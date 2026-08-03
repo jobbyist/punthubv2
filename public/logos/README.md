@@ -34,6 +34,9 @@ Please place the following logo image files in this directory:
 
 ### Additional Logos Needed
 
-- **bet-co-za.png** - Bet.co.za logo (please add this logo)
-- **supabets.png** - Supabets logo (please add this logo)
+9. **bet-co-za.png** - Bet.co.za logo
+   - Source: https://github.com/user-attachments/assets/ed6e9403-229b-453d-bd85-1bb6645500cc
+
+10. **supabets.png** - Supabets logo
+   - Source: https://github.com/user-attachments/assets/850fc385-bda4-44bc-8819-2272ebd38abd
 
