@@ -13,15 +13,22 @@ export const sports: Sport[] = [
   { name: "Golf", count: 6 },
 ];
 
-export const platforms = [
-  "Betway",
-  "Bet.co.za",
-  "Sportingbet",
-  "Hollywoodbets",
-  "Supabets",
-  "Betfair",
-  "Playabets",
-  "10bet",
+export type Platform = {
+  name: string;
+  logo: string;
+};
+
+export const platforms: Platform[] = [
+  { name: "Betway", logo: "/logos/betway.png" },
+  { name: "Bet.co.za", logo: "/logos/bet-co-za.png" },
+  { name: "Sportingbet", logo: "/logos/sportingbet.png" },
+  { name: "Hollywoodbets", logo: "/logos/hollywoodbets.png" },
+  { name: "Supabets", logo: "/logos/supabets.png" },
+  { name: "Betfair", logo: "/logos/betfair.png" },
+  { name: "Playabets", logo: "/logos/playabets.png" },
+  { name: "10bet", logo: "/logos/10bet.png" },
+  { name: "Stake", logo: "/logos/stake.png" },
+  { name: "Betfred", logo: "/logos/betfred.png" },
 ];
 
 export const topTipsters = [
