@@ -80,11 +80,15 @@ function LeftRail() {
       </p>
       <ul className="mt-2 space-y-0.5">
         {platforms.map((p) => (
-          <li key={p} className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm">
-            <span className="grid size-6 shrink-0 place-items-center rounded-md bg-ink text-[9px] font-bold text-ink-foreground">
-              {p.slice(0, 2).toUpperCase()}
-            </span>
-            {p}
+          <li key={p.name} className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm">
+            <div className="size-6 shrink-0 rounded-md bg-card border border-border flex items-center justify-center overflow-hidden">
+              <img 
+                src={p.logo} 
+                alt={p.name} 
+                className="h-4 w-auto object-contain"
+              />
+            </div>
+            {p.name}
           </li>
         ))}
         <li>

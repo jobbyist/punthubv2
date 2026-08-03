@@ -14,10 +14,10 @@ export function PlatformRail() {
     <div className="flex flex-wrap items-center justify-center gap-3">
       {platforms.map((p) => (
         <div
-          key={p}
-          className="grid h-16 min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-5 text-base font-extrabold tracking-tight text-ink shadow-soft transition-transform hover:-translate-y-0.5"
+          key={p.name}
+          className="grid h-16 min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-5 shadow-soft transition-transform hover:-translate-y-0.5"
         >
-          {p}
+          <img src={p.logo} alt={p.name} className="h-8 w-auto object-contain" />
         </div>
       ))}
     </div>
