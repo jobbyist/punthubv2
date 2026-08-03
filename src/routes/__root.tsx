@@ -101,13 +101,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "PuntHub — Predict. Earn. Win together." },
       { name: "twitter:description", content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6qWZov4tglQVz0lGHkWVgkSQwYl1/social-images/social-1785780505403-social-image.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6qWZov4tglQVz0lGHkWVgkSQwYl1/social-images/social-1785780505403-social-image.webp" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
