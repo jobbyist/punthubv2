@@ -84,21 +84,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PuntHub — SA's #1 AI Betting Prediction Community" },
+      { title: "PuntHub — Predict. Earn. Win together." },
       {
         name: "description",
         content:
-          "PuntHub aggregates odds, predictions and AI insights from South Africa's top bookmakers. Earn PuntPoints and 30% recurring referral revenue.",
+          "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
       },
       { name: "author", content: "PuntHub" },
       { property: "og:title", content: "PuntHub — Predict. Earn. Win together." },
       {
         property: "og:description",
-        content: "South Africa's #1 AI-powered betting prediction and community platform.",
+        content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "PuntHub — Predict. Earn. Win together." },
+      { name: "twitter:description", content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue." },
     ],
     links: [
       {

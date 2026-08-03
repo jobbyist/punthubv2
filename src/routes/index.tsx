@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "PuntHub — Predict. Earn. Win together." },
       {
         property: "og:description",
-        content: "Compare odds, share predictions and earn PuntPoints with South Africa's betting community.",
+        content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
       },
     ],
   }),
