@@ -9,7 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 
-const FORMSPREE_ENDPOINT = import.meta.env['VITE_FORMSPREE_ENDPOINT'] as string | undefined;
+// TODO: replace with your real Formspree endpoint, e.g. https://formspree.io/f/abcdwxyz
+// Can also be supplied via the VITE_FORMSPREE_ENDPOINT env var without touching this file.
+const FORMSPREE_PLACEHOLDER = "https://formspree.io/f/REPLACE_ME";
+const FORMSPREE_ENDPOINT =
+  (import.meta.env['VITE_FORMSPREE_ENDPOINT'] as string | undefined) || FORMSPREE_PLACEHOLDER;
+const FORMSPREE_READY = !FORMSPREE_ENDPOINT.includes("REPLACE_ME");
 
 export function EarlyAccessModal() {
   const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest, plan } = useSession();
@@ -23,7 +28,7 @@ export function EarlyAccessModal() {
     if (submitting) return;
     setSubmitting(true);
     try {
-      if (FORMSPREE_ENDPOINT) {
+      if (FORMSPREE_READY) {
         const res = await fetch(FORMSPREE_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
