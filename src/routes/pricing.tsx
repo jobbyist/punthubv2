@@ -153,7 +153,7 @@ function Pricing() {
             <Button
               className={`mt-5 h-11 ${p.variant === "ink" ? "bg-ink text-ink-foreground hover:bg-ink/90" : ""}`}
               variant={p.variant === "outline" ? "outline" : "default"}
-              onClick={() => openEarlyAccess(`Join the beta to reserve ${p.name}.`)}
+              onClick={() => openEarlyAccess(`Reserve your ${p.name} spot in the Puntr beta.`, p.name)}
             >
               {p.cta}
             </Button>
