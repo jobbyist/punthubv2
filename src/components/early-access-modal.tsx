@@ -23,7 +23,7 @@ export function EarlyAccessModal() {
             <Sparkles className="size-3.5" /> Beta • Early access
           </span>
           <h2 className="mt-4 text-2xl leading-tight">
-            Join the PuntHub <span className="text-primary">beta group</span>
+            Join the Puntr <span className="text-primary">beta group</span>
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {reason ?? "Get exclusive access before everyone else — plus 1 000 free PuntPoints on launch."}

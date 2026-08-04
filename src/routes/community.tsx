@@ -11,12 +11,12 @@ import { communityPosts } from "@/lib/mock-data";
 export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
-      { title: "Community | PuntHub" },
+      { title: "Community | Puntr" },
       {
         name: "description",
         content: "Connect with fellow South African punters, share insights, post your picks and grow together.",
       },
-      { property: "og:title", content: "Community | PuntHub" },
+      { property: "og:title", content: "Community | Puntr" },
       { property: "og:description", content: "Share picks, discuss matches and learn from the best." },
     ],
   }),
@@ -36,7 +36,7 @@ function Feed() {
         >
           {p.pinned && (
             <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-primary">
-              <Pin className="size-3.5" /> Pinned by PuntHub
+              <Pin className="size-3.5" /> Pinned by Puntr
             </p>
           )}
           <div className="flex items-center gap-3">

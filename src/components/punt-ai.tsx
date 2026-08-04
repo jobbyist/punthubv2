@@ -159,10 +159,10 @@ export function PuntAI() {
                   </button>
                 </form>
                 <button
-                  onClick={() => openEarlyAccess("PUNT AI is included with PuntHub AI — join the beta for early access.")}
+                  onClick={() => openEarlyAccess("PUNT AI is included with Puntr AI — join the beta for early access.")}
                   className="mt-3 w-full text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
                 >
-                  Preview mode · unlock full AI with PuntHub AI (R249/month)
+                  Preview mode · unlock full AI with Puntr AI (R249/month)
                 </button>
               </div>
             </motion.aside>

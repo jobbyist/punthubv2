@@ -9,12 +9,12 @@ import { useSession } from "@/components/session";
 export const Route = createFileRoute("/insights")({
   head: () => ({
     meta: [
-      { title: "AI Insights | PuntHub" },
+      { title: "AI Insights | Puntr" },
       {
         name: "description",
-        content: "Advanced AI analytics, value finders, market trends and performance tracking for PuntHub members.",
+        content: "Advanced AI analytics, value finders, market trends and performance tracking for Puntr members.",
       },
-      { property: "og:title", content: "AI Insights | PuntHub" },
+      { property: "og:title", content: "AI Insights | Puntr" },
       { property: "og:description", content: "Advanced insights, AI analytics and value betting tools." },
     ],
   }),
@@ -60,7 +60,7 @@ function Insights() {
           </Button>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
-          Join thousands of smart punters already winning with PuntHub.
+          Join thousands of smart punters already winning with Puntr.
         </p>
       </motion.section>
 

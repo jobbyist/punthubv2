@@ -12,7 +12,7 @@ type SessionValue = {
 
 const SessionContext = createContext<SessionValue | null>(null);
 
-const STORAGE_KEY = "punthub:guest";
+const STORAGE_KEY = "puntr:guest";
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [isGuest, setIsGuest] = useState(false);

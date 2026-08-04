@@ -9,13 +9,13 @@ import { useSession } from "@/components/session";
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "How PuntHub Works | Predict. Earn. Win together." },
+      { title: "How Puntr Works | Predict. Earn. Win together." },
       {
         name: "description",
         content:
-          "Sign up free, make predictions, earn PuntPoints, climb the leaderboards and earn 30% recurring referral revenue with PuntHub.",
+          "Sign up free, make predictions, earn PuntPoints, climb the leaderboards and earn 30% recurring referral revenue with Puntr.",
       },
-      { property: "og:title", content: "How PuntHub Works" },
+      { property: "og:title", content: "How Puntr Works" },
       { property: "og:description", content: "Six steps from free sign-up to real rewards and recurring revenue." },
     ],
   }),
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/how-it-works")({
 const steps = [
   {
     title: "Sign Up For Free",
-    body: "Create your free PuntHub account in seconds. Join a community of thousands of smart bettors.",
+    body: "Create your free Puntr account in seconds. Join a community of thousands of smart bettors.",
     bullets: ["100% free to join", "No credit card required"],
     aside: "Create your account",
   },
@@ -66,10 +66,10 @@ function HowItWorks() {
 
   return (
     <AppShell>
-      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">How PuntHub Works</h1>
+      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">How Puntr Works</h1>
       <p className="mt-1 text-sm text-muted-foreground">Predict. Earn. Win together.</p>
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-        PuntHub brings all the top betting platforms in South Africa into one place. Make predictions, earn PuntPoints
+        Puntr brings all the top betting platforms in South Africa into one place. Make predictions, earn PuntPoints
         and 30% recurring revenue from your referrals.
       </p>
 
@@ -110,7 +110,7 @@ function HowItWorks() {
         <div className="min-w-0 flex-1">
           <h3 className="text-lg">Bet Smarter. Earn More.</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            PuntHub is more than predictions. It's a community where knowledge wins and everyone benefits.
+            Puntr is more than predictions. It's a community where knowledge wins and everyone benefits.
           </p>
         </div>
         <Button onClick={() => openEarlyAccess()}>Start predicting now</Button>
