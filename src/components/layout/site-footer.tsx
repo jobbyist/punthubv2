@@ -27,8 +27,9 @@ const columns = [
     title: "Company",
     links: [
       ["About Us", "/how-it-works"],
-      ["Terms & Conditions", "/support"],
-      ["Privacy Policy", "/support"],
+      ["Terms & Conditions", "/terms"],
+      ["Privacy Policy", "/privacy"],
+      ["Cookie Preferences", "/cookies"],
       ["Contact Us", "/support"],
     ],
   },
