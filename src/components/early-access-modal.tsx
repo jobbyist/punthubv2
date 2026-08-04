@@ -28,7 +28,7 @@ export function EarlyAccessModal() {
     if (submitting) return;
     setSubmitting(true);
     try {
-      if (FORMSPREE_ENDPOINT) {
+      if (FORMSPREE_READY) {
         const res = await fetch(FORMSPREE_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
