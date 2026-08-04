@@ -28,7 +28,7 @@ export const platforms: Platform[] = [
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
   { name: "Stake", logo: "/logos/stake.png" },
-  { name: "Betfred", logo: "/logos/betfred.png" },
+  { name: "Easybet", logo: "/logos/easybet.png" },
 ];
 
 export const topTipsters = [
