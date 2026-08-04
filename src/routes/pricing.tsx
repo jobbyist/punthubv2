@@ -208,8 +208,8 @@ function Pricing() {
             Join thousands of smart punters making better decisions every day.
           </p>
         </div>
-        <Button onClick={() => openEarlyAccess()}>Start free</Button>
-        <Button variant="outline" onClick={() => openEarlyAccess()}>
+        <Button onClick={() => openEarlyAccess("Reserve your Free Plan spot in the Puntr beta.", "Free Plan")}>Start free</Button>
+        <Button variant="outline" onClick={() => openEarlyAccess("Reserve your Premium spot in the Puntr beta.", "Premium")}>
           Go Premium
         </Button>
       </section>
