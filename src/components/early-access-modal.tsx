@@ -88,14 +88,13 @@ export function EarlyAccessModal() {
             </Button>
           </div>
         ) : (
-          <form
-            className="space-y-4 px-6 pb-6 pt-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setDone(true);
-              toast.success("Welcome to the beta list", { description: "1 000 PuntPoints reserved for you." });
-            }}
-          >
+          <form className="space-y-4 px-6 pb-6 pt-5" onSubmit={submit}>
+            {plan && (
+              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
+                <span className="text-muted-foreground">Selected plan</span>
+                <span className="font-semibold text-primary">{plan}</span>
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label htmlFor="ea-name">Full name</Label>
               <Input id="ea-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
