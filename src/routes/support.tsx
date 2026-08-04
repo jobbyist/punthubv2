@@ -13,13 +13,13 @@ import { faqs } from "@/lib/mock-data";
 export const Route = createFileRoute("/support")({
   head: () => ({
     meta: [
-      { title: "Support Centre | PuntHub" },
+      { title: "Support Centre | Puntr" },
       {
         name: "description",
         content:
-          "Get help with PuntHub: FAQs, live chat, email support@punthub.fun or call 012 880 6560. We're here to help.",
+          "Get help with Puntr: FAQs, live chat, email support@punthub.fun or call 012 880 6560. We're here to help.",
       },
-      { property: "og:title", content: "PuntHub Support Centre" },
+      { property: "og:title", content: "Puntr Support Centre" },
       { property: "og:description", content: "Find answers, get in touch and we'll sort you out." },
     ],
   }),

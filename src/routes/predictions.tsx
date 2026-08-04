@@ -12,13 +12,13 @@ import { featuredPredictions, popularPredictions } from "@/lib/mock-data";
 export const Route = createFileRoute("/predictions")({
   head: () => ({
     meta: [
-      { title: "All Predictions | PuntHub" },
+      { title: "All Predictions | Puntr" },
       {
         name: "description",
         content:
           "Browse today's top community and AI-backed betting predictions across football, rugby, cricket and more.",
       },
-      { property: "og:title", content: "All Predictions | PuntHub" },
+      { property: "og:title", content: "All Predictions | Puntr" },
       { property: "og:description", content: "Top value bets with the highest AI confidence and community backing." },
     ],
   }),

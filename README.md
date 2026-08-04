@@ -1,10 +1,10 @@
-# PuntHub AI Insights
+# Puntr AI Insights
 
-Build a premium, production-ready SaaS web application called PuntHub — South Africa’s #1 AI-powered betting prediction and community platform.
+Build a premium, production-ready SaaS web application called Puntr — South Africa’s #1 AI-powered betting prediction and community platform.
 
 Website: https://punthub.fun
 
-PuntHub aggregates betting markets, odds, predictions, AI insights and community picks from South Africa’s leading bookmakers while rewarding users with PuntPoints and a 30% recurring referral commission for every Premium subscriber they refer.
+Puntr aggregates betting markets, odds, predictions, AI insights and community picks from South Africa’s leading bookmakers while rewarding users with PuntPoints and a 30% recurring referral commission for every Premium subscriber they refer.
 
 The platform should feel like a hybrid between:
 
@@ -322,7 +322,7 @@ Priority support
 
 ⸻
 
-PuntHub AI
+Puntr AI
 
 R249/month
 
@@ -728,7 +728,7 @@ Analytics
 
 Final Goal
 
-Deliver a polished, enterprise-grade SaaS platform that faithfully recreates the supplied mockups while enhancing them with smooth animations, premium interactions, role-based authentication, subscription management, AI-powered assistance, referral tracking, and scalable architecture. The experience should immediately communicate trust, speed, and professionalism, making PuntHub feel like the definitive betting prediction community for South African users.
+Deliver a polished, enterprise-grade SaaS platform that faithfully recreates the supplied mockups while enhancing them with smooth animations, premium interactions, role-based authentication, subscription management, AI-powered assistance, referral tracking, and scalable architecture. The experience should immediately communicate trust, speed, and professionalism, making Puntr feel like the definitive betting prediction community for South African users.
 
 Additional notes 
 

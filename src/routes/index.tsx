@@ -10,13 +10,13 @@ import { topTipsters } from "@/lib/mock-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PuntHub — Predict. Earn. Win together." },
+      { title: "Puntr — Predict. Earn. Win together." },
       {
         name: "description",
         content:
           "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
       },
-      { property: "og:title", content: "PuntHub — Predict. Earn. Win together." },
+      { property: "og:title", content: "Puntr — Predict. Earn. Win together." },
       {
         property: "og:description",
         content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
@@ -57,7 +57,7 @@ function Landing() {
             <span className="text-primary">Win together.</span>
           </h1>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            PuntHub aggregates all the top betting platforms in South Africa. Share your predictions, earn{" "}
+            Puntr aggregates all the top betting platforms in South Africa. Share your predictions, earn{" "}
             <span className="font-semibold text-foreground">PuntPoints</span> and 30% of ongoing monthly revenue from
             your referrals.
           </p>
@@ -170,7 +170,7 @@ function Landing() {
 
       {/* How it works */}
       <motion.section {...fade} className="card-surface p-6 sm:p-8">
-        <h2 className="text-center text-2xl">How PuntHub Works</h2>
+        <h2 className="text-center text-2xl">How Puntr Works</h2>
         <div className="mt-7 grid gap-4 md:grid-cols-4">
           {steps.map((s) => (
             <div key={s.n} className="flex gap-3 rounded-xl border border-border p-4">
@@ -225,7 +225,7 @@ function Landing() {
         <div className="rounded-xl bg-ink p-6 text-ink-foreground shadow-lift">
           <h3 className="text-xl">Earn 30% Ongoing Revenue</h3>
           <p className="mt-2 text-xs leading-relaxed text-ink-foreground/75">
-            Refer users to PuntHub Premium and earn 30% of their monthly subscription for as long as they remain
+            Refer users to Puntr Premium and earn 30% of their monthly subscription for as long as they remain
             active.
           </p>
           <p className="mt-5 flex items-end gap-3">
@@ -249,7 +249,7 @@ function Landing() {
         </div>
 
         <div className="card-surface p-5">
-          <h3 className="text-lg">Why Join PuntHub?</h3>
+          <h3 className="text-lg">Why Join Puntr?</h3>
           <ul className="mt-4 space-y-3.5">
             {[
               "Access to top betting platforms",

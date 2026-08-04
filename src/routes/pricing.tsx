@@ -10,14 +10,14 @@ import { useSession } from "@/components/session";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Simple plans, maximum value | PuntHub" },
+      { title: "Pricing — Simple plans, maximum value | Puntr" },
       {
         name: "description",
         content:
-          "PuntHub plans: Free forever, Premium at R99/month and PuntHub AI at R249/month with AI predictions, confidence scores and no ads.",
+          "Puntr plans: Free forever, Premium at R99/month and Puntr AI at R249/month with AI predictions, confidence scores and no ads.",
       },
-      { property: "og:title", content: "PuntHub Pricing — Simple pricing. Maximum value." },
-      { property: "og:description", content: "Free, Premium R99/month and PuntHub AI R249/month. Cancel anytime." },
+      { property: "og:title", content: "Puntr Pricing — Simple pricing. Maximum value." },
+      { property: "og:description", content: "Free, Premium R99/month and Puntr AI R249/month. Cancel anytime." },
     ],
   }),
   component: Pricing,
@@ -60,11 +60,11 @@ const plans = [
     note: "Best for serious punters who want more value and insights.",
   },
   {
-    name: "PuntHub AI",
+    name: "Puntr AI",
     tagline: "AI insights. Maximum edge.",
     price: "R249",
     badge: "New",
-    cta: "Go PuntHub AI",
+    cta: "Go Puntr AI",
     variant: "ink" as const,
     features: [
       "Unlimited AI predictions",
@@ -153,7 +153,7 @@ function Pricing() {
             <Button
               className={`mt-5 h-11 ${p.variant === "ink" ? "bg-ink text-ink-foreground hover:bg-ink/90" : ""}`}
               variant={p.variant === "outline" ? "outline" : "default"}
-              onClick={() => openEarlyAccess(`Join the beta to reserve ${p.name}.`)}
+              onClick={() => openEarlyAccess(`Reserve your ${p.name} spot in the Puntr beta.`, p.name)}
             >
               {p.cta}
             </Button>
@@ -179,7 +179,7 @@ function Pricing() {
               <th className="py-2.5 text-left font-medium">Features</th>
               <th className="py-2.5 font-medium">Free<br />R0/month</th>
               <th className="py-2.5 font-medium">Premium<br />R99/month</th>
-              <th className="py-2.5 font-medium">PuntHub AI<br />R249/month</th>
+              <th className="py-2.5 font-medium">Puntr AI<br />R249/month</th>
             </tr>
           </thead>
           <tbody>
@@ -208,8 +208,8 @@ function Pricing() {
             Join thousands of smart punters making better decisions every day.
           </p>
         </div>
-        <Button onClick={() => openEarlyAccess()}>Start free</Button>
-        <Button variant="outline" onClick={() => openEarlyAccess()}>
+        <Button onClick={() => openEarlyAccess("Reserve your Free Plan spot in the Puntr beta.", "Free Plan")}>Start free</Button>
+        <Button variant="outline" onClick={() => openEarlyAccess("Reserve your Premium spot in the Puntr beta.", "Premium")}>
           Go Premium
         </Button>
       </section>
@@ -219,7 +219,7 @@ function Pricing() {
         <Accordion type="single" collapsible className="mt-2">
           {([
             ["Can I cancel my subscription anytime?", "Yes — cancel in one click from Settings. You keep access until the end of your billing period."],
-            ["Is my payment information secure?", "Payments are processed by PCI-DSS compliant providers. PuntHub never stores your card details."],
+            ["Is my payment information secure?", "Payments are processed by PCI-DSS compliant providers. Puntr never stores your card details."],
             ["Do you offer refunds?", "Yes, a full refund within 30 days of your first payment, no questions asked."],
             ["What payment methods do you accept?", "Visa, Mastercard, InstantEFT and Zapper."],
           ] as [string, string][]).map(([q, a]) => (

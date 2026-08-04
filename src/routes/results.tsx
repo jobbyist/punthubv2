@@ -7,12 +7,12 @@ import { resultsByDate, resultsSummary } from "@/lib/mock-data";
 export const Route = createFileRoute("/results")({
   head: () => ({
     meta: [
-      { title: "Results | PuntHub" },
+      { title: "Results | Puntr" },
       {
         name: "description",
         content: "Check past match results, see how predictions performed and track your betting accuracy.",
       },
-      { property: "og:title", content: "Results | PuntHub" },
+      { property: "og:title", content: "Results | Puntr" },
       { property: "og:description", content: "See how predictions performed and track your accuracy." },
     ],
   }),

@@ -28,7 +28,7 @@ export const platforms: Platform[] = [
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
   { name: "Stake", logo: "/logos/stake.png" },
-  { name: "Betfred", logo: "/logos/betfred.png" },
+  { name: "Easybet", logo: "/logos/easybet.png" },
 ];
 
 export const topTipsters = [
@@ -175,8 +175,8 @@ export const sparkline = [12, 18, 14, 22, 19, 26, 24, 30, 27, 34, 31, 38];
 
 export const faqs = [
   {
-    q: "What is PuntHub?",
-    a: "PuntHub aggregates odds, markets, predictions and AI insights from South Africa's leading bookmakers into one place, and rewards you with PuntPoints for accurate predictions and community participation.",
+    q: "What is Puntr?",
+    a: "Puntr aggregates odds, markets, predictions and AI insights from South Africa's leading bookmakers into one place, and rewards you with PuntPoints for accurate predictions and community participation.",
   },
   {
     q: "How do PuntPoints work?",
@@ -184,11 +184,11 @@ export const faqs = [
   },
   {
     q: "How do I earn 30% recurring revenue?",
-    a: "Refer users to a PuntHub Premium or PuntHub AI plan and earn 30% of their monthly subscription for as long as they remain subscribed. There is no cap on earnings.",
+    a: "Refer users to a Puntr Premium or Puntr AI plan and earn 30% of their monthly subscription for as long as they remain subscribed. There is no cap on earnings.",
   },
   {
-    q: "Is PuntHub free to use?",
-    a: "Yes. The Free plan gives you community access, limited predictions and basic leaderboards. Premium (R99/month) and PuntHub AI (R249/month) unlock the full experience.",
+    q: "Is Puntr free to use?",
+    a: "Yes. The Free plan gives you community access, limited predictions and basic leaderboards. Premium (R99/month) and Puntr AI (R249/month) unlock the full experience.",
   },
   {
     q: "How accurate are predictions?",
@@ -206,11 +206,11 @@ export const faqs = [
 
 export const communityPosts = [
   {
-    author: "PuntHub Official",
+    author: "Puntr Official",
     meta: "2 days ago",
     pinned: true,
     admin: true,
-    title: "Welcome to the PuntHub Community! 👋",
+    title: "Welcome to the Puntr Community! 👋",
     body: "Share your picks, discuss matches, and learn from the best. Remember to bet responsibly and respect every member. Let's build the most helpful betting community in SA! 💚",
     likes: 124,
     comments: 32,

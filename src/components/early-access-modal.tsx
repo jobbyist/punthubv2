@@ -9,11 +9,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 
+const FORMSPREE_ENDPOINT = import.meta.env['VITE_FORMSPREE_ENDPOINT'] as string | undefined;
+
 export function EarlyAccessModal() {
-  const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest } = useSession();
+  const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest, plan } = useSession();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      if (FORMSPREE_ENDPOINT) {
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            plan: plan ?? "Unspecified",
+            source: "Puntr early access",
+            page: typeof window !== "undefined" ? window.location.pathname : "",
+          }),
+        });
+        if (!res.ok) throw new Error(`Formspree responded ${res.status}`);
+      }
+      setDone(true);
+      toast.success("Welcome to the beta list", {
+        description: `${plan ?? "Your plan"} reserved · 1 000 PuntPoints waiting.`,
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("We couldn't submit that", { description: "Please try again in a moment." });
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <Dialog open={earlyAccessOpen} onOpenChange={(o) => !o && closeEarlyAccess()}>
@@ -23,7 +57,7 @@ export function EarlyAccessModal() {
             <Sparkles className="size-3.5" /> Beta • Early access
           </span>
           <h2 className="mt-4 text-2xl leading-tight">
-            Join the PuntHub <span className="text-primary">beta group</span>
+            Join the Puntr <span className="text-primary">beta group</span>
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {reason ?? "Get exclusive access before everyone else — plus 1 000 free PuntPoints on launch."}
@@ -54,14 +88,13 @@ export function EarlyAccessModal() {
             </Button>
           </div>
         ) : (
-          <form
-            className="space-y-4 px-6 pb-6 pt-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setDone(true);
-              toast.success("Welcome to the beta list", { description: "1 000 PuntPoints reserved for you." });
-            }}
-          >
+          <form className="space-y-4 px-6 pb-6 pt-5" onSubmit={submit}>
+            {plan && (
+              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
+                <span className="text-muted-foreground">Selected plan</span>
+                <span className="font-semibold text-primary">{plan}</span>
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label htmlFor="ea-name">Full name</Label>
               <Input id="ea-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
@@ -77,8 +110,8 @@ export function EarlyAccessModal() {
                 placeholder="you@example.com"
               />
             </div>
-            <Button type="submit" className="h-11 w-full text-[15px]">
-              Request early access
+            <Button type="submit" disabled={submitting} className="h-11 w-full text-[15px]">
+              {submitting ? "Sending…" : "Request early access"}
             </Button>
 
             <div className="flex items-center gap-3 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -108,6 +141,7 @@ export function EarlyAccessModal() {
               Browse as guest
             </button>
             <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+              No payment is taken during early access — you only reserve your plan.<br />
               18+ only. Bet responsibly. By joining you agree to our Terms & Privacy Policy.
             </p>
           </form>

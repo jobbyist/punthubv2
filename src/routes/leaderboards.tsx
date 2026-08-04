@@ -10,12 +10,12 @@ import { topTipsters } from "@/lib/mock-data";
 export const Route = createFileRoute("/leaderboards")({
   head: () => ({
     meta: [
-      { title: "Leaderboard | PuntHub" },
+      { title: "Leaderboard | Puntr" },
       {
         name: "description",
-        content: "See the top predictors earning the most PuntPoints this month on PuntHub.",
+        content: "See the top predictors earning the most PuntPoints this month on Puntr.",
       },
-      { property: "og:title", content: "Leaderboard | PuntHub" },
+      { property: "og:title", content: "Leaderboard | Puntr" },
       { property: "og:description", content: "Top predictors earning the most PuntPoints this month." },
     ],
   }),

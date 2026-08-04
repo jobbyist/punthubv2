@@ -98,7 +98,7 @@ export function SiteFooter() {
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 pb-8 text-center text-xs leading-relaxed text-muted-foreground sm:px-6">
-        <p>PuntHub promotes responsible gambling. No persons under the age of 18 are permitted to gamble.</p>
+        <p>Puntr promotes responsible gambling. No persons under the age of 18 are permitted to gamble.</p>
         <p>
           National Responsible Gambling Programme Toll-Free Counselling Helpline:{" "}
           <span className="font-semibold text-foreground tnum">0800 006 008</span>
@@ -134,7 +134,7 @@ export function SiteFooter() {
                 href="https://x.com/punthub.za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="PuntHub on X"
+                aria-label="Puntr on X"
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <XIcon className="size-5" />
@@ -143,7 +143,7 @@ export function SiteFooter() {
                 href="https://chat.whatsapp.com/F7wPY6NrXSc7OPrqq3os7w"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Join the PuntHub WhatsApp community"
+                aria-label="Join the Puntr WhatsApp community"
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <MessageCircle className="size-5" />
@@ -152,7 +152,7 @@ export function SiteFooter() {
                 href="https://facebook.com/punthub.za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="PuntHub on Facebook"
+                aria-label="Puntr on Facebook"
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <Facebook className="size-5" />
@@ -166,7 +166,7 @@ export function SiteFooter() {
         </div>
 
         <p className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-          © 2025 PuntHub (Pty) Ltd. All rights reserved. 18+ only.
+          © 2025 Puntr (Pty) Ltd. All rights reserved. 18+ only.
         </p>
       </div>
     </footer>
