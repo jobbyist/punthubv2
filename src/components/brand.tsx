@@ -8,7 +8,8 @@ export function Logo({ className = "" }: { className?: string }) {
         <span className="absolute -right-0.5 top-1 h-1.5 w-2 rounded-full bg-background" />
       </span>
       <span className="font-display text-2xl font-extrabold tracking-tight text-ink">
-        punt<span className="text-primary">hub</span>
+        Punt<span className="text-primary">r</span>
+        <span className="align-super text-[10px] font-bold text-muted-foreground">™</span>
       </span>
     </Link>
   );
