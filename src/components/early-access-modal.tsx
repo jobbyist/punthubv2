@@ -110,8 +110,8 @@ export function EarlyAccessModal() {
                 placeholder="you@example.com"
               />
             </div>
-            <Button type="submit" className="h-11 w-full text-[15px]">
-              Request early access
+            <Button type="submit" disabled={submitting} className="h-11 w-full text-[15px]">
+              {submitting ? "Sending…" : "Request early access"}
             </Button>
 
             <div className="flex items-center gap-3 text-[11px] uppercase tracking-wide text-muted-foreground">
