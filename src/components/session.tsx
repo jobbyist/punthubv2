@@ -1,13 +1,17 @@
+import { useRouter } from "@tanstack/react-router";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 type SessionValue = {
   isGuest: boolean;
   enterGuest: () => void;
   exitGuest: () => void;
-  openEarlyAccess: (reason?: string) => void;
+  /** Opens the early-access form. Without a plan the user is sent to pricing first. */
+  openEarlyAccess: (reason?: string, plan?: string) => void;
   closeEarlyAccess: () => void;
   earlyAccessOpen: boolean;
   reason: string | undefined;
+  plan: string | undefined;
 };
 
 const SessionContext = createContext<SessionValue | null>(null);
@@ -15,9 +19,11 @@ const SessionContext = createContext<SessionValue | null>(null);
 const STORAGE_KEY = "puntr:guest";
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [isGuest, setIsGuest] = useState(false);
   const [earlyAccessOpen, setEarlyAccessOpen] = useState(false);
   const [reason, setReason] = useState<string | undefined>();
+  const [plan, setPlan] = useState<string | undefined>();
 
   useEffect(() => {
     setIsGuest(window.localStorage.getItem(STORAGE_KEY) === "1");
@@ -33,10 +39,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setIsGuest(false);
   }, []);
 
-  const openEarlyAccess = useCallback((r?: string) => {
-    setReason(r);
-    setEarlyAccessOpen(true);
-  }, []);
+  const openEarlyAccess = useCallback(
+    (r?: string, selectedPlan?: string) => {
+      if (!selectedPlan) {
+        setReason(r);
+        setEarlyAccessOpen(false);
+        toast("Pick a plan first", { description: "Choose the package you want reserved for the beta." });
+        void router.navigate({ to: "/pricing" });
+        return;
+      }
+      setReason(r);
+      setPlan(selectedPlan);
+      setEarlyAccessOpen(true);
+    },
+    [router],
+  );
 
   const value = useMemo(
     () => ({
@@ -47,8 +64,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       closeEarlyAccess: () => setEarlyAccessOpen(false),
       earlyAccessOpen,
       reason,
+      plan,
     }),
-    [isGuest, enterGuest, exitGuest, openEarlyAccess, earlyAccessOpen, reason],
+    [isGuest, enterGuest, exitGuest, openEarlyAccess, earlyAccessOpen, reason, plan],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
