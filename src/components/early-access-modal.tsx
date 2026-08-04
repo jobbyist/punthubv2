@@ -141,6 +141,7 @@ export function EarlyAccessModal() {
               Browse as guest
             </button>
             <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+              No payment is taken during early access — you only reserve your plan.<br />
               18+ only. Bet responsibly. By joining you agree to our Terms & Privacy Policy.
             </p>
           </form>
