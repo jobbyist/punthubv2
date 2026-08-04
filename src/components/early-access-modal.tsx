@@ -9,11 +9,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 
+const FORMSPREE_ENDPOINT = import.meta.env['VITE_FORMSPREE_ENDPOINT'] as string | undefined;
+
 export function EarlyAccessModal() {
-  const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest } = useSession();
+  const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest, plan } = useSession();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      if (FORMSPREE_ENDPOINT) {
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            plan: plan ?? "Unspecified",
+            source: "Puntr early access",
+            page: typeof window !== "undefined" ? window.location.pathname : "",
+          }),
+        });
+        if (!res.ok) throw new Error(`Formspree responded ${res.status}`);
+      }
+      setDone(true);
+      toast.success("Welcome to the beta list", {
+        description: `${plan ?? "Your plan"} reserved · 1 000 PuntPoints waiting.`,
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("We couldn't submit that", { description: "Please try again in a moment." });
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <Dialog open={earlyAccessOpen} onOpenChange={(o) => !o && closeEarlyAccess()}>
