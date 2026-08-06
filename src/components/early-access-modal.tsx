@@ -8,13 +8,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
-
-// TODO: replace with your real Formspree endpoint, e.g. https://formspree.io/f/abcdwxyz
-// Can also be supplied via the VITE_FORMSPREE_ENDPOINT env var without touching this file.
-const FORMSPREE_PLACEHOLDER = "https://formspree.io/f/REPLACE_ME";
-const FORMSPREE_ENDPOINT =
-  (import.meta.env['VITE_FORMSPREE_ENDPOINT'] as string | undefined) || FORMSPREE_PLACEHOLDER;
-const FORMSPREE_READY = !FORMSPREE_ENDPOINT.includes("REPLACE_ME");
+import { submitEarlyAccess } from "@/lib/early-access";
 
 export function EarlyAccessModal() {
   const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest, plan } = useSession();
@@ -26,29 +20,41 @@ export function EarlyAccessModal() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
+    
     setSubmitting(true);
+    
     try {
-      if (FORMSPREE_READY) {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            plan: plan ?? "Unspecified",
-            source: "Puntr early access",
-            page: typeof window !== "undefined" ? window.location.pathname : "",
-          }),
-        });
-        if (!res.ok) throw new Error(`Formspree responded ${res.status}`);
+      // Submit to Supabase
+      const result = await submitEarlyAccess({
+        name,
+        email,
+        plan: plan ?? "Free Plan",
+      });
+
+      if (!result.success) {
+        // Handle specific error cases
+        if (result.error === "DUPLICATE_EMAIL") {
+          toast.error("Already registered", {
+            description: "This email is already on the beta list. Check your inbox for details.",
+          });
+        } else {
+          toast.error("Unable to submit", {
+            description: result.message,
+          });
+        }
+        return;
       }
+
+      // Success!
       setDone(true);
-      toast.success("Welcome to the beta list", {
+      toast.success("Welcome to the beta list!", {
         description: `${plan ?? "Your plan"} reserved · 1 000 PuntPoints waiting.`,
       });
     } catch (err) {
-      console.error(err);
-      toast.error("We couldn't submit that", { description: "Please try again in a moment." });
+      // Catch any unexpected errors
+      toast.error("Something went wrong", {
+        description: "Please check your connection and try again.",
+      });
     } finally {
       setSubmitting(false);
     }
