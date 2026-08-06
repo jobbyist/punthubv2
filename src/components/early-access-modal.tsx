@@ -119,9 +119,44 @@ export function EarlyAccessModal() {
               </div>
             </div>
 
+            {!emailSent && (
+              <div className="mt-4 flex flex-col gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-left">
+                <p className="text-xs text-muted-foreground">
+                  Your spot is reserved, but we couldn't deliver the confirmation email.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={submitting}
+                  onClick={async () => {
+                    setSubmitting(true);
+                    try {
+                      const mail = await sendEarlyAccessWelcome({
+                        data: { name, email, plan: confirmedPlan ?? selectedPlan },
+                      });
+                      if (mail?.sent) {
+                        setEmailSent(true);
+                        toast.success("Confirmation email sent");
+                      } else {
+                        toast.error("Still couldn't send", { description: "Please try again in a moment." });
+                      }
+                    } catch {
+                      toast.error("Still couldn't send", { description: "Please try again in a moment." });
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }}
+                >
+                  <RotateCcw className="size-4" /> Resend confirmation email
+                </Button>
+              </div>
+            )}
+
             <p className="mt-4 text-xs text-muted-foreground">
               No payment is taken during early access — you only reserve your plan.
             </p>
+
 
             <Button
               className="mt-5 w-full"
