@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, RotateCcw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 import { submitEarlyAccess } from "@/lib/early-access";
+import { sendEarlyAccessWelcome } from "@/lib/early-access.functions";
 import { analytics } from "@/lib/analytics";
 
 export function EarlyAccessModal() {
@@ -19,14 +20,20 @@ export function EarlyAccessModal() {
   const [done, setDone] = useState(false);
   const [confirmedPlan, setConfirmedPlan] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [emailSent, setEmailSent] = useState(true);
 
   const selectedPlan = plan ?? "Free Plan";
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
+  async function runSubmit() {
     if (submitting) return;
 
     setSubmitting(true);
+    setErrorTitle(null);
+    setErrorDetail(null);
+    setAttempts((a) => a + 1);
 
     try {
       const result = await submitEarlyAccess({ name, email, phone, plan: selectedPlan });
@@ -34,11 +41,14 @@ export function EarlyAccessModal() {
       if (!result.success) {
         analytics.earlyAccessFailed(selectedPlan, result.error ?? "UNKNOWN");
         if (result.error === "DUPLICATE_EMAIL") {
-          toast.error("Already registered", {
-            description: "This email is already on the beta list. Check your inbox for details.",
-          });
+          setErrorTitle("This email is already on the beta list");
+          setErrorDetail("Check your inbox for your confirmation, or use a different email address.");
+        } else if (result.error === "INVALID_EMAIL" || result.error === "INVALID_PHONE") {
+          setErrorTitle("Please check your details");
+          setErrorDetail(result.message);
         } else {
-          toast.error("Unable to submit", { description: result.message });
+          setErrorTitle("We couldn't reserve your spot");
+          setErrorDetail(`${result.message} Your details are saved below — tap “Try again”.`);
         }
         return;
       }
@@ -49,15 +59,29 @@ export function EarlyAccessModal() {
       toast.success("Welcome to the beta list!", {
         description: `${selectedPlan} reserved · 1 000 PuntPoints waiting.`,
       });
+
+      try {
+        const mail = await sendEarlyAccessWelcome({
+          data: { name, email, plan: selectedPlan },
+        });
+        setEmailSent(Boolean(mail?.sent));
+      } catch {
+        setEmailSent(false);
+      }
     } catch {
       analytics.earlyAccessFailed(selectedPlan, "NETWORK");
-      toast.error("Something went wrong", {
-        description: "Please check your connection and try again.",
-      });
+      setErrorTitle("Connection problem");
+      setErrorDetail("We couldn't reach our servers. Check your connection and tap “Try again” — your details are kept.");
     } finally {
       setSubmitting(false);
     }
   }
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    void runSubmit();
+  }
+
 
   return (
     <Dialog open={earlyAccessOpen} onOpenChange={(o) => !o && closeEarlyAccess()}>
