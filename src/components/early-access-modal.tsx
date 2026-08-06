@@ -238,8 +238,15 @@ export function EarlyAccessModal() {
                 />
               </div>
               <Button type="submit" disabled={submitting} className="h-11 w-full text-[15px]">
-                {submitting ? "Sending…" : "Request early access"}
+                {submitting ? "Sending…" : errorTitle ? (
+                  <>
+                    <RotateCcw className="size-4" /> Try again
+                  </>
+                ) : (
+                  "Request early access"
+                )}
               </Button>
+
 
               <button
                 type="button"
