@@ -2,6 +2,8 @@ import { useRouter } from "@tanstack/react-router";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
+import { analytics, trackEvent } from "@/lib/analytics";
+
 type SessionValue = {
   isGuest: boolean;
   enterGuest: () => void;
