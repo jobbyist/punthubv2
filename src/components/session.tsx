@@ -44,6 +44,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       if (!selectedPlan) {
         setReason(r);
         setEarlyAccessOpen(false);
+        trackEvent("early_access_plan_required", { source: r ?? "unspecified" });
         toast("Pick a plan first", { description: "Choose the package you want reserved for the beta." });
         void router.navigate({ to: "/pricing" });
         return;
@@ -51,6 +52,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setReason(r);
       setPlan(selectedPlan);
       setEarlyAccessOpen(true);
+      analytics.planSelected(selectedPlan, r ?? "pricing");
+      analytics.earlyAccessOpened(selectedPlan);
     },
     [router],
   );
