@@ -183,10 +183,23 @@ export function EarlyAccessModal() {
             </div>
 
             <form className="space-y-4 px-6 pb-6 pt-5" onSubmit={submit}>
+              {errorTitle && (
+                <div className="flex gap-2.5 rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2.5 text-left">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
+                  <div className="text-xs leading-relaxed">
+                    <p className="font-semibold text-destructive">{errorTitle}</p>
+                    {errorDetail && <p className="mt-0.5 text-muted-foreground">{errorDetail}</p>}
+                    {attempts > 1 && (
+                      <p className="mt-0.5 text-muted-foreground">Attempt {attempts} — your details are kept.</p>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
                 <span className="text-muted-foreground">Selected plan</span>
                 <span className="font-semibold text-primary">{selectedPlan}</span>
               </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="ea-name">Full name</Label>
                 <Input
