@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, RotateCcw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 import { submitEarlyAccess } from "@/lib/early-access";
+import { sendEarlyAccessWelcome } from "@/lib/early-access.functions";
 import { analytics } from "@/lib/analytics";
 
 export function EarlyAccessModal() {
@@ -19,14 +20,20 @@ export function EarlyAccessModal() {
   const [done, setDone] = useState(false);
   const [confirmedPlan, setConfirmedPlan] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [emailSent, setEmailSent] = useState(true);
 
   const selectedPlan = plan ?? "Free Plan";
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
+  async function runSubmit() {
     if (submitting) return;
 
     setSubmitting(true);
+    setErrorTitle(null);
+    setErrorDetail(null);
+    setAttempts((a) => a + 1);
 
     try {
       const result = await submitEarlyAccess({ name, email, phone, plan: selectedPlan });
@@ -34,11 +41,14 @@ export function EarlyAccessModal() {
       if (!result.success) {
         analytics.earlyAccessFailed(selectedPlan, result.error ?? "UNKNOWN");
         if (result.error === "DUPLICATE_EMAIL") {
-          toast.error("Already registered", {
-            description: "This email is already on the beta list. Check your inbox for details.",
-          });
+          setErrorTitle("This email is already on the beta list");
+          setErrorDetail("Check your inbox for your confirmation, or use a different email address.");
+        } else if (result.error === "INVALID_EMAIL" || result.error === "INVALID_PHONE") {
+          setErrorTitle("Please check your details");
+          setErrorDetail(result.message);
         } else {
-          toast.error("Unable to submit", { description: result.message });
+          setErrorTitle("We couldn't reserve your spot");
+          setErrorDetail(`${result.message} Your details are saved below — tap “Try again”.`);
         }
         return;
       }
@@ -49,15 +59,29 @@ export function EarlyAccessModal() {
       toast.success("Welcome to the beta list!", {
         description: `${selectedPlan} reserved · 1 000 PuntPoints waiting.`,
       });
+
+      try {
+        const mail = await sendEarlyAccessWelcome({
+          data: { name, email, plan: selectedPlan },
+        });
+        setEmailSent(Boolean(mail?.sent));
+      } catch {
+        setEmailSent(false);
+      }
     } catch {
       analytics.earlyAccessFailed(selectedPlan, "NETWORK");
-      toast.error("Something went wrong", {
-        description: "Please check your connection and try again.",
-      });
+      setErrorTitle("Connection problem");
+      setErrorDetail("We couldn't reach our servers. Check your connection and tap “Try again” — your details are kept.");
     } finally {
       setSubmitting(false);
     }
   }
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    void runSubmit();
+  }
+
 
   return (
     <Dialog open={earlyAccessOpen} onOpenChange={(o) => !o && closeEarlyAccess()}>
@@ -95,9 +119,44 @@ export function EarlyAccessModal() {
               </div>
             </div>
 
+            {!emailSent && (
+              <div className="mt-4 flex flex-col gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-left">
+                <p className="text-xs text-muted-foreground">
+                  Your spot is reserved, but we couldn't deliver the confirmation email.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={submitting}
+                  onClick={async () => {
+                    setSubmitting(true);
+                    try {
+                      const mail = await sendEarlyAccessWelcome({
+                        data: { name, email, plan: confirmedPlan ?? selectedPlan },
+                      });
+                      if (mail?.sent) {
+                        setEmailSent(true);
+                        toast.success("Confirmation email sent");
+                      } else {
+                        toast.error("Still couldn't send", { description: "Please try again in a moment." });
+                      }
+                    } catch {
+                      toast.error("Still couldn't send", { description: "Please try again in a moment." });
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }}
+                >
+                  <RotateCcw className="size-4" /> Resend confirmation email
+                </Button>
+              </div>
+            )}
+
             <p className="mt-4 text-xs text-muted-foreground">
               No payment is taken during early access — you only reserve your plan.
             </p>
+
 
             <Button
               className="mt-5 w-full"
@@ -124,10 +183,23 @@ export function EarlyAccessModal() {
             </div>
 
             <form className="space-y-4 px-6 pb-6 pt-5" onSubmit={submit}>
+              {errorTitle && (
+                <div className="flex gap-2.5 rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2.5 text-left">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
+                  <div className="text-xs leading-relaxed">
+                    <p className="font-semibold text-destructive">{errorTitle}</p>
+                    {errorDetail && <p className="mt-0.5 text-muted-foreground">{errorDetail}</p>}
+                    {attempts > 1 && (
+                      <p className="mt-0.5 text-muted-foreground">Attempt {attempts} — your details are kept.</p>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
                 <span className="text-muted-foreground">Selected plan</span>
                 <span className="font-semibold text-primary">{selectedPlan}</span>
               </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="ea-name">Full name</Label>
                 <Input
@@ -166,8 +238,15 @@ export function EarlyAccessModal() {
                 />
               </div>
               <Button type="submit" disabled={submitting} className="h-11 w-full text-[15px]">
-                {submitting ? "Sending…" : "Request early access"}
+                {submitting ? "Sending…" : errorTitle ? (
+                  <>
+                    <RotateCcw className="size-4" /> Try again
+                  </>
+                ) : (
+                  "Request early access"
+                )}
               </Button>
+
 
               <button
                 type="button"
