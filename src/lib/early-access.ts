@@ -1,11 +1,9 @@
-import { supabase } from "@/lib/supabase";
-import type { Database } from "@/types/database.types";
-
-type EarlyAccessInsert = Database["public"]["Tables"]["early_access"]["Insert"];
+import { supabase } from "@/integrations/supabase/client";
 
 export interface EarlyAccessSubmission {
   email: string;
   name: string;
+  phone: string;
   plan: string;
 }
 
@@ -15,89 +13,45 @@ export interface SubmissionResult {
   error?: string;
 }
 
-/**
- * Sanitize input by trimming whitespace and basic validation
- */
 function sanitizeInput(input: string): string {
   return input.trim();
 }
 
-/**
- * Validate email format
- */
 function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone: string): boolean {
+  return /^[0-9+()\s-]{7,20}$/.test(phone);
 }
 
 /**
- * Check if an email already exists in the early_access table
+ * Submit early access form data to the backend.
  */
-export async function checkExistingEmail(email: string): Promise<boolean> {
+export async function submitEarlyAccess(data: EarlyAccessSubmission): Promise<SubmissionResult> {
   try {
-    const sanitizedEmail = sanitizeInput(email).toLowerCase();
-    
-    const { data, error } = await supabase
-      .from("early_access")
-      .select("email")
-      .eq("email", sanitizedEmail)
-      .maybeSingle();
+    const email = sanitizeInput(data.email).toLowerCase();
+    const name = sanitizeInput(data.name);
+    const phone = sanitizeInput(data.phone);
+    const plan = sanitizeInput(data.plan);
 
-    if (error) {
-      console.error("Error checking existing email:", error);
-      return false;
+    if (!isValidEmail(email)) {
+      return { success: false, message: "Please enter a valid email address.", error: "INVALID_EMAIL" };
     }
 
-    return data !== null;
-  } catch (error) {
-    console.error("Unexpected error checking email:", error);
-    return false;
-  }
-}
-
-/**
- * Submit early access form data to Supabase
- */
-export async function submitEarlyAccess(
-  data: EarlyAccessSubmission
-): Promise<SubmissionResult> {
-  try {
-    // Sanitize inputs
-    const sanitizedEmail = sanitizeInput(data.email).toLowerCase();
-    const sanitizedName = sanitizeInput(data.name);
-    const sanitizedPlan = sanitizeInput(data.plan);
-
-    // Validate email format
-    if (!isValidEmail(sanitizedEmail)) {
-      return {
-        success: false,
-        message: "Please enter a valid email address.",
-        error: "INVALID_EMAIL",
-      };
+    if (!isValidPhone(phone)) {
+      return { success: false, message: "Please enter a valid phone number.", error: "INVALID_PHONE" };
     }
 
-    // Check for duplicate email first
-    const exists = await checkExistingEmail(sanitizedEmail);
-    if (exists) {
-      return {
-        success: false,
-        message: "This email is already registered for early access.",
-        error: "DUPLICATE_EMAIL",
-      };
-    }
-
-    // Insert the early access record
-    const insertData: EarlyAccessInsert = {
-      email: sanitizedEmail,
-      name: sanitizedName,
-      plan: sanitizedPlan,
+    const { error } = await supabase.from("early_access").insert({
+      email,
+      name,
+      phone,
+      plan,
       status: "pending",
-    };
-
-    const { error } = await supabase.from("early_access").insert(insertData);
+    });
 
     if (error) {
-      // Check if it's a unique constraint violation (race condition)
       if (error.code === "23505") {
         return {
           success: false,
@@ -105,19 +59,11 @@ export async function submitEarlyAccess(
           error: "DUPLICATE_EMAIL",
         };
       }
-
-      console.error("Supabase insert error:", error);
-      return {
-        success: false,
-        message: "Unable to submit your request. Please try again.",
-        error: error.message,
-      };
+      console.error("Early access insert error:", error);
+      return { success: false, message: "Unable to submit your request. Please try again.", error: error.message };
     }
 
-    return {
-      success: true,
-      message: "Successfully registered for early access!",
-    };
+    return { success: true, message: "Successfully registered for early access!" };
   } catch (error) {
     console.error("Unexpected error submitting early access:", error);
     return {

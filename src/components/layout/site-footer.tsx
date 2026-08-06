@@ -167,7 +167,7 @@ export function SiteFooter() {
         </div>
 
         <p className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-          © 2025 Puntr (Pty) Ltd. All rights reserved. 18+ only.
+          © 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only.
         </p>
       </div>
     </footer>
