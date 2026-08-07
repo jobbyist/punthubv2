@@ -62,7 +62,7 @@ export function EarlyAccessModal() {
 
       try {
         const mail = await sendEarlyAccessWelcome({
-          data: { name, email, plan: selectedPlan },
+          data: { name, email, phone, plan: selectedPlan },
         });
         setEmailSent(Boolean(mail?.sent));
       } catch {
@@ -133,7 +133,7 @@ export function EarlyAccessModal() {
                     setSubmitting(true);
                     try {
                       const mail = await sendEarlyAccessWelcome({
-                        data: { name, email, plan: confirmedPlan ?? selectedPlan },
+                        data: { name, email, phone, plan: confirmedPlan ?? selectedPlan },
                       });
                       if (mail?.sent) {
                         setEmailSent(true);
