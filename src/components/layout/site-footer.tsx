@@ -132,7 +132,7 @@ export function SiteFooter() {
             <h4 className="font-display text-sm font-extrabold">Follow us</h4>
             <div className="mt-3 flex items-center gap-3">
               <a
-                href="https://x.com/punthub.za"
+                href="https://twitter.com/puntr_za"
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label="Puntr on X"
