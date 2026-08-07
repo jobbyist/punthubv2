@@ -1,4 +1,4 @@
-import { brand, button, card, divider, escapeHtml, footer, heading, layout, logoHeader, paragraph } from "./components";
+import { brand, button, card, divider, escapeHtml, footer, heading, layout, logoHeader, paragraph } from "../components";
 
 export interface WelcomeEmailProps {
   name: string;
