@@ -50,7 +50,7 @@ export function button(label: string, href: string, variant: "primary" | "second
   )}</a>`;
 }
 
-export function card(innerHtml: string, background = brand.soft): string {
+export function card(innerHtml: string, background: string = brand.soft): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${background};border:1px solid ${brand.border};border-radius:14px;">
     <tr><td style="padding:20px 22px;font-family:Helvetica,Arial,sans-serif;">${innerHtml}</td></tr>
   </table>`;
