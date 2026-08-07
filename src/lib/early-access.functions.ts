@@ -5,6 +5,7 @@ const welcomeSchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
   plan: z.string().trim().min(1).max(100),
+  phone: z.string().trim().max(40).optional(),
 });
 
 export const sendEarlyAccessWelcome = createServerFn({ method: "POST" })

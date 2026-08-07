@@ -67,40 +67,29 @@ export async function notifySupport(input: WelcomeEmailInput): Promise<void> {
 
 
 export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<{ sent: boolean; reason?: string }> {
-  const lovableApiKey = process.env["LOVABLE_API_KEY"];
-  const resendApiKey = process.env["RESEND_API_KEY"];
-
-  if (!lovableApiKey || !resendApiKey) {
-    console.error("Resend credentials missing; skipping early-access welcome email.");
-    return { sent: false, reason: "EMAIL_NOT_CONFIGURED" };
-  }
+  // Always alert the support inbox, regardless of the member email outcome.
+  const notify = notifySupport(input);
 
   try {
-    const response = await fetch(`${GATEWAY_URL}/emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${lovableApiKey}`,
-        "X-Connection-Api-Key": resendApiKey,
-      },
-      body: JSON.stringify({
-        from: process.env["RESEND_FROM"] || SENDER,
-        to: [input.email],
-        reply_to: REPLY_TO,
-        subject: welcomeSubject,
-        html: renderWelcomeEmail({ name: input.name, plan: input.plan }),
-      }),
+    const result = await sendViaResend({
+      to: [input.email],
+      reply_to: REPLY_TO,
+      subject: welcomeSubject,
+      html: renderWelcomeEmail({ name: input.name, plan: input.plan }),
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error(`Resend send failed [${response.status}]: ${errorBody}`);
-      return { sent: false, reason: `EMAIL_FAILED_${response.status}` };
+    await notify;
+
+    if (!result.ok) {
+      console.error(`Resend send failed [${result.status}]: ${result.body}`);
+      return { sent: false, reason: result.status === 0 ? "EMAIL_NOT_CONFIGURED" : `EMAIL_FAILED_${result.status}` };
     }
 
     return { sent: true };
   } catch (error) {
     console.error("Resend send threw:", error);
+    await notify;
     return { sent: false, reason: "EMAIL_NETWORK_ERROR" };
   }
+
 }
