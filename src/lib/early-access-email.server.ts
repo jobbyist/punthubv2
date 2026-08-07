@@ -12,7 +12,7 @@ export interface WelcomeEmailInput {
   name: string;
   email: string;
   plan: string;
-  phone?: string;
+  phone?: string | undefined;
 }
 
 export { renderWelcomeEmail };
