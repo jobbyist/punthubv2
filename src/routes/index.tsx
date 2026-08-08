@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Gift, ShieldCheck, Users, Zap } from "lucide-react";
+import { ArrowRight, Gift, Play, ShieldCheck, Users, X as CloseIcon, Zap } from "lucide-react";
 
 import { AffiliateBanner, PlatformRail } from "@/components/affiliate";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { topTipsters } from "@/lib/mock-data";
 import { TeamLogo } from "@/components/team-logo";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,8 +44,11 @@ const steps = [
 
 function Landing() {
   const { openEarlyAccess } = useSession();
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  // Auto-show popup disabled - popup now only triggers when clicking pricing plan buttons
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+  };
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
@@ -68,8 +72,8 @@ function Landing() {
             <Button size="lg" className="h-12 px-6 text-[15px]" onClick={() => openEarlyAccess()}>
               Get started for free
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-6 text-[15px]" asChild>
-              <Link to="/how-it-works">See how it works</Link>
+            <Button size="lg" variant="outline" className="h-12 px-6 text-[15px]" onClick={() => setIsVideoModalOpen(true)}>
+              <Play className="mr-2 size-4" /> Watch the video
             </Button>
           </div>
           <ul className="mt-9 grid gap-5 sm:grid-cols-3">
@@ -278,6 +282,37 @@ function Landing() {
       <div className="py-8">
         <AffiliateBanner />
       </div>
+
+      {isVideoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={handleCloseVideoModal}>
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={handleCloseVideoModal}
+              className="absolute -top-10 right-0 text-white transition-colors hover:text-primary"
+              aria-label="Close video modal"
+            >
+              <CloseIcon className="size-8" />
+            </button>
+            <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl" style={{ paddingBottom: "56.25%" }}>
+              <iframe
+                src="https://www.youtube.com/embed/pBCncBbeWkc?rel=0"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                }}
+                allowFullScreen
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin"
+                title="Puntr How It Works"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -60,7 +60,7 @@ const plans = [
     note: "Best for serious punters who want more value and insights.",
   },
   {
-    name: "Puntr AI",
+    name: "Elite AI",
     tagline: "AI insights. Maximum edge.",
     price: "R249",
     badge: "New",
@@ -191,7 +191,7 @@ function Pricing() {
               <th className="py-2.5 text-left font-medium">Features</th>
               <th className="py-2.5 font-medium">Free<br />R0/month</th>
               <th className="py-2.5 font-medium">Premium<br />R99/month</th>
-              <th className="py-2.5 font-medium">Puntr AI<br />R249/month</th>
+              <th className="py-2.5 font-medium">Elite AI<br />R249/month</th>
             </tr>
           </thead>
           <tbody>
@@ -213,23 +213,47 @@ function Pricing() {
         </table>
       </section>
 
-      <section className="card-surface mt-6 flex flex-wrap items-center gap-4 p-5">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-lg">Ready to step up your game?</h2>
-          <p className="text-sm text-muted-foreground">
-            Join thousands of smart punters making better decisions every day.
-          </p>
+      <section className="card-surface mt-6 p-6">
+        <div className="flex items-start gap-4">
+          <Sparkles className="mt-1 size-8 shrink-0 text-primary" />
+          <div>
+            <h2 className="text-xl">🎉 Early Access Special Offer</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Subscribe to any plan now and pay upfront to get a <span className="font-semibold text-foreground">50% lifetime discount</span> on your subscription fee.
+            </p>
+            <div className="mt-4 flex items-center gap-3 rounded-lg border border-primary/30 bg-primary-soft/50 p-3">
+              <ShieldCheck className="size-5 shrink-0 text-primary" />
+              <p className="text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Limited to the first 100 users</span> that claim this offer. Lock in your discount forever.
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button onClick={() => openEarlyAccess("Claim your 50% lifetime discount on the Premium plan.", "Premium")}>
+                Claim Premium at R49.50/month
+              </Button>
+              <Button 
+                className="bg-ink text-ink-foreground hover:bg-ink/90"
+                onClick={() => openEarlyAccess("Claim your 50% lifetime discount on the Elite AI plan.", "Elite AI")}
+              >
+                Claim Elite AI at R124.50/month
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button onClick={() => openEarlyAccess("Reserve your Free Plan spot in the Puntr beta.", "Free Plan")}>Start free</Button>
-        <Button variant="outline" onClick={() => openEarlyAccess("Reserve your Premium spot in the Puntr beta.", "Premium")}>
-          Go Premium
-        </Button>
       </section>
 
       <section className="card-surface mt-6 p-5">
         <h2 className="text-xl">Frequently Asked Questions</h2>
         <Accordion type="single" collapsible className="mt-2">
           {([
+            ["What makes Elite AI different from Premium?", "Elite AI includes advanced AI-powered predictions, match analysis, confidence scores, an AI chat betting assistant, and priority access to AI features. It's designed for punters who want the ultimate competitive edge."],
+            ["How do I earn PuntPoints?", "You earn PuntPoints by making accurate predictions, engaging with the community, referring friends, and participating in platform activities. Premium and Elite AI members earn points at higher multiplier rates."],
+            ["Can I upgrade or downgrade my plan?", "Yes, you can change your plan anytime from your account settings. When upgrading, you'll be charged the prorated difference. When downgrading, the change takes effect at the end of your current billing period."],
+            ["Are there any hidden fees?", "No hidden fees. What you see is what you pay. All prices are in South African Rand (ZAR) and include any applicable taxes."],
+            ["How does the referral program work?", "Premium and Elite AI members can share their unique referral link. You'll earn 30% recurring commission on every Premium or Elite AI subscription from your referrals, paid monthly for as long as they remain active subscribers."],
+            ["What platforms do you support?", "We aggregate odds and offers from all major South African bookmakers including Betway, Hollywoodbets, Supabets, Sportingbet, 1xBet, World Sports Betting, and many more."],
+            ["Is the early access special offer really lifetime?", "Yes! Once you claim the 50% lifetime discount as one of the first 100 users, your discounted rate is locked in forever as long as you maintain an active subscription."],
+            ["What happens if I don't win with your predictions?", "Puntr provides insights and community predictions to help inform your betting decisions, but we cannot guarantee wins. All predictions should be used as guidance, and you should always bet responsibly within your means."],
             ["Can I cancel my subscription anytime?", "Yes — cancel in one click from Settings. You keep access until the end of your billing period."],
             ["Is my payment information secure?", "Payments are processed by PCI-DSS compliant providers. Puntr never stores your card details."],
             ["Do you offer refunds?", "Yes, a full refund within 30 days of your first payment, no questions asked."],
