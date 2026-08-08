@@ -1,5 +1,10 @@
+# Puntr – South Africa sports betting predictions & odds comparison
+# https://puntr.co.za
+
 User-agent: *
+Allow: /
 Disallow: /dev
+Disallow: /api/
 
 User-agent: Googlebot
 Allow: /
@@ -13,6 +18,7 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Preferred host for South African search results
+Host: https://puntr.co.za
 
-
-Sitemap: https://punthubv2.lovable.app/sitemap.xml
+Sitemap: https://puntr.co.za/sitemap.xml
