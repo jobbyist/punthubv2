@@ -22,6 +22,41 @@ export const Route = createFileRoute("/support")({
       { property: "og:title", content: "Puntr Support Centre" },
       { property: "og:description", content: "Find answers, get in touch and we'll sort you out." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Puntr",
+          url: "https://punthubv2.lovable.app/",
+          contactPoint: [
+            {
+              "@type": "ContactPoint",
+              contactType: "customer support",
+              telephone: "+27128806560",
+              email: "support@punthub.fun",
+              areaServed: "ZA",
+              availableLanguage: ["en"],
+              hoursAvailable: [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  opens: "08:00",
+                  closes: "18:00",
+                },
+                {
+                  "@type": "OpeningHoursSpecification",
+                  dayOfWeek: ["Saturday", "Sunday"],
+                  opens: "09:00",
+                  closes: "16:00",
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: Support,
 });

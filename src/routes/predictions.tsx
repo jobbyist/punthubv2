@@ -21,6 +21,20 @@ export const Route = createFileRoute("/predictions")({
       { property: "og:title", content: "All Predictions | Puntr" },
       { property: "og:description", content: "Top value bets with the highest AI confidence and community backing." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "All Predictions",
+          description:
+            "Community and AI-backed betting predictions across football, rugby, cricket and more.",
+          url: "https://punthubv2.lovable.app/predictions",
+          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://punthubv2.lovable.app/" },
+        }),
+      },
+    ],
   }),
   component: Predictions,
 });

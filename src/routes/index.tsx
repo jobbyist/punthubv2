@@ -244,7 +244,7 @@ function Landing() {
             ))}
           </ul>
           <Button className="mt-6 w-full bg-background text-ink hover:bg-background/90" asChild>
-            <Link to="/how-it-works">Learn more</Link>
+            <Link to="/how-it-works">Learn about Puntr revenue sharing</Link>
           </Button>
         </div>
 

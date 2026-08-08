@@ -19,6 +19,20 @@ export const Route = createFileRoute("/community")({
       { property: "og:title", content: "Community | Puntr" },
       { property: "og:description", content: "Share picks, discuss matches and learn from the best." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Puntr Community",
+          description:
+            "Community feed where South African punters share betting insights, picks and discussions.",
+          url: "https://punthubv2.lovable.app/community",
+          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://punthubv2.lovable.app/" },
+        }),
+      },
+    ],
   }),
   component: Community,
 });

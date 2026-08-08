@@ -116,6 +116,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": "https://punthubv2.lovable.app/#website",
+              name: "Puntr",
+              url: "https://punthubv2.lovable.app/",
+              inLanguage: "en-ZA",
+              publisher: { "@id": "https://punthubv2.lovable.app/#organization" },
+            },
+            {
+              "@type": "Organization",
+              "@id": "https://punthubv2.lovable.app/#organization",
+              name: "Puntr",
+              url: "https://punthubv2.lovable.app/",
+              sameAs: ["https://twitter.com/puntr_za"],
+              contactPoint: [
+                {
+                  "@type": "ContactPoint",
+                  contactType: "customer support",
+                  telephone: "+27128806560",
+                  email: "support@punthub.fun",
+                  areaServed: "ZA",
+                  availableLanguage: ["en"],
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
