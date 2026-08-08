@@ -161,7 +161,7 @@ function Pricing() {
               {p.price}
               <span className="text-base font-medium text-muted-foreground">/month</span>
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Billed monthly. Cancel anytime.</p>
+            <p className="mt-1 text-xs text-muted-foreground">At launch. Free to reserve — no payment today.</p>
             <Button
               className={`mt-5 h-11 ${p.variant === "ink" ? "bg-ink text-ink-foreground hover:bg-ink/90" : ""}`}
               variant={p.variant === "outline" ? "outline" : "default"}
