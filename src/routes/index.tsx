@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Gift, ShieldCheck, Users, Zap } from "lucide-react";
 
@@ -6,6 +7,7 @@ import { AffiliateBanner, PlatformRail } from "@/components/affiliate";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { topTipsters } from "@/lib/mock-data";
+import { TeamLogo } from "@/components/team-logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,7 +43,23 @@ const steps = [
 ];
 
 function Landing() {
-  const { openEarlyAccess } = useSession();
+  const { openEarlyAccess, openEarlyAccessPopup, earlyAccessOpen } = useSession();
+
+  // Auto-show early access popup after 15 seconds on the homepage (once per session)
+  useEffect(() => {
+    const KEY = "puntr:ea-auto-shown";
+    if (typeof window === "undefined") return;
+    if (window.sessionStorage.getItem(KEY) === "1") return;
+    if (earlyAccessOpen) return;
+
+    const timer = window.setTimeout(() => {
+      if (window.sessionStorage.getItem(KEY) === "1") return;
+      window.sessionStorage.setItem(KEY, "1");
+      openEarlyAccessPopup();
+    }, 15_000);
+
+    return () => window.clearTimeout(timer);
+  }, [openEarlyAccessPopup, earlyAccessOpen]);
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
@@ -107,12 +125,12 @@ function Landing() {
           <div className="border-t border-border px-5 py-5 sm:px-6">
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="size-9 shrink-0 rounded-full bg-ink" />
+                <TeamLogo team="Orlando Pirates" size="md" />
                 <span className="truncate font-semibold">Orlando Pirates</span>
               </div>
               <span className="text-xs font-semibold text-muted-foreground">VS</span>
               <div className="flex min-w-0 items-center justify-end gap-3">
-                <span className="size-9 shrink-0 rounded-full bg-[oklch(0.8_0.16_85)]" />
+                <TeamLogo team="Kaizer Chiefs" size="md" />
                 <span className="truncate font-semibold">Kaizer Chiefs</span>
               </div>
             </div>
