@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tantml:function_calls>
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
