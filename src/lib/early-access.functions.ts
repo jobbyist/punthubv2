@@ -37,7 +37,14 @@ export const submitEarlyAccessForm = createServerFn({ method: "POST" })
         return { sent: false as const, reason: `FORM_FAILED_${response.status}` };
       }
 
+      const result = (await response.json().catch(() => null)) as { errors?: unknown[] } | null;
+      if (result?.errors && result.errors.length > 0) {
+        console.error("FormBackend validation errors:", JSON.stringify(result.errors));
+        return { sent: false as const, reason: "FORM_VALIDATION" };
+      }
+
       return { sent: true as const };
+
     } catch (error) {
       console.error("FormBackend submission threw:", error);
       return { sent: false as const, reason: "FORM_NETWORK_ERROR" };
