@@ -56,17 +56,17 @@ function Landing() {
       <section className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
           <span className="inline-block rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            South Africa's #1 betting prediction hub
+            Sports intelligence platform
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
-            Predict. Earn.
+            Predict smarter. Earn more.
             <br />
             <span className="text-primary">Win together.</span>
           </h1>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr aggregates all the top betting platforms in South Africa. Share your predictions, earn{" "}
-            <span className="font-semibold text-foreground">PuntPoints</span> and 30% of ongoing monthly revenue from
-            your referrals.
+            Puntr is an intelligent sports prediction ecosystem where you can discover fixtures, analyse data, publish
+            predictions, compare with the community, earn{" "}
+            <span className="font-semibold text-foreground">PuntPoints</span> and access intelligent prediction tools.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" className="h-12 px-6 text-[15px]" onClick={() => openEarlyAccess()}>
