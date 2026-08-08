@@ -101,10 +101,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Puntr — Predict. Earn. Win together." },
       { name: "twitter:description", content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6qWZov4tglQVz0lGHkWVgkSQwYl1/social-images/social-1785780505403-social-image.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6qWZov4tglQVz0lGHkWVgkSQwYl1/social-images/social-1785780505403-social-image.webp" },
+      { property: "og:image", content: "https://github.com/user-attachments/assets/4b887371-0ae6-4c5b-a743-4fc4ae7547eb" },
+      { name: "twitter:image", content: "https://github.com/user-attachments/assets/4b887371-0ae6-4c5b-a743-4fc4ae7547eb" },
     ],
     links: [
+      { rel: "canonical", href: "https://puntr.co.za" },
       {
         rel: "stylesheet",
         href: appCss,
