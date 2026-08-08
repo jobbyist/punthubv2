@@ -17,7 +17,7 @@ export const Route = createFileRoute("/support")({
       {
         name: "description",
         content:
-          "Get help with Puntr: FAQs, live chat, email support@punthub.fun or call 012 880 6560. We're here to help.",
+          "Get help with Puntr: FAQs, live chat, email support@puntr.co.za or call 012 880 6560. We're here to help.",
       },
       { property: "og:title", content: "Puntr Support Centre" },
       { property: "og:description", content: "Find answers, get in touch and we'll sort you out." },
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/support")({
               "@type": "ContactPoint",
               contactType: "customer support",
               telephone: "+27128806560",
-              email: "support@punthub.fun",
+              email: "support@puntr.co.za",
               areaServed: "ZA",
               availableLanguage: ["en"],
               hoursAvailable: [
@@ -72,8 +72,8 @@ function Support() {
             <Mail className="size-5" />
           </span>
           <p className="mt-3 font-semibold">Email Us</p>
-          <a href="mailto:support@punthub.fun" className="text-sm text-primary">
-            support@punthub.fun
+          <a href="mailto:support@puntr.co.za" className="text-sm text-primary">
+            support@puntr.co.za
           </a>
           <p className="mt-2 text-xs text-muted-foreground">We usually reply within 24 hours</p>
         </div>

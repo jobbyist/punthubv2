@@ -287,8 +287,8 @@ function Terms() {
             <h2 className="mb-3 text-xl font-semibold">18. Contact Information</h2>
             <p className="leading-relaxed text-muted-foreground">
               If you have questions about these Terms, please contact us at:{" "}
-              <a href="mailto:support@punthub.fun" className="font-semibold text-primary">
-                support@punthub.fun
+              <a href="mailto:support@puntr.co.za" className="font-semibold text-primary">
+                support@puntr.co.za
               </a>
             </p>
           </section>

@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Gift, ShieldCheck, Users, Zap } from "lucide-react";
+import { ArrowRight, Gift, Play, ShieldCheck, Users, X as CloseIcon, Zap } from "lucide-react";
 
 import { AffiliateBanner, PlatformRail } from "@/components/affiliate";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { topTipsters } from "@/lib/mock-data";
 import { TeamLogo } from "@/components/team-logo";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,23 +43,12 @@ const steps = [
 ];
 
 function Landing() {
-  const { openEarlyAccess, openEarlyAccessPopup, earlyAccessOpen } = useSession();
+  const { openEarlyAccess } = useSession();
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  // Auto-show early access popup after 15 seconds on the homepage (once per session)
-  useEffect(() => {
-    const KEY = "puntr:ea-auto-shown";
-    if (typeof window === "undefined") return;
-    if (window.sessionStorage.getItem(KEY) === "1") return;
-    if (earlyAccessOpen) return;
-
-    const timer = window.setTimeout(() => {
-      if (window.sessionStorage.getItem(KEY) === "1") return;
-      window.sessionStorage.setItem(KEY, "1");
-      openEarlyAccessPopup();
-    }, 15_000);
-
-    return () => window.clearTimeout(timer);
-  }, [openEarlyAccessPopup, earlyAccessOpen]);
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+  };
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
@@ -67,24 +56,24 @@ function Landing() {
       <section className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
           <span className="inline-block rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            South Africa's #1 betting prediction hub
+            Sports intelligence platform
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
-            Predict. Earn.
+            Predict smarter. Earn more.
             <br />
             <span className="text-primary">Win together.</span>
           </h1>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr aggregates all the top betting platforms in South Africa. Share your predictions, earn{" "}
-            <span className="font-semibold text-foreground">PuntPoints</span> and 30% of ongoing monthly revenue from
-            your referrals.
+            Puntr is an intelligent sports prediction ecosystem where you can discover fixtures, analyse data, publish
+            predictions, compare with the community, earn{" "}
+            <span className="font-semibold text-foreground">PuntPoints</span> and access intelligent prediction tools.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" className="h-12 px-6 text-[15px]" onClick={() => openEarlyAccess()}>
               Get started for free
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-6 text-[15px]" asChild>
-              <Link to="/how-it-works">See how it works</Link>
+            <Button size="lg" variant="outline" className="h-12 px-6 text-[15px]" onClick={() => setIsVideoModalOpen(true)}>
+              <Play className="mr-2 size-4" /> Watch the video
             </Button>
           </div>
           <ul className="mt-9 grid gap-5 sm:grid-cols-3">
@@ -293,6 +282,37 @@ function Landing() {
       <div className="py-8">
         <AffiliateBanner />
       </div>
+
+      {isVideoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={handleCloseVideoModal}>
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={handleCloseVideoModal}
+              className="absolute -top-10 right-0 text-white transition-colors hover:text-primary"
+              aria-label="Close video modal"
+            >
+              <CloseIcon className="size-8" />
+            </button>
+            <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl" style={{ paddingBottom: "56.25%" }}>
+              <iframe
+                src="https://www.youtube.com/embed/pBCncBbeWkc?rel=0"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                }}
+                allowFullScreen
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin"
+                title="Puntr How It Works"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

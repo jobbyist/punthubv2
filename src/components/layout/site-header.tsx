@@ -32,7 +32,7 @@ export function SiteHeader() {
       <div className="mx-auto grid h-16 max-w-[1400px] grid-cols-[auto_1fr_auto] items-center gap-3 px-4 sm:px-6 lg:h-[70px]">
         <div className="flex min-w-0 items-center gap-2">
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
+            <SheetTrigger asChild className={path === "/" ? "hidden" : ""}>
               <button className="grid size-9 shrink-0 place-items-center rounded-lg lg:hidden" aria-label="Open menu">
                 <Menu className="size-6" onClick={(e) => { e.stopPropagation(); openMobileMenu(); }} />
               </button>
