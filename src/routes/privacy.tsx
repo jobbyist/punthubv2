@@ -319,14 +319,14 @@ function Privacy() {
               <p className="mt-1 text-sm text-muted-foreground">Puntr (Pty) Ltd</p>
               <p className="mt-1 text-sm">
                 Email:{" "}
-                <a href="mailto:privacy@punthub.fun" className="font-semibold text-primary">
-                  privacy@punthub.fun
+                <a href="mailto:support@puntr.co.za" className="font-semibold text-primary">
+                  support@puntr.co.za
                 </a>
               </p>
               <p className="mt-1 text-sm">
                 General Support:{" "}
-                <a href="mailto:support@punthub.fun" className="font-semibold text-primary">
-                  support@punthub.fun
+                <a href="mailto:support@puntr.co.za" className="font-semibold text-primary">
+                  support@puntr.co.za
                 </a>
               </p>
             </div>

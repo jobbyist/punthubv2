@@ -186,7 +186,7 @@ export function SiteFooter() {
                 <MessageCircle className="size-5" />
               </a>
               <a
-                href="https://www.facebook.com/puntr_za"
+                href="https://facebook.com/puntrza"
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label="Puntr on Facebook"
