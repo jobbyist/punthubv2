@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Send, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 
 import { useSession } from "@/components/session";
 
@@ -17,8 +18,9 @@ const canned =
   "Here's my read: Orlando Pirates have won 4 of their last 5 at home and concede under 1.0 goals per match, which supports the 1X market at 1.62. Kaizer Chiefs' xG away sits at 0.94 — modest. My model gives Pirates a 61% win probability, so there's small positive value.\n\nRemember: no bet is a sure thing. Stake only what you can afford to lose, never chase losses, and take a break if it stops being fun. Support: 0800 006 008.";
 
 export function PuntAI() {
-  const { openEarlyAccess } = useSession();
+  const { isGuest, openEarlyAccess } = useSession();
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([
     { role: "ai", text: "Hi 👋 I'm PUNT AI. Ask me about matches, value bets, odds movement or bankroll strategy." },
@@ -50,6 +52,13 @@ export function PuntAI() {
       }, 16);
     }, 700);
   }
+
+  // Hide the button on homepage when user is not logged in
+  const isHomepage = pathname === "/";
+  const shouldHideButton = isHomepage && !isGuest;
+
+  // Don't render anything if the button should be hidden
+  if (shouldHideButton) return null;
 
   return (
     <>

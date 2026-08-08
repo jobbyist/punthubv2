@@ -15,9 +15,14 @@ export function PlatformRail() {
       {platforms.map((p) => (
         <div
           key={p.name}
-          className="grid h-16 min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-5 shadow-soft transition-transform hover:-translate-y-0.5"
+          className="grid h-16 min-w-[100px] sm:min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-3 sm:px-5 shadow-soft transition-transform hover:-translate-y-0.5"
         >
-          <img src={p.logo} alt={p.name} className="h-8 w-auto object-contain" />
+          <img 
+            src={p.logo} 
+            alt={`${p.name} logo`} 
+            loading="lazy"
+            className="h-6 w-auto max-w-full object-contain sm:h-8"
+          />
         </div>
       ))}
     </div>

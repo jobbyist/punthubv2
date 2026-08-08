@@ -18,6 +18,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthPrompt } from "@/components/auth-prompt";
 
 function NotFoundComponent() {
   return (
@@ -188,6 +189,7 @@ function RootComponent() {
         </div>
         <MobileNav />
         <PuntAI />
+        <AuthPrompt />
         <EarlyAccessModal />
         <Toaster />
       </SessionProvider>
