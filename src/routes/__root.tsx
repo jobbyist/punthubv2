@@ -107,6 +107,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "canonical", href: "https://puntr.co.za" },
       {
+        rel: "icon",
+        href: "/puntrlogorounded.png",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
