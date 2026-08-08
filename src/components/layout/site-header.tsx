@@ -6,6 +6,7 @@ import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/session";
+import { openMobileMenu } from "@/components/layout/mobile-nav";
 
 export const primaryNav = [
   { label: "Predictions", to: "/predictions" },
@@ -33,26 +34,38 @@ export function SiteHeader() {
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <button className="grid size-9 shrink-0 place-items-center rounded-lg lg:hidden" aria-label="Open menu">
-                <Menu className="size-6" />
+                <Menu className="size-6" onClick={(e) => { e.stopPropagation(); openMobileMenu(); }} />
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[280px] p-0">
               <SheetTitle className="sr-only">Menu</SheetTitle>
-              <div className="border-b border-border p-4">
+              <div className="border-b border-border px-5 py-4">
                 <Logo />
               </div>
-              <nav className="flex flex-col p-2">
+              <nav className="flex flex-col gap-1 p-4">
                 {links.map((l) => (
                   <Link
                     key={l.to}
                     to={l.to}
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-foreground transition-colors hover:bg-muted data-[status=active]:bg-primary-soft data-[status=active]:text-primary"
+                    className="group flex items-center gap-3 rounded-xl px-4 py-3.5 text-[15px] font-medium transition-colors hover:bg-muted data-[status=active]:bg-primary-soft data-[status=active]:text-primary"
                   >
+                    <span
+                      className={`size-1.5 rounded-full transition-opacity ${
+                        l.to === "data-[status=active]"
+                          ? "bg-primary opacity-100"
+                          : "bg-muted-foreground opacity-0 group-hover:opacity-50"
+                      }`}
+                    />
                     {l.label}
                   </Link>
                 ))}
               </nav>
+              <div className="border-t border-border px-5 py-4">
+                <p className="text-xs text-muted-foreground">
+                  Version 2.0 - © 2026 Puntr
+                </p>
+              </div>
             </SheetContent>
           </Sheet>
           <Logo />

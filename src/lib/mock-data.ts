@@ -31,6 +31,22 @@ export const platforms: Platform[] = [
   { name: "Easybet", logo: "/logos/easybet.png" },
 ];
 
+export type TeamLogo = {
+  name: string;
+  logo: string;
+};
+
+export const teamLogos: Record<string, string> = {
+  "Orlando Pirates": "/teams/orlando.png",
+  "Kaizer Chiefs": "/teams/kaizer.jpg",
+  "Real Madrid": "/teams/realmadrid.png",
+  "Bayern Munich": "/teams/bayernmunich.png",
+};
+
+export function getTeamLogo(teamName: string): string | undefined {
+  return teamLogos[teamName];
+}
+
 export const topTipsters = [
   { rank: 1, name: "TipMaster87", points: 12450, hitRate: 68, correct: "65/96", streak: 18 },
   { rank: 2, name: "SoccerKingZA", points: 9230, hitRate: 64, correct: "55/86", streak: 12 },
