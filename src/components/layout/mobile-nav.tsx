@@ -28,8 +28,8 @@ export function MobileNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Hidden until the visitor is signed in or browsing as a guest.
-  if (!isGuest) return null;
+  // Hidden on the homepage.
+  if (path === "/") return null;
 
   return (
     <>
