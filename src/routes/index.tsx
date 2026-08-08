@@ -12,17 +12,26 @@ import { useState } from "react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Puntr — Predict. Earn. Win together." },
+      {
+        title:
+          "Puntr — South Africa's #1 Sports Betting Predictions, Odds Comparison & AI Picks",
+      },
       {
         name: "description",
         content:
-          "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
+          "Compare live odds from Betway, Hollywoodbets, Bet.co.za, Supabets and more. Get AI-powered picks, community predictions for PSL, rugby & soccer, earn PuntPoints and 30% recurring referral revenue. 18+ Gamble Responsibly – 0800 006 008.",
       },
-      { property: "og:title", content: "Puntr — Predict. Earn. Win together." },
+      {
+        property: "og:title",
+        content: "Puntr — South Africa's #1 Sports Betting Predictions & Odds Hub",
+      },
       {
         property: "og:description",
-        content: "South Africa's #1 betting prediction hub. Compare odds from every top bookmaker, share predictions, earn PuntPoints and 30% recurring referral revenue.",
+        content:
+          "Compare odds from every major SA bookmaker, share predictions, earn PuntPoints and unlock AI picks. Built for South African punters.",
       },
+      { property: "og:url", content: "https://puntr.co.za/" },
+      { property: "og:locale", content: "en_ZA" },
     ],
   }),
   component: Landing,
