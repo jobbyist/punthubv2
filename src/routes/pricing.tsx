@@ -109,23 +109,35 @@ function Pricing() {
         Simple pricing. <span className="text-primary">Maximum value.</span>
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Choose the plan that fits your game and start winning more.
+        Choose the plan you want reserved for the beta. Pricing below is what you'll pay at launch — nothing is charged
+        today.
       </p>
       <div className="mt-4 flex flex-wrap gap-5 text-sm">
         <span className="flex items-center gap-2">
           <Check className="size-4 text-primary" /> Cancel anytime
         </span>
         <span className="flex items-center gap-2">
-          <ShieldCheck className="size-4 text-primary" /> Secure payments
+          <ShieldCheck className="size-4 text-primary" /> No card required today
         </span>
       </div>
-      <div className="mt-5 flex items-center gap-3 rounded-xl border border-border p-4">
+      <div className="mt-5 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary-soft/50 p-4">
+        <ShieldCheck className="size-6 shrink-0 text-primary" />
+        <div>
+          <p className="text-sm font-semibold">You're reserving a spot, not buying yet</p>
+          <p className="text-xs text-muted-foreground">
+            Early access is free. Pick a plan, submit your details, and our team reviews your request within 1–2 working
+            days before sending your invite by email and SMS. Billing only starts if you choose to continue at launch.
+          </p>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-3 rounded-xl border border-border p-4">
         <ShieldCheck className="size-6 shrink-0 text-ink" />
         <div>
           <p className="text-sm font-semibold">30-Day Money Back Guarantee</p>
           <p className="text-xs text-muted-foreground">Not happy? Get a full refund within 30 days, no questions asked.</p>
         </div>
       </div>
+
 
       <div className="mt-7 grid gap-4 lg:grid-cols-3">
         {plans.map((p, i) => (
@@ -149,7 +161,7 @@ function Pricing() {
               {p.price}
               <span className="text-base font-medium text-muted-foreground">/month</span>
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Billed monthly. Cancel anytime.</p>
+            <p className="mt-1 text-xs text-muted-foreground">At launch. Free to reserve — no payment today.</p>
             <Button
               className={`mt-5 h-11 ${p.variant === "ink" ? "bg-ink text-ink-foreground hover:bg-ink/90" : ""}`}
               variant={p.variant === "outline" ? "outline" : "default"}

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { AlertCircle, CheckCircle2, RotateCcw, Sparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 import { submitEarlyAccess } from "@/lib/early-access";
-import { sendEarlyAccessWelcome } from "@/lib/early-access.functions";
+import { submitEarlyAccessForm } from "@/lib/early-access.functions";
 import { analytics } from "@/lib/analytics";
 
 export function EarlyAccessModal() {
@@ -23,7 +23,6 @@ export function EarlyAccessModal() {
   const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
-  const [emailSent, setEmailSent] = useState(true);
 
   const selectedPlan = plan ?? "Free Plan";
 
@@ -36,38 +35,30 @@ export function EarlyAccessModal() {
     setAttempts((a) => a + 1);
 
     try {
-      const result = await submitEarlyAccess({ name, email, phone, plan: selectedPlan });
+      // FormBackend is the source of truth for delivery/notifications.
+      const form = await submitEarlyAccessForm({
+        data: { name, email, phone, plan: selectedPlan },
+      });
 
-      if (!result.success) {
-        analytics.earlyAccessFailed(selectedPlan, result.error ?? "UNKNOWN");
-        if (result.error === "DUPLICATE_EMAIL") {
-          setErrorTitle("This email is already on the beta list");
-          setErrorDetail("Check your inbox for your confirmation, or use a different email address.");
-        } else if (result.error === "INVALID_EMAIL" || result.error === "INVALID_PHONE") {
-          setErrorTitle("Please check your details");
-          setErrorDetail(result.message);
-        } else {
-          setErrorTitle("We couldn't reserve your spot");
-          setErrorDetail(`${result.message} Your details are saved below — tap “Try again”.`);
-        }
+      if (!form?.sent) {
+        analytics.earlyAccessFailed(selectedPlan, form?.reason ?? "FORM_FAILED");
+        setErrorTitle("We couldn't reserve your spot");
+        setErrorDetail("Something went wrong sending your details. Your details are saved below — tap “Try again”.");
         return;
+      }
+
+      // Log the submission in our database too (never blocks the user).
+      const logged = await submitEarlyAccess({ name, email, phone, plan: selectedPlan });
+      if (!logged.success && logged.error !== "DUPLICATE_EMAIL") {
+        console.error("Early access log failed:", logged.error);
       }
 
       analytics.earlyAccessSubmitted(selectedPlan);
       setConfirmedPlan(selectedPlan);
       setDone(true);
-      toast.success("Welcome to the beta list!", {
-        description: `${selectedPlan} reserved · 1 000 PuntPoints waiting.`,
+      toast.success("Spot reserved!", {
+        description: `${selectedPlan} held for you — our team will review within 1–2 working days.`,
       });
-
-      try {
-        const mail = await sendEarlyAccessWelcome({
-          data: { name, email, phone, plan: selectedPlan },
-        });
-        setEmailSent(Boolean(mail?.sent));
-      } catch {
-        setEmailSent(false);
-      }
     } catch {
       analytics.earlyAccessFailed(selectedPlan, "NETWORK");
       setErrorTitle("Connection problem");
@@ -82,10 +73,9 @@ export function EarlyAccessModal() {
     void runSubmit();
   }
 
-
   return (
     <Dialog open={earlyAccessOpen} onOpenChange={(o) => !o && closeEarlyAccess()}>
-      <DialogContent className="max-w-md overflow-hidden rounded-3xl border-border p-0 sm:max-w-md">
+      <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto rounded-3xl border-border p-0 sm:max-w-md">
         {done ? (
           <div className="px-6 pb-8 pt-10 text-center">
             <motion.div
@@ -97,11 +87,11 @@ export function EarlyAccessModal() {
             </motion.div>
 
             <h2 className="mt-5 text-2xl leading-tight">
-              You're on the <span className="text-primary">Puntr beta list</span>
+              Your spot is <span className="text-primary">reserved</span>
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Thank you, {name.split(" ")[0] || "there"} — your spot is reserved. We'll email and SMS you the moment
-              your invite is ready.
+              Thank you, {name.split(" ")[0] || "there"} — your request is in. No payment was taken and none is required
+              at this stage.
             </p>
 
             <div className="mt-5 rounded-xl border border-border bg-muted/40 px-4 py-3 text-left">
@@ -114,49 +104,39 @@ export function EarlyAccessModal() {
                 <span className="font-semibold tnum">1 000 PuntPoints</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Confirmation sent to</span>
+                <span className="text-muted-foreground">We'll contact you on</span>
                 <span className="max-w-[55%] truncate font-medium">{email}</span>
               </div>
             </div>
 
-            {!emailSent && (
-              <div className="mt-4 flex flex-col gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-left">
-                <p className="text-xs text-muted-foreground">
-                  Your spot is reserved, but we couldn't deliver the confirmation email.
+            <div className="mt-4 space-y-3 rounded-xl border border-border bg-primary-soft/40 px-4 py-4 text-left">
+              <p className="text-sm font-semibold">What happens next</p>
+              <div className="flex gap-2.5">
+                <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Our team manually reviews every request. This usually takes{" "}
+                  <span className="font-medium text-foreground">1–2 working days</span>.
                 </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={submitting}
-                  onClick={async () => {
-                    setSubmitting(true);
-                    try {
-                      const mail = await sendEarlyAccessWelcome({
-                        data: { name, email, phone, plan: confirmedPlan ?? selectedPlan },
-                      });
-                      if (mail?.sent) {
-                        setEmailSent(true);
-                        toast.success("Confirmation email sent");
-                      } else {
-                        toast.error("Still couldn't send", { description: "Please try again in a moment." });
-                      }
-                    } catch {
-                      toast.error("Still couldn't send", { description: "Please try again in a moment." });
-                    } finally {
-                      setSubmitting(false);
-                    }
-                  }}
-                >
-                  <RotateCcw className="size-4" /> Resend confirmation email
-                </Button>
               </div>
-            )}
+              <div className="flex gap-2.5">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Once approved, you'll receive a confirmation <span className="font-medium text-foreground">email
+                  and SMS</span> with full details about the Puntr early access programme.
+                </p>
+              </div>
+              <div className="flex gap-2.5">
+                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  That message includes a quick KYC verification step — required because Puntr is an 18+ betting
+                  platform.
+                </p>
+              </div>
+            </div>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              No payment is taken during early access — you only reserve your plan.
+              You won't receive an automated email right away — keep an eye out for our team's message.
             </p>
-
 
             <Button
               className="mt-5 w-full"
@@ -175,10 +155,13 @@ export function EarlyAccessModal() {
                 <Sparkles className="size-3.5" /> Beta • Early access
               </span>
               <h2 className="mt-4 text-2xl leading-tight">
-                Join the Puntr <span className="text-primary">beta group</span>
+                Reserve your <span className="text-primary">Puntr beta spot</span>
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 {reason ?? "Get exclusive access before everyone else — plus 1 000 free PuntPoints on launch."}
+              </p>
+              <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[11px] font-medium text-muted-foreground">
+                <ShieldCheck className="size-3.5 text-primary" /> Reservation only — no card, no payment today
               </p>
             </div>
 
@@ -236,17 +219,17 @@ export function EarlyAccessModal() {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+27 82 123 4567"
                 />
+                <p className="text-[11px] text-muted-foreground">Used for your SMS invite and KYC verification.</p>
               </div>
               <Button type="submit" disabled={submitting} className="h-11 w-full text-[15px]">
-                {submitting ? "Sending…" : errorTitle ? (
+                {submitting ? "Reserving…" : errorTitle ? (
                   <>
                     <RotateCcw className="size-4" /> Try again
                   </>
                 ) : (
-                  "Request early access"
+                  "Reserve my spot — free"
                 )}
               </Button>
-
 
               <button
                 type="button"
@@ -259,7 +242,8 @@ export function EarlyAccessModal() {
                 Browse as guest
               </button>
               <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-                No payment is taken during early access — you only reserve your plan.<br />
+                No payment is taken during early access — you only reserve your plan. Approval follows a short manual
+                review (1–2 working days).<br />
                 18+ only. Bet responsibly. By joining you agree to our Terms & Privacy Policy.
               </p>
             </form>
