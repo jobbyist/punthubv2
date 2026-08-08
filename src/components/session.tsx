@@ -10,6 +10,7 @@ type SessionValue = {
   exitGuest: () => void;
   /** Opens the early-access form. Without a plan the user is sent to pricing first. */
   openEarlyAccess: (reason?: string, plan?: string) => void;
+  openEarlyAccessPopup: (reason?: string) => void;
   closeEarlyAccess: () => void;
   earlyAccessOpen: boolean;
   reason: string | undefined;
@@ -60,18 +61,28 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [router],
   );
 
+  /** Opens the early-access modal directly (defaults to Free Plan). Used for timed homepage trigger. */
+  const openEarlyAccessPopup = useCallback((r?: string) => {
+    const selectedPlan = "Free Plan";
+    setReason(r ?? "Limited early-access spots — join the Puntr community today!");
+    setPlan(selectedPlan);
+    setEarlyAccessOpen(true);
+    analytics.earlyAccessOpened(selectedPlan);
+  }, []);
+
   const value = useMemo(
     () => ({
       isGuest,
       enterGuest,
       exitGuest,
       openEarlyAccess,
+      openEarlyAccessPopup,
       closeEarlyAccess: () => setEarlyAccessOpen(false),
       earlyAccessOpen,
       reason,
       plan,
     }),
-    [isGuest, enterGuest, exitGuest, openEarlyAccess, earlyAccessOpen, reason, plan],
+    [isGuest, enterGuest, exitGuest, openEarlyAccess, openEarlyAccessPopup, earlyAccessOpen, reason, plan],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
