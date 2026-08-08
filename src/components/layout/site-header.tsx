@@ -6,6 +6,7 @@ import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/session";
+import { openMobileMenu } from "@/components/layout/mobile-nav";
 
 export const primaryNav = [
   { label: "Predictions", to: "/predictions" },
@@ -33,7 +34,7 @@ export function SiteHeader() {
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <button className="grid size-9 shrink-0 place-items-center rounded-lg lg:hidden" aria-label="Open menu">
-                <Menu className="size-6" />
+                <Menu className="size-6" onClick={(e) => { e.stopPropagation(); openMobileMenu(); }} />
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[280px] p-0">

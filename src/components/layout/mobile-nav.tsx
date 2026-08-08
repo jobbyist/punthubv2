@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { useSession } from "@/components/session";
 
+let setMenuOpenExternal: ((open: boolean) => void) | null = null;
+
 const items = [
   { label: "Predictions", to: "/predictions", icon: Target },
   { label: "Results", to: "/results", icon: BarChart3 },
@@ -28,6 +30,7 @@ export function MobileNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  setMenuOpenExternal = setIsMenuOpen;
   // Hidden on the homepage.
   if (path === "/") return null;
 
@@ -131,4 +134,8 @@ export function MobileNav() {
       </nav>
     </>
   );
+}
+
+export function openMobileMenu() {
+  setMenuOpenExternal?.(true);
 }
