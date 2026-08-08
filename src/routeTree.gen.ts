@@ -19,6 +19,7 @@ import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 
@@ -72,6 +73,11 @@ const ResultsRoute = ResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/results': typeof ResultsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/results': typeof ResultsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/results': typeof ResultsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/results'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/results'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/results'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
   fileRoutesById: FileRoutesById
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   ResultsRoute: typeof ResultsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
 }
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/support': {
       id: '/support'
       path: '/support'
@@ -286,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   ResultsRoute: ResultsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
 }
