@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Facebook, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 
 import { Logo } from "@/components/brand";
@@ -92,6 +93,25 @@ function ComingSoonBadge({ store }: { store: "apple" | "google" }) {
 }
 
 export function SiteFooter() {
+  const [currentDateTime, setCurrentDateTime] = useState<string>("");
+
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date();
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: "Africa/Johannesburg",
+        dateStyle: "full",
+        timeStyle: "long",
+      };
+      setCurrentDateTime(now.toLocaleString("en-ZA", options));
+    };
+
+    updateDateTime();
+    const interval = setInterval(updateDateTime, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <footer className="mt-10 bg-surface">
       <div className="px-4 pb-8 sm:px-6">
@@ -167,7 +187,12 @@ export function SiteFooter() {
         </div>
 
         <p className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-          © 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only.
+          <span className="block">© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only.</span>
+          {currentDateTime && (
+            <span className="mt-2 block">
+              {currentDateTime}
+            </span>
+          )}
         </p>
       </div>
     </footer>

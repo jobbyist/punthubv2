@@ -31,9 +31,6 @@ export function MobileNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   setMenuOpenExternal = setIsMenuOpen;
-  // Hidden on the homepage.
-  if (path === "/") return null;
-
   return (
     <>
       {/* Full Screen Menu Overlay */}

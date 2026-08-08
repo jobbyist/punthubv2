@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Gift, ShieldCheck, Users, Zap } from "lucide-react";
 
@@ -43,23 +42,9 @@ const steps = [
 ];
 
 function Landing() {
-  const { openEarlyAccess, openEarlyAccessPopup, earlyAccessOpen } = useSession();
+  const { openEarlyAccess } = useSession();
 
-  // Auto-show early access popup after 15 seconds on the homepage (once per session)
-  useEffect(() => {
-    const KEY = "puntr:ea-auto-shown";
-    if (typeof window === "undefined") return;
-    if (window.sessionStorage.getItem(KEY) === "1") return;
-    if (earlyAccessOpen) return;
-
-    const timer = window.setTimeout(() => {
-      if (window.sessionStorage.getItem(KEY) === "1") return;
-      window.sessionStorage.setItem(KEY, "1");
-      openEarlyAccessPopup();
-    }, 15_000);
-
-    return () => window.clearTimeout(timer);
-  }, [openEarlyAccessPopup, earlyAccessOpen]);
+  // Auto-show popup disabled - popup now only triggers when clicking pricing plan buttons
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
