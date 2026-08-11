@@ -8,6 +8,10 @@ const submissionSchema = z.object({
   email: z.string().trim().email().max(255),
   plan: z.string().trim().min(1).max(100),
   phone: z.string().trim().min(1).max(40),
+  sports: z.array(z.string().trim().max(40)).max(20).optional(),
+  bookmakers: z.array(z.string().trim().max(40)).max(20).optional(),
+  experience: z.string().trim().max(60).optional(),
+  marketingOptIn: z.boolean().optional(),
 });
 
 /**
@@ -26,6 +30,10 @@ export const submitEarlyAccessForm = createServerFn({ method: "POST" })
           email: data.email,
           phone: data.phone,
           selected_plan: data.plan,
+          sports: data.sports?.join(", ") ?? "",
+          bookmakers: data.bookmakers?.join(", ") ?? "",
+          experience: data.experience ?? "",
+          marketing_opt_in: data.marketingOptIn ? "yes" : "no",
           source: "puntr-early-access",
           submitted_at: new Date().toISOString(),
         }),
