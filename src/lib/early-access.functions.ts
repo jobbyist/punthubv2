@@ -8,6 +8,10 @@ const submissionSchema = z.object({
   email: z.string().trim().email().max(255),
   plan: z.string().trim().min(1).max(100),
   phone: z.string().trim().min(1).max(40),
+  sports: z.array(z.string().trim().max(40)).max(20).optional(),
+  bookmakers: z.array(z.string().trim().max(40)).max(20).optional(),
+  experience: z.string().trim().max(60).optional(),
+  marketingOptIn: z.boolean().optional(),
 });
 
 /**
