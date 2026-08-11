@@ -18,16 +18,10 @@ import {
   Radio,
   Star,
   UserPlus,
-  BookOpen,
   Shield,
   Crown,
-  Gem,
-  ShoppingBag,
-  Mail,
-  MessageSquare,
   MessageCircle,
   Share2,
-  FileText,
   LogOut,
   ChevronRight,
   ChevronDown,
@@ -67,6 +61,7 @@ export function MobileNav() {
 
   const NavLink = ({
     to,
+    search,
     icon: Icon,
     label,
     badge,
@@ -75,6 +70,7 @@ export function MobileNav() {
     active: forceActive,
   }: {
     to?: string;
+    search?: Record<string, string>;
     icon: ComponentType<{ className?: string }>;
     label: string;
     badge?: string;
@@ -102,7 +98,7 @@ export function MobileNav() {
 
     if (to) {
       return (
-        <Link to={to} onClick={close}>
+        <Link to={to} search={search} onClick={close}>
           {content}
         </Link>
       );
@@ -139,14 +135,15 @@ export function MobileNav() {
                 <NavLink to="/" icon={Home} label="Home" active={path === "/"} />
                 <NavLink to="/predictions" icon={Target} label="Predictions" />
                 <NavLink
-                  to="/predictions"
+                  to="/coming-soon"
+                  search={{ feature: "AI Picks (PUNT AI)" }}
                   icon={Brain}
                   label="AI Picks (PUNT AI)"
                   badge="PRO"
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink to="/insights" icon={TrendingUp} label="Market Insights" />
-                <NavLink to="/support" icon={Mic} label="Podcast" />
+                <NavLink to="/coming-soon" search={{ feature: "Podcast" }} icon={Mic} label="Podcast" />
               </div>
 
               {/* Sports section */}
@@ -197,19 +194,22 @@ export function MobileNav() {
               {/* Tools & services */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/predictions"
+                  to="/coming-soon"
+                  search={{ feature: "Bookmakers" }}
                   icon={Building2}
                   label="Bookmakers"
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <NavLink
-                  to="/insights"
+                  to="/coming-soon"
+                  search={{ feature: "Betting Tools" }}
                   icon={Wrench}
                   label="Betting Tools"
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <NavLink
-                  to="/results"
+                  to="/coming-soon"
+                  search={{ feature: "Live Scores" }}
                   icon={Radio}
                   label="Live Scores"
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -219,14 +219,16 @@ export function MobileNav() {
               {/* Rewards & community */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/leaderboards"
+                  to="/coming-soon"
+                  search={{ feature: "PuntPoints" }}
                   icon={Star}
                   label="PuntPoints"
                   badge="NEW"
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink
-                  to="/how-it-works"
+                  to="/coming-soon"
+                  search={{ feature: "Referral Program" }}
                   icon={UserPlus}
                   label="Referral Program"
                   right={
@@ -246,15 +248,10 @@ export function MobileNav() {
               {/* Content & support */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/support"
+                  to="/coming-soon"
+                  search={{ feature: "Podcast" }}
                   icon={Mic}
                   label="Podcast"
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
-                <NavLink
-                  to="/how-it-works"
-                  icon={BookOpen}
-                  label="Guides & Tips"
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <a
@@ -277,26 +274,17 @@ export function MobileNav() {
                   label="Pricing"
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
-                <NavLink
-                  to="/pricing"
-                  icon={Gem}
-                  label="Pro Plans"
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
-                <NavLink
-                  to="/leaderboards"
-                  icon={ShoppingBag}
-                  label="PuntPoints Store"
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
               </div>
 
               {/* Help links */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <NavLink to="/support" icon={Mail} label="Contact Us" />
                 <NavLink to="/support" icon={HelpCircle} label="Help Center" />
-                <NavLink to="/support" icon={MessageSquare} label="FAQs" />
-                <NavLink to="/support" icon={MessageCircle} label="Feedback" />
+                <NavLink
+                  to="/coming-soon"
+                  search={{ feature: "Feedback" }}
+                  icon={MessageCircle}
+                  label="Feedback"
+                />
               </div>
 
               {/* Social */}
@@ -329,12 +317,6 @@ export function MobileNav() {
 
               {/* Press + logout */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3 pb-6">
-                <NavLink
-                  to="/about"
-                  icon={FileText}
-                  label="Press Kit"
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
                 <button
                   type="button"
                   onClick={() => {
