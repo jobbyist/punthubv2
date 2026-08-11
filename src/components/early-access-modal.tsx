@@ -97,7 +97,7 @@ export function EarlyAccessModal() {
           plan: selectedPlan,
           sports,
           bookmakers,
-          experience: experience || undefined,
+          ...(experience ? { experience } : {}),
           marketingOptIn,
         },
       });
