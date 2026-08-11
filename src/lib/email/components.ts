@@ -11,8 +11,8 @@ export const brand = {
   soft: "#F8FAFC",
   border: "#E5E7EB",
   white: "#FFFFFF",
-  site: "https://punthubv2.lovable.app",
   site: "https://puntr.co.za",
+  x: "https://twitter.com/puntr_za",
 } as const;
 
 export function escapeHtml(value: string): string {

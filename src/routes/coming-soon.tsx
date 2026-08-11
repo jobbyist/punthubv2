@@ -56,7 +56,7 @@ function FloatingCard({
 
 function ComingSoon() {
   const { openEarlyAccessPopup } = useSession();
-  const { feature } = useSearch({ from: "/coming-soon" });
+  const feature = useSearch({ from: "/coming-soon" })["feature"];
 
   return (
     <AppShell>

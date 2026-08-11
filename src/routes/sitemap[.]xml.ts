@@ -10,7 +10,7 @@ interface SitemapEntry {
   lastmod?: string;
 }
 
-const today = new Date().toISOString().split("T")[0];
+const today = new Date().toISOString().slice(0, 10);
 
 const entries: SitemapEntry[] = [
   // Core product pages – high priority for SA sports betting queries
@@ -28,6 +28,7 @@ const entries: SitemapEntry[] = [
   { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: today },
   { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },
   { path: "/cookies", changefreq: "yearly", priority: "0.3", lastmod: today },
+  { path: "/refunds", changefreq: "yearly", priority: "0.3", lastmod: today },
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({
