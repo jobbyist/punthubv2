@@ -50,13 +50,7 @@ export function SiteHeader() {
                     onClick={() => setOpen(false)}
                     className="group flex items-center gap-3 rounded-xl px-4 py-3.5 text-[15px] font-medium transition-colors hover:bg-muted data-[status=active]:bg-primary-soft data-[status=active]:text-primary"
                   >
-                    <span
-                      className={`size-1.5 rounded-full transition-opacity ${
-                        l.to === "data-[status=active]"
-                          ? "bg-primary opacity-100"
-                          : "bg-muted-foreground opacity-0 group-hover:opacity-50"
-                      }`}
-                    />
+                    <span className="size-1.5 rounded-full bg-muted-foreground opacity-0 transition-opacity group-hover:opacity-50 group-data-[status=active]:bg-primary group-data-[status=active]:opacity-100" />
                     {l.label}
                   </Link>
                 ))}
