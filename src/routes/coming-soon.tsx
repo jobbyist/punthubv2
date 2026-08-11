@@ -8,7 +8,7 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/coming-soon")({
   validateSearch: (search: Record<string, unknown>) => ({
-    feature: typeof search.feature === "string" ? search.feature : undefined,
+    feature: typeof search["feature"] === "string" ? (search["feature"] as string) : undefined,
   }),
   head: () => ({
     meta: [
