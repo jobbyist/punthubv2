@@ -98,7 +98,7 @@ export function MobileNav() {
 
     if (to) {
       return (
-        <Link to={to} search={search} onClick={close}>
+        <Link to={to} {...(search ? { search } : {})} onClick={close}>
           {content}
         </Link>
       );
