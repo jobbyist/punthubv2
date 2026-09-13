@@ -135,10 +135,18 @@ export function SiteFooter() {
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 pb-8 text-center text-xs leading-relaxed text-muted-foreground sm:px-6">
-        <p>Puntr promotes responsible gambling. No persons under the age of 18 are permitted to gamble.</p>
         <p>
-          National Responsible Gambling Programme Toll-Free Counselling Helpline:{" "}
-          <span className="font-semibold text-foreground tnum">0800 006 008</span>
+          Puntr provides sports analysis, statistics, and predictions for informational purposes only. We are not a bookmaker or betting operator; we do not accept bets, set odds, process transactions, or handle winnings. Past performance is no guarantee of future results, and content on puntr.co.za does not constitute financial or investment advice. Virtual tokens (PuntPoints), points, or values displayed on the platform carry no monetary or real-world value.
+        </p>
+        <p className="mt-3">
+          Strictly 18+. Winners know when to stop.
+        </p>
+        <p className="mt-3">
+          National Responsible Gambling Programme:{" "}
+          <a href="tel:0800006008" className="font-semibold text-foreground tnum hover:text-primary transition-colors">
+            0800 006 008
+          </a>{" "}
+          or WhatsApp "HELP" to <span className="font-semibold text-foreground tnum">076 675 0710</span>.
         </p>
       </div>
 
