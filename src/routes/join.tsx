@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { MfaChallenge } from "@/components/mfa-challenge";
 import { RgNotice } from "@/components/rg-notice";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,15 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { completeSignup, discardUnderageSignup } from "@/lib/accounts.functions";
+import {
+  completeSignup,
+  discardUnderageSignup,
+  signInWithUsername,
+} from "@/lib/accounts.functions";
 import { analytics } from "@/lib/analytics";
+import { parseIdentifier } from "@/lib/identifier";
+import { mfaRequired } from "@/lib/mfa";
+import { validatePassword } from "@/lib/password";
 import { FoundingCounter } from "@/components/founding-counter";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
 import { FOUNDING_CAP } from "@/lib/flags";
@@ -37,7 +45,8 @@ export const Route = createFileRoute("/join")({
   component: Join,
 });
 
-type Step = "email" | "code" | "onboarding" | "done" | "blocked";
+type Step = "email" | "code" | "mfa" | "onboarding" | "done" | "blocked";
+type CodeKind = "email" | "signup";
 
 const RESEND_SECONDS = 30;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,21 +58,35 @@ function Join() {
 
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
+  const [codeKind, setCodeKind] = useState<CodeKind>("email");
+  const [mfaTick, setMfaTick] = useState(0);
   const [foundingNumber, setFoundingNumber] = useState<number | null>(null);
 
   useEffect(() => rememberRef(ref), [ref]);
 
-  // Follow the session: signed in with a profile means done; signed in without one means onboarding.
+  // Follow the session: a member with two-factor on must pass it first; then a profile means done, and no
+  // profile means onboarding.
   useEffect(() => {
     if (loading) return;
-    if (profile) {
-      setFoundingNumber((n) => n ?? profile.founding_number);
-      setStep((s) => (s === "done" ? s : "done"));
-    } else if (user) {
-      setEmail((e) => e || user.email || "");
-      setStep((s) => (s === "email" || s === "code" ? "onboarding" : s));
-    }
-  }, [loading, profile, user]);
+    let active = true;
+    void (async () => {
+      if (user && (await mfaRequired())) {
+        if (active) setStep("mfa");
+        return;
+      }
+      if (!active) return;
+      if (profile) {
+        setFoundingNumber((n) => n ?? profile.founding_number);
+        setStep("done");
+      } else if (user) {
+        setEmail((e) => e || user.email || "");
+        setStep((s) => (s === "email" || s === "code" || s === "mfa" ? "onboarding" : s));
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, profile, user, mfaTick]);
 
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
@@ -73,9 +96,10 @@ function Join() {
 
       <div className="card-surface mt-6 p-6">
         {step === "email" && (
-          <EmailStep
-            onSent={(e) => {
+          <AuthStep
+            onNeedsCode={(e, kind) => {
               setEmail(e);
+              setCodeKind(kind);
               setStep("code");
             }}
           />
@@ -83,8 +107,18 @@ function Join() {
         {step === "code" && (
           <CodeStep
             email={email}
+            kind={codeKind}
             onChangeEmail={() => setStep("email")}
-            onVerified={() => setStep("onboarding")}
+            onVerified={() => setMfaTick((n) => n + 1)}
+          />
+        )}
+        {step === "mfa" && (
+          <MfaChallenge
+            onVerified={() => setMfaTick((n) => n + 1)}
+            onCancel={() => {
+              void supabase.auth.signOut();
+              setStep("email");
+            }}
           />
         )}
         {step === "blocked" && (
@@ -129,63 +163,252 @@ function LegalLinks({ i18nKey }: { i18nKey: string }) {
   );
 }
 
-function EmailStep({ onSent }: { onSent: (email: string) => void }) {
+function GoogleLogo() {
+  return (
+    <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+      <path
+        fill="#EA4335"
+        d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.2C12.4 13.6 17.7 9.5 24 9.5z"
+      />
+      <path
+        fill="#4285F4"
+        d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.1 5.3-4.5 6.9l7.3 5.7c4.3-4 6.9-9.9 6.9-17z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.9-6.2A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.2z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.7c-2 1.4-4.6 2.3-8.6 2.3-6.3 0-11.6-4.1-13.5-9.9l-7.9 6.2C6.5 42.6 14.6 48 24 48z"
+      />
+    </svg>
+  );
+}
+
+// Supabase answers these when an emailed code is requested for an address with no account. They are treated as
+// success so the screen never reveals whether an address is registered.
+const NO_ACCOUNT_CODES = new Set(["otp_disabled", "signup_disabled", "user_not_found"]);
+
+function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind) => void }) {
   const { t } = useTranslation("auth");
-  const [email, setEmail] = useState("");
+  const [mode, setMode] = useState<"create" | "signin">("create");
+  const [method, setMethod] = useState<"password" | "code">("password");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [adult, setAdult] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const create = mode === "create";
+  const usesPassword = method === "password";
+  const redirectOption =
+    typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}/join` };
+
+  const google = async () => {
+    setError(null);
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/join` },
+    });
+    if (err) setError(t("join.error.oauth"));
+  };
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    const clean = email.trim().toLowerCase();
-    if (!EMAIL_RE.test(clean)) return setError(t("join.error.email"));
-    if (!adult) return setError(t("join.error.ageRequired"));
-    setBusy(true);
-    analytics.joinStarted();
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email: clean,
-      options: { shouldCreateUser: true },
-    });
-    setBusy(false);
-    if (err) {
-      return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
+    const id = parseIdentifier(identifier);
+    const email = id.kind === "email" ? id.value : "";
+    const username = id.kind === "username" ? id.value : "";
+
+    // Creating an account always needs an email (a username is chosen later, in onboarding).
+    if (create && id.kind !== "email") return setError(t("join.error.email"));
+    if (create) {
+      if (usesPassword) {
+        const problem = validatePassword(password, email);
+        if (problem) return setError(t(`join.error.password.${problem}`));
+      }
+      if (!adult) return setError(t("join.error.ageRequired"));
+    } else if (id.kind === "invalid") {
+      return setError(t(usesPassword ? "join.error.identifier" : "join.error.email"));
+    } else if (!usesPassword && id.kind !== "email") {
+      return setError(t("join.error.email"));
+    } else if (usesPassword && !password) {
+      return setError(t("join.error.credentials"));
     }
-    onSent(clean);
+
+    setBusy(true);
+    try {
+      // Passwordless: a code and a link arrive in the same email. Signing up this way needs no password.
+      if (!usesPassword) {
+        if (create) analytics.joinStarted();
+        const { error: err } = await supabase.auth.signInWithOtp({
+          email,
+          options: { shouldCreateUser: create, ...redirectOption },
+        });
+        if (err && !(err.code && NO_ACCOUNT_CODES.has(err.code))) {
+          return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
+        }
+        return onNeedsCode(email, "email");
+      }
+
+      if (create) {
+        analytics.joinStarted();
+        const { data, error: err } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { ...redirectOption },
+        });
+        if (err) {
+          if (err.status === 429) return setError(t("join.error.rate"));
+          if (err.code === "user_already_exists" || /already/i.test(err.message)) {
+            return setError(t("join.error.exists"));
+          }
+          return setError(t("join.error.generic"));
+        }
+        // No session means the project still asks for email confirmation: carry on with the emailed code.
+        if (!data.session) onNeedsCode(email, "signup");
+        return;
+      }
+
+      // Sign in with a password: by email directly, by username through the server.
+      if (id.kind === "email") {
+        const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+        if (err) setError(err.status === 429 ? t("join.error.rate") : t("join.error.credentials"));
+        return;
+      }
+      const r = await signInWithUsername({ data: { username, password } });
+      if (!r.ok) {
+        return setError(
+          r.code === "rate"
+            ? t("join.error.rate")
+            : r.code === "unavailable"
+              ? t("join.error.generic")
+              : t("join.error.credentials"),
+        );
+      }
+      const { error: err } = await supabase.auth.setSession({
+        access_token: r.accessToken,
+        refresh_token: r.refreshToken,
+      });
+      if (err) setError(t("join.error.generic"));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
+      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.mode.label")}>
+        {(["create", "signin"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            aria-pressed={mode === m}
+            onClick={() => {
+              setMode(m);
+              setError(null);
+            }}
+            className={`px-4 py-2 text-sm font-medium ${
+              mode === m ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+            }`}
+          >
+            {t(`join.mode.${m}`)}
+          </button>
+        ))}
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full gap-2"
+        onClick={() => void google()}
+      >
+        <GoogleLogo /> {t("join.google")}
+      </Button>
+      <p className="text-center text-xs text-muted-foreground">{t("join.or")}</p>
+
+      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.method.label")}>
+        {(["password", "code"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            aria-pressed={method === m}
+            onClick={() => {
+              setMethod(m);
+              setError(null);
+            }}
+            className={`px-3 py-2 text-xs font-medium ${
+              method === m ? "bg-primary-soft text-primary" : "border border-border hover:bg-muted"
+            }`}
+          >
+            {t(`join.method.${m}`)}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-1.5">
-        <Label htmlFor="j-email">{t("join.emailStep.label")}</Label>
+        <Label htmlFor="j-email">
+          {!create && usesPassword ? t("join.emailStep.identifier") : t("join.emailStep.label")}
+        </Label>
         <Input
           id="j-email"
-          type="email"
-          autoComplete="email"
+          type={!create && usesPassword ? "text" : "email"}
+          autoComplete={!create && usesPassword ? "username" : "email"}
           inputMode="email"
-          placeholder={t("join.emailStep.placeholder")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          autoCapitalize="none"
+          placeholder={
+            !create && usesPassword
+              ? t("join.emailStep.identifierPlaceholder")
+              : t("join.emailStep.placeholder")
+          }
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
         />
-        <p className="text-xs text-muted-foreground">{t("join.emailStep.signedOutHint")}</p>
       </div>
-      <div className="flex items-start gap-3">
-        <Checkbox id="j-age" checked={adult} onCheckedChange={(v) => setAdult(v === true)} />
-        <Label htmlFor="j-age" className="text-sm font-normal leading-snug">
-          {t("join.emailStep.age")}
-        </Label>
-      </div>
-      <p className="text-xs text-muted-foreground">
-        <LegalLinks i18nKey="join.emailStep.terms" />
-      </p>
+
+      {usesPassword ? (
+        <div className="space-y-1.5">
+          <Label htmlFor="j-password">{t("join.passwordStep.label")}</Label>
+          <Input
+            id="j-password"
+            type="password"
+            autoComplete={create ? "new-password" : "current-password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {create && <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>}
+        </div>
+      ) : (
+        <p className="text-xs text-muted-foreground">{t("join.method.codeHint")}</p>
+      )}
+
+      {create && (
+        <>
+          <div className="flex items-start gap-3">
+            <Checkbox id="j-age" checked={adult} onCheckedChange={(v) => setAdult(v === true)} />
+            <Label htmlFor="j-age" className="text-sm font-normal leading-snug">
+              {t("join.emailStep.age")}
+            </Label>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            <LegalLinks i18nKey="join.emailStep.terms" />
+          </p>
+        </>
+      )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
       <Button type="submit" disabled={busy} className="w-full">
-        {busy ? t("join.emailStep.sending") : t("join.emailStep.send")}
+        {busy
+          ? t("join.emailStep.sending")
+          : !usesPassword
+            ? t("join.emailStep.sendCode")
+            : create
+              ? t("join.emailStep.create")
+              : t("join.emailStep.signin")}
       </Button>
     </form>
   );
@@ -193,10 +416,12 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
 
 function CodeStep({
   email,
+  kind,
   onChangeEmail,
   onVerified,
 }: {
   email: string;
+  kind: CodeKind;
   onChangeEmail: () => void;
   onVerified: () => void;
 }) {
@@ -217,7 +442,7 @@ function CodeStep({
     if (busy || token.length !== 6) return;
     setBusy(true);
     setError(null);
-    const { error: err } = await supabase.auth.verifyOtp({ email, token, type: "email" });
+    const { error: err } = await supabase.auth.verifyOtp({ email, token, type: kind });
     setBusy(false);
     if (err) {
       submitted.current = false;
@@ -229,10 +454,10 @@ function CodeStep({
 
   const resend = async () => {
     setError(null);
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: true },
-    });
+    const { error: err } =
+      kind === "signup"
+        ? await supabase.auth.resend({ type: "signup", email })
+        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
     if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
     setCooldown(RESEND_SECONDS);
   };
@@ -525,15 +750,26 @@ function OnboardingStep({
 
 function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
   const { t } = useTranslation("auth");
-  const { profile } = useSession();
+  const { profile, emailConfirmed } = useSession();
+  const number = foundingNumber ?? profile?.founding_number ?? null;
   return (
     <div className="space-y-4">
       <h2 className="text-2xl">
-        {foundingNumber
-          ? t("join.done.founding", { number: foundingNumber, cap: FOUNDING_CAP })
-          : t("join.done.full")}
+        {number
+          ? t("join.done.founding", { number, cap: FOUNDING_CAP })
+          : emailConfirmed
+            ? t("join.done.full")
+            : t("join.done.unconfirmed")}
       </h2>
       <p className="text-sm text-muted-foreground">{t("join.done.body")}</p>
+      {!emailConfirmed && (
+        <p className="border border-border bg-muted/40 p-3 text-sm">
+          {t("join.done.confirmPrompt")}{" "}
+          <Link to="/account/security" className="font-semibold underline">
+            {t("join.done.confirmCta")}
+          </Link>
+        </p>
+      )}
       <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link to="/predictions">{t("join.done.cta")}</Link>

@@ -36,6 +36,10 @@ P8 `/match/$fixtureId` and the pick form (`create_prediction` only, no edit or d
 
 Five early-access people loaded and reserved Founding spots, three-wave Resend emails (launch day, +3, +7) behind `LAUNCH_EMAILS_ENABLED`, WhatsApp/SMS draft delivered to `/admin` by Realtime and by email. See `docs/launch-notify.md`. `supabase/tests/launch_notify.sql` passes on the live project.
 
+## Passwords, confirmation and two-factor in brief
+
+Sign-up is email + password with no confirmation step; `/account/security` handles confirming the email, authenticator-app two-factor and setting a password; a bar nudges members. Held Founding spots need a confirmed email (`claim_reserved_founding`). Two-factor is enforced in the database (`mfa_ok`). Sign-in methods: Google, email + password, username + password (server-side lookup), email code or link. See `docs/auth-email.md` (includes the Google setup steps). `supabase/tests/auth_passwords_mfa.sql` still needs a live run.
+
 ## Environment facts
 
 - Supabase project `hucjuekhitjuygcoomhw` ("Puntr South Africa", eu-west-1, free plan: no branching). Old Lovable project `cntoniedcjwsgereqrib` must not be referenced.

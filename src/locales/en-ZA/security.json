@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Sign-in and security | Puntr",
+    "description": "Confirm your email and turn on two-factor sign-in."
+  },
+  "title": "Sign-in and security",
+  "subtitle": "Keep your account and your record safe.",
+  "prompt": {
+    "confirm": "Confirm your email so you can always get back into your account.",
+    "mfa": "Add two-factor sign-in to protect your account.",
+    "cta": "Open security",
+    "later": "Not now"
+  },
+  "email": {
+    "title": "Email",
+    "confirmed": "Email confirmed",
+    "why": "Confirming proves this address is yours. It keeps your account recoverable, and early-access members need it to claim their Founding spot.",
+    "send": "Send me a confirmation code",
+    "sent": "We sent a 6-digit code. It can take a minute.",
+    "resend": "Send a new code",
+    "error": {
+      "code": "That code isn't right or has expired.",
+      "rate": "Too many tries. Please wait a minute.",
+      "generic": "Couldn't send the code. Please try again."
+    }
+  },
+  "mfa": {
+    "title": "Two-factor sign-in",
+    "body": "After your password, Puntr asks for a 6-digit code from an authenticator app such as Google Authenticator or Authy. Once it is on, posting and profile changes need that code too.",
+    "turnOn": "Turn on two-factor sign-in",
+    "turnOff": "Turn off",
+    "on": "Two-factor sign-in is on",
+    "offDone": "Two-factor sign-in is off",
+    "scan": "Scan this QR code with your authenticator app.",
+    "qrAlt": "QR code for your authenticator app",
+    "manual": "Can't scan? Enter this key:",
+    "enter": "Then enter the 6-digit code it shows.",
+    "cancel": "Cancel",
+    "challenge": {
+      "title": "Enter your authenticator code",
+      "body": "Open your authenticator app and enter the 6-digit code for Puntr.",
+      "verify": "Verify",
+      "verifying": "Checking…",
+      "cancel": "Use a different account"
+    },
+    "error": {
+      "start": "Couldn't start set-up. Please try again.",
+      "code": "That code isn't right. Check the app and try again.",
+      "rate": "Too many tries. Please wait a minute.",
+      "noFactor": "No authenticator app is set up on this account.",
+      "off": "Couldn't turn it off. Sign in again with your code and retry."
+    }
+  },
+  "password": {
+    "title": "Password",
+    "body": "Set or change the password you sign in with.",
+    "label": "New password",
+    "save": "Save password",
+    "saved": "Password saved",
+    "error": {
+      "short": "Use at least 8 characters.",
+      "long": "That password is too long. Use 72 bytes or fewer.",
+      "sameAsEmail": "Your password can't be your email.",
+      "common": "That password is too easy to guess. Try a longer phrase.",
+      "generic": "Couldn't save the password. Please try again."
+    }
+  }
+}

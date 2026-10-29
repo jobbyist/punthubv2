@@ -31,6 +31,7 @@ import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
+import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
@@ -152,6 +153,11 @@ const AccountPrivacyRoute = AccountPrivacyRouteImport.update({
   path: '/account/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountSecurityRoute = AccountSecurityRouteImport.update({
+  id: '/account/security',
+  path: '/account/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy_/request': typeof PrivacyRequestRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
+    | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy/request'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
+    | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy/request'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
+    | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy_/request'
@@ -433,6 +445,7 @@ export interface RootRouteChildren {
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
+  AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
@@ -602,6 +615,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/security': {
+      id: '/account/security'
+      path: '/account/security'
+      fullPath: '/account/security'
+      preLoaderRoute: typeof AccountSecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -697,6 +717,7 @@ const rootRouteChildren: RootRouteChildren = {
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
+  AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
