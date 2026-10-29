@@ -35,5 +35,9 @@
   "sport": {
     "soccer": "Soccer",
     "rugby": "Rugby"
+  },
+  "founding": {
+    "left": "{{left}} of {{cap}} Founding spots left",
+    "full": "Founding spots are full"
   }
 }

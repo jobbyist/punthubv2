@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PickCard } from "@/components/pick-card";
+import { ReferralCard } from "@/components/referral-card";
+import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { formatDate, formatUnits, pct } from "@/lib/format";
@@ -28,6 +30,7 @@ const CHIP: Record<string, string> = {
 function PublicProfile() {
   const { t } = useTranslation("account");
   const { username } = Route.useParams();
+  const { profile: me } = useSession();
   const {
     data: profile,
     failed,
@@ -141,6 +144,8 @@ function PublicProfile() {
           </div>
         </section>
       )}
+
+      {me && me.id === profile.id && <ReferralCard />}
 
       <p className="mt-4 border border-border bg-primary-soft/50 p-3 text-sm font-semibold">
         {t("record.note")}

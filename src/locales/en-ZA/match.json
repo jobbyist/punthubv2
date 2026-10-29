@@ -124,5 +124,13 @@
     "already": "You've already reported this pick.",
     "signIn": "Sign in to report a pick.",
     "error": "We couldn't send your report. Please try again."
+  },
+  "share": {
+    "title": "Share your pick",
+    "body": "Your pick is locked. Share it with friends.",
+    "whatsapp": "Share on WhatsApp",
+    "copy": "Copy text",
+    "copied": "Copied",
+    "toWin": "{{team}} to win"
   }
 }

@@ -16,7 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { openMobileMenu } from "@/components/layout/mobile-nav";
+import { FoundingCounter } from "@/components/founding-counter";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { copyInviteLink } from "@/lib/invite";
+import { toast } from "sonner";
+import { analytics } from "@/lib/analytics";
+import { inviteText, whatsappUrl } from "@/lib/referral";
 
 export const primaryNav = [
   { key: "predictions", to: "/predictions" },
@@ -139,6 +144,30 @@ export function SiteHeader() {
                 >
                   {t("header.myRecord")}
                 </DropdownMenuItem>
+                {profile.referral_code && (
+                  <>
+                    <DropdownMenuItem
+                      onSelect={async () => {
+                        const code = profile.referral_code!;
+                        if (await copyInviteLink(code)) toast.success(t("header.invite"));
+                      }}
+                    >
+                      {t("header.copyInvite")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        analytics.shareClicked("invite");
+                        window.open(
+                          whatsappUrl(inviteText(profile.referral_code!)),
+                          "_blank",
+                          "noopener,noreferrer",
+                        );
+                      }}
+                    >
+                      {t("header.shareInvite")}
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
                   {t("header.account")}
                 </DropdownMenuItem>
@@ -152,12 +181,15 @@ export function SiteHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button
-              asChild
-              className="h-10 max-w-[9.5rem] whitespace-normal px-3 text-center text-sm leading-tight sm:max-w-none sm:px-5"
-            >
-              <Link to="/join">{t("header.getEarlyAccess")}</Link>
-            </Button>
+            <>
+              <FoundingCounter className="hidden xl:inline-block" />
+              <Button
+                asChild
+                className="h-10 max-w-[9.5rem] whitespace-normal px-3 text-center text-sm leading-tight sm:max-w-none sm:px-5"
+              >
+                <Link to="/join">{t("header.getEarlyAccess")}</Link>
+              </Button>
+            </>
           )}
         </div>
       </div>

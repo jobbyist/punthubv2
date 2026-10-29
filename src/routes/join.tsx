@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { completeSignup, discardUnderageSignup } from "@/lib/accounts.functions";
 import { analytics } from "@/lib/analytics";
+import { FoundingCounter } from "@/components/founding-counter";
+import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
 import { FOUNDING_CAP } from "@/lib/flags";
 import { headT } from "@/lib/i18n/head";
 import { useLocale } from "@/lib/i18n/provider";
@@ -37,32 +39,8 @@ export const Route = createFileRoute("/join")({
 
 type Step = "email" | "code" | "onboarding" | "done" | "blocked";
 
-const REF_KEY = "puntr:ref";
 const RESEND_SECONDS = 30;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/** The referral code is not personal information. It waits in localStorage until the profile exists. */
-function rememberRef(ref: string | undefined) {
-  try {
-    if (ref) window.localStorage.setItem(REF_KEY, ref);
-  } catch {
-    /* storage can be blocked; the link still works for this visit */
-  }
-}
-function storedRef(): string | null {
-  try {
-    return window.localStorage.getItem(REF_KEY);
-  } catch {
-    return null;
-  }
-}
-function forgetRef() {
-  try {
-    window.localStorage.removeItem(REF_KEY);
-  } catch {
-    /* nothing to do */
-  }
-}
 
 function Join() {
   const { t } = useTranslation("auth");
@@ -91,6 +69,7 @@ function Join() {
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
       <h1 className="text-3xl">{t("join.title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("join.subtitle")}</p>
+      <FoundingCounter className="mt-3" />
 
       <div className="card-surface mt-6 p-6">
         {step === "email" && (

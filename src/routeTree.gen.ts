@@ -27,6 +27,7 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
@@ -127,6 +128,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
   id: '/account/',
   path: '/account/',
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
@@ -251,6 +259,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/unsubscribe'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/unsubscribe'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/unsubscribe'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
@@ -509,6 +522,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account/': {
       id: '/account/'
       path: '/account'
@@ -594,6 +614,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,

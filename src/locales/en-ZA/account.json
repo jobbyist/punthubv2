@@ -87,5 +87,31 @@
     "loadMore": "Load more",
     "error": "We couldn't load this record. Please refresh the page.",
     "legend": "W won · L lost · V void"
+  },
+  "invite": {
+    "title": "Invite friends",
+    "body": "Share your link. A friend counts once they post their first pick.",
+    "copy": "Copy link",
+    "copied": "Invite link copied",
+    "copyFailed": "Couldn't copy. Select the link and copy it.",
+    "whatsapp": "Share on WhatsApp",
+    "joined_one": "Friends who joined: {{count}}",
+    "joined_other": "Friends who joined: {{count}}",
+    "signedUp_one": "{{count}} friend has signed up with your link.",
+    "signedUp_other": "{{count}} friends have signed up with your link.",
+    "rule": "Self-referrals and fake accounts don't count.",
+    "rewards": "When Pay-As-You-Go credits launch, you and each friend who joined will get 15 credits. Rewards are recorded now and granted then. Credits have no cash value and are not available yet."
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe",
+    "body": "Stop emails about early access to {{email}}?",
+    "confirm": "Unsubscribe",
+    "missing": "This link is incomplete. Use the unsubscribe link in the email.",
+    "done": "You're unsubscribed. We won't email you about early access again.",
+    "privacy": "Read our privacy notice",
+    "error": {
+      "invalid": "This link isn't valid. Use the unsubscribe link in the email, or send a privacy request.",
+      "error": "Something went wrong. Please try again."
+    }
   }
 }

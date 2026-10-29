@@ -8,6 +8,7 @@ import { PickCard } from "@/components/pick-card";
 import { PickForm } from "@/components/pick-form";
 import { TeamLogo } from "@/components/team-logo";
 import { useNow } from "@/hooks/use-now";
+import { rememberRef } from "@/lib/ref-store";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 import { fetchFixture, fetchPicksForFixture, type PickRow } from "@/lib/pick-data";
@@ -16,6 +17,8 @@ import { countdownTo, formatSpan } from "@/lib/picks";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const Route = createFileRoute("/match/$fixtureId")({
+  validateSearch: (search: Record<string, unknown>): { ref?: string } =>
+    typeof search["ref"] === "string" && search["ref"] ? { ref: search["ref"].slice(0, 32) } : {},
   loader: async ({ params }) => {
     if (!UUID.test(params.fixtureId)) throw notFound();
     const fixture = await fetchFixture(params.fixtureId);
@@ -59,6 +62,9 @@ function Match() {
   const { t: tc } = useTranslation("common");
   const { fixture } = Route.useLoaderData();
   const now = useNow();
+  const { ref } = Route.useSearch();
+  // A shared pick link carries the sharer's invite code, kept until the visitor joins.
+  useEffect(() => rememberRef(ref), [ref]);
 
   const [picks, setPicks] = useState<PickRow[] | null>(null);
   const [failed, setFailed] = useState(false);
