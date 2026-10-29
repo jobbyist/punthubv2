@@ -11,6 +11,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { claimFoundingSpot } from "@/lib/accounts.functions";
+import { notifyPointsChanged } from "@/lib/rewards-data";
 import { useLocale } from "@/lib/i18n/provider";
 import { isEnabledLocale } from "@/locales/config";
 import type { Tables } from "@/integrations/supabase/types";
@@ -137,6 +138,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       if (r.number !== null) void loadProfile(userId);
     });
   }, [needsClaim, userId, loadProfile]);
+
+  // A confirmed member may be owed the one-off email-confirmation points. Idempotent; the database decides.
+  const canSyncPoints = !!profile && confirmed;
+  useEffect(() => {
+    if (!canSyncPoints || !userId) return;
+    const key = `puntr:points:${userId}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      // Private mode: try once per page load.
+    }
+    void supabase.rpc("sync_my_points").then(({ data }) => {
+      if (data && data > 0) notifyPointsChanged();
+    });
+  }, [canSyncPoints, userId]);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();

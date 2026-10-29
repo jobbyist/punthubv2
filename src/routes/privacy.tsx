@@ -59,6 +59,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open [attorney review]",
   ],
   [
+    "PuntPoints and rewards",
+    "What earned or spent points and when, your redemptions, and any voucher code issued to you",
+    "Contract (the loyalty scheme you joined)",
+    "While your account is open; kept without your name after you delete it [attorney review]",
+  ],
+  [
     "Invites",
     "A referral code that links a new member to the member who invited them, and whether the new member has posted a first pick",
     "Your request (using an invite link)",
@@ -89,7 +95,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 29 October 2026 (version 2026-10-29-r2). Draft pending
+          <strong>Last updated:</strong> 29 October 2026 (version 2026-10-29-r3). Draft pending
           attorney review.
         </p>
 
@@ -195,10 +201,12 @@ function Privacy() {
             Supabase (database, sign-in and live notifications to our admins, hosted in Ireland,
             EU), Vercel (website hosting), Resend (sending email, through an email gateway) and
             Google (only if you choose Google to sign in). We also get match fixtures and results
-            from a sports-data provider; no personal information is sent to it. Sending data outside
-            South Africa is allowed under POPIA section 72 where the receiving country or contract
-            gives comparable protection. We never send personal data to AI services. We do not sell
-            your data.
+            from a sports-data provider; no personal information is sent to it. Reward sponsors do
+            not receive your personal information from us: vouchers come from bulk codes the sponsor
+            supplies, and a sponsor&apos;s own site collects data when you use a code. Sending data
+            outside South Africa is allowed under POPIA section 72 where the receiving country or
+            contract gives comparable protection. We never send personal data to AI services. We do
+            not sell your data.
           </p>
         </section>
 

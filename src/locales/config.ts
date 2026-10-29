@@ -69,6 +69,7 @@ export const NAMESPACES = [
   "rg",
   "auth",
   "security",
+  "rewards",
   "consent",
   "privacy-summary",
   "legal-summary",

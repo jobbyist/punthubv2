@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r3). Draft pending
+            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r4). Draft pending
             attorney review.
           </p>
 
@@ -131,31 +131,50 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">6. PuntPoints</h2>
+            <h2 className="mb-3 text-xl font-semibold">6. PuntPoints and rewards</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              PuntPoints are not awarded yet. If we introduce them they will recognise activity and
-              settled predictions, will have no monetary value and cannot be exchanged for cash. We
-              will publish how they work before they start.
+              PuntPoints are a loyalty scheme for active members. You earn them for activity, such
+              as confirming your email, posting predictions, having a prediction settle and inviting
+              friends, never for winning and never for spending money. What earns points, how many
+              and any daily or monthly limits are shown on the Rewards page and may change.
+              [attorney review]
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              PuntPoints have no cash value. They cannot be bought, sold, transferred or exchanged
+              for money, and they never change rankings, the leaderboard or prize eligibility.
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              You can redeem PuntPoints for the vouchers, sponsored rewards and perks listed on the
+              Rewards page, while they last. Rewards are provided by our partners and are subject to
+              their terms. Not every reward is open to every member: a reward may need a confirmed
+              email, and betting vouchers, if we offer them, are only for members aged 18 or older
+              who are not on a break. We may refuse, or reverse, points and redemptions obtained
+              through fraud, abuse, multiple accounts or error, and points earned through an invite
+              can be reversed if either account is removed shortly afterwards. We will give 30 days
+              notice before ending the scheme. What is available at any time is shown on the Rewards
+              page. [attorney review]
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">7. Invites</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Members can share a personal invite link. We record which member invited a new member
-              and whether the new member has posted a first pick. Puntr pays no commission or cash
-              for invites. Any reward linked to invites, such as free credits once paid options
-              exist, will be announced before it applies. Invites created through fraud, spam or
-              fake accounts may be cancelled and the accounts suspended.
+              Members can share a personal invite link. When a friend joins through it, is 18 or
+              older, confirms their email and posts a first prediction, you and your friend each
+              earn PuntPoints once a short waiting period has passed (currently 7 days). We may also
+              give milestone bonuses for several qualified invites. Puntr pays no cash or commission
+              for invites. Invites created through fraud, spam or fake accounts may be cancelled and
+              the accounts suspended.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">8. No prizes at launch</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              The weekly leaderboard is for recognition only. No prizes, cash or vouchers are
-              offered until separate contest rules are published. Those rules will say who can
-              enter, how winners are chosen and what is awarded.
+              The weekly leaderboard is for recognition only. No prizes or cash are offered for
+              leaderboard positions until separate contest rules are published. Those rules will say
+              who can enter, how winners are chosen and what is awarded. Rewards you redeem with
+              PuntPoints are a loyalty scheme, not a prize or a contest.
             </p>
           </section>
 

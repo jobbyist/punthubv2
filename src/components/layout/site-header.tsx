@@ -7,6 +7,8 @@ import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/session";
+import { usePoints } from "@/hooks/use-points";
+import { points as formatPoints } from "@/lib/format";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +39,7 @@ export const primaryNav = [
 export function SiteHeader() {
   const { t } = useTranslation("nav");
   const { isSignedIn, profile, signOut } = useSession();
+  const pp = usePoints();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -167,6 +170,16 @@ export function SiteHeader() {
                       {t("header.shareInvite")}
                     </DropdownMenuItem>
                   </>
+                )}
+                {pp.enabled && (
+                  <DropdownMenuItem onSelect={() => navigate({ to: "/rewards" })}>
+                    {t("header.puntPoints")}
+                    {pp.balance !== null && (
+                      <span className="ml-auto pl-3 text-xs font-semibold text-primary tnum">
+                        {formatPoints(pp.balance)}
+                      </span>
+                    )}
+                  </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
                   {t("header.account")}

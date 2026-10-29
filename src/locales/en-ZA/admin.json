@@ -38,7 +38,8 @@
     "settlement": "Settlement",
     "reports": "Reports",
     "users": "Users",
-    "waitlist": "Waitlist"
+    "waitlist": "Waitlist",
+    "rewards": "Rewards"
   },
   "settle": {
     "title": "Settlement",
@@ -166,6 +167,91 @@
       "sms": "SMS",
       "badPhone": "No usable South African number. Check it by hand.",
       "emailOnly": "Email only."
+    }
+  },
+  "rewards": {
+    "error": "Something went wrong. Check the values and try again.",
+    "saved": "Saved.",
+    "save": "Save",
+    "kind": {
+      "perk": "Perk",
+      "sponsored": "Sponsored reward",
+      "retail_voucher": "Voucher",
+      "betting_voucher": "Betting voucher"
+    },
+    "settings": {
+      "title": "Switches",
+      "body": "Everything is off until you turn it on. Rules and rewards below are proposals you can edit first.",
+      "points_enabled": "PuntPoints on",
+      "points_enabledHint": "Master switch. Nothing is awarded and referrals stay pending while it is off.",
+      "rewards_enabled": "Rewards on",
+      "rewards_enabledHint": "Shows the catalogue and allows redemption of active rewards.",
+      "betting_vouchers_enabled": "Betting vouchers on",
+      "betting_vouchers_enabledHint": "A gambling promotion. Keep off until counsel signs off and a licensed partner funds them. Only 18+, email-confirmed members see them."
+    },
+    "rules": {
+      "title": "Earning rules",
+      "body": "Points reward activity, never results. A blank cap means no cap. Each rule needs its own Active tick.",
+      "points": "Points",
+      "day": "Max a day",
+      "month": "Max a month",
+      "active": "Active",
+      "milestones": "Referral milestones",
+      "at": "at {{count}} qualified friends",
+      "bonus": "Bonus points"
+    },
+    "catalogue": {
+      "title": "Rewards catalogue",
+      "body": "New rewards start inactive. Voucher rewards use the codes you upload; others use a stock number or no limit.",
+      "new": "Add a reward",
+      "code": "Code (a-z, 0-9, - _)",
+      "name": "Name",
+      "kind": "Type",
+      "cost": "Points cost",
+      "stockHint": "Stock (blank = unlimited)",
+      "sponsor": "Sponsor",
+      "description": "Short description",
+      "approval": "An admin approves each redemption",
+      "create": "Add reward",
+      "unlimited": "unlimited",
+      "stock": "stock {{count}}"
+    },
+    "codes": {
+      "add": "Add codes",
+      "placeholder": "One voucher code per line",
+      "save": "Save codes",
+      "added": "Added {{count}} codes.",
+      "left": "{{left}} of {{total}} codes left"
+    },
+    "redemptions": {
+      "title": "Redemptions waiting",
+      "empty": "Nothing waiting.",
+      "fulfil": "Mark sent",
+      "cancel": "Cancel and refund",
+      "reason": "Reason (required to cancel)",
+      "reasonNeeded": "Write a reason first."
+    },
+    "adjust": {
+      "title": "Adjust points",
+      "body": "Written as a new ledger row with your name and reason. It never edits an earlier row.",
+      "username": "Username",
+      "points": "Points (negative to remove)",
+      "reason": "Reason",
+      "submit": "Write adjustment",
+      "notFound": "No member with that username.",
+      "negative": "That would take the balance below zero."
+    },
+    "referrals": {
+      "title": "Referral review",
+      "body": "Recent invites. A flag means one member qualified several friends within an hour.",
+      "empty": "No referrals yet.",
+      "burst": "Burst",
+      "reverse": "Reverse points",
+      "status": {
+        "pending": "Waiting to vest",
+        "granted": "Vested",
+        "void": "Reversed or void"
+      }
     }
   }
 }

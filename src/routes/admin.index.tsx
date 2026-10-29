@@ -11,6 +11,7 @@ import {
   WaitlistTab,
 } from "@/components/admin/admin-tabs";
 import { NotificationBanner } from "@/components/admin/launch-panel";
+import { RewardsTab } from "@/components/admin/rewards-admin";
 import { useSession } from "@/components/session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/admin/")({
   component: Admin,
 });
 
-const TABS = ["fixtures", "settlement", "reports", "users", "waitlist"] as const;
+const TABS = ["fixtures", "settlement", "reports", "users", "rewards", "waitlist"] as const;
 
 /** The database and every server function re-check the role; hiding the UI is only a convenience. */
 function Admin() {
@@ -57,6 +58,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="users" className="mt-5">
                   <UsersTab />
+                </TabsContent>
+                <TabsContent value="rewards" className="mt-5">
+                  <RewardsTab />
                 </TabsContent>
                 <TabsContent value="waitlist" className="mt-5">
                   <WaitlistTab />

@@ -21,7 +21,9 @@
     "privacyBody": "Download your data, change your marketing choices or delete your account.",
     "recordLink": "My public record",
     "securityLink": "Sign-in and security",
-    "securityBody": "Confirm your email, turn on two-factor sign-in or set a password."
+    "securityBody": "Confirm your email, turn on two-factor sign-in or set a password.",
+    "rewardsLink": "PuntPoints and rewards",
+    "rewardsBody": "Your balance, how to earn, invites and rewards."
   },
   "privacy": {
     "title": "Privacy and data",
@@ -101,8 +103,12 @@
     "joined_other": "Friends who joined: {{count}}",
     "signedUp_one": "{{count}} friend has signed up with your link.",
     "signedUp_other": "{{count}} friends have signed up with your link.",
-    "rule": "Self-referrals and fake accounts don't count.",
-    "rewards": "When Pay-As-You-Go credits launch, you and each friend who joined will get 15 credits. Rewards are recorded now and granted then. Credits have no cash value and are not available yet."
+    "rule": "Self-referrals and fake accounts don't count, and points can be reversed if an account is removed.",
+    "overview": "Waiting to vest: {{pending}} · Vested: {{vested}}",
+    "next": "Next milestone: {{title}} at {{count}} qualified friends.",
+    "pointsNote": "You and each friend earn PuntPoints once the friend has posted a first pick and a short waiting period has passed.",
+    "rewardsLink": "PuntPoints and rewards",
+    "rewardsSoon": "PuntPoints for invites are coming soon. Invites are recorded now. PuntPoints have no cash value."
   },
   "unsubscribe": {
     "title": "Unsubscribe",

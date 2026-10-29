@@ -91,7 +91,7 @@
     },
     "points": {
       "title": "PuntPoints",
-      "body": "Points for activity and settled picks, with no cash value"
+      "body": "Points for activity, redeemed for vouchers, sponsored rewards and perks. No cash value"
     },
     "ai": {
       "title": "AI-Powered Insights",
@@ -180,7 +180,7 @@
   "points": {
     "title1": "Every Prediction",
     "title2": "Counts",
-    "body": "PuntPoints recognise activity and settled picks. They have no cash value and cannot be exchanged for money.",
+    "body": "PuntPoints reward activity: confirming your email, posting picks, settled picks and invites. Redeem them for vouchers, sponsored rewards and perks. They have no cash value, cannot be bought and never change your ranking.",
     "accuracy": {
       "title": "Accuracy",
       "body": "Be recognised for getting it right."
