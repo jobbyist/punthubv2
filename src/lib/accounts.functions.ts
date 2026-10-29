@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { runCompleteSignup, signupSchema, type SignupResult } from "@/lib/accounts.logic";
+import { runUsernameSignIn, type UsernameSignInResult } from "@/lib/username-signin.logic";
 
 export type { SignupResult } from "@/lib/accounts.logic";
 
@@ -91,4 +92,49 @@ export const claimFoundingSpot = createServerFn({ method: "POST" })
       return { number: null };
     }
     return { number: data ?? null };
+  });
+
+/**
+ * Sign in with a username and password. Public (no session yet). The member's email is looked up and used on the
+ * server only; the browser receives session tokens and nothing else.
+ */
+export const signInWithUsername = createServerFn({ method: "POST" })
+  .validator((input: unknown) => {
+    const o = (typeof input === "object" && input !== null ? input : {}) as {
+      username?: unknown;
+      password?: unknown;
+    };
+    return {
+      username: typeof o.username === "string" ? o.username.slice(0, 40) : "",
+      password: typeof o.password === "string" ? o.password : "",
+    };
+  })
+  .handler(async ({ data }): Promise<UsernameSignInResult> => {
+    const url = process.env["SUPABASE_URL"];
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+    if (!url || !key) return { ok: false, code: "unavailable" };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createClient } = await import("@supabase/supabase-js");
+    return runUsernameSignIn(data, {
+      findProfile: async (username) => {
+        const { data: p } = await supabaseAdmin
+          .from("profiles")
+          .select("id, is_banned")
+          .eq("username", username)
+          .maybeSingle();
+        return p ? { id: p.id, isBanned: p.is_banned } : null;
+      },
+      emailFor: async (userId) => {
+        const { data: u } = await supabaseAdmin.auth.admin.getUserById(userId);
+        return u.user?.email ?? null;
+      },
+      signIn: async (email, password) => {
+        const anon = createClient(url, key, {
+          auth: { persistSession: false, autoRefreshToken: false },
+        });
+        const { data: s, error } = await anon.auth.signInWithPassword({ email, password });
+        if (error || !s.session) return { error: error?.status ?? null };
+        return { accessToken: s.session.access_token, refreshToken: s.session.refresh_token };
+      },
+    });
   });

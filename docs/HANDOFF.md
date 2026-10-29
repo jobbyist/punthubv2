@@ -38,7 +38,7 @@ Five early-access people loaded and reserved Founding spots, three-wave Resend e
 
 ## Passwords, confirmation and two-factor in brief
 
-Sign-up is email + password with no confirmation step; `/account/security` handles confirming the email, authenticator-app two-factor and setting a password; a bar nudges members. Held Founding spots need a confirmed email (`claim_reserved_founding`). Two-factor is enforced in the database (`mfa_ok`). See `docs/auth-email.md`. `supabase/tests/auth_passwords_mfa.sql` still needs a live run.
+Sign-up is email + password with no confirmation step; `/account/security` handles confirming the email, authenticator-app two-factor and setting a password; a bar nudges members. Held Founding spots need a confirmed email (`claim_reserved_founding`). Two-factor is enforced in the database (`mfa_ok`). Sign-in methods: Google, email + password, username + password (server-side lookup), email code or link. See `docs/auth-email.md` (includes the Google setup steps). `supabase/tests/auth_passwords_mfa.sql` still needs a live run.
 
 ## Environment facts
 

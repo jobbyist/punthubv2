@@ -11,8 +11,13 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { completeSignup, discardUnderageSignup } from "@/lib/accounts.functions";
+import {
+  completeSignup,
+  discardUnderageSignup,
+  signInWithUsername,
+} from "@/lib/accounts.functions";
 import { analytics } from "@/lib/analytics";
+import { parseIdentifier } from "@/lib/identifier";
 import { mfaRequired } from "@/lib/mfa";
 import { validatePassword } from "@/lib/password";
 import { FoundingCounter } from "@/components/founding-counter";
@@ -158,64 +163,138 @@ function LegalLinks({ i18nKey }: { i18nKey: string }) {
   );
 }
 
+function GoogleLogo() {
+  return (
+    <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+      <path
+        fill="#EA4335"
+        d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.2C12.4 13.6 17.7 9.5 24 9.5z"
+      />
+      <path
+        fill="#4285F4"
+        d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.1 5.3-4.5 6.9l7.3 5.7c4.3-4 6.9-9.9 6.9-17z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.9-6.2A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.2z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.7c-2 1.4-4.6 2.3-8.6 2.3-6.3 0-11.6-4.1-13.5-9.9l-7.9 6.2C6.5 42.6 14.6 48 24 48z"
+      />
+    </svg>
+  );
+}
+
+// Supabase answers these when an emailed code is requested for an address with no account. They are treated as
+// success so the screen never reveals whether an address is registered.
+const NO_ACCOUNT_CODES = new Set(["otp_disabled", "signup_disabled", "user_not_found"]);
+
 function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind) => void }) {
   const { t } = useTranslation("auth");
   const [mode, setMode] = useState<"create" | "signin">("create");
-  const [email, setEmail] = useState("");
+  const [method, setMethod] = useState<"password" | "code">("password");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [adult, setAdult] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const create = mode === "create";
+  const usesPassword = method === "password";
+  const redirectOption =
+    typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}/join` };
+
+  const google = async () => {
+    setError(null);
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/join` },
+    });
+    if (err) setError(t("join.error.oauth"));
+  };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    const clean = email.trim().toLowerCase();
-    if (!EMAIL_RE.test(clean)) return setError(t("join.error.email"));
+    const id = parseIdentifier(identifier);
+    const email = id.kind === "email" ? id.value : "";
+    const username = id.kind === "username" ? id.value : "";
+
+    // Creating an account always needs an email (a username is chosen later, in onboarding).
+    if (create && id.kind !== "email") return setError(t("join.error.email"));
     if (create) {
-      const problem = validatePassword(password, clean);
-      if (problem) return setError(t(`join.error.password.${problem}`));
+      if (usesPassword) {
+        const problem = validatePassword(password, email);
+        if (problem) return setError(t(`join.error.password.${problem}`));
+      }
       if (!adult) return setError(t("join.error.ageRequired"));
-    } else if (!password) {
+    } else if (id.kind === "invalid") {
+      return setError(t(usesPassword ? "join.error.identifier" : "join.error.email"));
+    } else if (!usesPassword && id.kind !== "email") {
+      return setError(t("join.error.email"));
+    } else if (usesPassword && !password) {
       return setError(t("join.error.credentials"));
     }
-    setBusy(true);
-    if (create) {
-      analytics.joinStarted();
-      const { data, error: err } = await supabase.auth.signUp({ email: clean, password });
-      setBusy(false);
-      if (err) {
-        if (err.status === 429) return setError(t("join.error.rate"));
-        if (err.code === "user_already_exists" || /already/i.test(err.message)) {
-          return setError(t("join.error.exists"));
-        }
-        return setError(t("join.error.generic"));
-      }
-      // No session means the project still asks for email confirmation: carry on with the emailed code.
-      if (!data.session) onNeedsCode(clean, "signup");
-      return;
-    }
-    const { error: err } = await supabase.auth.signInWithPassword({ email: clean, password });
-    setBusy(false);
-    if (err) {
-      return setError(err.status === 429 ? t("join.error.rate") : t("join.error.credentials"));
-    }
-  };
 
-  const emailMeCode = async () => {
-    setError(null);
-    const clean = email.trim().toLowerCase();
-    if (!EMAIL_RE.test(clean)) return setError(t("join.error.email"));
     setBusy(true);
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email: clean,
-      options: { shouldCreateUser: false },
-    });
-    setBusy(false);
-    if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
-    onNeedsCode(clean, "email");
+    try {
+      // Passwordless: a code and a link arrive in the same email. Signing up this way needs no password.
+      if (!usesPassword) {
+        if (create) analytics.joinStarted();
+        const { error: err } = await supabase.auth.signInWithOtp({
+          email,
+          options: { shouldCreateUser: create, ...redirectOption },
+        });
+        if (err && !(err.code && NO_ACCOUNT_CODES.has(err.code))) {
+          return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
+        }
+        return onNeedsCode(email, "email");
+      }
+
+      if (create) {
+        analytics.joinStarted();
+        const { data, error: err } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { ...redirectOption },
+        });
+        if (err) {
+          if (err.status === 429) return setError(t("join.error.rate"));
+          if (err.code === "user_already_exists" || /already/i.test(err.message)) {
+            return setError(t("join.error.exists"));
+          }
+          return setError(t("join.error.generic"));
+        }
+        // No session means the project still asks for email confirmation: carry on with the emailed code.
+        if (!data.session) onNeedsCode(email, "signup");
+        return;
+      }
+
+      // Sign in with a password: by email directly, by username through the server.
+      if (id.kind === "email") {
+        const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+        if (err) setError(err.status === 429 ? t("join.error.rate") : t("join.error.credentials"));
+        return;
+      }
+      const r = await signInWithUsername({ data: { username, password } });
+      if (!r.ok) {
+        return setError(
+          r.code === "rate"
+            ? t("join.error.rate")
+            : r.code === "unavailable"
+              ? t("join.error.generic")
+              : t("join.error.credentials"),
+        );
+      }
+      const { error: err } = await supabase.auth.setSession({
+        access_token: r.accessToken,
+        refresh_token: r.refreshToken,
+      });
+      if (err) setError(t("join.error.generic"));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -238,29 +317,72 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
           </button>
         ))}
       </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full gap-2"
+        onClick={() => void google()}
+      >
+        <GoogleLogo /> {t("join.google")}
+      </Button>
+      <p className="text-center text-xs text-muted-foreground">{t("join.or")}</p>
+
+      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.method.label")}>
+        {(["password", "code"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            aria-pressed={method === m}
+            onClick={() => {
+              setMethod(m);
+              setError(null);
+            }}
+            className={`px-3 py-2 text-xs font-medium ${
+              method === m ? "bg-primary-soft text-primary" : "border border-border hover:bg-muted"
+            }`}
+          >
+            {t(`join.method.${m}`)}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-1.5">
-        <Label htmlFor="j-email">{t("join.emailStep.label")}</Label>
+        <Label htmlFor="j-email">
+          {!create && usesPassword ? t("join.emailStep.identifier") : t("join.emailStep.label")}
+        </Label>
         <Input
           id="j-email"
-          type="email"
-          autoComplete="email"
+          type={!create && usesPassword ? "text" : "email"}
+          autoComplete={!create && usesPassword ? "username" : "email"}
           inputMode="email"
-          placeholder={t("join.emailStep.placeholder")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          autoCapitalize="none"
+          placeholder={
+            !create && usesPassword
+              ? t("join.emailStep.identifierPlaceholder")
+              : t("join.emailStep.placeholder")
+          }
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
         />
       </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="j-password">{t("join.passwordStep.label")}</Label>
-        <Input
-          id="j-password"
-          type="password"
-          autoComplete={create ? "new-password" : "current-password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {create && <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>}
-      </div>
+
+      {usesPassword ? (
+        <div className="space-y-1.5">
+          <Label htmlFor="j-password">{t("join.passwordStep.label")}</Label>
+          <Input
+            id="j-password"
+            type="password"
+            autoComplete={create ? "new-password" : "current-password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {create && <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>}
+        </div>
+      ) : (
+        <p className="text-xs text-muted-foreground">{t("join.method.codeHint")}</p>
+      )}
+
       {create && (
         <>
           <div className="flex items-start gap-3">
@@ -282,20 +404,12 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
       <Button type="submit" disabled={busy} className="w-full">
         {busy
           ? t("join.emailStep.sending")
-          : create
-            ? t("join.emailStep.create")
-            : t("join.emailStep.signin")}
+          : !usesPassword
+            ? t("join.emailStep.sendCode")
+            : create
+              ? t("join.emailStep.create")
+              : t("join.emailStep.signin")}
       </Button>
-      {!create && (
-        <button
-          type="button"
-          onClick={() => void emailMeCode()}
-          disabled={busy}
-          className="text-sm underline"
-        >
-          {t("join.emailStep.codeInstead")}
-        </button>
-      )}
     </form>
   );
 }
