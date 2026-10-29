@@ -28,12 +28,16 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
@@ -133,6 +137,11 @@ const UnsubscribeRoute = UnsubscribeRouteImport.update({
   path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
   id: '/account/',
   path: '/account/',
@@ -141,6 +150,11 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
 const AccountPrivacyRoute = AccountPrivacyRouteImport.update({
   id: '/account/privacy',
   path: '/account/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminFixturesRoute = AdminFixturesRouteImport.update({
@@ -161,6 +175,16 @@ const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
+  id: '/api/cron/chain-head',
+  path: '/api/cron/chain-head',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
+  id: '/api/cron/launch-notify',
+  path: '/api/cron/launch-notify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
@@ -199,12 +223,16 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -229,12 +257,16 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -260,12 +292,16 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -292,12 +328,16 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/unsubscribe'
+    | '/verify'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy/request'
     | '/u/$username'
     | '/account/'
+    | '/admin/'
+    | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -322,12 +362,16 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/unsubscribe'
+    | '/verify'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy/request'
     | '/u/$username'
     | '/account'
+    | '/admin'
+    | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -352,12 +396,16 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/unsubscribe'
+    | '/verify'
     | '/account/privacy'
     | '/admin/fixtures'
     | '/match/$fixtureId'
     | '/privacy_/request'
     | '/u/$username'
     | '/account/'
+    | '/admin/'
+    | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -383,12 +431,16 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  VerifyRoute: typeof VerifyRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
@@ -529,6 +581,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account/': {
       id: '/account/'
       path: '/account'
@@ -541,6 +600,13 @@ declare module '@tanstack/react-router' {
       path: '/account/privacy'
       fullPath: '/account/privacy'
       preLoaderRoute: typeof AccountPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/fixtures': {
@@ -569,6 +635,20 @@ declare module '@tanstack/react-router' {
       path: '/u/$username'
       fullPath: '/u/$username'
       preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/chain-head': {
+      id: '/api/cron/chain-head'
+      path: '/api/cron/chain-head'
+      fullPath: '/api/cron/chain-head'
+      preLoaderRoute: typeof ApiCronChainHeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/launch-notify': {
+      id: '/api/cron/launch-notify'
+      path: '/api/cron/launch-notify'
+      fullPath: '/api/cron/launch-notify'
+      preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cron/settle': {
@@ -615,12 +695,16 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  VerifyRoute: VerifyRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,

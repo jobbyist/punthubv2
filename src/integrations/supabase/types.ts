@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      launch_email_sends: {
+        Row: { detail: string | null; email: string; sent_at: string; status: string; wave: number }
+        Insert: { detail?: string | null; email: string; sent_at?: string; status?: string; wave: number }
+        Update: { detail?: string | null; email?: string; sent_at?: string; status?: string; wave?: number }
+        Relationships: []
+      }
+      admin_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          dedupe_key: string
+          done_at: string | null
+          done_by: string | null
+          id: string
+          kind: string
+          sms_body: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          dedupe_key: string
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          kind: string
+          sms_body?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          dedupe_key?: string
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          kind?: string
+          sms_body?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       breach_register: {
         Row: {
           contained_at: string | null
@@ -147,6 +189,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          founding_reserved: boolean
           id: string
           marketing_consent: boolean
           name: string
@@ -158,6 +201,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
+          founding_reserved?: boolean
           id?: string
           marketing_consent?: boolean
           name: string
@@ -169,6 +213,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          founding_reserved?: boolean
           id?: string
           marketing_consent?: boolean
           name?: string
@@ -865,6 +910,48 @@ export type Database = {
       }
     }
     Functions: {
+      admin_settle_prediction: {
+        Args: { p_prediction: string; p_reason: string; p_result: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          prediction_id: string
+          reason: string | null
+          result: string
+          seq: number
+          source: string
+          units: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "settlement_events"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      launch_recipients: {
+        Args: { p_wave: number }
+        Returns: { recipient_email: string; recipient_name: string }[]
+      }
+      launch_audience: {
+        Args: never
+        Returns: {
+          email_address: string
+          full_name: string
+          joined_at: string
+          marketing_ok: boolean
+          phone_number: string
+          reserved: boolean
+          signed_up: boolean
+          unsubscribed: boolean
+        }[]
+      }
+      founding_spots_held: { Args: never; Returns: number }
+      write_chain_head: {
+        Args: { p_day: string }
+        Returns: { head_day: string; head_hash: string; head_pick_count: number }[]
+      }
       apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
       anonymise_account: {
         Args: { p_email: string; p_user: string }
