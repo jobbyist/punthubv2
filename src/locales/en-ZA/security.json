@@ -6,7 +6,7 @@
   "title": "Sign-in and security",
   "subtitle": "Keep your account and your record safe.",
   "prompt": {
-    "confirm": "Confirm your email so you can always get back into your account.",
+    "confirm": "Confirm your email to post picks and keep your account recoverable.",
     "mfa": "Add two-factor sign-in to protect your account.",
     "cta": "Open security",
     "later": "Not now"
@@ -14,7 +14,7 @@
   "email": {
     "title": "Email",
     "confirmed": "Email confirmed",
-    "why": "Confirming proves this address is yours. It keeps your account recoverable, and early-access members need it to claim their Founding spot.",
+    "why": "Confirming proves this address is yours. You need it to post picks to the feed and the leaderboard, and to keep your account recoverable. Early-access members also need it to claim a Founding spot.",
     "send": "Send me a confirmation code",
     "sent": "We sent a 6-digit code. It can take a minute.",
     "resend": "Send a new code",

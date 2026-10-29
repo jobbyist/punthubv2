@@ -75,6 +75,7 @@ export function pickErrorKey(
     "posting_paused",
     "banned",
     "age_not_attested",
+    "email_not_confirmed",
     "no_profile",
     "not_authenticated",
     "invalid_market",

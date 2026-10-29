@@ -35,7 +35,7 @@ import { useNow } from "@/hooks/use-now";
 /** The pick form for one fixture. There is no edit or delete control anywhere: a pick is final once locked. */
 export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted: () => void }) {
   const { t } = useTranslation("match");
-  const { loading, profile, user } = useSession();
+  const { loading, profile, user, emailConfirmed } = useSession();
   const now = useNow();
 
   const markets = MARKETS_BY_SPORT[fixture.sport];
@@ -85,6 +85,18 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
         <p className="text-sm">{t("form.needProfile")}</p>
         <Button asChild className="mt-3">
           <Link to="/join">{t("form.finishCta")}</Link>
+        </Button>
+      </section>
+    );
+  }
+
+  if (!loading && user && profile && !emailConfirmed) {
+    return (
+      <section className="card-surface p-5">
+        <p className="text-sm font-semibold">{t("form.needEmail")}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{t("form.needEmailWhy")}</p>
+        <Button asChild className="mt-3">
+          <Link to="/account/security">{t("form.needEmailCta")}</Link>
         </Button>
       </section>
     );

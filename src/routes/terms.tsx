@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r2). Draft pending
+            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r3). Draft pending
             attorney review.
           </p>
 
@@ -94,7 +94,10 @@ function Terms() {
               matches. It provides:
             </p>
             <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
-              <li>Predictions that lock at kick-off and are kept on a public record</li>
+              <li>
+                Predictions that lock at kick-off and are kept on a public record. Posting needs a
+                confirmed email address
+              </li>
               <li>Automatic grading of settled predictions and a weekly leaderboard</li>
               <li>A page to check that a prediction has not been changed (/verify)</li>
               <li>Founding Membership for the first 100 members, free</li>
@@ -161,12 +164,13 @@ function Terms() {
               9. Predictions, grading and the public record
             </h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              A prediction is locked at kick-off and cannot be edited or deleted. It is published
-              with your username and chained to the one before it so a change can be detected;
-              anyone can check this on the verify page. Results are filled in automatically from
-              sports data. Abandoned and cancelled matches, and postponed matches that are not
-              replayed within 72 hours, are void. If a result is wrong we correct it by adding a new
-              entry with a reason; earlier entries stay on the record.
+              To post a prediction your email address must be confirmed. A prediction is locked at
+              kick-off and cannot be edited or deleted. It is published with your username and
+              chained to the one before it so a change can be detected; anyone can check this on the
+              verify page. Results are filled in automatically from sports data. Abandoned and
+              cancelled matches, and postponed matches that are not replayed within 72 hours, are
+              void. If a result is wrong we correct it by adding a new entry with a reason; earlier
+              entries stay on the record.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               Units show how a prediction did against a stake of one unit. They are not money, and
