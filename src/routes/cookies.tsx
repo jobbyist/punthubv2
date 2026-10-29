@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/cookies")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/cookies" }],
     meta: [
       { title: "Cookie Preferences | Puntr" },
       {

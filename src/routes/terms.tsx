@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/terms" }],
     meta: [
       { title: "Terms & Conditions | Puntr" },
       {
@@ -144,18 +145,12 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">7. Referral Program & Commission</h2>
+            <h2 className="mb-3 text-xl font-semibold">7. Invites</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Puntr offers a referral program where users can earn 30% recurring commission from referred premium
-              subscribers. Commission terms:
+              Founding Members can share a personal invite link. Invites may move friends up the waitlist. Puntr does
+              not pay commission or cash for referrals. Invites created through fraud, spam or fake accounts may be
+              cancelled and the accounts suspended.
             </p>
-            <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
-              <li>Commission is paid monthly for active referred subscriptions</li>
-              <li>Minimum payout threshold applies (displayed in your account)</li>
-              <li>Fraudulent referrals will result in commission forfeiture and account suspension</li>
-              <li>We reserve the right to modify commission rates with 30 days notice</li>
-              <li>Tax obligations are the responsibility of the recipient</li>
-            </ul>
           </section>
 
           <section className="mb-8">

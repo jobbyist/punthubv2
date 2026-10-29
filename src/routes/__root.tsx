@@ -17,6 +17,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
+import { SHOW_PUNT_AI_CHAT } from "@/lib/flags";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthPrompt } from "@/components/auth-prompt";
 
@@ -85,19 +86,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      {
-        title:
-          "Puntr — South Africa's #1 Sports Betting Predictions, Odds Comparison & AI Picks",
-      },
+      { title: "Puntr - Predict smarter. Prove it." },
       {
         name: "description",
         content:
-          "Puntr is South Africa's leading sports betting prediction hub. Compare live odds from Betway, Hollywoodbets, Bet.co.za, Supabets & more. Get AI-powered picks, community predictions, PuntPoints rewards and 30% recurring referral earnings. 18+ Gamble Responsibly.",
-      },
-      {
-        name: "keywords",
-        content:
-          "sports betting South Africa, SA betting predictions, best odds South Africa, Betway odds, Hollywoodbets tips, soccer predictions SA, rugby betting tips, PSL predictions, PuntPoints, AI betting tips South Africa, odds comparison SA, responsible gambling South Africa",
+          "Locked, auto-graded, public tipster records for PSL, EPL, UCL, URC and Springbok tests. Predict smarter. Prove it. 18+.",
       },
       { name: "author", content: "Puntr" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
@@ -106,33 +99,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "geo.placename", content: "South Africa" },
       { name: "language", content: "en-ZA" },
       { name: "theme-color", content: "#16A34A" },
-      { property: "og:title", content: "Puntr — South Africa's #1 Sports Betting Predictions & Odds Hub" },
+      { property: "og:title", content: "Puntr - Predict smarter. Prove it." },
       {
         property: "og:description",
         content:
-          "Compare odds from every major SA bookmaker, share predictions, earn PuntPoints and unlock AI picks. Built for South African punters.",
+          "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust. 18+.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://puntr.co.za" },
       { property: "og:site_name", content: "Puntr" },
       { property: "og:locale", content: "en_ZA" },
       { property: "og:image", content: "https://puntr.co.za/puntrlogo.png" },
-      { property: "og:image:alt", content: "Puntr – South Africa sports betting predictions" },
+      { property: "og:image:alt", content: "Puntr - locked, public tipster records" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@punthub.za" },
-      { name: "twitter:creator", content: "@punthub.za" },
-      { name: "twitter:title", content: "Puntr — South Africa's #1 Sports Betting Predictions & Odds Hub" },
+      { name: "twitter:site", content: "@puntr_za" },
+      { name: "twitter:creator", content: "@puntr_za" },
+      { name: "twitter:title", content: "Puntr - Predict smarter. Prove it." },
       {
         name: "twitter:description",
         content:
-          "Compare odds from every major SA bookmaker, share predictions, earn PuntPoints and unlock AI picks. Built for South African punters.",
+          "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust. 18+.",
       },
       { name: "twitter:image", content: "https://puntr.co.za/puntrlogo.png" },
     ],
     links: [
-      { rel: "canonical", href: "https://puntr.co.za" },
-      { rel: "alternate", hrefLang: "en-ZA", href: "https://puntr.co.za" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://puntr.co.za" },
       {
         rel: "icon",
         href: "/puntrlogorounded.png",
@@ -163,11 +153,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@type": "WebSite",
               "@id": "https://puntr.co.za/#website",
               name: "Puntr",
-              alternateName: ["Puntr SA", "Puntr South Africa", "PuntHub"],
+              alternateName: ["Puntr SA", "Puntr South Africa"],
               url: "https://puntr.co.za/",
               inLanguage: "en-ZA",
               description:
-                "South Africa's leading sports betting prediction platform. Live odds comparison, AI picks, community tips and PuntPoints rewards.",
+                "Locked, auto-graded, public tipster records for South African sport. 18+.",
               publisher: { "@id": "https://puntr.co.za/#organization" },
               potentialAction: {
                 "@type": "SearchAction",
@@ -186,9 +176,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 url: "https://puntr.co.za/puntrlogo.png",
               },
               sameAs: [
-                "https://x.com/punthub.za",
-                "https://facebook.com/punthub.za",
-                "https://www.instagram.com/punthub.za",
+                "https://x.com/puntr_za",
+                "https://facebook.com/puntrza",
+                "https://www.instagram.com/puntr_za",
               ],
               contactPoint: [
                 {
@@ -222,13 +212,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "ZAR",
-                description: "Free community predictions and odds comparison",
-              },
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.8",
-                ratingCount: "1243",
-                bestRating: "5",
+                description: "Free during the Founding 100 launch",
               },
             },
           ],
@@ -271,7 +255,7 @@ function RootComponent() {
           <SiteFooter />
         </div>
         <MobileNav />
-        <PuntAI />
+        {SHOW_PUNT_AI_CHAT && <PuntAI />}
         <AuthPrompt />
         <EarlyAccessModal />
         <Toaster />

@@ -8,14 +8,13 @@ import { useSession } from "@/components/session";
 type Msg = { role: "user" | "ai"; text: string };
 
 const suggestions = [
-  "Analyse Pirates vs Chiefs",
-  "Find today's value bets",
-  "Build me a 3-fold acca",
-  "How should I manage my bankroll?",
+  "How does Puntr lock a pick?",
+  "What do units and ROI mean?",
+  "How do I stay in control?",
 ];
 
 const canned =
-  "Here's my read: Orlando Pirates have won 4 of their last 5 at home and concede under 1.0 goals per match, which supports the 1X market at 1.62. Kaizer Chiefs' xG away sits at 0.94 — modest. My model gives Pirates a 61% win probability, so there's small positive value.\n\nRemember: no bet is a sure thing. Stake only what you can afford to lose, never chase losses, and take a break if it stops being fun. Support: 0800 006 008.";
+  "Puntr AI is not switched on yet. Match previews are coming after launch. Until then, every pick on Puntr is locked at kick-off and graded automatically.\n\nNo prediction is a sure thing. Only stake what you can afford to lose. Support: 0800 006 008.";
 
 export function PuntAI() {
   const { isGuest, openEarlyAccess } = useSession();
@@ -23,7 +22,7 @@ export function PuntAI() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "ai", text: "Hi 👋 I'm PUNT AI. Ask me about matches, value bets, odds movement or bankroll strategy." },
+    { role: "ai", text: "Hi 👋 Puntr AI is coming after launch. Ask how Puntr works in the meantime." },
   ]);
   const [typing, setTyping] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);

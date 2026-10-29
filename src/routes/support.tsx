@@ -12,6 +12,7 @@ import { faqs } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/support")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/support" }],
     meta: [
       { title: "Support Centre | Puntr" },
       {
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/support")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Puntr",
-          url: "https://punthubv2.lovable.app/",
+          url: "https://puntr.co.za/",
           contactPoint: [
             {
               "@type": "ContactPoint",

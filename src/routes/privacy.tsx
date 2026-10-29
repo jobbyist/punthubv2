@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/privacy" }],
     meta: [
       { title: "Privacy Statement | Puntr" },
       {

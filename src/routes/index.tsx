@@ -1,38 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Gift, Play, ShieldCheck, Users, X as CloseIcon, Zap } from "lucide-react";
+import { ArrowRight, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
-import { AffiliateBanner, PlatformRail } from "@/components/affiliate";
+import { PlatformRail } from "@/components/affiliate";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { topTipsters } from "@/lib/mock-data";
-import { TeamLogo } from "@/components/team-logo";
+import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      {
-        title:
-          "Puntr — South Africa's #1 Sports Betting Predictions, Odds Comparison & AI Picks",
-      },
+      { title: "Puntr - Predict smarter. Prove it." },
       {
         name: "description",
         content:
-          "Compare live odds from Betway, Hollywoodbets, Bet.co.za, Supabets and more. Get AI-powered picks, community predictions for PSL, rugby & soccer, earn PuntPoints and 30% recurring referral revenue. 18+ Gamble Responsibly – 0800 006 008.",
+          "Locked, auto-graded, public tipster records for PSL, EPL, UCL, URC and Springbok tests. 18+. Gamble responsibly: 0800 006 008.",
       },
-      {
-        property: "og:title",
-        content: "Puntr — South Africa's #1 Sports Betting Predictions & Odds Hub",
-      },
+      { property: "og:title", content: "Puntr - Predict smarter. Prove it." },
       {
         property: "og:description",
-        content:
-          "Compare odds from every major SA bookmaker, share predictions, earn PuntPoints and unlock AI picks. Built for South African punters.",
+        content: "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust.",
       },
       { property: "og:url", content: "https://puntr.co.za/" },
       { property: "og:locale", content: "en_ZA" },
     ],
+    links: [{ rel: "canonical", href: "https://puntr.co.za/" }],
   }),
   component: Landing,
 });
@@ -45,10 +39,10 @@ const fade = {
 };
 
 const steps = [
-  { n: 1, title: "Sign Up Free", body: "Create your free account and join the community." },
-  { n: 2, title: "Make Predictions", body: "Share your picks on upcoming matches." },
-  { n: 3, title: "Earn PuntPoints", body: "Get rewarded for accurate predictions and activity." },
-  { n: 4, title: "Earn 30% Revenue", body: "Refer users to premium and earn 30% recurring revenue." },
+  { n: 1, title: "Sign up free", body: "Create your free account. You must be 18 or older." },
+  { n: 2, title: "Make predictions", body: "Post your picks on upcoming matches before kick-off." },
+  { n: 3, title: "Get graded", body: "Every pick is locked at kick-off and settled automatically." },
+  { n: 4, title: "Climb the weekly leaderboard", body: "Build a public record based on units, ROI and sample size." },
 ];
 
 function Landing() {
@@ -65,17 +59,15 @@ function Landing() {
       <section className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
           <span className="inline-block rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            Sports intelligence platform
+            Public tipster records
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
-            Predict smarter. Earn more.
+            Predict smarter.
             <br />
-            <span className="text-primary">Win together.</span>
+            <span className="text-primary">Prove it.</span>
           </h1>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr is an intelligent sports prediction ecosystem where you can discover fixtures, analyse data, publish
-            predictions, compare with the community, earn{" "}
-            <span className="font-semibold text-foreground">PuntPoints</span> and access intelligent prediction tools.
+            Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" className="h-12 px-6 text-[15px]" onClick={() => openEarlyAccess()}>
@@ -87,11 +79,11 @@ function Landing() {
           </div>
           <ul className="mt-9 grid gap-5 sm:grid-cols-3">
             {[
-              [Zap, "Real-time odds", "from top platforms"],
-              [ShieldCheck, "Trusted predictions", "from the community"],
-              [Gift, "Earn rewards", "for your knowledge"],
+              [Lock, "Locked at kick-off", "no edits, no deletes"],
+              [ShieldCheck, "Graded automatically", "settled after the match"],
+              [Clock, "Kept forever", "a public record"],
             ].map(([Icon, title, sub]) => {
-              const I = Icon as typeof Zap;
+              const I = Icon as typeof Lock;
               return (
                 <li key={title as string} className="flex items-center gap-3">
                   <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
@@ -107,68 +99,39 @@ function Landing() {
           </ul>
         </motion.div>
 
-        {/* Top match card */}
+        {/* Why a locked record matters */}
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.12 }}
           className="card-surface overflow-hidden"
         >
-          <div className="flex items-center justify-between px-5 py-4 sm:px-6">
-            <h2 className="text-lg">Top Match Prediction</h2>
-            <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-              <span className="size-1.5 rounded-full bg-primary" /> Live
-            </span>
+          <div className="px-5 py-4 sm:px-6">
+            <h2 className="text-lg">Why a locked record matters</h2>
           </div>
-          <div className="border-t border-border px-5 py-5 sm:px-6">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <TeamLogo team="Orlando Pirates" size="md" />
-                <span className="truncate font-semibold">Orlando Pirates</span>
-              </div>
-              <span className="text-xs font-semibold text-muted-foreground">VS</span>
-              <div className="flex min-w-0 items-center justify-end gap-3">
-                <TeamLogo team="Kaizer Chiefs" size="md" />
-                <span className="truncate font-semibold">Kaizer Chiefs</span>
-              </div>
-            </div>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
-              Sat, 10 May 2025 · 15:30 · DSTV Premiership
-            </p>
-
-            <div className="mt-5 rounded-xl border border-border p-4">
-              <p className="text-sm font-semibold">Community Prediction</p>
-              {[
-                ["Orlando Pirates", 62],
-                ["Draw", 22],
-                ["Kaizer Chiefs", 16],
-              ].map(([label, pct]) => (
-                <div key={label as string} className="mt-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>{label as string}</span>
-                    <span className="font-semibold tnum">{pct as number}%</span>
-                  </div>
-                  <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${pct as number}%` }}
-                      transition={{ duration: 0.9, delay: 0.3 }}
-                      className={`h-full rounded-full ${(pct as number) > 50 ? "bg-primary" : "bg-muted-foreground/40"}`}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-              <Users className="size-3.5 text-primary" /> 1 243 predictions · Closes in 02h 35m
-            </p>
-          </div>
+          <ul className="space-y-4 border-t border-border px-5 py-5 text-sm sm:px-6">
+            {[
+              ["Timestamped before kick-off", "A pick counts only if it was posted before the match started."],
+              ["No edits or deletes", "Wins and losses stay on the record. Nothing is hidden afterwards."],
+              ["Public units, ROI and sample size", "See how many picks sit behind a result before you trust it."],
+            ].map(([title, body]) => (
+              <li key={title} className="flex gap-3">
+                <span className="grid size-6 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">
+                  ✓
+                </span>
+                <span>
+                  <span className="block font-semibold">{title}</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{body}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </motion.div>
       </section>
 
-      <AffiliateBanner />
 
       {/* Platforms */}
+      {SHOW_BOOKMAKER_WALL && (
       <motion.section {...fade} className="py-14 text-center">
         <h2 className="text-3xl">All Top Platforms. One Place.</h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -183,6 +146,7 @@ function Landing() {
           </Link>
         </Button>
       </motion.section>
+      )}
 
       {/* How it works */}
       <motion.section {...fade} className="card-surface p-6 sm:p-8">
@@ -202,82 +166,46 @@ function Landing() {
         </div>
       </motion.section>
 
-      <div className="py-8">
-        <AffiliateBanner />
-      </div>
 
-      {/* Three-up */}
-      <motion.section {...fade} className="grid gap-5 lg:grid-cols-3">
+      {/* Leaderboard + why join */}
+      <motion.section {...fade} className="mt-8 grid gap-5 lg:grid-cols-2">
         <div className="card-surface p-5">
-          <h3 className="text-lg">PuntPoints & Leaderboard</h3>
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-lg">Weekly leaderboard</h3>
+            <span className="bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+              Example
+            </span>
+          </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-            Climb the leaderboard, earn PuntPoints and unlock exclusive rewards.
+            Sample names and numbers, shown until the first real week is settled.
           </p>
           <ul className="mt-4 space-y-2.5">
             {topTipsters.slice(0, 3).map((t) => (
               <li key={t.name} className="flex items-center gap-3">
-                <span className="grid size-6 place-items-center rounded-md bg-muted text-[11px] font-bold tnum">
-                  {t.rank}
-                </span>
+                <span className="grid size-6 place-items-center bg-muted text-[11px] font-bold tnum">{t.rank}</span>
                 <span className="size-7 rounded-full bg-muted" />
                 <span className="flex-1 truncate text-sm font-medium">{t.name}</span>
                 <span className="text-xs font-semibold text-primary tnum">{t.points.toLocaleString()} PP</span>
               </li>
             ))}
-            <li className="flex items-center gap-3 rounded-lg bg-primary-soft px-2 py-2">
-              <span className="grid size-6 place-items-center rounded-md bg-background text-[11px] font-bold tnum">
-                24
-              </span>
-              <span className="size-7 rounded-full bg-background" />
-              <span className="flex-1 text-sm font-semibold">You</span>
-              <span className="text-xs font-semibold text-primary tnum">2 340 PP</span>
-            </li>
           </ul>
           <Button variant="outline" className="mt-4 w-full" asChild>
-            <Link to="/leaderboards">View Leaderboard</Link>
-          </Button>
-        </div>
-
-        <div className="rounded-xl bg-ink p-6 text-ink-foreground shadow-lift">
-          <h3 className="text-xl">Earn 30% Ongoing Revenue</h3>
-          <p className="mt-2 text-xs leading-relaxed text-ink-foreground/75">
-            Refer users to Puntr Premium and earn 30% of their monthly subscription for as long as they remain
-            active.
-          </p>
-          <p className="mt-5 flex items-end gap-3">
-            <span className="font-display text-5xl font-extrabold text-primary tnum">30%</span>
-            <span className="pb-1 text-sm font-semibold leading-tight">
-              Recurring
-              <br />
-              commission
-            </span>
-          </p>
-          <ul className="mt-5 space-y-2 text-sm">
-            {["No limits on earnings", "Real-time tracking", "Monthly payouts"].map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <span className="text-success">✓</span> {f}
-              </li>
-            ))}
-          </ul>
-          <Button className="mt-6 w-full bg-background text-ink hover:bg-background/90" asChild>
-            <Link to="/how-it-works">Learn about Puntr revenue sharing</Link>
+            <Link to="/leaderboards">View leaderboard</Link>
           </Button>
         </div>
 
         <div className="card-surface p-5">
-          <h3 className="text-lg">Why Join Puntr?</h3>
+          <h3 className="text-lg">Why join Puntr?</h3>
           <ul className="mt-4 space-y-3.5">
             {[
-              "Access to top betting platforms",
-              "Real-time odds & insights",
+              "Picks locked at kick-off",
+              "Automatic grading",
+              "A public record you can share",
               "Community predictions & chat",
-              "Earn rewards & cash",
               "100% free to join",
             ].map((f) => (
               <li key={f} className="flex items-center gap-3 text-sm">
-                <span className="grid size-7 shrink-0 place-items-center rounded-md bg-primary-soft text-primary">
-                  ✓
-                </span>
+                <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">✓</span>
                 {f}
               </li>
             ))}
@@ -287,10 +215,6 @@ function Landing() {
           </Button>
         </div>
       </motion.section>
-
-      <div className="py-8">
-        <AffiliateBanner />
-      </div>
 
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={handleCloseVideoModal}>

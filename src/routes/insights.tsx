@@ -8,14 +8,15 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/insights" }],
     meta: [
       { title: "AI Insights | Puntr" },
       {
         name: "description",
-        content: "Advanced AI analytics, value finders, market trends and performance tracking for Puntr members.",
+        content: "Match previews and performance tracking for Puntr members. Coming after launch.",
       },
       { property: "og:title", content: "AI Insights | Puntr" },
-      { property: "og:description", content: "Advanced insights, AI analytics and value betting tools." },
+      { property: "og:description", content: "Match previews and performance tracking. Coming after launch." },
     ],
   }),
   component: Insights,
@@ -49,7 +50,7 @@ function Insights() {
           This feature is only available to <span className="text-primary">our members</span>
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-          Get full access to advanced insights, AI analytics, value betting tools and more.
+          Match previews and performance tracking are coming after launch.
         </p>
         <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3">
           <Button size="lg" className="h-12" onClick={() => openEarlyAccess()}>

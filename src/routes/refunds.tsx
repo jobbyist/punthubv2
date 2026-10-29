@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/refunds")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/refunds" }],
     meta: [
       { title: "Refund Policy — 30-Day Money Back Guarantee | Puntr" },
       {

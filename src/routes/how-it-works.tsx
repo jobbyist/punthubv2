@@ -8,6 +8,7 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/how-it-works" }],
     meta: [
       { title: "How Puntr Works | Predict. Earn. Win together." },
       {

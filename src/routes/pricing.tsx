@@ -9,6 +9,7 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/pricing" }],
     meta: [
       { title: "Pricing — Simple plans, maximum value | Puntr" },
       {

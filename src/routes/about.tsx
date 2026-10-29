@@ -24,6 +24,7 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/about" }],
     meta: [
       { title: "About Puntr | Africa's Sports Prediction & Intelligence Platform" },
       {

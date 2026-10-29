@@ -1,16 +1,16 @@
 export type Sport = {
   name: string;
-  count: number;
+  active: boolean;
 };
 
 export const sports: Sport[] = [
-  { name: "Football", count: 128 },
-  { name: "Rugby", count: 34 },
-  { name: "Basketball", count: 21 },
-  { name: "Cricket", count: 18 },
-  { name: "Tennis", count: 12 },
-  { name: "Esports", count: 9 },
-  { name: "Golf", count: 6 },
+  { name: "Soccer", active: true },
+  { name: "Rugby", active: true },
+  { name: "Basketball", active: false },
+  { name: "Tennis", active: false },
+  { name: "Cricket", active: false },
+  { name: "Combat sports", active: false },
+  { name: "Horse racing", active: false },
 ];
 
 export type Platform = {
@@ -194,31 +194,31 @@ export const sparkline = [12, 18, 14, 22, 19, 26, 24, 30, 27, 34, 31, 38];
 export const faqs = [
   {
     q: "What is Puntr?",
-    a: "Puntr aggregates odds, markets, predictions and AI insights from South Africa's leading bookmakers into one place, and rewards you with PuntPoints for accurate predictions and community participation.",
+    a: "Puntr is a place to post sports predictions that are locked at kick-off, graded automatically and kept as a public record, so you can build a track record people can trust.",
   },
   {
     q: "How do PuntPoints work?",
-    a: "You earn PuntPoints for daily logins, predictions, correct picks, community posts, streaks and referrals. Points unlock badges, ranks and real rewards like cash and free bets.",
+    a: "PuntPoints are leaderboard points for activity and settled picks. They have no cash value and cannot be exchanged for money.",
   },
   {
-    q: "How do I earn 30% recurring revenue?",
-    a: "Refer users to a Puntr Premium or Puntr AI plan and earn 30% of their monthly subscription for as long as they remain subscribed. There is no cap on earnings.",
+    q: "Can I invite friends?",
+    a: "Yes. Founding Members get a personal invite link. Invites move friends up the waitlist. There are no payments for referrals.",
   },
   {
     q: "Is Puntr free to use?",
-    a: "Yes. The Free plan gives you community access, limited predictions and basic leaderboards. Premium (R99/month) and Puntr AI (R249/month) unlock the full experience.",
+    a: "Yes. Puntr is free during the Founding 100 launch. Any paid features later will be announced first and never switched on without notice.",
   },
   {
     q: "How accurate are predictions?",
-    a: "Every tipster has a public hit rate and history, and AI confidence scores are shown alongside each pick. Nothing is guaranteed — always bet responsibly.",
+    a: "Every tipster has a public record with units, ROI and sample size. Past results do not predict future results. Bet responsibly: 0800 006 008.",
   },
   {
     q: "Can I withdraw my PuntPoints?",
-    a: "PuntPoints can be redeemed for cash rewards, bookmaker bonuses and free bets from the Rewards page once you reach the minimum threshold.",
+    a: "No. PuntPoints have no monetary value and cannot be withdrawn or exchanged for cash.",
   },
   {
-    q: "Which betting platforms are supported?",
-    a: "Betway, Bet.co.za, Sportingbet, Hollywoodbets, Supabets, Betfair, Playabets and 10bet, with more being added.",
+    q: "Does Puntr take bets?",
+    a: "No. Puntr does not accept bets, set odds or handle winnings. It is a place to record and review predictions.",
   },
 ];
 

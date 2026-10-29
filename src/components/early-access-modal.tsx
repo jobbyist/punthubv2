@@ -22,7 +22,7 @@ import { submitEarlyAccess } from "@/lib/early-access";
 import { submitEarlyAccessForm } from "@/lib/early-access.functions";
 import { analytics } from "@/lib/analytics";
 
-const SPORTS = ["Soccer", "Rugby", "Cricket", "Basketball", "Tennis", "Boxing", "Golf", "Horse racing"] as const;
+const SPORTS = ["Soccer", "Rugby", "Cricket", "Basketball", "Tennis", "Combat sports", "Horse racing"] as const;
 const BOOKMAKERS = ["Betway", "Hollywoodbets", "Supabets", "Easybet", "Sunbet", "World Sports Betting"] as const;
 const EXPERIENCE = ["New to betting", "Casual punter", "Regular punter", "Serious / data-driven"] as const;
 
