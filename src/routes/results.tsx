@@ -1,153 +1,186 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { Button } from "@/components/ui/button";
-import { resultsByDate, resultsSummary } from "@/lib/mock-data";
+import { useSession } from "@/components/session";
+import { TeamLogo } from "@/components/team-logo";
+import { useAsync } from "@/hooks/use-async";
+import { formatUnits, pct } from "@/lib/format";
+import { headT } from "@/lib/i18n/head";
+import { fetchResults, fetchTipsterStats } from "@/lib/records";
 
 export const Route = createFileRoute("/results")({
-  head: () => ({
-    links: [{ rel: "canonical", href: "https://puntr.co.za/results" }],
-    meta: [
-      { title: "Results | Puntr" },
-      {
-        name: "description",
-        content:
-          "Check past match results, see how predictions performed and track your betting accuracy.",
-      },
-      { property: "og:title", content: "Results | Puntr" },
-      {
-        property: "og:description",
-        content: "See how predictions performed and track your accuracy.",
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const t = headT(match.context.locale, "results");
+    return {
+      links: [{ rel: "canonical", href: "https://puntr.co.za/results" }],
+      meta: [
+        { title: t("meta.title") },
+        { name: "description", content: t("meta.description") },
+        { property: "og:title", content: t("meta.ogTitle") },
+        { property: "og:description", content: t("meta.ogDescription") },
+      ],
+    };
+  },
   component: Results,
 });
 
-const perf: [string, string][] = [
-  ["48", "Predictions"],
-  ["31", "Correct"],
-  ["64.6%", "Hit Rate"],
-  ["+1 280 PP", "PuntPoints Earned"],
-  ["7", "Win Streak"],
-];
+const CHIP = {
+  won: "bg-primary-soft text-primary",
+  lost: "bg-destructive/10 text-destructive",
+  void: "bg-muted text-muted-foreground",
+} as const;
 
-function Results() {
+function FormChips({ form }: { form: string }) {
   return (
-    <AppShell>
-      <PageHeading
-        title="Results"
-        subtitle="Check past results, see how predictions performed and track your accuracy."
-      />
+    <span className="inline-flex gap-1" aria-label={form}>
+      {form.split("").map((c, i) => (
+        <span
+          key={i}
+          className={`grid size-6 place-items-center text-[11px] font-bold ${
+            c === "W" ? CHIP.won : c === "L" ? CHIP.lost : CHIP.void
+          }`}
+        >
+          {c}
+        </span>
+      ))}
+    </span>
+  );
+}
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        {["All Results", "Yesterday", "Today", "This Week", "This Month"].map((f, i) => (
-          <button
-            key={f}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              i === 0 ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      <section className="card-surface mb-6 p-5">
-        <h2 className="text-lg">
-          Your Performance{" "}
-          <span className="text-sm font-normal text-muted-foreground">(8 – 11 May 2025)</span>
-        </h2>
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {perf.map(([v, l]) => (
-            <div key={l} className="text-center">
-              <p
-                className={`font-display text-2xl font-extrabold tnum ${v.startsWith("+") ? "text-primary" : ""}`}
-              >
-                {v}
-              </p>
-              <p className="text-xs text-muted-foreground">{l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="card-surface overflow-hidden">
-        <h2 className="p-5 pb-3 text-lg">Results by Date</h2>
-        {resultsByDate.map((day) => (
-          <div key={day.date}>
-            <div className="flex flex-wrap items-center gap-3 border-y border-border bg-muted/40 px-5 py-3 text-sm">
-              <span className="font-semibold">{day.date}</span>
-              <span className="flex-1" />
-              <span className="font-medium text-primary tnum">{day.correct} Correct</span>
-              <span className="font-medium text-destructive tnum">{day.incorrect} Incorrect</span>
-              <span className="font-semibold text-primary tnum">+{day.points} PP</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[680px] text-sm">
-                <thead>
-                  <tr className="text-left text-xs text-muted-foreground">
-                    <th className="px-5 py-2.5 font-medium">Match</th>
-                    <th className="px-3 py-2.5 font-medium">Your Pick</th>
-                    <th className="px-3 py-2.5 font-medium">Result</th>
-                    <th className="px-3 py-2.5 font-medium">Odds</th>
-                    <th className="px-3 py-2.5 font-medium">Outcome</th>
-                    <th className="px-5 py-2.5 font-medium">PuntPoints</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {day.matches.map((m) => (
-                    <tr key={m.match} className="border-t border-border hover:bg-muted/40">
-                      <td className="px-5 py-3">
-                        <p className="text-[11px] text-muted-foreground">{m.league}</p>
-                        <p className="font-medium">{m.match}</p>
-                      </td>
-                      <td className="px-3 py-3">{m.pick}</td>
-                      <td className="px-3 py-3 font-semibold tnum">{m.result}</td>
-                      <td className="px-3 py-3 tnum">{m.odds.toFixed(2)}</td>
-                      <td className="px-3 py-3">
-                        <span
-                          className={`rounded-md px-2 py-1 text-xs font-medium ${
-                            m.ok
-                              ? "bg-primary-soft text-primary"
-                              : "bg-destructive/10 text-destructive"
-                          }`}
-                        >
-                          {m.ok ? "Correct" : "Incorrect"}
-                        </span>
-                      </td>
-                      <td
-                        className={`px-5 py-3 font-semibold tnum ${m.ok ? "text-primary" : "text-muted-foreground"}`}
-                      >
-                        {m.ok ? "+60 PP" : "0 PP"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+function MyRecord({ userId }: { userId: string }) {
+  const { t } = useTranslation("results");
+  const { data } = useAsync(() => fetchTipsterStats(userId), [userId]);
+  if (!data) return null;
+  const items = [
+    [String(data.picks), t("mine.picks")],
+    [String(data.settled), t("mine.settled")],
+    [data.win_rate === null ? t("mine.none") : pct(data.win_rate, 0), t("mine.winRate")],
+    [formatUnits(data.units), t("mine.units")],
+  ] as const;
+  return (
+    <section className="card-surface mb-6 p-5">
+      <h2 className="text-lg">{t("mine.title")}</h2>
+      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
+        {items.map(([v, l]) => (
+          <div key={l} className="text-center">
+            <p
+              className={`font-display text-2xl font-extrabold tnum ${v.startsWith("+") ? "text-primary" : ""}`}
+            >
+              {v}
+            </p>
+            <p className="text-xs text-muted-foreground">{l}</p>
           </div>
         ))}
+        <div className="col-span-2 text-center sm:col-span-1">
+          <p className="min-h-8">
+            {data.form_last_10 ? <FormChips form={data.form_last_10} /> : t("mine.none")}
+          </p>
+          <p className="text-xs text-muted-foreground">{t("mine.form")}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        <ul>
-          {resultsSummary.map((d) => (
-            <li
-              key={d.date}
-              className="flex flex-wrap items-center gap-3 border-t border-border px-5 py-4 text-sm"
-            >
-              <span className="font-semibold">{d.date}</span>
-              <span className="flex-1" />
-              <span className="text-muted-foreground tnum">{d.matches} matches</span>
-              <span className="text-primary tnum">{d.correct} Correct</span>
-              <span className="text-destructive tnum">{d.incorrect} Incorrect</span>
-              <span className="font-semibold text-primary tnum">+{d.points} PP</span>
-              <Button variant="outline" size="sm">
-                View matches
-              </Button>
-            </li>
+function Results() {
+  const { t } = useTranslation("results");
+  const { profile } = useSession();
+  const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
+
+  return (
+    <AppShell>
+      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+
+      {profile && <MyRecord userId={profile.id} />}
+
+      {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
+      {!failed && !loading && (days ?? []).length === 0 && (
+        <div className="card-surface p-6">
+          <h2 className="text-lg">{t("empty.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>
+        </div>
+      )}
+
+      {(days ?? []).length > 0 && (
+        <section className="card-surface overflow-hidden">
+          <h2 className="p-5 pb-3 text-lg">{t("byDate")}</h2>
+          {(days ?? []).map((day) => (
+            <div key={day.label}>
+              <div className="flex flex-wrap items-center gap-3 border-y border-border bg-muted/40 px-5 py-3 text-sm">
+                <span className="font-semibold">{day.label}</span>
+                <span className="flex-1" />
+                <span className="text-muted-foreground tnum">
+                  {t("day.matches", { count: day.fixtures.length })} ·{" "}
+                  {t("day.picks", { count: day.picks })}
+                </span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[640px] text-sm">
+                  <thead>
+                    <tr className="text-left text-xs text-muted-foreground">
+                      <th className="px-5 py-2.5 font-medium">{t("col.match")}</th>
+                      <th className="px-3 py-2.5 font-medium">{t("col.score")}</th>
+                      <th className="px-3 py-2.5 font-medium">{t("col.crowd")}</th>
+                      <th className="px-5 py-2.5 font-medium">{t("col.leaders")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {day.fixtures.map((r) => (
+                      <tr key={r.fixture.id} className="border-t border-border hover:bg-muted/40">
+                        <td className="px-5 py-3">
+                          <p className="text-[11px] text-muted-foreground">
+                            {r.fixture.competition}
+                          </p>
+                          <Link
+                            to="/match/$fixtureId"
+                            params={{ fixtureId: r.fixture.id }}
+                            className="inline-flex flex-wrap items-center gap-x-2 font-medium hover:underline"
+                          >
+                            <TeamLogo team={r.fixture.home} size="sm" /> {r.fixture.home}
+                            <span className="text-xs font-normal text-muted-foreground">v</span>
+                            <TeamLogo team={r.fixture.away} size="sm" /> {r.fixture.away}
+                          </Link>
+                        </td>
+                        <td className="px-3 py-3 font-semibold tnum">
+                          {r.fixture.home_score} – {r.fixture.away_score}
+                        </td>
+                        <td className="px-3 py-3 text-xs">
+                          {r.crowdWinRate === null
+                            ? r.picks > 0
+                              ? t("crowd.picks", { count: r.picks })
+                              : t("crowd.none")
+                            : t("crowd.won", { percent: pct(r.crowdWinRate, 0), count: r.settled })}
+                        </td>
+                        <td className="px-5 py-3">
+                          {r.leaders.length === 0 ? (
+                            <span className="text-xs text-muted-foreground">
+                              {t("leader.none")}
+                            </span>
+                          ) : (
+                            <ul className="space-y-1">
+                              {r.leaders.map((l) => (
+                                <li key={l.id} className="flex items-center gap-2 text-xs">
+                                  <span className="font-medium">{l.username}</span>
+                                  <span
+                                    className={`px-1.5 py-0.5 font-semibold ${CHIP[l.result ?? "void"]}`}
+                                  >
+                                    {t(`leader.${l.result ?? "pending"}`)}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           ))}
-        </ul>
-      </section>
+        </section>
+      )}
     </AppShell>
   );
 }

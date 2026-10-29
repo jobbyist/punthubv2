@@ -62,7 +62,11 @@
     "community": "Community",
     "calendar": "Events calendar",
     "sports": "Sports",
-    "topTipsters": "Top tipsters"
+    "topTipsters": "Top tipsters",
+    "noLeaders": "No settled picks this week yet",
+    "noLive": "No matches in play",
+    "inPlay": "In play",
+    "units": "{{units}} units"
   },
   "footer": {
     "platform": "Platform",

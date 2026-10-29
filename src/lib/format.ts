@@ -90,3 +90,11 @@ export function formatPhone(input: string): string {
   if (national.length !== 9) return input;
   return `+27 ${national.slice(0, 2)} ${national.slice(2, 5)} ${national.slice(5)}`;
 }
+
+/** Units with a sign and two places: +1.10, -2.00, 0.00. Same in every language. */
+export function formatUnits(value: number): string {
+  if (!Number.isFinite(value)) return "";
+  const fixed = Math.abs(value).toFixed(2);
+  if (Number(fixed) === 0) return "0.00";
+  return `${value > 0 ? "+" : "-"}${fixed}`;
+}

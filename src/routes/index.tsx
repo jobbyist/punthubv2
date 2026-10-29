@@ -7,14 +7,15 @@ import { Em } from "@/components/em";
 import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
-import { topTipsters } from "@/lib/mock-data";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
-import { formatDate, formatTime } from "@/lib/format";
+import { fetchThisWeeksLeaders } from "@/lib/records";
+import { formatDate, formatTime, formatUnits } from "@/lib/format";
+import { useAsync } from "@/hooks/use-async";
 import { TeamLogo } from "@/components/team-logo";
 
 export const Route = createFileRoute("/")({
@@ -57,6 +58,8 @@ function Landing() {
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
+  const { data: leadersData } = useAsync(() => fetchThisWeeksLeaders(3), []);
+  const leaders = leadersData ?? [];
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const handleCloseVideoModal = () => {
@@ -223,29 +226,31 @@ function Landing() {
       {/* Leaderboard + why join */}
       <motion.section {...fade} className="mt-8 grid gap-5 lg:grid-cols-2">
         <div className="card-surface p-5">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-lg">{t("board.title")}</h3>
-            <span className="bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-              {tc("badge.example")}
-            </span>
-          </div>
-          <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-            {t("board.sample")}
-          </p>
-          <ul className="mt-4 space-y-2.5">
-            {topTipsters.slice(0, 3).map((tp) => (
-              <li key={tp.name} className="flex items-center gap-3">
-                <span className="grid size-6 place-items-center bg-muted text-[11px] font-bold tnum">
-                  {tp.rank}
-                </span>
-                <span className="size-7 rounded-full bg-muted" />
-                <span className="flex-1 truncate text-sm font-medium">{tp.name}</span>
-                <span className="text-xs font-semibold text-primary tnum">
-                  {t("board.points", { value: tp.points.toLocaleString() })}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <h3 className="text-lg">{t("board.title")}</h3>
+          {leaders.length === 0 ? (
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("board.empty")}</p>
+          ) : (
+            <ul className="mt-4 space-y-2.5">
+              {leaders.map((tp, i) => (
+                <li key={tp.user_id} className="flex items-center gap-3">
+                  <span className="grid size-6 place-items-center bg-muted text-[11px] font-bold tnum">
+                    {i + 1}
+                  </span>
+                  <span className="size-7 rounded-full bg-muted" />
+                  <Link
+                    to="/u/$username"
+                    params={{ username: tp.username }}
+                    className="flex-1 truncate text-sm font-medium hover:underline"
+                  >
+                    {tp.username}
+                  </Link>
+                  <span className="text-xs font-semibold text-primary tnum">
+                    {t("board.units", { units: formatUnits(tp.units) })}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
           <Button variant="outline" className="mt-4 w-full" asChild>
             <Link to="/leaderboards">{t("board.view")}</Link>
           </Button>
