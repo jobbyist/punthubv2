@@ -23,26 +23,55 @@ export const Route = createFileRoute("/privacy")({
 
 const PURPOSES: [string, string, string, string][] = [
   [
-    "Waitlist and founding membership",
-    "Name, email, optional phone, chosen plan",
+    "Early-access list",
+    "Name, email, optional phone, chosen plan, whether you opted in to marketing, and a held Founding spot",
     "Your request (consent)",
-    "Until launch emails are done, then until you ask us to delete it [attorney review]",
+    "Until you sign up, unsubscribe or ask us to delete it [attorney review]",
+  ],
+  [
+    "Launch messages",
+    "Email address, and phone number if you gave one and opted in",
+    "Your request; marketing consent for reminders",
+    "Until you unsubscribe or ask us to delete it",
   ],
   [
     "Running your account",
-    "Username, display name, 18+ confirmation, birth year if given",
+    "Email (from your email or Google sign-in), a one-way hash of your password if you set one, username, display name, 18+ confirmation, birth year, language, Founding number, referral code",
     "Contract (providing Puntr to you)",
-    "While your account is open; anonymised when you delete it",
+    "While your account is open; email and profile details are removed when you delete it",
+  ],
+  [
+    "Keeping accounts secure",
+    "Whether your email is confirmed, authenticator-app two-factor details, sign-in sessions",
+    "Contract and our interest in keeping accounts safe",
+    "While your account is open",
   ],
   [
     "Public pick record",
-    "Your picks, odds, results, a hash of each pick",
+    "Your picks, odds, results, a hash of each pick, and any correction made to a result with the reason",
     "Legitimate interest: a verifiable, permanent track record",
     "Kept permanently, linked only to an anonymous id after deletion",
   ],
+  [
+    "Reports and moderation",
+    "Reports you file (your id, the pick, your reason) and actions we take, such as hiding a pick or suspending an account",
+    "Legitimate interest: fairness and safety",
+    "While your account is open [attorney review]",
+  ],
+  [
+    "Invites",
+    "A referral code that links a new member to the member who invited them, and whether the new member has posted a first pick",
+    "Your request (using an invite link)",
+    "While your account is open",
+  ],
   ["Analytics", "Page views and button use", "Your consent", "Up to 14 months [attorney review]"],
   ["Affiliate tracking", "Which ad you clicked", "Your consent", "Up to 90 days [attorney review]"],
-  ["Marketing email", "Email address", "Your consent, off by default", "Until you withdraw"],
+  [
+    "Marketing email, WhatsApp and SMS",
+    "Email address and, for WhatsApp or SMS, phone number",
+    "Your consent, off by default",
+    "Until you withdraw",
+  ],
   [
     "Privacy requests",
     "Email, what you asked for",
@@ -60,7 +89,8 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 29 October 2026. Draft pending attorney review.
+          <strong>Last updated:</strong> 29 October 2026 (version 2026-10-29-r2). Draft pending
+          attorney review.
         </p>
 
         <section>
@@ -104,37 +134,76 @@ function Privacy() {
           <p className="mt-3">
             We do not collect your ID document, a selfie or biometrics. We do not store your IP
             address or device details with your sign-up. Puntr does not take payments at launch, so
-            we hold no card or bank details.
+            we hold no card or bank details. We never see your password: our sign-in provider keeps
+            only a one-way hash of it.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-2 text-xl font-semibold text-foreground">3. How you sign in</h2>
+          <p>
+            You can sign up and sign in with an email and password, with an emailed code or link, or
+            with Google. If you choose Google, Google tells us your email address and that it is
+            verified; we do not receive your Google password, and Google&apos;s own privacy policy
+            applies to what it does. You can also sign in with your username and password: we look
+            up your email on our server to complete the sign-in and never show it to anyone. You can
+            confirm your email and turn on two-factor sign-in with an authenticator app on your
+            account page. Once two-factor is on, posting and changing your profile need the code
+            from your app.
+          </p>
+        </section>
+
+        <section id="marketing">
+          <h2 className="mb-2 text-xl font-semibold text-foreground">
+            4. Early access, launch messages and marketing
+          </h2>
+          <p>
+            If you asked for early access, we hold your name, email, optional phone number and
+            whether you ticked marketing. We send a short series of emails when Puntr launches: one
+            on launch day and, if you have not yet signed up, up to two reminders. Every email has
+            an unsubscribe link. The reminders go only to people who ticked marketing. If you opted
+            in and gave a phone number, a person at Puntr may also send you a one-off launch message
+            on WhatsApp or SMS from our own accounts. Marketing is never a condition of joining and
+            is off unless you tick it. You can change your choice at any time on{" "}
+            <Link to="/account/privacy" className="underline">
+              your privacy page
+            </Link>{" "}
+            or by using the unsubscribe link.
           </p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">
-            3. Your picks are a public, permanent record
+            5. Your picks are a public, permanent record
           </h2>
           <p>
             Picks are published with your username so anyone can check a track record, and each pick
             is chained to the one before it so it cannot be quietly changed. Because of that, picks
-            cannot be deleted. When you delete your account we remove your name, email and profile
-            details and your picks stay under an anonymous id. Do not put personal information in a
-            pick&apos;s reasoning.
+            cannot be deleted or edited. Results are filled in automatically from sports data. If we
+            have to correct a result, the correction is added as a new entry with a reason and the
+            earlier entry stays on the record. When you delete your account we remove your name,
+            email and profile details and your picks stay under an anonymous id. Do not put personal
+            information in a pick&apos;s reasoning.
           </p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">
-            4. Who processes data for us
+            6. Who processes data for us
           </h2>
           <p>
-            Supabase (database and sign-in, hosted in Ireland, EU), Vercel (website hosting) and an
-            email provider for service emails. Sending data outside South Africa is allowed under
-            POPIA section 72 where the receiving country or contract gives comparable protection. We
-            never send personal data to AI services. We do not sell your data.
+            Supabase (database, sign-in and live notifications to our admins, hosted in Ireland,
+            EU), Vercel (website hosting), Resend (sending email, through an email gateway) and
+            Google (only if you choose Google to sign in). We also get match fixtures and results
+            from a sports-data provider; no personal information is sent to it. Sending data outside
+            South Africa is allowed under POPIA section 72 where the receiving country or contract
+            gives comparable protection. We never send personal data to AI services. We do not sell
+            your data.
           </p>
         </section>
 
         <section>
-          <h2 className="mb-2 text-xl font-semibold text-foreground">5. Children</h2>
+          <h2 className="mb-2 text-xl font-semibold text-foreground">7. Children</h2>
           <p>
             Puntr is for people aged 18 and over. If we learn someone under 18 has an account we
             will remove it.
@@ -142,7 +211,7 @@ function Privacy() {
         </section>
 
         <section>
-          <h2 className="mb-2 text-xl font-semibold text-foreground">6. Your rights</h2>
+          <h2 className="mb-2 text-xl font-semibold text-foreground">8. Your rights</h2>
           <p>
             You can ask to see your data, correct it, delete it, object to its use, or withdraw
             consent at any time. Use{" "}
@@ -163,7 +232,7 @@ function Privacy() {
         </section>
 
         <section>
-          <h2 className="mb-2 text-xl font-semibold text-foreground">7. If something goes wrong</h2>
+          <h2 className="mb-2 text-xl font-semibold text-foreground">9. If something goes wrong</h2>
           <p>
             If your personal information is compromised we will tell the Information Regulator and
             the people affected as soon as reasonably possible.
@@ -172,10 +241,10 @@ function Privacy() {
 
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">
-            8. Cookies and affiliate links
+            10. Cookies, browser storage and affiliate links
           </h2>
           <p>
-            Only an essential cookie is used until you agree to more. See{" "}
+            Only what is needed to run Puntr is used until you agree to more. See{" "}
             <Link to="/cookies" className="underline">
               Privacy choices
             </Link>{" "}
