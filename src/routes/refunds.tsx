@@ -10,7 +10,7 @@ export const Route = createFileRoute("/refunds")({
       {
         name: "description",
         content:
-          "Puntr has no paid products at launch. Refund terms for credits will be published before credits go on sale.",
+          "Puntr has no paid products at launch. Refund and cancellation terms for Pay-As-You-Go credits and Puntr Pro will be published before either goes on sale.",
       },
       { property: "og:title", content: "Refunds | Puntr" },
       {
@@ -39,10 +39,11 @@ function Refunds() {
         </section>
 
         <section className="card-surface p-6">
-          <h2 className="text-xl">Credits come later</h2>
+          <h2 className="text-xl">Pay-As-You-Go and Puntr Pro come later</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            If we put credits on sale, we will publish the refund terms first and show them before
-            you pay. Nothing on this page applies to credits until then.
+            If we put Pay-As-You-Go credits or the Puntr Pro subscription on sale, we will publish
+            the refund and cancellation terms first and show them before you pay. Nothing on this
+            page applies to either until then. [attorney review]
           </p>
         </section>
 

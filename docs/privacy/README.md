@@ -11,13 +11,17 @@ Drafts for attorney review. Open TODOs:
 - App-level tests (no test runner installed yet).
 
 ## Processors
+
 Supabase (EU, eu-west-1), Vercel, email provider (TBD). Cross-border: POPIA s72.
 
 ## Data map
+
 early_access (waitlist), profiles, predictions (public, permanent, pseudonymous after deletion), settlement_events, consent_records, privacy_requests, breach_register.
 
 ## Breach runbook
+
 1. Contain. 2. Record in `breach_register`. 3. Tell the Information Regulator and affected people as soon as reasonably possible (internal target 72 hours). 4. Review.
 
 ## Affiliate data rules
+
 No personal information in partner links. Tracking only with consent. No ads for non-18+ or users on a break.

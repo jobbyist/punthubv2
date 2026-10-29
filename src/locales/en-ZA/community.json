@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Community | Puntr",
-    "description": "Connect with fellow South African sports fans, share your picks and discuss the games.",
+    "description": "Share your picks, talk through the games and learn from fellow South African sports fans on a Community-First Platform.",
     "ogDescription": "Share picks, discuss matches and learn from each other."
   },
   "ld": {
@@ -9,7 +9,7 @@
     "description": "Community feed where South African sports fans share picks and discussions."
   },
   "title": "Community",
-  "subtitle": "Connect with fellow fans, share insights and learn from each other.",
+  "subtitle": "Share your reasoning, talk through the games and learn from fellow fans.",
   "composer": {
     "prompt": "What's on your mind?",
     "locked": "Create a free account to post in the community.",
