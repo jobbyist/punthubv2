@@ -2,7 +2,7 @@
 
 As of the evening of Thu 29 Oct 2026. Written so a new Claude account can carry on without the old conversation.
 Blueprint (prompts P0 to P18, status, schedule, decisions): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2 (version 1.2, updated 29 Oct 2026)
-MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13, P14 and PuntPoints (P19) are not started.
+MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13, P14, PuntPoints (P19) and the referral and rewards programme (P20) are not started.
 Repo `jobbyist/punthubv2` (site puntr.co.za). Soft launch Sun 1 Nov, production Mon 2 Nov 2026, goal 100 Founding Members in 30 days.
 
 ## Start here
@@ -86,6 +86,15 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 - Tests: awards are idempotent and capped; unconfirmed emails earn nothing; points never change leaderboard ranking; a SQL test in `supabase/tests`.
 
 
+**Referral programme and PuntPoints rewards (blueprint prompt P20), owner request 29 Oct.** A high-value referral incentive coupled with PuntPoints, which work like a loyalty scheme: points are redeemed for betting vouchers, sponsored rewards and other perks. **No cash prizes.** Build it together with or right after P19. Do not build before the owner settles decisions D19 to D22 in the blueprint (reward values, who funds them, what is live at launch, referral size).
+
+- Qualifying referral (proposal): the invited person signs up through the link, is 18+ attested, confirms their email and posts a first pick (posting already needs a confirmed email). Rewards vest after 7 days and are clawed back if the account is banned or deleted within 30 days. Both sides earn points; the referrer also earns milestone rewards (for example 3, 10 and 25 qualified referrals: a Founding Ambassador badge, then a sponsor-funded perk, then a larger sponsor-funded voucher). The owner sets the numbers.
+- Rewards catalogue and redemptions: `rewards` (kind `perk`, `sponsored`, `retail_voucher`, `betting_voucher`; points cost; stock; sponsor; active) and `redemptions` (requested, approved, fulfilled, cancelled; points spent as a negative ledger row, never an edit). Voucher codes are held securely (RLS: only the member and admins) and fulfilled by an admin at first. High-value rewards need manual approval. Redeeming is atomic, so stock and points cannot go wrong.
+- Flags: `REWARDS_ENABLED` and a separate `BETTING_VOUCHERS_ENABLED`, off until counsel signs off and a licensed partner (Supabets or Playbet) has agreed to fund them. Perks, sponsored rewards and retail vouchers (for example Mr Price Sport) can go live earlier. Rewards are funded by sponsors, not by Puntr, unless the owner decides otherwise.
+- Betting vouchers are a gambling promotion: show them only to members who are 18+ attested, email-confirmed, not on a break and not banned, labelled "Ad" with 18+, "T&Cs apply" and 0800 006 008, and never with profit or "free bet" style claims. No personal information goes to a partner; use bulk codes the partner supplies.
+- Abuse controls: caps on referral rewards per member per month, a review queue in `/admin` for suspicious patterns (many sign-ups in minutes, similar email patterns), and no device or IP tracking (privacy). Multiple accounts are already prohibited in the Terms.
+- Legal in the same PR (standing rule): Terms (the rewards scheme, eligibility, no cash value, fraud revocation, changes with notice) and section 7 Invites, Privacy (redemptions and voucher codes, what a partner sees), Affiliate disclosure, notice version bump, `docs/legal-changelog.md`. Questions for counsel, marked `[attorney review]`: whether any part is a promotional competition under CPA s36, whether betting vouchers as incentives breach the National Gambling Board's advertising rules on inducements, and tax treatment.
+
 **PayFast credits and recurring billing, planned Fri 30 Oct 2026 at 12:00 SAST.** The owner decided to add Pay-As-You-Go credits and recurring billing (Puntr Pro, indicatively R99/month) with their PayFast merchant account before launch. A scheduled message was set in the previous account's session; in a new account start it by hand with this brief:
 
 - Env vars (owner sets them in Vercel; never ask for credentials in chat): `PAYFAST_MERCHANT_ID`, `PAYFAST_MERCHANT_KEY`, `PAYFAST_PASSPHRASE`, a sandbox flag. Sandbox first; the owner approves live mode.
@@ -98,6 +107,7 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 ## Decisions the owner has made
 
 - PuntPoints must be configured before launch. The earning rules are still to be decided (D18).
+- A referral programme with a high-value incentive, coupled with PuntPoints as a loyalty scheme redeemable for betting vouchers, sponsored rewards and perks. No cash prizes. Values, funding and what is live at launch are still to be decided (D19 to D22).
 
 - Sign-in: email + password without a confirmation step, with email confirmation and two-factor encouraged afterwards; code or link, username + password and Google also offered; X/Twitter not enabled.
 - Posting a pick (which puts it on the feed and the leaderboard) needs a confirmed email. Identity verification (KYC) is not built and not decided: the privacy notice says no ID document, selfie or biometrics are collected, so KYC needs a provider, a privacy-notice change and attorney review first.
