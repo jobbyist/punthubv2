@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "title": "Leaderboard | Puntr",
+    "description": "The weekly Puntr leaderboard, ranked on units, then ROI. Every pick is locked at kick-off and graded automatically. Play for pride.",
+    "ogTitle": "Weekly leaderboard | Puntr",
+    "ogDescription": "Ranked on units, then ROI. Play for pride."
+  },
+  "title": "Leaderboard",
+  "subtitle": "Ranked on units, then ROI, from picks locked at kick-off and graded automatically.",
+  "pride": "Play for pride - prizes start once contest rules are published.",
+  "week": {
+    "this": "This week",
+    "last": "Last week",
+    "range": "{{from}} to {{to}}"
+  },
+  "you": {
+    "title": "Your week",
+    "rank": "Your rank",
+    "units": "Units",
+    "roi": "ROI",
+    "settled": "Settled picks",
+    "unranked": "Not ranked yet",
+    "needs": "Needs {{count}} more settled picks at odds of 1.50 or more",
+    "signIn": "Join free to see where you rank.",
+    "signInCta": "Join free"
+  },
+  "table": {
+    "rank": "Rank",
+    "tipster": "Tipster",
+    "units": "Units",
+    "roi": "ROI",
+    "settled": "Settled",
+    "wins": "Wins",
+    "status": "Status",
+    "ranked": "Ranked",
+    "needs": "Needs {{count}} more",
+    "unranked": "Not yet ranked"
+  },
+  "empty": "No picks have been settled this week yet. The leaderboard fills as results come in.",
+  "error": "We couldn't load the leaderboard. Please refresh the page.",
+  "unrankedTitle": "Not yet ranked",
+  "unrankedNote": "A tipster is ranked once they have {{count}} settled picks at odds of 1.50 or more in the week.",
+  "how": {
+    "title": "How the leaderboard works",
+    "subtitle": "Climb on a record that cannot be edited.",
+    "s1": {
+      "title": "Make predictions",
+      "body": "Post your picks on upcoming matches before kick-off."
+    },
+    "s2": {
+      "title": "Get graded",
+      "body": "Every pick is locked at kick-off and settled automatically."
+    },
+    "s3": {
+      "title": "Climb the ranks",
+      "body": "Units first, then ROI. Weeks run Monday to Sunday, South African time."
+    },
+    "s4": {
+      "title": "Build your record",
+      "body": "Units, ROI and sample size stay public and permanent."
+    }
+  },
+  "rules": "Only settled (won or lost) picks at odds of 1.50 or more count towards the weekly ranking. Void picks add nothing."
+}

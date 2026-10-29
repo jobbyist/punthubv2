@@ -33,6 +33,7 @@ import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
 
@@ -156,6 +157,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
+  id: '/api/cron/settle',
+  path: '/api/cron/settle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronSyncFixturesRoute = ApiCronSyncFixturesRouteImport.update({
   id: '/api/cron/sync-fixtures',
   path: '/api/cron/sync-fixtures',
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/privacy_/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/privacy/request'
     | '/u/$username'
     | '/account/'
+    | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
   fileRoutesByTo: FileRoutesByTo
@@ -307,6 +317,7 @@ export interface FileRouteTypes {
     | '/privacy/request'
     | '/u/$username'
     | '/account'
+    | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
   id:
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/privacy_/request'
     | '/u/$username'
     | '/account/'
+    | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
   fileRoutesById: FileRoutesById
@@ -364,6 +376,7 @@ export interface RootRouteChildren {
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
 }
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/settle': {
+      id: '/api/cron/settle'
+      path: '/api/cron/settle'
+      fullPath: '/api/cron/settle'
+      preLoaderRoute: typeof ApiCronSettleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/sync-fixtures': {
       id: '/api/cron/sync-fixtures'
       path: '/api/cron/sync-fixtures'
@@ -580,6 +600,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRequestRoute: PrivacyRequestRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
+  ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
 }

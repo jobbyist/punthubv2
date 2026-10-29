@@ -820,6 +820,7 @@ export type Database = {
       }
     }
     Functions: {
+      apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
       anonymise_account: {
         Args: { p_email: string; p_user: string }
         Returns: undefined
@@ -869,6 +870,20 @@ export type Database = {
       }
       export_my_data: { Args: never; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
+      pending_settlements: {
+        Args: never
+        Returns: {
+          away_score: number
+          line: number
+          market: string
+          odds: number
+          prediction_id: string
+          selection: string
+          sport: string
+          status: string
+          home_score: number
+        }[]
+      }
       record_consent: {
         Args: {
           p_granted: boolean

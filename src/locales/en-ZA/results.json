@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Results | Puntr",
+    "description": "Final scores with how the Puntr crowd and this week's top tipsters did. Every pick is graded automatically.",
+    "ogTitle": "Results | Puntr",
+    "ogDescription": "Final scores, and how the crowd and the top tipsters did."
+  },
+  "title": "Results",
+  "subtitle": "Final scores, and how the Puntr crowd and this week's top tipsters did.",
+  "mine": {
+    "title": "Your record",
+    "picks": "Picks",
+    "settled": "Settled",
+    "winRate": "Win rate",
+    "units": "Units",
+    "form": "Last 10",
+    "none": "-"
+  },
+  "byDate": "Results by date",
+  "day": {
+    "matches_one": "{{count}} match",
+    "matches_other": "{{count}} matches",
+    "picks_one": "{{count}} pick",
+    "picks_other": "{{count}} picks"
+  },
+  "col": {
+    "match": "Match",
+    "score": "Score",
+    "crowd": "The crowd",
+    "leaders": "Top tipsters this week"
+  },
+  "crowd": {
+    "won": "{{percent}} won ({{count}} settled)",
+    "none": "No settled picks",
+    "picks": "{{count}} picks"
+  },
+  "leader": {
+    "won": "Won",
+    "lost": "Lost",
+    "void": "Void",
+    "pending": "Pending",
+    "none": "No pick"
+  },
+  "empty": {
+    "title": "No results yet",
+    "body": "Finished matches appear here, usually within a few hours of full time."
+  },
+  "error": "We couldn't load results. Please refresh the page."
+}

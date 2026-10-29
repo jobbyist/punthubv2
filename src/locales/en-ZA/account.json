@@ -68,8 +68,24 @@
     "founding": "Founding Member #{{number}}",
     "member": "Member",
     "joined": "Joined {{date}}",
-    "soon": "Your picks and record will appear here once picks open.",
     "note": "Every pick stays on the record - none can be edited or removed.",
-    "notFound": "We couldn't find that member."
+    "notFound": "We couldn't find that member.",
+    "stats": {
+      "picks": "Picks",
+      "settled": "Settled",
+      "winRate": "Win rate",
+      "units": "Units",
+      "roi": "ROI",
+      "sample": "Sample size",
+      "form": "Last 10",
+      "formNone": "No settled picks yet",
+      "sampleNote": "{{count}} settled picks. A small sample says little.",
+      "noRoi": "-"
+    },
+    "history": "Pick history",
+    "empty": "No picks yet.",
+    "loadMore": "Load more",
+    "error": "We couldn't load this record. Please refresh the page.",
+    "legend": "W won · L lost · V void"
   }
 }

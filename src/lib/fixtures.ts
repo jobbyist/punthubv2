@@ -53,3 +53,15 @@ export async function fetchUpcomingFixtures(opts: {
   if (error) throw error;
   return (data ?? []) as UpcomingFixture[];
 }
+
+/** Matches in play right now, for the side rail. */
+export async function fetchLiveFixtures(limit = 3): Promise<UpcomingFixture[]> {
+  const { data, error } = await supabase
+    .from("fixtures")
+    .select("id, sport, competition, home, away, kickoff_at, status")
+    .eq("status", "live")
+    .order("kickoff_at", { ascending: true })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as UpcomingFixture[];
+}

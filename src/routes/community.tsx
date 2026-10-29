@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { CalendarDays, Target } from "lucide-react";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { Locked } from "@/components/locked";
 import { PickCard } from "@/components/pick-card";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
@@ -169,13 +168,7 @@ function Community() {
         ))}
       </div>
 
-      {isSignedIn ? (
-        <Feed sort={sort} />
-      ) : (
-        <Locked label={t("gate")} intensity="lg">
-          <Feed sort={sort} />
-        </Locked>
-      )}
+      <Feed sort={sort} />
     </AppShell>
   );
 }

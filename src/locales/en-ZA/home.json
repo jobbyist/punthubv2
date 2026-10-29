@@ -61,9 +61,9 @@
   },
   "board": {
     "title": "Weekly leaderboard",
-    "sample": "Example names and numbers, shown until the first real week is settled.",
+    "empty": "No picks have been settled this week yet. Post a pick and be first on the board.",
     "view": "View leaderboard",
-    "points": "{{value}} PP"
+    "units": "{{units}} units"
   },
   "join": {
     "title": "Why join Puntr?",

@@ -5,7 +5,11 @@ import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
 import { Button } from "@/components/ui/button";
-import { liveNow, sports, topTipsters } from "@/lib/mock-data";
+import { sports } from "@/lib/mock-data";
+import { useAsync } from "@/hooks/use-async";
+import { formatUnits } from "@/lib/format";
+import { fetchLiveFixtures } from "@/lib/fixtures";
+import { fetchThisWeeksLeaders } from "@/lib/records";
 
 const sideNav = [
   { key: "predictions", to: "/predictions", icon: Target },
@@ -76,70 +80,81 @@ function LeftRail() {
 export function RightRail() {
   const { t } = useTranslation("nav");
   const { t: tc } = useTranslation("common");
-  const { t: th } = useTranslation("home");
+  const { data: leaders } = useAsync(() => fetchThisWeeksLeaders(5), []);
+  const { data: live } = useAsync(() => fetchLiveFixtures(), []);
   return (
     <aside className="hidden w-[280px] shrink-0 space-y-5 py-6 xl:block">
       <div className="card-surface p-4">
         <div className="flex items-center justify-between">
-          <h4 className="flex items-center gap-2 text-sm">
-            {t("side.topTipsters")}
-            <span className="bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-              {tc("badge.example")}
-            </span>
-          </h4>
+          <h4 className="flex items-center gap-2 text-sm">{t("side.topTipsters")}</h4>
           <Link to="/leaderboards" className="text-xs font-medium text-primary">
             {tc("action.viewLeaderboard")}
           </Link>
         </div>
-        <ul className="mt-3 space-y-3">
-          {topTipsters.slice(0, 5).map((tp) => (
-            <li key={tp.name} className="flex items-center gap-3">
-              <span
-                className={`grid size-6 shrink-0 place-items-center rounded-md text-[11px] font-bold tnum ${
-                  tp.rank === 1
-                    ? "bg-[oklch(0.85_0.16_90)] text-ink"
-                    : tp.rank === 2
-                      ? "bg-muted text-foreground"
-                      : tp.rank === 3
-                        ? "bg-[oklch(0.85_0.08_50)] text-ink"
-                        : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {tp.rank}
-              </span>
-              <span className="size-7 shrink-0 rounded-full bg-muted" />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">{tp.name}</span>
-              <span className="text-xs font-semibold text-primary tnum">
-                {th("board.points", { value: tp.points.toLocaleString() })}
-              </span>
-            </li>
-          ))}
-        </ul>
+        {(leaders ?? []).length === 0 ? (
+          <p className="mt-3 text-xs text-muted-foreground">{t("side.noLeaders")}</p>
+        ) : (
+          <ul className="mt-3 space-y-3">
+            {(leaders ?? []).map((tp, i) => (
+              <li key={tp.user_id} className="flex items-center gap-3">
+                <span
+                  className={`grid size-6 shrink-0 place-items-center rounded-md text-[11px] font-bold tnum ${
+                    i === 0
+                      ? "bg-[oklch(0.85_0.16_90)] text-ink"
+                      : i === 1
+                        ? "bg-muted text-foreground"
+                        : i === 2
+                          ? "bg-[oklch(0.85_0.08_50)] text-ink"
+                          : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <Link
+                  to="/u/$username"
+                  params={{ username: tp.username }}
+                  className="min-w-0 flex-1 truncate text-sm font-medium hover:underline"
+                >
+                  {tp.username}
+                </Link>
+                <span className="text-xs font-semibold text-primary tnum">
+                  {t("side.units", { units: formatUnits(tp.units) })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="card-surface p-4">
         <div className="flex items-center justify-between">
           <h4 className="text-sm">{t("side.liveNow")}</h4>
-          <span className="bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-            {tc("badge.example")}
-          </span>
         </div>
-        <ul className="mt-3 space-y-3">
-          {liveNow.map((e) => (
-            <li key={e.home} className="flex items-center gap-3">
-              <span className="size-7 shrink-0 rounded-full bg-muted" />
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-muted-foreground">{e.league}</p>
-                <p className="truncate text-sm">{e.home}</p>
-                <p className="truncate text-sm">{e.away}</p>
-              </div>
-              <div className="text-right text-sm font-semibold tnum">
-                <p>{e.hs}</p>
-                <p>{e.as}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {(live ?? []).length === 0 ? (
+          <p className="mt-3 text-xs text-muted-foreground">{t("side.noLive")}</p>
+        ) : (
+          <ul className="mt-3 space-y-3">
+            {(live ?? []).map((e) => (
+              <li key={e.id}>
+                <Link
+                  to="/match/$fixtureId"
+                  params={{ fixtureId: e.id }}
+                  className="flex items-center gap-3"
+                >
+                  <span className="size-7 shrink-0 rounded-full bg-muted" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] text-muted-foreground">{e.competition}</p>
+                    <p className="truncate text-sm">{e.home}</p>
+                    <p className="truncate text-sm">{e.away}</p>
+                  </div>
+                  <span className="bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase text-muted-foreground">
+                    {t("side.inPlay")}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
         <Button variant="outline" size="sm" className="mt-4 w-full" asChild>
           <Link to="/results">{tc("action.viewResults")}</Link>
         </Button>

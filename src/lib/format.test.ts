@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDate, formatDateTime, formatPhone, formatTime, money, odds, pct } from "./format";
+import {
+  formatDate,
+  formatDateTime,
+  formatPhone,
+  formatTime,
+  formatUnits,
+  money,
+  odds,
+  pct,
+} from "./format";
 
 const NBSP = " ";
 
@@ -60,4 +69,13 @@ describe("formatPhone", () => {
     expect(formatPhone("+27821234567")).toBe("+27 82 123 4567");
   });
   it("leaves unrecognised input alone", () => expect(formatPhone("12345")).toBe("12345"));
+});
+
+describe("formatUnits", () => {
+  it("signs and fixes to two places", () => {
+    expect(formatUnits(1.1)).toBe("+1.10");
+    expect(formatUnits(-2)).toBe("-2.00");
+    expect(formatUnits(0)).toBe("0.00");
+    expect(formatUnits(-0.001)).toBe("0.00");
+  });
 });
