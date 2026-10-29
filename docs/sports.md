@@ -2,11 +2,16 @@
 
 Provider: API-Sports (API-Football v3 for soccer, API-Rugby v1 for rugby). Code in `src/lib/sports/`.
 
+**Football only at launch.** Rugby and horse racing are added after launch, in weeks 1 to 2. `SPORTS_ENABLED` (default `soccer`) decides which sports the sync requests; rugby is switched on later with `SPORTS_ENABLED=soccer,rugby` once the API-Sports **Rugby** subscription exists (it is a separate subscription from Football). Horse racing needs its own data model and provider and is not built.
+
+**The free API-Sports plan only serves seasons 2022 to 2024**, so a paid Football plan (Pro, about $19 a month at the time of writing) is needed for the current season. Pro's 7,500 requests a day is far more than the sync uses.
+
 ## Environment
 
 - `SPORTS_API_KEY` (Vercel, server only).
 - `CRON_SECRET` (Vercel). The same value goes into Supabase Vault (below).
-- `SPORTS_LEAGUE_IDS`: JSON such as `{"psl":0,"epl":0,"ucl":0,"urc":0,"springbok-tests":0}` with the real IDs. **IDs are never guessed in code.** Run `SPORTS_API_KEY=... bun run sports:ids` to list candidate leagues for each competition, pick the right ones, and set the variable. A competition without an ID is skipped and reported in the sync response.
+- `SPORTS_LEAGUE_IDS`: JSON keyed by competition, for example `{"psl":288,"epl":39,"ucl":2}`, plus any of the other football keys (`uel`, `uecl`, `laliga`, `seriea`, `bundesliga`, `ligue1`, `facup`, `eflcup`, `nedbank`, `mtn8`, `sa-championship`, `caf-cl`, `caf-cc`, `afcon`, `wcq-caf`, `bafana-friendlies`) once you have looked up the real IDs. **IDs are never guessed in code.** Run `SPORTS_API_KEY=... bun run sports:ids` to list candidate leagues for each competition, pick the right ones, and set the variable. A competition without an ID is skipped and reported in the sync response.
+- `SPORTS_ENABLED`: optional, defaults to `soccer`.
 - `SUPABASE_SERVICE_ROLE_KEY` is already set for Production (it is what `client.server.ts` reads). Preview has none of the Supabase variables yet.
 
 ## Routes (GET, `Authorization: Bearer ${CRON_SECRET}`)
@@ -40,3 +45,7 @@ Soccer stores the 90-minute (full-time) score, so extra time and penalties never
 
 - League IDs and the Springbok Tests season rule (assumed calendar year) must be confirmed from the printed league list.
 - Nothing here has been run against the live API: no key was available.
+
+## Adding a league
+
+Add a `competitions` entry (key, sport, name, season rule, search terms; `teamIncludes` keeps only matches involving a named team, used for Bafana Bafana friendlies and qualifiers). Run `SPORTS_API_KEY=... bun run sports:ids`, pick the right league, and add its ID to `SPORTS_LEAGUE_IDS`. Each league costs one fixtures call a day plus a results call only while it has open fixtures. The predictions page builds its league filter from the fixtures that are loaded, so a league appears only when it has matches.

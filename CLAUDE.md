@@ -26,7 +26,7 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 - Keep 18+ and the 0800 006 008 helpline on every page.
 
 ## Launch scope
-- Soccer (Betway Premiership/PSL, EPL, UCL) and Rugby (URC, Springbok tests) only.
+- Football (soccer) only at launch: Betway Premiership/PSL, EPL, UCL and more leagues as their league IDs are set. Rugby (URC, Springbok tests) and horse racing are added after launch, in weeks 1 to 2 (owner decision, 29 Oct 2026). Rugby is switched on with `SPORTS_ENABLED=soccer,rugby` and needs its own API-Sports Rugby subscription; horse racing needs its own data model. Until then no page may claim rugby or racing coverage.
 - No cash referrals, no cash prizes and no odds comparison at launch.
 - Rewards: PuntPoints are a loyalty scheme redeemable only for vouchers, sponsored rewards and perks, never cash (owner decision, 29 Oct 2026). Betting vouchers stay switched off until counsel signs off and a licensed partner funds them; they are a gambling promotion (labelled "Ad", 18+, "T&Cs apply", 0800 006 008, shown only to eligible members). Rewards are funded by sponsors, not by Puntr, unless the owner says otherwise.
 - Payments: the owner decided on 29 Oct 2026 to add Pay-As-You-Go credits and recurring billing (Puntr Pro) through PayFast before launch. They are built in the PayFast task (30 Oct, 12:00 SAST) and stay off until that work, its legal copy and the owner's go-ahead are done. Until then: no payments or subscriptions.

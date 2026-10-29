@@ -1,4 +1,4 @@
-import { competitions, parseLeagueIds, seasonFor, type Competition } from "./competitions";
+import { activeCompetitions, parseLeagueIds, seasonFor, type Competition } from "./competitions";
 import { normaliseFootball, normaliseRugby, PROVIDER } from "./apisports.normalise";
 import type { ListOptions, ListResult, SportsProvider } from "./provider";
 import type { NormalisedFixture } from "./types";
@@ -89,7 +89,7 @@ export class ApiSportsProvider implements SportsProvider {
     this.calls = 0;
     const fixtures: NormalisedFixture[] = [];
     const skipped: ListResult["skipped"] = [];
-    for (const comp of competitions) {
+    for (const comp of activeCompetitions()) {
       if (opts.only && !opts.only.includes(comp.key)) continue;
       const leagueId = this.leagueIds[comp.key];
       if (!leagueId) {

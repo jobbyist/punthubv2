@@ -17,7 +17,7 @@
     "s2": {
       "title": "Post a pick before kick-off",
       "body": "Choose a fixture, a market and a selection, then enter the odds you got.",
-      "b1": "Soccer and rugby at launch",
+      "b1": "Football at launch. Rugby and horse racing are coming",
       "b2": "Picks close at kick-off"
     },
     "s3": {
@@ -40,7 +40,7 @@
     "market": {
       "m1": {
         "name": "Match result (1X2)",
-        "scope": "Soccer and rugby"
+        "scope": "Football (rugby coming soon)"
       },
       "m2": {
         "name": "Over/Under 2.5",
@@ -48,7 +48,7 @@
       },
       "m3": {
         "name": "Handicap",
-        "scope": "Rugby only"
+        "scope": "Rugby only, coming soon"
       },
       "m4": {
         "name": "Both teams to score",

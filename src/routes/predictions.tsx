@@ -8,11 +8,16 @@ import { formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 import type { Sport } from "@/lib/sports/types";
 
-type Search = { sport?: Sport };
+type Search = { sport?: Sport; competition?: string };
 
 export const Route = createFileRoute("/predictions")({
-  validateSearch: (search: Record<string, unknown>): Search =>
-    search["sport"] === "soccer" || search["sport"] === "rugby" ? { sport: search["sport"] } : {},
+  validateSearch: (search: Record<string, unknown>): Search => {
+    const out: Search = {};
+    if (search["sport"] === "soccer" || search["sport"] === "rugby") out.sport = search["sport"];
+    if (typeof search["competition"] === "string" && search["competition"])
+      out.competition = search["competition"].slice(0, 80);
+    return out;
+  },
   loaderDeps: ({ search }) => ({ sport: search.sport }),
   loader: async ({ deps }) => {
     try {
@@ -50,40 +55,55 @@ export const Route = createFileRoute("/predictions")({
   component: Predictions,
 });
 
-const FILTERS = [
-  ["all", undefined],
-  ["soccer", "soccer"],
-  ["rugby", "rugby"],
-] as const;
-
 function Predictions() {
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
   const { fixtures, failed } = Route.useLoaderData();
-  const { sport } = Route.useSearch();
-  const days = groupFixturesByDay(fixtures);
+  const { sport, competition } = Route.useSearch();
+  // League chips come from what is actually loaded, so a league appears only when it has fixtures.
+  const leagues = Array.from(
+    fixtures.reduce(
+      (m, f) => m.set(f.competition, (m.get(f.competition) ?? 0) + 1),
+      new Map<string, number>(),
+    ),
+  ).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  const shown = competition ? fixtures.filter((f) => f.competition === competition) : fixtures;
+  const days = groupFixturesByDay(shown);
 
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        {FILTERS.map(([key, value]) => {
-          const active = sport === value;
-          return (
-            <Link
-              key={key}
-              to="/predictions"
-              search={value ? { sport: value } : {}}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                active ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
-              }`}
-            >
-              {t(`filter.${key}`)}
-            </Link>
-          );
-        })}
-      </div>
+      {leagues.length > 1 && (
+        <div
+          className="mb-6 flex flex-wrap items-center gap-2"
+          role="group"
+          aria-label={t("filter.label")}
+        >
+          {[
+            [undefined, fixtures.length] as const,
+            ...leagues.map(([name, n]) => [name, n] as const),
+          ].map(([name, n]) => {
+            const active = competition === name;
+            return (
+              <Link
+                key={name ?? "all"}
+                to="/predictions"
+                search={{
+                  ...(sport ? { sport } : {}),
+                  ...(name ? { competition: name } : {}),
+                }}
+                aria-current={active ? "true" : undefined}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  active ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+                }`}
+              >
+                {name ?? t("filter.all")} <span className="tnum opacity-70">{n}</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
 

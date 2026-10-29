@@ -29,6 +29,10 @@ export function normaliseFootball(item: FootballItem, comp: Competition): Normal
   const away = item.teams?.away?.name;
   const status = mapFootballStatus(item.fixture?.status?.short);
   if (!id || !date || !home || !away || !status || Number.isNaN(Date.parse(date))) return null;
+  if (comp.teamIncludes) {
+    const needle = comp.teamIncludes.toLowerCase();
+    if (!home.toLowerCase().includes(needle) && !away.toLowerCase().includes(needle)) return null;
+  }
   const finished = status === "finished";
   const ft = item.score?.fulltime;
   const homeScore = finished ? (num(ft?.home) ?? num(item.goals?.home)) : null;

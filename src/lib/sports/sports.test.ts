@@ -2,7 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 
 import { normaliseFootball, normaliseRugby } from "./apisports.normalise";
 import { ApiSportsProvider } from "./apisports.server";
-import { competitions, parseLeagueIds, seasonFor } from "./competitions";
+import {
+  activeCompetitions,
+  competitions,
+  enabledSports,
+  parseLeagueIds,
+  seasonFor,
+} from "./competitions";
 import { csvProviderRef, parseFixtureCsv } from "./csv";
 import { mapFootballStatus, mapRugbyStatus } from "./status";
 import { syncFixtures, syncResults, type FixtureStore } from "./sync.server";
@@ -226,7 +232,13 @@ describe("ApiSportsProvider", () => {
       new Date("2026-11-12T00:00:00Z"),
     );
     expect(out.calls).toBe(1);
-    expect(out.skipped.map((s) => s.key).sort()).toEqual(["epl", "springbok-tests", "ucl", "urc"]);
+    const expected = activeCompetitions()
+      .map((c) => c.key)
+      .filter((k) => k !== "psl")
+      .sort();
+    expect(out.skipped.map((s) => s.key).sort()).toEqual(expected);
+    expect(expected).not.toContain("urc");
+    expect(expected).not.toContain("springbok-tests");
     const url = new URL(fetchImpl.mock.calls[0]![0]);
     expect(url.pathname).toBe("/fixtures");
     expect(url.searchParams.get("league")).toBe("288");
@@ -263,6 +275,7 @@ describe("ApiSportsProvider", () => {
       .mockResolvedValue(
         ok([game(1, "2026-11-01T15:00:00+02:00"), game(2, "2027-02-01T15:00:00+02:00")]),
       );
+    process.env["SPORTS_ENABLED"] = "soccer,rugby";
     const p = new ApiSportsProvider("key", { urc: 76 }, fetchImpl as never);
     const out = await p.listFixtures(
       new Date("2026-10-29T00:00:00Z"),
@@ -270,5 +283,37 @@ describe("ApiSportsProvider", () => {
       { only: ["urc"] },
     );
     expect(out.fixtures.map((f) => f.providerRef)).toEqual(["rugby:1"]);
+    delete process.env["SPORTS_ENABLED"];
+  });
+});
+
+describe("enabled sports", () => {
+  it("fetches football only by default, so rugby needs no subscription at launch", () => {
+    expect([...enabledSports(undefined)]).toEqual(["soccer"]);
+    expect(activeCompetitions().every((c) => c.sport === "soccer")).toBe(true);
+    expect(activeCompetitions().length).toBeGreaterThan(3);
+  });
+  it("adds rugby only when asked", () => {
+    expect(activeCompetitions("soccer,rugby").some((c) => c.sport === "rugby")).toBe(true);
+    expect(activeCompetitions("").every((c) => c.sport === "soccer")).toBe(true);
+  });
+  it("every competition has search terms and a unique key", () => {
+    const keys = competitions.map((c) => c.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(competitions.every((c) => c.searches.length > 0 && c.name.length > 2)).toBe(true);
+  });
+});
+
+describe("football team filter", () => {
+  const item = (home: string, away: string) => ({
+    fixture: { id: 7, date: "2026-11-14T17:00:00+02:00", status: { short: "NS" } },
+    teams: { home: { name: home }, away: { name: away } },
+    goals: {},
+    score: {},
+  });
+  it("keeps only matches involving the named team", () => {
+    const comp = competitions.find((c) => c.key === "bafana-friendlies")!;
+    expect(normaliseFootball(item("South Africa", "Ghana") as never, comp)).not.toBeNull();
+    expect(normaliseFootball(item("Egypt", "Ghana") as never, comp)).toBeNull();
   });
 });

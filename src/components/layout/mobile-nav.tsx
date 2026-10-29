@@ -45,7 +45,7 @@ const bottomNavItems = [
 
 const sports = [
   { key: "soccer", emoji: "⚽", to: "/predictions", active: true },
-  { key: "rugby", emoji: "🏉", to: "/predictions", active: true },
+  { key: "rugby", emoji: "🏉", active: false },
   { key: "basketball", emoji: "🏀", active: false },
   { key: "tennis", emoji: "🎾", active: false },
   { key: "cricket", emoji: "🏏", active: false },
