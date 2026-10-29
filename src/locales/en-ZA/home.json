@@ -81,5 +81,9 @@
     "title": "Predictions across South Africa's bookmakers",
     "body": "Tipsters on Puntr record picks against the odds these platforms offer. Puntr does not take bets, and is not affiliated with or endorsed by them.",
     "fine": "18+ only. T&Cs apply."
+  },
+  "next": {
+    "title": "Next fixtures",
+    "all": "All fixtures"
   }
 }

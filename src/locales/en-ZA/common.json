@@ -31,5 +31,9 @@
     "ogImageAlt": "Puntr - locked, public tipster records",
     "orgDescription": "Locked, auto-graded, public tipster records for South African sport. 18+."
   },
-  "vs": "vs"
+  "vs": "vs",
+  "sport": {
+    "soccer": "Soccer",
+    "rugby": "Rugby"
+  }
 }

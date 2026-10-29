@@ -20,6 +20,10 @@ i18next + react-i18next, SSR-safe, no flash. See `docs/i18n.md`. Strings live in
 
 `/join` (email code, 18+ box, OTP, onboarding), `complete_signup` SQL function (profile + 4 consent rows in one transaction, Founding number shown only after), `completeSignup` / `discardUnderageSignup` / `deleteMyAccount` server functions (`src/lib/accounts.functions.ts`, logic and tests in `accounts.logic.ts`), Supabase `SessionProvider` (`useSession`: user, profile, isSignedIn, isAdmin, signOut), header account menu, `/account`, `/account/privacy` (export, marketing, delete), minimal `/u/$username`. Early-access modal and timed popup are no longer rendered. The OTP email text is in `docs/auth-email.md` and must be pasted into Supabase Auth templates by hand.
 
+## P7 (fixtures) in one paragraph
+
+Provider interface + API-Sports implementation, sync routes with a bearer secret, pg_cron schedule (migration applied), admin CSV fallback, `/predictions` and the home page read real upcoming fixtures. See `docs/sports.md`. Not run against the live API (no key). League IDs come from `SPORTS_LEAGUE_IDS`.
+
 ## Environment facts
 
 - Supabase project `hucjuekhitjuygcoomhw` ("Puntr South Africa", eu-west-1, free plan: no branching). Old Lovable project `cntoniedcjwsgereqrib` must not be referenced.

@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "i18n:check": "bun scripts/i18n-check.ts"
+    "i18n:check": "bun scripts/i18n-check.ts",
+    "sports:ids": "bun scripts/print-league-ids.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
