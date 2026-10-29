@@ -2,7 +2,7 @@
 
 As of the evening of Thu 29 Oct 2026. Written so a new Claude account can carry on without the old conversation.
 Blueprint (prompts P0 to P18, status, schedule, decisions): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2 (version 1.2, updated 29 Oct 2026)
-MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13 and P14 are not started.
+MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13, P14 and PuntPoints (P19) are not started.
 Repo `jobbyist/punthubv2` (site puntr.co.za). Soft launch Sun 1 Nov, production Mon 2 Nov 2026, goal 100 Founding Members in 30 days.
 
 ## Start here
@@ -76,6 +76,16 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 
 ## Next work
 
+**PuntPoints must be configured before the Mon 2 Nov 2026 launch (owner requirement, 29 Oct). Blueprint prompt P19.** Today nothing awards PuntPoints: the About, Support and nav copy mention them, and Terms section 6 says they are "not awarded yet". Do not build before the owner confirms the earning rules (decision D18); propose the defaults below and ask. Suggested slot: Sat 31 Oct, after PayFast.
+
+- Proposed rules (owner decides): points reward activity, never results. Confirm email +10 once; first pick +20; each locked pick +2 (max 10 a day); each settled pick +3 (a void earns 0); a referred friend who joins and posts a first pick +25 each side. No points for winning, units, payments or affiliate clicks, so they cannot encourage risk-taking or spending.
+- Hard rules already promised in the copy and Terms: no cash value, not exchangeable for cash, not transferable, never purchasable, paying never earns points, no effect on ranking, the leaderboard or prize eligibility. No points for unconfirmed emails, banned accounts or accounts on a break.
+- Build: append-only `puntpoints_ledger` (RLS: members read their own rows; awards only through a security-definer function or the service role; idempotent on user, rule code and reference id) and a `point_rules` table; balance on the profile, account page history and a header chip; a `points()` formatter in `src/lib/format.ts`; admin adjustment with a required reason (written as a new row); strings through i18n keys.
+- Redemption: none at launch unless the owner decides points convert to PayFast credits (rate and cap are then a legal decision as well).
+- Legal in the same PR (standing rule): Terms section 6 (rules, no cash value, revocation for fraud, 30 days' notice before changing or ending), Privacy data table (the ledger), About and Support copy, notice version bump, `docs/legal-changelog.md` entry marked `[attorney review]`.
+- Tests: awards are idempotent and capped; unconfirmed emails earn nothing; points never change leaderboard ranking; a SQL test in `supabase/tests`.
+
+
 **PayFast credits and recurring billing, planned Fri 30 Oct 2026 at 12:00 SAST.** The owner decided to add Pay-As-You-Go credits and recurring billing (Puntr Pro, indicatively R99/month) with their PayFast merchant account before launch. A scheduled message was set in the previous account's session; in a new account start it by hand with this brief:
 
 - Env vars (owner sets them in Vercel; never ask for credentials in chat): `PAYFAST_MERCHANT_ID`, `PAYFAST_MERCHANT_KEY`, `PAYFAST_PASSPHRASE`, a sandbox flag. Sandbox first; the owner approves live mode.
@@ -87,6 +97,8 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 
 ## Decisions the owner has made
 
+- PuntPoints must be configured before launch. The earning rules are still to be decided (D18).
+
 - Sign-in: email + password without a confirmation step, with email confirmation and two-factor encouraged afterwards; code or link, username + password and Google also offered; X/Twitter not enabled.
 - Posting a pick (which puts it on the feed and the leaderboard) needs a confirmed email. Identity verification (KYC) is not built and not decided: the privacy notice says no ID document, selfie or biometrics are collected, so KYC needs a provider, a privacy-notice change and attorney review first.
 - Launch emails: one on launch day and two reminders (reminders only for people who ticked marketing); WhatsApp and SMS are sent by a person from `/admin`, only to opted-in people.
@@ -96,6 +108,6 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 - Nothing has run against live API-Sports, live Resend, real Google sign-in or the real crons yet; UI was verified against mock servers.
 - Unconfirmed email sign-up allows pre-registration of someone else's address (mitigations in `docs/auth-email.md`).
 - Referral farming (many accounts) is not prevented. Age check is by birth year plus attestation.
-- `/support` contact form only shows a toast. PuntPoints are mentioned in some copy but nothing awards them.
+- `/support` contact form only shows a toast. PuntPoints are mentioned in the About, Support and nav copy but nothing awards them yet; they must be configured before launch (P19, decision D18).
 - Username sign-in attempts share the server's IP for Supabase's rate limits.
 - Legal pages are drafts until counsel approves.
