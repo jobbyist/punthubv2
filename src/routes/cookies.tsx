@@ -57,9 +57,33 @@ function Cookies() {
         <section>
           <h2 className="font-display text-lg font-bold">Essential (always on)</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Keeps you signed in and remembers this choice (cookie <code>puntr_consent</code>, 180
-            days). Puntr cannot work without it.
+            Puntr cannot work without these. They are set only to run features you use, not to track
+            you.
           </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>
+              Your sign-in session, kept in your browser&apos;s storage while you are signed in (and
+              cleared when you sign out).
+            </li>
+            <li>
+              Cookie <code>puntr_consent</code> (180 days): remembers your choices on this page.
+            </li>
+            <li>
+              Cookie <code>puntr_lang</code> (1 year): remembers the language you pick.
+            </li>
+            <li>
+              Browser storage <code>puntr:ref</code>: the invite code from a link you opened, kept
+              until you finish signing up.
+            </li>
+            <li>
+              Browser storage <code>puntr:security-prompt</code>: remembers that you dismissed the
+              account security reminder (3 days).
+            </li>
+            <li>
+              Browser session storage <code>puntr:claim:…</code>: stops the same one-off
+              Founding-spot check from running twice in a visit.
+            </li>
+          </ul>
         </section>
         <Separator />
         <section className="flex items-start justify-between gap-4">

@@ -47,5 +47,11 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 - Rand amounts through `money()` and odds through `odds()` from `src/lib/format.ts`.
 - The responsible-gambling message only through `<RgNotice />`.
 
+## Legal pages stay aligned
+- With every PR that changes what the platform collects, stores, shows, sends or promises, update the legal copy in the same PR: `/terms`, `/privacy`, `/cookies` (Privacy choices), `/affiliate-disclosure` and `/refunds`, plus the Supabase `notice_versions` rows (new version, new migration) and "Last updated". The attorney approves retroactively, so the PR must make the change easy to review.
+- Add an entry to `docs/legal-changelog.md` (what changed, which pages, what counsel should look at). Mark anything uncertain `[attorney review]`. Never state something the product doesn't do, and never leave a claim the product no longer matches.
+- Use `docs/legal-alignment.md` to find which page covers which feature. Say in the PR description what legal copy changed, or that nothing needed to.
+- Do not enable a new sign-in provider, tracker, processor or paid product without saying so in the PR; the owner decides under their compliance policy.
+
 ## Before every commit
 `bun run lint && bun run build` must pass.
