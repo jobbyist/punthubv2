@@ -79,6 +79,9 @@ describe("markets by sport", () => {
 });
 
 describe("pickErrorKey", () => {
+  it("maps an unconfirmed email to its own message", () => {
+    expect(pickErrorKey({ message: "email_not_confirmed" })).toBe("email_not_confirmed");
+  });
   it("maps the database's reasons", () => {
     expect(pickErrorKey({ message: "kickoff_passed" })).toBe("kickoff_passed");
     expect(pickErrorKey({ message: "daily_limit" })).toBe("daily_limit");

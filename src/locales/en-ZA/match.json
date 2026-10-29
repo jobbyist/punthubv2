@@ -51,7 +51,10 @@
       "odds": "Enter odds between 1.01 and 50, with at most two decimals.",
       "confidence": "Choose a confidence from 1 to 5.",
       "reasoning": "Keep your reasoning to 280 characters."
-    }
+    },
+    "needEmail": "Confirm your email to post a pick.",
+    "needEmailWhy": "Picks go on the public feed and the leaderboard, so we ask for a confirmed email first. It takes a minute.",
+    "needEmailCta": "Confirm my email"
   },
   "error": {
     "kickoff_passed": "This match has kicked off - picks are locked.",
@@ -71,7 +74,8 @@
     "invalid_odds": "Enter odds between 1.01 and 50, with at most two decimals.",
     "invalid_confidence": "Choose a confidence from 1 to 5.",
     "reasoning_too_long": "Keep your reasoning to 280 characters.",
-    "generic": "We couldn't lock your pick. Please try again."
+    "generic": "We couldn't lock your pick. Please try again.",
+    "email_not_confirmed": "Confirm your email to post a pick. You can do it on your account's security page."
   },
   "market": {
     "1X2": "Match result (1X2)",

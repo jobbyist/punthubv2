@@ -27,7 +27,8 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 
 ## Launch scope
 - Soccer (Betway Premiership/PSL, EPL, UCL) and Rugby (URC, Springbok tests) only.
-- No payments, subscriptions, cash referrals or odds comparison at launch.
+- No cash referrals or odds comparison at launch.
+- Payments: the owner decided on 29 Oct 2026 to add Pay-As-You-Go credits and recurring billing (Puntr Pro) through PayFast before launch. They are built in the PayFast task (30 Oct, 12:00 SAST) and stay off until that work, its legal copy and the owner's go-ahead are done. Until then: no payments or subscriptions.
 
 ## Affiliates
 - Links and creatives only for partners in the `affiliate_partners` registry with status 'live' (approved: Supabets, Playbet, Mr Price Sport via Admarula).

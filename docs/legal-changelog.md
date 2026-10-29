@@ -3,6 +3,15 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-10-29, Terms version `2026-10-29-r3` (PR: confirmed email to post)
+
+- **Terms** §4 and §9: posting a prediction (which puts it on the community feed and the leaderboard) needs a
+  confirmed email address. Enforced in the database (`can_post`, trigger on `predictions`).
+  Review: whether a confirmed email is enough for posting to the public leaderboard, or whether identity
+  verification (KYC) is wanted. KYC is **not built**; `/privacy` currently says no ID document, selfie or biometrics
+  are collected, so adding KYC would need that statement, a verification provider and a lawful basis changed first.
+- New `notice_versions` row for `terms` at `2026-10-29-r3`. Privacy and Cookies are unchanged (`r2`).
+
 ## 2026-10-29, notice version `2026-10-29-r2` (PR: legal alignment)
 
 Brought the pages in line with the platform as built through PRs #18 to #27.
