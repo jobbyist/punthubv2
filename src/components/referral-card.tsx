@@ -2,21 +2,27 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { useSession } from "@/components/session";
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
 import { analytics } from "@/lib/analytics";
 import { copyInviteLink } from "@/lib/invite";
+import { fetchReferralOverview } from "@/lib/rewards-data";
+import { usePoints } from "@/hooks/use-points";
 import { inviteText, inviteUrl, whatsappUrl } from "@/lib/referral";
 
 /** The member's invite link with Copy and WhatsApp, and how many friends have joined. */
 export function ReferralCard() {
   const { t } = useTranslation("account");
   const { profile } = useSession();
+  const { enabled } = usePoints();
   const { data } = useAsync(async () => {
     const { data: rows } = await supabase.rpc("my_referral_counts");
     return rows?.[0] ?? { signed_up: 0, joined: 0 };
   }, [profile?.id]);
+  const { data: overview } = useAsync(fetchReferralOverview, [profile?.id]);
 
   if (!profile?.referral_code) return null;
   const code = profile.referral_code;
@@ -57,9 +63,28 @@ export function ReferralCard() {
       <p className="mt-1 text-xs text-muted-foreground">
         {t("invite.signedUp", { count: data?.signed_up ?? 0 })} {t("invite.rule")}
       </p>
-      <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
-        {t("invite.rewards")}
-      </p>
+      {enabled && overview ? (
+        <div className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
+          <p className="tnum">
+            {t("invite.overview", { pending: overview.pending, vested: overview.vested })}
+          </p>
+          {overview.next_threshold && (
+            <p className="mt-1">
+              {t("invite.next", { title: overview.next_title, count: overview.next_threshold })}
+            </p>
+          )}
+          <p className="mt-1">
+            {t("invite.pointsNote")}{" "}
+            <Link to="/rewards" className="underline">
+              {t("invite.rewardsLink")}
+            </Link>
+          </p>
+        </div>
+      ) : (
+        <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
+          {t("invite.rewardsSoon")}
+        </p>
+      )}
     </section>
   );
 }

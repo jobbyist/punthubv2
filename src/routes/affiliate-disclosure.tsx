@@ -33,6 +33,12 @@ function AffiliateDisclosure() {
           </a>
           . Ads are not shown to anyone who has not confirmed they are 18+ or who is on a break.
         </p>
+        <p>
+          Some rewards you can redeem with PuntPoints are funded by partners. Sponsored rewards say
+          who sponsors them. Betting vouchers, if we offer them, are partner promotions: they are
+          labelled &quot;Ad&quot;, shown only to members who are 18+ and not on a break, and carry
+          the responsible-gambling message. Partners do not receive your personal information.
+        </p>
         <p>Partners do not influence the picks, results or leaderboards on Puntr.</p>
         <p className="text-xs">
           18+ only. T&amp;Cs apply. Gambling can be addictive. Helpline: 0800 006 008.

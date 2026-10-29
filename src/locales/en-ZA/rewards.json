@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "title": "PuntPoints and rewards | Puntr",
+    "description": "Earn PuntPoints for activity and invites, and redeem them for vouchers, sponsored rewards and perks. No cash.",
+    "ogDescription": "PuntPoints reward activity, never results. No cash value."
+  },
+  "title": "PuntPoints and rewards",
+  "subtitle": "A loyalty scheme for active members. Points reward activity, never results.",
+  "unit": "PuntPoints",
+  "ad": "Ad",
+  "balance": "Your balance",
+  "soon": {
+    "title": "PuntPoints are on their way",
+    "body": "You will earn points for confirming your email, posting picks and inviting friends, and redeem them for vouchers, sponsored rewards and perks. We switch them on once the rules are final. There is no cash value and points can never be bought."
+  },
+  "signIn": {
+    "body": "Sign in to see your balance, invite friends and redeem rewards.",
+    "cta": "Sign in or join"
+  },
+  "confirm": {
+    "title": "Confirm your email to earn and redeem points.",
+    "body": "Points and rewards are for members with a confirmed email address.",
+    "cta": "Confirm my email"
+  },
+  "earn": {
+    "title": "How to earn",
+    "body": "Points come from activity, never from winning, and never from spending.",
+    "limit": {
+      "day_one": "up to {{count}} a day",
+      "day_other": "up to {{count}} a day",
+      "month_one": "up to {{count}} a month",
+      "month_other": "up to {{count}} a month"
+    }
+  },
+  "rule": {
+    "confirm_email": "Confirm your email",
+    "first_pick": "Post your first pick",
+    "pick_locked": "Lock a pick",
+    "pick_settled": "A pick you posted settles",
+    "referral_referred": "Join through a friend's invite",
+    "referral_referrer": "A friend you invited posts a first pick",
+    "referral_milestone": "Invite milestone bonus"
+  },
+  "kind": {
+    "perk": "Perk",
+    "sponsored": "Sponsored reward",
+    "retail_voucher": "Voucher",
+    "betting_voucher": "Betting voucher"
+  },
+  "catalogue": {
+    "title": "Rewards",
+    "empty": "No rewards are available right now. Check back soon.",
+    "soon": "Rewards open once our sponsors confirm them. Your points keep building in the meantime.",
+    "sponsor": "Sponsored by {{name}}",
+    "error": "Couldn't load rewards. Please try again."
+  },
+  "redeem": {
+    "button": "Redeem",
+    "confirm": "Spend {{cost}} to redeem",
+    "cancel": "Cancel",
+    "working": "Redeeming…",
+    "done": "Redeemed. We will send your reward shortly if it is not ready yet.",
+    "outOfStock": "Out of stock",
+    "short": "{{short}} more points needed",
+    "error": {
+      "not_authenticated": "Please sign in again.",
+      "rewards_disabled": "Rewards aren't open yet.",
+      "reward_not_found": "That reward isn't available.",
+      "not_eligible": "You need a confirmed email, to be 18 or older and not on a break to redeem this.",
+      "daily_limit": "You've reached today's redemption limit. Try again tomorrow.",
+      "insufficient_points": "You don't have enough points for that.",
+      "out_of_stock": "That reward just ran out.",
+      "generic": "We couldn't redeem that. Please try again."
+    }
+  },
+  "redemptions": {
+    "title": "Your redemptions",
+    "unknown": "Reward",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "copyFailed": "Couldn't copy. Select the code and copy it.",
+    "status": {
+      "requested": "Waiting for us to send it",
+      "fulfilled": "Sent",
+      "cancelled": "Cancelled and refunded"
+    }
+  },
+  "history": {
+    "title": "Points history",
+    "kind": {
+      "award": "Points earned",
+      "spend": "Redeemed",
+      "refund": "Refund",
+      "adjust": "Adjustment",
+      "reversal": "Reversed"
+    }
+  },
+  "rules": {
+    "note": "PuntPoints have no cash value, cannot be bought, exchanged for money or transferred, and never change rankings or the leaderboard. We may reverse points earned through fraud or abuse. Rewards are provided by our partners and subject to their terms."
+  }
+}

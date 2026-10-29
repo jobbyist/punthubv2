@@ -23,6 +23,13 @@ export function money(amount: number): string {
   return `${negative ? "-" : ""}R${body}`;
 }
 
+/** points(1250) -> "1 250". The label ("PuntPoints", "pts") comes from the translation keys. */
+export function points(value: number): string {
+  if (!Number.isFinite(value)) return "";
+  const n = Math.trunc(value);
+  return `${n < 0 ? "-" : ""}${groupThousands(String(Math.abs(n)))}`;
+}
+
 /** odds(2.1) -> "2.10". Bookmaker decimal point, two places. */
 export function odds(value: number): string {
   if (!Number.isFinite(value)) return "";

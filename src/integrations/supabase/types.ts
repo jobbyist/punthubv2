@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      reward_settings: {
+        Row: { enabled: boolean; key: string; updated_at: string; updated_by: string | null }
+        Insert: { enabled?: boolean; key: string; updated_at?: string; updated_by?: string | null }
+        Update: { enabled?: boolean; key?: string; updated_at?: string; updated_by?: string | null }
+        Relationships: []
+      }
+      point_rules: {
+        Row: { active: boolean; cap_per_day: number | null; cap_per_month: number | null; code: string; points: number; sort: number; title: string; updated_at: string }
+        Insert: { active?: boolean; cap_per_day?: number | null; cap_per_month?: number | null; code: string; points: number; sort?: number; title: string; updated_at?: string }
+        Update: { active?: boolean; cap_per_day?: number | null; cap_per_month?: number | null; code?: string; points?: number; sort?: number; title?: string; updated_at?: string }
+        Relationships: []
+      }
+      referral_milestones: {
+        Row: { active: boolean; bonus_points: number; threshold: number; title: string }
+        Insert: { active?: boolean; bonus_points: number; threshold: number; title: string }
+        Update: { active?: boolean; bonus_points?: number; threshold?: number; title?: string }
+        Relationships: []
+      }
+      puntpoints_ledger: {
+        Row: { admin_id: string | null; created_at: string; id: string; kind: string; points: number; reason: string | null; ref_id: string | null; rule_code: string | null; seq: number; user_id: string }
+        Insert: { admin_id?: string | null; created_at?: string; id?: string; kind: string; points: number; reason?: string | null; ref_id?: string | null; rule_code?: string | null; seq?: number; user_id: string }
+        Update: { admin_id?: string | null; created_at?: string; id?: string; kind?: string; points?: number; reason?: string | null; ref_id?: string | null; rule_code?: string | null; seq?: number; user_id?: string }
+        Relationships: []
+      }
+      rewards: {
+        Row: { active: boolean; code: string; created_at: string; description: string | null; id: string; kind: string; points_cost: number; requires_approval: boolean; sponsor: string | null; stock: number | null; title: string }
+        Insert: { active?: boolean; code: string; created_at?: string; description?: string | null; id?: string; kind: string; points_cost: number; requires_approval?: boolean; sponsor?: string | null; stock?: number | null; title: string }
+        Update: { active?: boolean; code?: string; created_at?: string; description?: string | null; id?: string; kind?: string; points_cost?: number; requires_approval?: boolean; sponsor?: string | null; stock?: number | null; title?: string }
+        Relationships: []
+      }
+      reward_codes: {
+        Row: { code: string; created_at: string; id: string; redemption_id: string | null; reward_id: string }
+        Insert: { code: string; created_at?: string; id?: string; redemption_id?: string | null; reward_id: string }
+        Update: { code?: string; created_at?: string; id?: string; redemption_id?: string | null; reward_id?: string }
+        Relationships: []
+      }
+      redemptions: {
+        Row: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null }
+        Insert: { admin_id?: string | null; created_at?: string; id?: string; note?: string | null; points: number; reward_id: string; status?: string; updated_at?: string; user_id: string; voucher_code?: string | null }
+        Update: { admin_id?: string | null; created_at?: string; id?: string; note?: string | null; points?: number; reward_id?: string; status?: string; updated_at?: string; user_id?: string; voucher_code?: string | null }
+        Relationships: []
+      }
       launch_email_sends: {
         Row: { detail: string | null; email: string; sent_at: string; status: string; wave: number }
         Insert: { detail?: string | null; email: string; sent_at?: string; status?: string; wave: number }
@@ -546,6 +588,9 @@ export type Database = {
           referrer_credits: number
           referrer_id: string
           status: string
+          vested_at: string | null
+          vests_at: string
+          reversed_at: string | null
         }
         Insert: {
           created_at?: string
@@ -556,6 +601,9 @@ export type Database = {
           referrer_credits?: number
           referrer_id: string
           status?: string
+          vested_at?: string | null
+          vests_at?: string
+          reversed_at?: string | null
         }
         Update: {
           created_at?: string
@@ -566,6 +614,9 @@ export type Database = {
           referrer_credits?: number
           referrer_id?: string
           status?: string
+          vested_at?: string | null
+          vests_at?: string
+          reversed_at?: string | null
         }
         Relationships: []
       }
@@ -932,6 +983,22 @@ export type Database = {
       }
       mfa_ok: { Args: never; Returns: boolean }
       claim_reserved_founding: { Args: { p_user: string }; Returns: number }
+      reward_setting: { Args: { p_key: string }; Returns: boolean }
+      member_may_redeem: { Args: { p_user: string }; Returns: boolean }
+      award_points: { Args: { p_points?: number; p_ref: string; p_rule: string; p_user: string }; Returns: number }
+      sync_my_points: { Args: never; Returns: number }
+      my_puntpoints: { Args: never; Returns: number }
+      rewards_status: { Args: never; Returns: { points_enabled: boolean; rewards_enabled: boolean }[] }
+      point_rules_public: { Args: never; Returns: { cap_per_day: number | null; cap_per_month: number | null; code: string; points: number; title: string }[] }
+      vest_referrals: { Args: never; Returns: number }
+      my_referral_overview: { Args: never; Returns: { next_threshold: number | null; next_title: string | null; pending: number; qualified: number; reversed: number; signed_up: number; vested: number }[] }
+      list_rewards: { Args: never; Returns: { code: string; description: string | null; id: string; in_stock: boolean; kind: string; points_cost: number; sponsor: string | null; title: string }[] }
+      redeem_reward: { Args: { p_reward: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
+      admin_fulfil_redemption: { Args: { p_note?: string; p_redemption: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
+      admin_cancel_redemption: { Args: { p_reason: string; p_redemption: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
+      admin_adjust_points: { Args: { p_points: number; p_reason: string; p_user: string }; Returns: number }
+      admin_referral_review: { Args: never; Returns: { burst: boolean; created_at: string; id: string; referred: string; referrer: string; status: string; vests_at: string }[] }
+      admin_reverse_referral: { Args: { p_reason: string; p_referral: string }; Returns: undefined }
       launch_recipients: {
         Args: { p_wave: number }
         Returns: { recipient_email: string; recipient_name: string }[]
