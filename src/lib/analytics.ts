@@ -32,8 +32,11 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
 }
 
 export const analytics = {
-  planSelected: (plan: string, source: string) => trackEvent("pricing_plan_selected", { plan, source }),
-  earlyAccessOpened: (plan?: string) => trackEvent("early_access_modal_opened", { plan: plan ?? "unspecified" }),
+  planSelected: (plan: string, source: string) =>
+    trackEvent("pricing_plan_selected", { plan, source }),
+  earlyAccessOpened: (plan?: string) =>
+    trackEvent("early_access_modal_opened", { plan: plan ?? "unspecified" }),
   earlyAccessSubmitted: (plan: string) => trackEvent("early_access_submitted", { plan }),
-  earlyAccessFailed: (plan: string, reason: string) => trackEvent("early_access_failed", { plan, reason }),
+  earlyAccessFailed: (plan: string, reason: string) =>
+    trackEvent("early_access_failed", { plan, reason }),
 };

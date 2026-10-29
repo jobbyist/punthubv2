@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Support centre | Puntr",
+    "description": "Get help with Puntr: FAQs, email support@puntr.co.za or call +27 12 880 6560.",
+    "ogTitle": "Puntr support centre",
+    "ogDescription": "Find answers, get in touch and we'll sort it out."
+  },
+  "title": "Support centre",
+  "subtitle": "We're here to help. Find answers, get in touch and we'll sort it out.",
+  "email": { "title": "Email us", "note": "We aim to reply within 24 hours." },
+  "phone": { "title": "Call us", "hours": "Mon – Fri: 08:00 – 18:00 · Sat – Sun: 09:00 – 16:00 SAST", "display": "+27 12 880 6560" },
+  "chat": { "title": "Live chat", "body": "Live chat is not available yet. Email us and we'll reply.", "badge": "Not yet available" },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1": "What is Puntr?",
+    "a1": "Puntr is a place to post sports predictions that are locked at kick-off, graded automatically and kept as a public record, so you can build a track record people can trust.",
+    "q2": "How do PuntPoints work?",
+    "a2": "PuntPoints are leaderboard points for activity and settled picks. They have no cash value and cannot be exchanged for money.",
+    "q3": "Can I invite friends?",
+    "a3": "Yes. Founding Members get a personal invite link. Invites move friends up the waitlist. There are no payments for referrals.",
+    "q4": "Is Puntr free to use?",
+    "a4": "Yes. Puntr is free during the Founding 100 launch. Any paid features later will be announced first and never switched on without notice.",
+    "q5": "How accurate are predictions?",
+    "a5": "Every tipster has a public record with units, ROI and sample size. Past results do not predict future results. Gamble responsibly: 0800 006 008.",
+    "q6": "Can I withdraw my PuntPoints?",
+    "a6": "No. PuntPoints have no monetary value and cannot be withdrawn or exchanged for cash.",
+    "q7": "Does Puntr take bets?",
+    "a7": "No. Puntr does not accept bets, set odds or handle winnings. It is a place to record and review predictions."
+  },
+  "contact": {
+    "title": "Contact us",
+    "body": "Send us a message and we'll get back to you as soon as we can.",
+    "name": "Full name",
+    "namePh": "Enter your full name",
+    "email": "Email address",
+    "emailPh": "Enter your email address",
+    "subject": "Subject",
+    "subjectPh": "What is your message about?",
+    "message": "Message",
+    "messagePh": "Type your message here…",
+    "submit": "Send message",
+    "toastTitle": "Message sent",
+    "toastBody": "Our team will reply within 24 hours."
+  }
+}

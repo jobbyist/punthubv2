@@ -1,0 +1,4 @@
+{
+  "notFound": { "title": "Page not found", "body": "The page you're looking for doesn't exist or has moved.", "home": "Go home" },
+  "generic": { "title": "This page didn't load", "body": "Something went wrong on our side. Try refreshing, or head back home.", "retry": "Try again" }
+}

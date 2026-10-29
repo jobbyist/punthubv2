@@ -1,84 +1,51 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
+import { RgNotice } from "@/components/rg-notice";
+import { headT } from "@/lib/i18n/head";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => ({
-    links: [{ rel: "canonical", href: "https://puntr.co.za/how-it-works" }],
-    meta: [
-      { title: "How Puntr works | Predict smarter. Prove it." },
-      {
-        name: "description",
-        content:
-          "Sign up with an email code, post a pick before kick-off, and let it lock and settle automatically. Climb the weekly leaderboard. 18+.",
-      },
-      { property: "og:title", content: "How Puntr works" },
-      { property: "og:description", content: "Four steps from sign-up to a public, locked record." },
-    ],
-  }),
+  head: ({ match }) => {
+    const t = headT(match.context.locale, "howitworks");
+    return {
+      links: [{ rel: "canonical", href: "https://puntr.co.za/how-it-works" }],
+      meta: [
+        { title: t("meta.title") },
+        { name: "description", content: t("meta.description") },
+        { property: "og:title", content: t("meta.ogTitle") },
+        { property: "og:description", content: t("meta.ogDescription") },
+      ],
+    };
+  },
   component: HowItWorks,
 });
 
-const steps = [
-  {
-    title: "Sign up with an email code. 18+",
-    body: "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password.",
-    bullets: ["Free for Founding Members", "No card needed"],
-  },
-  {
-    title: "Post a pick before kick-off",
-    body: "Choose a fixture, a market and a selection, then enter the odds you got.",
-    bullets: ["Soccer and rugby at launch", "Picks close at kick-off"],
-  },
-  {
-    title: "It locks and settles automatically",
-    body: "Your pick is timestamped and locked. After the match it is graded from the official result.",
-    bullets: ["No edits, no deletes", "Corrections are logged, never overwritten"],
-  },
-  {
-    title: "Climb the weekly leaderboard",
-    body: "Your units, ROI and sample size are public. The leaderboard resets every Monday.",
-    bullets: ["Ranked on units, then ROI", "Needs 10 settled picks to qualify"],
-  },
-];
-
-const markets = [
-  ["Match result (1X2)", "Soccer and rugby"],
-  ["Over/Under 2.5", "Soccer only"],
-  ["Handicap", "Rugby only"],
-  ["Both teams to score", "Soccer only"],
-  ["Double chance", "Soccer"],
-] as const;
-
-const rules = [
-  "Every pick is worth 1 unit at the odds you entered.",
-  "Won: you gain (odds - 1) units. Example: 2.10 gives +1.10 units.",
-  "Lost: you lose 1 unit.",
-  "Void: 0 units. This covers a match that is postponed, abandoned or cancelled.",
-  "Picks are graded from the official full-time result.",
-  "If a result is corrected, the correction is logged as a new entry. The earlier entry is never overwritten.",
-];
+const STEPS = ["s1", "s2", "s3", "s4"] as const;
+const MARKETS = ["m1", "m2", "m3", "m4", "m5"] as const;
+const RULES = ["r1", "r2", "r3", "r4", "r5", "r6"] as const;
 
 function HowItWorks() {
   const { openEarlyAccess } = useSession();
+  const { t } = useTranslation("howitworks");
+  const { t: tc } = useTranslation("common");
 
   return (
     <AppShell>
-      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">How Puntr works</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Predict smarter. Prove it.</p>
+      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">{t("title")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{tc("brand.tagline")}</p>
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-        Every pick is locked at kick-off, graded automatically and kept forever. Puntr does not take bets or handle
-        money.
+        {t("intro")}
       </p>
 
       <ol className="relative mt-8 space-y-4 border-l border-border pl-6 sm:pl-8">
-        {steps.map((s, i) => (
+        {STEPS.map((k, i) => (
           <motion.li
-            key={s.title}
+            key={k}
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
@@ -89,12 +56,14 @@ function HowItWorks() {
               {i + 1}
             </span>
             <div className="card-surface p-5">
-              <h2 className="text-xl">{s.title}</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              <h2 className="text-xl">{t(`steps.${k}.title`)}</h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {t(`steps.${k}.body`)}
+              </p>
               <ul className="mt-3 space-y-1.5">
-                {s.bullets.map((b) => (
+                {(["b1", "b2"] as const).map((b) => (
                   <li key={b} className="flex items-center gap-2 text-sm">
-                    <Check className="size-4 text-primary" /> {b}
+                    <Check className="size-4 text-primary" /> {t(`steps.${k}.${b}`)}
                   </li>
                 ))}
               </ul>
@@ -103,26 +72,34 @@ function HowItWorks() {
         ))}
       </ol>
 
-      <section id="grading" className="card-surface mt-8 scroll-mt-24 p-6" aria-labelledby="grading-title">
+      <section
+        id="grading"
+        className="card-surface mt-8 scroll-mt-24 p-6"
+        aria-labelledby="grading-title"
+      >
         <h2 id="grading-title" className="text-2xl">
-          How we grade picks
+          {t("grading.title")}
         </h2>
 
-        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Markets</h3>
+        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("grading.markets")}
+        </h3>
         <ul className="mt-2 divide-y divide-border border border-border">
-          {markets.map(([name, scope]) => (
-            <li key={name} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
-              <span className="font-medium">{name}</span>
-              <span className="text-muted-foreground">{scope}</span>
+          {MARKETS.map((m) => (
+            <li key={m} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+              <span className="font-medium">{t(`grading.market.${m}.name`)}</span>
+              <span className="text-muted-foreground">{t(`grading.market.${m}.scope`)}</span>
             </li>
           ))}
         </ul>
 
-        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Rules</h3>
+        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("grading.rules")}
+        </h3>
         <ul className="mt-2 space-y-2">
-          {rules.map((r) => (
+          {RULES.map((r) => (
             <li key={r} className="flex items-start gap-2 text-sm leading-relaxed">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" /> {r}
+              <Check className="mt-0.5 size-4 shrink-0 text-primary" /> {t(`grading.rule.${r}`)}
             </li>
           ))}
         </ul>
@@ -130,10 +107,10 @@ function HowItWorks() {
 
       <section className="card-surface mt-6 flex flex-wrap items-center gap-4 bg-primary-soft/50 p-5">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg">Build a record people can trust.</h3>
-          <p className="mt-1 text-sm text-muted-foreground">18+. Gamble responsibly: 0800 006 008.</p>
+          <h3 className="text-lg">{t("cta.title")}</h3>
+          <RgNotice variant="compact" className="mt-1" />
         </div>
-        <Button onClick={() => openEarlyAccess()}>Get started for free</Button>
+        <Button onClick={() => openEarlyAccess()}>{tc("cta.getStarted")}</Button>
       </section>
     </AppShell>
   );

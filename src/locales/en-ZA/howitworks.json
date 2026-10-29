@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "How Puntr works | Predict smarter. Prove it.",
+    "description": "Sign up with an email code, post a pick before kick-off, and let it lock and settle automatically. Climb the weekly leaderboard. 18+.",
+    "ogTitle": "How Puntr works",
+    "ogDescription": "Four steps from sign-up to a public, locked record."
+  },
+  "title": "How Puntr works",
+  "intro": "Every pick is locked at kick-off, graded automatically and kept forever. Puntr does not take bets or handle money.",
+  "steps": {
+    "s1": { "title": "Sign up with an email code. 18+", "body": "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password.", "b1": "Free for Founding Members", "b2": "No card needed" },
+    "s2": { "title": "Post a pick before kick-off", "body": "Choose a fixture, a market and a selection, then enter the odds you got.", "b1": "Soccer and rugby at launch", "b2": "Picks close at kick-off" },
+    "s3": { "title": "It locks and settles automatically", "body": "Your pick is timestamped and locked. After the match it is graded from the official result.", "b1": "No edits, no deletes", "b2": "Corrections are logged, never overwritten" },
+    "s4": { "title": "Climb the weekly leaderboard", "body": "Your units, ROI and sample size are public. The leaderboard resets every Monday.", "b1": "Ranked on units, then ROI", "b2": "Needs 10 settled picks to qualify" }
+  },
+  "grading": {
+    "title": "How we grade picks",
+    "markets": "Markets",
+    "rules": "Rules",
+    "market": {
+      "m1": { "name": "Match result (1X2)", "scope": "Soccer and rugby" },
+      "m2": { "name": "Over/Under 2.5", "scope": "Soccer only" },
+      "m3": { "name": "Handicap", "scope": "Rugby only" },
+      "m4": { "name": "Both teams to score", "scope": "Soccer only" },
+      "m5": { "name": "Double chance", "scope": "Soccer only" }
+    },
+    "rule": {
+      "r1": "Every pick is worth 1 unit at the odds you entered.",
+      "r2": "Won: you gain (odds - 1) units. Example: 2.10 gives +1.10 units.",
+      "r3": "Lost: you lose 1 unit.",
+      "r4": "Void: 0 units. This covers a match that is postponed, abandoned or cancelled.",
+      "r5": "Picks are graded from the official full-time result.",
+      "r6": "If a result is corrected, the correction is logged as a new entry. The earlier entry is never overwritten."
+    }
+  },
+  "cta": { "title": "Build a record people can trust." }
+}

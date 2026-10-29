@@ -17,7 +17,10 @@ export const Route = createFileRoute("/leaderboards")({
         content: "See the top predictors earning the most PuntPoints this month on Puntr.",
       },
       { property: "og:title", content: "Leaderboard | Puntr" },
-      { property: "og:description", content: "Top predictors earning the most PuntPoints this month." },
+      {
+        property: "og:description",
+        content: "Top predictors earning the most PuntPoints this month.",
+      },
     ],
   }),
   component: Leaderboards,
@@ -79,7 +82,9 @@ function Leaderboards() {
                   )}
                 </div>
               </td>
-              <td className="px-4 py-3 font-semibold text-primary tnum">{t.points.toLocaleString()} PP</td>
+              <td className="px-4 py-3 font-semibold text-primary tnum">
+                {t.points.toLocaleString()} PP
+              </td>
               <td className="px-4 py-3 tnum">{t.hitRate}%</td>
               <td className="px-4 py-3 tnum">{t.correct}</td>
               <td className="px-4 py-3">
@@ -91,7 +96,9 @@ function Leaderboards() {
           ))}
           <tr className="bg-primary-soft/60">
             <td className="px-4 py-3">
-              <span className="grid size-7 place-items-center rounded-full bg-background text-xs font-bold tnum">24</span>
+              <span className="grid size-7 place-items-center rounded-full bg-background text-xs font-bold tnum">
+                24
+              </span>
             </td>
             <td className="px-4 py-3">
               <div className="flex items-center gap-3">
@@ -116,7 +123,10 @@ function Leaderboards() {
 
   return (
     <AppShell>
-      <PageHeading title="Leaderboard" subtitle="Top predictors earning the most PuntPoints this month." />
+      <PageHeading
+        title="Leaderboard"
+        subtitle="Top predictors earning the most PuntPoints this month."
+      />
 
       <div className="mb-6 flex flex-wrap gap-2">
         {["Overall", "This Month", "This Week", "All Time"].map((f, i) => (
@@ -147,7 +157,13 @@ function Leaderboards() {
       </div>
 
       <section className="card-surface overflow-hidden">
-        {isGuest ? table : <Locked label="Create a free account to see the full leaderboard." intensity="sm">{table}</Locked>}
+        {isGuest ? (
+          table
+        ) : (
+          <Locked label="Create a free account to see the full leaderboard." intensity="sm">
+            {table}
+          </Locked>
+        )}
       </section>
 
       <section className="card-surface mt-6 p-6 text-center">

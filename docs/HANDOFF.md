@@ -1,4 +1,4 @@
-# Handoff: Puntr MVP (as of Thu 29 Oct 2026, after P4)
+# Handoff: Puntr MVP (as of Thu 29 Oct 2026, after P4; P5 on branch mvp/p5-localisation)
 
 Blueprint (prompts P0–P18): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2 (version 4)
 Original build session: https://claude.ai/code/session_01H72HwojUL7ZLfrT7zuovqi
@@ -10,6 +10,9 @@ Soft launch Sun 1 Nov; production target Mon 2 Nov 2026; goal 100 founding membe
 - P2 free-launch pricing, refunds holding policy, grading rules, "No prizes at launch" terms.
 - P3 core schema (`supabase/migrations/20261029071500_mvp_core.sql` + hardening): profiles, fixtures, append-only predictions with SHA-256 chain, `create_prediction` RPC, settlement events, leaderboard views.
 - P4 POPIA: `privacy` migration, consent library/banner, `/cookies` (Privacy choices), `/privacy`, `/privacy/request`, `/affiliate-disclosure`, `docs/privacy/README.md`.
+
+## P5 (localisation) in one paragraph
+i18next + react-i18next, SSR-safe, no flash. See `docs/i18n.md`. Strings live in `src/locales/en-ZA/*.json`; only en-ZA is enabled (af, zu, xh wait for reviewers, P13). Formatters in `src/lib/format.ts` (`money()`, `odds()`, `pct()`, dates in SAST). `<RgNotice />` is the only responsible-gambling message. Migration `20261030060000_profiles_language.sql` is applied on the live project. `bun run i18n:check`, `bun run test`.
 
 ## Environment facts
 - Supabase project `hucjuekhitjuygcoomhw` ("Puntr South Africa", eu-west-1, free plan: no branching). Old Lovable project `cntoniedcjwsgereqrib` must not be referenced.

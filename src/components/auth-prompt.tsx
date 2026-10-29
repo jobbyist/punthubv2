@@ -39,7 +39,7 @@ export function AuthPrompt() {
       if (lastPrompt) {
         const lastPromptTime = parseInt(lastPrompt, 10);
         const daysSinceLastPrompt = (now - lastPromptTime) / (1000 * 60 * 60 * 24);
-        
+
         if (daysSinceLastPrompt >= DAYS_BETWEEN_PROMPTS) {
           localStorage.setItem(STORAGE_KEY_LAST_PROMPT, now.toString());
           return true;
@@ -95,7 +95,8 @@ export function AuthPrompt() {
             </button>
             <h3 className="text-xl font-bold">Join Puntr Today</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Sign up for free to post predictions, build a public record and climb the weekly leaderboard. 18+.
+              Sign up for free to post predictions, build a public record and climb the weekly
+              leaderboard. 18+.
             </p>
             <div className="mt-5 flex gap-3">
               <Button onClick={handleSignup} className="flex-1">

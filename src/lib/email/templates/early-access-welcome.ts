@@ -1,12 +1,25 @@
-import { brand, button, card, divider, escapeHtml, footer, heading, layout, logoHeader, paragraph } from "../components";
+import {
+  brand,
+  button,
+  card,
+  divider,
+  escapeHtml,
+  footer,
+  heading,
+  layout,
+  logoHeader,
+  paragraph,
+} from "../components";
 
 export interface WelcomeEmailProps {
   name: string;
   plan?: string;
+  locale?: string | null;
 }
 
 export const welcomeSubject = "🏆 You're officially on the Puntr Early Access List";
-export const welcomePreview = "You're one step closer to smarter sports betting. Here's what happens next.";
+export const welcomePreview =
+  "You're one step closer to smarter sports betting. Here's what happens next.";
 
 const perks = [
   "Priority beta access",
@@ -22,7 +35,7 @@ const nextUp = [
   "You'll be among the first invited into the beta.",
 ];
 
-export function renderWelcomeEmail({ name, plan }: WelcomeEmailProps): string {
+export function renderWelcomeEmail({ name, plan, locale }: WelcomeEmailProps): string {
   const firstName = escapeHtml(name.split(" ")[0] || "there");
 
   const perkRows = perks
@@ -88,8 +101,8 @@ export function renderWelcomeEmail({ name, plan }: WelcomeEmailProps): string {
         )}
       </td>
     </tr>
-    ${footer()}
+    ${footer(locale)}
   `;
 
-  return layout(body, welcomePreview);
+  return layout(body, welcomePreview, locale);
 }

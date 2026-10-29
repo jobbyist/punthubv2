@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "Coming soon | Puntr",
+    "description": "Puntr is building more tools for South African sports fans. Join early to hear first.",
+    "ogDescription": "More from Puntr is on the way."
+  },
+  "badge": "Coming soon",
+  "title1": "More from Puntr is",
+  "title2": "on the way.",
+  "body": "We are building in stages. Predictions, locked records and the weekly leaderboard come first. Other features follow once they are ready.",
+  "queue": "<1>{{feature}}</1> is in the build queue",
+  "cta": "Get started",
+  "explore": "Explore Puntr",
+  "fine": "Free to join. 18+ only. Gamble responsibly.",
+  "example": "Example",
+  "card": { "confidence": "Example confidence", "form": "Example form index", "next": "Example prediction", "homeWin": "Home win" },
+  "features": {
+    "aiPicks": "AI picks",
+    "podcast": "Podcast",
+    "bookmakers": "Bookmakers",
+    "tools": "Tools",
+    "liveScores": "Live scores",
+    "puntPoints": "PuntPoints",
+    "referrals": "Referrals",
+    "feedback": "Feedback"
+  }
+}

@@ -37,11 +37,19 @@ export async function submitEarlyAccess(data: EarlyAccessSubmission): Promise<Su
     const plan = sanitizeInput(data.plan);
 
     if (!isValidEmail(email)) {
-      return { success: false, message: "Please enter a valid email address.", error: "INVALID_EMAIL" };
+      return {
+        success: false,
+        message: "Please enter a valid email address.",
+        error: "INVALID_EMAIL",
+      };
     }
 
     if (phone !== "" && !isValidPhone(phone)) {
-      return { success: false, message: "Please enter a valid phone number.", error: "INVALID_PHONE" };
+      return {
+        success: false,
+        message: "Please enter a valid phone number.",
+        error: "INVALID_PHONE",
+      };
     }
 
     const { error } = await supabase.from("early_access").insert({
@@ -62,7 +70,11 @@ export async function submitEarlyAccess(data: EarlyAccessSubmission): Promise<Su
         };
       }
       console.error("Early access insert error:", error);
-      return { success: false, message: "Unable to submit your request. Please try again.", error: error.message };
+      return {
+        success: false,
+        message: "Unable to submit your request. Please try again.",
+        error: error.message,
+      };
     }
 
     return { success: true, message: "Successfully registered for early access!" };

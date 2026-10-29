@@ -431,6 +431,7 @@ export type Database = {
           id: string
           is_18_attested: boolean
           is_banned: boolean
+          language: string
           marketing_opt_in: boolean
           popia_consent_at: string
           posting_paused_until: string | null
@@ -447,6 +448,7 @@ export type Database = {
           id: string
           is_18_attested: boolean
           is_banned?: boolean
+          language?: string
           marketing_opt_in?: boolean
           popia_consent_at: string
           posting_paused_until?: string | null
@@ -463,6 +465,7 @@ export type Database = {
           id?: string
           is_18_attested?: boolean
           is_banned?: boolean
+          language?: string
           marketing_opt_in?: boolean
           popia_consent_at?: string
           posting_paused_until?: string | null

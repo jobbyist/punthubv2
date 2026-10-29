@@ -37,7 +37,9 @@ export function MatchPreview() {
             <TeamLogo team="Kaizer Chiefs" size="lg" />
           </div>
         </div>
-        <p className="mt-3 text-center text-xs text-muted-foreground">Betway Premiership · Sample fixture</p>
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Betway Premiership · Sample fixture
+        </p>
 
         <p className="mt-5 text-sm font-semibold">Tap to try a pick</p>
         <div className="mt-2 space-y-2">
@@ -51,7 +53,9 @@ export function MatchPreview() {
                 aria-pressed={active}
                 className={cn(
                   "relative w-full overflow-hidden border px-3 py-2.5 text-left text-sm transition-colors",
-                  active ? "border-primary bg-primary-soft" : "border-border hover:border-primary/50",
+                  active
+                    ? "border-primary bg-primary-soft"
+                    : "border-border hover:border-primary/50",
                 )}
               >
                 <motion.span
@@ -63,7 +67,9 @@ export function MatchPreview() {
                 />
                 <span className="relative flex items-center justify-between">
                   <span className="font-medium">{o.label}</span>
-                  <span className="tnum text-xs font-semibold text-muted-foreground">{o.share}%</span>
+                  <span className="tnum text-xs font-semibold text-muted-foreground">
+                    {o.share}%
+                  </span>
                 </span>
               </button>
             );
