@@ -1,18 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { SlidersHorizontal, Star, TrendingUp } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
-import { AffiliateBanner } from "@/components/affiliate";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { GateValue, Locked } from "@/components/locked";
-import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
-import { featuredPredictions, popularPredictions } from "@/lib/mock-data";
+import { TeamLogo } from "@/components/team-logo";
+import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
+import { formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { odds, pct } from "@/lib/format";
+import type { Sport } from "@/lib/sports/types";
+
+type Search = { sport?: Sport };
 
 export const Route = createFileRoute("/predictions")({
+  validateSearch: (search: Record<string, unknown>): Search =>
+    search["sport"] === "soccer" || search["sport"] === "rugby" ? { sport: search["sport"] } : {},
+  loaderDeps: ({ search }) => ({ sport: search.sport }),
+  loader: async ({ deps }) => {
+    try {
+      return { fixtures: await fetchUpcomingFixtures({ sport: deps.sport }), failed: false };
+    } catch (error) {
+      console.error("fixtures load failed", error);
+      return { fixtures: [], failed: true };
+    }
+  },
   head: ({ match }) => {
     const t = headT(match.context.locale, "predictions");
     return {
@@ -41,169 +50,90 @@ export const Route = createFileRoute("/predictions")({
   component: Predictions,
 });
 
-const FILTERS = ["all", "top", "today", "tomorrow", "week"] as const;
+const FILTERS = [
+  ["all", undefined],
+  ["soccer", "soccer"],
+  ["rugby", "rugby"],
+] as const;
 
 function Predictions() {
-  const { isSignedIn } = useSession();
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
-
-  const cards = (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {featuredPredictions.map((p, i) => (
-        <motion.article
-          key={p.home}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.07 }}
-          whileHover={{ y: -3 }}
-          className="card-surface p-4"
-        >
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-            <span>
-              {p.league} • {p.kickoff}
-            </span>
-            <Star className="size-4 fill-primary text-primary" />
-          </div>
-          <div className="mt-4 flex items-center justify-around gap-2 text-center">
-            <div className="min-w-0">
-              <span className="mx-auto block size-10 rounded-full bg-ink" />
-              <p className="mt-2 truncate text-sm font-semibold">{p.home}</p>
-            </div>
-            <span className="text-xs text-muted-foreground">{tc("vs")}</span>
-            <div className="min-w-0">
-              <span className="mx-auto block size-10 rounded-full bg-[oklch(0.8_0.16_85)]" />
-              <p className="mt-2 truncate text-sm font-semibold">{p.away}</p>
-            </div>
-          </div>
-          <div className="mt-4 border-t border-border pt-3">
-            <p className="text-[11px] text-muted-foreground">{t("card.topPick")}</p>
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold">{p.pick}</p>
-              <GateValue className="text-sm font-bold text-primary tnum">{odds(p.odds)}</GateValue>
-            </div>
-            <p className="text-xs text-muted-foreground">{p.market}</p>
-          </div>
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">{t("card.confidence")}</span>
-              <GateValue className="font-semibold tnum">{pct(p.confidence / 100)}</GateValue>
-            </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${p.confidence}%` }}
-                transition={{ duration: 0.8 }}
-                className="h-full rounded-full bg-primary"
-              />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-2 border-t border-border pt-3">
-            <span className="size-7 rounded-full bg-muted" />
-            <span className="flex-1 truncate text-sm">{p.tipster}</span>
-            <span className="rounded-md bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary">
-              {p.badge}
-            </span>
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground tnum">
-            {t("card.mostBacked")} · {t("card.backedCount", { count: p.backed })}
-          </p>
-          <Button variant="outline" className="mt-3 w-full">
-            {t("card.view")}
-          </Button>
-        </motion.article>
-      ))}
-    </div>
-  );
+  const { fixtures, failed } = Route.useLoaderData();
+  const { sport } = Route.useSearch();
+  const days = groupFixturesByDay(fixtures);
 
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        {FILTERS.map((f, i) => (
-          <button
-            key={f}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              i === 0 ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
-            }`}
-          >
-            {t(`filter.${f}`)}
-          </button>
-        ))}
-        <span className="flex-1" />
-        <button className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-          <SlidersHorizontal className="size-4" /> {t("filter.filters")}
-        </button>
-        <button className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-          <TrendingUp className="size-4" /> {t("filter.trending")}
-        </button>
+        {FILTERS.map(([key, value]) => {
+          const active = sport === value;
+          return (
+            <Link
+              key={key}
+              to="/predictions"
+              search={value ? { sport: value } : {}}
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                active ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+              }`}
+            >
+              {t(`filter.${key}`)}
+            </Link>
+          );
+        })}
       </div>
 
-      <section className="card-surface mb-6 p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-lg">{t("featured.title")}</h2>
-          <span className="rounded-md bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary">
-            {t("featured.curated")}
-          </span>
-          <span className="flex-1" />
-          <button className="text-xs font-medium text-primary">{tc("action.viewAll")}</button>
-        </div>
-        <p className="mb-4 mt-1 text-sm text-muted-foreground">{t("featured.sample")}</p>
-        {isSignedIn ? cards : <Locked intensity="md">{cards}</Locked>}
-      </section>
+      {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
 
-      <AffiliateBanner />
-
-      <section className="card-surface mt-6 overflow-hidden">
-        <div className="flex items-center justify-between p-5 pb-3">
-          <div>
-            <h2 className="text-lg">{t("popular.title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("popular.body")}</p>
-          </div>
-          <button className="text-xs font-medium text-primary">{tc("action.viewAll")}</button>
+      {!failed && days.length === 0 && (
+        <div className="card-surface p-6">
+          <h2 className="text-lg">{t("empty.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-sm">
-            <thead>
-              <tr className="border-y border-border text-left text-xs text-muted-foreground">
-                <th className="px-5 py-2.5 font-medium">{t("popular.match")}</th>
-                <th className="px-3 py-2.5 font-medium">{t("popular.market")}</th>
-                <th className="px-3 py-2.5 font-medium">{t("popular.tip")}</th>
-                <th className="px-3 py-2.5 font-medium">{t("popular.odds")}</th>
-                <th className="px-3 py-2.5 font-medium">{t("popular.conf")}</th>
-                <th className="px-5 py-2.5 font-medium">{t("popular.backedBy")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {popularPredictions.map((r) => (
-                <tr
-                  key={r.match}
-                  className="border-b border-border last:border-0 hover:bg-muted/50"
+      )}
+
+      <div className="space-y-6">
+        {days.map((day) => (
+          <section key={day.label} aria-label={day.label}>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              {day.label}
+            </h2>
+            <ul className="card-surface divide-y divide-border">
+              {day.fixtures.map((f) => (
+                <li
+                  key={f.id}
+                  className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 sm:grid-cols-[6.5rem_1fr_auto]"
                 >
-                  <td className="px-5 py-3">
-                    <p className="text-[11px] text-muted-foreground">{r.league}</p>
-                    <p className="font-medium">{r.match}</p>
-                  </td>
-                  <td className="px-3 py-3 text-muted-foreground">{r.market}</td>
-                  <td className="px-3 py-3">{r.tip}</td>
-                  <td className="px-3 py-3">
-                    <GateValue className="rounded-md bg-primary-soft px-2 py-1 text-xs font-semibold text-primary tnum">
-                      {odds(r.odds)}
-                    </GateValue>
-                  </td>
-                  <td className="px-3 py-3">
-                    <GateValue className="font-semibold text-primary tnum">
-                      {pct(r.conf / 100)}
-                    </GateValue>
-                  </td>
-                  <td className="px-5 py-3 text-muted-foreground tnum">{r.backed}</td>
-                </tr>
+                  <div className="text-sm font-semibold tnum">
+                    {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-muted-foreground">
+                      {f.competition} ·{" "}
+                      {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
+                    </p>
+                    <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+                      <span className="inline-flex items-center gap-2">
+                        <TeamLogo team={f.home} size="sm" />
+                        {f.home}
+                      </span>
+                      <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
+                      <span className="inline-flex items-center gap-2">
+                        <TeamLogo team={f.away} size="sm" />
+                        {f.away}
+                      </span>
+                    </p>
+                  </div>
+                </li>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      <p className="mt-6 text-xs text-muted-foreground">{t("note")}</p>
     </AppShell>
   );
 }

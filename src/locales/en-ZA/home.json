@@ -12,9 +12,18 @@
     "watch": "Watch the video"
   },
   "pillars": {
-    "locked": { "title": "Locked at kick-off", "sub": "no edits, no deletes" },
-    "graded": { "title": "Graded automatically", "sub": "settled after the match" },
-    "kept": { "title": "Kept forever", "sub": "a public record" }
+    "locked": {
+      "title": "Locked at kick-off",
+      "sub": "no edits, no deletes"
+    },
+    "graded": {
+      "title": "Graded automatically",
+      "sub": "settled after the match"
+    },
+    "kept": {
+      "title": "Kept forever",
+      "sub": "a public record"
+    }
   },
   "why": {
     "title": "Why a locked record matters",
@@ -33,7 +42,10 @@
   },
   "steps": {
     "title": "How Puntr works",
-    "s1": { "title": "Sign up free", "body": "Create your free account. You must be 18 or older." },
+    "s1": {
+      "title": "Sign up free",
+      "body": "Create your free account. You must be 18 or older."
+    },
     "s2": {
       "title": "Make predictions",
       "body": "Post your picks on upcoming matches before kick-off."
@@ -61,10 +73,17 @@
     "f4": "Community predictions and chat",
     "f5": "Free to join"
   },
-  "video": { "close": "Close video", "iframeTitle": "How Puntr works" },
+  "video": {
+    "close": "Close video",
+    "iframeTitle": "How Puntr works"
+  },
   "platforms": {
     "title": "All top platforms. One place.",
     "body": "Compare odds, markets and offers from South Africa's leading bookmakers.",
     "viewAll": "View all platforms"
+  },
+  "next": {
+    "title": "Next fixtures",
+    "all": "All fixtures"
   }
 }

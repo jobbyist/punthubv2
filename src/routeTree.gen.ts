@@ -29,8 +29,11 @@ import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
+import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
+import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -132,6 +135,11 @@ const AccountPrivacyRoute = AccountPrivacyRouteImport.update({
   path: '/account/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFixturesRoute = AdminFixturesRouteImport.update({
+  id: '/admin/fixtures',
+  path: '/admin/fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
   path: '/privacy/request',
@@ -140,6 +148,16 @@ const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncFixturesRoute = ApiCronSyncFixturesRouteImport.update({
+  id: '/api/cron/sync-fixtures',
+  path: '/api/cron/sync-fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
+  id: '/api/cron/sync-results',
+  path: '/api/cron/sync-results',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -163,9 +181,12 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -187,9 +208,12 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -212,9 +236,12 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -238,9 +265,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/account/privacy'
+    | '/admin/fixtures'
     | '/privacy/request'
     | '/u/$username'
     | '/account/'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-results'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -262,9 +292,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/account/privacy'
+    | '/admin/fixtures'
     | '/privacy/request'
     | '/u/$username'
     | '/account'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-results'
   id:
     | '__root__'
     | '/'
@@ -286,9 +319,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/account/privacy'
+    | '/admin/fixtures'
     | '/privacy_/request'
     | '/u/$username'
     | '/account/'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-results'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -311,9 +347,12 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
+  AdminFixturesRoute: typeof AdminFixturesRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
+  ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -458,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/fixtures': {
+      id: '/admin/fixtures'
+      path: '/admin/fixtures'
+      fullPath: '/admin/fixtures'
+      preLoaderRoute: typeof AdminFixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy_/request': {
       id: '/privacy_/request'
       path: '/privacy/request'
@@ -470,6 +516,20 @@ declare module '@tanstack/react-router' {
       path: '/u/$username'
       fullPath: '/u/$username'
       preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-fixtures': {
+      id: '/api/cron/sync-fixtures'
+      path: '/api/cron/sync-fixtures'
+      fullPath: '/api/cron/sync-fixtures'
+      preLoaderRoute: typeof ApiCronSyncFixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-results': {
+      id: '/api/cron/sync-results'
+      path: '/api/cron/sync-results'
+      fullPath: '/api/cron/sync-results'
+      preLoaderRoute: typeof ApiCronSyncResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -495,9 +555,12 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
+  AdminFixturesRoute: AdminFixturesRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
+  ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
+  ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

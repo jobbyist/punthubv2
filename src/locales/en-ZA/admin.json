@@ -1,0 +1,22 @@
+{
+  "forbidden": "This page is for Puntr admins.",
+  "fixtures": {
+    "title": "Fixtures"
+  },
+  "csv": {
+    "title": "CSV import",
+    "body": "For fixtures the data provider misses. Every row is checked first; if any row is wrong nothing is imported. Re-importing the same row updates it.",
+    "example": "sport,competition,home,away,kickoff_at\nsoccer,Betway Premiership,Mamelodi Sundowns,Orlando Pirates,2026-11-07T17:30:00+02:00",
+    "label": "CSV",
+    "import": "Import fixtures",
+    "importing": "Importing…",
+    "done_one": "Imported {{count}} fixture.",
+    "done_other": "Imported {{count}} fixtures.",
+    "line": "Line {{line}}",
+    "error": {
+      "forbidden": "Only admins can import fixtures.",
+      "invalid": "The file has problems. Nothing was imported.",
+      "error": "Something went wrong. Nothing was imported."
+    }
+  }
+}

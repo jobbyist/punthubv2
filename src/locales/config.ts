@@ -85,6 +85,7 @@ export const NAMESPACES = [
   "comingsoon",
   "email",
   "account",
+  "admin",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];

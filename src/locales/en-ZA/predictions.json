@@ -1,43 +1,28 @@
 {
   "meta": {
-    "title": "All predictions | Puntr",
-    "description": "Browse community predictions across soccer and rugby.",
-    "ogTitle": "All predictions | Puntr",
-    "ogDescription": "Community predictions on upcoming PSL, EPL, UCL, URC and Springbok fixtures."
+    "title": "Fixtures and predictions | Puntr",
+    "description": "Upcoming Betway Premiership, Premier League, Champions League, URC and Springbok fixtures. Post a pick before kick-off and build a locked, public record.",
+    "ogTitle": "Fixtures and predictions | Puntr",
+    "ogDescription": "Upcoming PSL, EPL, UCL, URC and Springbok fixtures."
   },
-  "title": "All predictions",
-  "subtitle": "Discover predictions from the community, each with a public record behind it.",
+  "title": "Predictions",
+  "subtitle": "Upcoming fixtures in South African time. Picks close at kick-off.",
   "filter": {
     "all": "All",
-    "top": "Top picks",
-    "today": "Today",
-    "tomorrow": "Tomorrow",
-    "week": "This week",
-    "filters": "Filters",
-    "trending": "Trending"
+    "soccer": "Soccer",
+    "rugby": "Rugby"
   },
-  "featured": {
-    "title": "Featured predictions",
-    "curated": "Curated",
-    "sample": "Community predictions on upcoming fixtures. Sample data is shown until the first real fixtures load."
+  "empty": {
+    "title": "No fixtures in the next 14 days yet",
+    "body": "Fixtures are updated every day. Check back soon."
   },
-  "card": {
-    "topPick": "Top pick",
-    "confidence": "Confidence",
-    "mostBacked": "Most backed",
-    "backedCount_one": "{{count}} prediction",
-    "backedCount_other": "{{count}} predictions",
-    "view": "View prediction"
-  },
-  "popular": {
-    "title": "Popular predictions",
-    "body": "See what the community is backing right now.",
-    "match": "Match",
-    "market": "Market",
-    "tip": "Tip",
-    "odds": "Odds",
-    "conf": "Confidence",
-    "backedBy": "Backed by"
+  "error": "We couldn't load fixtures. Please refresh the page.",
+  "live": "In play",
+  "kickoff": "Kick-off",
+  "note": "Past results do not predict future results. 18+.",
+  "upcoming": {
+    "title": "Next fixtures",
+    "all": "All fixtures"
   },
   "gate": {
     "label": "Create a free account to unlock today's predictions.",

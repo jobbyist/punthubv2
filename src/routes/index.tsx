@@ -11,8 +11,19 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
+import { fetchUpcomingFixtures } from "@/lib/fixtures";
+import { formatDate, formatTime } from "@/lib/format";
+import { TeamLogo } from "@/components/team-logo";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    try {
+      return { next: await fetchUpcomingFixtures({ limit: 3 }) };
+    } catch (error) {
+      console.error("home fixtures failed", error);
+      return { next: [] };
+    }
+  },
   head: ({ match }) => {
     const t = headT(match.context.locale, "home");
     return {
@@ -43,6 +54,7 @@ function Landing() {
   const { t } = useTranslation("home");
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
+  const { next } = Route.useLoaderData();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const handleCloseVideoModal = () => {
@@ -138,6 +150,33 @@ function Landing() {
           </ul>
         </motion.div>
       </section>
+
+      {/* Next fixtures: real data from the daily sync. Hidden when there are none. */}
+      {next.length > 0 && (
+        <motion.section {...fade} className="card-surface mb-8 p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg">{t("next.title")}</h2>
+            <Link to="/predictions" className="text-xs font-medium text-primary">
+              {t("next.all")}
+            </Link>
+          </div>
+          <ul className="mt-4 divide-y divide-border">
+            {next.map((f) => (
+              <li key={f.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
+                <span className="w-44 shrink-0 text-xs text-muted-foreground tnum">
+                  {formatDate(f.kickoff_at)} · {formatTime(f.kickoff_at)}
+                </span>
+                <span className="inline-flex min-w-0 flex-1 flex-wrap items-center gap-x-2 text-sm font-semibold">
+                  <TeamLogo team={f.home} size="sm" /> {f.home}
+                  <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
+                  <TeamLogo team={f.away} size="sm" /> {f.away}
+                </span>
+                <span className="text-xs text-muted-foreground">{f.competition}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
+      )}
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && (
