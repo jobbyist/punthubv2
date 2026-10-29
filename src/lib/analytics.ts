@@ -1,7 +1,10 @@
 /**
  * Lightweight analytics helper.
  * Pushes events to any installed analytics layer (GA4 / GTM) and logs in dev.
+ * Nothing is sent or queued until the visitor has said yes to the Analytics purpose (POPIA).
  */
+import { hasConsent } from "@/lib/consent";
+
 type AnalyticsPayload = Record<string, string | number | boolean | undefined>;
 
 declare global {
@@ -13,6 +16,7 @@ declare global {
 
 export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
   if (typeof window === "undefined") return;
+  if (!hasConsent("analytics")) return;
 
   const data = { event, ...payload, timestamp: new Date().toISOString() };
 

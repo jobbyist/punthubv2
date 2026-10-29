@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      breach_register: {
+        Row: {
+          contained_at: string | null
+          created_at: string
+          data_types: string | null
+          description: string
+          discovered_at: string
+          id: string
+          outcome: string | null
+          regulator_notified_at: string | null
+          subjects_affected: number | null
+          subjects_notified_at: string | null
+        }
+        Insert: {
+          contained_at?: string | null
+          created_at?: string
+          data_types?: string | null
+          description: string
+          discovered_at: string
+          id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
+        }
+        Update: {
+          contained_at?: string | null
+          created_at?: string
+          data_types?: string | null
+          description?: string
+          discovered_at?: string
+          id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
+        }
+        Relationships: []
+      }
       chain_heads: {
         Row: {
           created_at: string
@@ -53,11 +92,63 @@ export type Database = {
           },
         ]
       }
+      consent_records: {
+        Row: {
+          anon_id: string | null
+          created_at: string
+          granted: boolean
+          id: string
+          notice_version: string
+          purpose: string
+          seq: number
+          source: string
+          user_id: string | null
+        }
+        Insert: {
+          anon_id?: string | null
+          created_at?: string
+          granted: boolean
+          id?: string
+          notice_version: string
+          purpose: string
+          seq?: never
+          source: string
+          user_id?: string | null
+        }
+        Update: {
+          anon_id?: string | null
+          created_at?: string
+          granted?: boolean
+          id?: string
+          notice_version?: string
+          purpose?: string
+          seq?: never
+          source?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       early_access: {
         Row: {
           created_at: string
           email: string
           id: string
+          marketing_consent: boolean
           name: string
           phone: string | null
           plan: string
@@ -68,6 +159,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          marketing_consent?: boolean
           name: string
           phone?: string | null
           plan: string
@@ -78,6 +170,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          marketing_consent?: boolean
           name?: string
           phone?: string | null
           plan?: string
@@ -181,6 +274,30 @@ export type Database = {
           },
         ]
       }
+      notice_versions: {
+        Row: {
+          effective_at: string
+          id: string
+          kind: string
+          url: string
+          version: string
+        }
+        Insert: {
+          effective_at: string
+          id?: string
+          kind: string
+          url: string
+          version: string
+        }
+        Update: {
+          effective_at?: string
+          id?: string
+          kind?: string
+          url?: string
+          version?: string
+        }
+        Relationships: []
+      }
       predictions: {
         Row: {
           confidence: number
@@ -244,6 +361,60 @@ export type Database = {
           },
           {
             foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      privacy_requests: {
+        Row: {
+          closed_at: string | null
+          details: string | null
+          due_at: string
+          email: string
+          id: string
+          kind: string
+          notes: string | null
+          received_at: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          closed_at?: string | null
+          details?: string | null
+          due_at?: string
+          email: string
+          id?: string
+          kind: string
+          notes?: string | null
+          received_at?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          closed_at?: string | null
+          details?: string | null
+          due_at?: string
+          email?: string
+          id?: string
+          kind?: string
+          notes?: string | null
+          received_at?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privacy_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "privacy_requests_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
@@ -440,6 +611,32 @@ export type Database = {
       }
     }
     Views: {
+      current_consents: {
+        Row: {
+          created_at: string | null
+          granted: boolean | null
+          notice_version: string | null
+          purpose: string | null
+          source: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prediction_results: {
         Row: {
           prediction_id: string | null
@@ -620,6 +817,10 @@ export type Database = {
       }
     }
     Functions: {
+      anonymise_account: {
+        Args: { p_email: string; p_user: string }
+        Returns: undefined
+      }
       create_prediction: {
         Args: {
           p_confidence: number
@@ -652,7 +853,21 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      export_my_data: { Args: never; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
+      record_consent: {
+        Args: {
+          p_granted: boolean
+          p_notice_version: string
+          p_purpose: string
+          p_source: string
+        }
+        Returns: undefined
+      }
+      submit_privacy_request: {
+        Args: { p_details: string; p_email: string; p_kind: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
