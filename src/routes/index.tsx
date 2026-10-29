@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
+import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
+import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { RgNotice } from "@/components/rg-notice";
@@ -108,52 +109,49 @@ function Landing() {
           </ul>
         </motion.div>
 
-        {/* Why a locked record matters */}
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.12 }}
-          className="card-surface overflow-hidden"
         >
-          <div className="px-5 py-4 sm:px-6">
-            <h2 className="text-lg">{t("why.title")}</h2>
-          </div>
-          <ul className="space-y-4 border-t border-border px-5 py-5 text-sm sm:px-6">
-            {(["stamped", "noEdits", "public"] as const).map((k) => (
-              <li key={k} className="flex gap-3">
-                <span className="grid size-6 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">
-                  ✓
-                </span>
-                <span>
-                  <span className="block font-semibold">{t(`why.${k}.title`)}</span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                    {t(`why.${k}.body`)}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <MatchPreview />
         </motion.div>
       </section>
+
+      {/* Why a locked record matters */}
+      <motion.section {...fade} className="grid gap-4 md:grid-cols-3">
+        {(["stamped", "noEdits", "public"] as const).map((k) => (
+          <div key={k} className="card-surface flex gap-3 p-5">
+            <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">
+              ✓
+            </span>
+            <span>
+              <span className="block text-sm font-semibold">{t(`why.${k}.title`)}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                {t(`why.${k}.body`)}
+              </span>
+            </span>
+          </div>
+        ))}
+      </motion.section>
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && (
         <motion.section {...fade} className="py-14 text-center">
           <h2 className="text-3xl">{t("platforms.title")}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{t("platforms.body")}</p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+            {t("platforms.body")}
+          </p>
           <div className="mt-8">
             <PlatformRail />
           </div>
-          <Button variant="outline" className="mt-6" asChild>
-            <Link to="/predictions">
-              {t("platforms.viewAll")} <ArrowRight className="ml-1.5 size-4" />
-            </Link>
-          </Button>
+          <p className="mt-5 text-xs text-muted-foreground">{t("platforms.fine")}</p>
+          <RgNotice variant="compact" className="mt-1" />
         </motion.section>
       )}
 
       {/* How it works */}
-      <motion.section {...fade} className="card-surface p-6 sm:p-8">
+      <motion.section {...fade} className="card-surface mt-8 p-6 sm:p-8">
         <h2 className="text-center text-2xl">{t("steps.title")}</h2>
         <div className="mt-7 grid gap-4 md:grid-cols-4">
           {STEP_KEYS.map((k, i) => (
