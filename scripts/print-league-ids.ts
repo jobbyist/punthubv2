@@ -1,10 +1,10 @@
 /**
  * bun run sports:ids
- * Prints candidate leagues from API-Sports for each launch competition so you can choose the right IDs.
+ * Prints candidate leagues from API-Sports for each enabled competition (SPORTS_ENABLED, football by default) so you can choose the right IDs.
  * Nothing is guessed: copy the chosen IDs into SPORTS_LEAGUE_IDS, e.g. {"psl":123,"epl":456,"ucl":789,"urc":1,"springbok-tests":2}.
  * Needs SPORTS_API_KEY in the environment. Uses up to a few calls per competition from the daily free quota.
  */
-import { competitions } from "../src/lib/sports/competitions";
+import { activeCompetitions } from "../src/lib/sports/competitions";
 
 const key = process.env["SPORTS_API_KEY"];
 if (!key) {
@@ -17,7 +17,7 @@ const BASE = {
   rugby: "https://v1.rugby.api-sports.io",
 } as const;
 
-for (const comp of competitions) {
+for (const comp of activeCompetitions()) {
   console.log(`\n== ${comp.key}: ${comp.name} (${comp.sport})`);
   for (const term of comp.searches) {
     const url = new URL("/leagues", BASE[comp.sport]);

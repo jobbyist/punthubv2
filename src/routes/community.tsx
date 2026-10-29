@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import { CalendarDays, Target } from "lucide-react";
+import { Target } from "lucide-react";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
@@ -132,7 +132,7 @@ function Community() {
             {t("composer.prompt")}
           </Link>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <Link
             to="/predictions"
             search={{ sport: "soccer" }}
@@ -140,14 +140,7 @@ function Community() {
           >
             <Target className="size-4 text-muted-foreground" /> {t("composer.soccer")}
           </Link>
-          <Link
-            to="/predictions"
-            search={{ sport: "rugby" }}
-            className="flex items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium hover:bg-muted"
-          >
-            <CalendarDays className="size-4 text-muted-foreground" /> {t("composer.rugby")}
-          </Link>
-          <Button asChild className="col-span-2 sm:col-span-1">
+          <Button asChild>
             <Link to="/predictions">{t("composer.post")}</Link>
           </Button>
         </div>

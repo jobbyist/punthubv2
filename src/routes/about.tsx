@@ -61,13 +61,13 @@ const PRINCIPLES = [
 
 const LAYERS = ["data", "record", "community", "board", "points", "ai", "pro"] as const;
 
-/** The competitions in launch scope. Names are proper nouns and are not translated. */
+/** What is covered at launch. Names are proper nouns and are not translated. Rugby and horse racing follow after launch. */
 const COMPETITIONS = [
   ["Betway Premiership", "soccer"],
   ["Premier League", "soccer"],
   ["UEFA Champions League", "soccer"],
-  ["United Rugby Championship", "rugby"],
-  ["Springboks", "rugby"],
+  ["Rugby", "soon"],
+  ["Horse racing", "soon"],
 ] as const;
 
 const TECH = [
@@ -306,7 +306,7 @@ function About() {
                     <Trophy className="size-8 text-primary opacity-60" />
                     <p className="mt-2 text-xs font-medium">{name}</p>
                     <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      {tc(`sport.${sport}`)}
+                      {sport === "soon" ? tc("comingSoon") : tc(`sport.${sport}`)}
                     </p>
                   </div>
                 ))}

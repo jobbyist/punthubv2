@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r4). Draft pending
+            <strong>Last Updated:</strong> 29 October 2026 (version 2026-10-29-r5). Draft pending
             attorney review.
           </p>
 
@@ -90,8 +90,9 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">4. Platform Services</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Puntr is a community platform where members post predictions on soccer and rugby
-              matches. It provides:
+              Puntr is a community platform where members post predictions on football (soccer)
+              matches. Rugby and horse racing are planned for after launch and are not yet
+              available. It provides:
             </p>
             <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
               <li>

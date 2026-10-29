@@ -1,4 +1,4 @@
-import { competitions, type CompetitionKey } from "./competitions";
+import { activeCompetitions, type CompetitionKey } from "./competitions";
 import type { SportsProvider } from "./provider";
 import type { NormalisedFixture } from "./types";
 
@@ -57,7 +57,9 @@ export async function syncResults(
   if (open.length === 0) return { ok: true, calls: 0, upserted: 0, skipped: [] };
 
   const names = new Set(open.map((o) => o.competition));
-  const only = competitions.filter((c) => names.has(c.name)).map((c) => c.key) as CompetitionKey[];
+  const only = activeCompetitions()
+    .filter((c) => names.has(c.name))
+    .map((c) => c.key) as CompetitionKey[];
   if (only.length === 0)
     return {
       ok: true,

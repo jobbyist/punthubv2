@@ -1,16 +1,17 @@
 {
   "meta": {
     "title": "Fixtures and predictions | Puntr",
-    "description": "Upcoming Betway Premiership, Premier League, Champions League, URC and Springbok fixtures. Post a pick before kick-off and build a locked, public record.",
+    "description": "Upcoming Betway Premiership, Premier League, Champions League and more football fixtures. Post a pick before kick-off and build a locked, public record.",
     "ogTitle": "Fixtures and predictions | Puntr",
-    "ogDescription": "Upcoming PSL, EPL, UCL, URC and Springbok fixtures."
+    "ogDescription": "Upcoming PSL, EPL, UCL and more football fixtures."
   },
   "title": "Predictions",
   "subtitle": "Upcoming fixtures in South African time. Picks close at kick-off.",
   "filter": {
-    "all": "All",
+    "all": "All leagues",
     "soccer": "Soccer",
-    "rugby": "Rugby"
+    "rugby": "Rugby",
+    "label": "Filter by league"
   },
   "empty": {
     "title": "No fixtures in the next 14 days yet",

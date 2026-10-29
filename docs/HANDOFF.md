@@ -74,6 +74,10 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 7. Brand and affiliate: partner licence checks and tracking links for Supabets, Playbet and Mr Price Sport (P12 inputs).
 8. Translators for Afrikaans, isiZulu, isiXhosa (P13).
 
+## Sports scope (owner decision, 29 Oct 2026)
+
+Football only at launch. The owner is paying for the API-Sports **Football** plan only (the free plan serves only seasons 2022 to 2024, so every competition was refused on the first real re-sync). Rugby (URC, Springbok tests) and horse racing are added after launch in weeks 1 to 2: rugby by setting `SPORTS_ENABLED=soccer,rugby` once an API-Sports Rugby subscription exists; horse racing needs its own data model. More football leagues are defined in `src/lib/sports/competitions.ts` and need their real IDs in `SPORTS_LEAGUE_IDS` (see `docs/sports.md`). The API-Sports account answered "suspended" when I tried to look the IDs up on 29 Oct, so the owner must check the API-Sports dashboard (billing or verification) before the IDs can be fetched or the sync will work. No page may claim rugby or racing coverage until they are live.
+
 ## Next work
 
 **PuntPoints (P19) and the referral and rewards programme (P20): BUILT, switched off, waiting for the owner's decisions (D18 to D22). Read `docs/puntpoints.md`.** The original brief follows for context; the build matches it, with every value editable in `/admin` → Rewards, and the live SQL test `supabase/tests/puntpoints_rewards.sql` still to be run in the SQL editor (the Supabase connector asks for approval on its `update` statements and times out). Turning it on needs: values decided, rewards added (and sponsor voucher codes uploaded), PuntPoints then Rewards switched on, legal pages approved. Betting vouchers have their own switch and stay off until counsel signs off and a licensed partner funds them. The original brief follows.
