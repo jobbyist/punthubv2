@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,7 +14,6 @@ import {
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
 import { headT } from "@/lib/i18n/head";
 
 export const Route = createFileRoute("/insights")({
@@ -44,7 +43,7 @@ const PERKS = [
 ] as const;
 
 function Insights() {
-  const { openEarlyAccess } = useSession();
+  const navigate = useNavigate();
   const { t } = useTranslation("insights");
 
   return (
@@ -66,10 +65,15 @@ function Insights() {
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">{t("body")}</p>
         <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3">
-          <Button size="lg" className="h-12" onClick={() => openEarlyAccess()}>
+          <Button size="lg" className="h-12" onClick={() => navigate({ to: "/join" })}>
             {t("cta")}
           </Button>
-          <Button size="lg" variant="outline" className="h-12" onClick={() => openEarlyAccess()}>
+          <Button
+            size="lg"
+            variant="outline"
+            className="h-12"
+            onClick={() => navigate({ to: "/join" })}
+          >
             {t("beta")}
           </Button>
         </div>

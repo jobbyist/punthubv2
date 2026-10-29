@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
   Menu,
@@ -56,7 +56,8 @@ const sports = [
 export function MobileNav() {
   const { t } = useTranslation("nav");
   const { t: tc } = useTranslation("common");
-  const { isGuest, exitGuest, openEarlyAccess } = useSession();
+  const { isSignedIn, signOut } = useSession();
+  const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [sportsOpen, setSportsOpen] = useState(true);
@@ -354,14 +355,14 @@ export function MobileNav() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (isGuest) exitGuest();
-                    else openEarlyAccess(t("mobile.signInPrompt"));
+                    if (isSignedIn) void signOut();
+                    else navigate({ to: "/join" });
                     close();
                   }}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   <LogOut className="size-5 shrink-0 text-muted-foreground" />
-                  <span>{t("mobile.logOut")}</span>
+                  <span>{isSignedIn ? t("mobile.logOut") : t("mobile.signIn")}</span>
                 </button>
                 <LanguageSwitcher className="px-3 py-2" />
               </div>

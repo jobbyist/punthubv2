@@ -13,7 +13,12 @@
   "explore": "Explore Puntr",
   "fine": "Free to join. 18+ only. Gamble responsibly.",
   "example": "Example",
-  "card": { "confidence": "Example confidence", "form": "Example form index", "next": "Example prediction", "homeWin": "Home win" },
+  "card": {
+    "confidence": "Example confidence",
+    "form": "Example form index",
+    "next": "Example prediction",
+    "homeWin": "Home win"
+  },
   "features": {
     "aiPicks": "AI picks",
     "podcast": "Podcast",

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Send, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 import { useSession } from "@/components/session";
 
@@ -17,7 +17,9 @@ const canned =
   "Puntr AI is not switched on yet. Match previews are coming after launch. Until then, every pick on Puntr is locked at kick-off and graded automatically.\n\nNo prediction is a sure thing. Only stake what you can afford to lose. Support: 0800 006 008.";
 
 export function PuntAI() {
-  const { isGuest, openEarlyAccess } = useSession();
+  const { isSignedIn: isGuest } = useSession();
+  const navigate = useNavigate();
+  const openEarlyAccess = (_reason?: string) => void navigate({ to: "/join" });
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [input, setInput] = useState("");

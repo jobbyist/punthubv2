@@ -1,3 +1,4 @@
+import type { Session, User } from "@supabase/supabase-js";
 import {
   createContext,
   useCallback,
@@ -8,86 +9,114 @@ import {
   type ReactNode,
 } from "react";
 
-import { analytics, trackEvent } from "@/lib/analytics";
+import { supabase } from "@/integrations/supabase/client";
+import { useLocale } from "@/lib/i18n/provider";
+import { isEnabledLocale } from "@/locales/config";
+import type { Tables } from "@/integrations/supabase/types";
+
+export type Profile = Pick<
+  Tables<"profiles">,
+  | "id"
+  | "username"
+  | "display_name"
+  | "founding_number"
+  | "language"
+  | "role"
+  | "referral_code"
+  | "marketing_opt_in"
+  | "is_banned"
+>;
 
 type SessionValue = {
-  isGuest: boolean;
-  enterGuest: () => void;
-  exitGuest: () => void;
-  /** Opens the early-access form. Puntr is free at launch, so the plan defaults to Founding Member. */
-  openEarlyAccess: (reason?: string, plan?: string) => void;
-  openEarlyAccessPopup: (reason?: string) => void;
-  closeEarlyAccess: () => void;
-  earlyAccessOpen: boolean;
-  reason: string | undefined;
-  plan: string | undefined;
+  /** True until the first session and profile lookup has finished. */
+  loading: boolean;
+  user: User | null;
+  /** Null when signed out, or signed in but still to complete onboarding. */
+  profile: Profile | null;
+  isSignedIn: boolean;
+  isAdmin: boolean;
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 };
 
 const SessionContext = createContext<SessionValue | null>(null);
 
-const STORAGE_KEY = "puntr:guest";
-const FOUNDING_PLAN = "Founding Member";
+const PROFILE_COLUMNS =
+  "id, username, display_name, founding_number, language, role, referral_code, marketing_opt_in, is_banned";
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [isGuest, setIsGuest] = useState(false);
-  const [earlyAccessOpen, setEarlyAccessOpen] = useState(false);
-  const [reason, setReason] = useState<string | undefined>();
-  const [plan, setPlan] = useState<string | undefined>();
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const { locale, setLocale } = useLocale();
+
+  // Profile language wins over the cookie and Accept-Language once the profile has loaded.
+  useEffect(() => {
+    if (profile && profile.language !== locale && isEnabledLocale(profile.language)) {
+      setLocale(profile.language);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.language]);
+
+  const loadProfile = useCallback(async (userId: string | null) => {
+    if (!userId) {
+      setProfile(null);
+      return;
+    }
+    const { data } = await supabase
+      .from("profiles")
+      .select(PROFILE_COLUMNS)
+      .eq("id", userId)
+      .maybeSingle();
+    setProfile(data ?? null);
+  }, []);
 
   useEffect(() => {
-    setIsGuest(window.localStorage.getItem(STORAGE_KEY) === "1");
+    let active = true;
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!active) return;
+      setSession(data.session);
+      await loadProfile(data.session?.user.id ?? null);
+      if (active) setLoading(false);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+      setSession(next);
+      // Defer: calling supabase inside this callback can deadlock the auth client.
+      setTimeout(() => {
+        void loadProfile(next?.user.id ?? null);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [loadProfile]);
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setProfile(null);
   }, []);
 
-  const enterGuest = useCallback(() => {
-    window.localStorage.setItem(STORAGE_KEY, "1");
-    setIsGuest(true);
-  }, []);
+  const refreshProfile = useCallback(
+    () => loadProfile(session?.user.id ?? null),
+    [loadProfile, session],
+  );
 
-  const exitGuest = useCallback(() => {
-    window.localStorage.removeItem(STORAGE_KEY);
-    setIsGuest(false);
-  }, []);
-
-  const openEarlyAccess = useCallback((r?: string, selectedPlan?: string) => {
-    const chosen = selectedPlan ?? FOUNDING_PLAN;
-    setReason(r);
-    setPlan(chosen);
-    setEarlyAccessOpen(true);
-    analytics.planSelected(chosen, r ?? "cta");
-    analytics.earlyAccessOpened(chosen);
-  }, []);
-
-  /** Opens the early-access modal directly (defaults to Free Plan). Used for timed homepage trigger. */
-  const openEarlyAccessPopup = useCallback((r?: string) => {
-    const selectedPlan = FOUNDING_PLAN;
-    setReason(r ?? "Only 100 Founding spots. Join the Puntr community today.");
-    setPlan(selectedPlan);
-    setEarlyAccessOpen(true);
-    analytics.earlyAccessOpened(selectedPlan);
-  }, []);
-
-  const value = useMemo(
+  const value = useMemo<SessionValue>(
     () => ({
-      isGuest,
-      enterGuest,
-      exitGuest,
-      openEarlyAccess,
-      openEarlyAccessPopup,
-      closeEarlyAccess: () => setEarlyAccessOpen(false),
-      earlyAccessOpen,
-      reason,
-      plan,
+      loading,
+      user: session?.user ?? null,
+      profile,
+      isSignedIn: !!profile,
+      isAdmin: profile?.role === "admin" && !profile.is_banned,
+      signOut,
+      refreshProfile,
     }),
-    [
-      isGuest,
-      enterGuest,
-      exitGuest,
-      openEarlyAccess,
-      openEarlyAccessPopup,
-      earlyAccessOpen,
-      reason,
-      plan,
-    ],
+    [loading, session, profile, signOut, refreshProfile],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

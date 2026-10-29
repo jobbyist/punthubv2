@@ -14,10 +14,12 @@
     "menu": "Menu",
     "version": "Version 2.0 - © 2026 Puntr",
     "getEarlyAccess": "Get started",
-    "guest": "Guest",
-    "notifications": "Notifications",
-    "notificationsLocked": "Notifications start once your account is open.",
-    "home": "Puntr home"
+    "home": "Puntr home",
+    "founding": "Founding Member #{{number}}",
+    "myRecord": "My record",
+    "account": "Account",
+    "privacy": "Privacy and data",
+    "signOut": "Sign out"
   },
   "mobile": {
     "primary": "Primary",
@@ -27,7 +29,6 @@
     "sports": "Sports",
     "followPuntr": "Follow Puntr",
     "logOut": "Log out",
-    "signInPrompt": "Sign in or create an account to continue.",
     "responsibleGambling": "Responsible gambling",
     "helpCentre": "Help centre",
     "feedback": "Feedback",
@@ -41,7 +42,8 @@
       "liveScores": "Live scores",
       "puntPoints": "PuntPoints",
       "referrals": "Referrals"
-    }
+    },
+    "signIn": "Sign in"
   },
   "sport": {
     "soccer": "Soccer",

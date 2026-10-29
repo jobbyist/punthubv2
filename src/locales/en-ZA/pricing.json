@@ -22,8 +22,18 @@
     "note": "Indicative prices. They may change before launch.",
     "packs": "Packs",
     "uses": "What they buy",
-    "pack": { "starter": "Starter", "matchday": "Match Day", "season": "Season", "credits": "{{count}} credits" },
-    "use": { "preview": "AI match preview", "slip": "AI slip check", "stats": "Deep tipster stats", "cost": "{{count}} credits" },
+    "pack": {
+      "starter": "Starter",
+      "matchday": "Match Day",
+      "season": "Season",
+      "credits": "{{count}} credits"
+    },
+    "use": {
+      "preview": "AI match preview",
+      "slip": "AI slip check",
+      "stats": "Deep tipster stats",
+      "cost": "{{count}} credits"
+    },
     "alwaysFree": "Posting, voting and the leaderboard are always free."
   },
   "never": "Paying will never earn extra points or prize eligibility.",

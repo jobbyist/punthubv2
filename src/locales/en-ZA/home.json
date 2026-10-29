@@ -18,16 +18,34 @@
   },
   "why": {
     "title": "Why a locked record matters",
-    "stamped": { "title": "Timestamped before kick-off", "body": "A pick counts only if it was posted before the match started." },
-    "noEdits": { "title": "No edits or deletes", "body": "Wins and losses stay on the record. Nothing is hidden afterwards." },
-    "public": { "title": "Public units, ROI and sample size", "body": "See how many picks sit behind a result before you trust it." }
+    "stamped": {
+      "title": "Timestamped before kick-off",
+      "body": "A pick counts only if it was posted before the match started."
+    },
+    "noEdits": {
+      "title": "No edits or deletes",
+      "body": "Wins and losses stay on the record. Nothing is hidden afterwards."
+    },
+    "public": {
+      "title": "Public units, ROI and sample size",
+      "body": "See how many picks sit behind a result before you trust it."
+    }
   },
   "steps": {
     "title": "How Puntr works",
     "s1": { "title": "Sign up free", "body": "Create your free account. You must be 18 or older." },
-    "s2": { "title": "Make predictions", "body": "Post your picks on upcoming matches before kick-off." },
-    "s3": { "title": "Get graded", "body": "Every pick is locked at kick-off and settled automatically." },
-    "s4": { "title": "Climb the weekly leaderboard", "body": "Build a public record based on units, ROI and sample size." }
+    "s2": {
+      "title": "Make predictions",
+      "body": "Post your picks on upcoming matches before kick-off."
+    },
+    "s3": {
+      "title": "Get graded",
+      "body": "Every pick is locked at kick-off and settled automatically."
+    },
+    "s4": {
+      "title": "Climb the weekly leaderboard",
+      "body": "Build a public record based on units, ROI and sample size."
+    }
   },
   "board": {
     "title": "Weekly leaderboard",
@@ -44,5 +62,9 @@
     "f5": "Free to join"
   },
   "video": { "close": "Close video", "iframeTitle": "How Puntr works" },
-  "platforms": { "title": "All top platforms. One place.", "body": "Compare odds, markets and offers from South Africa's leading bookmakers.", "viewAll": "View all platforms" }
+  "platforms": {
+    "title": "All top platforms. One place.",
+    "body": "Compare odds, markets and offers from South Africa's leading bookmakers.",
+    "viewAll": "View all platforms"
+  }
 }

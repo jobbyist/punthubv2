@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
 import { RgNotice } from "@/components/rg-notice";
 import { headT } from "@/lib/i18n/head";
 
@@ -30,7 +29,7 @@ const MARKETS = ["m1", "m2", "m3", "m4", "m5"] as const;
 const RULES = ["r1", "r2", "r3", "r4", "r5", "r6"] as const;
 
 function HowItWorks() {
-  const { openEarlyAccess } = useSession();
+  const navigate = useNavigate();
   const { t } = useTranslation("howitworks");
   const { t: tc } = useTranslation("common");
 
@@ -110,7 +109,7 @@ function HowItWorks() {
           <h3 className="text-lg">{t("cta.title")}</h3>
           <RgNotice variant="compact" className="mt-1" />
         </div>
-        <Button onClick={() => openEarlyAccess()}>{tc("cta.getStarted")}</Button>
+        <Button onClick={() => navigate({ to: "/join" })}>{tc("cta.getStarted")}</Button>
       </section>
     </AppShell>
   );

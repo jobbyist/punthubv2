@@ -39,4 +39,7 @@ export const analytics = {
   earlyAccessSubmitted: (plan: string) => trackEvent("early_access_submitted", { plan }),
   earlyAccessFailed: (plan: string, reason: string) =>
     trackEvent("early_access_failed", { plan, reason }),
+  joinStarted: () => trackEvent("join_started"),
+  otpVerified: () => trackEvent("otp_verified"),
+  profileCreated: () => trackEvent("profile_created"),
 };

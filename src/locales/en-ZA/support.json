@@ -8,8 +8,16 @@
   "title": "Support centre",
   "subtitle": "We're here to help. Find answers, get in touch and we'll sort it out.",
   "email": { "title": "Email us", "note": "We aim to reply within 24 hours." },
-  "phone": { "title": "Call us", "hours": "Mon – Fri: 08:00 – 18:00 · Sat – Sun: 09:00 – 16:00 SAST", "display": "+27 12 880 6560" },
-  "chat": { "title": "Live chat", "body": "Live chat is not available yet. Email us and we'll reply.", "badge": "Not yet available" },
+  "phone": {
+    "title": "Call us",
+    "hours": "Mon – Fri: 08:00 – 18:00 · Sat – Sun: 09:00 – 16:00 SAST",
+    "display": "+27 12 880 6560"
+  },
+  "chat": {
+    "title": "Live chat",
+    "body": "Live chat is not available yet. Email us and we'll reply.",
+    "badge": "Not yet available"
+  },
   "faq": {
     "title": "Frequently asked questions",
     "q1": "What is Puntr?",

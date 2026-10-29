@@ -7,7 +7,15 @@
   },
   "title": "All predictions",
   "subtitle": "Discover predictions from the community, each with a public record behind it.",
-  "filter": { "all": "All", "top": "Top picks", "today": "Today", "tomorrow": "Tomorrow", "week": "This week", "filters": "Filters", "trending": "Trending" },
+  "filter": {
+    "all": "All",
+    "top": "Top picks",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "week": "This week",
+    "filters": "Filters",
+    "trending": "Trending"
+  },
   "featured": {
     "title": "Featured predictions",
     "curated": "Curated",
@@ -31,5 +39,9 @@
     "conf": "Confidence",
     "backedBy": "Backed by"
   },
-  "gate": { "label": "Create a free account to unlock today's predictions.", "values": "Create a free account to see odds and confidence.", "valuesAria": "Locked. Create a free account to view." }
+  "gate": {
+    "label": "Create a free account to unlock today's predictions.",
+    "values": "Create a free account to see odds and confidence.",
+    "valuesAria": "Locked. Create a free account to view."
+  }
 }

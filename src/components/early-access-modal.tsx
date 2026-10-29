@@ -1,3 +1,4 @@
+// Retired in P6: replaced by /join. The FormBackend call is no longer reachable. Delete after launch.
 import { motion } from "motion/react";
 import {
   AlertCircle,
@@ -65,7 +66,13 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
 }
 
 export function EarlyAccessModal() {
-  const { earlyAccessOpen, closeEarlyAccess, reason, enterGuest, plan } = useSession();
+  // Retired in P6: no longer rendered, and the old session fields are gone.
+  useSession();
+  const earlyAccessOpen = false;
+  const closeEarlyAccess = () => {};
+  const reason: string | undefined = undefined;
+  const enterGuest = () => {};
+  const plan: string | undefined = undefined;
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");

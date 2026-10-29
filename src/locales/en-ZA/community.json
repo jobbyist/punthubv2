@@ -4,11 +4,36 @@
     "description": "Connect with fellow South African sports fans, share your picks and discuss the games.",
     "ogDescription": "Share picks, discuss matches and learn from each other."
   },
-  "ld": { "name": "Puntr community", "description": "Community feed where South African sports fans share picks and discussions." },
+  "ld": {
+    "name": "Puntr community",
+    "description": "Community feed where South African sports fans share picks and discussions."
+  },
   "title": "Community",
   "subtitle": "Connect with fellow fans, share insights and learn from each other.",
-  "composer": { "prompt": "What's on your mind?", "locked": "Create a free account to post in the community.", "image": "Image", "poll": "Poll", "tip": "Tip", "match": "Match", "post": "Post" },
-  "tabs": { "all": "All posts", "following": "Following", "popular": "Popular", "mine": "My posts" },
+  "composer": {
+    "prompt": "What's on your mind?",
+    "locked": "Create a free account to post in the community.",
+    "image": "Image",
+    "poll": "Poll",
+    "tip": "Tip",
+    "match": "Match",
+    "post": "Post"
+  },
+  "tabs": {
+    "all": "All posts",
+    "following": "Following",
+    "popular": "Popular",
+    "mine": "My posts"
+  },
   "gate": "Create a free account to join the discussion.",
-  "post": { "pinned": "Pinned by Puntr", "admin": "Admin", "fullTime": "FT", "share": "Share post", "fold_one": "{{count}}-fold acca", "fold_other": "{{count}}-fold acca", "combined": "Combined odds", "total": "Total odds" }
+  "post": {
+    "pinned": "Pinned by Puntr",
+    "admin": "Admin",
+    "fullTime": "FT",
+    "share": "Share post",
+    "fold_one": "{{count}}-fold acca",
+    "fold_other": "{{count}}-fold acca",
+    "combined": "Combined odds",
+    "total": "Total odds"
+  }
 }

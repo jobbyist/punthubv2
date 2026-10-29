@@ -12,7 +12,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider } from "@/components/session";
-import { EarlyAccessModal } from "@/components/early-access-modal";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -20,7 +19,6 @@ import { PuntAI } from "@/components/punt-ai";
 import { SHOW_PUNT_AI_CHAT } from "@/lib/flags";
 import { ConsentBanner } from "@/components/consent-banner";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthPrompt } from "@/components/auth-prompt";
 import { LocaleProvider } from "@/lib/i18n/provider";
 import { detectLocale, detectLocaleOnClient } from "@/lib/i18n/locale";
 import { DEFAULT_LOCALE, type LocaleCode } from "@/locales/config";
@@ -269,8 +267,6 @@ function RootComponent() {
         </div>
         <MobileNav />
         {SHOW_PUNT_AI_CHAT && <PuntAI />}
-        <AuthPrompt />
-        <EarlyAccessModal />
         <ConsentBanner />
         <Toaster />
       </SessionProvider>

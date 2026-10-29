@@ -15,6 +15,7 @@ const today = new Date().toISOString().slice(0, 10);
 const entries: SitemapEntry[] = [
   // Real public routes only. Add new routes here when they ship.
   { path: "/", changefreq: "daily", priority: "1.0", lastmod: today },
+  { path: "/join", changefreq: "monthly", priority: "0.8", lastmod: today },
   { path: "/predictions", changefreq: "hourly", priority: "0.95", lastmod: today },
   { path: "/results", changefreq: "hourly", priority: "0.9", lastmod: today },
   { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },

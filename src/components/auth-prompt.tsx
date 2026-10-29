@@ -1,3 +1,5 @@
+// Retired in P6: no longer rendered (sign-up lives at /join). Kept for reference; delete after launch.
+import { useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -11,7 +13,9 @@ const STORAGE_KEY_FIRST_VISIT = "puntr:first-visit";
 const DAYS_BETWEEN_PROMPTS = 7;
 
 export function AuthPrompt() {
-  const { isGuest, openEarlyAccess } = useSession();
+  const { isSignedIn: isGuest } = useSession();
+  const navigate = useNavigate();
+  const openEarlyAccess = () => void navigate({ to: "/join" });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [show, setShow] = useState(false);
 

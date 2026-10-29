@@ -824,6 +824,17 @@ export type Database = {
         Args: { p_email: string; p_user: string }
         Returns: undefined
       }
+      complete_signup: {
+        Args: {
+          p_birth_year: number
+          p_language: string
+          p_marketing_email: boolean
+          p_marketing_whatsapp: boolean
+          p_ref: string
+          p_username: string
+        }
+        Returns: number
+      }
       create_prediction: {
         Args: {
           p_confidence: number
@@ -867,6 +878,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      username_available: { Args: { p_username: string }; Returns: boolean }
       submit_privacy_request: {
         Args: { p_details: string; p_email: string; p_kind: string }
         Returns: string

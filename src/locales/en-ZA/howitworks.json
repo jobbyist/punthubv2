@@ -8,10 +8,30 @@
   "title": "How Puntr works",
   "intro": "Every pick is locked at kick-off, graded automatically and kept forever. Puntr does not take bets or handle money.",
   "steps": {
-    "s1": { "title": "Sign up with an email code. 18+", "body": "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password.", "b1": "Free for Founding Members", "b2": "No card needed" },
-    "s2": { "title": "Post a pick before kick-off", "body": "Choose a fixture, a market and a selection, then enter the odds you got.", "b1": "Soccer and rugby at launch", "b2": "Picks close at kick-off" },
-    "s3": { "title": "It locks and settles automatically", "body": "Your pick is timestamped and locked. After the match it is graded from the official result.", "b1": "No edits, no deletes", "b2": "Corrections are logged, never overwritten" },
-    "s4": { "title": "Climb the weekly leaderboard", "body": "Your units, ROI and sample size are public. The leaderboard resets every Monday.", "b1": "Ranked on units, then ROI", "b2": "Needs 10 settled picks to qualify" }
+    "s1": {
+      "title": "Sign up with an email code. 18+",
+      "body": "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password.",
+      "b1": "Free for Founding Members",
+      "b2": "No card needed"
+    },
+    "s2": {
+      "title": "Post a pick before kick-off",
+      "body": "Choose a fixture, a market and a selection, then enter the odds you got.",
+      "b1": "Soccer and rugby at launch",
+      "b2": "Picks close at kick-off"
+    },
+    "s3": {
+      "title": "It locks and settles automatically",
+      "body": "Your pick is timestamped and locked. After the match it is graded from the official result.",
+      "b1": "No edits, no deletes",
+      "b2": "Corrections are logged, never overwritten"
+    },
+    "s4": {
+      "title": "Climb the weekly leaderboard",
+      "body": "Your units, ROI and sample size are public. The leaderboard resets every Monday.",
+      "b1": "Ranked on units, then ROI",
+      "b2": "Needs 10 settled picks to qualify"
+    }
   },
   "grading": {
     "title": "How we grade picks",
