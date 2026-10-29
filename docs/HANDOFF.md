@@ -1,7 +1,8 @@
 # Handoff: Puntr MVP
 
 As of the evening of Thu 29 Oct 2026. Written so a new Claude account can carry on without the old conversation.
-Blueprint (prompts P0 to P18 and the readiness score): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2
+Blueprint (prompts P0 to P18, status, schedule, decisions): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2 (version 1.2, updated 29 Oct 2026)
+MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13 and P14 are not started.
 Repo `jobbyist/punthubv2` (site puntr.co.za). Soft launch Sun 1 Nov, production Mon 2 Nov 2026, goal 100 Founding Members in 30 days.
 
 ## Start here
