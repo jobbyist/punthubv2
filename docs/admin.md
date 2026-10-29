@@ -24,6 +24,6 @@ Every action is checked twice: RLS or `is_admin()` in the database, and `is_admi
 
 Paste a pick ID. The browser recomputes the SHA-256 from the stored fields and the previous pick's hash and compares it with the stored hash (`src/lib/verify.ts`, tested against a hash produced by Postgres). It also checks the link to the previous pick. A daily table of chain heads is written by the `chain-head` cron (`write_chain_head`, 21:55 UTC).
 
-## Open
+## Applied
 
-- `20261030100500_chain_head_fix.sql` fixes an ambiguous-column bug in `write_chain_head` from `20261030100000_admin_chain.sql`. Apply it, then re-run `supabase/tests/admin_chain.sql`.
+`20261030100500_chain_head_fix.sql` is applied on the live project and `supabase/tests/admin_chain.sql` passes.

@@ -30,11 +30,11 @@ P8 `/match/$fixtureId` and the pick form (`create_prediction` only, no edit or d
 
 ## P11 in brief
 
-`/admin` (Fixtures, Settlement, Reports, Users, Waitlist), `/verify` with in-browser hash recomputation, `admin_settle_prediction`, daily `chain_heads` via cron. `/admin/fixtures` redirects to `/admin`. See `docs/admin.md`. The `write_chain_head` fix migration is written but not applied.
+`/admin` (Fixtures, Settlement, Reports, Users, Waitlist), `/verify` with in-browser hash recomputation, `admin_settle_prediction`, daily `chain_heads` via cron. `/admin/fixtures` redirects to `/admin`. See `docs/admin.md`. The `write_chain_head` fix is applied and its live test passes.
 
 ## Launch notifications in brief
 
-Five early-access people loaded and reserved Founding spots, three-wave Resend emails (launch day, +3, +7) behind `LAUNCH_EMAILS_ENABLED`, WhatsApp/SMS draft delivered to `/admin` by Realtime and by email. See `docs/launch-notify.md`. `supabase/tests/launch_notify.sql` still needs a live run.
+Five early-access people loaded and reserved Founding spots, three-wave Resend emails (launch day, +3, +7) behind `LAUNCH_EMAILS_ENABLED`, WhatsApp/SMS draft delivered to `/admin` by Realtime and by email. See `docs/launch-notify.md`. `supabase/tests/launch_notify.sql` passes on the live project.
 
 ## Environment facts
 
