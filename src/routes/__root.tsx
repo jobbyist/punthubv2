@@ -18,6 +18,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
 import { SHOW_PUNT_AI_CHAT } from "@/lib/flags";
+import { ConsentBanner } from "@/components/consent-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthPrompt } from "@/components/auth-prompt";
 
@@ -258,6 +259,7 @@ function RootComponent() {
         {SHOW_PUNT_AI_CHAT && <PuntAI />}
         <AuthPrompt />
         <EarlyAccessModal />
+        <ConsentBanner />
         <Toaster />
       </SessionProvider>
     </QueryClientProvider>

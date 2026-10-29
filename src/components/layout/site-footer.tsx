@@ -30,7 +30,8 @@ const columns = [
       ["About", "/about"],
       ["Terms", "/terms"],
       ["Privacy", "/privacy"],
-      ["Cookies", "/cookies"],
+      ["Privacy choices", "/cookies"],
+      ["Affiliate disclosure", "/affiliate-disclosure"],
       ["Refunds", "/refunds"],
     ],
   },
@@ -146,7 +147,7 @@ export function SiteFooter() {
         <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.3fr_repeat(3,1fr)_1.2fr]">
           <div>
             <Logo />
-            <p className="mt-3 text-sm text-muted-foreground">Predict. Earn. Win together.</p>
+            <p className="mt-3 text-sm text-muted-foreground">Predict smarter. Prove it.</p>
           </div>
 
           {columns.map((col) => (
