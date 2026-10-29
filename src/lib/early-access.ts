@@ -5,6 +5,7 @@ export interface EarlyAccessSubmission {
   name: string;
   phone: string;
   plan: string;
+  marketingConsent: boolean;
 }
 
 export interface SubmissionResult {
@@ -39,16 +40,17 @@ export async function submitEarlyAccess(data: EarlyAccessSubmission): Promise<Su
       return { success: false, message: "Please enter a valid email address.", error: "INVALID_EMAIL" };
     }
 
-    if (!isValidPhone(phone)) {
+    if (phone !== "" && !isValidPhone(phone)) {
       return { success: false, message: "Please enter a valid phone number.", error: "INVALID_PHONE" };
     }
 
     const { error } = await supabase.from("early_access").insert({
       email,
       name,
-      phone,
+      phone: phone === "" ? null : phone,
       plan,
       status: "pending",
+      marketing_consent: data.marketingConsent,
     });
 
     if (error) {

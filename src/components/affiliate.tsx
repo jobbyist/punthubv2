@@ -1,6 +1,9 @@
 import { platforms } from "@/lib/mock-data";
+import { AFFILIATES_ENABLED } from "@/lib/flags";
 
+/** Placeholder slot. Renders nothing until AFFILIATES_ENABLED; P12 replaces it with real partner placements. */
 export function AffiliateBanner({ label = "970 x 90" }: { label?: string }) {
+  if (!AFFILIATES_ENABLED) return null;
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-primary/25 bg-primary-soft/50 px-6 py-6 text-center">
       <p className="text-sm font-medium text-muted-foreground">Affiliate banner / Promo space</p>

@@ -24,6 +24,7 @@ import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/about" }],
     meta: [
       { title: "About Puntr | Africa's Sports Prediction & Intelligence Platform" },
       {
@@ -98,10 +99,10 @@ const technologies = [
   { name: "TypeScript", category: "Frontend", description: "Type-safe development for reliability." },
   { name: "Tailwind CSS", category: "Frontend", description: "Utility-first styling for rapid UI development." },
   { name: "TanStack Query", category: "Data Layer", description: "Efficient server-state management and real-time data experiences." },
-  { name: "Supabase", category: "Backend", description: "Database, authentication and real-time subscriptions." },
+  { name: "Supabase", category: "Backend", description: "Database, authentication and live updates." },
   { name: "Vercel", category: "Infrastructure", description: "Scalable deployment and global application delivery." },
   { name: "VerifyNow", category: "Verification", description: "Identity and age verification infrastructure." },
-  { name: "Paystack", category: "Payments", description: "Secure payment infrastructure for premium products and subscriptions." },
+  { name: "Paystack", category: "Payments", description: "Planned for credit purchases later. Not in use at launch." },
   { name: "Framer Motion", category: "UI/UX", description: "Production-ready animation library." },
   { name: "Recharts", category: "Analytics", description: "Data visualization and charting." },
   { name: "PUNT AI", category: "AI", description: "AI-powered prediction intelligence." },

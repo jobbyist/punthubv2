@@ -13,13 +13,12 @@ interface SitemapEntry {
 const today = new Date().toISOString().slice(0, 10);
 
 const entries: SitemapEntry[] = [
-  // Core product pages – high priority for SA sports betting queries
+  // Real public routes only. Add new routes here when they ship.
   { path: "/", changefreq: "daily", priority: "1.0", lastmod: today },
   { path: "/predictions", changefreq: "hourly", priority: "0.95", lastmod: today },
   { path: "/results", changefreq: "hourly", priority: "0.9", lastmod: today },
   { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
   { path: "/community", changefreq: "daily", priority: "0.85", lastmod: today },
-  { path: "/insights", changefreq: "daily", priority: "0.85", lastmod: today },
   { path: "/pricing", changefreq: "weekly", priority: "0.8", lastmod: today },
   { path: "/how-it-works", changefreq: "monthly", priority: "0.75", lastmod: today },
   { path: "/support", changefreq: "monthly", priority: "0.7", lastmod: today },

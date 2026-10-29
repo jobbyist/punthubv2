@@ -19,10 +19,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/components/session";
 import { submitEarlyAccess } from "@/lib/early-access";
-import { submitEarlyAccessForm } from "@/lib/early-access.functions";
 import { analytics } from "@/lib/analytics";
 
-const SPORTS = ["Soccer", "Rugby", "Cricket", "Basketball", "Tennis", "Boxing", "Golf", "Horse racing"] as const;
+const SPORTS = ["Soccer", "Rugby", "Cricket", "Basketball", "Tennis", "Combat sports", "Horse racing"] as const;
 const BOOKMAKERS = ["Betway", "Hollywoodbets", "Supabets", "Easybet", "Sunbet", "World Sports Betting"] as const;
 const EXPERIENCE = ["New to betting", "Casual punter", "Regular punter", "Serious / data-driven"] as const;
 
@@ -63,7 +62,7 @@ export function EarlyAccessModal() {
   const [bookmakers, setBookmakers] = useState<string[]>([]);
   const [experience, setExperience] = useState<string>("");
   const [agreed, setAgreed] = useState(false);
-  const [marketingOptIn, setMarketingOptIn] = useState(true);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [done, setDone] = useState(false);
   const [confirmedPlan, setConfirmedPlan] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
@@ -71,13 +70,13 @@ export function EarlyAccessModal() {
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
 
-  const selectedPlan = plan ?? "Free Plan";
+  const selectedPlan = plan ?? "Founding Member";
 
   const toggle = (list: string[], set: (v: string[]) => void, value: string) =>
     set(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
   const accountValid =
-    name.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && /^[0-9+()\s-]{7,20}$/.test(phone.trim());
+    name.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && (phone.trim() === "" || /^[0-9+()\s-]{7,20}$/.test(phone.trim()));
 
   async function runSubmit() {
     if (submitting) return;
@@ -88,38 +87,20 @@ export function EarlyAccessModal() {
     setAttempts((a) => a + 1);
 
     try {
-      // FormBackend is the source of truth for delivery/notifications.
-      const form = await submitEarlyAccessForm({
-        data: {
-          name,
-          email,
-          phone,
-          plan: selectedPlan,
-          sports,
-          bookmakers,
-          ...(experience ? { experience } : {}),
-          marketingOptIn,
-        },
-      });
-
-      if (!form?.sent) {
-        analytics.earlyAccessFailed(selectedPlan, form?.reason ?? "FORM_FAILED");
+      // The Supabase table is the single source of truth for the waitlist.
+      const saved = await submitEarlyAccess({ name, email, phone, plan: selectedPlan, marketingConsent: marketingOptIn });
+      if (!saved.success && saved.error !== "DUPLICATE_EMAIL") {
+        analytics.earlyAccessFailed(selectedPlan, saved.error ?? "SAVE_FAILED");
         setErrorTitle("We couldn't reserve your spot");
-        setErrorDetail("Something went wrong sending your details. Your details are saved below — tap “Try again”.");
+        setErrorDetail("Something went wrong saving your details. Tap “Try again”.");
         return;
-      }
-
-      // Log the submission in our database too (never blocks the user).
-      const logged = await submitEarlyAccess({ name, email, phone, plan: selectedPlan });
-      if (!logged.success && logged.error !== "DUPLICATE_EMAIL") {
-        console.error("Early access log failed:", logged.error);
       }
 
       analytics.earlyAccessSubmitted(selectedPlan);
       setConfirmedPlan(selectedPlan);
       setDone(true);
-      toast.success("Spot reserved!", {
-        description: `${selectedPlan} held for you — our team will review within 1–2 working days.`,
+      toast.success("You're on the waitlist", {
+        description: "We'll email you when Puntr opens.",
       });
     } catch {
       analytics.earlyAccessFailed(selectedPlan, "NETWORK");
@@ -153,21 +134,16 @@ export function EarlyAccessModal() {
             </motion.div>
 
             <h2 className="mt-5 text-2xl leading-tight">
-              Welcome to <span className="text-primary">Puntr</span> — your spot is reserved
+              You're on the <span className="text-primary">Puntr</span> waitlist
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Thank you, {name.split(" ")[0] || "there"} — your request is in. No payment was taken and none is required
-              at this stage.
+              Thank you, {name.split(" ")[0] || "there"}. No payment was taken and none is needed.
             </p>
 
             <div className="mt-5 rounded-xl border border-border bg-muted/40 px-4 py-3 text-left">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Plan reserved</span>
+                <span className="text-muted-foreground">Your spot</span>
                 <span className="font-semibold text-primary">{confirmedPlan}</span>
-              </div>
-              <div className="mt-2 flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Welcome bonus</span>
-                <span className="font-semibold tnum">1 000 PuntPoints</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">We'll contact you on</span>
@@ -186,29 +162,16 @@ export function EarlyAccessModal() {
               <div className="flex gap-2.5">
                 <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Our team manually reviews every request. This usually takes{" "}
-                  <span className="font-medium text-foreground">1–2 working days</span>.
-                </p>
-              </div>
-              <div className="flex gap-2.5">
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Once approved, you'll receive a confirmation <span className="font-medium text-foreground">email
-                  and SMS</span> with full details about the Puntr early access programme.
+                  You're on the waitlist. We'll email you when Puntr opens so you can claim your Founding spot.
                 </p>
               </div>
               <div className="flex gap-2.5">
                 <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  That message includes a quick KYC verification step — required because Puntr is an 18+ betting
-                  platform.
+                  You must be 18 or older. Puntr never asks for ID documents.
                 </p>
               </div>
             </div>
-
-            <p className="mt-4 text-xs text-muted-foreground">
-              You won't receive an automated email right away — keep an eye out for our team's message.
-            </p>
 
             <Button
               className="mt-5 w-full"
@@ -224,13 +187,13 @@ export function EarlyAccessModal() {
           <>
             <div className="bg-primary-soft px-6 pb-6 pt-8 text-center">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                <Sparkles className="size-3.5" /> Beta • Early access
+                <Sparkles className="size-3.5" /> Founding 100
               </span>
               <h2 className="mt-4 text-2xl leading-tight">
-                Reserve your <span className="text-primary">Puntr beta spot</span>
+                Claim your <span className="text-primary">Founding spot</span>
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                {reason ?? "Get exclusive access before everyone else — plus 1 000 free PuntPoints on launch."}
+                {reason ?? "Join the waitlist for one of 100 Founding spots. Free."}
               </p>
               <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 text-primary" /> Reservation only — no card, no payment today
@@ -269,7 +232,7 @@ export function EarlyAccessModal() {
               )}
 
               <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
-                <span className="text-muted-foreground">Selected plan</span>
+                <span className="text-muted-foreground">Your spot</span>
                 <span className="font-semibold text-primary">{selectedPlan}</span>
               </div>
 
@@ -299,7 +262,7 @@ export function EarlyAccessModal() {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="ea-phone">Phone number</Label>
+                    <Label htmlFor="ea-phone">Phone number (optional)</Label>
                     <Input
                       id="ea-phone"
                       type="tel"
@@ -311,7 +274,7 @@ export function EarlyAccessModal() {
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+27 82 123 4567"
                     />
-                    <p className="text-[11px] text-muted-foreground">Used for your SMS invite and KYC verification.</p>
+                    <p className="text-[11px] text-muted-foreground">Optional. Only used to reach you about your Founding spot.</p>
                   </div>
                 </>
               )}
@@ -381,7 +344,7 @@ export function EarlyAccessModal() {
                       <a href="/privacy" className="font-medium text-primary underline-offset-4 hover:underline">
                         Privacy Policy
                       </a>
-                      , including a KYC verification check before access is granted.
+                      .
                     </Label>
                   </div>
                   <div className="flex items-start gap-3 rounded-xl border border-border bg-card px-3.5 py-3">
@@ -392,7 +355,7 @@ export function EarlyAccessModal() {
                       className="mt-0.5"
                     />
                     <Label htmlFor="ea-marketing" className="text-xs font-normal leading-relaxed text-muted-foreground">
-                      Send me launch updates, predictions and rewards news by email and SMS.
+                      Email me launch updates and news about Puntr. Optional. I can say no and still join.
                     </Label>
                   </div>
                 </div>
@@ -452,9 +415,10 @@ export function EarlyAccessModal() {
                 Browse as guest
               </button>
               <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-                No payment is taken during early access — you only reserve your plan. Approval follows a short manual
-                review (1–2 working days).<br />
-                18+ only. Bet responsibly.
+                Puntr is free during the Founding 100 launch. We only use your details to run the waitlist
+                and, if you tick the box, to email you news. Your picks, once you post them, are a public and permanent
+                record.<br />
+                18+ only. Bet responsibly: 0800 006 008.
               </p>
             </form>
           </>

@@ -41,12 +41,13 @@ const bottomNavItems = [
 ] as const;
 
 const sports = [
-  { label: "Soccer", emoji: "⚽", to: "/predictions" },
-  { label: "Basketball", emoji: "🏀", to: "/predictions" },
-  { label: "Tennis", emoji: "🎾", to: "/predictions" },
-  { label: "Rugby", emoji: "🏉", to: "/predictions" },
-  { label: "Cricket", emoji: "🏏", to: "/predictions" },
-  { label: "Boxing", emoji: "🥊", to: "/predictions" },
+  { label: "Soccer", emoji: "⚽", to: "/predictions", active: true },
+  { label: "Rugby", emoji: "🏉", to: "/predictions", active: true },
+  { label: "Basketball", emoji: "🏀", active: false },
+  { label: "Tennis", emoji: "🎾", active: false },
+  { label: "Cricket", emoji: "🏏", active: false },
+  { label: "Combat sports", emoji: "🥊", active: false },
+  { label: "Horse racing", emoji: "🏇", active: false },
 ] as const;
 
 export function MobileNav() {
@@ -166,27 +167,30 @@ export function MobileNav() {
 
                 {sportsOpen && (
                   <div className="mt-2 grid grid-cols-4 gap-2 px-1 pb-2">
-                    {sports.map((s) => (
-                      <Link
-                        key={s.label}
-                        to={s.to}
-                        onClick={close}
-                        className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
-                      >
-                        <span className="text-xl leading-none">{s.emoji}</span>
-                        <span className="text-[11px] font-medium text-foreground">{s.label}</span>
-                      </Link>
-                    ))}
-                    <Link
-                      to="/predictions"
-                      onClick={close}
-                      className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
-                    >
-                      <span className="grid size-6 place-items-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
-                        ···
-                      </span>
-                      <span className="text-[11px] font-medium text-foreground">More</span>
-                    </Link>
+                    {sports.map((s) =>
+                      s.active ? (
+                        <Link
+                          key={s.label}
+                          to={s.to}
+                          onClick={close}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
+                        >
+                          <span className="text-xl leading-none">{s.emoji}</span>
+                          <span className="text-[11px] font-medium text-foreground">{s.label}</span>
+                        </Link>
+                      ) : (
+                        <div
+                          key={s.label}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-70"
+                        >
+                          <span className="text-xl leading-none grayscale">{s.emoji}</span>
+                          <span className="text-[11px] font-medium text-foreground">{s.label}</span>
+                          <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            Coming soon
+                          </span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 )}
               </div>
@@ -295,11 +299,11 @@ export function MobileNav() {
                 </div>
                 <div className="mt-1 flex items-center gap-2 px-3 pb-2">
                   {[
-                    { href: "https://x.com/punthub.za", label: "X" },
-                    { href: "https://facebook.com/punthub.za", label: "f" },
-                    { href: "https://instagram.com/punthub.za", label: "ig" },
-                    { href: "https://youtube.com/@punthub", label: "yt" },
-                    { href: "https://tiktok.com/@punthub.za", label: "tt" },
+                    { href: "https://x.com/puntr_za", label: "X" },
+                    { href: "https://facebook.com/puntrza", label: "f" },
+                    { href: "https://instagram.com/puntr_za", label: "ig" },
+                    { href: "https://youtube.com/@puntr_za", label: "yt" },
+                    { href: "https://tiktok.com/@puntr_za", label: "tt" },
                   ].map((s) => (
                     <a
                       key={s.label}

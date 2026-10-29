@@ -95,7 +95,7 @@ export function AuthPrompt() {
             </button>
             <h3 className="text-xl font-bold">Join Puntr Today</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Sign up for free to access predictions, earn PuntPoints, and get 30% recurring revenue from referrals.
+              Sign up for free to post predictions, build a public record and climb the weekly leaderboard. 18+.
             </p>
             <div className="mt-5 flex gap-3">
               <Button onClick={handleSignup} className="flex-1">

@@ -11,15 +11,16 @@ import { featuredPredictions, popularPredictions } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/predictions")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/predictions" }],
     meta: [
       { title: "All Predictions | Puntr" },
       {
         name: "description",
         content:
-          "Browse today's top community and AI-backed betting predictions across football, rugby, cricket and more.",
+          "Browse today's top community and AI-backed betting predictions across soccer and rugby.",
       },
       { property: "og:title", content: "All Predictions | Puntr" },
-      { property: "og:description", content: "Top value bets with the highest AI confidence and community backing." },
+      { property: "og:description", content: "Community predictions on upcoming PSL, EPL, UCL, URC and Springbok fixtures." },
     ],
     scripts: [
       {
@@ -29,9 +30,9 @@ export const Route = createFileRoute("/predictions")({
           "@type": "CollectionPage",
           name: "All Predictions",
           description:
-            "Community and AI-backed betting predictions across football, rugby, cricket and more.",
-          url: "https://punthubv2.lovable.app/predictions",
-          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://punthubv2.lovable.app/" },
+            "Community and AI-backed betting predictions across soccer and rugby.",
+          url: "https://puntr.co.za/predictions",
+          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://puntr.co.za/" },
         }),
       },
     ],
@@ -147,7 +148,7 @@ function Predictions() {
           <button className="text-xs font-medium text-primary">View all</button>
         </div>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">
-          Top value bets with the highest AI confidence and community backing.
+          Community predictions on upcoming fixtures. Sample data shown until the first real fixtures load.
         </p>
         {isGuest ? cards : <Locked intensity="md">{cards}</Locked>}
       </section>

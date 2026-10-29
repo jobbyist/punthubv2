@@ -11,6 +11,7 @@ export const Route = createFileRoute("/coming-soon")({
     feature: typeof search["feature"] === "string" ? (search["feature"] as string) : undefined,
   }),
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/coming-soon" }],
     meta: [
       { title: "Coming Soon — The Future of Sports Intelligence | Puntr" },
       {

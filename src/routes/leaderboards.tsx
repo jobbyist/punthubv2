@@ -9,6 +9,7 @@ import { topTipsters } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/leaderboards")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/leaderboards" }],
     meta: [
       { title: "Leaderboard | Puntr" },
       {
@@ -152,14 +153,14 @@ function Leaderboards() {
       <section className="card-surface mt-6 p-6 text-center">
         <h2 className="text-2xl">How PuntPoints Work</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Earn PuntPoints for accurate predictions and active participation.
+          Climb the leaderboard on a record that cannot be edited.
         </p>
         <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Make Predictions", "Submit your picks on upcoming matches across all sports."],
-            ["Earn Points", "Get points for correct predictions based on odds and difficulty."],
-            ["Climb the Ranks", "Climb the leaderboard and unlock exclusive rewards."],
-            ["Win Rewards", "Redeem your points for cash, bonuses and premium perks."],
+            ["Get graded", "Every pick is locked at kick-off and settled automatically."],
+            ["Climb the ranks", "Move up the weekly leaderboard as your record grows."],
+            ["Build your record", "Units, ROI and sample size stay public and permanent."],
           ].map(([title, body]) => (
             <div key={title}>
               <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary">

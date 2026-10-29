@@ -6,6 +6,7 @@ import { resultsByDate, resultsSummary } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/results" }],
     meta: [
       { title: "Results | Puntr" },
       {

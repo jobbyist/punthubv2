@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/terms" }],
     meta: [
       { title: "Terms & Conditions | Puntr" },
       {
@@ -97,32 +98,20 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">5. Payment Providers & Third-Party Services</h2>
+            <h2 className="mb-3 text-xl font-semibold">5. Payments & Third-Party Services</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Puntr partners with various licensed bookmakers and payment service providers, including but not limited to:
-            </p>
-            <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
-              <li>Betway South Africa</li>
-              <li>Hollywoodbets</li>
-              <li>Supabets</li>
-              <li>Sportingbet</li>
-              <li>10bet</li>
-              <li>Bet.co.za</li>
-              <li>Other licensed South African betting operators</li>
-            </ul>
-            <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Payment Processing:</strong> All payment transactions with third-party bookmakers are processed
-              directly by those platforms. Puntr does not store or process your payment information. Each bookmaker may
-              use different payment providers and methods.
+              <strong>No payments at launch:</strong> Puntr does not take payments, hold funds or process transactions.
+              Puntr does not accept bets, set odds or handle winnings.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Third-Party Terms:</strong> When you engage with linked betting platforms, you are subject to
-              their terms and conditions, privacy policies, and payment processing terms. Puntr is not responsible for
-              the practices, policies, or services of third-party platforms.
+              <strong>Third-Party Terms:</strong> If you follow a link to a licensed operator or retailer, you are
+              subject to that company&apos;s terms, privacy policy and payment terms. Puntr is not responsible for
+              their practices, policies or services.
             </p>
             <p className="leading-relaxed text-muted-foreground">
-              <strong>Affiliate Relationships:</strong> Puntr may receive commission from bookmakers when you sign up
-              or place bets through our referral links. This does not affect the odds or services you receive.
+              <strong>Affiliate Relationships:</strong> Puntr may earn a commission when you use a link marked
+              &quot;Ad&quot;. Links are marked, and this does not change what you see in the records. Only licensed
+              partners appear.
             </p>
           </section>
 
@@ -144,22 +133,25 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">7. Referral Program & Commission</h2>
+            <h2 className="mb-3 text-xl font-semibold">7. Invites</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Puntr offers a referral program where users can earn 30% recurring commission from referred premium
-              subscribers. Commission terms:
+              Founding Members can share a personal invite link. Invites may move friends up the waitlist. Puntr does
+              not pay commission or cash for referrals. Invites created through fraud, spam or fake accounts may be
+              cancelled and the accounts suspended.
             </p>
-            <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
-              <li>Commission is paid monthly for active referred subscriptions</li>
-              <li>Minimum payout threshold applies (displayed in your account)</li>
-              <li>Fraudulent referrals will result in commission forfeiture and account suspension</li>
-              <li>We reserve the right to modify commission rates with 30 days notice</li>
-              <li>Tax obligations are the responsibility of the recipient</li>
-            </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">8. User Conduct & Prohibited Activities</h2>
+            <h2 className="mb-3 text-xl font-semibold">8. No prizes at launch</h2>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              The weekly leaderboard is for recognition only. No prizes, cash or vouchers are offered until separate
+              contest rules are published. Those rules will say who can enter, how winners are chosen and what is
+              awarded.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="mb-3 text-xl font-semibold">9. User Conduct & Prohibited Activities</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               You agree not to:
             </p>
@@ -177,7 +169,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">9. Responsible Gambling</h2>
+            <h2 className="mb-3 text-xl font-semibold">10. Responsible Gambling</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               Puntr is committed to promoting responsible gambling. We encourage all users to:
             </p>
@@ -194,7 +186,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">10. Intellectual Property</h2>
+            <h2 className="mb-3 text-xl font-semibold">11. Intellectual Property</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               All content, features, and functionality of the Service, including but not limited to text, graphics,
               logos, icons, images, audio clips, and software, are the exclusive property of Puntr (Pty) Ltd and are
@@ -207,7 +199,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">11. User-Generated Content</h2>
+            <h2 className="mb-3 text-xl font-semibold">12. User-Generated Content</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               By posting predictions, comments, or other content on Puntr, you grant us a non-exclusive, worldwide,
               royalty-free license to use, reproduce, modify, and display such content in connection with the Service.
@@ -219,7 +211,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">12. Disclaimer of Warranties</h2>
+            <h2 className="mb-3 text-xl font-semibold">13. Disclaimer of Warranties</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
               IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
@@ -232,7 +224,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">13. Limitation of Liability</h2>
+            <h2 className="mb-3 text-xl font-semibold">14. Limitation of Liability</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               TO THE MAXIMUM EXTENT PERMITTED BY SOUTH AFRICAN LAW, PUNTR (PTY) LTD SHALL NOT BE LIABLE FOR ANY
               INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF
@@ -248,7 +240,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">14. Indemnification</h2>
+            <h2 className="mb-3 text-xl font-semibold">15. Indemnification</h2>
             <p className="leading-relaxed text-muted-foreground">
               You agree to indemnify, defend, and hold harmless Puntr (Pty) Ltd, its officers, directors, employees,
               and affiliates from any claims, damages, losses, liabilities, and expenses (including legal fees) arising
@@ -257,7 +249,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">15. Termination</h2>
+            <h2 className="mb-3 text-xl font-semibold">16. Termination</h2>
             <p className="leading-relaxed text-muted-foreground">
               We reserve the right to suspend or terminate your account and access to the Service at our sole
               discretion, without notice, for conduct that we believe violates these Terms, is harmful to other users,
@@ -266,7 +258,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">16. Governing Law & Dispute Resolution</h2>
+            <h2 className="mb-3 text-xl font-semibold">17. Governing Law & Dispute Resolution</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               These Terms are governed by and construed in accordance with the laws of the Republic of South Africa.
               Any disputes arising from these Terms or your use of the Service shall be subject to the exclusive
@@ -275,7 +267,7 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">17. Changes to Terms</h2>
+            <h2 className="mb-3 text-xl font-semibold">18. Changes to Terms</h2>
             <p className="leading-relaxed text-muted-foreground">
               We may update these Terms from time to time. We will notify you of material changes by posting the
               updated Terms on our website and updating the "Last Updated" date. Your continued use of the Service
@@ -284,7 +276,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold">18. Contact Information</h2>
+            <h2 className="mb-3 text-xl font-semibold">19. Contact Information</h2>
             <p className="leading-relaxed text-muted-foreground">
               If you have questions about these Terms, please contact us at:{" "}
               <a href="mailto:support@puntr.co.za" className="font-semibold text-primary">

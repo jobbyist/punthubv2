@@ -10,6 +10,7 @@ import { communityPosts } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/community")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://puntr.co.za/community" }],
     meta: [
       { title: "Community | Puntr" },
       {
@@ -28,8 +29,8 @@ export const Route = createFileRoute("/community")({
           name: "Puntr Community",
           description:
             "Community feed where South African punters share betting insights, picks and discussions.",
-          url: "https://punthubv2.lovable.app/community",
-          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://punthubv2.lovable.app/" },
+          url: "https://puntr.co.za/community",
+          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://puntr.co.za/" },
         }),
       },
     ],
