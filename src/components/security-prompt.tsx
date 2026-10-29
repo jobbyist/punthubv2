@@ -10,7 +10,7 @@ const SNOOZE_MS = 3 * 24 * 3600 * 1000;
 /** A slim, dismissible nudge for members who have not confirmed their email or turned on two-factor sign-in. */
 export function SecurityPrompt() {
   const { t } = useTranslation("security");
-  const { profile, emailConfirmed, hasMfa } = useSession();
+  const { user, profile, emailConfirmed, hasMfa } = useSession();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [snoozed, setSnoozed] = useState(true);
 

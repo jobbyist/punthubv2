@@ -9,7 +9,8 @@
     "confirm": "Confirm your email so you can always get back into your account.",
     "mfa": "Add two-factor sign-in to protect your account.",
     "cta": "Open security",
-    "later": "Not now"
+    "later": "Not now",
+    "addEmail": "Add an email address so you can recover your account and hear from us if you choose."
   },
   "email": {
     "title": "Email",
@@ -22,7 +23,12 @@
       "code": "That code isn't right or has expired.",
       "rate": "Too many tries. Please wait a minute.",
       "generic": "Couldn't send the code. Please try again."
-    }
+    },
+    "addTitle": "Add your email",
+    "addWhy": "Your sign-in didn't share an email address. Add one so you can recover your account, and so early-access members can claim a held Founding spot.",
+    "addLabel": "Email address",
+    "addSend": "Send me a confirmation code",
+    "addError": "Couldn't use that email. Check it, or try another."
   },
   "mfa": {
     "title": "Two-factor sign-in",

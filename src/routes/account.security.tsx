@@ -62,6 +62,87 @@ function OtpInput({
   );
 }
 
+/** For a sign-in that shared no email (X may not). updateUser sends a code; the member enters it to finish. */
+function AddEmailSection() {
+  const { t } = useTranslation("security");
+  const { refreshSecurity } = useSession();
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const send = async (e?: FormEvent) => {
+    e?.preventDefault();
+    const clean = (pending ?? email).trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) return setError(t("email.addError"));
+    setBusy(true);
+    setError(null);
+    const { error: err } = await supabase.auth.updateUser({ email: clean });
+    setBusy(false);
+    if (err) return setError(err.status === 429 ? t("email.error.rate") : t("email.addError"));
+    setPending(clean);
+  };
+
+  const verify = async (token: string) => {
+    if (!pending || busy) return;
+    setBusy(true);
+    setError(null);
+    const { error: err } = await supabase.auth.verifyOtp({
+      email: pending,
+      token,
+      type: "email_change",
+    });
+    setBusy(false);
+    if (err) {
+      setCode("");
+      return setError(t("email.error.code"));
+    }
+    await refreshSecurity();
+    toast.success(t("email.confirmed"));
+  };
+
+  return (
+    <section className="card-surface p-5">
+      <h2 className="text-lg">{t("email.addTitle")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{t("email.addWhy")}</p>
+      {!pending ? (
+        <form onSubmit={(e) => void send(e)} className="mt-3 space-y-3" noValidate>
+          <Label htmlFor="s-email">{t("email.addLabel")}</Label>
+          <Input
+            id="s-email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Button type="submit" disabled={busy}>
+            {t("email.addSend")}
+          </Button>
+        </form>
+      ) : (
+        <div className="mt-3 space-y-3">
+          <p className="text-sm text-muted-foreground">{t("email.sent")}</p>
+          <OtpInput value={code} onChange={setCode} onComplete={(v) => void verify(v)} />
+          <button
+            type="button"
+            className="text-sm underline"
+            disabled={busy}
+            onClick={() => void send()}
+          >
+            {t("email.resend")}
+          </button>
+        </div>
+      )}
+      {error && (
+        <p role="alert" className="mt-3 text-sm text-destructive">
+          {error}
+        </p>
+      )}
+    </section>
+  );
+}
+
 function EmailSection() {
   const { t } = useTranslation("security");
   const { user, emailConfirmed, refreshSecurity } = useSession();
@@ -311,6 +392,7 @@ function MfaSection() {
 
 function Security() {
   const { t } = useTranslation("security");
+  const { user } = useSession();
   return (
     <RequireMember>
       {() => (
@@ -318,9 +400,9 @@ function Security() {
           <h1 className="text-3xl">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
           <div className="mt-6 space-y-5">
-            <EmailSection />
+            {user?.email ? <EmailSection /> : <AddEmailSection />}
             <MfaSection />
-            <PasswordSection />
+            {user?.email && <PasswordSection />}
           </div>
         </AccountPage>
       )}

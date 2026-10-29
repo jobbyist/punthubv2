@@ -163,6 +163,14 @@ function LegalLinks({ i18nKey }: { i18nKey: string }) {
   );
 }
 
+function XLogo() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
 function GoogleLogo() {
   return (
     <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
@@ -205,10 +213,10 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
   const redirectOption =
     typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}/join` };
 
-  const google = async () => {
+  const social = async (provider: "google" | "x") => {
     setError(null);
     const { error: err } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider,
       options: { redirectTo: `${window.location.origin}/join` },
     });
     if (err) setError(t("join.error.oauth"));
@@ -318,14 +326,26 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
         ))}
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full gap-2"
-        onClick={() => void google()}
-      >
-        <GoogleLogo /> {t("join.google")}
-      </Button>
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+          aria-label={t("join.googleLabel")}
+          onClick={() => void social("google")}
+        >
+          <GoogleLogo /> {t("join.google")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+          aria-label={t("join.xLabel")}
+          onClick={() => void social("x")}
+        >
+          <XLogo /> {t("join.x")}
+        </Button>
+      </div>
       <p className="text-center text-xs text-muted-foreground">{t("join.or")}</p>
 
       <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.method.label")}>
@@ -528,6 +548,8 @@ function OnboardingStep({
 }) {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
+  const { user } = useSession();
+  const hasEmail = !!user?.email;
   const { locale, setLocale } = useLocale();
   const languages = enabledLocales();
 
@@ -588,7 +610,7 @@ function OnboardingStep({
         username: username.trim().toLowerCase(),
         birthYear: year,
         language: locales.some((l) => l.code === language) ? language : "en-ZA",
-        marketingEmail,
+        marketingEmail: hasEmail && marketingEmail,
         marketingWhatsapp,
         ref: storedRef(),
       },
@@ -710,16 +732,18 @@ function OnboardingStep({
           </Label>
         </div>
         {/* Two separate, unticked boxes. Marketing is never a condition of joining. */}
-        <div className="flex items-start gap-3">
-          <Checkbox
-            id="o-mail"
-            checked={marketingEmail}
-            onCheckedChange={(v) => setMarketingEmail(v === true)}
-          />
-          <Label htmlFor="o-mail" className="text-sm font-normal leading-snug">
-            {t("join.onboarding.marketingEmail")}
-          </Label>
-        </div>
+        {hasEmail && (
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="o-mail"
+              checked={marketingEmail}
+              onCheckedChange={(v) => setMarketingEmail(v === true)}
+            />
+            <Label htmlFor="o-mail" className="text-sm font-normal leading-snug">
+              {t("join.onboarding.marketingEmail")}
+            </Label>
+          </div>
+        )}
         <div className="flex items-start gap-3">
           <Checkbox
             id="o-wa"

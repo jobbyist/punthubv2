@@ -31,7 +31,9 @@ function Account() {
         <AccountPage>
           <h1 className="text-3xl">{t("home.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {t("home.subtitle", { email: user?.email ?? "" })}
+            {user?.email
+              ? t("home.subtitle", { email: user.email })
+              : t("home.subtitleNoEmail", { username: profile.username })}
           </p>
 
           <dl className="card-surface mt-6 divide-y divide-border">

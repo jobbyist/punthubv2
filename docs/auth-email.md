@@ -5,6 +5,7 @@
 | Method | Sign up | Sign in | Notes |
 |---|---|---|---|
 | Google | Continue with Google | Continue with Google | Needs the Google provider set up (below). The email arrives confirmed. The 18+ box, year of birth and Terms are asked in onboarding. |
+| X (Twitter) | Continue with X | Continue with X | Needs the X provider set up (below). X may not share an email address; a member without one is asked to add and confirm one on `/account/security`. |
 | Email + password | Yes | Yes | No confirmation step. |
 | Username + password | No (a username is chosen in onboarding) | Yes, in the same "Email or username" box | Done on the server: it finds the email and signs in itself, then returns only session tokens. A username never reveals an email, and every failure looks the same. |
 | Email code or link | Yes (no password at all) | Yes | One email carries a 6-digit code and a one-tap link. Asking for a code for an address with no account looks identical to asking for one that has an account. |
@@ -38,6 +39,20 @@ also works if they forget the password.
    `https://puntr.co.za`. Authorised redirect URI: `https://hucjuekhitjuygcoomhw.supabase.co/auth/v1/callback`.
 3. Copy the Client ID and Client Secret into Supabase → Google provider, switch it on, and save.
 4. Publish the consent screen (move it from Testing to In production) so people outside your test list can sign in.
+
+**Authentication → Sign In / Providers → X / Twitter (OAuth 2.0)** (needed for the X button; pick the OAuth 2.0 one,
+not the older "Twitter (deprecated)")
+1. At developer.x.com, create a project and app. Under **User authentication settings** switch on **OAuth 2.0**,
+   set the app type to **Web App, Automated App or Bot** (a confidential client), and request the permission to
+   read users (and their email if X offers it for your app).
+2. Callback URI: `https://hucjuekhitjuygcoomhw.supabase.co/auth/v1/callback`. Website URL `https://puntr.co.za`.
+   Add the Terms (`https://puntr.co.za/terms`) and Privacy (`https://puntr.co.za/privacy`) URLs.
+3. Copy the **Client ID** and **Client Secret** (OAuth 2.0 keys, not the API Key and Secret) into Supabase's X
+   provider, switch it on, and save.
+
+A member who signs in with X and shares no email has no email-based recovery, no password sign-in and no launch
+emails until they add one on `/account/security`. A held Founding spot is claimed once that email is confirmed.
+An X sign-in is not matched to an existing email account automatically, so someone could end up with two accounts.
 
 **Authentication → Emails → Templates**: set **Confirm signup** and **Magic Link** to the text below, so one email
 carries both the 6-digit code and a one-tap link.

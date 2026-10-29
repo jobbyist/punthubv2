@@ -21,7 +21,8 @@
     "privacyBody": "Download your data, change your marketing choices or delete your account.",
     "recordLink": "My public record",
     "securityLink": "Sign-in and security",
-    "securityBody": "Confirm your email, turn on two-factor sign-in or set a password."
+    "securityBody": "Confirm your email, turn on two-factor sign-in or set a password.",
+    "subtitleNoEmail": "Signed in as @{{username}}"
   },
   "privacy": {
     "title": "Privacy and data",
