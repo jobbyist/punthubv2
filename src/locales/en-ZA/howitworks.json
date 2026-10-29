@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "How Puntr works | Predict smarter. Prove it.",
-    "description": "Join with an email code, post a pick before kick-off and let it lock and settle automatically. Climb the weekly leaderboard. 18+.",
+    "description": "Join free with your email, post a pick before kick-off and let it lock and settle automatically. Climb the weekly leaderboard. 18+.",
     "ogTitle": "How Puntr works",
     "ogDescription": "Four steps from sign-up to a public, locked record."
   },
@@ -9,8 +9,8 @@
   "intro": "Every pick is <1>locked at kick-off</1>, graded automatically and kept forever. Puntr does not take bets or handle money.",
   "steps": {
     "s1": {
-      "title": "Join with an email code. 18+",
-      "body": "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password to remember.",
+      "title": "Join with your email. 18+",
+      "body": "Enter your email, choose a password and confirm that you are 18 or older. You can confirm your email and add two-factor sign-in once you are in.",
       "b1": "Free for Founding Members",
       "b2": "No card needed"
     },

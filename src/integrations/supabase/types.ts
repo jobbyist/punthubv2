@@ -930,6 +930,8 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      mfa_ok: { Args: never; Returns: boolean }
+      claim_reserved_founding: { Args: { p_user: string }; Returns: number }
       launch_recipients: {
         Args: { p_wave: number }
         Returns: { recipient_email: string; recipient_name: string }[]

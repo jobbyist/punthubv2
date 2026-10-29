@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { MfaChallenge } from "@/components/mfa-challenge";
 import { RgNotice } from "@/components/rg-notice";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { completeSignup, discardUnderageSignup } from "@/lib/accounts.functions";
 import { analytics } from "@/lib/analytics";
+import { mfaRequired } from "@/lib/mfa";
+import { validatePassword } from "@/lib/password";
 import { FoundingCounter } from "@/components/founding-counter";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
 import { FOUNDING_CAP } from "@/lib/flags";
@@ -37,7 +40,8 @@ export const Route = createFileRoute("/join")({
   component: Join,
 });
 
-type Step = "email" | "code" | "onboarding" | "done" | "blocked";
+type Step = "email" | "code" | "mfa" | "onboarding" | "done" | "blocked";
+type CodeKind = "email" | "signup";
 
 const RESEND_SECONDS = 30;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,21 +53,35 @@ function Join() {
 
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
+  const [codeKind, setCodeKind] = useState<CodeKind>("email");
+  const [mfaTick, setMfaTick] = useState(0);
   const [foundingNumber, setFoundingNumber] = useState<number | null>(null);
 
   useEffect(() => rememberRef(ref), [ref]);
 
-  // Follow the session: signed in with a profile means done; signed in without one means onboarding.
+  // Follow the session: a member with two-factor on must pass it first; then a profile means done, and no
+  // profile means onboarding.
   useEffect(() => {
     if (loading) return;
-    if (profile) {
-      setFoundingNumber((n) => n ?? profile.founding_number);
-      setStep((s) => (s === "done" ? s : "done"));
-    } else if (user) {
-      setEmail((e) => e || user.email || "");
-      setStep((s) => (s === "email" || s === "code" ? "onboarding" : s));
-    }
-  }, [loading, profile, user]);
+    let active = true;
+    void (async () => {
+      if (user && (await mfaRequired())) {
+        if (active) setStep("mfa");
+        return;
+      }
+      if (!active) return;
+      if (profile) {
+        setFoundingNumber((n) => n ?? profile.founding_number);
+        setStep("done");
+      } else if (user) {
+        setEmail((e) => e || user.email || "");
+        setStep((s) => (s === "email" || s === "code" || s === "mfa" ? "onboarding" : s));
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, profile, user, mfaTick]);
 
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
@@ -73,9 +91,10 @@ function Join() {
 
       <div className="card-surface mt-6 p-6">
         {step === "email" && (
-          <EmailStep
-            onSent={(e) => {
+          <AuthStep
+            onNeedsCode={(e, kind) => {
               setEmail(e);
+              setCodeKind(kind);
               setStep("code");
             }}
           />
@@ -83,8 +102,18 @@ function Join() {
         {step === "code" && (
           <CodeStep
             email={email}
+            kind={codeKind}
             onChangeEmail={() => setStep("email")}
-            onVerified={() => setStep("onboarding")}
+            onVerified={() => setMfaTick((n) => n + 1)}
+          />
+        )}
+        {step === "mfa" && (
+          <MfaChallenge
+            onVerified={() => setMfaTick((n) => n + 1)}
+            onCancel={() => {
+              void supabase.auth.signOut();
+              setStep("email");
+            }}
           />
         )}
         {step === "blocked" && (
@@ -129,34 +158,86 @@ function LegalLinks({ i18nKey }: { i18nKey: string }) {
   );
 }
 
-function EmailStep({ onSent }: { onSent: (email: string) => void }) {
+function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind) => void }) {
   const { t } = useTranslation("auth");
+  const [mode, setMode] = useState<"create" | "signin">("create");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [adult, setAdult] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const create = mode === "create";
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     const clean = email.trim().toLowerCase();
     if (!EMAIL_RE.test(clean)) return setError(t("join.error.email"));
-    if (!adult) return setError(t("join.error.ageRequired"));
+    if (create) {
+      const problem = validatePassword(password, clean);
+      if (problem) return setError(t(`join.error.password.${problem}`));
+      if (!adult) return setError(t("join.error.ageRequired"));
+    } else if (!password) {
+      return setError(t("join.error.credentials"));
+    }
     setBusy(true);
-    analytics.joinStarted();
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email: clean,
-      options: { shouldCreateUser: true },
-    });
+    if (create) {
+      analytics.joinStarted();
+      const { data, error: err } = await supabase.auth.signUp({ email: clean, password });
+      setBusy(false);
+      if (err) {
+        if (err.status === 429) return setError(t("join.error.rate"));
+        if (err.code === "user_already_exists" || /already/i.test(err.message)) {
+          return setError(t("join.error.exists"));
+        }
+        return setError(t("join.error.generic"));
+      }
+      // No session means the project still asks for email confirmation: carry on with the emailed code.
+      if (!data.session) onNeedsCode(clean, "signup");
+      return;
+    }
+    const { error: err } = await supabase.auth.signInWithPassword({ email: clean, password });
     setBusy(false);
     if (err) {
-      return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
+      return setError(err.status === 429 ? t("join.error.rate") : t("join.error.credentials"));
     }
-    onSent(clean);
+  };
+
+  const emailMeCode = async () => {
+    setError(null);
+    const clean = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(clean)) return setError(t("join.error.email"));
+    setBusy(true);
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email: clean,
+      options: { shouldCreateUser: false },
+    });
+    setBusy(false);
+    if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
+    onNeedsCode(clean, "email");
   };
 
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
+      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.mode.label")}>
+        {(["create", "signin"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            aria-pressed={mode === m}
+            onClick={() => {
+              setMode(m);
+              setError(null);
+            }}
+            className={`px-4 py-2 text-sm font-medium ${
+              mode === m ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+            }`}
+          >
+            {t(`join.mode.${m}`)}
+          </button>
+        ))}
+      </div>
       <div className="space-y-1.5">
         <Label htmlFor="j-email">{t("join.emailStep.label")}</Label>
         <Input
@@ -168,35 +249,65 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <p className="text-xs text-muted-foreground">{t("join.emailStep.signedOutHint")}</p>
       </div>
-      <div className="flex items-start gap-3">
-        <Checkbox id="j-age" checked={adult} onCheckedChange={(v) => setAdult(v === true)} />
-        <Label htmlFor="j-age" className="text-sm font-normal leading-snug">
-          {t("join.emailStep.age")}
-        </Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="j-password">{t("join.passwordStep.label")}</Label>
+        <Input
+          id="j-password"
+          type="password"
+          autoComplete={create ? "new-password" : "current-password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {create && <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>}
       </div>
-      <p className="text-xs text-muted-foreground">
-        <LegalLinks i18nKey="join.emailStep.terms" />
-      </p>
+      {create && (
+        <>
+          <div className="flex items-start gap-3">
+            <Checkbox id="j-age" checked={adult} onCheckedChange={(v) => setAdult(v === true)} />
+            <Label htmlFor="j-age" className="text-sm font-normal leading-snug">
+              {t("join.emailStep.age")}
+            </Label>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            <LegalLinks i18nKey="join.emailStep.terms" />
+          </p>
+        </>
+      )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
       <Button type="submit" disabled={busy} className="w-full">
-        {busy ? t("join.emailStep.sending") : t("join.emailStep.send")}
+        {busy
+          ? t("join.emailStep.sending")
+          : create
+            ? t("join.emailStep.create")
+            : t("join.emailStep.signin")}
       </Button>
+      {!create && (
+        <button
+          type="button"
+          onClick={() => void emailMeCode()}
+          disabled={busy}
+          className="text-sm underline"
+        >
+          {t("join.emailStep.codeInstead")}
+        </button>
+      )}
     </form>
   );
 }
 
 function CodeStep({
   email,
+  kind,
   onChangeEmail,
   onVerified,
 }: {
   email: string;
+  kind: CodeKind;
   onChangeEmail: () => void;
   onVerified: () => void;
 }) {
@@ -217,7 +328,7 @@ function CodeStep({
     if (busy || token.length !== 6) return;
     setBusy(true);
     setError(null);
-    const { error: err } = await supabase.auth.verifyOtp({ email, token, type: "email" });
+    const { error: err } = await supabase.auth.verifyOtp({ email, token, type: kind });
     setBusy(false);
     if (err) {
       submitted.current = false;
@@ -229,10 +340,10 @@ function CodeStep({
 
   const resend = async () => {
     setError(null);
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: true },
-    });
+    const { error: err } =
+      kind === "signup"
+        ? await supabase.auth.resend({ type: "signup", email })
+        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
     if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
     setCooldown(RESEND_SECONDS);
   };
@@ -525,15 +636,26 @@ function OnboardingStep({
 
 function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
   const { t } = useTranslation("auth");
-  const { profile } = useSession();
+  const { profile, emailConfirmed } = useSession();
+  const number = foundingNumber ?? profile?.founding_number ?? null;
   return (
     <div className="space-y-4">
       <h2 className="text-2xl">
-        {foundingNumber
-          ? t("join.done.founding", { number: foundingNumber, cap: FOUNDING_CAP })
-          : t("join.done.full")}
+        {number
+          ? t("join.done.founding", { number, cap: FOUNDING_CAP })
+          : emailConfirmed
+            ? t("join.done.full")
+            : t("join.done.unconfirmed")}
       </h2>
       <p className="text-sm text-muted-foreground">{t("join.done.body")}</p>
+      {!emailConfirmed && (
+        <p className="border border-border bg-muted/40 p-3 text-sm">
+          {t("join.done.confirmPrompt")}{" "}
+          <Link to="/account/security" className="font-semibold underline">
+            {t("join.done.confirmCta")}
+          </Link>
+        </p>
+      )}
       <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link to="/predictions">{t("join.done.cta")}</Link>

@@ -65,6 +65,11 @@ function Account() {
 
           <ReferralCard />
 
+          <Link to="/account/security" className="card-surface mt-4 block p-4 hover:bg-muted/40">
+            <p className="font-semibold">{t("home.securityLink")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t("home.securityBody")}</p>
+          </Link>
+
           <Link to="/account/privacy" className="card-surface mt-4 block p-4 hover:bg-muted/40">
             <p className="font-semibold">{t("home.privacyLink")}</p>
             <p className="mt-1 text-sm text-muted-foreground">{t("home.privacyBody")}</p>

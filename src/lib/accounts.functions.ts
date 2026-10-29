@@ -74,3 +74,21 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+/**
+ * Gives the signed-in member their reserved Founding number once their email is confirmed. The database checks
+ * everything (confirmed email, a reservation, a free number); this only calls it with the caller's own id.
+ */
+export const claimFoundingSpot = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ number: number | null }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin.rpc("claim_reserved_founding", {
+      p_user: context.userId,
+    });
+    if (error) {
+      console.error("claim founding failed", error.message);
+      return { number: null };
+    }
+    return { number: data ?? null };
+  });

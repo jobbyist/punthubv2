@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider } from "@/components/session";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SecurityPrompt } from "@/components/security-prompt";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
@@ -259,6 +260,7 @@ function RootComponent() {
       <SessionProvider>
         <div className="flex min-h-dvh flex-col">
           <SiteHeader />
+          <SecurityPrompt />
           <div className="flex-1 pb-20 lg:pb-0">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
