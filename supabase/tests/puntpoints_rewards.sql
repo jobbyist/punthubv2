@@ -110,7 +110,8 @@ begin
   v_b1 := pg_temp.bal(1);
   perform public.vest_referrals();
   if pg_temp.bal(1) <> v_b1 + 25 + 50 then raise exception 'ASSERT FAILED: referral plus milestone should add 75, added %', pg_temp.bal(1) - v_b1; end if;
-  -- clawback: ban the referred member
+  -- clawback: ban the referred member (clear the fake member login first, or the profile guard blocks the update)
+  perform set_config('request.jwt.claims', '', true);
   update public.profiles set is_banned = true where id = (select id from t_u where n = 5);
   v_b1 := pg_temp.bal(1);
   perform public.vest_referrals();
