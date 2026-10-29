@@ -1,23 +1,29 @@
 {
   "meta": {
-    "title": "Insights | Puntr",
-    "description": "Match previews and performance tracking for Puntr members. Coming after launch.",
-    "ogDescription": "Match previews and performance tracking. Coming after launch."
+    "title": "AI-Powered Insights | Puntr",
+    "description": "AI-Powered Insights, match previews and performance tracking for Puntr members. Coming after launch.",
+    "ogDescription": "AI-Powered Insights and performance tracking. Coming after launch."
   },
-  "title1": "This feature is only available to",
-  "title2": "our members",
-  "body": "Match previews and performance tracking are coming after launch.",
+  "title1": "<1>AI-Powered Insights</1> are coming for",
+  "title2": "Puntr members",
+  "body": "Match previews, form and performance tracking arrive after launch. Join free now and be ready on day one.",
   "cta": "Get started",
   "beta": "Join the beta group",
   "fine": "Past results do not predict future results. 18+.",
   "perks": {
-    "title": "Members will get access to:",
+    "title": "What members will get",
     "insights": {
-      "title": "Match previews",
+      "title": "AI-Powered Insights",
       "body": "Plain-language context for upcoming fixtures."
     },
-    "premium": { "title": "Tipster records", "body": "Public, locked records from every tipster." },
-    "trends": { "title": "Form and trends", "body": "Recent results and head-to-head history." },
+    "premium": {
+      "title": "Tipster records",
+      "body": "Public, locked records from every tipster."
+    },
+    "trends": {
+      "title": "Form and trends",
+      "body": "Recent results and head-to-head history."
+    },
     "filters": {
       "title": "Advanced filters",
       "body": "Filter picks by sport, competition and market."
@@ -28,8 +34,11 @@
     },
     "tracking": {
       "title": "Performance tracking",
-      "body": "Track your units, ROI and sample size over time."
+      "body": "Track your units, ROI and sample size over time. Advanced analytics come with Puntr Pro."
     },
-    "adfree": { "title": "Clear labelling", "body": "Every advertisement is marked \"Ad\"." }
+    "adfree": {
+      "title": "Clear labelling",
+      "body": "Every advertisement is marked \"Ad\"."
+    }
   }
 }

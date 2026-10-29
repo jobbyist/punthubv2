@@ -6,7 +6,7 @@
     "label": "Language"
   },
   "cta": {
-    "getStarted": "Get started for free",
+    "getStarted": "Join free",
     "createAccount": "Create your free account",
     "createFreeAccount": "Create free account",
     "joinEarlyAccess": "Get started"
@@ -25,11 +25,11 @@
     "send": "Send message"
   },
   "meta": {
-    "title": "Puntr - Predict smarter. Prove it.",
-    "description": "Locked, auto-graded, public tipster records for PSL, EPL, UCL, URC and Springbok tests. Predict smarter. Prove it. 18+.",
+    "title": "Puntr | Predict smarter. Prove it.",
+    "description": "A Community-First Platform for South African sports fans. Picks locked at kick-off, graded automatically and kept forever. 18+.",
     "ogDescription": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust. 18+.",
-    "ogImageAlt": "Puntr - locked, public tipster records",
-    "orgDescription": "Locked, auto-graded, public tipster records for South African sport. 18+."
+    "ogImageAlt": "Puntr: locked, public tipster records",
+    "orgDescription": "A Community-First Platform for South African sports fans: locked, auto-graded, public tipster records. 18+."
   },
   "vs": "vs",
   "sport": {

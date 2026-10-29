@@ -6,8 +6,11 @@
     "ogDescription": "Find answers, get in touch and we'll sort it out."
   },
   "title": "Support centre",
-  "subtitle": "We're here to help. Find answers, get in touch and we'll sort it out.",
-  "email": { "title": "Email us", "note": "We aim to reply within 24 hours." },
+  "subtitle": "We're here to help. Find your answer below or get in touch and we'll sort it out.",
+  "email": {
+    "title": "Email us",
+    "note": "We aim to reply within 24 hours."
+  },
   "phone": {
     "title": "Call us",
     "hours": "Mon – Fri: 08:00 – 18:00 · Sat – Sun: 09:00 – 16:00 SAST",

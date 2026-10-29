@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
+import { Em } from "@/components/em";
 import { RgNotice } from "@/components/rg-notice";
 import { headT } from "@/lib/i18n/head";
 
@@ -38,7 +39,7 @@ function HowItWorks() {
       <h1 className="text-[clamp(2rem,4vw,2.4rem)]">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{tc("brand.tagline")}</p>
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-        {t("intro")}
+        <Trans t={t} i18nKey="intro" components={{ 1: <Em /> }} />
       </p>
 
       <ol className="relative mt-8 space-y-4 border-l border-border pl-6 sm:pl-8">
@@ -57,7 +58,7 @@ function HowItWorks() {
             <div className="card-surface p-5">
               <h2 className="text-xl">{t(`steps.${k}.title`)}</h2>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {t(`steps.${k}.body`)}
+                <Trans t={t} i18nKey={`steps.${k}.body`} components={{ 1: <Em /> }} />
               </p>
               <ul className="mt-3 space-y-1.5">
                 {(["b1", "b2"] as const).map((b) => (

@@ -1,13 +1,13 @@
 {
   "meta": {
     "title": "Coming soon | Puntr",
-    "description": "Puntr is building more tools for South African sports fans. Join early to hear first.",
+    "description": "Puntr is built in stages. AI-Powered Insights, Puntr Pro and more are on the way for South African sports fans.",
     "ogDescription": "More from Puntr is on the way."
   },
   "badge": "Coming soon",
   "title1": "More from Puntr is",
   "title2": "on the way.",
-  "body": "We are building in stages. Predictions, locked records and the weekly leaderboard come first. Other features follow once they are ready.",
+  "body": "We're building in stages. Predictions, locked records and the weekly leaderboard come first. <1>AI-Powered Insights</1> and more follow once they're ready.",
   "queue": "<1>{{feature}}</1> is in the build queue",
   "cta": "Get started",
   "explore": "Explore Puntr",
@@ -20,7 +20,7 @@
     "homeWin": "Home win"
   },
   "features": {
-    "aiPicks": "AI picks",
+    "aiPicks": "AI-Powered Insights",
     "podcast": "Podcast",
     "bookmakers": "Bookmakers",
     "tools": "Tools",

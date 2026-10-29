@@ -1,27 +1,42 @@
 {
   "meta": {
-    "title": "Pricing - free for Founding Members | Puntr",
-    "description": "Puntr is free for the first 100 Founding Members. Credits for optional extras are coming later. Posting, voting and the leaderboard are always free.",
-    "ogTitle": "Puntr pricing - free for Founding Members",
+    "title": "Pricing | Free for Founding Members, Pay-As-You-Go and Puntr Pro",
+    "description": "Puntr is free for the first 100 Founding Members. Pay-As-You-Go credits and Puntr Pro (R99 per month) are coming later. Posting and the leaderboard are always free.",
+    "ogTitle": "Puntr pricing: free for Founding Members",
     "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
   },
   "title": "Pricing",
-  "subtitle": "Free for the first 100 Founding Members. Paid extras come later and are optional.",
+  "subtitle": "Free for the first 100 Founding Members. Pay-As-You-Go and Puntr Pro come later and are entirely optional.",
   "founding": {
     "badge": "Open now",
-    "title": "Founding Members - free",
+    "title": "Founding Members: free",
     "spots": "100 spots. No card needed.",
     "f1": "A permanent Founding badge, numbered #1 to #100",
     "f2": "Full access to posting, your record and the weekly leaderboard",
-    "f3": "30 free credits a month for 3 months once credits launch",
+    "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch",
     "cta": "Claim a Founding spot"
   },
-  "credits": {
+  "never": "Paying never earns extra points, a higher ranking or prize eligibility.",
+  "faq": {
+    "title": "Pricing questions",
+    "q1": "Is Puntr free?",
+    "a1": "Yes. Founding Members use Puntr free. Posting, voting and the leaderboard are always free.",
+    "q2": "When do Pay-As-You-Go and Puntr Pro launch?",
+    "a2": "Not at launch. We will announce prices and terms before anything goes on sale. The prices here are indicative.",
+    "q3": "What is the difference between Pay-As-You-Go and Puntr Pro?",
+    "a3": "Pay-As-You-Go lets you buy credits when you need them. Puntr Pro is one monthly subscription, R99 per month, for advanced bettors and tipsters who use Puntr every week.",
+    "q4": "Can paying improve my ranking?",
+    "a4": "No. Paying never earns extra points or prize eligibility. Credits and Puntr Pro only unlock optional extras.",
+    "q5": "Is Puntr a bookmaker?",
+    "a5": "No. Puntr does not take bets, set odds or hold betting funds."
+  },
+  "payg": {
     "badge": "Coming soon",
-    "title": "Credits - coming soon",
+    "title": "Pay-As-You-Go",
+    "tagline": "Buy credits only when you need them. No subscription.",
     "note": "Indicative prices. They may change before launch.",
-    "packs": "Packs",
-    "uses": "What they buy",
+    "packs": "Credit packs",
+    "uses": "What credits buy",
     "pack": {
       "starter": "Starter",
       "matchday": "Match Day",
@@ -36,16 +51,18 @@
     },
     "alwaysFree": "Posting, voting and the leaderboard are always free."
   },
-  "never": "Paying will never earn extra points or prize eligibility.",
-  "faq": {
-    "title": "Pricing questions",
-    "q1": "Is Puntr free?",
-    "a1": "Yes. Founding Members use Puntr free. Posting, voting and the leaderboard are always free.",
-    "q2": "When do credits launch?",
-    "a2": "Not at launch. We will announce credits and their terms before anything goes on sale. The prices here are indicative.",
-    "q3": "Can paying improve my ranking?",
-    "a3": "No. Paying will never earn extra points or prize eligibility. Credits only unlock optional extras.",
-    "q4": "Is Puntr a bookmaker?",
-    "a4": "No. Puntr does not take bets, set odds or hold betting funds."
+  "pro": {
+    "badge": "Coming soon",
+    "title": "Puntr Pro",
+    "tagline": "For advanced bettors and tipsters who want deeper analysis.",
+    "price": "{{price}} per month",
+    "note": "One simple monthly subscription. Not on sale yet: we will publish the full terms and cancellation rules before it opens.",
+    "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
+    "f2": "Advanced tipster analytics: units, ROI and form by market, sport and odds range",
+    "f3": "Custom alerts for fixtures and settled picks you follow",
+    "f4": "Early access to new tools",
+    "f5": "A Pro badge on your profile",
+    "cta": "Coming soon",
+    "fine": "Pro never changes your ranking, points or prize eligibility."
   }
 }

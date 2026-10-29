@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "title": "About Puntr | A Community-First Platform for South African sport",
+    "description": "Puntr is a Community-First Platform where South African sports fans post picks, lock them at kick-off and build a public record. AI-Powered Insights are coming.",
+    "ogTitle": "About Puntr"
+  },
+  "hero": {
+    "title1": "Where Sports Knowledge",
+    "title2": "Community",
+    "title3": "Meets",
+    "body": "Puntr is a <1>Community-First Platform</1> where South African sports fans post their picks, lock them at kick-off and build a public record they can be proud of. <1>AI-Powered Insights</1> are on the way.",
+    "cta": "Join Puntr",
+    "meet": "Meet the platform"
+  },
+  "why": {
+    "title1": "Sport Deserves",
+    "title2": "Honest",
+    "title3": "Records.",
+    "p1": "Everyone has an opinion on the game. Puntr gives those opinions a fair place to be tested: every pick is timestamped, locked and graded the same way for everyone.",
+    "p2": "Tips on social media vanish when they go wrong. Puntr keeps every pick, win or lose, so you can see who is genuinely good.",
+    "data": {
+      "title": "Data",
+      "body": "Turn information into insight."
+    },
+    "community": {
+      "title": "Community",
+      "body": "See what other predictors think."
+    },
+    "ai": {
+      "title": "AI-Powered Insights",
+      "body": "Plain-language context for every fixture, coming soon."
+    },
+    "recognition": {
+      "title": "Recognition",
+      "body": "Be known for your knowledge, with a record to prove it."
+    }
+  },
+  "mission": {
+    "title": "Mission",
+    "body": "To build a <1>Community-First Platform</1> where sports knowledge is tested in public and recognised fairly.",
+    "visionTitle": "Vision",
+    "vision": "To become a trusted home for sports predictions in South Africa, and then across Africa, with every pick on the record."
+  },
+  "principles": {
+    "title1": "Built On Better",
+    "title2": "Principles",
+    "community": {
+      "title": "Community First",
+      "body": "Build together. Learn together. Be accountable together."
+    },
+    "transparency": {
+      "title": "Transparency",
+      "body": "Clear information. Honest interactions."
+    },
+    "responsible": {
+      "title": "Responsible Gambling",
+      "body": "Promote informed, measured and responsible choices. 18+ only."
+    },
+    "innovation": {
+      "title": "Innovation",
+      "body": "Keep improving the technology behind the experience."
+    },
+    "recognition": {
+      "title": "Fair Recognition",
+      "body": "Recognise genuine knowledge and contribution. Money never buys rank."
+    },
+    "evidence": {
+      "title": "Evidence Over Noise",
+      "body": "Back predictions with a record, not noise."
+    }
+  },
+  "ecosystem": {
+    "title1": "One Platform. Layers of",
+    "title2": "Insight",
+    "body": "Puntr connects every part of the prediction experience.",
+    "data": {
+      "title": "Sports Data",
+      "body": "Fixtures and results for the competitions we cover"
+    },
+    "record": {
+      "title": "Locked Records",
+      "body": "Timestamped before kick-off, never edited"
+    },
+    "community": {
+      "title": "Community Predictions",
+      "body": "See what other fans are backing"
+    },
+    "board": {
+      "title": "Weekly Leaderboard",
+      "body": "Ranked on units, ROI and sample size"
+    },
+    "points": {
+      "title": "PuntPoints",
+      "body": "Points for activity and settled picks, with no cash value"
+    },
+    "ai": {
+      "title": "AI-Powered Insights",
+      "body": "Match previews, coming soon"
+    },
+    "pro": {
+      "title": "Puntr Pro",
+      "body": "Advanced analytics for serious predictors, coming soon"
+    }
+  },
+  "sports": {
+    "title1": "Built Around The Sports You",
+    "title2": "Love",
+    "body": "At launch we cover the competitions South African fans follow most.",
+    "heading": "Competitions we cover"
+  },
+  "tech": {
+    "title1": "Built On A",
+    "title2": "Modern",
+    "title3": "Foundation",
+    "body": "A fast, secure web app designed for real-time sports data and a growing community.",
+    "react": {
+      "cat": "Frontend",
+      "body": "Component-driven interfaces for a fast product."
+    },
+    "ts": {
+      "cat": "Frontend",
+      "body": "Type-safe code for reliability."
+    },
+    "tailwind": {
+      "cat": "Frontend",
+      "body": "Consistent, accessible styling."
+    },
+    "tanstack": {
+      "cat": "Framework",
+      "body": "Server-rendered pages and data loading."
+    },
+    "supabase": {
+      "cat": "Backend",
+      "body": "Database and email-code sign-in."
+    },
+    "vercel": {
+      "cat": "Infrastructure",
+      "body": "Hosting and fast delivery across South Africa."
+    }
+  },
+  "fits": {
+    "title1": "How Puntr",
+    "title2": "Fits Together",
+    "core": "Core application",
+    "infra": "Infrastructure and services",
+    "c1": "Puntr web app",
+    "c2": "Email-code sign-in",
+    "c3": "Locked prediction record",
+    "c4": "Community and leaderboards",
+    "i1": "Vercel (hosting)",
+    "i2": "Supabase (database and sign-in)",
+    "i3": "Sports data provider (fixtures and results)",
+    "i4": "Email delivery"
+  },
+  "knowledge": {
+    "title1": "Your Knowledge Deserves A",
+    "title2": "Record",
+    "body": "Puntr recognises the people who know their sport.",
+    "predict": {
+      "title": "Predict",
+      "body": "Make your call."
+    },
+    "compete": {
+      "title": "Compete",
+      "body": "See how you rank."
+    },
+    "learn": {
+      "title": "Learn",
+      "body": "Understand where you can improve."
+    },
+    "recognised": {
+      "title": "Be recognised",
+      "body": "Let your record do the talking."
+    },
+    "board": "Top predictors",
+    "sample": "Example names and numbers, for illustration only.",
+    "accuracy": "{{value}} accuracy",
+    "predictions": "{{count}} predictions"
+  },
+  "points": {
+    "title1": "Every Prediction",
+    "title2": "Counts",
+    "body": "PuntPoints recognise activity and settled picks. They have no cash value and cannot be exchanged for money.",
+    "accuracy": {
+      "title": "Accuracy",
+      "body": "Be recognised for getting it right."
+    },
+    "engagement": {
+      "title": "Engagement",
+      "body": "Take part, contribute and build your reputation."
+    },
+    "referrals": {
+      "title": "Referrals",
+      "body": "Invite friends and watch the community grow."
+    }
+  },
+  "cta": {
+    "title1": "Think You Know",
+    "title2": "Sport",
+    "body": "Put your predictions on the record.",
+    "join": "Join Puntr",
+    "explore": "Explore predictions"
+  }
+}

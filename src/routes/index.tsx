@@ -3,13 +3,14 @@ import { motion } from "motion/react";
 import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
+import { Em } from "@/components/em";
 import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { topTipsters } from "@/lib/mock-data";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
@@ -65,13 +66,14 @@ function Landing() {
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
       {/* Hero */}
-      <section className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
+      <section className="grid gap-10 py-10 grid-cols-[minmax(0,1fr)] lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
+          className="min-w-0"
         >
-          <span className="inline-block rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
+          <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
             {t("hero.badge")}
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
@@ -80,7 +82,7 @@ function Landing() {
             <span className="text-primary">{t("hero.title2")}</span>
           </h1>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            {t("hero.body")}
+            <Trans t={t} i18nKey="hero.body" components={{ 1: <Em /> }} />
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
@@ -204,7 +206,7 @@ function Landing() {
               <div>
                 <p className="text-sm font-semibold">{t(`steps.${k}.title`)}</p>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  {t(`steps.${k}.body`)}
+                  <Trans t={t} i18nKey={`steps.${k}.body`} components={{ 1: <Em /> }} />
                 </p>
               </div>
             </div>
@@ -246,12 +248,12 @@ function Landing() {
         <div className="card-surface p-5">
           <h3 className="text-lg">{t("join.title")}</h3>
           <ul className="mt-4 space-y-3.5">
-            {(["f1", "f2", "f3", "f4", "f5"] as const).map((f) => (
+            {(["f1", "f2", "f3", "f4", "f5", "f6"] as const).map((f) => (
               <li key={f} className="flex items-center gap-3 text-sm">
                 <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">
                   ✓
                 </span>
-                {t(`join.${f}`)}
+                <Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} />
               </li>
             ))}
           </ul>

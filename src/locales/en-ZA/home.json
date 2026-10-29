@@ -1,39 +1,39 @@
 {
   "meta": {
-    "title": "Puntr - Predict smarter. Prove it.",
-    "description": "Locked, auto-graded, public tipster records for PSL, EPL, UCL, URC and Springbok tests. 18+. Gamble responsibly: 0800 006 008.",
+    "title": "Puntr | Predict smarter. Prove it.",
+    "description": "A Community-First Platform for South African sports fans. Picks locked at kick-off, graded automatically and kept forever. PSL, EPL, UCL, URC and Springboks. 18+.",
     "ogDescription": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust."
   },
   "hero": {
-    "badge": "Public tipster records",
+    "badge": "Community-First Platform",
     "title1": "Predict smarter.",
     "title2": "Prove it.",
-    "body": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust.",
+    "body": "Puntr is where South African sports fans back their judgement in public. Every pick is <1>locked at kick-off</1>, graded automatically and kept forever, so your <1>public record</1> speaks for you.",
     "watch": "Watch the video"
   },
   "pillars": {
     "locked": {
       "title": "Locked at kick-off",
-      "sub": "no edits, no deletes"
+      "sub": "No edits. No deletes."
     },
     "graded": {
       "title": "Graded automatically",
-      "sub": "settled after the match"
+      "sub": "Settled from the official result"
     },
     "kept": {
       "title": "Kept forever",
-      "sub": "a public record"
+      "sub": "One public record"
     }
   },
   "why": {
     "title": "Why a locked record matters",
     "stamped": {
       "title": "Timestamped before kick-off",
-      "body": "A pick counts only if it was posted before the match started."
+      "body": "A pick only counts if it was posted before the match started."
     },
     "noEdits": {
-      "title": "No edits or deletes",
-      "body": "Wins and losses stay on the record. Nothing is hidden afterwards."
+      "title": "No edits, no deletes",
+      "body": "Wins and losses stay on your record. Nothing disappears afterwards."
     },
     "public": {
       "title": "Public units, ROI and sample size",
@@ -43,35 +43,36 @@
   "steps": {
     "title": "How Puntr works",
     "s1": {
-      "title": "Sign up free",
-      "body": "Create your free account. You must be 18 or older."
+      "title": "Join free",
+      "body": "Create your account with an email code. You must be 18 or older."
     },
     "s2": {
-      "title": "Make predictions",
-      "body": "Post your picks on upcoming matches before kick-off."
+      "title": "Post your picks",
+      "body": "Back your call on upcoming matches before kick-off."
     },
     "s3": {
       "title": "Get graded",
-      "body": "Every pick is locked at kick-off and settled automatically."
+      "body": "Every pick is <1>locked at kick-off</1> and settled automatically."
     },
     "s4": {
       "title": "Climb the weekly leaderboard",
-      "body": "Build a public record based on units, ROI and sample size."
+      "body": "Build a public record on units, ROI and sample size. Play for pride."
     }
   },
   "board": {
     "title": "Weekly leaderboard",
-    "sample": "Sample names and numbers, shown until the first real week is settled.",
+    "sample": "Example names and numbers, shown until the first real week is settled.",
     "view": "View leaderboard",
     "points": "{{value}} PP"
   },
   "join": {
     "title": "Why join Puntr?",
-    "f1": "Picks locked at kick-off",
-    "f2": "Automatic grading",
+    "f1": "Picks <1>locked at kick-off</1>",
+    "f2": "Automatic, transparent grading",
     "f3": "A public record you can share",
-    "f4": "Community predictions and chat",
-    "f5": "Free to join"
+    "f4": "A <1>Community-First Platform</1> to learn from",
+    "f5": "<1>AI-Powered Insights</1>, coming soon",
+    "f6": "Free for Founding Members"
   },
   "video": {
     "close": "Close video",
@@ -85,5 +86,15 @@
   "next": {
     "title": "Next fixtures",
     "all": "All fixtures"
+  },
+  "preview": {
+    "title": "Soweto Derby",
+    "badge": "Illustrative example",
+    "fixture": "Betway Premiership · Sample fixture",
+    "try": "Tap to try a pick",
+    "draw": "Draw",
+    "locked": "On Puntr this pick would be timestamped and locked at kick-off. It could not be edited or deleted.",
+    "idle": "Picks lock at kick-off and cannot be edited or deleted.",
+    "fine": "Sample split for illustration. Not a real prediction. Nothing you tap here is saved."
   }
 }

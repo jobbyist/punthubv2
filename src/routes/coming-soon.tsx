@@ -5,6 +5,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
+import { Em } from "@/components/em";
 import { headT } from "@/lib/i18n/head";
 import { odds, pct } from "@/lib/format";
 
@@ -115,7 +116,7 @@ function ComingSoon() {
               transition={{ delay: 0.12 }}
               className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              {t("body")}
+              <Trans t={t} i18nKey="body" components={{ 1: <Em /> }} />
             </motion.p>
 
             {feature && (
