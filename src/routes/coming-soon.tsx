@@ -1,11 +1,10 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Activity, ArrowRight, BarChart3, Brain, Sparkles, TrendingUp } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
 import { headT } from "@/lib/i18n/head";
 import { odds, pct } from "@/lib/format";
 
@@ -66,7 +65,7 @@ const FEATURE_KEYS = [
 ];
 
 function ComingSoon() {
-  const { openEarlyAccessPopup } = useSession();
+  const navigate = useNavigate();
   const { t } = useTranslation("comingsoon");
   const featureId = useSearch({ from: "/coming-soon" })["feature"];
   // Only known ids are shown, so the query string can't inject text into the page.
@@ -140,7 +139,7 @@ function ComingSoon() {
               <Button
                 size="lg"
                 className="h-12 px-6 text-[15px]"
-                onClick={() => openEarlyAccessPopup()}
+                onClick={() => navigate({ to: "/join" })}
               >
                 {t("cta")} <ArrowRight className="size-4" />
               </Button>

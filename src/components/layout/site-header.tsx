@@ -1,5 +1,5 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, Bell, ChevronDown } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Menu, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +7,14 @@ import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/session";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { openMobileMenu } from "@/components/layout/mobile-nav";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
@@ -23,12 +31,13 @@ export const primaryNav = [
 
 export function SiteHeader() {
   const { t } = useTranslation("nav");
-  const { isGuest, openEarlyAccess } = useSession();
+  const { isSignedIn, profile, signOut } = useSession();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   // Signed-in (guest session) users don't need the marketing pages in the nav.
-  const links = primaryNav.filter((l) => !("guestOnly" in l && l.guestOnly && isGuest));
+  const links = primaryNav.filter((l) => !("guestOnly" in l && l.guestOnly && isSignedIn));
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
@@ -100,35 +109,54 @@ export function SiteHeader() {
           <div className="hidden lg:block">
             <LanguageSwitcher />
           </div>
-          {isGuest ? (
-            <>
-              <span className="hidden items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-semibold text-primary tnum sm:inline-flex">
-                0 PP
-              </span>
-              <button
-                aria-label={t("header.notifications")}
-                onClick={() => openEarlyAccess(t("header.notificationsLocked"))}
-                className="hidden size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted sm:grid"
-              >
-                <Bell className="size-[18px]" />
-              </button>
-              <button
-                onClick={() => openEarlyAccess()}
-                className="flex items-center gap-1.5 rounded-full border border-border py-1 pl-1 pr-2.5 text-sm font-medium"
-              >
-                <span className="grid size-7 place-items-center rounded-full bg-muted text-xs font-semibold">
-                  G
-                </span>
-                <span className="hidden sm:inline">{t("header.guest")}</span>
-                <ChevronDown className="size-4 text-muted-foreground" />
-              </button>
-            </>
+          {isSignedIn && profile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-1.5 rounded-full border border-border py-1 pl-1 pr-2.5 text-sm font-medium">
+                  <span className="grid size-7 place-items-center rounded-full bg-muted text-xs font-semibold uppercase">
+                    {profile.username.slice(0, 1)}
+                  </span>
+                  <span className="hidden max-w-[10rem] truncate sm:inline">
+                    {profile.username}
+                  </span>
+                  <ChevronDown className="size-4 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <span className="block truncate">{profile.username}</span>
+                  {profile.founding_number && (
+                    <span className="block text-xs font-normal text-muted-foreground">
+                      {t("header.founding", { number: profile.founding_number })}
+                    </span>
+                  )}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() =>
+                    navigate({ to: "/u/$username", params: { username: profile.username } })
+                  }
+                >
+                  {t("header.myRecord")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
+                  {t("header.account")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/account/privacy" })}>
+                  {t("header.privacy")}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => void signOut()}>
+                  {t("header.signOut")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button
-              onClick={() => openEarlyAccess()}
+              asChild
               className="h-10 max-w-[9.5rem] whitespace-normal px-3 text-center text-sm leading-tight sm:max-w-none sm:px-5"
             >
-              {t("header.getEarlyAccess")}
+              <Link to="/join">{t("header.getEarlyAccess")}</Link>
             </Button>
           )}
         </div>

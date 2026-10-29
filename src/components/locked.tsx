@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,7 +20,6 @@ export function Locked({
   intensity?: "sm" | "md" | "lg";
   compact?: boolean;
 }) {
-  const { openEarlyAccess } = useSession();
   const { t } = useTranslation(["predictions", "common"]);
   const text = label ?? t("predictions:gate.label");
   const blur =
@@ -36,12 +36,8 @@ export function Locked({
             <Lock className="size-4" />
           </span>
           <p className={`mt-3 font-medium ${compact ? "text-xs" : "text-sm"}`}>{text}</p>
-          <Button
-            size={compact ? "sm" : "default"}
-            className="mt-3"
-            onClick={() => openEarlyAccess(text)}
-          >
-            {t("common:cta.createFreeAccount")}
+          <Button asChild size={compact ? "sm" : "default"} className="mt-3">
+            <Link to="/join">{t("common:cta.createFreeAccount")}</Link>
           </Button>
         </div>
       </div>
@@ -56,16 +52,16 @@ export function GateValue({
   children: ReactNode;
   className?: string;
 }) {
-  const { isGuest, openEarlyAccess } = useSession();
+  const { isSignedIn } = useSession();
   const { t } = useTranslation("predictions");
-  if (!isGuest) return <span className={className}>{children}</span>;
+  if (isSignedIn) return <span className={className}>{children}</span>;
   return (
-    <button
-      onClick={() => openEarlyAccess(t("gate.values"))}
+    <Link
+      to="/join"
       className={`select-none blur-[5px] transition hover:blur-[4px] ${className}`}
       aria-label={t("gate.valuesAria")}
     >
       {children}
-    </button>
+    </Link>
   );
 }

@@ -17,6 +17,7 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -26,7 +27,10 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
+import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -66,6 +70,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
 const InsightsRoute = InsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardsRoute = LeaderboardsRouteImport.update({
@@ -113,9 +122,24 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountPrivacyRoute = AccountPrivacyRouteImport.update({
+  id: '/account/privacy',
+  path: '/account/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
   path: '/privacy/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -128,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
@@ -137,7 +162,10 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/account/privacy': typeof AccountPrivacyRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account/': typeof AccountIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -148,6 +176,7 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
@@ -157,7 +186,10 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/account/privacy': typeof AccountPrivacyRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account': typeof AccountIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,6 +201,7 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
@@ -178,7 +211,10 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/account/privacy': typeof AccountPrivacyRoute
   '/privacy_/request': typeof PrivacyRequestRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account/': typeof AccountIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,6 +227,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/how-it-works'
     | '/insights'
+    | '/join'
     | '/leaderboards'
     | '/predictions'
     | '/pricing'
@@ -200,7 +237,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/account/privacy'
     | '/privacy/request'
+    | '/u/$username'
+    | '/account/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -211,6 +251,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/how-it-works'
     | '/insights'
+    | '/join'
     | '/leaderboards'
     | '/predictions'
     | '/pricing'
@@ -220,7 +261,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/account/privacy'
     | '/privacy/request'
+    | '/u/$username'
+    | '/account'
   id:
     | '__root__'
     | '/'
@@ -231,6 +275,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/how-it-works'
     | '/insights'
+    | '/join'
     | '/leaderboards'
     | '/predictions'
     | '/pricing'
@@ -240,7 +285,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/account/privacy'
     | '/privacy_/request'
+    | '/u/$username'
+    | '/account/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -252,6 +300,7 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
+  JoinRoute: typeof JoinRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
   PredictionsRoute: typeof PredictionsRoute
   PricingRoute: typeof PricingRoute
@@ -261,7 +310,10 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  AccountPrivacyRoute: typeof AccountPrivacyRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
+  UUsernameRoute: typeof UUsernameRoute
+  AccountIndexRoute: typeof AccountIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -320,6 +372,13 @@ declare module '@tanstack/react-router' {
       path: '/insights'
       fullPath: '/insights'
       preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboards': {
@@ -385,11 +444,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/privacy': {
+      id: '/account/privacy'
+      path: '/account/privacy'
+      fullPath: '/account/privacy'
+      preLoaderRoute: typeof AccountPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy_/request': {
       id: '/privacy_/request'
       path: '/privacy/request'
       fullPath: '/privacy/request'
       preLoaderRoute: typeof PrivacyRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -404,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
+  JoinRoute: JoinRoute,
   LeaderboardsRoute: LeaderboardsRoute,
   PredictionsRoute: PredictionsRoute,
   PricingRoute: PricingRoute,
@@ -413,7 +494,10 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  AccountPrivacyRoute: AccountPrivacyRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
+  UUsernameRoute: UUsernameRoute,
+  AccountIndexRoute: AccountIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

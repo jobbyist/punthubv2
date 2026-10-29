@@ -1,11 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
 import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
 import { RgNotice } from "@/components/rg-notice";
 import { topTipsters } from "@/lib/mock-data";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
@@ -44,7 +43,7 @@ const STEP_KEYS = ["s1", "s2", "s3", "s4"] as const;
 function Landing() {
   const { t } = useTranslation("home");
   const { t: tc } = useTranslation("common");
-  const { openEarlyAccess } = useSession();
+  const navigate = useNavigate();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const handleCloseVideoModal = () => {
@@ -72,7 +71,11 @@ function Landing() {
             {t("hero.body")}
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-6 text-[15px]" onClick={() => openEarlyAccess()}>
+            <Button
+              size="lg"
+              className="h-12 px-6 text-[15px]"
+              onClick={() => navigate({ to: "/join" })}
+            >
               {tc("cta.getStarted")}
             </Button>
             <Button
@@ -213,7 +216,7 @@ function Landing() {
               </li>
             ))}
           </ul>
-          <Button className="mt-6 w-full" onClick={() => openEarlyAccess()}>
+          <Button className="mt-6 w-full" onClick={() => navigate({ to: "/join" })}>
             {tc("cta.createAccount")}
           </Button>
           <RgNotice variant="compact" className="mt-4" />

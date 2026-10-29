@@ -44,7 +44,7 @@ export const Route = createFileRoute("/predictions")({
 const FILTERS = ["all", "top", "today", "tomorrow", "week"] as const;
 
 function Predictions() {
-  const { isGuest } = useSession();
+  const { isSignedIn } = useSession();
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
 
@@ -150,7 +150,7 @@ function Predictions() {
           <button className="text-xs font-medium text-primary">{tc("action.viewAll")}</button>
         </div>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">{t("featured.sample")}</p>
-        {isGuest ? cards : <Locked intensity="md">{cards}</Locked>}
+        {isSignedIn ? cards : <Locked intensity="md">{cards}</Locked>}
       </section>
 
       <AffiliateBanner />

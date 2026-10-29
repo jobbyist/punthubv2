@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -147,7 +147,8 @@ function Feed() {
 }
 
 function Community() {
-  const { isGuest, openEarlyAccess } = useSession();
+  const { isSignedIn } = useSession();
+  const navigate = useNavigate();
   const { t } = useTranslation("community");
 
   return (
@@ -158,7 +159,7 @@ function Community() {
         <div className="flex items-center gap-3">
           <span className="size-10 shrink-0 rounded-full bg-muted" />
           <button
-            onClick={() => openEarlyAccess(t("composer.locked"))}
+            onClick={() => navigate({ to: "/join" })}
             className="min-w-0 flex-1 truncate rounded-lg bg-muted px-4 py-2.5 text-left text-sm text-muted-foreground"
           >
             {t("composer.prompt")}
@@ -182,7 +183,7 @@ function Community() {
               </button>
             );
           })}
-          <Button className="col-span-2 sm:col-span-1" onClick={() => openEarlyAccess()}>
+          <Button className="col-span-2 sm:col-span-1" onClick={() => navigate({ to: "/join" })}>
             {t("composer.post")}
           </Button>
         </div>
@@ -201,7 +202,7 @@ function Community() {
         ))}
       </div>
 
-      {isGuest ? (
+      {isSignedIn ? (
         <Feed />
       ) : (
         <Locked label={t("gate")} intensity="lg">

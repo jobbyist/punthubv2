@@ -34,7 +34,7 @@ const stats = [
 ];
 
 function Leaderboards() {
-  const { isGuest } = useSession();
+  const { isSignedIn } = useSession();
 
   const table = (
     <div className="overflow-x-auto">
@@ -157,7 +157,7 @@ function Leaderboards() {
       </div>
 
       <section className="card-surface overflow-hidden">
-        {isGuest ? (
+        {isSignedIn ? (
           table
         ) : (
           <Locked label="Create a free account to see the full leaderboard." intensity="sm">

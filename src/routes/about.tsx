@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -20,7 +20,6 @@ import {
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/components/session";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -205,7 +204,7 @@ const leaderboardData = [
 ];
 
 function About() {
-  const { openEarlyAccess } = useSession();
+  const navigate = useNavigate();
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
   return (
@@ -238,7 +237,7 @@ function About() {
               <Button
                 size="lg"
                 className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
-                onClick={() => openEarlyAccess()}
+                onClick={() => navigate({ to: "/join" })}
               >
                 Explore Puntr
               </Button>
@@ -816,7 +815,7 @@ function About() {
               <Button
                 size="lg"
                 className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
-                onClick={() => openEarlyAccess()}
+                onClick={() => navigate({ to: "/join" })}
               >
                 Join Puntr
               </Button>

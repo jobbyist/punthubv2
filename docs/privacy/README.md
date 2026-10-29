@@ -6,7 +6,7 @@ Drafts for attorney review. Open TODOs:
 - Create privacy@puntr.co.za and decide who monitors it (30-day target is our own, not statutory).
 - Attorney review of retention periods marked [attorney review] in /privacy.
 - Email notification on new rows in `privacy_requests` (currently admins read the table; no email is sent).
-- `/account/privacy` (export, correct, delete) arrives with accounts in P6; the RPCs `export_my_data` and `anonymise_account` already exist.
+- `/account/privacy` shipped in P6: export (`export_my_data`), marketing choices (`record_consent`), delete (`anonymise_account` + auth admin delete via `deleteMyAccount`). Correction goes through `/privacy/request`. Deletion needs `SUPABASE_SERVICE_ROLE_KEY` in Vercel.
 - Retire the old Lovable Supabase project and the FormBackend processor.
 - App-level tests (no test runner installed yet).
 

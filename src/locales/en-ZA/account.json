@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Your account | Puntr",
+    "privacyTitle": "Privacy and data | Puntr",
+    "description": "Manage your Puntr account.",
+    "recordTitle": "{{username}} | Puntr"
+  },
+  "signInNeeded": {
+    "title": "Sign in to continue",
+    "body": "This page is for signed-in members.",
+    "cta": "Sign in or join"
+  },
+  "home": {
+    "title": "Your account",
+    "subtitle": "Signed in as {{email}}",
+    "username": "Username",
+    "founding": "Founding Member #{{number}}",
+    "member": "Member",
+    "language": "Language",
+    "privacyLink": "Privacy and data",
+    "privacyBody": "Download your data, change your marketing choices or delete your account.",
+    "recordLink": "My public record"
+  },
+  "privacy": {
+    "title": "Privacy and data",
+    "subtitle": "You are in control of your personal information. See the <1>privacy notice</1> for the detail.",
+    "export": {
+      "title": "Download your data",
+      "body": "A JSON file with your profile, consents, picks and reports.",
+      "cta": "Download my data",
+      "working": "Preparing…",
+      "error": "We couldn't prepare your file. Please try again."
+    },
+    "marketing": {
+      "title": "Marketing",
+      "body": "Marketing is optional and never a condition of using Puntr. Service emails (such as your sign-in code) are not marketing.",
+      "email": "Email me news and offers from Puntr",
+      "whatsapp": "WhatsApp me news and offers from Puntr",
+      "saved": "Saved",
+      "error": "Couldn't save that choice. Please try again."
+    },
+    "tracking": {
+      "title": "Analytics and affiliate tracking",
+      "body": "Both are off unless you accept them.",
+      "cta": "Open privacy choices"
+    },
+    "request": {
+      "title": "Other requests",
+      "body": "To correct information, object to a use or make a complaint, send a privacy request.",
+      "cta": "Make a privacy request"
+    },
+    "delete": {
+      "title": "Delete your account",
+      "body": "This removes your email, birth year and marketing choices, and signs you out for good. It cannot be undone.",
+      "record": "Your picks stay on the public record because the record is permanent and verifiable. They stay under a name that no longer points to you (deleted-xxxxxxxxxx).",
+      "cta": "Delete my account",
+      "confirmTitle": "Delete your account?",
+      "confirmBody": "Type DELETE to confirm.",
+      "confirmWord": "DELETE",
+      "confirm": "Delete permanently",
+      "cancel": "Cancel",
+      "working": "Deleting…",
+      "error": "We couldn't delete your account. Please try again or send a privacy request.",
+      "done": "Your account has been deleted."
+    }
+  },
+  "record": {
+    "founding": "Founding Member #{{number}}",
+    "member": "Member",
+    "joined": "Joined {{date}}",
+    "soon": "Your picks and record will appear here once picks open.",
+    "note": "Every pick stays on the record - none can be edited or removed.",
+    "notFound": "We couldn't find that member."
+  }
+}
