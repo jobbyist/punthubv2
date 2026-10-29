@@ -9,14 +9,14 @@ Built as blueprint prompts P19 and P20. **Everything ships switched off.** Nothi
 - **Members earn only when in good standing:** 18+ attested, confirmed email, not banned, not on a break. Awards are idempotent (one per member, rule and reference) and capped in the database.
 - **Referrals:** a referral is recorded at the invited member's first pick and vests after 7 days (`referral_rewards.vests_at`). A daily job (`vest-referrals`, 03:15 UTC) awards both sides and any milestone. It does nothing while points are off, so referrals wait instead of being lost. A referral that vested in the last 30 days is reversed if either account is banned or deleted. `/admin` → Rewards → Referral review flags a member who qualified four friends within an hour and can reverse a referral with a reason.
 - **Rewards catalogue** (tables `rewards`, `reward_codes`, `redemptions`): kinds are perk, sponsored reward, retail voucher and betting voucher. A reward with uploaded codes uses them as stock; others use a stock number or no limit. Redeeming is one locked transaction (no double spend, no over-stock), writes a negative ledger row, and an admin marks it sent (the code then shows to the member). Cancelling refunds points and frees the code as new rows. Perks can be set to fulfil straight away.
-- **Betting vouchers** have their own switch. They appear only to 18+, email-confirmed members not on a break, labelled "Ad" with the responsible-gambling message.
+- **Betting vouchers** have their own switch, **switched on by the owner on 29 Oct 2026** for launch. They appear only to 18+, email-confirmed members not on a break, labelled "Ad" with the responsible-gambling message. The switch alone lists nothing: a betting voucher appears only once a reward of that type is added and activated, so counsel's sign-off and a licensed partner's written agreement to fund it come first.
 - Members see `/rewards` (balance, earning rules, invite card, catalogue, redemptions, history) and a PuntPoints item in the account menu.
 
 ## Turn it on (owner checklist)
 
 1. Decide the values (decisions D18 to D22 in the blueprint): edit the rules and milestones in `/admin` → Rewards.
 2. Add rewards (title, type, cost, stock, sponsor) and upload any voucher codes the sponsors supplied. New rewards start inactive: switch each on.
-3. Switch on **PuntPoints**, then **Rewards**. Switch on **Betting vouchers** only after counsel signs off and a licensed partner funds them.
+3. Switch on **PuntPoints**, then **Rewards**. **Betting vouchers** are already on (owner decision, 29 Oct 2026); add a betting-voucher reward only after counsel signs off and a licensed partner has agreed in writing to fund it and supply the codes.
 4. Make sure the legal pages are approved (see `docs/legal-changelog.md`): Terms §6 to §8, the Privacy table and the Affiliate disclosure describe this scheme.
 5. Run `supabase/tests/puntpoints_rewards.sql` in the Supabase SQL editor (it rolls back; any `ASSERT FAILED` is a failure).
 
