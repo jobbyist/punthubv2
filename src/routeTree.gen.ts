@@ -30,6 +30,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
+import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -140,6 +141,11 @@ const AdminFixturesRoute = AdminFixturesRouteImport.update({
   path: '/admin/fixtures',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
+  id: '/match/$fixtureId',
+  path: '/match/$fixtureId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
   path: '/privacy/request',
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
@@ -266,6 +275,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/account/privacy'
     | '/admin/fixtures'
+    | '/match/$fixtureId'
     | '/privacy/request'
     | '/u/$username'
     | '/account/'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/account/privacy'
     | '/admin/fixtures'
+    | '/match/$fixtureId'
     | '/privacy/request'
     | '/u/$username'
     | '/account'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/account/privacy'
     | '/admin/fixtures'
+    | '/match/$fixtureId'
     | '/privacy_/request'
     | '/u/$username'
     | '/account/'
@@ -348,6 +360,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
+  MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
@@ -504,6 +517,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFixturesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/match/$fixtureId': {
+      id: '/match/$fixtureId'
+      path: '/match/$fixtureId'
+      fullPath: '/match/$fixtureId'
+      preLoaderRoute: typeof MatchFixtureIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy_/request': {
       id: '/privacy_/request'
       path: '/privacy/request'
@@ -556,6 +576,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
   AdminFixturesRoute: AdminFixturesRoute,
+  MatchFixtureIdRoute: MatchFixtureIdRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,

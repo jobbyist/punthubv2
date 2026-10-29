@@ -9,21 +9,20 @@
     "description": "Community feed where South African sports fans share picks and discussions."
   },
   "title": "Community",
-  "subtitle": "Share your reasoning, talk through the games and learn from fellow fans.",
+  "subtitle": "The latest locked picks from across Puntr. Every pick stays on the record, win or lose.",
   "composer": {
-    "prompt": "What's on your mind?",
-    "locked": "Create a free account to post in the community.",
-    "image": "Image",
-    "poll": "Poll",
-    "tip": "Tip",
-    "match": "Match",
-    "post": "Post"
+    "prompt": "Post a pick on an upcoming match",
+    "locked": "Create a free account to post picks.",
+    "soccer": "Soccer",
+    "rugby": "Rugby",
+    "fixtures": "All fixtures",
+    "post": "Choose a match",
+    "avatar": "You"
   },
   "tabs": {
-    "all": "All posts",
-    "following": "Following",
-    "popular": "Popular",
-    "mine": "My posts"
+    "new": "New",
+    "top": "Top tipsters this week",
+    "mine": "My picks"
   },
   "gate": "Create a free account to join the discussion.",
   "post": {
@@ -35,5 +34,15 @@
     "fold_other": "{{count}}-fold acca",
     "combined": "Combined odds",
     "total": "Total odds"
+  },
+  "feed": {
+    "empty": {
+      "new": "No picks yet. Be the first: choose a match and lock a pick.",
+      "top": "Top tipsters appear once this week's first picks are settled.",
+      "mine": "You haven't posted a pick yet."
+    },
+    "loadMore": "Load more",
+    "loading": "Loading…",
+    "error": "We couldn't load the feed. Please refresh the page."
   }
 }

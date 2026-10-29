@@ -28,5 +28,6 @@
     "label": "Create a free account to unlock today's predictions.",
     "values": "Create a free account to see odds and confidence.",
     "valuesAria": "Locked. Create a free account to view."
-  }
+  },
+  "pick": "Make a pick"
 }

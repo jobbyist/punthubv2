@@ -102,30 +102,38 @@ function Predictions() {
             </h2>
             <ul className="card-surface divide-y divide-border">
               {day.fixtures.map((f) => (
-                <li
-                  key={f.id}
-                  className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 sm:grid-cols-[6.5rem_1fr_auto]"
-                >
-                  <div className="text-sm font-semibold tnum">
-                    {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] text-muted-foreground">
-                      {f.competition} ·{" "}
-                      {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
-                    </p>
-                    <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
-                      <span className="inline-flex items-center gap-2">
-                        <TeamLogo team={f.home} size="sm" />
-                        {f.home}
-                      </span>
-                      <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
-                      <span className="inline-flex items-center gap-2">
-                        <TeamLogo team={f.away} size="sm" />
-                        {f.away}
-                      </span>
-                    </p>
-                  </div>
+                <li key={f.id}>
+                  <Link
+                    to="/match/$fixtureId"
+                    params={{ fixtureId: f.id }}
+                    className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/40 sm:grid-cols-[6.5rem_1fr_auto]"
+                  >
+                    <div className="text-sm font-semibold tnum">
+                      {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] text-muted-foreground">
+                        {f.competition} ·{" "}
+                        {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
+                      </p>
+                      <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+                        <span className="inline-flex items-center gap-2">
+                          <TeamLogo team={f.home} size="sm" />
+                          {f.home}
+                        </span>
+                        <span className="text-xs font-normal text-muted-foreground">
+                          {tc("vs")}
+                        </span>
+                        <span className="inline-flex items-center gap-2">
+                          <TeamLogo team={f.away} size="sm" />
+                          {f.away}
+                        </span>
+                      </p>
+                    </div>
+                    <span className="hidden text-sm font-medium text-primary sm:block">
+                      {t("pick")}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
