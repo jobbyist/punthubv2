@@ -1,3 +1,5 @@
+import { emailLocale, emailT } from "./i18n";
+
 /**
  * Reusable, email-client-safe HTML building blocks (Gmail / Outlook friendly).
  * Pure presentation — no business logic, no secrets.
@@ -40,7 +42,11 @@ export function logoHeader(): string {
   </tr>`;
 }
 
-export function button(label: string, href: string, variant: "primary" | "secondary" = "primary"): string {
+export function button(
+  label: string,
+  href: string,
+  variant: "primary" | "secondary" = "primary",
+): string {
   const isPrimary = variant === "primary";
   const bg = isPrimary ? brand.green : brand.white;
   const color = isPrimary ? brand.white : brand.text;
@@ -68,26 +74,27 @@ export function divider(): string {
   return `<div style="height:1px;line-height:1px;background-color:${brand.border};margin:28px 0;">&nbsp;</div>`;
 }
 
-export function footer(): string {
+export function footer(locale?: string | null): string {
+  const t = emailT(locale);
   return `<tr>
     <td style="padding:24px 32px 32px;border-top:1px solid ${brand.border};font-family:Helvetica,Arial,sans-serif;">
       <div style="font-size:15px;font-weight:800;color:${brand.text};">Puntr</div>
-      <div style="font-size:13px;color:${brand.muted};margin-top:2px;">Smarter Predictions. Better Decisions.</div>
+      <div style="font-size:13px;color:${brand.muted};margin-top:2px;">${escapeHtml(t("footer.tagline"))}</div>
       <div style="margin-top:16px;font-size:12px;line-height:1.7;color:#6B7280;">
-        <strong style="color:${brand.text};">Responsible Gambling Reminder</strong><br />
-        Puntr promotes responsible gambling. No prediction can guarantee winnings.<br />
-        Never bet more than you can afford to lose. 18+ Only.<br />
-        National Responsible Gambling Toll-Free Counselling Line: 0800 006 008.
+        <strong style="color:${brand.text};">${escapeHtml(t("footer.rgTitle"))}</strong><br />
+        ${escapeHtml(t("footer.rgLine1"))}<br />
+        ${escapeHtml(t("footer.rgLine2"))}<br />
+        ${escapeHtml(t("footer.rgLine3"))} 0800 006 008.
       </div>
-      <div style="margin-top:16px;font-size:11px;color:#9CA3AF;">&copy; 2026 Puntr. All Rights Reserved.</div>
+      <div style="margin-top:16px;font-size:11px;color:#9CA3AF;">${escapeHtml(t("footer.copyright"))}</div>
     </td>
   </tr>`;
 }
 
 /** Wraps body rows in a responsive, dark-mode-aware document shell. */
-export function layout(bodyRows: string, previewText: string): string {
+export function layout(bodyRows: string, previewText: string, locale?: string | null): string {
   return `<!doctype html>
-<html lang="en">
+<html lang="${emailLocale(locale)}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />

@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "title": "Puntr - Predict smarter. Prove it.",
+    "description": "Locked, auto-graded, public tipster records for PSL, EPL, UCL, URC and Springbok tests. 18+. Gamble responsibly: 0800 006 008.",
+    "ogDescription": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust."
+  },
+  "hero": {
+    "badge": "Public tipster records",
+    "title1": "Predict smarter.",
+    "title2": "Prove it.",
+    "body": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust.",
+    "watch": "Watch the video"
+  },
+  "pillars": {
+    "locked": { "title": "Locked at kick-off", "sub": "no edits, no deletes" },
+    "graded": { "title": "Graded automatically", "sub": "settled after the match" },
+    "kept": { "title": "Kept forever", "sub": "a public record" }
+  },
+  "why": {
+    "title": "Why a locked record matters",
+    "stamped": { "title": "Timestamped before kick-off", "body": "A pick counts only if it was posted before the match started." },
+    "noEdits": { "title": "No edits or deletes", "body": "Wins and losses stay on the record. Nothing is hidden afterwards." },
+    "public": { "title": "Public units, ROI and sample size", "body": "See how many picks sit behind a result before you trust it." }
+  },
+  "steps": {
+    "title": "How Puntr works",
+    "s1": { "title": "Sign up free", "body": "Create your free account. You must be 18 or older." },
+    "s2": { "title": "Make predictions", "body": "Post your picks on upcoming matches before kick-off." },
+    "s3": { "title": "Get graded", "body": "Every pick is locked at kick-off and settled automatically." },
+    "s4": { "title": "Climb the weekly leaderboard", "body": "Build a public record based on units, ROI and sample size." }
+  },
+  "board": {
+    "title": "Weekly leaderboard",
+    "sample": "Sample names and numbers, shown until the first real week is settled.",
+    "view": "View leaderboard",
+    "points": "{{value}} PP"
+  },
+  "join": {
+    "title": "Why join Puntr?",
+    "f1": "Picks locked at kick-off",
+    "f2": "Automatic grading",
+    "f3": "A public record you can share",
+    "f4": "Community predictions and chat",
+    "f5": "Free to join"
+  },
+  "video": { "close": "Close video", "iframeTitle": "How Puntr works" },
+  "platforms": { "title": "All top platforms. One place.", "body": "Compare odds, markets and offers from South Africa's leading bookmakers.", "viewAll": "View all platforms" }
+}

@@ -1,0 +1,102 @@
+{
+  "primary": {
+    "predictions": "Predictions",
+    "leaderboards": "Leaderboards",
+    "results": "Results",
+    "community": "Community",
+    "insights": "Insights",
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "support": "Support"
+  },
+  "header": {
+    "openMenu": "Open menu",
+    "menu": "Menu",
+    "version": "Version 2.0 - © 2026 Puntr",
+    "getEarlyAccess": "Get started",
+    "guest": "Guest",
+    "notifications": "Notifications",
+    "notificationsLocked": "Notifications start once your account is open.",
+    "home": "Puntr home"
+  },
+  "mobile": {
+    "primary": "Primary",
+    "more": "More",
+    "closeMenu": "Close menu",
+    "home": "Home",
+    "sports": "Sports",
+    "followPuntr": "Follow Puntr",
+    "logOut": "Log out",
+    "signInPrompt": "Sign in or create an account to continue.",
+    "responsibleGambling": "Responsible gambling",
+    "helpCentre": "Help centre",
+    "feedback": "Feedback",
+    "invite": "Invite friends",
+    "tools": {
+      "aiPicks": "AI picks",
+      "marketInsights": "Market insights",
+      "podcast": "Podcast",
+      "bookmakers": "Bookmakers",
+      "tools": "Tools",
+      "liveScores": "Live scores",
+      "puntPoints": "PuntPoints",
+      "referrals": "Referrals"
+    }
+  },
+  "sport": {
+    "soccer": "Soccer",
+    "rugby": "Rugby",
+    "basketball": "Basketball",
+    "tennis": "Tennis",
+    "cricket": "Cricket",
+    "combat": "Combat sports",
+    "racing": "Horse racing"
+  },
+  "side": {
+    "predictions": "Predictions",
+    "topPicks": "Top picks",
+    "liveNow": "Live now",
+    "popular": "Popular",
+    "community": "Community",
+    "calendar": "Events calendar",
+    "sports": "Sports",
+    "topTipsters": "Top tipsters"
+  },
+  "footer": {
+    "platform": "Platform",
+    "communityCol": "Community",
+    "company": "Company",
+    "followUs": "Follow us",
+    "link": {
+      "predictions": "Predictions",
+      "leaderboards": "Leaderboards",
+      "results": "Results",
+      "insights": "Insights",
+      "pricing": "Pricing",
+      "feed": "Community feed",
+      "howItWorks": "How it works",
+      "puntPoints": "PuntPoints",
+      "support": "Support",
+      "about": "About",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "privacyChoices": "Privacy choices",
+      "affiliate": "Affiliate disclosure",
+      "refunds": "Refunds"
+    },
+    "social": {
+      "x": "Puntr on X",
+      "whatsapp": "Join the Puntr WhatsApp community",
+      "facebook": "Puntr on Facebook",
+      "youtube": "Puntr on YouTube",
+      "instagram": "Puntr on Instagram",
+      "tiktok": "Puntr on TikTok"
+    },
+    "store": {
+      "comingSoonTo": "Coming soon to",
+      "appStore": "the App Store",
+      "googlePlay": "Google Play"
+    },
+    "copyright": "© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only."
+  }
+}

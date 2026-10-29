@@ -20,7 +20,8 @@ export { renderWelcomeEmail };
 async function sendViaResend(payload: Record<string, unknown>) {
   const lovableApiKey = process.env["LOVABLE_API_KEY"];
   const resendApiKey = process.env["RESEND_API_KEY"];
-  if (!lovableApiKey || !resendApiKey) return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
+  if (!lovableApiKey || !resendApiKey)
+    return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
 
   const response = await fetch(`${GATEWAY_URL}/emails`, {
     method: "POST",
@@ -47,7 +48,10 @@ export async function notifySupport(input: WelcomeEmailInput): Promise<void> {
       ["Phone", input.phone || "—"],
       ["Plan", input.plan],
     ]
-      .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#4B5563;">${k}</td><td style="padding:4px 0;font-weight:700;color:#111111;">${v}</td></tr>`)
+      .map(
+        ([k, v]) =>
+          `<tr><td style="padding:4px 12px 4px 0;color:#4B5563;">${k}</td><td style="padding:4px 0;font-weight:700;color:#111111;">${v}</td></tr>`,
+      )
       .join("");
 
     const result = await sendViaResend({
@@ -65,8 +69,9 @@ export async function notifySupport(input: WelcomeEmailInput): Promise<void> {
   }
 }
 
-
-export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<{ sent: boolean; reason?: string }> {
+export async function sendWelcomeEmail(
+  input: WelcomeEmailInput,
+): Promise<{ sent: boolean; reason?: string }> {
   // Always alert the support inbox, regardless of the member email outcome.
   const notify = notifySupport(input);
 
@@ -82,7 +87,10 @@ export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<{ sent
 
     if (!result.ok) {
       console.error(`Resend send failed [${result.status}]: ${result.body}`);
-      return { sent: false, reason: result.status === 0 ? "EMAIL_NOT_CONFIGURED" : `EMAIL_FAILED_${result.status}` };
+      return {
+        sent: false,
+        reason: result.status === 0 ? "EMAIL_NOT_CONFIGURED" : `EMAIL_FAILED_${result.status}`,
+      };
     }
 
     return { sent: true };
@@ -91,5 +99,4 @@ export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<{ sent
     await notify;
     return { sent: false, reason: "EMAIL_NETWORK_ERROR" };
   }
-
 }

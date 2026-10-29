@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { analytics, trackEvent } from "@/lib/analytics";
 
@@ -70,7 +78,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       reason,
       plan,
     }),
-    [isGuest, enterGuest, exitGuest, openEarlyAccess, openEarlyAccessPopup, earlyAccessOpen, reason, plan],
+    [
+      isGuest,
+      enterGuest,
+      exitGuest,
+      openEarlyAccess,
+      openEarlyAccessPopup,
+      earlyAccessOpen,
+      reason,
+      plan,
+    ],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

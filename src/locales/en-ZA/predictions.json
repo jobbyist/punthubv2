@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "All predictions | Puntr",
+    "description": "Browse community predictions across soccer and rugby.",
+    "ogTitle": "All predictions | Puntr",
+    "ogDescription": "Community predictions on upcoming PSL, EPL, UCL, URC and Springbok fixtures."
+  },
+  "title": "All predictions",
+  "subtitle": "Discover predictions from the community, each with a public record behind it.",
+  "filter": { "all": "All", "top": "Top picks", "today": "Today", "tomorrow": "Tomorrow", "week": "This week", "filters": "Filters", "trending": "Trending" },
+  "featured": {
+    "title": "Featured predictions",
+    "curated": "Curated",
+    "sample": "Community predictions on upcoming fixtures. Sample data is shown until the first real fixtures load."
+  },
+  "card": {
+    "topPick": "Top pick",
+    "confidence": "Confidence",
+    "mostBacked": "Most backed",
+    "backedCount_one": "{{count}} prediction",
+    "backedCount_other": "{{count}} predictions",
+    "view": "View prediction"
+  },
+  "popular": {
+    "title": "Popular predictions",
+    "body": "See what the community is backing right now.",
+    "match": "Match",
+    "market": "Market",
+    "tip": "Tip",
+    "odds": "Odds",
+    "conf": "Confidence",
+    "backedBy": "Backed by"
+  },
+  "gate": { "label": "Create a free account to unlock today's predictions.", "values": "Create a free account to see odds and confidence.", "valuesAria": "Locked. Create a free account to view." }
+}

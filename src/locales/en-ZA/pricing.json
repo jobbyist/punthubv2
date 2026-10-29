@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "title": "Pricing - free for Founding Members | Puntr",
+    "description": "Puntr is free for the first 100 Founding Members. Credits for optional extras are coming later. Posting, voting and the leaderboard are always free.",
+    "ogTitle": "Puntr pricing - free for Founding Members",
+    "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
+  },
+  "title": "Pricing",
+  "subtitle": "Free for the first 100 Founding Members. Paid extras come later and are optional.",
+  "founding": {
+    "badge": "Open now",
+    "title": "Founding Members - free",
+    "spots": "100 spots. No card needed.",
+    "f1": "A permanent Founding badge, numbered #1 to #100",
+    "f2": "Full access to posting, your record and the weekly leaderboard",
+    "f3": "30 free credits a month for 3 months once credits launch",
+    "cta": "Claim a Founding spot"
+  },
+  "credits": {
+    "badge": "Coming soon",
+    "title": "Credits - coming soon",
+    "note": "Indicative prices. They may change before launch.",
+    "packs": "Packs",
+    "uses": "What they buy",
+    "pack": { "starter": "Starter", "matchday": "Match Day", "season": "Season", "credits": "{{count}} credits" },
+    "use": { "preview": "AI match preview", "slip": "AI slip check", "stats": "Deep tipster stats", "cost": "{{count}} credits" },
+    "alwaysFree": "Posting, voting and the leaderboard are always free."
+  },
+  "never": "Paying will never earn extra points or prize eligibility.",
+  "faq": {
+    "title": "Pricing questions",
+    "q1": "Is Puntr free?",
+    "a1": "Yes. Founding Members use Puntr free. Posting, voting and the leaderboard are always free.",
+    "q2": "When do credits launch?",
+    "a2": "Not at launch. We will announce credits and their terms before anything goes on sale. The prices here are indicative.",
+    "q3": "Can paying improve my ranking?",
+    "a3": "No. Paying will never earn extra points or prize eligibility. Credits only unlock optional extras.",
+    "q4": "Is Puntr a bookmaker?",
+    "a4": "No. Puntr does not take bets, set odds or hold betting funds."
+  }
+}

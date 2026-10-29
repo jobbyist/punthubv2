@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "title": "Insights | Puntr",
+    "description": "Match previews and performance tracking for Puntr members. Coming after launch.",
+    "ogDescription": "Match previews and performance tracking. Coming after launch."
+  },
+  "title1": "This feature is only available to",
+  "title2": "our members",
+  "body": "Match previews and performance tracking are coming after launch.",
+  "cta": "Get started",
+  "beta": "Join the beta group",
+  "fine": "Past results do not predict future results. 18+.",
+  "perks": {
+    "title": "Members will get access to:",
+    "insights": { "title": "Match previews", "body": "Plain-language context for upcoming fixtures." },
+    "premium": { "title": "Tipster records", "body": "Public, locked records from every tipster." },
+    "trends": { "title": "Form and trends", "body": "Recent results and head-to-head history." },
+    "filters": { "title": "Advanced filters", "body": "Filter picks by sport, competition and market." },
+    "alerts": { "title": "Custom alerts", "body": "Get notified about fixtures and settled picks you follow." },
+    "tracking": { "title": "Performance tracking", "body": "Track your units, ROI and sample size over time." },
+    "adfree": { "title": "Clear labelling", "body": "Every advertisement is marked \"Ad\"." }
+  }
+}

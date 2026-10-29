@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { SlidersHorizontal, Star, TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
@@ -8,42 +9,44 @@ import { GateValue, Locked } from "@/components/locked";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { featuredPredictions, popularPredictions } from "@/lib/mock-data";
+import { headT } from "@/lib/i18n/head";
+import { odds, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/predictions")({
-  head: () => ({
-    links: [{ rel: "canonical", href: "https://puntr.co.za/predictions" }],
-    meta: [
-      { title: "All Predictions | Puntr" },
-      {
-        name: "description",
-        content:
-          "Browse today's top community and AI-backed betting predictions across soccer and rugby.",
-      },
-      { property: "og:title", content: "All Predictions | Puntr" },
-      { property: "og:description", content: "Community predictions on upcoming PSL, EPL, UCL, URC and Springbok fixtures." },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: "All Predictions",
-          description:
-            "Community and AI-backed betting predictions across soccer and rugby.",
-          url: "https://puntr.co.za/predictions",
-          isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://puntr.co.za/" },
-        }),
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const t = headT(match.context.locale, "predictions");
+    return {
+      links: [{ rel: "canonical", href: "https://puntr.co.za/predictions" }],
+      meta: [
+        { title: t("meta.title") },
+        { name: "description", content: t("meta.description") },
+        { property: "og:title", content: t("meta.ogTitle") },
+        { property: "og:description", content: t("meta.ogDescription") },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: t("title"),
+            description: t("meta.description"),
+            url: "https://puntr.co.za/predictions",
+            isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://puntr.co.za/" },
+          }),
+        },
+      ],
+    };
+  },
   component: Predictions,
 });
 
-const filters = ["All", "Top Picks", "Today", "Tomorrow", "This Week"];
+const FILTERS = ["all", "top", "today", "tomorrow", "week"] as const;
 
 function Predictions() {
   const { isGuest } = useSession();
+  const { t } = useTranslation("predictions");
+  const { t: tc } = useTranslation("common");
 
   const cards = (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -67,24 +70,24 @@ function Predictions() {
               <span className="mx-auto block size-10 rounded-full bg-ink" />
               <p className="mt-2 truncate text-sm font-semibold">{p.home}</p>
             </div>
-            <span className="text-xs text-muted-foreground">vs</span>
+            <span className="text-xs text-muted-foreground">{tc("vs")}</span>
             <div className="min-w-0">
               <span className="mx-auto block size-10 rounded-full bg-[oklch(0.8_0.16_85)]" />
               <p className="mt-2 truncate text-sm font-semibold">{p.away}</p>
             </div>
           </div>
           <div className="mt-4 border-t border-border pt-3">
-            <p className="text-[11px] text-muted-foreground">Top Pick</p>
+            <p className="text-[11px] text-muted-foreground">{t("card.topPick")}</p>
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">{p.pick}</p>
-              <GateValue className="text-sm font-bold text-primary tnum">{p.odds.toFixed(2)}</GateValue>
+              <GateValue className="text-sm font-bold text-primary tnum">{odds(p.odds)}</GateValue>
             </div>
             <p className="text-xs text-muted-foreground">{p.market}</p>
           </div>
           <div className="mt-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">AI Confidence</span>
-              <GateValue className="font-semibold tnum">{p.confidence}%</GateValue>
+              <span className="text-muted-foreground">{t("card.confidence")}</span>
+              <GateValue className="font-semibold tnum">{pct(p.confidence / 100)}</GateValue>
             </div>
             <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
               <motion.div
@@ -102,9 +105,11 @@ function Predictions() {
               {p.badge}
             </span>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground tnum">Most Backed · {p.backed.toLocaleString()} predictions</p>
+          <p className="mt-2 text-xs text-muted-foreground tnum">
+            {t("card.mostBacked")} · {t("card.backedCount", { count: p.backed })}
+          </p>
           <Button variant="outline" className="mt-3 w-full">
-            View Prediction
+            {t("card.view")}
           </Button>
         </motion.article>
       ))}
@@ -113,43 +118,38 @@ function Predictions() {
 
   return (
     <AppShell>
-      <PageHeading
-        title="All Predictions"
-        subtitle="Discover top predictions from the community and AI insights you can trust."
-      />
+      <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        {filters.map((f, i) => (
+        {FILTERS.map((f, i) => (
           <button
             key={f}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               i === 0 ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
             }`}
           >
-            {f}
+            {t(`filter.${f}`)}
           </button>
         ))}
         <span className="flex-1" />
         <button className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-          <SlidersHorizontal className="size-4" /> Filters
+          <SlidersHorizontal className="size-4" /> {t("filter.filters")}
         </button>
         <button className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-          <TrendingUp className="size-4" /> Trending
+          <TrendingUp className="size-4" /> {t("filter.trending")}
         </button>
       </div>
 
       <section className="card-surface mb-6 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-lg">Featured Predictions</h2>
+          <h2 className="text-lg">{t("featured.title")}</h2>
           <span className="rounded-md bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary">
-            AI Curated
+            {t("featured.curated")}
           </span>
           <span className="flex-1" />
-          <button className="text-xs font-medium text-primary">View all</button>
+          <button className="text-xs font-medium text-primary">{tc("action.viewAll")}</button>
         </div>
-        <p className="mb-4 mt-1 text-sm text-muted-foreground">
-          Community predictions on upcoming fixtures. Sample data shown until the first real fixtures load.
-        </p>
+        <p className="mb-4 mt-1 text-sm text-muted-foreground">{t("featured.sample")}</p>
         {isGuest ? cards : <Locked intensity="md">{cards}</Locked>}
       </section>
 
@@ -158,26 +158,29 @@ function Predictions() {
       <section className="card-surface mt-6 overflow-hidden">
         <div className="flex items-center justify-between p-5 pb-3">
           <div>
-            <h2 className="text-lg">Popular Predictions</h2>
-            <p className="text-sm text-muted-foreground">See what the community is backing right now.</p>
+            <h2 className="text-lg">{t("popular.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("popular.body")}</p>
           </div>
-          <button className="text-xs font-medium text-primary">View all</button>
+          <button className="text-xs font-medium text-primary">{tc("action.viewAll")}</button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-y border-border text-left text-xs text-muted-foreground">
-                <th className="px-5 py-2.5 font-medium">Match</th>
-                <th className="px-3 py-2.5 font-medium">Market</th>
-                <th className="px-3 py-2.5 font-medium">Tip</th>
-                <th className="px-3 py-2.5 font-medium">Odds</th>
-                <th className="px-3 py-2.5 font-medium">AI Conf.</th>
-                <th className="px-5 py-2.5 font-medium">Backed by</th>
+                <th className="px-5 py-2.5 font-medium">{t("popular.match")}</th>
+                <th className="px-3 py-2.5 font-medium">{t("popular.market")}</th>
+                <th className="px-3 py-2.5 font-medium">{t("popular.tip")}</th>
+                <th className="px-3 py-2.5 font-medium">{t("popular.odds")}</th>
+                <th className="px-3 py-2.5 font-medium">{t("popular.conf")}</th>
+                <th className="px-5 py-2.5 font-medium">{t("popular.backedBy")}</th>
               </tr>
             </thead>
             <tbody>
               {popularPredictions.map((r) => (
-                <tr key={r.match} className="border-b border-border last:border-0 hover:bg-muted/50">
+                <tr
+                  key={r.match}
+                  className="border-b border-border last:border-0 hover:bg-muted/50"
+                >
                   <td className="px-5 py-3">
                     <p className="text-[11px] text-muted-foreground">{r.league}</p>
                     <p className="font-medium">{r.match}</p>
@@ -186,11 +189,13 @@ function Predictions() {
                   <td className="px-3 py-3">{r.tip}</td>
                   <td className="px-3 py-3">
                     <GateValue className="rounded-md bg-primary-soft px-2 py-1 text-xs font-semibold text-primary tnum">
-                      {r.odds.toFixed(2)}
+                      {odds(r.odds)}
                     </GateValue>
                   </td>
                   <td className="px-3 py-3">
-                    <GateValue className="font-semibold text-primary tnum">{r.conf}%</GateValue>
+                    <GateValue className="font-semibold text-primary tnum">
+                      {pct(r.conf / 100)}
+                    </GateValue>
                   </td>
                   <td className="px-5 py-3 text-muted-foreground tnum">{r.backed}</td>
                 </tr>

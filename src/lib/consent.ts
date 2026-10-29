@@ -59,7 +59,10 @@ export function hasConsent(purpose: ConsentPurpose): boolean {
   return readConsent()?.[purpose] === true;
 }
 
-export function writeConsent(choice: Pick<ConsentState, ConsentPurpose>, source: "banner" | "account" = "banner"): ConsentState {
+export function writeConsent(
+  choice: Pick<ConsentState, ConsentPurpose>,
+  source: "banner" | "account" = "banner",
+): ConsentState {
   const previous = readConsent();
   const state: ConsentState = {
     v: 1,
@@ -70,7 +73,8 @@ export function writeConsent(choice: Pick<ConsentState, ConsentPurpose>, source:
   };
 
   if (typeof document !== "undefined") {
-    const secure = typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+    const secure =
+      typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
     document.cookie = `${CONSENT_COOKIE}=${encodeURIComponent(JSON.stringify(state))}; Path=/; Max-Age=${MAX_AGE_SECONDS}; SameSite=Lax${secure}`;
   }
   if (typeof window !== "undefined") {
@@ -83,7 +87,10 @@ export function writeConsent(choice: Pick<ConsentState, ConsentPurpose>, source:
 }
 
 /** When a user is signed in, keep an auditable copy of each choice in consent_records. */
-export async function syncConsentToAccount(state: ConsentState, source: "banner" | "account" = "banner"): Promise<void> {
+export async function syncConsentToAccount(
+  state: ConsentState,
+  source: "banner" | "account" = "banner",
+): Promise<void> {
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     const { data } = await supabase.auth.getSession();

@@ -27,30 +27,35 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Logo } from "@/components/brand";
 import { useSession } from "@/components/session";
+import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
-  { label: "Predictions", to: "/predictions", icon: Target },
-  { label: "Results", to: "/results", icon: BarChart3 },
-  { label: "Community", to: "/community", icon: Users },
-  { label: "Leaderboards", to: "/leaderboards", icon: Trophy },
+  { key: "predictions", to: "/predictions", icon: Target },
+  { key: "results", to: "/results", icon: BarChart3 },
+  { key: "community", to: "/community", icon: Users },
+  { key: "leaderboards", to: "/leaderboards", icon: Trophy },
 ] as const;
 
 const sports = [
-  { label: "Soccer", emoji: "⚽", to: "/predictions", active: true },
-  { label: "Rugby", emoji: "🏉", to: "/predictions", active: true },
-  { label: "Basketball", emoji: "🏀", active: false },
-  { label: "Tennis", emoji: "🎾", active: false },
-  { label: "Cricket", emoji: "🏏", active: false },
-  { label: "Combat sports", emoji: "🥊", active: false },
-  { label: "Horse racing", emoji: "🏇", active: false },
+  { key: "soccer", emoji: "⚽", to: "/predictions", active: true },
+  { key: "rugby", emoji: "🏉", to: "/predictions", active: true },
+  { key: "basketball", emoji: "🏀", active: false },
+  { key: "tennis", emoji: "🎾", active: false },
+  { key: "cricket", emoji: "🏏", active: false },
+  { key: "combat", emoji: "🥊", active: false },
+  { key: "racing", emoji: "🏇", active: false },
 ] as const;
 
 export function MobileNav() {
+  const { t } = useTranslation("nav");
+  const { t: tc } = useTranslation("common");
   const { isGuest, exitGuest, openEarlyAccess } = useSession();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -89,7 +94,9 @@ export function MobileNav() {
         <Icon className={`size-5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
         <span className="flex-1 truncate">{label}</span>
         {badge && (
-          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${badgeColor}`}>
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${badgeColor}`}
+          >
             {badge}
           </span>
         )}
@@ -122,7 +129,7 @@ export function MobileNav() {
             <button
               onClick={close}
               className="grid size-9 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-muted"
-              aria-label="Close menu"
+              aria-label={t("mobile.closeMenu")}
             >
               <X className="size-5" />
             </button>
@@ -133,18 +140,27 @@ export function MobileNav() {
             <nav className="px-3 py-3">
               {/* Primary links */}
               <div className="space-y-0.5">
-                <NavLink to="/" icon={Home} label="Home" active={path === "/"} />
-                <NavLink to="/predictions" icon={Target} label="Predictions" />
+                <NavLink to="/" icon={Home} label={t("mobile.home")} active={path === "/"} />
+                <NavLink to="/predictions" icon={Target} label={t("primary.predictions")} />
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "AI Picks (PUNT AI)" }}
+                  search={{ feature: "aiPicks" }}
                   icon={Brain}
-                  label="AI Picks (PUNT AI)"
-                  badge="PRO"
+                  label={t("mobile.tools.aiPicks")}
+                  badge={tc("badge.pro")}
                   badgeColor="bg-primary/15 text-primary"
                 />
-                <NavLink to="/insights" icon={TrendingUp} label="Market Insights" />
-                <NavLink to="/coming-soon" search={{ feature: "Podcast" }} icon={Mic} label="Podcast" />
+                <NavLink
+                  to="/insights"
+                  icon={TrendingUp}
+                  label={t("mobile.tools.marketInsights")}
+                />
+                <NavLink
+                  to="/coming-soon"
+                  search={{ feature: "podcast" }}
+                  icon={Mic}
+                  label={t("mobile.tools.podcast")}
+                />
               </div>
 
               {/* Sports section */}
@@ -156,7 +172,7 @@ export function MobileNav() {
                 >
                   <span className="flex items-center gap-3">
                     <Trophy className="size-5 text-muted-foreground" />
-                    Sports
+                    {t("mobile.sports")}
                   </span>
                   {sportsOpen ? (
                     <ChevronDown className="size-4 text-muted-foreground" />
@@ -170,23 +186,27 @@ export function MobileNav() {
                     {sports.map((s) =>
                       s.active ? (
                         <Link
-                          key={s.label}
+                          key={s.key}
                           to={s.to}
                           onClick={close}
                           className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
                         >
                           <span className="text-xl leading-none">{s.emoji}</span>
-                          <span className="text-[11px] font-medium text-foreground">{s.label}</span>
+                          <span className="text-[11px] font-medium text-foreground">
+                            {t(`sport.${s.key}`)}
+                          </span>
                         </Link>
                       ) : (
                         <div
-                          key={s.label}
+                          key={s.key}
                           className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-70"
                         >
                           <span className="text-xl leading-none grayscale">{s.emoji}</span>
-                          <span className="text-[11px] font-medium text-foreground">{s.label}</span>
+                          <span className="text-[11px] font-medium text-foreground">
+                            {t(`sport.${s.key}`)}
+                          </span>
                           <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-                            Coming soon
+                            {tc("badge.comingSoon")}
                           </span>
                         </div>
                       ),
@@ -199,23 +219,23 @@ export function MobileNav() {
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Bookmakers" }}
+                  search={{ feature: "bookmakers" }}
                   icon={Building2}
-                  label="Bookmakers"
+                  label={t("mobile.tools.bookmakers")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Betting Tools" }}
+                  search={{ feature: "tools" }}
                   icon={Wrench}
-                  label="Betting Tools"
+                  label={t("mobile.tools.tools")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Live Scores" }}
+                  search={{ feature: "liveScores" }}
                   icon={Radio}
-                  label="Live Scores"
+                  label={t("mobile.tools.liveScores")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
               </div>
@@ -224,27 +244,27 @@ export function MobileNav() {
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "PuntPoints" }}
+                  search={{ feature: "puntPoints" }}
                   icon={Star}
-                  label="PuntPoints"
-                  badge="NEW"
+                  label={t("mobile.tools.puntPoints")}
+                  badge={tc("badge.new")}
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Referral Program" }}
+                  search={{ feature: "referrals" }}
                   icon={UserPlus}
-                  label="Referral Program"
+                  label={t("mobile.tools.referrals")}
                   right={
                     <span className="flex items-center gap-1 text-xs font-medium text-primary">
-                      Earn & Grow <ChevronRight className="size-3.5" />
+                      {t("mobile.invite")} <ChevronRight className="size-3.5" />
                     </span>
                   }
                 />
                 <NavLink
                   to="/community"
                   icon={Users}
-                  label="Community"
+                  label={t("primary.community")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
               </div>
@@ -253,19 +273,21 @@ export function MobileNav() {
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Podcast" }}
+                  search={{ feature: "podcast" }}
                   icon={Mic}
-                  label="Podcast"
+                  label={t("mobile.tools.podcast")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <a
-                  href="tel:0800006008"
+                  href={HELPLINE_TEL}
                   onClick={close}
                   className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   <Shield className="size-5 shrink-0 text-muted-foreground" />
-                  <span className="flex-1">Responsible Betting</span>
-                  <span className="text-sm font-semibold text-primary">0800 006 008</span>
+                  <span className="flex-1">{t("mobile.responsibleGambling")}</span>
+                  <span className="text-sm font-semibold text-primary tnum">
+                    {HELPLINE_DISPLAY}
+                  </span>
                   <ChevronRight className="size-4 text-muted-foreground" />
                 </a>
               </div>
@@ -275,19 +297,19 @@ export function MobileNav() {
                 <NavLink
                   to="/pricing"
                   icon={Crown}
-                  label="Pricing"
+                  label={t("primary.pricing")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
               </div>
 
               {/* Help links */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <NavLink to="/support" icon={HelpCircle} label="Help Center" />
+                <NavLink to="/support" icon={HelpCircle} label={t("mobile.helpCentre")} />
                 <NavLink
                   to="/coming-soon"
-                  search={{ feature: "Feedback" }}
+                  search={{ feature: "feedback" }}
                   icon={MessageCircle}
-                  label="Feedback"
+                  label={t("mobile.feedback")}
                 />
               </div>
 
@@ -295,7 +317,7 @@ export function MobileNav() {
               <div className="mt-2 border-t border-border pt-3">
                 <div className="flex items-center gap-3 px-3 py-2 text-[15px] font-medium text-foreground">
                   <Share2 className="size-5 text-muted-foreground" />
-                  <span className="flex-1">Follow Puntr</span>
+                  <span className="flex-1">{t("mobile.followPuntr")}</span>
                 </div>
                 <div className="mt-1 flex items-center gap-2 px-3 pb-2">
                   {[
@@ -313,7 +335,15 @@ export function MobileNav() {
                       className="grid size-9 place-items-center rounded-full border border-border text-xs font-bold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
                       aria-label={s.label}
                     >
-                      {s.label === "X" ? "𝕏" : s.label === "f" ? "f" : s.label === "ig" ? "◎" : s.label === "yt" ? "▶" : "♪"}
+                      {s.label === "X"
+                        ? "𝕏"
+                        : s.label === "f"
+                          ? "f"
+                          : s.label === "ig"
+                            ? "◎"
+                            : s.label === "yt"
+                              ? "▶"
+                              : "♪"}
                     </a>
                   ))}
                 </div>
@@ -325,14 +355,15 @@ export function MobileNav() {
                   type="button"
                   onClick={() => {
                     if (isGuest) exitGuest();
-                    else openEarlyAccess("Sign in or create an account to continue.");
+                    else openEarlyAccess(t("mobile.signInPrompt"));
                     close();
                   }}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   <LogOut className="size-5 shrink-0 text-muted-foreground" />
-                  <span>Log out</span>
+                  <span>{t("mobile.logOut")}</span>
                 </button>
+                <LanguageSwitcher className="px-3 py-2" />
               </div>
             </nav>
           </div>
@@ -341,15 +372,15 @@ export function MobileNav() {
 
       {/* Bottom Navigation Bar */}
       <nav
-        aria-label="Primary"
+        aria-label={t("mobile.primary")}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur-xl lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <ul className="grid grid-cols-5">
-          {bottomNavItems.map(({ label, to, icon: Icon }) => {
+          {bottomNavItems.map(({ key, to, icon: Icon }) => {
             const active = path === to;
             return (
-              <li key={label}>
+              <li key={key}>
                 <Link
                   to={to}
                   className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
@@ -357,7 +388,7 @@ export function MobileNav() {
                   }`}
                 >
                   <Icon className="size-5" />
-                  {label}
+                  <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
                 </Link>
               </li>
             );
@@ -370,7 +401,7 @@ export function MobileNav() {
               }`}
             >
               <Menu className="size-5" />
-              More
+              <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
             </button>
           </li>
         </ul>

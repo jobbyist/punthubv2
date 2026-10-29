@@ -1,33 +1,32 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Activity, ArrowRight, BarChart3, Brain, Sparkles, TrendingUp } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
+import { headT } from "@/lib/i18n/head";
+import { odds, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/coming-soon")({
   validateSearch: (search: Record<string, unknown>) => ({
     feature: typeof search["feature"] === "string" ? (search["feature"] as string) : undefined,
   }),
-  head: () => ({
-    links: [{ rel: "canonical", href: "https://puntr.co.za/coming-soon" }],
-    meta: [
-      { title: "Coming Soon — The Future of Sports Intelligence | Puntr" },
-      {
-        name: "description",
-        content:
-          "Puntr brings sports data, predictions, insights and betting intelligence together in one experience built for the modern South African sports fan.",
-      },
-      { property: "og:title", content: "Coming Soon — The Future of Sports Intelligence | Puntr" },
-      {
-        property: "og:description",
-        content: "Sports data, predictions and betting intelligence in one place. Join Puntr early access.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) => {
+    const t = headT(match.context.locale, "comingsoon");
+    return {
+      links: [{ rel: "canonical", href: "https://puntr.co.za/coming-soon" }],
+      meta: [
+        { title: t("meta.title") },
+        { name: "description", content: t("meta.description") },
+        { property: "og:title", content: t("meta.title") },
+        { property: "og:description", content: t("meta.ogDescription") },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    };
+  },
   component: ComingSoon,
 });
 
@@ -55,9 +54,24 @@ function FloatingCard({
   );
 }
 
+const FEATURE_KEYS = [
+  "aiPicks",
+  "podcast",
+  "bookmakers",
+  "tools",
+  "liveScores",
+  "puntPoints",
+  "referrals",
+  "feedback",
+];
+
 function ComingSoon() {
   const { openEarlyAccessPopup } = useSession();
-  const feature = useSearch({ from: "/coming-soon" })["feature"];
+  const { t } = useTranslation("comingsoon");
+  const featureId = useSearch({ from: "/coming-soon" })["feature"];
+  // Only known ids are shown, so the query string can't inject text into the page.
+  const feature =
+    featureId && FEATURE_KEYS.includes(featureId) ? t(`features.${featureId}`) : undefined;
 
   return (
     <AppShell>
@@ -84,7 +98,7 @@ function ComingSoon() {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary"
             >
-              <Sparkles className="size-3.5" /> Coming soon
+              <Sparkles className="size-3.5" /> {t("badge")}
             </motion.span>
 
             <motion.h1
@@ -93,8 +107,7 @@ function ComingSoon() {
               transition={{ delay: 0.05 }}
               className="mt-5 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl"
             >
-              The future of sports intelligence is{" "}
-              <span className="text-primary">almost here.</span>
+              {t("title1")} <span className="text-primary">{t("title2")}</span>
             </motion.h1>
 
             <motion.p
@@ -103,14 +116,18 @@ function ComingSoon() {
               transition={{ delay: 0.12 }}
               className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              Puntr brings sports data, predictions, insights and betting intelligence together in one experience built
-              for the modern South African sports fan.
+              {t("body")}
             </motion.p>
 
             {feature && (
               <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground">
                 <Activity className="size-3.5 text-primary" />
-                <span className="text-foreground">{feature}</span> is in the build queue
+                <Trans
+                  t={t}
+                  i18nKey="queue"
+                  values={{ feature }}
+                  components={{ 1: <span className="text-foreground" /> }}
+                />
               </p>
             )}
 
@@ -123,24 +140,16 @@ function ComingSoon() {
               <Button
                 size="lg"
                 className="h-12 px-6 text-[15px]"
-                onClick={() =>
-                  openEarlyAccessPopup(
-                    feature
-                      ? `${feature} lands first for early access members. Reserve your spot.`
-                      : "Limited early-access spots — reserve yours now.",
-                  )
-                }
+                onClick={() => openEarlyAccessPopup()}
               >
-                Join Early Access <ArrowRight className="size-4" />
+                {t("cta")} <ArrowRight className="size-4" />
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 px-6 text-[15px]">
-                <Link to="/predictions">Explore Puntr</Link>
+                <Link to="/predictions">{t("explore")}</Link>
               </Button>
             </motion.div>
 
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free to reserve — no card required. 18+ only. Bet responsibly.
-            </p>
+            <p className="mt-4 text-xs text-muted-foreground">{t("fine")}</p>
           </div>
 
           {/* Abstract animated data visual */}
@@ -165,9 +174,9 @@ function ComingSoon() {
 
             <FloatingCard className="left-0 top-4 w-[190px]" delay={0.2}>
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                <TrendingUp className="size-3.5 text-primary" /> Model confidence
+                <TrendingUp className="size-3.5 text-primary" /> {t("card.confidence")}
               </div>
-              <p className="mt-1 text-2xl font-bold tnum text-primary">87.4%</p>
+              <p className="mt-1 text-2xl font-bold tnum text-primary">{pct(0.874, 1)}</p>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
                 <motion.div
                   initial={{ width: "12%" }}
@@ -180,14 +189,19 @@ function ComingSoon() {
 
             <FloatingCard className="bottom-8 left-2 w-[170px]" delay={0.5}>
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                <BarChart3 className="size-3.5 text-primary" /> Form index
+                <BarChart3 className="size-3.5 text-primary" /> {t("card.form")}
               </div>
               <div className="mt-2 flex h-12 items-end gap-1">
                 {[40, 65, 30, 82, 55, 92, 48].map((h, i) => (
                   <motion.span
                     key={i}
                     animate={{ height: [`${h * 0.5}%`, `${h}%`, `${h * 0.7}%`] }}
-                    transition={{ duration: 3.5, delay: i * 0.15, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 3.5,
+                      delay: i * 0.15,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="flex-1 rounded-sm bg-primary/60"
                   />
                 ))}
@@ -195,17 +209,16 @@ function ComingSoon() {
             </FloatingCard>
 
             <FloatingCard className="right-0 top-24 w-[200px]" delay={0.8}>
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Next prediction</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("card.next")}
+              </p>
               <p className="mt-1 text-sm font-semibold">Sundowns vs Pirates</p>
               <div className="mt-2 flex items-center justify-between text-xs">
-                <span className="rounded-full bg-primary-soft px-2 py-0.5 font-semibold text-primary">Home win</span>
-                <span className="font-bold tnum">1.85</span>
+                <span className="rounded-full bg-primary-soft px-2 py-0.5 font-semibold text-primary">
+                  {t("card.homeWin")}
+                </span>
+                <span className="font-bold tnum">{odds(1.85)}</span>
               </div>
-            </FloatingCard>
-
-            <FloatingCard className="bottom-2 right-4 w-[160px]" delay={1.1}>
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Value edge</p>
-              <p className="mt-1 text-xl font-bold tnum text-primary">+12.6%</p>
             </FloatingCard>
           </div>
         </div>

@@ -22,7 +22,10 @@ export function PuntAI() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "ai", text: "Hi 👋 Puntr AI is coming after launch. Ask how Puntr works in the meantime." },
+    {
+      role: "ai",
+      text: "Hi 👋 Puntr AI is coming after launch. Ask how Puntr works in the meantime.",
+    },
   ]);
   const [typing, setTyping] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
@@ -99,11 +102,17 @@ export function PuntAI() {
                     <Sparkles className="size-4 text-primary" />
                   </span>
                   <div>
-                    <p className="font-display text-sm font-extrabold uppercase tracking-wide">Punt AI</p>
+                    <p className="font-display text-sm font-extrabold uppercase tracking-wide">
+                      Punt AI
+                    </p>
                     <p className="text-xs text-muted-foreground">Your betting assistant</p>
                   </div>
                 </div>
-                <button onClick={() => setOpen(false)} aria-label="Close assistant" className="grid size-8 place-items-center rounded-full hover:bg-muted">
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close assistant"
+                  className="grid size-8 place-items-center rounded-full hover:bg-muted"
+                >
                   <X className="size-4" />
                 </button>
               </header>
@@ -162,12 +171,20 @@ export function PuntAI() {
                     aria-label="Message PUNT AI"
                     className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                   />
-                  <button type="submit" aria-label="Send" className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
+                  <button
+                    type="submit"
+                    aria-label="Send"
+                    className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
+                  >
                     <Send className="size-4" />
                   </button>
                 </form>
                 <button
-                  onClick={() => openEarlyAccess("Puntr AI previews are coming after launch. Join to hear first.")}
+                  onClick={() =>
+                    openEarlyAccess(
+                      "Puntr AI previews are coming after launch. Join to hear first.",
+                    )
+                  }
                   className="mt-3 w-full text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
                 >
                   Preview mode · AI previews are coming after launch

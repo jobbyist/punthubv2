@@ -21,21 +21,33 @@ import { useSession } from "@/components/session";
 import { submitEarlyAccess } from "@/lib/early-access";
 import { analytics } from "@/lib/analytics";
 
-const SPORTS = ["Soccer", "Rugby", "Cricket", "Basketball", "Tennis", "Combat sports", "Horse racing"] as const;
-const BOOKMAKERS = ["Betway", "Hollywoodbets", "Supabets", "Easybet", "Sunbet", "World Sports Betting"] as const;
-const EXPERIENCE = ["New to betting", "Casual punter", "Regular punter", "Serious / data-driven"] as const;
+const SPORTS = [
+  "Soccer",
+  "Rugby",
+  "Cricket",
+  "Basketball",
+  "Tennis",
+  "Combat sports",
+  "Horse racing",
+] as const;
+const BOOKMAKERS = [
+  "Betway",
+  "Hollywoodbets",
+  "Supabets",
+  "Easybet",
+  "Sunbet",
+  "World Sports Betting",
+] as const;
+const EXPERIENCE = [
+  "New to betting",
+  "Casual punter",
+  "Regular punter",
+  "Serious / data-driven",
+] as const;
 
 const STEPS = ["Account", "Sports", "Preferences", "Consent"] as const;
 
-function Chip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -76,7 +88,9 @@ export function EarlyAccessModal() {
     set(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
   const accountValid =
-    name.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && (phone.trim() === "" || /^[0-9+()\s-]{7,20}$/.test(phone.trim()));
+    name.trim().length > 1 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
+    (phone.trim() === "" || /^[0-9+()\s-]{7,20}$/.test(phone.trim()));
 
   async function runSubmit() {
     if (submitting) return;
@@ -88,7 +102,13 @@ export function EarlyAccessModal() {
 
     try {
       // The Supabase table is the single source of truth for the waitlist.
-      const saved = await submitEarlyAccess({ name, email, phone, plan: selectedPlan, marketingConsent: marketingOptIn });
+      const saved = await submitEarlyAccess({
+        name,
+        email,
+        phone,
+        plan: selectedPlan,
+        marketingConsent: marketingOptIn,
+      });
       if (!saved.success && saved.error !== "DUPLICATE_EMAIL") {
         analytics.earlyAccessFailed(selectedPlan, saved.error ?? "SAVE_FAILED");
         setErrorTitle("We couldn't reserve your spot");
@@ -105,7 +125,9 @@ export function EarlyAccessModal() {
     } catch {
       analytics.earlyAccessFailed(selectedPlan, "NETWORK");
       setErrorTitle("Connection problem");
-      setErrorDetail("We couldn't reach our servers. Check your connection and tap “Try again” — your details are kept.");
+      setErrorDetail(
+        "We couldn't reach our servers. Check your connection and tap “Try again” — your details are kept.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -162,7 +184,8 @@ export function EarlyAccessModal() {
               <div className="flex gap-2.5">
                 <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  You're on the waitlist. We'll email you when Puntr opens so you can claim your Founding spot.
+                  You're on the waitlist. We'll email you when Puntr opens so you can claim your
+                  Founding spot.
                 </p>
               </div>
               <div className="flex gap-2.5">
@@ -196,7 +219,8 @@ export function EarlyAccessModal() {
                 {reason ?? "Join the waitlist for one of 100 Founding spots. Free."}
               </p>
               <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[11px] font-medium text-muted-foreground">
-                <ShieldCheck className="size-3.5 text-primary" /> Reservation only — no card, no payment today
+                <ShieldCheck className="size-3.5 text-primary" /> Reservation only — no card, no
+                payment today
               </p>
 
               <div className="mt-4 flex items-center gap-1.5">
@@ -225,7 +249,9 @@ export function EarlyAccessModal() {
                     <p className="font-semibold text-destructive">{errorTitle}</p>
                     {errorDetail && <p className="mt-0.5 text-muted-foreground">{errorDetail}</p>}
                     {attempts > 1 && (
-                      <p className="mt-0.5 text-muted-foreground">Attempt {attempts} — your details are kept.</p>
+                      <p className="mt-0.5 text-muted-foreground">
+                        Attempt {attempts} — your details are kept.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -274,7 +300,9 @@ export function EarlyAccessModal() {
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+27 82 123 4567"
                     />
-                    <p className="text-[11px] text-muted-foreground">Optional. Only used to reach you about your Founding spot.</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      Optional. Only used to reach you about your Founding spot.
+                    </p>
                   </div>
                 </>
               )}
@@ -282,10 +310,17 @@ export function EarlyAccessModal() {
               {step === 1 && (
                 <div>
                   <p className="text-sm font-semibold">Which sports do you follow?</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Pick as many as you like — we'll tailor your feed.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Pick as many as you like — we'll tailor your feed.
+                  </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {SPORTS.map((s) => (
-                      <Chip key={s} label={s} active={sports.includes(s)} onClick={() => toggle(sports, setSports, s)} />
+                      <Chip
+                        key={s}
+                        label={s}
+                        active={sports.includes(s)}
+                        onClick={() => toggle(sports, setSports, s)}
+                      />
                     ))}
                   </div>
                 </div>
@@ -295,7 +330,8 @@ export function EarlyAccessModal() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm font-semibold">
-                      Bookmakers you use <span className="font-normal text-muted-foreground">(optional)</span>
+                      Bookmakers you use{" "}
+                      <span className="font-normal text-muted-foreground">(optional)</span>
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {BOOKMAKERS.map((b) => (
@@ -310,7 +346,8 @@ export function EarlyAccessModal() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold">
-                      Your experience <span className="font-normal text-muted-foreground">(optional)</span>
+                      Your experience{" "}
+                      <span className="font-normal text-muted-foreground">(optional)</span>
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {EXPERIENCE.map((e) => (
@@ -335,13 +372,22 @@ export function EarlyAccessModal() {
                       onCheckedChange={(v) => setAgreed(v === true)}
                       className="mt-0.5"
                     />
-                    <Label htmlFor="ea-terms" className="text-xs font-normal leading-relaxed text-muted-foreground">
+                    <Label
+                      htmlFor="ea-terms"
+                      className="text-xs font-normal leading-relaxed text-muted-foreground"
+                    >
                       I'm 18 or older and I agree to the Puntr{" "}
-                      <a href="/terms" className="font-medium text-primary underline-offset-4 hover:underline">
+                      <a
+                        href="/terms"
+                        className="font-medium text-primary underline-offset-4 hover:underline"
+                      >
                         Terms
                       </a>{" "}
                       and{" "}
-                      <a href="/privacy" className="font-medium text-primary underline-offset-4 hover:underline">
+                      <a
+                        href="/privacy"
+                        className="font-medium text-primary underline-offset-4 hover:underline"
+                      >
                         Privacy Policy
                       </a>
                       .
@@ -354,8 +400,12 @@ export function EarlyAccessModal() {
                       onCheckedChange={(v) => setMarketingOptIn(v === true)}
                       className="mt-0.5"
                     />
-                    <Label htmlFor="ea-marketing" className="text-xs font-normal leading-relaxed text-muted-foreground">
-                      Email me launch updates and news about Puntr. Optional. I can say no and still join.
+                    <Label
+                      htmlFor="ea-marketing"
+                      className="text-xs font-normal leading-relaxed text-muted-foreground"
+                    >
+                      Email me launch updates and news about Puntr. Optional. I can say no and still
+                      join.
                     </Label>
                   </div>
                 </div>
@@ -415,9 +465,10 @@ export function EarlyAccessModal() {
                 Browse as guest
               </button>
               <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-                Puntr is free during the Founding 100 launch. We only use your details to run the waitlist
-                and, if you tick the box, to email you news. Your picks, once you post them, are a public and permanent
-                record.<br />
+                Puntr is free during the Founding 100 launch. We only use your details to run the
+                waitlist and, if you tick the box, to email you news. Your picks, once you post
+                them, are a public and permanent record.
+                <br />
                 18+ only. Bet responsibly: 0800 006 008.
               </p>
             </form>

@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AffiliateDisclosureRouteImport } from './routes/affiliate-disclosure'
 import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as DevRouteImport } from './routes/dev'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
@@ -26,6 +26,7 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AffiliateDisclosureRoute = AffiliateDisclosureRouteImport.update({
+  id: '/affiliate-disclosure',
+  path: '/affiliate-disclosure',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComingSoonRoute = ComingSoonRouteImport.update({
@@ -50,11 +56,6 @@ const CommunityRoute = CommunityRouteImport.update({
 const CookiesRoute = CookiesRouteImport.update({
   id: '/cookies',
   path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevRoute = DevRouteImport.update({
-  id: '/dev',
-  path: '/dev',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -112,14 +113,19 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
+  id: '/privacy_/request',
+  path: '/privacy/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
-  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/leaderboards': typeof LeaderboardsRoute
@@ -131,14 +137,15 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/privacy/request': typeof PrivacyRequestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
-  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/leaderboards': typeof LeaderboardsRoute
@@ -150,15 +157,16 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/privacy/request': typeof PrivacyRequestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
-  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/leaderboards': typeof LeaderboardsRoute
@@ -170,16 +178,17 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/privacy_/request': typeof PrivacyRequestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/affiliate-disclosure'
     | '/coming-soon'
     | '/community'
     | '/cookies'
-    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/leaderboards'
@@ -191,14 +200,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/privacy/request'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/affiliate-disclosure'
     | '/coming-soon'
     | '/community'
     | '/cookies'
-    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/leaderboards'
@@ -210,14 +220,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/privacy/request'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/affiliate-disclosure'
     | '/coming-soon'
     | '/community'
     | '/cookies'
-    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/leaderboards'
@@ -229,15 +240,16 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/privacy_/request'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AffiliateDisclosureRoute: typeof AffiliateDisclosureRoute
   ComingSoonRoute: typeof ComingSoonRoute
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
-  DevRoute: typeof DevRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
@@ -249,6 +261,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  PrivacyRequestRoute: typeof PrivacyRequestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/affiliate-disclosure': {
+      id: '/affiliate-disclosure'
+      path: '/affiliate-disclosure'
+      fullPath: '/affiliate-disclosure'
+      preLoaderRoute: typeof AffiliateDisclosureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coming-soon': {
@@ -286,13 +306,6 @@ declare module '@tanstack/react-router' {
       path: '/cookies'
       fullPath: '/cookies'
       preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dev': {
-      id: '/dev'
-      path: '/dev'
-      fullPath: '/dev'
-      preLoaderRoute: typeof DevRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -372,16 +385,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy_/request': {
+      id: '/privacy_/request'
+      path: '/privacy/request'
+      fullPath: '/privacy/request'
+      preLoaderRoute: typeof PrivacyRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AffiliateDisclosureRoute: AffiliateDisclosureRoute,
   ComingSoonRoute: ComingSoonRoute,
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
-  DevRoute: DevRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
   LeaderboardsRoute: LeaderboardsRoute,
@@ -393,6 +413,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  PrivacyRequestRoute: PrivacyRequestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

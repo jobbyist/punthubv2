@@ -1,5 +1,6 @@
 import { Lock } from "lucide-react";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
@@ -9,17 +10,20 @@ import { useSession } from "@/components/session";
  */
 export function Locked({
   children,
-  label = "Create a free account to unlock today's predictions.",
+  label,
   intensity = "md",
   compact = false,
 }: {
   children: ReactNode;
-  label?: string;
+  label?: string | undefined;
   intensity?: "sm" | "md" | "lg";
   compact?: boolean;
 }) {
   const { openEarlyAccess } = useSession();
-  const blur = intensity === "sm" ? "blur-[3px]" : intensity === "lg" ? "blur-[10px]" : "blur-[6px]";
+  const { t } = useTranslation(["predictions", "common"]);
+  const text = label ?? t("predictions:gate.label");
+  const blur =
+    intensity === "sm" ? "blur-[3px]" : intensity === "lg" ? "blur-[10px]" : "blur-[6px]";
 
   return (
     <div className="relative overflow-hidden rounded-xl">
@@ -31,9 +35,13 @@ export function Locked({
           <span className="mx-auto grid size-10 place-items-center rounded-full bg-primary-soft text-primary">
             <Lock className="size-4" />
           </span>
-          <p className={`mt-3 font-medium ${compact ? "text-xs" : "text-sm"}`}>{label}</p>
-          <Button size={compact ? "sm" : "default"} className="mt-3" onClick={() => openEarlyAccess(label)}>
-            Create free account
+          <p className={`mt-3 font-medium ${compact ? "text-xs" : "text-sm"}`}>{text}</p>
+          <Button
+            size={compact ? "sm" : "default"}
+            className="mt-3"
+            onClick={() => openEarlyAccess(text)}
+          >
+            {t("common:cta.createFreeAccount")}
           </Button>
         </div>
       </div>
@@ -41,14 +49,21 @@ export function Locked({
   );
 }
 
-export function GateValue({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function GateValue({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const { isGuest, openEarlyAccess } = useSession();
+  const { t } = useTranslation("predictions");
   if (!isGuest) return <span className={className}>{children}</span>;
   return (
     <button
-      onClick={() => openEarlyAccess("Create a free account to see live odds and AI confidence.")}
+      onClick={() => openEarlyAccess(t("gate.values"))}
       className={`select-none blur-[5px] transition hover:blur-[4px] ${className}`}
-      aria-label="Locked — create a free account to view"
+      aria-label={t("gate.valuesAria")}
     >
       {children}
     </button>

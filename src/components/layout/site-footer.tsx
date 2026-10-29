@@ -1,69 +1,45 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Facebook, Instagram, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Facebook, Instagram, MessageCircle } from "lucide-react";
 
 import { Logo } from "@/components/brand";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { HELPLINE_DISPLAY, RgNotice } from "@/components/rg-notice";
+import { formatDateTime } from "@/lib/format";
 
 const columns = [
   {
-    title: "Platform",
+    key: "platform",
     links: [
-      ["Predictions", "/predictions"],
-      ["Leaderboards", "/leaderboards"],
-      ["Results", "/results"],
-      ["Insights", "/insights"],
-      ["Pricing", "/pricing"],
+      ["predictions", "/predictions"],
+      ["leaderboards", "/leaderboards"],
+      ["results", "/results"],
+      ["insights", "/insights"],
+      ["pricing", "/pricing"],
     ],
   },
   {
-    title: "Community",
+    key: "communityCol",
     links: [
-      ["Community Feed", "/community"],
-      ["How it works", "/how-it-works"],
-      ["PuntPoints", "/leaderboards"],
-      ["Support", "/support"],
+      ["feed", "/community"],
+      ["howItWorks", "/how-it-works"],
+      ["puntPoints", "/leaderboards"],
+      ["support", "/support"],
     ],
   },
   {
-    title: "Company",
+    key: "company",
     links: [
-      ["About", "/about"],
-      ["Terms", "/terms"],
-      ["Privacy", "/privacy"],
-      ["Privacy choices", "/cookies"],
-      ["Affiliate disclosure", "/affiliate-disclosure"],
-      ["Refunds", "/refunds"],
+      ["about", "/about"],
+      ["terms", "/terms"],
+      ["privacy", "/privacy"],
+      ["privacyChoices", "/cookies"],
+      ["affiliate", "/affiliate-disclosure"],
+      ["refunds", "/refunds"],
     ],
   },
 ] as const;
-
-export function ResponsibleGambling() {
-  return (
-    <section
-      aria-label="Responsible gambling"
-      className="mx-auto grid max-w-[1400px] gap-5 rounded-2xl border border-border bg-card px-6 py-6 shadow-soft md:grid-cols-[1.4fr_1fr] md:items-center"
-    >
-      <div className="flex items-start gap-4">
-        <ShieldCheck className="mt-0.5 size-8 shrink-0 text-ink" strokeWidth={1.6} />
-        <div>
-          <h3 className="text-lg">Bet Responsibly</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Betting should be fun. Stay in control and never bet more than you can afford to lose.
-          </p>
-        </div>
-      </div>
-      <div className="md:border-l md:border-border md:pl-6">
-        <p className="text-sm font-semibold">Need help?</p>
-        <p className="text-xs text-muted-foreground">
-          Contact the South African Responsible Gambling Foundation
-        </p>
-        <a href="tel:0800006008" className="mt-1.5 flex items-center gap-2 text-lg font-bold text-primary tnum">
-          <Phone className="size-4" /> 0800 006 008
-        </a>
-      </div>
-    </section>
-  );
-}
 
 function XIcon(props: { className?: string }) {
   return (
@@ -90,6 +66,7 @@ function TikTokIcon(props: { className?: string }) {
 }
 
 function ComingSoonBadge({ store }: { store: "apple" | "google" }) {
+  const { t } = useTranslation("nav");
   return (
     <div className="flex h-12 items-center gap-2.5 rounded-lg bg-ink px-3.5 text-ink-foreground">
       {store === "apple" ? (
@@ -102,44 +79,41 @@ function ComingSoonBadge({ store }: { store: "apple" | "google" }) {
         </svg>
       )}
       <span className="leading-tight">
-        <span className="block text-[9px] uppercase tracking-wide opacity-80">Coming soon to</span>
-        <span className="block text-[13px] font-semibold">{store === "apple" ? "the App Store" : "Google Play"}</span>
+        <span className="block text-[9px] uppercase tracking-wide opacity-80">
+          {t("footer.store.comingSoonTo")}
+        </span>
+        <span className="block text-[13px] font-semibold">
+          {store === "apple" ? t("footer.store.appStore") : t("footer.store.googlePlay")}
+        </span>
       </span>
     </div>
   );
 }
 
 export function SiteFooter() {
+  const { t } = useTranslation("nav");
+  const { t: tRg } = useTranslation("rg");
+  const { t: tc } = useTranslation("common");
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
 
   useEffect(() => {
-    const updateDateTime = () => {
-      const now = new Date();
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: "Africa/Johannesburg",
-        dateStyle: "full",
-        timeStyle: "long",
-      };
-      setCurrentDateTime(now.toLocaleString("en-ZA", options));
-    };
-
-    updateDateTime();
-    const interval = setInterval(updateDateTime, 1000);
-
+    const update = () => setCurrentDateTime(formatDateTime(new Date()));
+    update();
+    const interval = setInterval(update, 30_000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <footer className="mt-10 bg-surface">
       <div className="px-4 pb-8 sm:px-6">
-        <ResponsibleGambling />
+        <RgNotice />
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 pb-8 text-center text-xs leading-relaxed text-muted-foreground sm:px-6">
-        <p>Puntr promotes responsible gambling. No persons under the age of 18 are permitted to gamble.</p>
+        <p>{tRg("footer.promote")}</p>
         <p>
-          National Responsible Gambling Programme Toll-Free Counselling Helpline:{" "}
-          <span className="font-semibold text-foreground tnum">0800 006 008</span>
+          {tRg("footer.helpline")}{" "}
+          <span className="font-semibold text-foreground tnum">{HELPLINE_DISPLAY}</span>
         </p>
       </div>
 
@@ -147,17 +121,20 @@ export function SiteFooter() {
         <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.3fr_repeat(3,1fr)_1.2fr]">
           <div>
             <Logo />
-            <p className="mt-3 text-sm text-muted-foreground">Predict smarter. Prove it.</p>
+            <p className="mt-3 text-sm text-muted-foreground">{tc("brand.tagline")}</p>
           </div>
 
           {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="font-display text-sm font-extrabold">{col.title}</h4>
+            <div key={col.key}>
+              <h4 className="font-display text-sm font-extrabold">{t(`footer.${col.key}`)}</h4>
               <ul className="mt-3 space-y-2">
                 {col.links.map(([label, to]) => (
                   <li key={label}>
-                    <Link to={to} className="text-sm text-muted-foreground transition-colors hover:text-primary">
-                      {label}
+                    <Link
+                      to={to}
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {t(`footer.link.${label}`)}
                     </Link>
                   </li>
                 ))}
@@ -166,13 +143,13 @@ export function SiteFooter() {
           ))}
 
           <div>
-            <h4 className="font-display text-sm font-extrabold">Follow us</h4>
+            <h4 className="font-display text-sm font-extrabold">{t("footer.followUs")}</h4>
             <div className="mt-3 flex items-center gap-3">
               <a
                 href="https://twitter.com/puntr_za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Puntr on X"
+                aria-label={t("footer.social.x")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <XIcon className="size-5" />
@@ -181,7 +158,7 @@ export function SiteFooter() {
                 href="https://chat.whatsapp.com/F7wPY6NrXSc7OPrqq3os7w"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Join the Puntr WhatsApp community"
+                aria-label={t("footer.social.whatsapp")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <MessageCircle className="size-5" />
@@ -190,7 +167,7 @@ export function SiteFooter() {
                 href="https://facebook.com/puntrza"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Puntr on Facebook"
+                aria-label={t("footer.social.facebook")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <Facebook className="size-5" />
@@ -199,7 +176,7 @@ export function SiteFooter() {
                 href="https://www.youtube.com/@puntr_za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Puntr on YouTube"
+                aria-label={t("footer.social.youtube")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <YouTubeIcon className="size-5" />
@@ -208,7 +185,7 @@ export function SiteFooter() {
                 href="https://www.instagram.com/puntr_za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Puntr on Instagram"
+                aria-label={t("footer.social.instagram")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <Instagram className="size-5" />
@@ -217,12 +194,13 @@ export function SiteFooter() {
                 href="https://www.tiktok.com/@puntr_za"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="Puntr on TikTok"
+                aria-label={t("footer.social.tiktok")}
                 className="text-foreground transition-colors hover:text-primary"
               >
                 <TikTokIcon className="size-5" />
               </a>
             </div>
+            <LanguageSwitcher className="mt-4" />
             <div className="mt-4 flex flex-wrap gap-2">
               <ComingSoonBadge store="apple" />
               <ComingSoonBadge store="google" />
@@ -231,12 +209,8 @@ export function SiteFooter() {
         </div>
 
         <p className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-          <span className="block">© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only.</span>
-          {currentDateTime && (
-            <span className="mt-2 block">
-              {currentDateTime}
-            </span>
-          )}
+          <span className="block">{t("footer.copyright")}</span>
+          {currentDateTime && <span className="mt-2 block">{currentDateTime}</span>}
         </p>
       </div>
     </footer>

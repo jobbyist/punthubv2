@@ -32,7 +32,10 @@ export const Route = createFileRoute("/about")({
         content:
           "Discover Puntr — a next-generation sports prediction platform combining AI insights, sports data, community predictions, rewards and intelligent betting tools.",
       },
-      { property: "og:title", content: "About Puntr | Africa's Sports Prediction & Intelligence Platform" },
+      {
+        property: "og:title",
+        content: "About Puntr | Africa's Sports Prediction & Intelligence Platform",
+      },
       {
         property: "og:description",
         content:
@@ -94,15 +97,47 @@ const ecosystemLayers = [
 ];
 
 const technologies = [
-  { name: "React", category: "Frontend", description: "Component-driven interfaces built for a fast, dynamic product experience." },
+  {
+    name: "React",
+    category: "Frontend",
+    description: "Component-driven interfaces built for a fast, dynamic product experience.",
+  },
   { name: "Vite", category: "Frontend", description: "Lightning-fast build tool and dev server." },
-  { name: "TypeScript", category: "Frontend", description: "Type-safe development for reliability." },
-  { name: "Tailwind CSS", category: "Frontend", description: "Utility-first styling for rapid UI development." },
-  { name: "TanStack Query", category: "Data Layer", description: "Efficient server-state management and real-time data experiences." },
-  { name: "Supabase", category: "Backend", description: "Database, authentication and live updates." },
-  { name: "Vercel", category: "Infrastructure", description: "Scalable deployment and global application delivery." },
-  { name: "VerifyNow", category: "Verification", description: "Identity and age verification infrastructure." },
-  { name: "Paystack", category: "Payments", description: "Planned for credit purchases later. Not in use at launch." },
+  {
+    name: "TypeScript",
+    category: "Frontend",
+    description: "Type-safe development for reliability.",
+  },
+  {
+    name: "Tailwind CSS",
+    category: "Frontend",
+    description: "Utility-first styling for rapid UI development.",
+  },
+  {
+    name: "TanStack Query",
+    category: "Data Layer",
+    description: "Efficient server-state management and real-time data experiences.",
+  },
+  {
+    name: "Supabase",
+    category: "Backend",
+    description: "Database, authentication and live updates.",
+  },
+  {
+    name: "Vercel",
+    category: "Infrastructure",
+    description: "Scalable deployment and global application delivery.",
+  },
+  {
+    name: "VerifyNow",
+    category: "Verification",
+    description: "Identity and age verification infrastructure.",
+  },
+  {
+    name: "Paystack",
+    category: "Payments",
+    description: "Planned for credit purchases later. Not in use at launch.",
+  },
   { name: "Framer Motion", category: "UI/UX", description: "Production-ready animation library." },
   { name: "Recharts", category: "Analytics", description: "Data visualization and charting." },
   { name: "PUNT AI", category: "AI", description: "AI-powered prediction intelligence." },
@@ -131,10 +166,42 @@ const bettingPlatforms = [
 ];
 
 const leaderboardData = [
-  { rank: 1, username: "TipMaster87", accuracy: 78, predictions: 342, points: 12450, streak: 7, trend: "up" },
-  { rank: 2, username: "TheSportsProphet", accuracy: 76, predictions: 289, points: 11230, streak: 5, trend: "up" },
-  { rank: 3, username: "DataDrivenBets", accuracy: 74, predictions: 401, points: 10890, streak: 3, trend: "same" },
-  { rank: 4, username: "You", accuracy: 68, predictions: 156, points: 6780, streak: 2, trend: "up" },
+  {
+    rank: 1,
+    username: "TipMaster87",
+    accuracy: 78,
+    predictions: 342,
+    points: 12450,
+    streak: 7,
+    trend: "up",
+  },
+  {
+    rank: 2,
+    username: "TheSportsProphet",
+    accuracy: 76,
+    predictions: 289,
+    points: 11230,
+    streak: 5,
+    trend: "up",
+  },
+  {
+    rank: 3,
+    username: "DataDrivenBets",
+    accuracy: 74,
+    predictions: 401,
+    points: 10890,
+    streak: 3,
+    trend: "same",
+  },
+  {
+    rank: 4,
+    username: "You",
+    accuracy: 68,
+    predictions: 156,
+    points: 6780,
+    streak: 2,
+    trend: "up",
+  },
 ];
 
 function About() {
@@ -164,11 +231,15 @@ function About() {
               Meets <span className="text-[#16A34A]">Community</span>.
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-300">
-              Puntr is building a smarter way for sports fans to predict, compete and earn — combining data, AI,
-              community insight and rewards in one powerful ecosystem.
+              Puntr is building a smarter way for sports fans to predict, compete and earn —
+              combining data, AI, community insight and rewards in one powerful ecosystem.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button size="lg" className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90" onClick={() => openEarlyAccess()}>
+              <Button
+                size="lg"
+                className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
+                onClick={() => openEarlyAccess()}
+              >
                 Explore Puntr
               </Button>
               <Button
@@ -193,20 +264,33 @@ function About() {
                 Sports Should Be More <span className="text-primary">Intelligent</span>.
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                Sports fans already have opinions. Puntr gives those opinions a place to compete, improve and become
-                more valuable.
+                Sports fans already have opinions. Puntr gives those opinions a place to compete,
+                improve and become more valuable.
               </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                The sports betting landscape is fragmented. Fans move between bookmakers, social media tipsters,
-                statistics websites and disconnected prediction communities. Puntr brings the experience together.
+                The sports betting landscape is fragmented. Fans move between bookmakers, social
+                media tipsters, statistics websites and disconnected prediction communities. Puntr
+                brings the experience together.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {[
                 { icon: BarChart3, title: "Data", description: "Turn information into insight." },
-                { icon: Users, title: "Community", description: "See what other predictors think." },
-                { icon: Brain, title: "AI", description: "Augment your analysis with intelligent insights." },
-                { icon: Gift, title: "Rewards", description: "Get recognised for knowledge, accuracy and engagement." },
+                {
+                  icon: Users,
+                  title: "Community",
+                  description: "See what other predictors think.",
+                },
+                {
+                  icon: Brain,
+                  title: "AI",
+                  description: "Augment your analysis with intelligent insights.",
+                },
+                {
+                  icon: Gift,
+                  title: "Rewards",
+                  description: "Get recognised for knowledge, accuracy and engagement.",
+                },
               ].map((item) => (
                 <motion.div
                   key={item.title}
@@ -230,17 +314,20 @@ function About() {
                 P
               </div>
               <div className="relative">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#16A34A]">Mission</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#16A34A]">
+                  Mission
+                </h3>
                 <p className="mt-4 text-xl font-semibold leading-relaxed lg:text-2xl">
-                  To build Africa's most trusted prediction community where sports knowledge is rewarded.
+                  To build Africa's most trusted prediction community where sports knowledge is
+                  rewarded.
                 </p>
               </div>
             </div>
             <div>
               <h3 className="text-sm font-bold uppercase tracking-wider text-[#16A34A]">Vision</h3>
               <p className="mt-4 text-xl font-semibold leading-relaxed lg:text-2xl">
-                To become the leading sports prediction ecosystem across Africa, connecting millions of sports fans
-                through data, community and rewards.
+                To become the leading sports prediction ecosystem across Africa, connecting millions
+                of sports fans through data, community and rewards.
               </p>
             </div>
           </div>
@@ -266,7 +353,9 @@ function About() {
                   </div>
                   <div>
                     <h3 className="font-semibold">{principle.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{principle.description}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {principle.description}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -281,7 +370,8 @@ function About() {
               One Platform. Multiple Layers of <span className="text-primary">Intelligence</span>.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Puntr connects every layer of the sports prediction experience into one unified ecosystem.
+              Puntr connects every layer of the sports prediction experience into one unified
+              ecosystem.
             </p>
           </div>
           <div className="mx-auto mt-12 max-w-4xl">
@@ -322,7 +412,8 @@ function About() {
               Built Around The Sports You <span className="text-primary">Love</span>.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Puntr brings fans closer to the sports, competitions and platforms that power the modern sports ecosystem.
+              Puntr brings fans closer to the sports, competitions and platforms that power the
+              modern sports ecosystem.
             </p>
           </div>
           <div className="mt-12">
@@ -353,8 +444,8 @@ function About() {
               Connected To The Sports <span className="text-primary">Economy</span>.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Puntr helps fans compare opportunities across the wider sports betting ecosystem without replacing the
-              licensed operators they use.
+              Puntr helps fans compare opportunities across the wider sports betting ecosystem
+              without replacing the licensed operators they use.
             </p>
           </div>
           <div className="mt-12">
@@ -368,7 +459,11 @@ function About() {
                     key={platform.name}
                     className="flex items-center justify-center rounded-lg border border-border bg-background p-6 opacity-60 transition-all hover:opacity-100"
                   >
-                    <img src={platform.logo} alt={platform.name} className="max-h-12 w-full object-contain" />
+                    <img
+                      src={platform.logo}
+                      alt={platform.name}
+                      className="max-h-12 w-full object-contain"
+                    />
                   </div>
                 ))}
               </div>
@@ -383,8 +478,8 @@ function About() {
               Engineered For <span className="text-primary">Scale</span>.
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">
-              Puntr is built as a modern, scalable web application designed for real-time sports data, high-volume
-              community interaction and intelligent prediction experiences.
+              Puntr is built as a modern, scalable web application designed for real-time sports
+              data, high-volume community interaction and intelligent prediction experiences.
             </p>
           </div>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -405,7 +500,9 @@ function About() {
                   <div>
                     <h3 className="font-semibold">{tech.name}</h3>
                     <p className="text-xs font-medium text-primary">{tech.category}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{tech.description}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {tech.description}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -494,7 +591,11 @@ function About() {
                   { icon: Target, title: "Predict", description: "Make your call." },
                   { icon: TrendingUp, title: "Compete", description: "See how you rank." },
                   { icon: LineChart, title: "Learn", description: "Understand where you improve." },
-                  { icon: Gift, title: "Earn", description: "Turn participation and performance into rewards." },
+                  {
+                    icon: Gift,
+                    title: "Earn",
+                    description: "Turn participation and performance into rewards.",
+                  },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-3">
                     <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
@@ -524,7 +625,9 @@ function About() {
                     >
                       <span
                         className={`grid size-8 shrink-0 place-items-center rounded-md text-xs font-bold tnum ${
-                          user.username === "You" ? "bg-primary text-primary-foreground" : "bg-muted"
+                          user.username === "You"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted"
                         }`}
                       >
                         {user.rank}
@@ -545,7 +648,9 @@ function About() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-primary tnum">{user.points.toLocaleString()} PP</p>
+                        <p className="text-sm font-bold text-primary tnum">
+                          {user.points.toLocaleString()} PP
+                        </p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {user.trend === "up" ? "↗" : user.trend === "down" ? "↘" : "→"}
                         </p>
@@ -566,20 +671,35 @@ function About() {
                 Every Prediction <span className="text-primary">Counts</span>.
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-                PuntPoints are the platform's reward currency — recognising accuracy, engagement and contribution.
+                PuntPoints are the platform's reward currency — recognising accuracy, engagement and
+                contribution.
               </p>
               <div className="mt-10 grid gap-6 sm:grid-cols-3">
                 {[
-                  { icon: Target, title: "Accuracy", description: "Get recognised for getting it right." },
-                  { icon: Users, title: "Engagement", description: "Participate, contribute and build your reputation." },
-                  { icon: Gift, title: "Referrals", description: "Help grow the community and unlock additional rewards." },
+                  {
+                    icon: Target,
+                    title: "Accuracy",
+                    description: "Get recognised for getting it right.",
+                  },
+                  {
+                    icon: Users,
+                    title: "Engagement",
+                    description: "Participate, contribute and build your reputation.",
+                  },
+                  {
+                    icon: Gift,
+                    title: "Referrals",
+                    description: "Help grow the community and unlock additional rewards.",
+                  },
                 ].map((item) => (
                   <div key={item.title} className="rounded-xl border border-border bg-card p-6">
                     <div className="mx-auto grid size-12 place-items-center rounded-lg bg-primary-soft text-primary">
                       <item.icon className="size-6" strokeWidth={1.5} />
                     </div>
                     <h3 className="mt-4 font-semibold">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -599,21 +719,25 @@ function About() {
                   Predict Smart. Play <span className="text-primary">Responsibly</span>.
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-                  Puntr exists to make sports prediction more informed — not to encourage reckless gambling.
+                  Puntr exists to make sports prediction more informed — not to encourage reckless
+                  gambling.
                 </p>
               </div>
               <div className="mt-10 space-y-4 text-sm leading-relaxed text-muted-foreground">
                 <p>
-                  • Puntr does not guarantee betting outcomes. All predictions and AI insights are informational and
-                  should not be considered professional advice.
+                  • Puntr does not guarantee betting outcomes. All predictions and AI insights are
+                  informational and should not be considered professional advice.
                 </p>
-                <p>• No persons under the age of 18 are permitted to use betting-related features.</p>
                 <p>
-                  • We encourage users to understand risk, set limits and make informed decisions about their betting
-                  activity.
+                  • No persons under the age of 18 are permitted to use betting-related features.
+                </p>
+                <p>
+                  • We encourage users to understand risk, set limits and make informed decisions
+                  about their betting activity.
                 </p>
                 <p className="font-semibold text-foreground">
-                  If you or someone you know needs support: National Responsible Gambling Programme Helpline:{" "}
+                  If you or someone you know needs support: National Responsible Gambling Programme
+                  Helpline:{" "}
                   <a href="tel:0800006008" className="text-primary hover:underline">
                     0800 006 008
                   </a>
@@ -630,7 +754,8 @@ function About() {
               We're Just Getting <span className="text-primary">Started</span>.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Puntr is a platform that can expand beyond prediction into a comprehensive sports intelligence ecosystem.
+              Puntr is a platform that can expand beyond prediction into a comprehensive sports
+              intelligence ecosystem.
             </p>
           </div>
           <div className="mx-auto mt-12 max-w-5xl">
@@ -684,9 +809,15 @@ function About() {
             <h2 className="text-[clamp(2.5rem,6vw,4rem)] font-extrabold leading-tight">
               Think You Know <span className="text-[#16A34A]">Sports</span>?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-gray-300">Put your predictions to the test.</p>
+            <p className="mx-auto mt-4 max-w-xl text-lg text-gray-300">
+              Put your predictions to the test.
+            </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button size="lg" className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90" onClick={() => openEarlyAccess()}>
+              <Button
+                size="lg"
+                className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
+                onClick={() => openEarlyAccess()}
+              >
                 Join Puntr
               </Button>
               <Button
@@ -698,7 +829,9 @@ function About() {
                 <Link to="/predictions">Explore Predictions</Link>
               </Button>
             </div>
-            <p className="mt-8 text-sm font-semibold text-[#16A34A]">Predict. Earn. Win Together.</p>
+            <p className="mt-8 text-sm font-semibold text-[#16A34A]">
+              Predict. Earn. Win Together.
+            </p>
           </motion.div>
         </div>
       </section>
