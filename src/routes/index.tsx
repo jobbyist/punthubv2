@@ -163,16 +163,22 @@ function Landing() {
           </div>
           <ul className="mt-4 divide-y divide-border">
             {next.map((f) => (
-              <li key={f.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
-                <span className="w-44 shrink-0 text-xs text-muted-foreground tnum">
-                  {formatDate(f.kickoff_at)} · {formatTime(f.kickoff_at)}
-                </span>
-                <span className="inline-flex min-w-0 flex-1 flex-wrap items-center gap-x-2 text-sm font-semibold">
-                  <TeamLogo team={f.home} size="sm" /> {f.home}
-                  <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
-                  <TeamLogo team={f.away} size="sm" /> {f.away}
-                </span>
-                <span className="text-xs text-muted-foreground">{f.competition}</span>
+              <li key={f.id}>
+                <Link
+                  to="/match/$fixtureId"
+                  params={{ fixtureId: f.id }}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 hover:bg-muted/40"
+                >
+                  <span className="w-44 shrink-0 text-xs text-muted-foreground tnum">
+                    {formatDate(f.kickoff_at)} · {formatTime(f.kickoff_at)}
+                  </span>
+                  <span className="inline-flex min-w-0 flex-1 flex-wrap items-center gap-x-2 text-sm font-semibold">
+                    <TeamLogo team={f.home} size="sm" /> {f.home}
+                    <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
+                    <TeamLogo team={f.away} size="sm" /> {f.away}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{f.competition}</span>
+                </Link>
               </li>
             ))}
           </ul>

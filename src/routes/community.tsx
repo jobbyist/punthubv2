@@ -1,24 +1,18 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import {
-  BarChart3,
-  CalendarDays,
-  Heart,
-  Image as ImageIcon,
-  Lightbulb,
-  MessageCircle,
-  Pin,
-  Share2,
-} from "lucide-react";
+import { CalendarDays, Target } from "lucide-react";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Locked } from "@/components/locked";
+import { PickCard } from "@/components/pick-card";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
-import { communityPosts } from "@/lib/mock-data";
 import { headT } from "@/lib/i18n/head";
-import { odds } from "@/lib/format";
+import { fetchFeed, type FeedPick, type FeedSort } from "@/lib/pick-data";
+
+const PAGE = 20;
 
 export const Route = createFileRoute("/community")({
   head: ({ match }) => {
@@ -49,107 +43,81 @@ export const Route = createFileRoute("/community")({
   component: Community,
 });
 
-function Feed() {
+const SORTS = ["new", "top", "mine"] as const;
+
+function Feed({ sort }: { sort: FeedSort }) {
   const { t } = useTranslation("community");
+  const { profile } = useSession();
+  const [items, setItems] = useState<FeedPick[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [more, setMore] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(
+    async (before?: string) => {
+      setBusy(true);
+      try {
+        const page = await fetchFeed({ sort, userId: profile?.id, before, limit: PAGE });
+        setItems((prev) => (before && prev ? [...prev, ...page] : page));
+        setMore(page.length === PAGE);
+        setFailed(false);
+      } catch (error) {
+        console.error("feed load failed", error);
+        setFailed(true);
+      } finally {
+        setBusy(false);
+      }
+    },
+    [sort, profile?.id],
+  );
+
+  useEffect(() => {
+    setItems(null);
+    void load();
+  }, [load]);
+
+  if (failed) return <p className="card-surface p-5 text-sm text-destructive">{t("feed.error")}</p>;
+  if (items === null) return <p className="text-sm text-muted-foreground">{t("feed.loading")}</p>;
+  if (items.length === 0) {
+    return (
+      <p className="card-surface p-5 text-sm text-muted-foreground">{t(`feed.empty.${sort}`)}</p>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      {communityPosts.map((p, i) => (
-        <motion.article
-          key={i}
+      {items.map((p, i) => (
+        <motion.div
+          key={p.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.05 }}
-          className="card-surface p-5"
+          transition={{ delay: Math.min(i, 6) * 0.05 }}
         >
-          {p.pinned && (
-            <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-primary">
-              <Pin className="size-3.5" /> {t("post.pinned")}
-            </p>
-          )}
-          <div className="flex items-center gap-3">
-            <span className="size-10 shrink-0 rounded-full bg-muted" />
-            <div className="min-w-0 flex-1">
-              <p className="flex flex-wrap items-center gap-2 font-semibold">
-                {p.author}
-                {p.tag && (
-                  <span className="rounded-md bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary">
-                    {p.tag}
-                  </span>
-                )}
-                {p.admin && (
-                  <span className="rounded-md bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary">
-                    {t("post.admin")}
-                  </span>
-                )}
-              </p>
-              <p className="text-xs text-muted-foreground">{p.meta}</p>
-            </div>
-          </div>
-
-          {p.title && <h3 className="mt-4 text-lg">{p.title}</h3>}
-          <p className="mt-2 text-[15px] leading-relaxed">{p.body}</p>
-
-          {p.score && (
-            <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-border p-4">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="size-8 shrink-0 rounded-full bg-ink" />
-                <span className="truncate text-sm font-medium">{p.score.home}</span>
-              </div>
-              <div className="text-center">
-                <p className="font-display text-xl font-extrabold tnum">
-                  {p.score.hs} – {p.score.as}
-                </p>
-                <p className="text-[10px] text-muted-foreground">{t("post.fullTime")}</p>
-              </div>
-              <div className="flex min-w-0 items-center justify-end gap-3">
-                <span className="truncate text-sm font-medium">{p.score.away}</span>
-                <span className="size-8 shrink-0 rounded-full bg-[oklch(0.8_0.16_85)]" />
-              </div>
-            </div>
-          )}
-
-          {p.acca && (
-            <div className="mt-4 rounded-xl bg-muted/60 p-4">
-              <div className="flex items-center justify-between text-sm font-semibold">
-                <span>{t("post.fold", { count: p.acca.length })}</span>
-                <span className="text-primary">{t("post.combined")}</span>
-              </div>
-              <ul className="mt-2 space-y-1.5 text-sm">
-                {p.acca.map((l) => (
-                  <li key={l.name} className="flex items-center justify-between">
-                    <span>{l.name}</span>
-                    <span className="tnum">{odds(l.odds)}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-2 flex items-center justify-between border-t border-border pt-2 text-sm font-bold text-primary">
-                <span>{t("post.total")}</span>
-                <span className="tnum">{p.total ? odds(p.total) : ""}</span>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-4 flex items-center gap-6 text-sm text-muted-foreground">
-            <button className="flex items-center gap-1.5 transition-colors hover:text-primary">
-              <Heart className="size-4" /> <span className="tnum">{p.likes}</span>
-            </button>
-            <button className="flex items-center gap-1.5 transition-colors hover:text-primary">
-              <MessageCircle className="size-4" /> <span className="tnum">{p.comments}</span>
-            </button>
-            <button className="transition-colors hover:text-primary" aria-label={t("post.share")}>
-              <Share2 className="size-4" />
-            </button>
-          </div>
-        </motion.article>
+          <PickCard
+            pick={p}
+            fixture={p.fixture}
+            teams={{ home: p.fixture?.home ?? "", away: p.fixture?.away ?? "" }}
+            kickoff={p.fixture?.kickoff_at ?? p.created_at}
+          />
+        </motion.div>
       ))}
+      {more && (
+        <Button
+          variant="outline"
+          disabled={busy}
+          onClick={() => void load(items[items.length - 1]?.created_at)}
+        >
+          {busy ? t("feed.loading") : t("feed.loadMore")}
+        </Button>
+      )}
     </div>
   );
 }
 
 function Community() {
   const { isSignedIn } = useSession();
-  const navigate = useNavigate();
   const { t } = useTranslation("community");
+  const [sort, setSort] = useState<FeedSort>("new");
 
   return (
     <AppShell>
@@ -158,55 +126,54 @@ function Community() {
       <div className="card-surface mb-5 p-4">
         <div className="flex items-center gap-3">
           <span className="size-10 shrink-0 rounded-full bg-muted" />
-          <button
-            onClick={() => navigate({ to: "/join" })}
+          <Link
+            to="/predictions"
             className="min-w-0 flex-1 truncate rounded-lg bg-muted px-4 py-2.5 text-left text-sm text-muted-foreground"
           >
             {t("composer.prompt")}
-          </button>
+          </Link>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-[repeat(4,1fr)_auto]">
-          {(
-            [
-              [ImageIcon, "image"],
-              [BarChart3, "poll"],
-              [Lightbulb, "tip"],
-              [CalendarDays, "match"],
-            ] as const
-          ).map(([I, label]) => {
-            return (
-              <button
-                key={label}
-                className="flex items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium hover:bg-muted"
-              >
-                <I className="size-4 text-muted-foreground" /> {t(`composer.${label}`)}
-              </button>
-            );
-          })}
-          <Button className="col-span-2 sm:col-span-1" onClick={() => navigate({ to: "/join" })}>
-            {t("composer.post")}
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <Link
+            to="/predictions"
+            search={{ sport: "soccer" }}
+            className="flex items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium hover:bg-muted"
+          >
+            <Target className="size-4 text-muted-foreground" /> {t("composer.soccer")}
+          </Link>
+          <Link
+            to="/predictions"
+            search={{ sport: "rugby" }}
+            className="flex items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium hover:bg-muted"
+          >
+            <CalendarDays className="size-4 text-muted-foreground" /> {t("composer.rugby")}
+          </Link>
+          <Button asChild className="col-span-2 sm:col-span-1">
+            <Link to="/predictions">{t("composer.post")}</Link>
           </Button>
         </div>
       </div>
 
       <div className="mb-5 flex flex-wrap gap-2">
-        {(["all", "following", "popular", "mine"] as const).map((f, i) => (
+        {SORTS.filter((s) => s !== "mine" || isSignedIn).map((s) => (
           <button
-            key={f}
+            key={s}
+            onClick={() => setSort(s)}
+            aria-pressed={sort === s}
             className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              i === 0 ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+              sort === s ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
             }`}
           >
-            {t(`tabs.${f}`)}
+            {t(`tabs.${s}`)}
           </button>
         ))}
       </div>
 
       {isSignedIn ? (
-        <Feed />
+        <Feed sort={sort} />
       ) : (
         <Locked label={t("gate")} intensity="lg">
-          <Feed />
+          <Feed sort={sort} />
         </Locked>
       )}
     </AppShell>

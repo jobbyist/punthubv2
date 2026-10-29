@@ -1,1 +1,128 @@
-{}
+{
+  "meta": {
+    "title": "{{home}} v {{away}} | Puntr",
+    "description": "Post a pick on {{home}} v {{away}} ({{competition}}) before kick-off. Locked at kick-off, graded automatically and kept forever.",
+    "notFound": "Match not found | Puntr"
+  },
+  "back": "All fixtures",
+  "notFound": {
+    "title": "We couldn't find that match",
+    "body": "It may have been removed or the link may be wrong.",
+    "cta": "See fixtures"
+  },
+  "header": {
+    "kickoff": "Kick-off",
+    "live": "In play",
+    "finished": "Full time",
+    "postponed": "Postponed",
+    "abandoned": "Abandoned",
+    "cancelled": "Cancelled"
+  },
+  "countdown": {
+    "locksIn": "Locks in {{span}}",
+    "locked": "Picks locked at {{time}}",
+    "closed": "Picks are closed for this match."
+  },
+  "form": {
+    "title": "Post your pick",
+    "market": "Market",
+    "selection": "Your pick",
+    "line": "Handicap line",
+    "lineHint": "Added to {{home}}'s score. -6.5 means {{home}} give 6.5 points; +6.5 means they get 6.5.",
+    "odds": "Odds you got",
+    "oddsHint": "From 1.01 to 50, for example 2.10.",
+    "confidence": "Confidence",
+    "confidenceHint": "1 is a hunch, 5 is a strong view.",
+    "reasoning": "Your reasoning (optional)",
+    "reasoningHint": "Up to 280 characters. It is public.",
+    "counter": "{{count}} / {{max}}",
+    "submit": "Lock my pick",
+    "submitting": "Locking…",
+    "permanent": "Once locked, a pick cannot be edited or deleted. It stays on your public record.",
+    "signIn": "Create a free account to post a pick on this match.",
+    "signInCta": "Join free",
+    "needProfile": "Finish setting up your profile to post picks.",
+    "finishCta": "Finish sign-up",
+    "success": "Pick locked. It is on your public record.",
+    "viewRecord": "My record",
+    "problem": {
+      "selection": "Choose your pick.",
+      "line": "Enter a handicap line such as -6.5.",
+      "odds": "Enter odds between 1.01 and 50, with at most two decimals.",
+      "confidence": "Choose a confidence from 1 to 5.",
+      "reasoning": "Keep your reasoning to 280 characters."
+    }
+  },
+  "error": {
+    "kickoff_passed": "This match has kicked off - picks are locked.",
+    "fixture_not_open": "This match is no longer open for picks.",
+    "fixture_not_found": "We couldn't find that match.",
+    "duplicate": "You already have a {{market}} pick on this game.",
+    "daily_limit": "You've reached today's limit of 30 picks. Try again tomorrow.",
+    "posting_paused": "Posting is paused on your account. Contact support if you think this is a mistake.",
+    "banned": "Your account can't post picks. Contact support if you think this is a mistake.",
+    "age_not_attested": "We need your 18+ confirmation before you can post.",
+    "no_profile": "Finish setting up your profile to post picks.",
+    "not_authenticated": "Please sign in again to post a pick.",
+    "invalid_market": "That market isn't available.",
+    "invalid_market_for_sport": "That market isn't available for this sport.",
+    "invalid_selection": "That pick isn't valid for this market.",
+    "invalid_line": "That handicap line isn't valid.",
+    "invalid_odds": "Enter odds between 1.01 and 50, with at most two decimals.",
+    "invalid_confidence": "Choose a confidence from 1 to 5.",
+    "reasoning_too_long": "Keep your reasoning to 280 characters.",
+    "generic": "We couldn't lock your pick. Please try again."
+  },
+  "market": {
+    "1X2": "Match result (1X2)",
+    "DC": "Double chance",
+    "OU25": "Over/Under 2.5",
+    "BTTS": "Both teams to score",
+    "HCP": "Handicap"
+  },
+  "selection": {
+    "draw": "Draw",
+    "over": "Over 2.5 goals",
+    "under": "Under 2.5 goals",
+    "yes": "Yes",
+    "no": "No",
+    "homeOrDraw": "{{home}} or draw",
+    "drawOrAway": "Draw or {{away}}",
+    "homeOrAway": "{{home}} or {{away}}",
+    "handicap": "{{team}} {{line}}"
+  },
+  "picks": {
+    "title": "Picks on this match",
+    "empty": "No picks yet. Be the first to post one.",
+    "founding": "Founding #{{number}}",
+    "odds": "Odds",
+    "confidence": "Confidence {{value}}/5",
+    "lockedBefore": "Locked {{span}} before kick-off",
+    "hash": "Hash",
+    "verify": "Verify",
+    "won": "Won",
+    "lost": "Lost",
+    "void": "Void",
+    "pending": "Pending",
+    "units": "{{units}} units",
+    "loadError": "We couldn't load the picks. Please refresh the page."
+  },
+  "crowd": {
+    "title": "Crowd split (Match result)",
+    "sample": "{{percent}}% {{team}} - {{count}} picks",
+    "draw": "Draw",
+    "note": "Based on {{count}} Match result picks. Sample size matters: a small sample says little."
+  },
+  "report": {
+    "cta": "Report",
+    "title": "Report this pick",
+    "body": "Tell us what is wrong. A person will look at it.",
+    "placeholder": "What is the problem?",
+    "submit": "Send report",
+    "cancel": "Cancel",
+    "thanks": "Thanks. We'll look at it.",
+    "already": "You've already reported this pick.",
+    "signIn": "Sign in to report a pick.",
+    "error": "We couldn't send your report. Please try again."
+  }
+}
