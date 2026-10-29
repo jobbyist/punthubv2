@@ -1,7 +1,20 @@
 {
   "forbidden": "This page is for Puntr admins.",
   "fixtures": {
-    "title": "Fixtures"
+    "title": "Fixtures",
+    "resync": {
+      "title": "Re-sync from the data provider",
+      "body": "Runs the fixture and result syncs now. It uses calls from the provider's daily quota.",
+      "button": "Re-sync now",
+      "working": "Syncing…",
+      "done": "Fixtures: {{fcalls}} calls, {{fupserted}} updated. Results: {{rcalls}} calls, {{rupserted}} updated.",
+      "skipped": "Skipped",
+      "error": {
+        "forbidden": "Only admins can do this.",
+        "not_configured": "SPORTS_API_KEY is not set on the server.",
+        "error": "The sync failed. Check the server logs."
+      }
+    }
   },
   "csv": {
     "title": "CSV import",
@@ -18,5 +31,97 @@
       "invalid": "The file has problems. Nothing was imported.",
       "error": "Something went wrong. Nothing was imported."
     }
+  },
+  "title": "Admin",
+  "tabs": {
+    "fixtures": "Fixtures",
+    "settlement": "Settlement",
+    "reports": "Reports",
+    "users": "Users",
+    "waitlist": "Waitlist"
+  },
+  "settle": {
+    "title": "Settlement",
+    "overview": "Final matches with picks waiting for a first settlement",
+    "none": "Nothing is waiting. Picks settle automatically within minutes of a result.",
+    "pending_one": "{{count}} pick waiting",
+    "pending_other": "{{count}} picks waiting",
+    "noScore": "No score yet: it can't be graded automatically.",
+    "all": "Settle all now",
+    "allWorking": "Settling…",
+    "allDone": "Graded {{graded}}, written {{inserted}}, left for later {{skipped}}.",
+    "error": "Could not settle. Check the server logs.",
+    "manual": {
+      "title": "Correct or settle a pick",
+      "body": "A correction is written as a new entry with your reason and name. The earlier entries stay on the record.",
+      "pickId": "Pick ID",
+      "result": "New result",
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void",
+      "reason": "Reason (required, shown on the record)",
+      "submit": "Write correction",
+      "working": "Saving…",
+      "done": "Saved as a new entry.",
+      "history": "History for this pick",
+      "by": "{{source}} · {{result}} · {{units}} units",
+      "error": {
+        "forbidden": "Only admins can do this.",
+        "reason_required": "A reason is required.",
+        "prediction_not_found": "No pick with that ID.",
+        "invalid_result": "Choose a result.",
+        "generic": "Could not save the correction."
+      }
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "empty": "No open reports.",
+    "reported": "Reported by {{user}} on {{date}}",
+    "reason": "Reason",
+    "pick": "Pick",
+    "resolve": "Resolve",
+    "hide": "Hide pick",
+    "hideReason": "Reason for hiding",
+    "hidden": "Pick hidden.",
+    "resolved": "Report resolved.",
+    "error": "Something went wrong. Please try again."
+  },
+  "users": {
+    "title": "Users",
+    "search": "Search by username",
+    "go": "Search",
+    "none": "No members found.",
+    "founding": "Founding #{{number}}",
+    "banned": "Banned",
+    "ban": "Ban",
+    "unban": "Unban",
+    "banDone": "Done.",
+    "banError": "Couldn't change that member.",
+    "hideTitle": "Hide a pick",
+    "hideBody": "The pick leaves the public feed but stays in the record and in /verify. Write the reason.",
+    "hideId": "Pick ID",
+    "hideReason": "Reason",
+    "hideButton": "Hide pick",
+    "hideDone": "Pick hidden.",
+    "hideError": "Couldn't hide that pick. Check the ID."
+  },
+  "waitlist": {
+    "title": "Waitlist",
+    "total": "{{count}} on the waitlist",
+    "status": {
+      "invited": "Invited",
+      "unsubscribed": "Unsubscribed",
+      "privacy": "Privacy request",
+      "notInvited": "Not invited yet"
+    },
+    "col": {
+      "email": "Email",
+      "name": "Name",
+      "joined": "Joined",
+      "status": "Status"
+    },
+    "empty": "The waitlist is empty. The earlier sign-ups still need importing into this project.",
+    "note": "Invites are sent by the script (bun run waitlist:invite), not from here. Do not send until the attorney has agreed the approach."
   }
 }

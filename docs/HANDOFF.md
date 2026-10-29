@@ -28,6 +28,10 @@ Provider interface + API-Sports implementation, sync routes with a bearer secret
 
 P8 `/match/$fixtureId` and the pick form (`create_prediction` only, no edit or delete anywhere), community feed of locked picks. P9 `grade()` and `/api/cron/settle`, leaderboard, results, profile record. P10 founding counter, referrals (`referral_rewards`, pending), waitlist invite script (dry run by default; do not `--send` until D11), `/unsubscribe`. See `docs/growth.md` and `docs/sports.md`.
 
+## P11 in brief
+
+`/admin` (Fixtures, Settlement, Reports, Users, Waitlist), `/verify` with in-browser hash recomputation, `admin_settle_prediction`, daily `chain_heads` via cron. `/admin/fixtures` redirects to `/admin`. See `docs/admin.md`. The `write_chain_head` fix migration is written but not applied.
+
 ## Environment facts
 
 - Supabase project `hucjuekhitjuygcoomhw` ("Puntr South Africa", eu-west-1, free plan: no branching). Old Lovable project `cntoniedcjwsgereqrib` must not be referenced.

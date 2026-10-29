@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Verify the record | Puntr",
+    "description": "Check that a Puntr pick has not been changed. Paste a pick ID and your browser recomputes its fingerprint. Every pick is locked, linked to the one before it and fingerprinted daily.",
+    "ogTitle": "Verify the record | Puntr"
+  },
+  "title": "Verify the record",
+  "subtitle": "Every pick has a fingerprint (a hash) that depends on the pick and on the pick before it. If anything were changed, the fingerprints would stop matching. Check one yourself: your browser does the sums, not Puntr.",
+  "how": {
+    "title": "How the fingerprint is made",
+    "p1": "When a pick is locked, Puntr joins these facts into one line of text, with nothing between them: the fingerprint of the previous pick, the member's ID, the match ID, the market, the selection, the handicap line (blank unless it's a handicap), the odds with two decimals, and the exact time it was locked, to the microsecond, in UTC.",
+    "p2": "That line is run through SHA-256, a standard fingerprinting method. The result is the pick's hash. Because it includes the previous pick's hash, the picks form a chain: changing any old pick would change every hash after it.",
+    "p3": "Each night just before midnight (South African time) Puntr also records the day's last hash and pick count below. Compare them with your own copy to see that the chain was not rewritten later."
+  },
+  "check": {
+    "title": "Check a pick",
+    "label": "Pick ID",
+    "placeholder": "Paste a pick ID",
+    "hint": "Open any pick and use its hash link, or paste its ID here.",
+    "button": "Verify",
+    "working": "Checking…",
+    "invalid": "That doesn't look like a pick ID. It is a long code such as 9faaef2d-f559-4698-868f-73f1c0f669a9.",
+    "notFound": "We couldn't find that pick.",
+    "error": "We couldn't load that pick. Please try again."
+  },
+  "result": {
+    "matchTitle": "The hash matches",
+    "matchBody": "Your browser recomputed this pick's hash from its facts and got the same result as the record. The pick has not been changed.",
+    "noMatchTitle": "The hash does not match",
+    "noMatchBody": "The recomputed hash is different from the stored one. Please tell us at support@puntr.co.za.",
+    "links": "Linked to the pick before it: yes",
+    "linksNo": "Linked to the pick before it: NO, the previous pick's hash does not match",
+    "linksUnknown": "Previous pick: not checked",
+    "first": "This is the first pick on Puntr.",
+    "stored": "Stored hash",
+    "recomputed": "Recomputed in your browser",
+    "pick": "Pick",
+    "lockedAt": "Locked at"
+  },
+  "heads": {
+    "title": "Daily chain heads",
+    "body": "The last hash of each day (South African time) and how many picks were locked that day.",
+    "day": "Day",
+    "picks": "Picks",
+    "hash": "Last hash",
+    "today": "Today",
+    "empty": "No picks have been locked yet.",
+    "error": "We couldn't load the chain heads."
+  }
+}

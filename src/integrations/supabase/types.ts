@@ -865,6 +865,30 @@ export type Database = {
       }
     }
     Functions: {
+      admin_settle_prediction: {
+        Args: { p_prediction: string; p_reason: string; p_result: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          prediction_id: string
+          reason: string | null
+          result: string
+          seq: number
+          source: string
+          units: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "settlement_events"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      write_chain_head: {
+        Args: { p_day: string }
+        Returns: { head_day: string; head_hash: string; head_pick_count: number }[]
+      }
       apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
       anonymise_account: {
         Args: { p_email: string; p_user: string }
