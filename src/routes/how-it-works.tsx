@@ -10,14 +10,14 @@ export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     links: [{ rel: "canonical", href: "https://puntr.co.za/how-it-works" }],
     meta: [
-      { title: "How Puntr Works | Predict. Earn. Win together." },
+      { title: "How Puntr works | Predict smarter. Prove it." },
       {
         name: "description",
         content:
-          "Sign up free, make predictions, earn PuntPoints, climb the leaderboards and earn 30% recurring referral revenue with Puntr.",
+          "Sign up with an email code, post a pick before kick-off, and let it lock and settle automatically. Climb the weekly leaderboard. 18+.",
       },
-      { property: "og:title", content: "How Puntr Works" },
-      { property: "og:description", content: "Six steps from free sign-up to real rewards and recurring revenue." },
+      { property: "og:title", content: "How Puntr works" },
+      { property: "og:description", content: "Four steps from sign-up to a public, locked record." },
     ],
   }),
   component: HowItWorks,
@@ -25,41 +25,42 @@ export const Route = createFileRoute("/how-it-works")({
 
 const steps = [
   {
-    title: "Sign Up For Free",
-    body: "Create your free Puntr account in seconds. Join a community of thousands of smart bettors.",
-    bullets: ["100% free to join", "No credit card required"],
-    aside: "Create your account",
+    title: "Sign up with an email code. 18+",
+    body: "Enter your email and we send you a one-time code. You confirm that you are 18 or older. No password.",
+    bullets: ["Free for Founding Members", "No card needed"],
   },
   {
-    title: "Make Predictions",
-    body: "Browse upcoming matches from all major sports. Share your picks and add your prediction.",
-    bullets: ["Real-time odds from top platforms", "AI insights to help you decide"],
-    aside: "Orlando Pirates vs Kaizer Chiefs · 1.62",
+    title: "Post a pick before kick-off",
+    body: "Choose a fixture, a market and a selection, then enter the odds you got.",
+    bullets: ["Soccer and rugby at launch", "Picks close at kick-off"],
   },
   {
-    title: "Earn PuntPoints",
-    body: "Get rewarded for accurate predictions and active participation in the community.",
-    bullets: ["Points for correct picks", "Bonus points for streaks & engagement"],
-    aside: "+120 PP · Correct Prediction",
+    title: "It locks and settles automatically",
+    body: "Your pick is timestamped and locked. After the match it is graded from the official result.",
+    bullets: ["No edits, no deletes", "Corrections are logged, never overwritten"],
   },
   {
-    title: "Climb The Leaderboards",
-    body: "The more accurate you are, the higher you climb. Compete with others and prove you're #1.",
-    bullets: ["Monthly & all-time leaderboards", "Great prizes up for grabs"],
-    aside: "TipMaster87 · 12 450 PP",
+    title: "Climb the weekly leaderboard",
+    body: "Your units, ROI and sample size are public. The leaderboard resets every Monday.",
+    bullets: ["Ranked on units, then ROI", "Needs 10 settled picks to qualify"],
   },
-  {
-    title: "Refer & Earn 30% Revenue",
-    body: "Refer users to premium and earn 30% of their monthly subscription for as long as they remain active.",
-    bullets: ["No limits on earnings", "Real monthly payouts"],
-    aside: "Your Referral Earnings · R1 245.00",
-  },
-  {
-    title: "Withdraw & Enjoy Rewards",
-    body: "Cash out your earnings or spend your PuntPoints on exclusive rewards and prizes.",
-    bullets: ["Cash withdrawals", "Exclusive rewards & perks"],
-    aside: "Available Balance · 2 450 PP",
-  },
+];
+
+const markets = [
+  ["Match result (1X2)", "Soccer and rugby"],
+  ["Over/Under 2.5", "Soccer only"],
+  ["Handicap", "Rugby only"],
+  ["Both teams to score", "Soccer only"],
+  ["Double chance", "Soccer"],
+] as const;
+
+const rules = [
+  "Every pick is worth 1 unit at the odds you entered.",
+  "Won: you gain (odds - 1) units. Example: 2.10 gives +1.10 units.",
+  "Lost: you lose 1 unit.",
+  "Void: 0 units. This covers a match that is postponed, abandoned or cancelled.",
+  "Picks are graded from the official full-time result.",
+  "If a result is corrected, the correction is logged as a new entry. The earlier entry is never overwritten.",
 ];
 
 function HowItWorks() {
@@ -67,11 +68,11 @@ function HowItWorks() {
 
   return (
     <AppShell>
-      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">How Puntr Works</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Predict. Earn. Win together.</p>
+      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">How Puntr works</h1>
+      <p className="mt-1 text-sm text-muted-foreground">Predict smarter. Prove it.</p>
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-        Puntr brings all the top betting platforms in South Africa into one place. Make predictions, earn PuntPoints
-        and 30% recurring revenue from your referrals.
+        Every pick is locked at kick-off, graded automatically and kept forever. Puntr does not take bets or handle
+        money.
       </p>
 
       <ol className="relative mt-8 space-y-4 border-l border-border pl-6 sm:pl-8">
@@ -87,34 +88,52 @@ function HowItWorks() {
             <span className="absolute -left-[34px] grid size-7 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground tnum sm:-left-[42px]">
               {i + 1}
             </span>
-            <div className="card-surface grid gap-5 p-5 md:grid-cols-[1.2fr_1fr] md:items-center">
-              <div>
-                <h2 className="text-xl">{s.title}</h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-                <ul className="mt-3 space-y-1.5">
-                  {s.bullets.map((b) => (
-                    <li key={b} className="flex items-center gap-2 text-sm">
-                      <Check className="size-4 text-primary" /> {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="grid min-h-[110px] place-items-center rounded-xl bg-primary-soft/60 p-5 text-center text-sm font-semibold text-primary">
-                {s.aside}
-              </div>
+            <div className="card-surface p-5">
+              <h2 className="text-xl">{s.title}</h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              <ul className="mt-3 space-y-1.5">
+                {s.bullets.map((b) => (
+                  <li key={b} className="flex items-center gap-2 text-sm">
+                    <Check className="size-4 text-primary" /> {b}
+                  </li>
+                ))}
+              </ul>
             </div>
           </motion.li>
         ))}
       </ol>
 
+      <section id="grading" className="card-surface mt-8 scroll-mt-24 p-6" aria-labelledby="grading-title">
+        <h2 id="grading-title" className="text-2xl">
+          How we grade picks
+        </h2>
+
+        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Markets</h3>
+        <ul className="mt-2 divide-y divide-border border border-border">
+          {markets.map(([name, scope]) => (
+            <li key={name} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+              <span className="font-medium">{name}</span>
+              <span className="text-muted-foreground">{scope}</span>
+            </li>
+          ))}
+        </ul>
+
+        <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Rules</h3>
+        <ul className="mt-2 space-y-2">
+          {rules.map((r) => (
+            <li key={r} className="flex items-start gap-2 text-sm leading-relaxed">
+              <Check className="mt-0.5 size-4 shrink-0 text-primary" /> {r}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section className="card-surface mt-6 flex flex-wrap items-center gap-4 bg-primary-soft/50 p-5">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg">Bet Smarter. Earn More.</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Puntr is more than predictions. It's a community where knowledge wins and everyone benefits.
-          </p>
+          <h3 className="text-lg">Build a record people can trust.</h3>
+          <p className="mt-1 text-sm text-muted-foreground">18+. Gamble responsibly: 0800 006 008.</p>
         </div>
-        <Button onClick={() => openEarlyAccess()}>Start predicting now</Button>
+        <Button onClick={() => openEarlyAccess()}>Get started for free</Button>
       </section>
     </AppShell>
   );
