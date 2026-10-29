@@ -76,7 +76,7 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 
 ## Next work
 
-**PuntPoints (P19) and the referral and rewards programme (P20): BUILT, switched off, waiting for the owner's decisions (D18 to D22). Read `docs/puntpoints.md`.** The original brief follows for context; the build matches it, with every value editable in `/admin` → Rewards, and the live SQL test `supabase/tests/puntpoints_rewards.sql` still to be run in the SQL editor (the Supabase connector asks for approval on its `update` statements and times out). Turning it on needs: values decided, rewards added (and sponsor voucher codes uploaded), PuntPoints then Rewards switched on, legal pages approved. Betting vouchers have their own switch and stay off until counsel signs off and a licensed partner funds them. Original brief: Today nothing awards PuntPoints: the About, Support and nav copy mention them, and Terms section 6 says they are "not awarded yet". Do not build before the owner confirms the earning rules (decision D18); propose the defaults below and ask. Suggested slot: Sat 31 Oct, after PayFast.
+**PuntPoints (P19) and the referral and rewards programme (P20): BUILT, switched off, waiting for the owner's decisions (D18 to D22). Read `docs/puntpoints.md`.** The original brief follows for context; the build matches it, with every value editable in `/admin` → Rewards, and the live SQL test `supabase/tests/puntpoints_rewards.sql` still to be run in the SQL editor (the Supabase connector asks for approval on its `update` statements and times out). Turning it on needs: values decided, rewards added (and sponsor voucher codes uploaded), PuntPoints then Rewards switched on, legal pages approved. Betting vouchers have their own switch and stay off until counsel signs off and a licensed partner funds them. The original brief follows.
 
 - Proposed rules (owner decides): points reward activity, never results. Confirm email +10 once; first pick +20; each locked pick +2 (max 10 a day); each settled pick +3 (a void earns 0); a referred friend who joins and posts a first pick +25 each side. No points for winning, units, payments or affiliate clicks, so they cannot encourage risk-taking or spending.
 - Hard rules already promised in the copy and Terms: no cash value, not exchangeable for cash, not transferable, never purchasable, paying never earns points, no effect on ranking, the leaderboard or prize eligibility. No points for unconfirmed emails, banned accounts or accounts on a break.
@@ -86,7 +86,7 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 - Tests: awards are idempotent and capped; unconfirmed emails earn nothing; points never change leaderboard ranking; a SQL test in `supabase/tests`.
 
 
-**Referral programme and PuntPoints rewards (blueprint prompt P20), owner request 29 Oct. Built and switched off (see above).** A high-value referral incentive coupled with PuntPoints, which work like a loyalty scheme: points are redeemed for betting vouchers, sponsored rewards and other perks. **No cash prizes.** Build it together with or right after P19. Do not build before the owner settles decisions D19 to D22 in the blueprint (reward values, who funds them, what is live at launch, referral size).
+**Referral programme and PuntPoints rewards (blueprint prompt P20), owner request 29 Oct. Built and switched off (see above).** A high-value referral incentive coupled with PuntPoints, which work like a loyalty scheme: points are redeemed for betting vouchers, sponsored rewards and other perks. **No cash prizes.** Decisions D19 to D22 in the blueprint (reward values, who funds them, what is live at launch, referral size) are the owner's to make; the values are editable in `/admin` after the fact.
 
 - Qualifying referral (proposal): the invited person signs up through the link, is 18+ attested, confirms their email and posts a first pick (posting already needs a confirmed email). Rewards vest after 7 days and are clawed back if the account is banned or deleted within 30 days. Both sides earn points; the referrer also earns milestone rewards (for example 3, 10 and 25 qualified referrals: a Founding Ambassador badge, then a sponsor-funded perk, then a larger sponsor-funded voucher). The owner sets the numbers.
 - Rewards catalogue and redemptions: `rewards` (kind `perk`, `sponsored`, `retail_voucher`, `betting_voucher`; points cost; stock; sponsor; active) and `redemptions` (requested, approved, fulfilled, cancelled; points spent as a negative ledger row, never an edit). Voucher codes are held securely (RLS: only the member and admins) and fulfilled by an admin at first. High-value rewards need manual approval. Redeeming is atomic, so stock and points cannot go wrong.
@@ -106,7 +106,7 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 
 ## Decisions the owner has made
 
-- PuntPoints must be configured before launch. The earning rules are still to be decided (D18).
+- PuntPoints must be configured before launch: built and switched off; the earning rules are still to be decided (D18).
 - A referral programme with a high-value incentive, coupled with PuntPoints as a loyalty scheme redeemable for betting vouchers, sponsored rewards and perks. No cash prizes. Built and switched off; values, funding and what is live at launch are still to be decided by the owner (D19 to D22).
 
 - Sign-in: email + password without a confirmation step, with email confirmation and two-factor encouraged afterwards; code or link, username + password and Google also offered; X/Twitter not enabled.
@@ -118,6 +118,6 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 - Nothing has run against live API-Sports, live Resend, real Google sign-in or the real crons yet; UI was verified against mock servers.
 - Unconfirmed email sign-up allows pre-registration of someone else's address (mitigations in `docs/auth-email.md`).
 - Referral farming (many accounts) is not prevented. Age check is by birth year plus attestation.
-- `/support` contact form only shows a toast. PuntPoints are mentioned in the About, Support and nav copy but nothing awards them yet; they must be configured before launch (P19, decision D18).
+- `/support` contact form only shows a toast. PuntPoints are built but switched off until the owner decides the values and turns them on (P19, D18); the About, Support and Terms copy already describes the scheme.
 - Username sign-in attempts share the server's IP for Supabase's rate limits.
 - Legal pages are drafts until counsel approves.
