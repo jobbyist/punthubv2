@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
+import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
+import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { topTipsters } from "@/lib/mock-data";
@@ -99,57 +100,52 @@ function Landing() {
           </ul>
         </motion.div>
 
-        {/* Why a locked record matters */}
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.12 }}
-          className="card-surface overflow-hidden"
         >
-          <div className="px-5 py-4 sm:px-6">
-            <h2 className="text-lg">Why a locked record matters</h2>
-          </div>
-          <ul className="space-y-4 border-t border-border px-5 py-5 text-sm sm:px-6">
-            {[
-              ["Timestamped before kick-off", "A pick counts only if it was posted before the match started."],
-              ["No edits or deletes", "Wins and losses stay on the record. Nothing is hidden afterwards."],
-              ["Public units, ROI and sample size", "See how many picks sit behind a result before you trust it."],
-            ].map(([title, body]) => (
-              <li key={title} className="flex gap-3">
-                <span className="grid size-6 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">
-                  ✓
-                </span>
-                <span>
-                  <span className="block font-semibold">{title}</span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{body}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <MatchPreview />
         </motion.div>
       </section>
 
 
+      {/* Why a locked record matters */}
+      <motion.section {...fade} className="grid gap-4 md:grid-cols-3">
+        {[
+          ["Timestamped before kick-off", "A pick counts only if it was posted before the match started."],
+          ["No edits or deletes", "Wins and losses stay on the record. Nothing is hidden afterwards."],
+          ["Public units, ROI and sample size", "See how many picks sit behind a result before you trust it."],
+        ].map(([title, body]) => (
+          <div key={title} className="card-surface flex gap-3 p-5">
+            <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">✓</span>
+            <span>
+              <span className="block text-sm font-semibold">{title}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{body}</span>
+            </span>
+          </div>
+        ))}
+      </motion.section>
+
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && (
-      <motion.section {...fade} className="py-14 text-center">
-        <h2 className="text-3xl">All Top Platforms. One Place.</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Compare odds, markets and offers from South Africa's leading bookmakers.
-        </p>
-        <div className="mt-8">
-          <PlatformRail />
-        </div>
-        <Button variant="outline" className="mt-6" asChild>
-          <Link to="/predictions">
-            View all platforms <ArrowRight className="ml-1.5 size-4" />
-          </Link>
-        </Button>
-      </motion.section>
+        <motion.section {...fade} className="py-14 text-center">
+          <h2 className="text-3xl">Predictions across South Africa&apos;s bookmakers</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+            Tipsters on Puntr record picks against the odds these platforms offer. Puntr does not take bets, and is
+            not affiliated with or endorsed by them.
+          </p>
+          <div className="mt-8">
+            <PlatformRail />
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">
+            18+ only. T&amp;Cs apply. Gambling can be addictive. Helpline: 0800 006 008.
+          </p>
+        </motion.section>
       )}
 
       {/* How it works */}
-      <motion.section {...fade} className="card-surface p-6 sm:p-8">
+      <motion.section {...fade} className="card-surface mt-8 p-6 sm:p-8">
         <h2 className="text-center text-2xl">How Puntr Works</h2>
         <div className="mt-7 grid gap-4 md:grid-cols-4">
           {steps.map((s) => (
