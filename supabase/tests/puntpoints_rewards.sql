@@ -1,5 +1,6 @@
 -- Plain SQL assertions for supabase/migrations/20261030150000_puntpoints_rewards.sql. One transaction, rolled back.
--- Failures start with "ASSERT FAILED". Contains no delete or drop. Uses only invalid-domain emails.
+-- Failures start with "ASSERT FAILED". Contains no delete or drop. If the SQL editor truncates it, run it in two
+-- parts (docs/puntpoints.md) or use the Supabase CLI. Uses only invalid-domain emails.
 begin;
 
 create temp table t_u (n int, id uuid);
@@ -76,7 +77,8 @@ begin
   select id into v_pred from public.predictions where user_id = (select id from t_u where n = 2);
   insert into public.settlement_events (prediction_id, result, units, source) values (v_pred, 'void', 0, 'auto');
   if pg_temp.bal(2) <> 22 then raise exception 'ASSERT FAILED: a void earned points'; end if;
-  insert into public.settlement_events (prediction_id, result, units, source) values (v_pred, 'lost', -1, 'admin');
+  insert into public.settlement_events (prediction_id, result, units, source, reason, admin_id)
+  values (v_pred, 'lost', -1, 'admin', 'test correction', (select id from t_u where n = 1));
   if pg_temp.bal(2) <> 25 then raise exception 'ASSERT FAILED: a settled pick should earn 3, balance %', pg_temp.bal(2); end if;
 end $$;
 
