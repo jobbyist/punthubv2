@@ -24,6 +24,10 @@ i18next + react-i18next, SSR-safe, no flash. See `docs/i18n.md`. Strings live in
 
 Provider interface + API-Sports implementation, sync routes with a bearer secret, pg_cron schedule (migration applied), admin CSV fallback, `/predictions` and the home page read real upcoming fixtures. See `docs/sports.md`. Not run against the live API (no key). League IDs come from `SPORTS_LEAGUE_IDS`.
 
+## P8-P10 in brief
+
+P8 `/match/$fixtureId` and the pick form (`create_prediction` only, no edit or delete anywhere), community feed of locked picks. P9 `grade()` and `/api/cron/settle`, leaderboard, results, profile record. P10 founding counter, referrals (`referral_rewards`, pending), waitlist invite script (dry run by default; do not `--send` until D11), `/unsubscribe`. See `docs/growth.md` and `docs/sports.md`.
+
 ## Environment facts
 
 - Supabase project `hucjuekhitjuygcoomhw` ("Puntr South Africa", eu-west-1, free plan: no branching). Old Lovable project `cntoniedcjwsgereqrib` must not be referenced.

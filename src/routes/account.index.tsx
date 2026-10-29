@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AccountPage, RequireMember } from "@/components/account-gate";
+import { ReferralCard } from "@/components/referral-card";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useSession } from "@/components/session";
 import { headT } from "@/lib/i18n/head";
@@ -61,6 +62,8 @@ function Account() {
               </dd>
             </div>
           </dl>
+
+          <ReferralCard />
 
           <Link to="/account/privacy" className="card-surface mt-4 block p-4 hover:bg-muted/40">
             <p className="font-semibold">{t("home.privacyLink")}</p>

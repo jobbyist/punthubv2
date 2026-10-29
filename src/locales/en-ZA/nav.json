@@ -19,7 +19,10 @@
     "myRecord": "My record",
     "account": "Account",
     "privacy": "Privacy and data",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "copyInvite": "Copy invite link",
+    "shareInvite": "Share on WhatsApp",
+    "invite": "Invite friends"
   },
   "mobile": {
     "primary": "Primary",

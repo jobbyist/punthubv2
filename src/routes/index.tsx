@@ -4,6 +4,7 @@ import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
 import { Em } from "@/components/em";
+import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
@@ -104,6 +105,7 @@ function Landing() {
               <Play className="mr-2 size-4" /> {t("hero.watch")}
             </Button>
           </div>
+          <FoundingCounter className="mt-4" />
           <ul className="mt-9 grid gap-5 sm:grid-cols-3">
             {(
               [

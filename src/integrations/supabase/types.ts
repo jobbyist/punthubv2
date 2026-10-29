@@ -491,6 +491,39 @@ export type Database = {
           },
         ]
       }
+      referral_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          qualifying_prediction_id: string
+          referred_credits: number
+          referred_id: string
+          referrer_credits: number
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          qualifying_prediction_id: string
+          referred_credits?: number
+          referred_id: string
+          referrer_credits?: number
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          qualifying_prediction_id?: string
+          referred_credits?: number
+          referred_id?: string
+          referrer_credits?: number
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           created_at: string
@@ -546,6 +579,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      waitlist_invites: {
+        Row: { detail: string | null; email: string; sent_at: string; status: string }
+        Insert: { detail?: string | null; email: string; sent_at?: string; status?: string }
+        Update: { detail?: string | null; email?: string; sent_at?: string; status?: string }
+        Relationships: []
+      }
+      waitlist_unsubscribes: {
+        Row: { created_at: string; email: string }
+        Insert: { created_at?: string; email: string }
+        Update: { created_at?: string; email?: string }
+        Relationships: []
       }
       settlement_events: {
         Row: {
@@ -869,7 +914,12 @@ export type Database = {
         }
       }
       export_my_data: { Args: never; Returns: Json }
+      founding_spots_taken: { Args: never; Returns: number }
       is_admin: { Args: never; Returns: boolean }
+      my_referral_counts: {
+        Args: never
+        Returns: { joined: number; signed_up: number }[]
+      }
       pending_settlements: {
         Args: never
         Returns: {

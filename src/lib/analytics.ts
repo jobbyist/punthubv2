@@ -42,6 +42,8 @@ export const analytics = {
   joinStarted: () => trackEvent("join_started"),
   pickPosted: (market: string, sport: string) => trackEvent("pick_posted", { market, sport }),
   userActivated: () => trackEvent("user_activated"),
+  referralLinkCopied: () => trackEvent("referral_link_copied"),
+  shareClicked: (what: "pick" | "invite") => trackEvent("share_clicked", { what }),
   otpVerified: () => trackEvent("otp_verified"),
   profileCreated: () => trackEvent("profile_created"),
 };
