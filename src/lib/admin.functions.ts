@@ -260,3 +260,34 @@ export const adminFindUsers = createServerFn({ method: "POST" })
       createdAt: r.created_at,
     }));
   });
+
+export interface LaunchStatus {
+  /** True when LAUNCH_EMAILS_ENABLED=true on the server. Nothing is sent while it is off. */
+  enabled: boolean;
+  /** True when the email service is configured on the server. */
+  emailConfigured: boolean;
+  launchDate: string;
+  waves: { wave: number; date: string; sent: number; failed: number }[];
+}
+
+/** Where the launch email waves stand. Reads server settings, so it runs on the server. */
+export const adminLaunchStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<LaunchStatus | null> => {
+    if (!(await isAdmin(context))) return null;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { launchDate, waveDates } = await import("@/lib/launch");
+    const launch = launchDate(process.env["LAUNCH_DATE"]);
+    const { data } = await supabaseAdmin.from("launch_email_sends").select("wave, status");
+    return {
+      enabled: process.env["LAUNCH_EMAILS_ENABLED"] === "true",
+      emailConfigured: Boolean(process.env["LOVABLE_API_KEY"] && process.env["RESEND_API_KEY"]),
+      launchDate: launch,
+      waves: waveDates(launch).map(({ wave, date }) => ({
+        wave,
+        date,
+        sent: (data ?? []).filter((r) => r.wave === wave && r.status === "sent").length,
+        failed: (data ?? []).filter((r) => r.wave === wave && r.status === "failed").length,
+      })),
+    };
+  });

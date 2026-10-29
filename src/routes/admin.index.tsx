@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { RequireMember } from "@/components/account-gate";
@@ -9,6 +10,7 @@ import {
   UsersTab,
   WaitlistTab,
 } from "@/components/admin/admin-tabs";
+import { NotificationBanner } from "@/components/admin/launch-panel";
 import { useSession } from "@/components/session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -25,6 +27,7 @@ const TABS = ["fixtures", "settlement", "reports", "users", "waitlist"] as const
 function Admin() {
   const { t } = useTranslation("admin");
   const { isAdmin } = useSession();
+  const [tab, setTab] = useState<string>("fixtures");
   return (
     <RequireMember>
       {() => (
@@ -33,30 +36,33 @@ function Admin() {
           {!isAdmin ? (
             <p className="mt-4 text-sm text-muted-foreground">{t("forbidden")}</p>
           ) : (
-            <Tabs defaultValue="fixtures" className="mt-6">
-              <TabsList className="flex h-auto flex-wrap justify-start">
-                {TABS.map((k) => (
-                  <TabsTrigger key={k} value={k}>
-                    {t(`tabs.${k}`)}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <TabsContent value="fixtures" className="mt-5">
-                <FixturesTab />
-              </TabsContent>
-              <TabsContent value="settlement" className="mt-5">
-                <SettlementTab />
-              </TabsContent>
-              <TabsContent value="reports" className="mt-5">
-                <ReportsTab />
-              </TabsContent>
-              <TabsContent value="users" className="mt-5">
-                <UsersTab />
-              </TabsContent>
-              <TabsContent value="waitlist" className="mt-5">
-                <WaitlistTab />
-              </TabsContent>
-            </Tabs>
+            <>
+              <NotificationBanner onOpenAudience={() => setTab("waitlist")} />
+              <Tabs value={tab} onValueChange={setTab} className="mt-6">
+                <TabsList className="flex h-auto flex-wrap justify-start">
+                  {TABS.map((k) => (
+                    <TabsTrigger key={k} value={k}>
+                      {t(`tabs.${k}`)}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                <TabsContent value="fixtures" className="mt-5">
+                  <FixturesTab />
+                </TabsContent>
+                <TabsContent value="settlement" className="mt-5">
+                  <SettlementTab />
+                </TabsContent>
+                <TabsContent value="reports" className="mt-5">
+                  <ReportsTab />
+                </TabsContent>
+                <TabsContent value="users" className="mt-5">
+                  <UsersTab />
+                </TabsContent>
+                <TabsContent value="waitlist" className="mt-5">
+                  <WaitlistTab />
+                </TabsContent>
+              </Tabs>
+            </>
           )}
         </div>
       )}
