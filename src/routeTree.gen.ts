@@ -37,6 +37,7 @@ import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
@@ -181,6 +182,11 @@ const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
   path: '/api/cron/chain-head',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
+  id: '/api/cron/launch-notify',
+  path: '/api/cron/launch-notify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
   id: '/api/cron/settle',
   path: '/api/cron/settle',
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/api/cron/chain-head'
+    | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -428,6 +440,7 @@ export interface RootRouteChildren {
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
@@ -631,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronChainHeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/launch-notify': {
+      id: '/api/cron/launch-notify'
+      path: '/api/cron/launch-notify'
+      fullPath: '/api/cron/launch-notify'
+      preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/settle': {
       id: '/api/cron/settle'
       path: '/api/cron/settle'
@@ -684,6 +704,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { FixtureCsvImport } from "@/components/admin/fixture-csv-import";
+import { LaunchAudience } from "@/components/admin/launch-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -480,6 +481,15 @@ export function UsersTab() {
 }
 
 export function WaitlistTab() {
+  return (
+    <div className="space-y-5">
+      <LaunchAudience />
+      <WaitlistStatus />
+    </div>
+  );
+}
+
+function WaitlistStatus() {
   const { t } = useTranslation("admin");
   const { data } = useAsync(async () => {
     const [ea, inv, unsub] = await Promise.all([

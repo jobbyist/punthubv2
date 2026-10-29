@@ -123,5 +123,49 @@
     },
     "empty": "The waitlist is empty. The earlier sign-ups still need importing into this project.",
     "note": "Invites are sent by the script (bun run waitlist:invite), not from here. Do not send until the attorney has agreed the approach."
+  },
+  "launch": {
+    "whatsapp": "WhatsApp message",
+    "sms": "SMS",
+    "copied": "Copied.",
+    "copyFailed": "Couldn't copy. Select the text and copy it by hand.",
+    "copyWhatsapp": "Copy WhatsApp message",
+    "copySms": "Copy SMS",
+    "notice": {
+      "region": "Admin notifications",
+      "body": "Send this to the early-access list on WhatsApp and SMS today. Personalised one-tap links are on the Waitlist tab.",
+      "open": "Open the list",
+      "done": "Mark as done"
+    },
+    "emails": {
+      "title": "Launch emails",
+      "on": "Sending is switched on.",
+      "off": "Sending is switched off. Set LAUNCH_EMAILS_ENABLED=true on the server when you are ready.",
+      "notConfigured": "The email service keys are not set on the server.",
+      "wave1": "Launch day",
+      "wave2": "Reminder 1",
+      "wave3": "Final reminder",
+      "counts": "{{sent}} sent, {{failed}} failed",
+      "note": "Emails go out at 08:00 on each date (SAST) to people who have not signed up yet, were not unsubscribed and have no privacy request. Reminders 1 and 2 go only to people who ticked marketing on the early-access form."
+    },
+    "draft": {
+      "title": "Launch message draft",
+      "body": "The system never sends this. On launch day it appears here as a notification and is emailed to you, and you send it yourself."
+    },
+    "audience": {
+      "title": "Early-access list ({{count}})",
+      "showAll": "Show people who have signed up",
+      "note": "One-tap links open WhatsApp or your SMS app with the message filled in. Only people who opted in to marketing get links; the rest are email only.",
+      "empty": "Nobody left to message.",
+      "error": "Couldn't load the list.",
+      "optedIn": "Opted in to marketing",
+      "notOptedIn": "Did not opt in to marketing",
+      "signedUp": "signed up",
+      "unsubscribed": "unsubscribed",
+      "whatsapp": "WhatsApp",
+      "sms": "SMS",
+      "badPhone": "No usable South African number. Check it by hand.",
+      "emailOnly": "Email only."
+    }
   }
 }
