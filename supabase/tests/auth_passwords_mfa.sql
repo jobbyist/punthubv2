@@ -18,6 +18,7 @@ values ('early@example.invalid', 'Early', 'free', true);
 -- 1. An UNCONFIRMED reserved email signs up: no number, and the last spot stays held.
 create temp table t_e (id uuid);
 insert into t_e values (gen_random_uuid());
+grant select on t_e to authenticated, service_role;
 insert into auth.users (id, email) select id, 'early@example.invalid' from t_e;
 insert into public.profiles (id, username, display_name, is_18_attested, birth_year, popia_consent_at)
 select id, 'early_one', 'Early', true, 1990, now() from t_e;
