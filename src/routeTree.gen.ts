@@ -15,6 +15,7 @@ import { Route as AffiliateDisclosureRouteImport } from './routes/affiliate-disc
 import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as DevRouteImport } from './routes/dev'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
@@ -72,6 +73,11 @@ const CommunityRoute = CommunityRouteImport.update({
 const CookiesRoute = CookiesRouteImport.update({
   id: '/cookies',
   path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevRoute = DevRouteImport.update({
+  id: '/dev',
+  path: '/dev',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByTo {
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -295,6 +303,7 @@ export interface FileRoutesById {
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -333,6 +342,7 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/community'
     | '/cookies'
+    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/community'
     | '/cookies'
+    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -405,6 +416,7 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/community'
     | '/cookies'
+    | '/dev'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -442,6 +454,7 @@ export interface RootRouteChildren {
   ComingSoonRoute: typeof ComingSoonRoute
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
+  DevRoute: typeof DevRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
   JoinRoute: typeof JoinRoute
@@ -514,6 +527,13 @@ declare module '@tanstack/react-router' {
       path: '/cookies'
       fullPath: '/cookies'
       preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev': {
+      id: '/dev'
+      path: '/dev'
+      fullPath: '/dev'
+      preLoaderRoute: typeof DevRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -722,6 +742,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComingSoonRoute: ComingSoonRoute,
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
+  DevRoute: DevRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
   JoinRoute: JoinRoute,
