@@ -23,6 +23,7 @@ const SKIP_FILES = [
   "src/routes/refunds.tsx",
   "src/routes/affiliate-disclosure.tsx",
   "src/routes/sitemap",
+  "src/routes/dev.tsx", // internal team page (MVP blueprint), English only
   "src/components/early-access-modal.tsx", // replaced in P6
   "src/components/auth-prompt.tsx", // replaced in P6
   "src/components/punt-ai.tsx", // hidden behind SHOW_PUNT_AI_CHAT

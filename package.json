@@ -13,7 +13,8 @@
     "test": "vitest run",
     "i18n:check": "bun scripts/i18n-check.ts",
     "sports:ids": "bun scripts/print-league-ids.ts",
-    "waitlist:invite": "bun scripts/invite-waitlist.ts"
+    "waitlist:invite": "bun scripts/invite-waitlist.ts",
+    "dev:blueprint": "bun scripts/dev-blueprint.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
