@@ -25,6 +25,7 @@ import {
   LogOut,
   ChevronRight,
   ChevronDown,
+  Map,
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -299,6 +300,12 @@ export function MobileNav() {
                   to="/pricing"
                   icon={Crown}
                   label={t("primary.pricing")}
+                  right={<ChevronRight className="size-4 text-muted-foreground" />}
+                />
+                <NavLink
+                  to="/roadmap"
+                  icon={Map}
+                  label={t("mobile.roadmap")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
               </div>

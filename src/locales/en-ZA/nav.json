@@ -5,6 +5,7 @@
     "results": "Results",
     "community": "Community",
     "insights": "Insights",
+    "roadmap": "Roadmap",
     "howItWorks": "How it works",
     "pricing": "Pricing",
     "support": "Support"
@@ -47,7 +48,8 @@
       "puntPoints": "PuntPoints",
       "referrals": "Referrals"
     },
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "roadmap": "Roadmap"
   },
   "sport": {
     "soccer": "Soccer",
@@ -94,7 +96,8 @@
       "affiliate": "Affiliate disclosure",
       "refunds": "Refunds",
       "grading": "How we grade picks",
-      "verify": "Verify the record"
+      "verify": "Verify the record",
+      "roadmap": "Roadmap"
     },
     "social": {
       "x": "Puntr on X",

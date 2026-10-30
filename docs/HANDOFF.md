@@ -74,7 +74,10 @@ Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview c
 7. Brand and affiliate: partner licence checks and tracking links for Supabets, Playbet and Mr Price Sport (P12 inputs).
 8. Translators for Afrikaans, isiZulu, isiXhosa (P13).
 
-## Sports scope (owner decision, 29 Oct 2026)
+## Sports scope (owner decision, 29 Oct 2026; schedule updated 30 Oct 2026)
+
+Schedule from 30 Oct (weeks count from launch week = week 1), shown live at `/roadmap` from `src/lib/roadmap.ts`: football at launch; basketball and rugby week 2; horse racing week 4; combat sports (boxing, MMA) weeks 6 to 8; cricket week 10; tennis week 12. The owner also asked for a curated mix of sports data providers (free plans first) instead of relying on API-Sports alone; see `docs/sports-providers.md`.
+
 
 Football only at launch. The owner is paying for the API-Sports **Football** plan only (the free plan serves only seasons 2022 to 2024, so every competition was refused on the first real re-sync). Rugby (URC, Springbok tests) and horse racing are added after launch in weeks 1 to 2: rugby by setting `SPORTS_ENABLED=soccer,rugby` once an API-Sports Rugby subscription exists; horse racing needs its own data model. More football leagues are defined in `src/lib/sports/competitions.ts` and need their real IDs in `SPORTS_LEAGUE_IDS` (see `docs/sports.md`). The API-Sports account answered "suspended" when I tried to look the IDs up on 29 Oct, so the owner must check the API-Sports dashboard (billing or verification) before the IDs can be fetched or the sync will work. No page may claim rugby or racing coverage until they are live.
 

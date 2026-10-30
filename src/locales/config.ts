@@ -73,6 +73,7 @@ export const NAMESPACES = [
   "consent",
   "privacy-summary",
   "legal-summary",
+  "roadmap",
   "support",
   "affiliate",
   "payments",

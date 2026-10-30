@@ -24,6 +24,7 @@ const entries: SitemapEntry[] = [
   { path: "/how-it-works", changefreq: "monthly", priority: "0.75", lastmod: today },
   { path: "/support", changefreq: "monthly", priority: "0.7", lastmod: today },
   { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
+  { path: "/roadmap", changefreq: "weekly", priority: "0.6", lastmod: today },
   // Legal / trust pages (important for SA gambling compliance & YMYL)
   { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: today },
   { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },

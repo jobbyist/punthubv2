@@ -31,8 +31,9 @@ export const primaryNav = [
   { key: "results", to: "/results" },
   { key: "community", to: "/community" },
   { key: "insights", to: "/insights" },
-  { key: "howItWorks", to: "/how-it-works", guestOnly: true },
-  { key: "pricing", to: "/pricing", guestOnly: true },
+  { key: "roadmap", to: "/roadmap" },
+  { key: "howItWorks", to: "/how-it-works", guestOnly: true, wideOnly: true },
+  { key: "pricing", to: "/pricing", guestOnly: true, wideOnly: true },
   { key: "support", to: "/support" },
 ] as const;
 
@@ -100,9 +101,9 @@ export function SiteHeader() {
               <Link
                 key={l.to}
                 to={l.to}
-                className={`relative px-3 py-2 text-sm font-medium transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`relative whitespace-nowrap px-2 py-2 text-sm font-medium transition-colors xl:px-3 ${
+                  "wideOnly" in l && l.wideOnly ? "hidden xl:inline-block" : ""
+                } ${active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {t(`primary.${l.key}`)}
                 {active && (
@@ -114,9 +115,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex min-w-0 items-center justify-end gap-2">
-          <div className="hidden lg:block">
-            <LanguageSwitcher />
-          </div>
+          {/* The language switcher lives in the footer and the mobile menu: the desktop bar has no room for it
+              next to eight links. Only en-ZA is enabled until P13; revisit placement then (e.g. a globe icon). */}
           {isSignedIn && profile ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

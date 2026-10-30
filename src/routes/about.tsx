@@ -61,7 +61,7 @@ const PRINCIPLES = [
 
 const LAYERS = ["data", "record", "community", "board", "points", "ai", "pro"] as const;
 
-/** What is covered at launch. Names are proper nouns and are not translated. Rugby and horse racing follow after launch. */
+/** What is covered at launch. Names are proper nouns and are not translated. Other sports follow after launch (see /roadmap and src/lib/roadmap.ts). */
 const COMPETITIONS = [
   ["Betway Premiership", "soccer"],
   ["Premier League", "soccer"],
