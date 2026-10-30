@@ -25,6 +25,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -122,6 +123,11 @@ const ResultsRoute = ResultsRouteImport.update({
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -232,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -268,6 +275,7 @@ export interface FileRoutesByTo {
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -305,6 +313,7 @@ export interface FileRoutesById {
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -343,6 +352,7 @@ export interface FileRouteTypes {
     | '/refunds'
     | '/results'
     | '/rewards'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/support'
     | '/terms'
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/refunds'
     | '/results'
     | '/rewards'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/support'
     | '/terms'
@@ -415,6 +426,7 @@ export interface FileRouteTypes {
     | '/refunds'
     | '/results'
     | '/rewards'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/support'
     | '/terms'
@@ -452,6 +464,7 @@ export interface RootRouteChildren {
   RefundsRoute: typeof RefundsRoute
   ResultsRoute: typeof ResultsRoute
   RewardsRoute: typeof RewardsRoute
+  RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
@@ -584,6 +597,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards'
       preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -732,6 +752,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundsRoute: RefundsRoute,
   ResultsRoute: ResultsRoute,
   RewardsRoute: RewardsRoute,
+  RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,

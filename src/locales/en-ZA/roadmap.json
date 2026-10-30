@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "title": "Product roadmap | Puntr",
+    "description": "What's live on Puntr and what's coming next: football at launch, then basketball, rugby, horse racing, combat sports, cricket and tennis.",
+    "ogTitle": "Puntr product roadmap"
+  },
+  "eyebrow": "Product roadmap",
+  "title": "Football first. More sports every few weeks.",
+  "intro": "Puntr launches with football (soccer) on {{launch}}. Here's the order the other sports join, with target weeks counted from launch. This page updates itself: a sport only shows as live once its fixtures are on Puntr.",
+  "summary": {
+    "live_one": "{{count}} sport live",
+    "live_other": "{{count}} sports live",
+    "planned_one": "{{count}} sport on the way",
+    "planned_other": "{{count}} sports on the way",
+    "checked": "Status checked {{time}}"
+  },
+  "sportsTitle": "Sports",
+  "week": {
+    "single": "Week {{week}}",
+    "range": "Weeks {{from}} to {{to}}",
+    "launch": "Launch week"
+  },
+  "dates": "{{from}} to {{to}}",
+  "stage": {
+    "live": "Live",
+    "launching": "Launching {{date}}",
+    "inProgress": "In progress",
+    "next": "Up next",
+    "planned": "Planned"
+  },
+  "sport": {
+    "soccer": {
+      "name": "Football (soccer)",
+      "body": "Betway Premiership, Premier League, Champions League and more leagues as they are added. Post picks, get graded, climb the weekly leaderboard."
+    },
+    "basketball": {
+      "name": "Basketball",
+      "body": "Picks on the same locked, public record. We'll confirm the leagues closer to the time."
+    },
+    "rugby": {
+      "name": "Rugby",
+      "body": "United Rugby Championship and Springbok tests."
+    },
+    "racing": {
+      "name": "Horse racing",
+      "body": "Race cards and picks. Racing needs its own way of recording picks, so it follows a little later."
+    },
+    "combat": {
+      "name": "Combat sports",
+      "body": "Boxing and MMA fight cards."
+    },
+    "cricket": {
+      "name": "Cricket",
+      "body": "Competitions confirmed closer to the time."
+    },
+    "tennis": {
+      "name": "Tennis",
+      "body": "Tournaments confirmed closer to the time."
+    }
+  },
+  "alsoTitle": "Also on the way",
+  "alsoIntro": "No dates yet. We'll add them here once they're set.",
+  "also": {
+    "languages": {
+      "title": "Afrikaans, isiZulu and isiXhosa",
+      "body": "Each language goes live once a native speaker has reviewed it."
+    },
+    "rewards": {
+      "title": "PuntPoints rewards",
+      "body": "Points for taking part, redeemable for vouchers, sponsored rewards and perks. Never cash."
+    },
+    "pro": {
+      "title": "Puntr Pro",
+      "body": "Extra tools for members who want more. Puntr stays free to join."
+    },
+    "apps": {
+      "title": "Mobile apps",
+      "body": "Puntr for iPhone and Android."
+    }
+  },
+  "note": "Target dates can move. We'd rather add a sport late than add it before its fixtures and grading are reliable.",
+  "suggest": {
+    "title": "Want a sport or league sooner?",
+    "body": "Tell us what you'd use. Requests from members shape the order.",
+    "cta": "Suggest something"
+  }
+}

@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-10-30, Terms `2026-10-30-r6` (PR: product roadmap)
+
+- **Terms** §4 now lists the sports planned after launch (basketball, rugby, horse racing, combat sports, cricket, tennis), says none is available until it appears on the site, and that the target dates on `/roadmap` are plans, not commitments. No new data is collected.
+- New public page `/roadmap`: target weeks per sport counted from launch; a sport shows as "Live" only when it is switched on for the fixtures sync. "Also on the way" lists languages, PuntPoints rewards, Puntr Pro and mobile apps without dates.
+- Site copy corrected in the same PR: the sidebar listed rugby as an active sport (it is not live); How it works now points to the roadmap.
+- Review: whether publishing target dates creates a Consumer Protection Act expectation (the page and Terms both say dates can move); combat sports and horse racing content under the advertising rules once live.
+- New `notice_versions` row: `terms` `2026-10-30-r6`. Privacy and Privacy choices unchanged.
+
 ## 2026-10-29, betting vouchers switched on (no page text changed)
 
 - The owner switched `betting_vouchers_enabled` on in the live database for launch. No reward of that type exists yet, so nothing is listed to members. Terms §6 and the Affiliate disclosure already describe betting vouchers ("if we offer them"): once a betting-voucher reward is added, change that wording to say they are offered, in the same PR.

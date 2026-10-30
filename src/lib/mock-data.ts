@@ -6,7 +6,7 @@ export type Sport = {
 
 export const sports: Sport[] = [
   { name: "Soccer", active: true },
-  { name: "Rugby", active: true },
+  { name: "Rugby", active: false },
   { name: "Basketball", active: false },
   { name: "Tennis", active: false },
   { name: "Cricket", active: false },
