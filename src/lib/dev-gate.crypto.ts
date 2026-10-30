@@ -1,4 +1,4 @@
-import { scryptSync } from "node:crypto";
+import { scrypt, scryptSync } from "node:crypto";
 
 /**
  * Key derivation for the private /dev page. Server and build script only (node:crypto).
@@ -17,5 +17,18 @@ export function deriveDevKey(email: string, password: string, salt: Buffer): Buf
     r: DEV_KDF.r,
     p: DEV_KDF.p,
     maxmem: 256 * 1024 * 1024,
+  });
+}
+
+/** Same key as deriveDevKey, off the event loop (libuv thread pool). Used by the server. */
+export function deriveDevKeyAsync(email: string, password: string, salt: Buffer): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    scrypt(
+      `${normaliseDevEmail(email)}\n${password}`,
+      salt,
+      DEV_KDF.keyLen,
+      { N: DEV_KDF.N, r: DEV_KDF.r, p: DEV_KDF.p, maxmem: 256 * 1024 * 1024 },
+      (err, key) => (err ? reject(err) : resolve(key)),
+    );
   });
 }

@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import {
   deleteCookie,
   getCookie,
+  getRequestHeader,
   setCookie,
   setResponseHeader,
 } from "@tanstack/react-start/server";
@@ -30,6 +31,8 @@ export const getDevPage = createServerFn({ method: "GET" }).handler(
   },
 );
 
+export type DevSignInResult = { ok: true } | { ok: false; reason: "invalid" | "busy" | "limited" };
+
 const signInSchema = z.object({
   email: z.string().trim().email().max(254),
   password: z.string().min(1).max(200),
@@ -37,16 +40,21 @@ const signInSchema = z.object({
 
 export const devSignIn = createServerFn({ method: "POST" })
   .validator((input: unknown) => signInSchema.parse(input))
-  .handler(async ({ data }): Promise<{ ok: boolean }> => {
+  .handler(async ({ data }): Promise<DevSignInResult> => {
     privateHeaders();
-    const { DEV_COOKIE, DEV_SESSION_SECONDS, encodeSession, unlockWithCredentials } =
+    const { DEV_COOKIE, DEV_SESSION_SECONDS, attemptSignIn, encodeSession } =
       await import("@/lib/dev-gate.server");
-    const key = unlockWithCredentials(data.email, data.password);
-    if (!key) {
-      // scrypt already costs ~0.5s per attempt; a fixed pause on failure slows guessing further.
-      await new Promise((r) => setTimeout(r, 750));
-      return { ok: false };
+    const ip =
+      getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ||
+      getRequestHeader("x-real-ip") ||
+      "unknown";
+    const res = await attemptSignIn(ip, data.email, data.password);
+    if (!res.ok) {
+      // A fixed pause on failure slows guessing further.
+      if (res.reason === "invalid") await new Promise((r) => setTimeout(r, 750));
+      return { ok: false, reason: res.reason };
     }
+    const key = res.key;
     setCookie(DEV_COOKIE, encodeSession(key), {
       httpOnly: true,
       secure: process.env["NODE_ENV"] === "production",

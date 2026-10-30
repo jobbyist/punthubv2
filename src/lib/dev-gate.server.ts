@@ -1,7 +1,7 @@
 import { createDecipheriv } from "node:crypto";
 
 import blueprint from "@/content/dev/blueprint.enc.json";
-import { deriveDevKey } from "@/lib/dev-gate.crypto";
+import { deriveDevKeyAsync } from "@/lib/dev-gate.crypto";
 
 /** Private /dev page. Server only: the ciphertext and the decrypted HTML never reach the client bundle. */
 
@@ -38,9 +38,53 @@ function decrypt(key: Buffer): DevDocument | null {
 }
 
 /** Checks an email + password by deriving the key and decrypting. Returns the key on success. */
-export function unlockWithCredentials(email: string, password: string): Buffer | null {
-  const key = deriveDevKey(email, password, Buffer.from(doc.salt, "base64"));
+export async function unlockWithCredentials(
+  email: string,
+  password: string,
+): Promise<Buffer | null> {
+  const key = await deriveDevKeyAsync(email, password, Buffer.from(doc.salt, "base64"));
   return decrypt(key) ? key : null;
+}
+
+/*
+ * Sign-in throttle. Each attempt costs 128 MiB and ~0.5 s of scrypt, so a public endpoint must bound it:
+ * at most MAX_IN_FLIGHT derivations at once per server instance, and MAX_FAILURES failed attempts per
+ * client IP per WINDOW_MS. In memory, so per instance: it limits load and online guessing; the passphrase
+ * is still what protects the public ciphertext against offline guessing.
+ */
+export const MAX_IN_FLIGHT = 2;
+export const MAX_FAILURES = 5;
+export const WINDOW_MS = 10 * 60 * 1000;
+
+let inFlight = 0;
+const failures = new Map<string, number[]>();
+
+export type Attempt =
+  { ok: true; key: Buffer } | { ok: false; reason: "invalid" | "busy" | "limited" };
+
+export async function attemptSignIn(
+  ip: string,
+  email: string,
+  password: string,
+  now = Date.now(),
+): Promise<Attempt> {
+  const recent = (failures.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  if (recent.length >= MAX_FAILURES) return { ok: false, reason: "limited" };
+  if (inFlight >= MAX_IN_FLIGHT) return { ok: false, reason: "busy" };
+  inFlight++;
+  try {
+    const key = await unlockWithCredentials(email, password);
+    if (key) {
+      failures.delete(ip);
+      return { ok: true, key };
+    }
+    recent.push(now);
+    failures.set(ip, recent);
+    if (failures.size > 10_000) failures.clear(); // bound memory
+    return { ok: false, reason: "invalid" };
+  } finally {
+    inFlight--;
+  }
 }
 
 /** Session cookie value: key and expiry. httpOnly, so page scripts can never read it. */

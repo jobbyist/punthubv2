@@ -58,6 +58,10 @@ function Gate() {
       if (res.ok) {
         setPassword("");
         await router.invalidate();
+      } else if (res.reason === "limited") {
+        setError("Too many attempts. Wait 10 minutes and try again.");
+      } else if (res.reason === "busy") {
+        setError("The server is busy. Try again in a few seconds.");
       } else {
         setError("That email and password don't match. Try again.");
       }

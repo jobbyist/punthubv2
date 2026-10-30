@@ -80,6 +80,9 @@ let body = html.slice(
 );
 body = body
   .replace(/<title>[\s\S]*?<\/title>/g, "")
+  // Defence in depth: the page injects this HTML, so no script may survive (the page's behaviour is rebuilt in React).
+  .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+  .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*')/gi, "")
   .replace(/<meta[^>]*>/g, "")
   .replace(/<link[^>]*>/g, "")
   .replace(/<style>[\s\S]*?<\/style>/g, "")
