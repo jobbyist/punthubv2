@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/cron/launch-notify")({
         const { unsubscribeUrl } = await import("@/lib/waitlist");
         try {
           const report = await runLaunchNotify({
-            launchDateEnv: process.env["LAUNCH_DATE"],
+            signupOpenDateEnv: process.env["FOUNDING_OPEN_DATE"],
             enabled: process.env["LAUNCH_EMAILS_ENABLED"] === "true",
             store: createLaunchStore(),
             send: sendViaResend,

@@ -266,7 +266,10 @@ export interface LaunchStatus {
   enabled: boolean;
   /** True when the email service is configured on the server. */
   emailConfigured: boolean;
+  /** The official launch date (LAUNCH_DATE). */
   launchDate: string;
+  /** The day Founding sign-ups open (FOUNDING_OPEN_DATE). The email waves count from it. */
+  signupOpenDate: string;
   waves: { wave: number; date: string; sent: number; failed: number }[];
 }
 
@@ -276,14 +279,16 @@ export const adminLaunchStatus = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<LaunchStatus | null> => {
     if (!(await isAdmin(context))) return null;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { launchDate, waveDates } = await import("@/lib/launch");
+    const { launchDate, signupOpenDate, waveDates } = await import("@/lib/launch");
     const launch = launchDate(process.env["LAUNCH_DATE"]);
+    const signupOpen = signupOpenDate(process.env["FOUNDING_OPEN_DATE"]);
     const { data } = await supabaseAdmin.from("launch_email_sends").select("wave, status");
     return {
       enabled: process.env["LAUNCH_EMAILS_ENABLED"] === "true",
       emailConfigured: Boolean(process.env["LOVABLE_API_KEY"] && process.env["RESEND_API_KEY"]),
       launchDate: launch,
-      waves: waveDates(launch).map(({ wave, date }) => ({
+      signupOpenDate: signupOpen,
+      waves: waveDates(signupOpen).map(({ wave, date }) => ({
         wave,
         date,
         sent: (data ?? []).filter((r) => r.wave === wave && r.status === "sent").length,

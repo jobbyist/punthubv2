@@ -5,13 +5,14 @@ import {
   cleanEmail,
   launchDate,
   launchMessages,
+  signupOpenDate,
   toE164ZA,
   waveDates,
   waveFor,
 } from "./launch";
 
 describe("launch waves", () => {
-  it("runs on launch day, +3 and +7", () => {
+  it("runs on the day Founding sign-ups open, +3 and +7", () => {
     expect(waveDates("2026-11-02").map((w) => w.date)).toEqual([
       "2026-11-02",
       "2026-11-05",
@@ -23,11 +24,16 @@ describe("launch waves", () => {
     expect(waveFor("2026-11-03", "2026-11-02")).toBeNull();
     expect(addDays("2026-11-28", 3)).toBe("2026-12-01");
   });
-  it("falls back to the default launch date for bad input", () => {
-    expect(launchDate(undefined)).toBe("2026-11-02");
-    expect(launchDate("tomorrow")).toBe("2026-11-02");
-    expect(launchDate("2026-13-45")).toBe("2026-11-02");
-    expect(launchDate(" 2026-11-09 ")).toBe("2026-11-09");
+  it("falls back to the default launch date (1 Dec 2026) for bad input", () => {
+    expect(launchDate(undefined)).toBe("2026-12-01");
+    expect(launchDate("tomorrow")).toBe("2026-12-01");
+    expect(launchDate("2026-13-45")).toBe("2026-12-01");
+    expect(launchDate(" 2026-12-08 ")).toBe("2026-12-08");
+  });
+  it("falls back to 2 Nov 2026 for the day Founding sign-ups open", () => {
+    expect(signupOpenDate(undefined)).toBe("2026-11-02");
+    expect(signupOpenDate("soon")).toBe("2026-11-02");
+    expect(signupOpenDate(" 2026-11-09 ")).toBe("2026-11-09");
   });
 });
 

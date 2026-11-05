@@ -18,17 +18,17 @@ const COPY: Record<
   { subject: string; preheader: string; title: string; lead: string; cta: string; closing?: string }
 > = {
   1: {
-    subject: "Puntr is live: your Founding spot is reserved",
+    subject: "Puntr Founding sign-ups are open: your spot is reserved",
     preheader: "Join free with this email address to claim your numbered Founding badge.",
-    title: "Puntr is live",
-    lead: "You asked for early access, and today Puntr opens. Your Founding Member spot is reserved for you.",
+    title: "Founding sign-ups are open",
+    lead: "You asked for early access, and today Founding Member sign-ups open. Your spot is reserved for you. Puntr launches on 1 December.",
     cta: "Claim my Founding spot",
   },
   2: {
     subject: "Your Puntr Founding spot is still reserved",
     preheader: "It takes about a minute to join, and it is free.",
     title: "Your Founding spot is still waiting",
-    lead: "Puntr opened a few days ago and we are still holding your Founding Member spot.",
+    lead: "Founding sign-ups opened a few days ago and we are still holding your Founding Member spot. Puntr launches on 1 December.",
     cta: "Join Puntr free",
   },
   3: {
@@ -126,17 +126,17 @@ export interface AdminReminderInput {
   adminUrl: string;
 }
 
-/** Sent to the admin on launch day: the message to send to every early-access person by WhatsApp and SMS. */
+/** Sent to the admin on the day Founding sign-ups open: the message to send to every early-access person by WhatsApp and SMS. */
 export function renderAdminReminder({ whatsapp, sms, adminUrl }: AdminReminderInput): {
   subject: string;
   html: string;
   text: string;
 } {
-  const subject = "Puntr is live: send the launch message on WhatsApp and SMS";
+  const subject = "Founding sign-ups are open: send the message on WhatsApp and SMS";
   const text = [
-    "Launch day reminder",
+    "Founding sign-ups reminder",
     "",
-    "The launch emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list.",
+    "The early-access emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list.",
     `The list, with one-tap WhatsApp and SMS links, is in the admin panel: ${adminUrl}`,
     "",
     "WhatsApp:",
@@ -156,8 +156,8 @@ export function renderAdminReminder({ whatsapp, sms, adminUrl }: AdminReminderIn
     <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
       <tr><td style="padding:28px;">
         <div style="font-size:26px;font-weight:800;letter-spacing:-1px;">puntr<span style="color:#16a34a;">.</span></div>
-        <h1 style="margin:16px 0 12px;font-size:20px;">Launch day reminder</h1>
-        <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#374151;">The launch emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list. The list, with one-tap links, is in the admin panel.</p>
+        <h1 style="margin:16px 0 12px;font-size:20px;">Founding sign-ups reminder</h1>
+        <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#374151;">The early-access emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list. The list, with one-tap links, is in the admin panel.</p>
         <p style="margin:0 0 20px;"><a href="${esc(adminUrl)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;">Open the admin panel</a></p>
         <p style="margin:0 0 6px;font-size:13px;font-weight:700;">WhatsApp</p>${block(whatsapp)}
         <p style="margin:0 0 6px;font-size:13px;font-weight:700;">SMS</p>${block(sms)}

@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-05, Privacy `2026-11-05-r4` (PR: launch date 1 December, Founding sign-ups from 2 November)
+
+- Owner decision (5 Nov 2026): the official platform launch is **1 December 2026**; Founding Member sign-ups (first 100, free) open from **2 November 2026**.
+- **Privacy** §4 now says the early-access emails are sent when Founding Member sign-ups open (2 November 2026), then up to two reminders, instead of "on launch day". Nothing new is collected or sent.
+- Product wording corrected in the same PR so nothing says Puntr "is live" before 1 December: the three early-access emails, the WhatsApp/SMS drafts for the admin, the admin reminder email, and the intro on `/roadmap` (launch date 1 Dec, "Founding Member sign-ups are open now"). The roadmap's weeks now count from 1 December.
+- Review: whether "Founding Member" perks described before launch (numbered badge, 30 free Pay-As-You-Go credits a month for 3 months once they launch) need extra wording while credits are not on sale `[attorney review]`. Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` row: `privacy` `2026-11-05-r4`. Terms stays `2026-10-30-r6`.
+
 ## 2026-10-30, Terms `2026-10-30-r6` (PR: product roadmap)
 
 - **Terms** §4 now lists the sports planned after launch (basketball, rugby, horse racing, combat sports, cricket, tennis), says none is available until it appears on the site, and that the target dates on `/roadmap` are plans, not commitments. No new data is collected.

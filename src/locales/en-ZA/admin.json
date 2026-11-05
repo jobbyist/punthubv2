@@ -139,19 +139,19 @@
       "done": "Mark as done"
     },
     "emails": {
-      "title": "Launch emails",
+      "title": "Early-access emails",
       "on": "Sending is switched on.",
       "off": "Sending is switched off. Set LAUNCH_EMAILS_ENABLED=true on the server when you are ready.",
       "notConfigured": "The email service keys are not set on the server.",
-      "wave1": "Launch day",
+      "wave1": "Sign-ups open",
       "wave2": "Reminder 1",
       "wave3": "Final reminder",
       "counts": "{{sent}} sent, {{failed}} failed",
       "note": "Emails go out at 08:00 on each date (SAST) to people who have not signed up yet, were not unsubscribed and have no privacy request. Reminders 1 and 2 go only to people who ticked marketing on the early-access form."
     },
     "draft": {
-      "title": "Launch message draft",
-      "body": "The system never sends this. On launch day it appears here as a notification and is emailed to you, and you send it yourself."
+      "title": "Founding sign-ups message draft",
+      "body": "The system never sends this. On the day Founding sign-ups open it appears here as a notification and is emailed to you, and you send it yourself."
     },
     "audience": {
       "title": "Early-access list ({{count}})",
