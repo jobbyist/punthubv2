@@ -1,0 +1,26 @@
+erDiagram
+  competitions ||--o{ seasons : has
+  competitions ||--o{ fixtures : contains
+  seasons ||--o{ fixtures : contains
+  teams ||--o{ fixtures : "home"
+  teams ||--o{ fixtures : "away"
+  fixtures ||--o| results : "final score"
+  fixtures ||--o{ fixture_observations : "seen by sources"
+  data_sources ||--o{ fixture_observations : provides
+  data_sources ||--o{ source_mappings : "maps names"
+  teams ||--o{ source_mappings : aliases
+  competitions ||--o{ source_mappings : aliases
+  ingestion_runs ||--o{ fixture_observations : produced
+  ingestion_runs ||--o{ ingestion_errors : logged
+  fixtures ||--o{ data_change_logs : audited
+  competitions { text competition_id PK }
+  teams { uuid team_id PK }
+  seasons { uuid season_id PK }
+  fixtures { uuid fixture_id PK }
+  results { uuid fixture_id PK }
+  data_sources { text source_id PK }
+  source_mappings { uuid mapping_id PK }
+  fixture_observations { uuid observation_id PK }
+  ingestion_runs { uuid run_id PK }
+  ingestion_errors { uuid error_id PK }
+  data_change_logs { bigint change_id PK }
