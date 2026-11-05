@@ -16,6 +16,7 @@ const columns = [
       ["leaderboards", "/leaderboards"],
       ["results", "/results"],
       ["insights", "/insights"],
+      ["founding", "/founding"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
     ],

@@ -9,7 +9,12 @@
     "getStarted": "Join free",
     "createAccount": "Create your free account",
     "createFreeAccount": "Create free account",
-    "joinEarlyAccess": "Get started"
+    "joinEarlyAccess": "Get started",
+    "becomeFounding": "Become a Founding Member"
+  },
+  "foundingBar": {
+    "text": "Founding Member sign-ups are open: the first 100 get a numbered badge, free. Puntr launches {{launch}}.",
+    "cta": "Claim your spot"
   },
   "badge": {
     "example": "Example",

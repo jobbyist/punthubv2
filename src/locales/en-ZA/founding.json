@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "title": "Become a Founding Member | Puntr",
+    "description": "Get in early. Become a Puntr Founding Member: the first 100 members get a permanent numbered badge and full access, free. 18+. Predict what's next. Prove your worth.",
+    "ogTitle": "Puntr: Predict what's next. Prove your worth."
+  },
+  "eyebrow": "Founding Member sign-ups are open",
+  "title1": "Predict what's next.",
+  "title2": "Prove your worth.",
+  "lead": "Get in early. Become a Founding Member. Be part of what's next.",
+  "body": "The first 100 members get a permanent, numbered Founding badge and full access, free. No card needed. Puntr launches on {{launch}}.",
+  "cta": "Claim your Founding spot",
+  "how": "See how it works",
+  "dates": {
+    "open": "Founding sign-ups",
+    "openValue": "Open now",
+    "launch": "Puntr launches",
+    "launchValue": "{{date}}"
+  },
+  "perks": {
+    "title": "What Founding Members get",
+    "f1": "A permanent Founding badge, numbered #1 to #100",
+    "f2": "Full access to posting, your record and the weekly leaderboard",
+    "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch"
+  },
+  "steps": {
+    "title": "How it works",
+    "s1": {
+      "title": "Join free",
+      "body": "Create your account with your email. You must be 18 or older."
+    },
+    "s2": {
+      "title": "Back your call",
+      "body": "Post picks on upcoming football matches before kick-off. Each pick is locked and cannot be edited or deleted."
+    },
+    "s3": {
+      "title": "Build a public record",
+      "body": "Picks are graded automatically, so your record speaks for you."
+    }
+  },
+  "fine": "Puntr is a prediction community, not a bookmaker. Joining is free and Founding spots are limited to the first 100 members.",
+  "last": {
+    "title": "Be part of what's next",
+    "body": "Once the 100 spots are taken, Founding badges are closed for good."
+  }
+}

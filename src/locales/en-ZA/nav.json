@@ -14,7 +14,7 @@
     "openMenu": "Open menu",
     "menu": "Menu",
     "version": "Version 2.0 - © 2026 Puntr",
-    "getEarlyAccess": "Get started",
+    "getEarlyAccess": "Become a Founding Member",
     "home": "Puntr home",
     "founding": "Founding Member #{{number}}",
     "myRecord": "My record",
@@ -97,7 +97,8 @@
       "refunds": "Refunds",
       "grading": "How we grade picks",
       "verify": "Verify the record",
-      "roadmap": "Roadmap"
+      "roadmap": "Roadmap",
+      "founding": "Become a Founding Member"
     },
     "social": {
       "x": "Puntr on X",

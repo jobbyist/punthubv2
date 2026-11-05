@@ -22,7 +22,7 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 
 ## Copy
 - Never imply profit: no "earn more", "win money", "sure", "guaranteed", "value bet", "#1".
-- Brand line: "Predict smarter. Prove it."
+- Brand line: "Predict smarter. Prove it." Early-access campaign positioning (owner, 5 Nov 2026): "Predict what's next. Prove your worth." and "Get in early. Become a founding member. Be part of what's next." (home hero, `/founding`, the Founding bar, social assets).
 - Keep 18+ and the 0800 006 008 helpline on every page.
 
 ## Launch scope

@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-05, no legal page text changed (PR: Founding Member landing page and sitewide copy)
+
+- New public page `/founding`, a sitewide Founding Member strip, a new home hero ("Predict what's next. Prove your worth." / "Get in early. Become a Founding Member. Be part of what's next."), a footer link and a clearer header button. They link to the existing `/join` sign-up. No new data is collected, stored or sent, and no new tracker, processor or sign-in method.
+- The perks shown are the ones already on `/pricing`: numbered badge #1 to #100, full access, and 30 free Pay-As-You-Go credits a month for 3 months once credits launch (credits are not on sale). The launch date (1 December 2026) is shown as a plan.
+- Review: whether "Prove your worth" and "Get in early" read as inducements under the advertising rules `[attorney review]`; whether the 30-credit perk needs a fuller condition on `/terms` before credits launch. Terms, Privacy, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+
 ## 2026-11-05, Privacy `2026-11-05-r4` (PR: launch date 1 December, Founding sign-ups from 2 November)
 
 - Owner decision (5 Nov 2026): the official platform launch is **1 December 2026**; Founding Member sign-ups (first 100, free) open from **2 November 2026**.
