@@ -14,7 +14,7 @@ function fakeStore(people: { email: string; name: string }[] = []) {
 }
 const ok = async (_p: Record<string, unknown>) => ({ ok: true, status: 200, body: "" });
 const base = {
-  launchDateEnv: "2026-11-02",
+  signupOpenDateEnv: "2026-11-02",
   unsubscribeUrl: (e: string) => `https://x/u?e=${e}`,
   replyTo: "support@puntr.co.za",
 };
@@ -45,7 +45,7 @@ describe("runLaunchNotify", () => {
     expect(store.createNotification).not.toHaveBeenCalled();
   });
 
-  it("launch day: notifies the admin once and emails every recipient, logging each send", async () => {
+  it("sign-ups open day: notifies the admin once and emails every recipient, logging each send", async () => {
     const { store, logged } = fakeStore([
       { email: "a@x.com", name: "Ann Lee" },
       { email: "b@x.com", name: "Bo" },
@@ -59,7 +59,7 @@ describe("runLaunchNotify", () => {
     const member = send.mock.calls
       .map((c) => c[0] as Record<string, unknown>)
       .find((p) => (p["to"] as string[])[0] === "a@x.com")!;
-    expect(member["subject"]).toBe("Puntr is live: your Founding spot is reserved");
+    expect(member["subject"]).toBe("Puntr Founding sign-ups are open: your spot is reserved");
     expect(String(member["text"])).toContain("0800 006 008");
     expect(member["headers"]).toEqual({ "List-Unsubscribe": "<https://x/u?e=a@x.com>" });
   });

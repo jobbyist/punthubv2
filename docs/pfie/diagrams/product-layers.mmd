@@ -1,0 +1,15 @@
+flowchart TB
+  subgraph L3["Layer 3: Intelligence (future, proprietary)"]
+    P3["PUNT AI previews, calibrated predictions,<br/>model outputs with provenance"]
+  end
+  subgraph L2["Layer 2: Community data (Puntr-original, proprietary)"]
+    P2["Locked picks, consensus, graded track records,<br/>leaderboards. Aggregated, no personal data"]
+  end
+  subgraph L1["Layer 1: Football facts (PFIE)"]
+    P1["Fixtures, results, teams, competitions.<br/>Sourced, verified, audited"]
+  end
+  L1 --> L2 --> L3
+  L1 --> API["PFIE API v1 (planned)<br/>keys, rate limits, metering, attribution"]
+  L2 --> API
+  L3 --> API
+  API --> PART["Partner platforms"]

@@ -95,7 +95,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 29 October 2026 (version 2026-10-29-r3). Draft pending
+          <strong>Last updated:</strong> 5 November 2026 (version 2026-11-05-r4). Draft pending
           attorney review.
         </p>
 
@@ -165,12 +165,13 @@ function Privacy() {
           </h2>
           <p>
             If you asked for early access, we hold your name, email, optional phone number and
-            whether you ticked marketing. We send a short series of emails when Puntr launches: one
-            on launch day and, if you have not yet signed up, up to two reminders. Every email has
-            an unsubscribe link. The reminders go only to people who ticked marketing. If you opted
-            in and gave a phone number, a person at Puntr may also send you a one-off launch message
-            on WhatsApp or SMS from our own accounts. Marketing is never a condition of joining and
-            is off unless you tick it. You can change your choice at any time on{" "}
+            whether you ticked marketing. We send a short series of emails around the launch: one
+            when Founding Member sign-ups open (2 November 2026) and, if you have not yet signed up,
+            up to two reminders. Every email has an unsubscribe link. The reminders go only to
+            people who ticked marketing. If you opted in and gave a phone number, a person at Puntr
+            may also send you a one-off launch message on WhatsApp or SMS from our own accounts.
+            Marketing is never a condition of joining and is off unless you tick it. You can change
+            your choice at any time on{" "}
             <Link to="/account/privacy" className="underline">
               your privacy page
             </Link>{" "}

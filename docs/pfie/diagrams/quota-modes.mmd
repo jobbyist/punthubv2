@@ -1,0 +1,24 @@
+stateDiagram-v2
+  [*] --> Normal
+  Normal --> Conserve: any provider over 70% of monthly quota
+  Conserve --> Critical: any provider over 90%
+  Critical --> Exhausted: provider quota hit or HTTP 429
+  Conserve --> Normal: new month or usage drops
+  Critical --> Normal: new month
+  Exhausted --> Normal: new month
+  note right of Normal
+    Full tiered schedule
+  end note
+  note right of Conserve
+    Priority 1 and 2 only
+    Tier C/D weekly
+  end note
+  note right of Critical
+    Priority 1, next 48 hours
+    Direct sources only
+  end note
+  note right of Exhausted
+    No Firecrawl or Gemini calls
+    Serve last verified data
+    Show last verified time
+  end note

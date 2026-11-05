@@ -1,5 +1,5 @@
 import { renderAdminReminder, renderLaunchEmail } from "@/lib/email/launch-notify";
-import { launchDate, launchMessages, SITE, waveFor, type Wave } from "@/lib/launch";
+import { launchMessages, signupOpenDate, SITE, waveFor, type Wave } from "@/lib/launch";
 import { sastDate } from "@/lib/sast";
 
 export interface LaunchRecipient {
@@ -32,7 +32,8 @@ export type SendFn = (
 
 export interface LaunchOptions {
   now?: Date;
-  launchDateEnv?: string | undefined;
+  /** FOUNDING_OPEN_DATE: the day Founding sign-ups open. The waves count from it. */
+  signupOpenDateEnv?: string | undefined;
   enabled: boolean;
   store: LaunchStore;
   send: SendFn;
@@ -58,8 +59,8 @@ export type LaunchReport =
 /** Runs whichever wave is due today (SAST). Safe to call many times a day: every send is logged first-come. */
 export async function runLaunchNotify(o: LaunchOptions): Promise<LaunchReport> {
   const now = o.now ?? new Date();
-  const launch = launchDate(o.launchDateEnv);
-  const wave = waveFor(sastDate(now), launch);
+  const signupOpen = signupOpenDate(o.signupOpenDateEnv);
+  const wave = waveFor(sastDate(now), signupOpen);
   if (!wave) return { ok: true, wave: null };
   if (!o.enabled) return { ok: true, wave, enabled: false };
 
@@ -68,8 +69,9 @@ export async function runLaunchNotify(o: LaunchOptions): Promise<LaunchReport> {
     const m = launchMessages();
     const created = await o.store.createNotification({
       kind: "launch_message",
-      dedupeKey: `launch-day:${launch}`,
-      title: "Puntr is live: send the launch message on WhatsApp and SMS",
+      // Key prefix kept from the first version so a notification already created for 2 Nov is not repeated.
+      dedupeKey: `launch-day:${signupOpen}`,
+      title: "Founding sign-ups are open: send the message on WhatsApp and SMS",
       body: m.whatsapp,
       smsBody: m.sms,
     });

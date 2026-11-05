@@ -1,0 +1,35 @@
+flowchart TB
+  subgraph SCHED["1 Schedule"]
+    CRON["Supabase pg_cron<br/>invoke_cron()"] --> PLAN["Quota-aware planner<br/>picks jobs by priority"]
+  end
+  subgraph FETCH["2 Fetch"]
+    PLAN --> A["Tier A/B direct fetch<br/>openfootball, football-data.org"]
+    PLAN --> FC["Firecrawl scrape<br/>markdown only, 1 credit"]
+    PLAN -.-> PS["Parallel Search<br/>discovery only"]
+  end
+  subgraph EXTRACT["3 Extract (AI)"]
+    FC --> HASH{"Page changed?<br/>content hash"}
+    HASH -- no --> SKIP["Skip, log cache hit"]
+    HASH -- yes --> GEM["Gemini free tier<br/>JSON + evidence quotes"]
+  end
+  subgraph VALIDATE["4 Validate (code only)"]
+    A --> VAL
+    GEM --> VAL["Schema, evidence match,<br/>entity resolution, rules"]
+    VAL -- fail --> ERR[("ingestion_errors")]
+  end
+  subgraph CORROBORATE["5 Corroborate (code only)"]
+    VAL --> OBS[("fixture_observations<br/>one row per source")]
+    OBS --> CORR["Independent sources<br/>agree?"]
+    CORR -- "2+ agree" --> VER["verified"]
+    CORR -- "1 source" --> SINGLE["single_source"]
+    CORR -- conflict --> DISP["disputed → admin queue"]
+  end
+  subgraph PUBLISH["6 Publish"]
+    VER --> PUB["Publisher upserts<br/>pfie.fixtures"]
+    SINGLE --> PUB
+    PUB --> LOG[("data_change_logs")]
+    PUB --> APP["public.fixtures<br/>(app read model)"]
+    PUB --> EXP["CSV and JSON feeds"]
+  end
+  APP --> FE["Puntr frontend<br/>picks, settlement"]
+  EXP --> FUT["Future PFIE API v1"]

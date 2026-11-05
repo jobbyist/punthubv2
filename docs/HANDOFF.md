@@ -3,7 +3,7 @@
 As of the evening of Thu 29 Oct 2026. Written so a new Claude account can carry on without the old conversation.
 Blueprint (prompts P0 to P18, status, schedule, decisions): https://claude.ai/artifact/LKwEaVceitXRL6CgF8iBQ2 (version 1.2, updated 29 Oct 2026)
 MVP readiness score: **78/100** (44 this morning, 13 before that), using the blueprint's weights. It counts what is built and tested; nothing has been verified end to end on the live site, so treat it as an upper bound until the P14 smoke test passes. P12, P13 and P14 are not started. PuntPoints (P19) and the referral and rewards programme (P20) are built but switched off (see `docs/puntpoints.md`).
-Repo `jobbyist/punthubv2` (site puntr.co.za). Soft launch Sun 1 Nov, production Mon 2 Nov 2026, goal 100 Founding Members in 30 days.
+Repo `jobbyist/punthubv2` (site puntr.co.za). Founding Member sign-ups (first 100, free) open Mon 2 Nov 2026; official platform launch Tue 1 Dec 2026 (owner decision, 5 Nov). Goal 100 Founding Members.
 
 ## Start here
 
@@ -61,7 +61,7 @@ Tool quirk: the Supabase connector asks the owner to confirm statements containi
 
 Vercel Production has the Supabase variables, `LAUNCH_EMAILS_ENABLED=true`, `CRON_SECRET`, `WAITLIST_LINK_SECRET`, `SPORTS_API_KEY`, `SPORTS_LEAGUE_IDS` (chosen from `bun run sports:ids`: PSL 288, EPL 39, UCL 2, URC 76, Springbok tests 84). Vault has `cron_secret` and `cron_base_url`.
 
-Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview copies of the Supabase variables, and the PayFast variables below. Optional: `LAUNCH_DATE` (default 2026-11-02), `ADMIN_NOTIFY_EMAIL`, `RESEND_FROM`.
+Still missing: `RESEND_API_KEY` and `LOVABLE_API_KEY` (email gateway), Preview copies of the Supabase variables, and the PayFast variables below. Optional: `LAUNCH_DATE` (official launch, default 2026-12-01), `FOUNDING_OPEN_DATE` (default 2026-11-02), `ADMIN_NOTIFY_EMAIL`, `RESEND_FROM`.
 
 ## Owner actions still open
 
@@ -119,7 +119,7 @@ Football only at launch. The owner is paying for the API-Sports **Football** pla
 
 - Sign-in: email + password without a confirmation step, with email confirmation and two-factor encouraged afterwards; code or link, username + password and Google also offered; X/Twitter not enabled.
 - Posting a pick (which puts it on the feed and the leaderboard) needs a confirmed email. Identity verification (KYC) is not built and not decided: the privacy notice says no ID document, selfie or biometrics are collected, so KYC needs a provider, a privacy-notice change and attorney review first.
-- Launch emails: one on launch day and two reminders (reminders only for people who ticked marketing); WhatsApp and SMS are sent by a person from `/admin`, only to opted-in people.
+- Early-access emails: one when Founding sign-ups open and two reminders (reminders only for people who ticked marketing); WhatsApp and SMS are sent by a person from `/admin`, only to opted-in people.
 
 ## Known risks and gaps
 

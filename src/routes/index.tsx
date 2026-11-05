@@ -85,7 +85,8 @@ function Landing() {
             <br />
             <span className="text-primary">{t("hero.title2")}</span>
           </h1>
-          <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          <p className="mt-4 text-base font-semibold sm:text-lg">{t("hero.tagline")}</p>
+          <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
             <Trans t={t} i18nKey="hero.body" components={{ 1: <Em /> }} />
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
@@ -94,7 +95,7 @@ function Landing() {
               className="h-12 px-6 text-[15px]"
               onClick={() => navigate({ to: "/join" })}
             >
-              {tc("cta.getStarted")}
+              {tc("cta.becomeFounding")}
             </Button>
             <Button
               size="lg"

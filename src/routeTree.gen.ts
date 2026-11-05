@@ -16,6 +16,7 @@ import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
+import { Route as FoundingRouteImport } from './routes/founding'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
@@ -79,6 +80,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DevRoute = DevRouteImport.update({
   id: '/dev',
   path: '/dev',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoundingRoute = FoundingRouteImport.update({
+  id: '/founding',
+  path: '/founding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -312,6 +320,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -390,6 +400,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -428,6 +439,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
@@ -467,6 +479,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
+  FoundingRoute: typeof FoundingRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
   JoinRoute: typeof JoinRoute
@@ -547,6 +560,13 @@ declare module '@tanstack/react-router' {
       path: '/dev'
       fullPath: '/dev'
       preLoaderRoute: typeof DevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/founding': {
+      id: '/founding'
+      path: '/founding'
+      fullPath: '/founding'
+      preLoaderRoute: typeof FoundingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -763,6 +783,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
+  FoundingRoute: FoundingRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
   JoinRoute: JoinRoute,

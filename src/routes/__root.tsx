@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider } from "@/components/session";
+import { FoundingBar } from "@/components/founding-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SecurityPrompt } from "@/components/security-prompt";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -259,6 +260,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <div className="flex min-h-dvh flex-col">
+          <FoundingBar />
           <SiteHeader />
           <SecurityPrompt />
           <div className="flex-1 pb-20 lg:pb-0">

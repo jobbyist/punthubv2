@@ -1,0 +1,11 @@
+flowchart TD
+  O["New observation from one source"] --> E{"Every extracted value<br/>appears in the source text?"}
+  E -- no --> R1["Reject. Log ingestion_error.<br/>AI output is never trusted on its own"]
+  E -- yes --> S{"Passes schema and<br/>football rules?"}
+  S -- no --> R2["Reject. Log ingestion_error"]
+  S -- yes --> M{"Teams and competition<br/>resolve to canonical IDs?"}
+  M -- no --> Q1["Unresolved alias → admin queue"]
+  M -- yes --> N{"Other independent source<br/>observed this fixture?"}
+  N -- "none" --> SS["single_source<br/>published with flag,<br/>lower confidence"]
+  N -- "agree on teams, date, kickoff" --> V["verified<br/>confidence from formula"]
+  N -- "disagree" --> D["disputed<br/>NOT auto-resolved<br/>admin decides, change is logged"]

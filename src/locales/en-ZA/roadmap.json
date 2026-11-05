@@ -6,7 +6,7 @@
   },
   "eyebrow": "Product roadmap",
   "title": "Football first. More sports every few weeks.",
-  "intro": "Puntr launches with football (soccer) on {{launch}}. Here's the order the other sports join, with target weeks counted from launch. This page updates itself: a sport only shows as live once its fixtures are on Puntr.",
+  "intro": "Puntr launches with football (soccer) on {{launch}}. Founding Member sign-ups are open now. Here's the order the other sports join, with target weeks counted from launch. This page updates itself: a sport only shows as live once its fixtures are on Puntr.",
   "summary": {
     "live_one": "{{count}} sport live",
     "live_other": "{{count}} sports live",
