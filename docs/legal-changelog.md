@@ -89,3 +89,11 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - Name the Information Officer and register with the Information Regulator (`/privacy` §1).
 - Retention periods marked `[attorney review]` on `/privacy`.
 - Whether unconfirmed email sign-up creates any obligation to verify before the public leaderboard shows a member.
+
+## 2026-11-06: Pay-As-You-Go and Puntr Pro "available at launch" copy
+
+- **Changed**: `/pricing` and `/about` now say Pay-As-You-Go credits and Puntr Pro (indicative R99 per month) are available
+  at the official launch on 1 December 2026 (previously "coming later"). Nothing is on sale yet and the CTA stays
+  disabled until the PayFast work, its legal copy and the owner's go-ahead are done.
+- **Review** `[attorney review]`: Terms still need a subscription clause and the Refunds page needs the credits and
+  subscription position before either product goes on sale on 1 December.

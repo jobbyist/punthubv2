@@ -95,11 +95,11 @@
     },
     "ai": {
       "title": "AI-Powered Insights",
-      "body": "Match previews, coming soon"
+      "body": "Match previews, available at launch"
     },
     "pro": {
       "title": "Puntr Pro",
-      "body": "Advanced analytics for serious predictors, coming soon"
+      "body": "Advanced analytics for serious predictors, available at launch"
     }
   },
   "sports": {
@@ -110,33 +110,11 @@
   },
   "tech": {
     "title1": "Built On A",
-    "title2": "Modern",
-    "title3": "Foundation",
-    "body": "A fast, secure web app designed for real-time sports data and a growing community.",
-    "react": {
-      "cat": "Frontend",
-      "body": "Component-driven interfaces for a fast product."
-    },
-    "ts": {
-      "cat": "Frontend",
-      "body": "Type-safe code for reliability."
-    },
-    "tailwind": {
-      "cat": "Frontend",
-      "body": "Consistent, accessible styling."
-    },
-    "tanstack": {
-      "cat": "Framework",
-      "body": "Server-rendered pages and data loading."
-    },
-    "supabase": {
-      "cat": "Backend",
-      "body": "Database and email-code sign-in."
-    },
-    "vercel": {
-      "cat": "Infrastructure",
-      "body": "Hosting and fast delivery across South Africa."
-    }
+    "title2": "World-Class",
+    "title3": "Foundation, Strategic Partnership Network And Next-Generation Technology…",
+    "body": "Reliable infrastructure, trusted data and a growing partner network behind every prediction on Puntr.",
+    "logosLabel": "Puntr partners and technology",
+    "logoPlaceholder": "Logo {{n}}"
   },
   "fits": {
     "title1": "How Puntr",

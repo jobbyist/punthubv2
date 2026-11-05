@@ -70,14 +70,8 @@ const COMPETITIONS = [
   ["Horse racing", "soon"],
 ] as const;
 
-const TECH = [
-  ["React", "react"],
-  ["TypeScript", "ts"],
-  ["Tailwind CSS", "tailwind"],
-  ["TanStack", "tanstack"],
-  ["Supabase", "supabase"],
-  ["Vercel", "vercel"],
-] as const;
+/** Ten logo slots for the partnership network. Replace with approved partner logos as agreements are confirmed. */
+const PARTNER_SLOTS = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const KNOWLEDGE = [
   [Target, "predict"],
@@ -315,41 +309,28 @@ function About() {
           </div>
         </motion.section>
 
-        {/* Technology */}
+        {/* Foundation and partners */}
         <motion.section {...fade} className="py-16 lg:py-24">
           <div className="text-center">
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
               {t("tech.title1")} <span className="text-primary">{t("tech.title2")}</span>{" "}
-              {t("tech.title3")}.
+              {t("tech.title3")}
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">{t("tech.body")}</p>
           </div>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TECH.map(([name, key], index) => (
-              <motion.div
-                key={key}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                whileHover={{ y: -4 }}
-                className="rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+          <ul
+            className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
+            aria-label={t("tech.logosLabel")}
+          >
+            {PARTNER_SLOTS.map((n) => (
+              <li
+                key={n}
+                className="grid h-20 place-items-center rounded-xl border border-dashed border-border bg-card text-xs font-medium text-muted-foreground"
               >
-                <div className="flex items-start gap-3">
-                  <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
-                    <Zap className="size-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{name}</h3>
-                    <p className="text-xs font-medium text-primary">{t(`tech.${key}.cat`)}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {t(`tech.${key}.body`)}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                {t("tech.logoPlaceholder", { n })}
+              </li>
             ))}
-          </div>
+          </ul>
         </motion.section>
 
         {/* How it fits together */}
