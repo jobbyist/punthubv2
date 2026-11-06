@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  getPassPaymentStatus,
-  startAnnualPassCheckout,
-  type StartCheckoutResult,
+  reserveAnnualPass,
+  type ReserveAnnualPassResult,
 } from "@/lib/annual-pass.functions";
 
 const SPOTS = 20;
@@ -19,7 +18,6 @@ const DEADLINE = "16 November 2026";
 type Offer = { remaining: number; open: boolean };
 type MyClaim = { status: "pending" | "paid"; hold_expires_at: string | null } | null;
 
-// New functions and table: types.ts is regenerated after the migration, so read them through a loose view.
 const db = supabase as unknown as {
   rpc: (fn: string) => Promise<{ data: unknown }>;
   from: (t: string) => {
@@ -29,27 +27,7 @@ const db = supabase as unknown as {
   };
 };
 
-/** Submits the PayFast form the server signed. */
-function postToCheckout(url: string, fields: Record<string, string>) {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = url;
-  for (const [k, v] of Object.entries(fields)) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = k;
-    input.value = v;
-    form.appendChild(input);
-  }
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
-}
-
-/**
- * Founding Annual Pass: first 20 founding members to claim before 16 November 2026. Claiming includes payment
- * (R299 once-off, PayFast); a claim holds the place for 48 hours until payment is received.
- */
+/** Reservation-first Annual Pass: no payment is collected on Puntr. */
 export function AnnualPassClaim({
   onboarding = false,
   compact = onboarding,
@@ -59,16 +37,15 @@ export function AnnualPassClaim({
 }) {
   const { t, i18n } = useTranslation("founding");
   const { isSignedIn, profile } = useSession();
-  const start = useServerFn(startAnnualPassCheckout);
+  const reserve = useServerFn(reserveAnnualPass);
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<StartCheckoutResult | null>(null);
+  const [result, setResult] = useState<ReserveAnnualPassResult | null>(null);
   const [tick, setTick] = useState(0);
 
   const { data: offer } = useAsync(async () => {
     const { data } = await db.rpc("annual_pass_offer");
     return (data as Offer | null) ?? null;
   }, [tick]);
-  const { data: payments } = useAsync(() => getPassPaymentStatus(), []);
   const { data: mine } = useAsync(async (): Promise<MyClaim> => {
     if (!profile) return null;
     const { data } = await db
@@ -79,17 +56,16 @@ export function AnnualPassClaim({
     return (data as MyClaim) ?? null;
   }, [profile?.id, tick]);
 
-  const claim = async () => {
+  const submitReservation = async () => {
     setBusy(true);
     try {
-      const r = await start();
-      setResult(r);
-      if (r.ok) postToCheckout(r.checkoutUrl, r.fields);
+      const response = await reserve();
+      setResult(response);
+      setTick((n) => n + 1);
     } catch {
       setResult({ ok: false, reason: "error" });
     } finally {
       setBusy(false);
-      setTick((n) => n + 1);
     }
   };
 
@@ -104,6 +80,7 @@ export function AnnualPassClaim({
         month: "long",
         hour: "2-digit",
         minute: "2-digit",
+        timeZone: "Africa/Johannesburg",
       })
     : "";
 
@@ -116,17 +93,19 @@ export function AnnualPassClaim({
 
   const reasonText =
     result && !result.ok
-      ? result.reason === "payments_not_open"
-        ? t("pass.paymentsSoon")
-        : result.reason === "checkout_unavailable"
-          ? t("pass.unavailable")
-          : result.reason === "full"
-            ? t("pass.full", params)
-            : result.reason === "closed"
-              ? t("pass.closed", params)
-              : result.reason === "already_paid"
-                ? t("pass.paid")
-                : t("pass.error")
+      ? result.reason === "email_not_configured"
+        ? t("pass.emailNotConfigured")
+        : result.reason === "email_failed"
+          ? t("pass.emailFailed")
+          : result.reason === "missing_email"
+            ? t("pass.missingEmail")
+            : result.reason === "full"
+              ? t("pass.full", params)
+              : result.reason === "closed"
+                ? t("pass.closed", params)
+                : result.reason === "already_paid"
+                  ? t("pass.paid")
+                  : t("pass.error")
       : null;
 
   return (
@@ -153,12 +132,23 @@ export function AnnualPassClaim({
         ) : isSignedIn && profile ? (
           <>
             {holdValid && <p className="text-sm font-semibold">{t("pass.pending", { until })}</p>}
-            {payments?.paymentsOpen ? (
-              <Button onClick={claim} disabled={busy} size="lg" className="h-11 px-6">
-                {busy ? t("pass.claiming") : t("pass.claim")}
-              </Button>
-            ) : (
-              <p className="text-sm">{t("pass.paymentsSoon")}</p>
+            <Button onClick={submitReservation} disabled={busy} size="lg" className="h-11 px-6">
+              {busy
+                ? t("pass.reserving")
+                : holdValid
+                  ? t("pass.resendEmail")
+                  : t("pass.reserve")}
+            </Button>
+            {result?.ok && (
+              <p className="text-sm font-semibold text-primary">
+                {t("pass.emailSent", { until: new Date(result.holdExpiresAt).toLocaleString(i18n.language, {
+                  day: "numeric",
+                  month: "long",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  timeZone: "Africa/Johannesburg",
+                }) })}
+              </p>
             )}
           </>
         ) : (

@@ -2,7 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useSession } from "@/components/session";
 import { formatDate } from "@/lib/format";
 import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { getFoundingSpots } from "@/lib/founding.functions";
@@ -31,7 +30,6 @@ async function fetchScarcityCounts(): Promise<ScarcityCounts | null> {
 /** Sitewide founding strip. Counts are fetched from the live founding and Annual Pass RPCs; never hard-coded. */
 export function FoundingBar() {
   const { t } = useTranslation("common");
-  const { profile } = useSession();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [counts, setCounts] = useState<ScarcityCounts | null>(null);
 
@@ -52,14 +50,14 @@ export function FoundingBar() {
     };
   }, []);
 
-  if (profile || path === "/join" || path === "/founding" || path.startsWith("/admin")) return null;
+  if (path === "/join" || path === "/founding" || path.startsWith("/admin")) return null;
 
   const launch = formatDate(`${DEFAULT_LAUNCH_DATE}T12:00:00+02:00`);
   const foundingText = counts
     ? `Founding Sign-Ups: ${counts.foundingClaimed} of ${counts.foundingCap} spots claimed`
     : t("foundingBar.text", { launch });
   const annualText = counts
-    ? ` · ${counts.annualPassRemaining} of ${ANNUAL_PASS_CAP} Annual Passes remaining`
+    ? ` · ${counts.annualPassRemaining}/${ANNUAL_PASS_CAP} Annual Passes remaining`
     : "";
 
   return (
