@@ -27,7 +27,7 @@ export type Profile = Pick<
   | "referral_code"
   | "marketing_opt_in"
   | "is_banned"
->;
+> & { avatar_url?: string | null };
 
 type SessionValue = {
   /** True until the first session and profile lookup has finished. */
@@ -50,7 +50,7 @@ type SessionValue = {
 const SessionContext = createContext<SessionValue | null>(null);
 
 const PROFILE_COLUMNS =
-  "id, username, display_name, founding_number, language, role, referral_code, marketing_opt_in, is_banned";
+  "id, username, display_name, founding_number, language, role, referral_code, marketing_opt_in, is_banned, avatar_url";
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -77,7 +77,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       .select(PROFILE_COLUMNS)
       .eq("id", userId)
       .maybeSingle();
-    setProfile(data ?? null);
+    // avatar_url is not in the generated types until types.ts is regenerated.
+    setProfile((data as unknown as Profile | null) ?? null);
   }, []);
 
   useEffect(() => {

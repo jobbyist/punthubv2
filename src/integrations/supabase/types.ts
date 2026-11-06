@@ -10,15 +10,227 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.17"
+    PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
+      admin_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          dedupe_key: string
+          done_at: string | null
+          done_by: string | null
+          id: string
+          kind: string
+          sms_body: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          dedupe_key: string
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          kind: string
+          sms_body?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          dedupe_key?: string
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          kind?: string
+          sms_body?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_notifications_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_notifications_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      annual_pass_claims: {
+        Row: {
+          amount_cents: number | null
+          claimed_at: string
+          hold_expires_at: string | null
+          paid_at: string | null
+          payment_reference: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      breach_register: {
+        Row: {
+          contained_at: string | null
+          created_at: string
+          data_types: string | null
+          description: string
+          discovered_at: string
+          id: string
+          outcome: string | null
+          regulator_notified_at: string | null
+          subjects_affected: number | null
+          subjects_notified_at: string | null
+        }
+        Insert: {
+          contained_at?: string | null
+          created_at?: string
+          data_types?: string | null
+          description: string
+          discovered_at: string
+          id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
+        }
+        Update: {
+          contained_at?: string | null
+          created_at?: string
+          data_types?: string | null
+          description?: string
+          discovered_at?: string
+          id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
+        }
+        Relationships: []
+      }
+      chain_heads: {
+        Row: {
+          created_at: string
+          day: string
+          hash: string
+          last_prediction_id: string
+          pick_count: number
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          hash: string
+          last_prediction_id: string
+          pick_count: number
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          hash?: string
+          last_prediction_id?: string
+          pick_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chain_heads_last_prediction_id_fkey"
+            columns: ["last_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chain_heads_last_prediction_id_fkey"
+            columns: ["last_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consent_records: {
+        Row: {
+          anon_id: string | null
+          created_at: string
+          granted: boolean
+          id: string
+          notice_version: string
+          purpose: string
+          seq: number
+          source: string
+          user_id: string | null
+        }
+        Insert: {
+          anon_id?: string | null
+          created_at?: string
+          granted: boolean
+          id?: string
+          notice_version: string
+          purpose: string
+          seq?: never
+          source: string
+          user_id?: string | null
+        }
+        Update: {
+          anon_id?: string | null
+          created_at?: string
+          granted?: boolean
+          id?: string
+          notice_version?: string
+          purpose?: string
+          seq?: never
+          source?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       early_access: {
         Row: {
           created_at: string
           email: string
+          founding_reserved: boolean
           id: string
+          marketing_consent: boolean
           name: string
           phone: string | null
           plan: string
@@ -28,7 +240,9 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
+          founding_reserved?: boolean
           id?: string
+          marketing_consent?: boolean
           name: string
           phone?: string | null
           plan: string
@@ -38,7 +252,9 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          founding_reserved?: boolean
           id?: string
+          marketing_consent?: boolean
           name?: string
           phone?: string | null
           plan?: string
@@ -47,12 +263,1769 @@ export type Database = {
         }
         Relationships: []
       }
+      fixtures: {
+        Row: {
+          away: string
+          away_score: number | null
+          competition: string
+          home: string
+          home_score: number | null
+          id: string
+          kickoff_at: string
+          provider: string
+          provider_ref: string
+          sport: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          away: string
+          away_score?: number | null
+          competition: string
+          home: string
+          home_score?: number | null
+          id?: string
+          kickoff_at: string
+          provider: string
+          provider_ref: string
+          sport: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          away?: string
+          away_score?: number | null
+          competition?: string
+          home?: string
+          home_score?: number | null
+          id?: string
+          kickoff_at?: string
+          provider?: string
+          provider_ref?: string
+          sport?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          email: string | null
+          emailed: boolean
+          form: string
+          id: string
+          message: string | null
+          meta: Json
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          emailed?: boolean
+          form: string
+          id?: string
+          message?: string | null
+          meta?: Json
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          emailed?: boolean
+          form?: string
+          id?: string
+          message?: string | null
+          meta?: Json
+          name?: string | null
+        }
+        Relationships: []
+      }
+      founding_campaign_sends: {
+        Row: {
+          campaign: string
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          campaign: string
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          campaign?: string
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      founding_welcome_sends: {
+        Row: {
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      hidden_predictions: {
+        Row: {
+          admin_id: string
+          created_at: string
+          prediction_id: string
+          reason: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          prediction_id: string
+          reason: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          prediction_id?: string
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hidden_predictions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_predictions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_predictions_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_predictions_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      launch_email_sends: {
+        Row: {
+          detail: string | null
+          email: string
+          sent_at: string
+          status: string
+          wave: number
+        }
+        Insert: {
+          detail?: string | null
+          email: string
+          sent_at?: string
+          status?: string
+          wave: number
+        }
+        Update: {
+          detail?: string | null
+          email?: string
+          sent_at?: string
+          status?: string
+          wave?: number
+        }
+        Relationships: []
+      }
+      member_details: {
+        Row: {
+          date_of_birth: string | null
+          first_name: string | null
+          last_name: string | null
+          phone: string | null
+          province: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          date_of_birth?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          province?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          date_of_birth?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          province?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      newsroom_articles: {
+        Row: {
+          author_name: string
+          body: string
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          excerpt: string
+          id: string
+          og_image_url: string | null
+          published_at: string | null
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          body?: string
+          category: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt: string
+          id?: string
+          og_image_url?: string | null
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          id?: string
+          og_image_url?: string | null
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsroom_articles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsroom_articles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notice_versions: {
+        Row: {
+          effective_at: string
+          id: string
+          kind: string
+          url: string
+          version: string
+        }
+        Insert: {
+          effective_at: string
+          id?: string
+          kind: string
+          url: string
+          version: string
+        }
+        Update: {
+          effective_at?: string
+          id?: string
+          kind?: string
+          url?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          message: string
+          newsroom_article_id: string | null
+          published_at: string
+          target_url: string | null
+          title: string
+          visibility: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          newsroom_article_id?: string | null
+          published_at?: string
+          target_url?: string | null
+          title: string
+          visibility?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          newsroom_article_id?: string | null
+          published_at?: string
+          target_url?: string | null
+          title?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      point_rules: {
+        Row: {
+          active: boolean
+          cap_per_day: number | null
+          cap_per_month: number | null
+          code: string
+          points: number
+          sort: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          cap_per_day?: number | null
+          cap_per_month?: number | null
+          code: string
+          points: number
+          sort?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          cap_per_day?: number | null
+          cap_per_month?: number | null
+          code?: string
+          points?: number
+          sort?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      predictions: {
+        Row: {
+          confidence: number
+          created_at: string
+          fixture_id: string
+          hash: string
+          id: string
+          line: number | null
+          market: string
+          odds: number
+          prev_hash: string
+          reasoning: string | null
+          selection: string
+          seq: number
+          user_id: string
+        }
+        Insert: {
+          confidence: number
+          created_at?: string
+          fixture_id: string
+          hash: string
+          id?: string
+          line?: number | null
+          market: string
+          odds: number
+          prev_hash: string
+          reasoning?: string | null
+          selection: string
+          seq?: never
+          user_id: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          fixture_id?: string
+          hash?: string
+          id?: string
+          line?: number | null
+          market?: string
+          odds?: number
+          prev_hash?: string
+          reasoning?: string | null
+          selection?: string
+          seq?: never
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      privacy_requests: {
+        Row: {
+          closed_at: string | null
+          details: string | null
+          due_at: string
+          email: string
+          id: string
+          kind: string
+          notes: string | null
+          received_at: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          closed_at?: string | null
+          details?: string | null
+          due_at?: string
+          email: string
+          id?: string
+          kind: string
+          notes?: string | null
+          received_at?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          closed_at?: string | null
+          details?: string | null
+          due_at?: string
+          email?: string
+          id?: string
+          kind?: string
+          notes?: string | null
+          received_at?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privacy_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "privacy_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          birth_year: number | null
+          created_at: string
+          display_name: string
+          founding_number: number | null
+          id: string
+          is_18_attested: boolean
+          is_banned: boolean
+          language: string
+          marketing_opt_in: boolean
+          popia_consent_at: string
+          posting_paused_until: string | null
+          referral_code: string | null
+          referred_by: string | null
+          role: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          display_name: string
+          founding_number?: number | null
+          id: string
+          is_18_attested: boolean
+          is_banned?: boolean
+          language?: string
+          marketing_opt_in?: boolean
+          popia_consent_at: string
+          posting_paused_until?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          role?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          display_name?: string
+          founding_number?: number | null
+          id?: string
+          is_18_attested?: boolean
+          is_banned?: boolean
+          language?: string
+          marketing_opt_in?: boolean
+          popia_consent_at?: string
+          posting_paused_until?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          role?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      puntpoints_ledger: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          points: number
+          reason: string | null
+          ref_id: string | null
+          rule_code: string | null
+          seq: number
+          user_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          points: number
+          reason?: string | null
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: never
+          user_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          points?: number
+          reason?: string | null
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: never
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puntpoints_ledger_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      redemptions: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points: number
+          reward_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          voucher_code?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points?: number
+          reward_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          voucher_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redemptions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_milestones: {
+        Row: {
+          active: boolean
+          bonus_points: number
+          threshold: number
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          bonus_points: number
+          threshold: number
+          title: string
+        }
+        Update: {
+          active?: boolean
+          bonus_points?: number
+          threshold?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      referral_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          qualifying_prediction_id: string
+          referred_credits: number
+          referred_id: string
+          referrer_credits: number
+          referrer_id: string
+          reversed_at: string | null
+          status: string
+          vested_at: string | null
+          vests_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          qualifying_prediction_id: string
+          referred_credits?: number
+          referred_id: string
+          referrer_credits?: number
+          referrer_id: string
+          reversed_at?: string | null
+          status?: string
+          vested_at?: string | null
+          vests_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          qualifying_prediction_id?: string
+          referred_credits?: number
+          referred_id?: string
+          referrer_credits?: number
+          referrer_id?: string
+          reversed_at?: string | null
+          status?: string
+          vested_at?: string | null
+          vests_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
+            columns: ["qualifying_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
+            columns: ["qualifying_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          id: string
+          prediction_id: string
+          reason: string
+          reporter_id: string
+          resolved_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prediction_id: string
+          reason: string
+          reporter_id: string
+          resolved_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prediction_id?: string
+          reason?: string
+          reporter_id?: string
+          resolved_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reward_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          redemption_id: string | null
+          reward_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          redemption_id?: string | null
+          reward_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          redemption_id?: string | null
+          reward_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_codes_redemption_fk"
+            columns: ["redemption_id"]
+            isOneToOne: true
+            referencedRelation: "redemptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reward_codes_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reward_settings: {
+        Row: {
+          enabled: boolean
+          key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reward_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          points_cost: number
+          requires_approval: boolean
+          sponsor: string | null
+          stock: number | null
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: string
+          points_cost: number
+          requires_approval?: boolean
+          sponsor?: string | null
+          stock?: number | null
+          title: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          points_cost?: number
+          requires_approval?: boolean
+          sponsor?: string | null
+          stock?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
+      settlement_events: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          prediction_id: string
+          reason: string | null
+          result: string
+          seq: number
+          source: string
+          units: number
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          prediction_id: string
+          reason?: string | null
+          result: string
+          seq?: never
+          source: string
+          units: number
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          prediction_id?: string
+          reason?: string | null
+          result?: string
+          seq?: never
+          source?: string
+          units?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_events_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_events_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_responses: {
+        Row: {
+          answers: Json
+          contact_ok: boolean
+          created_at: string
+          draw_entry: boolean
+          id: string
+          improve: string | null
+          liked: string | null
+          pass_interest: string | null
+          pricing_view: string | null
+          rating: number | null
+          survey_version: number
+          user_id: string
+          wanted_features: string[]
+        }
+        Insert: {
+          answers?: Json
+          contact_ok?: boolean
+          created_at?: string
+          draw_entry?: boolean
+          id?: string
+          improve?: string | null
+          liked?: string | null
+          pass_interest?: string | null
+          pricing_view?: string | null
+          rating?: number | null
+          survey_version?: number
+          user_id: string
+          wanted_features?: string[]
+        }
+        Update: {
+          answers?: Json
+          contact_ok?: boolean
+          created_at?: string
+          draw_entry?: boolean
+          id?: string
+          improve?: string | null
+          liked?: string | null
+          pass_interest?: string | null
+          pricing_view?: string | null
+          rating?: number | null
+          survey_version?: number
+          user_id?: string
+          wanted_features?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          notification_id: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notification_id: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notification_id?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waitlist_invites: {
+        Row: {
+          detail: string | null
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          detail?: string | null
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          detail?: string | null
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      waitlist_unsubscribes: {
+        Row: {
+          created_at: string
+          email: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      current_consents: {
+        Row: {
+          created_at: string | null
+          granted: boolean | null
+          notice_version: string | null
+          purpose: string | null
+          source: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prediction_results: {
+        Row: {
+          prediction_id: string | null
+          result: string | null
+          settled_at: string | null
+          source: string | null
+          units: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      public_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          founding_number: number | null
+          id: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          founding_number?: number | null
+          id?: string | null
+          username?: never
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          founding_number?: number | null
+          id?: string | null
+          username?: never
+        }
+        Relationships: []
+      }
+      tipster_stats: {
+        Row: {
+          form_last_10: string | null
+          picks: number | null
+          roi: number | null
+          settled: number | null
+          units: number | null
+          user_id: string | null
+          username: string | null
+          win_rate: number | null
+          wins: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visible_predictions: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          fixture_id: string | null
+          hash: string | null
+          id: string | null
+          line: number | null
+          market: string | null
+          odds: number | null
+          prev_hash: string | null
+          reasoning: string | null
+          selection: string | null
+          seq: number | null
+          user_id: string | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          fixture_id?: string | null
+          hash?: string | null
+          id?: string | null
+          line?: number | null
+          market?: string | null
+          odds?: number | null
+          prev_hash?: string | null
+          reasoning?: string | null
+          selection?: string | null
+          seq?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          fixture_id?: string | null
+          hash?: string | null
+          id?: string | null
+          line?: number | null
+          market?: string | null
+          odds?: number | null
+          prev_hash?: string | null
+          reasoning?: string | null
+          selection?: string | null
+          seq?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weekly_leaderboard: {
+        Row: {
+          eligible: boolean | null
+          last_pick_at: string | null
+          picks_settled: number | null
+          rank: number | null
+          roi: number | null
+          units: number | null
+          user_id: string | null
+          username: string | null
+          week_start: string | null
+          wins: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      admin_adjust_points: {
+        Args: { p_points: number; p_reason: string; p_user: string }
+        Returns: number
+      }
+      admin_cancel_redemption: {
+        Args: { p_reason: string; p_redemption: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_founding_members: {
+        Args: never
+        Returns: {
+          email: string
+          first_name: string
+          founding_number: number
+          phone: string
+          signed_up_at: string
+          status: string
+          surname: string
+        }[]
+      }
+      admin_fulfil_redemption: {
+        Args: { p_note?: string; p_redemption: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_member_details: {
+        Args: never
+        Returns: {
+          date_of_birth: string
+          first_name: string
+          last_name: string
+          phone: string
+          province: string
+          user_id: string
+        }[]
+      }
+      admin_referral_review: {
+        Args: never
+        Returns: {
+          burst: boolean
+          created_at: string
+          id: string
+          referred: string
+          referrer: string
+          status: string
+          vests_at: string
+        }[]
+      }
+      admin_reverse_referral: {
+        Args: { p_reason: string; p_referral: string }
+        Returns: undefined
+      }
+      admin_settle_prediction: {
+        Args: { p_prediction: string; p_reason: string; p_result: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          prediction_id: string
+          reason: string | null
+          result: string
+          seq: number
+          source: string
+          units: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "settlement_events"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      annual_pass_offer: { Args: never; Returns: Json }
+      annual_pass_taken: { Args: never; Returns: number }
+      anonymise_account: {
+        Args: { p_email: string; p_user: string }
+        Returns: undefined
+      }
+      apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
+      award_points: {
+        Args: {
+          p_points?: number
+          p_ref: string
+          p_rule: string
+          p_user: string
+        }
+        Returns: number
+      }
+      can_post: { Args: { p_user: string }; Returns: boolean }
+      claim_annual_pass: { Args: never; Returns: Json }
+      claim_reserved_founding: { Args: { p_user: string }; Returns: number }
+      complete_signup: {
+        Args: {
+          p_birth_year: number
+          p_language: string
+          p_marketing_email: boolean
+          p_marketing_whatsapp: boolean
+          p_ref: string
+          p_username: string
+        }
+        Returns: number
+      }
+      confirm_annual_pass_payment: {
+        Args: { p_amount_cents: number; p_reference: string; p_user: string }
+        Returns: Json
+      }
+      create_prediction: {
+        Args: {
+          p_confidence: number
+          p_fixture_id: string
+          p_line: number
+          p_market: string
+          p_odds: number
+          p_reasoning: string
+          p_selection: string
+        }
+        Returns: {
+          confidence: number
+          created_at: string
+          fixture_id: string
+          hash: string
+          id: string
+          line: number | null
+          market: string
+          odds: number
+          prev_hash: string
+          reasoning: string | null
+          selection: string
+          seq: number
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "predictions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      export_my_data: { Args: never; Returns: Json }
+      founding_campaign_recipients: {
+        Args: { p_campaign: string }
+        Returns: {
+          is_member: boolean
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
+      founding_spots_held: { Args: never; Returns: number }
+      founding_spots_taken: { Args: never; Returns: number }
+      founding_welcome_recipients: {
+        Args: never
+        Returns: {
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
+      invoke_cron: { Args: { p_path: string }; Returns: undefined }
+      is_admin: { Args: never; Returns: boolean }
+      launch_audience: {
+        Args: never
+        Returns: {
+          email_address: string
+          full_name: string
+          joined_at: string
+          marketing_ok: boolean
+          phone_number: string
+          reserved: boolean
+          signed_up: boolean
+          unsubscribed: boolean
+        }[]
+      }
+      launch_recipients: {
+        Args: { p_wave: number }
+        Returns: {
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
+      list_rewards: {
+        Args: never
+        Returns: {
+          code: string
+          description: string
+          id: string
+          in_stock: boolean
+          kind: string
+          points_cost: number
+          sponsor: string
+          title: string
+        }[]
+      }
+      member_may_redeem: { Args: { p_user: string }; Returns: boolean }
+      mfa_ok: { Args: never; Returns: boolean }
+      my_puntpoints: { Args: never; Returns: number }
+      my_referral_counts: {
+        Args: never
+        Returns: {
+          joined: number
+          signed_up: number
+        }[]
+      }
+      my_referral_overview: {
+        Args: never
+        Returns: {
+          next_threshold: number
+          next_title: string
+          pending: number
+          qualified: number
+          reversed: number
+          signed_up: number
+          vested: number
+        }[]
+      }
+      pending_settlements: {
+        Args: never
+        Returns: {
+          away_score: number
+          home_score: number
+          line: number
+          market: string
+          odds: number
+          prediction_id: string
+          selection: string
+          sport: string
+          status: string
+        }[]
+      }
+      point_rules_public: {
+        Args: never
+        Returns: {
+          cap_per_day: number
+          cap_per_month: number
+          code: string
+          points: number
+          title: string
+        }[]
+      }
+      record_consent: {
+        Args: {
+          p_granted: boolean
+          p_notice_version: string
+          p_purpose: string
+          p_source: string
+        }
+        Returns: undefined
+      }
+      redeem_reward: {
+        Args: { p_reward: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      reward_setting: { Args: { p_key: string }; Returns: boolean }
+      rewards_status: {
+        Args: never
+        Returns: {
+          points_enabled: boolean
+          rewards_enabled: boolean
+        }[]
+      }
+      submit_privacy_request: {
+        Args: { p_details: string; p_email: string; p_kind: string }
+        Returns: string
+      }
+      sync_my_points: { Args: never; Returns: number }
+      username_available: { Args: { p_username: string }; Returns: boolean }
+      vest_referrals: { Args: never; Returns: number }
+      write_chain_head: {
+        Args: { p_day: string }
+        Returns: {
+          head_day: string
+          head_hash: string
+          head_pick_count: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

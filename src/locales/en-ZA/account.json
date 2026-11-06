@@ -135,5 +135,19 @@
     "saved": "Details saved",
     "error": "Could not save your details. Check the mobile number and try again.",
     "under18": "You must be 18 or older to use Puntr."
+  },
+  "avatar": {
+    "title": "Profile picture",
+    "hint": "JPG, PNG or WebP, under 10 MB. We crop it to a square and compress it. It shows on your public profile.",
+    "upload": "Upload a picture",
+    "change": "Change picture",
+    "remove": "Remove",
+    "working": "Uploading...",
+    "tooBig": "That image is 10 MB or larger. Please choose a smaller one.",
+    "badType": "Please choose a JPG, PNG or WebP image.",
+    "failed": "We couldn't upload your picture. Please try again.",
+    "saved": "Picture saved.",
+    "removed": "Picture removed.",
+    "alt": "{{username}}'s profile picture"
   }
 }

@@ -6,7 +6,12 @@ import { Lock, ArrowRight } from "lucide-react";
 import { TeamLogo } from "@/components/team-logo";
 import { useSession } from "@/components/session";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -48,9 +53,13 @@ export function MatchPreview() {
               <TeamLogo team="Orlando Pirates" size="lg" />
               <span className="truncate text-sm font-semibold sm:text-base">Orlando Pirates</span>
             </div>
-            <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">{tc("vs").toUpperCase()}</span>
+            <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">
+              {tc("vs").toUpperCase()}
+            </span>
             <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-3">
-              <span className="truncate text-right text-sm font-semibold sm:text-base">Kaizer Chiefs</span>
+              <span className="truncate text-right text-sm font-semibold sm:text-base">
+                Kaizer Chiefs
+              </span>
               <TeamLogo team="Kaizer Chiefs" size="lg" />
             </div>
           </div>
@@ -68,7 +77,9 @@ export function MatchPreview() {
                   aria-pressed={active}
                   className={cn(
                     "relative min-h-12 w-full overflow-hidden border px-3 py-3 text-left text-sm transition-colors touch-manipulation",
-                    active ? "border-primary bg-primary-soft" : "border-border hover:border-primary/50",
+                    active
+                      ? "border-primary bg-primary-soft"
+                      : "border-border hover:border-primary/50",
                   )}
                 >
                   <motion.span
@@ -76,18 +87,28 @@ export function MatchPreview() {
                     initial={{ width: 0 }}
                     animate={{ width: `${o.share}%` }}
                     transition={{ duration: 0.9, delay: 0.2 }}
-                    className={cn("absolute inset-y-0 left-0", active ? "bg-primary/15" : "bg-muted")}
+                    className={cn(
+                      "absolute inset-y-0 left-0",
+                      active ? "bg-primary/15" : "bg-muted",
+                    )}
                   />
                   <span className="relative flex items-center justify-between gap-3">
-                    <span className="min-w-0 truncate font-medium">{o.label ?? t("preview.draw")}</span>
-                    <span className="shrink-0 tnum text-xs font-bold text-foreground">{o.share}%</span>
+                    <span className="min-w-0 truncate font-medium">
+                      {o.label ?? t("preview.draw")}
+                    </span>
+                    <span className="shrink-0 tnum text-xs font-bold text-foreground">
+                      {o.share}%
+                    </span>
                   </span>
                 </button>
               );
             })}
           </div>
 
-          <p className="mt-4 flex items-start gap-2 text-xs text-muted-foreground" aria-live="polite">
+          <p
+            className="mt-4 flex items-start gap-2 text-xs text-muted-foreground"
+            aria-live="polite"
+          >
             <Lock className="mt-0.5 size-3.5 shrink-0 text-primary" />
             {picked ? t("preview.locked") : t("preview.idle")}
           </p>
@@ -98,9 +119,12 @@ export function MatchPreview() {
       <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
         <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-xl p-5 sm:p-6">
           <DialogHeader className="pr-6">
-            <DialogTitle className="text-xl font-extrabold leading-tight">Great pick! 👏</DialogTitle>
+            <DialogTitle className="text-xl font-extrabold leading-tight">
+              Great pick! 👏
+            </DialogTitle>
             <DialogDescription className="pt-2 text-sm leading-relaxed">
-              Lock in this prediction on your public profile before kick-off as soon as we go live 🚀
+              Lock in this prediction on your public profile before kick-off as soon as we go live
+              🚀
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-2 sm:flex-col">

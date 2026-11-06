@@ -249,7 +249,6 @@ export function MobileNav() {
 
               {/* Content & support */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-
                 <a
                   href={HELPLINE_TEL}
                   onClick={close}
@@ -283,11 +282,7 @@ export function MobileNav() {
               {/* Help links */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink to="/support" icon={HelpCircle} label={t("mobile.helpCentre")} />
-                <NavLink
-                  to="/feedback"
-                  icon={MessageCircle}
-                  label={t("mobile.feedback")}
-                />
+                <NavLink to="/feedback" icon={MessageCircle} label={t("mobile.feedback")} />
               </div>
 
               {/* Social */}

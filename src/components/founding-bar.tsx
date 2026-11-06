@@ -14,7 +14,7 @@ type ScarcityCounts = { foundingClaimed: number; foundingCap: number; annualPass
 async function fetchScarcityCounts(): Promise<ScarcityCounts | null> {
   const [founding, annual] = await Promise.all([
     getFoundingSpots(),
-    supabase.rpc("annual_pass_offer" as never),
+    supabase.rpc("annual_pass_offer"),
   ]);
   if (!founding || annual.error || !annual.data) return null;
 
@@ -66,9 +66,13 @@ export function FoundingBar() {
     <div className="bg-foreground px-3 py-2.5 text-center text-[11px] leading-snug text-background sm:px-4 sm:py-2 sm:text-sm">
       <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
         <span className="font-semibold" aria-live="polite">
-          {foundingText}{annualText}
+          {foundingText}
+          {annualText}
         </span>
-        <Link to="/founding" className="inline-flex shrink-0 items-center font-bold text-primary underline underline-offset-2">
+        <Link
+          to="/founding"
+          className="inline-flex shrink-0 items-center font-bold text-primary underline underline-offset-2"
+        >
           {t("foundingBar.cta")}
         </Link>
       </div>

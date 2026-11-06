@@ -10,6 +10,7 @@ import {
   logoHeader,
   PASS_CLAIM_URL,
   PASS_DEADLINE_TEXT,
+  PASS_PAYMENT_TEXT,
   PASS_SPOTS,
   RG_LINE,
 } from "./founding-shared";
@@ -38,8 +39,9 @@ export function renderFoundingPassEmail({ name, isMember, unsubscribeUrl }: Foun
     "One payment. It does not renew automatically",
   ];
   const note =
-    "The Annual Pass is a prepaid membership for the Puntr platform and tools. It is not an investment and it does not change how predictions are graded. Claiming reserves your place and the price. You pay nothing today: checkout opens before launch and we will email you the moment it does.";
-  const cta = isMember ? "Claim my Annual Pass place" : "Claim my Founding spot";
+    "The Annual Pass is a prepaid membership for the Puntr platform and tools. It is not an investment and it does not change how predictions are graded. " +
+    PASS_PAYMENT_TEXT;
+  const cta = isMember ? "Claim and pay R299" : "Claim my Founding spot";
   const link = isMember ? PASS_CLAIM_URL : `${SITE}/join`;
   const reason =
     "You are getting this because you opted in to updates from Puntr. Unsubscribe at any time.";

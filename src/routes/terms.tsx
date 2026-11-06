@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r8). Draft pending
+            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r9). Draft pending
             attorney review.
           </p>
 
@@ -106,9 +106,10 @@ function Terms() {
               <li>Founding Membership for the first 100 members, free</li>
               <li>
                 A limited Founding Annual Pass offer: the first 20 Founding Members to claim it
-                before 16 November 2026 reserve 12 months of Puntr Pro for a once-off R299, starting
-                on 1 December 2026, with no automatic renewal. Claiming takes no payment; payment
-                opens at checkout before launch, and refund terms will be shown before you pay.
+                before 16 November 2026 get 12 months of Puntr Pro for a once-off R299, starting on
+                1 December 2026, with no automatic renewal. Claiming includes payment through
+                PayFast: a claim holds a place for 48 hours and the place is confirmed when payment
+                is received; unpaid places are released. Refunds are covered on the Refunds page.
                 Referral rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases
                 made by people you invite (never cash), are not available until we publish their
                 terms [attorney review]

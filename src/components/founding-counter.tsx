@@ -27,7 +27,9 @@ export function FoundingCounter({ className = "" }: { className?: string }) {
             {full ? "All spots claimed" : `${data.left} / ${data.cap} left`}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {full ? "The first 100 Founding Member places have been taken." : `${claimed} of ${data.cap} places claimed. Join before the founding allocation closes.`}
+            {full
+              ? "The first 100 Founding Member places have been taken."
+              : `${claimed} of ${data.cap} places claimed. Join before the founding allocation closes.`}
           </p>
         </div>
         {!full && (
@@ -45,7 +47,10 @@ export function FoundingCounter({ className = "" }: { className?: string }) {
         aria-valuemax={data.cap}
         aria-valuenow={claimed}
       >
-        <div className="h-full rounded-full bg-primary transition-[width] duration-700" style={{ width: `${progress}%` }} />
+        <div
+          className="h-full rounded-full bg-primary transition-[width] duration-700"
+          style={{ width: `${progress}%` }}
+        />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-semibold text-muted-foreground">
         <span>{claimed} claimed</span>

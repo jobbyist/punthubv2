@@ -18,7 +18,10 @@ export const Route = createFileRoute("/affiliate-disclosure")({
 function AffiliateDisclosure() {
   return (
     <AppShell>
-      <PageHeading title="Affiliate disclosure" subtitle="How advertising and affiliate links work, and how commercial relationships are kept separate from predictions and rankings." />
+      <PageHeading
+        title="Affiliate disclosure"
+        subtitle="How advertising and affiliate links work, and how commercial relationships are kept separate from predictions and rankings."
+      />
       <div className="card-surface space-y-4 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
           Puntr may earn a commission if you click a partner link and sign up with that partner.
@@ -39,7 +42,10 @@ function AffiliateDisclosure() {
           labelled &quot;Ad&quot;, shown only to members who are 18+ and not on a break, and carry
           the responsible-gambling message. Partners do not receive your personal information.
         </p>
-        <p>Commercial partners do not control or influence Puntr’s picks, results, prediction assessments, editorial content or leaderboards.</p>
+        <p>
+          Commercial partners do not control or influence Puntr’s picks, results, prediction
+          assessments, editorial content or leaderboards.
+        </p>
         <p className="text-xs">
           18+ only. T&amp;Cs apply. Gambling can be addictive. Helpline: 0800 006 008.
         </p>
