@@ -18,6 +18,40 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
             { ok: false, error: "WAITLIST_LINK_SECRET_not_set" },
             { status: 503 },
           );
+        // ?test=1: send both template variants to the support inbox only. Records nothing, emails no member.
+        if (new URL(request.url).searchParams.get("test") === "1") {
+          const { SUPPORT_INBOX, sendViaResend: sendTest } =
+            await import("@/lib/email/resend.server");
+          const { unsubscribeUrl: unsubTest } = await import("@/lib/waitlist");
+          const { renderFoundingPassEmail: renderTest } = await import("@/lib/email/founding-pass");
+          const results: { variant: string; ok: boolean; status: number }[] = [];
+          for (const isMember of [true, false]) {
+            const mail = renderTest({
+              name: "Test",
+              isMember,
+              unsubscribeUrl: unsubTest(SUPPORT_INBOX, secret),
+            });
+            let res: { ok: boolean; status: number };
+            try {
+              res = await sendTest({
+                to: [SUPPORT_INBOX],
+                subject: `[TEST ${isMember ? "member" : "reserved"}] ${mail.subject}`,
+                html: mail.html,
+                text: mail.text,
+              });
+            } catch (err) {
+              console.error("founding-campaign test send failed", err);
+              res = { ok: false, status: 500 };
+            }
+            results.push({
+              variant: isMember ? "member" : "reserved",
+              ok: res.ok,
+              status: res.status,
+            });
+          }
+          console.info("founding-campaign test", JSON.stringify(results));
+          return Response.json({ ok: results.every((r) => r.ok), test: true, results });
+        }
         if (process.env["LAUNCH_EMAILS_ENABLED"] !== "true")
           return Response.json({ ok: true, enabled: false, sent: 0 });
 
