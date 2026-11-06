@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06, Privacy `2026-11-06-r6` (PR: X Ads Founding campaign tracking)
+
+- Analytics events (already consent-gated) are now also stored first-party in Supabase (`campaign_events`) with the ad's UTM tags (source, medium, campaign, content, term), the page path and the random browser ID from the `puntr_consent` cookie. No account ID, name, email, IP address or user agent. Kept up to 14 months (daily purge). Only admins can read it (admin Campaigns tab).
+- UTM tags from an ad link are kept in sessionStorage for the visit before consent; they are not personal information and are sent nowhere unless the visitor accepts Analytics.
+- No new tracker, pixel or processor: the X (Twitter) conversion pixel is NOT installed. `/founding` gains Open Graph/Twitter card tags, trust points and an FAQ (free, not a bookmaker, 18+, email confirmation).
+- Privacy §4 Analytics row updated. Review: whether storing UTM tags with a consent-cookie ID needs any wording beyond the Analytics row `[attorney review]`; the X Ads creatives say "Free to join", "First 100", "18+" and carry no profit claim. Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` row: `privacy` `2026-11-06-r6`.
+
 ## 2026-11-06, Terms `2026-11-06-r7` and Privacy `2026-11-06-r5` (PR: Founding welcome email, Annual Pass offer)
 
 - New Founding Member welcome email from the Founder (new sign-ups only, opted-in members, one per address, logged in `founding_welcome_sends`). Privacy §4 says so.

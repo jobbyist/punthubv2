@@ -57,5 +57,21 @@
     "full": "All {{spots}} places have been claimed.",
     "closed": "This offer closed on {{deadline}}.",
     "error": "We couldn't claim your place just now. Please try again."
+  },
+  "trust": {
+    "t1": "Free to join. No card needed.",
+    "t2": "Every pick locked and timestamped",
+    "t3": "Built in South Africa for football fans"
+  },
+  "faq": {
+    "title": "Quick answers",
+    "q1": "Is it really free?",
+    "a1": "Yes. Joining is free and you don't need a card. The first 100 members get the numbered Founding badge.",
+    "q2": "Is Puntr a bookmaker?",
+    "a2": "No. Puntr is a prediction community. You post picks and build a public record. We don't take bets.",
+    "q3": "When does Puntr launch?",
+    "a3": "Puntr launches officially on {{launch}}. Founding Members sign up now, get their numbered badge as soon as they confirm their email, and are first in when we launch.",
+    "q4": "Who can join?",
+    "a4": "Anyone in South Africa who is 18 or older. You confirm your email before you can sign in."
   }
 }

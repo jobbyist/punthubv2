@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -6,6 +7,7 @@ import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
+import { analytics } from "@/lib/analytics";
 
 const SPOTS = 20;
 const DEADLINE = "16 November 2026";
@@ -86,7 +88,9 @@ export function AnnualPassClaim() {
         ) : (
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild size="lg" className="h-11 px-6">
-              <Link to="/join">{t("pass.join")}</Link>
+              <Link to="/join" onClick={() => analytics.foundingCtaClicked("pass")}>
+                {t("pass.join")}
+              </Link>
             </Button>
           </div>
         )}

@@ -70,7 +70,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Your request (using an invite link)",
     "While your account is open",
   ],
-  ["Analytics", "Page views and button use", "Your consent", "Up to 14 months [attorney review]"],
+  [
+    "Analytics",
+    "Page views and button use, with the campaign tags of the ad or link that brought you (for example utm_source=x). Stored on our own database with a random browser ID, never with your name, email or account",
+    "Your consent",
+    "Up to 14 months [attorney review]",
+  ],
   ["Affiliate tracking", "Which ad you clicked", "Your consent", "Up to 90 days [attorney review]"],
   [
     "Marketing email, WhatsApp and SMS",
@@ -95,7 +100,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r5). Draft pending
+          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r6). Draft pending
           attorney review.
         </p>
 

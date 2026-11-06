@@ -20,6 +20,7 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
 import { SHOW_PUNT_AI_CHAT } from "@/lib/flags";
 import { ConsentBanner } from "@/components/consent-banner";
+import { captureUtm } from "@/lib/campaign";
 import { Toaster } from "@/components/ui/sonner";
 import { LocaleProvider } from "@/lib/i18n/provider";
 import { detectLocale, detectLocaleOnClient } from "@/lib/i18n/locale";
@@ -255,6 +256,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // Remember which ad link brought this visit (UTM tags only; nothing is sent without Analytics consent).
+  useEffect(() => captureUtm(), []);
 
   return (
     <QueryClientProvider client={queryClient}>

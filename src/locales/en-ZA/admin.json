@@ -39,7 +39,8 @@
     "reports": "Reports",
     "users": "Users",
     "waitlist": "Waitlist",
-    "rewards": "Rewards"
+    "rewards": "Rewards",
+    "campaigns": "Campaigns"
   },
   "settle": {
     "title": "Settlement",
@@ -253,5 +254,40 @@
         "void": "Reversed or void"
       }
     }
+  },
+  "campaigns": {
+    "title": "Campaign tracking",
+    "body": "Unique visitors per ad (utm_content) through the Founding sign-up funnel. Tag every ad link with utm_source, utm_campaign and utm_content.",
+    "period": "Period",
+    "periods": {
+      "24h": "24 hours",
+      "48h": "48 hours",
+      "7d": "7 days",
+      "30d": "30 days"
+    },
+    "filter": "Campaign, e.g. founding_x_nov",
+    "apply": "Filter",
+    "refresh": "Refresh",
+    "kpi": {
+      "visits": "Ad visitors",
+      "signups": "Ad sign-ups",
+      "rate": "Visit to sign-up",
+      "founding": "Founding spots taken (all)"
+    },
+    "col": {
+      "ad": "Ad",
+      "rate": "Sign-up rate"
+    },
+    "step": {
+      "landing_viewed": "Landing views",
+      "founding_cta_clicked": "CTA clicks",
+      "join_started": "Join started",
+      "otp_verified": "Email verified",
+      "signup_completed": "Sign-ups"
+    },
+    "loading": "Loading…",
+    "empty": "No tracked visits in this period yet.",
+    "error": "Couldn't load campaign data. If this is new, apply the campaign_events migration in Supabase.",
+    "note": "Counts only visitors who accepted Analytics. Founding spots taken counts everyone, so compare the two to estimate untracked sign-ups. Times are rolling from now."
   }
 }
