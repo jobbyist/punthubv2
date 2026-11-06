@@ -6,10 +6,10 @@
     "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
   },
   "title": "Pricing",
-  "subtitle": "Free for the first 100 Founding Members. Pay-As-You-Go and Puntr Pro are available at launch on 1 December 2026 and are entirely optional.",
+  "subtitle": "Start free as a Founding Member. Optional Pay-As-You-Go credits and Puntr Pro are planned for the official launch on 1 December 2026.",
   "founding": {
     "badge": "Open now",
-    "title": "Founding Members: free",
+    "title": "Your place in the founding community",
     "spots": "100 spots. No card needed.",
     "f1": "A permanent Founding badge, numbered #1 to #100",
     "f2": "Full access to posting, your record and the weekly leaderboard",
@@ -24,9 +24,9 @@
     "q2": "When do Pay-As-You-Go and Puntr Pro launch?",
     "a2": "Both are available from the official launch on 1 December 2026. We will confirm final prices and terms before anything goes on sale. The prices here are indicative.",
     "q3": "What is the difference between Pay-As-You-Go and Puntr Pro?",
-    "a3": "Pay-As-You-Go lets you buy credits when you need them. Puntr Pro is one monthly subscription, R99 per month, for advanced bettors and tipsters who use Puntr every week.",
+    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro is an optional monthly subscription for members who want deeper analysis and additional tools.",
     "q4": "Can paying improve my ranking?",
-    "a4": "No. Paying never earns extra points or prize eligibility. Credits and Puntr Pro only unlock optional extras.",
+    "a4": "No. Payment does not buy points, improve your position on the leaderboard or change prize eligibility. Rankings are based on recorded performance.",
     "q5": "Is Puntr a bookmaker?",
     "a5": "No. Puntr does not take bets, set odds or hold betting funds."
   },
@@ -54,7 +54,7 @@
   "pro": {
     "badge": "At launch",
     "title": "Puntr Pro",
-    "tagline": "For advanced bettors and tipsters who want deeper analysis.",
+    "tagline": "For sports fans and tipsters who want more context, deeper analysis and useful tools.",
     "price": "{{price}} per month",
     "note": "One simple monthly subscription. Not on sale yet: we will publish the full terms and cancellation rules before it opens.",
     "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
