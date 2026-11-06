@@ -107,9 +107,9 @@ function Terms() {
               <li>
                 A limited Founding Annual Pass offer: the first 20 Founding Members to claim it
                 before 16 November 2026 get 12 months of Puntr Pro for a once-off R299, starting on
-                1 December 2026, with no automatic renewal. Claiming includes payment through
-                PayFast: a claim holds a place for 48 hours and the place is confirmed when payment
-                is received; unpaid places are released. Refunds are covered on the Refunds page.
+                1 December 2026, with no automatic renewal. Reserving is free on Puntr. We email a secure PayFast payment link; payment must be completed
+                within 48 hours or the reservation expires and the place is released. The Annual Pass is
+                confirmed only after payment is received. Refunds are covered on the Refunds page.
                 Referral rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases
                 made by people you invite (never cash), are not available until we publish their
                 terms [attorney review]
