@@ -45,6 +45,7 @@ import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -230,6 +231,11 @@ const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
   path: '/api/cron/chain-head',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
+  id: '/api/cron/founding-campaign',
+  path: '/api/cron/founding-campaign',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   id: '/api/cron/launch-notify',
   path: '/api/cron/launch-notify',
@@ -288,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -417,6 +426,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/newsroom'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -544,6 +556,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
@@ -804,6 +817,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronChainHeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/founding-campaign': {
+      id: '/api/cron/founding-campaign'
+      path: '/api/cron/founding-campaign'
+      fullPath: '/api/cron/founding-campaign'
+      preLoaderRoute: typeof ApiCronFoundingCampaignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/launch-notify': {
       id: '/api/cron/launch-notify'
       path: '/api/cron/launch-notify'
@@ -872,6 +892,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
