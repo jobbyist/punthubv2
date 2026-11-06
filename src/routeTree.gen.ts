@@ -46,6 +46,7 @@ import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
+import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -236,6 +237,11 @@ const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
   path: '/api/cron/founding-campaign',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronFoundingWelcomeRoute = ApiCronFoundingWelcomeRouteImport.update({
+  id: '/api/cron/founding-welcome',
+  path: '/api/cron/founding-welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   id: '/api/cron/launch-notify',
   path: '/api/cron/launch-notify',
@@ -295,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -338,6 +345,7 @@ export interface FileRoutesByTo {
   '/newsroom': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -382,6 +390,7 @@ export interface FileRoutesById {
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -427,6 +436,7 @@ export interface FileRouteTypes {
     | '/newsroom/'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-welcome'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -470,6 +480,7 @@ export interface FileRouteTypes {
     | '/newsroom'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-welcome'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -513,6 +524,7 @@ export interface FileRouteTypes {
     | '/newsroom/'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-welcome'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -557,6 +569,7 @@ export interface RootRouteChildren {
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
+  ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
@@ -824,6 +837,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronFoundingCampaignRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/founding-welcome': {
+      id: '/api/cron/founding-welcome'
+      path: '/api/cron/founding-welcome'
+      fullPath: '/api/cron/founding-welcome'
+      preLoaderRoute: typeof ApiCronFoundingWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/launch-notify': {
       id: '/api/cron/launch-notify'
       path: '/api/cron/launch-notify'
@@ -893,6 +913,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
+  ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,

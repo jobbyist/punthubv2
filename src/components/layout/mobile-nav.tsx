@@ -31,6 +31,7 @@ import { useState, type ComponentType, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Logo } from "@/components/brand";
+import { LiveBadge } from "@/components/live-badge";
 import { useSession } from "@/components/session";
 import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -52,6 +53,7 @@ const sports = [
   { key: "tennis", emoji: "🎾", active: false },
   { key: "cricket", emoji: "🏏", active: false },
   { key: "combat", emoji: "🥊", active: false },
+  { key: "athletics", emoji: "🏃", active: false },
   { key: "racing", emoji: "🏇", active: false },
 ] as const;
 
@@ -198,6 +200,7 @@ export function MobileNav() {
                           <span className="text-[11px] font-medium text-foreground">
                             {t(`sport.${s.key}`)}
                           </span>
+                          {s.key === "soccer" && <LiveBadge />}
                         </Link>
                       ) : (
                         <div

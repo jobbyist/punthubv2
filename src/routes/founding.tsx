@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { FoundingCounter } from "@/components/founding-counter";
 import { RgNotice } from "@/components/rg-notice";
 import { Button } from "@/components/ui/button";
@@ -94,6 +95,8 @@ function Founding() {
           ))}
         </ol>
       </section>
+
+      <AnnualPassClaim />
 
       <section className="mt-12 bg-primary-soft p-6">
         <h2 className="text-xl">{t("last.title")}</h2>

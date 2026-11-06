@@ -6,7 +6,7 @@
 import { addDays } from "./launch";
 
 export type RoadmapSport =
-  "soccer" | "basketball" | "rugby" | "racing" | "combat" | "cricket" | "tennis";
+  "soccer" | "basketball" | "rugby" | "racing" | "combat" | "athletics" | "cricket" | "tennis";
 
 export const SPORT_ROADMAP: readonly { sport: RoadmapSport; weeks: readonly [number, number] }[] = [
   { sport: "soccer", weeks: [1, 1] },
@@ -14,6 +14,7 @@ export const SPORT_ROADMAP: readonly { sport: RoadmapSport; weeks: readonly [num
   { sport: "rugby", weeks: [2, 2] },
   { sport: "racing", weeks: [4, 4] },
   { sport: "combat", weeks: [6, 8] },
+  { sport: "athletics", weeks: [6, 8] },
   { sport: "cricket", weeks: [10, 10] },
   { sport: "tennis", weeks: [12, 12] },
 ] as const;

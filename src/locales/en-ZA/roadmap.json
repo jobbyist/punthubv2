@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Product roadmap | Puntr",
-    "description": "What's live on Puntr and what's coming next: football at launch, then basketball, rugby, horse racing, combat sports, cricket and tennis.",
+    "description": "What's live on Puntr and what's coming next: football at launch, then basketball, rugby, horse racing, combat sports, athletics, cricket and tennis.",
     "ogTitle": "Puntr product roadmap"
   },
   "eyebrow": "Product roadmap",
@@ -49,6 +49,10 @@
       "name": "Combat sports",
       "body": "Boxing and MMA fight cards."
     },
+    "athletics": {
+      "name": "Athletics",
+      "body": "Track and field meetings. Competitions confirmed closer to the time."
+    },
     "cricket": {
       "name": "Cricket",
       "body": "Competitions confirmed closer to the time."
@@ -72,6 +76,10 @@
     "pro": {
       "title": "Puntr Pro",
       "body": "Extra tools for members who want more. Puntr stays free to join."
+    },
+    "referrals": {
+      "title": "Refer and earn 30%",
+      "body": "Share the unique referral link or code on your profile to invite your network to join Puntr and you'll earn up to 30% on qualifying purchases made by them after they sign up. More details coming soon."
     },
     "apps": {
       "title": "Mobile apps",
