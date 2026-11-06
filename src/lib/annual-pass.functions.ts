@@ -17,42 +17,20 @@ export type ReserveAnnualPassResult =
         | "error";
     };
 
-const PAYFAST_HOSTS = new Set([
-  "www.payfast.co.za",
-  "payfast.co.za",
-  "www.payfast.io",
-  "payfast.io",
-]);
-
-function configuredPayfastUrl(): string | null {
-  const value = process.env["ANNUAL_PASS_PAYFAST_URL"]?.trim();
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    if (
-      url.protocol !== "https:" ||
-      !PAYFAST_HOSTS.has(url.hostname) ||
-      url.username ||
-      url.password ||
-      (url.port && url.port !== "443")
-    ) return null;
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
 /**
  * Reserve one of the 20 Founding Annual Passes without collecting payment on Puntr.
  * The existing claim_annual_pass RPC atomically creates/returns a 48-hour hold. Resend then
- * emails the configured, HTTPS-only PayFast hosted payment link to the authenticated member.
+ * emails a signed, expiring Puntr redirect which forwards to the configured PayFast hosted link.
  */
 export const reserveAnnualPass = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ReserveAnnualPassResult> => {
-    const paymentUrl = configuredPayfastUrl();
-    if (!paymentUrl || !process.env["RESEND_API_KEY"])
-      return { ok: false, reason: "email_not_configured" };
+    const paymentSecret = process.env["ANNUAL_PASS_LINK_SECRET"];
+    if (
+      !paymentSecret ||
+      !process.env["RESEND_API_KEY"] ||
+      !(await import("@/lib/annual-pass-payment.server")).configuredPayfastUrl()
+    ) return { ok: false, reason: "email_not_configured" };
 
     const claims = context.claims as unknown as Record<string, unknown>;
     const email = typeof claims["email"] === "string" ? claims["email"].trim().toLowerCase() : "";
@@ -82,10 +60,21 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
       return { ok: false, reason: "error" };
 
     try {
-      const [{ sendViaResend, REPLY_TO }, { renderAnnualPassReservationEmail }] = await Promise.all([
+      const [
+        { sendViaResend, REPLY_TO },
+        { renderAnnualPassReservationEmail },
+        { createAnnualPassPaymentToken },
+        { SITE },
+      ] = await Promise.all([
         import("@/lib/email/resend.server"),
         import("@/lib/email/annual-pass-reservation"),
+        import("@/lib/annual-pass-payment.server"),
+        import("@/lib/launch"),
       ]);
+      const token = createAnnualPassPaymentToken(context.userId, holdExpiresAt, paymentSecret);
+      const paymentLink = new URL("/api/annual-pass/pay", SITE);
+      paymentLink.searchParams.set("token", token);
+
       const { data: profile } = await context.supabase
         .from("profiles")
         .select("display_name")
@@ -93,7 +82,7 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
         .maybeSingle();
       const mail = renderAnnualPassReservationEmail({
         name: profile?.display_name ?? "",
-        paymentUrl,
+        paymentUrl: paymentLink.toString(),
         holdExpiresAt,
       });
       const sent = await sendViaResend({
