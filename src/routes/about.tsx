@@ -327,7 +327,9 @@ function About() {
         {/* Sports */}
         <motion.section {...fade} className="py-16">
           <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">SPORTS COVERAGE</h2>
+            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
+              {t("sports.title1")} <span className="text-primary">{t("sports.title2")}</span>.
+            </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("sports.body")}</p>
           </div>
           <div className="mt-12">
@@ -359,7 +361,7 @@ function About() {
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
-          <ExplainerVideo title={t("video.iframeTitle")} />
+          <div className="mx-auto mt-8 max-w-3xl"><ExplainerVideo title={t("video.iframeTitle")} /></div>
         </motion.section>
 
         {/* Foundation and partners */}
