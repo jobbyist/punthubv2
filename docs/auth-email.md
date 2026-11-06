@@ -5,22 +5,24 @@
 | Method | Sign up | Sign in | Notes |
 |---|---|---|---|
 | Google | Continue with Google | Continue with Google | Needs the Google provider set up (below). The email arrives confirmed. The 18+ box, year of birth and Terms are asked in onboarding. |
-| Email + password | Yes | Yes | No confirmation step. |
+| Email + password | Yes | Yes | The email is confirmed first: sign-up sends a 6-digit code and link (join screen, code step), and signing in before confirming sends a fresh code. |
 | Username + password | No (a username is chosen in onboarding) | Yes, in the same "Email or username" box | Done on the server: it finds the email and signs in itself, then returns only session tokens. A username never reveals an email, and every failure looks the same. |
 | Email code or link | Yes (no password at all) | Yes | One email carries a 6-digit code and a one-tap link. Asking for a code for an address with no account looks identical to asking for one that has an account. |
 
 Members with two-factor on are asked for the authenticator code after any of these.
 
-Members sign up with **email + password** and are signed in straight away. They are then asked, in a dismissible
-bar and on `/account/security`, to confirm their email and turn on two-factor sign-in (authenticator app).
+Members sign up with **email + password**, confirm their email with the emailed code or link, and are then signed in
+(owner decision, 6 Nov 2026: confirm before sign-in). They are then asked, in a dismissible bar and on
+`/account/security`, to turn on two-factor sign-in (authenticator app). Members who signed up before this change and
+never confirmed still see the confirm prompts.
 Returning members can also ask for a **6-digit sign-in code** by email ("Email me a sign-in code instead"), which
 also works if they forget the password.
 
 ## Supabase settings (dashboard, by hand)
 
 **Authentication → Sign In / Providers → Email**
-- **Confirm email: OFF.** This is what lets people in without confirming first. (If it is left ON, the join screen
-  falls back to asking for the emailed code, so nothing breaks.)
+- **Confirm email: ON.** Nobody can sign in with an unconfirmed address, and a Founding spot cannot be claimed with
+  an address the person does not own. The join screen asks for the emailed code.
 - Minimum password length: 8 (the app also checks 8 to 72 bytes and refuses common passwords).
 - Leaked-password protection: turn on if your plan allows it.
 

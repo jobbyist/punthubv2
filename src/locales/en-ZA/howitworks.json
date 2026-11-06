@@ -10,7 +10,7 @@
   "steps": {
     "s1": {
       "title": "Join with your email. 18+",
-      "body": "Enter your email, choose a password and confirm that you are 18 or older. You can confirm your email and add two-factor sign-in once you are in.",
+      "body": "Enter your email, choose a password and confirm that you are 18 or older. We email you a code to confirm your address, then you can sign in. You can add two-factor sign-in afterwards.",
       "b1": "Free for Founding Members",
       "b2": "No card needed"
     },

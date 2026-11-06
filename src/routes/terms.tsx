@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r7). Draft pending
+            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r8). Draft pending
             attorney review.
           </p>
 
@@ -109,8 +109,9 @@ function Terms() {
                 before 16 November 2026 reserve 12 months of Puntr Pro for a once-off R299, starting
                 on 1 December 2026, with no automatic renewal. Claiming takes no payment; payment
                 opens at checkout before launch, and refund terms will be shown before you pay.
-                Referral rewards on qualifying purchases (up to 30%) are planned and are not
-                available until we publish their terms [attorney review]
+                Referral rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases
+                made by people you invite (never cash), are not available until we publish their
+                terms [attorney review]
               </li>
               <li>Educational content and betting resources</li>
               <li>Links to licensed partners, marked &quot;Ad&quot;</li>

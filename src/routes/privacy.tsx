@@ -95,7 +95,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r5). Draft pending
+          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r6). Draft pending
           attorney review.
         </p>
 
@@ -153,9 +153,10 @@ function Privacy() {
             verified; we do not receive your Google password, and Google&apos;s own privacy policy
             applies to what it does. You can also sign in with your username and password: we look
             up your email on our server to complete the sign-in and never show it to anyone. You can
-            confirm your email and turn on two-factor sign-in with an authenticator app on your
-            account page. Once two-factor is on, posting and changing your profile need the code
-            from your app.
+            turn on two-factor sign-in with an authenticator app on your account page. When you sign
+            up with an email, we email you a code or link and you confirm your address before you
+            can sign in. Once two-factor is on, posting and changing your profile need the code from
+            your app.
           </p>
         </section>
 

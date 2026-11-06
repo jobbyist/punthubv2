@@ -1,4 +1,5 @@
 import { emailLocale, emailT } from "./i18n";
+import { DARK_CSS, themedLogo } from "./theme";
 
 /**
  * Reusable, email-client-safe HTML building blocks (Gmail / Outlook friendly).
@@ -35,9 +36,9 @@ export function preheader(text: string): string {
 
 export function logoHeader(): string {
   return `<tr>
-    <td align="center" style="padding:32px 24px 8px;">
-      <div style="font-family:Helvetica,Arial,sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;color:${brand.text};">Puntr<span style="color:${brand.green};">.</span></div>
-      <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${brand.green};margin-top:6px;font-weight:700;">Early Access</div>
+    <td align="center" class="dm-card" style="padding:28px 24px 8px;background-color:${brand.white};">
+      ${themedLogo(104, 56)}
+      <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${brand.green};margin-top:6px;font-weight:700;" class="dm-green">Early Access</div>
     </td>
   </tr>`;
 }
@@ -57,31 +58,31 @@ export function button(
 }
 
 export function card(innerHtml: string, background: string = brand.soft): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${background};border:1px solid ${brand.border};border-radius:14px;">
+  return `<table role="presentation" class="dm-box" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${background};border:1px solid ${brand.border};border-radius:14px;">
     <tr><td style="padding:20px 22px;font-family:Helvetica,Arial,sans-serif;">${innerHtml}</td></tr>
   </table>`;
 }
 
 export function heading(text: string): string {
-  return `<h1 style="margin:0 0 14px;font-family:Helvetica,Arial,sans-serif;font-size:26px;line-height:1.25;color:${brand.text};font-weight:800;">${text}</h1>`;
+  return `<h1 class="dm-h" style="margin:0 0 14px;font-family:Helvetica,Arial,sans-serif;font-size:26px;line-height:1.25;color:${brand.text};font-weight:800;">${text}</h1>`;
 }
 
 export function paragraph(html: string): string {
-  return `<p style="margin:0 0 16px;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:${brand.muted};">${html}</p>`;
+  return `<p class="dm-p" style="margin:0 0 16px;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:${brand.muted};">${html}</p>`;
 }
 
 export function divider(): string {
-  return `<div style="height:1px;line-height:1px;background-color:${brand.border};margin:28px 0;">&nbsp;</div>`;
+  return `<div class="dm-line" style="height:1px;line-height:1px;background-color:${brand.border};margin:28px 0;">&nbsp;</div>`;
 }
 
 export function footer(locale?: string | null): string {
   const t = emailT(locale);
   return `<tr>
-    <td style="padding:24px 32px 32px;border-top:1px solid ${brand.border};font-family:Helvetica,Arial,sans-serif;">
-      <div style="font-size:15px;font-weight:800;color:${brand.text};">Puntr</div>
-      <div style="font-size:13px;color:${brand.muted};margin-top:2px;">${escapeHtml(t("footer.tagline"))}</div>
-      <div style="margin-top:16px;font-size:12px;line-height:1.7;color:#6B7280;">
-        <strong style="color:${brand.text};">${escapeHtml(t("footer.rgTitle"))}</strong><br />
+    <td class="dm-line" style="padding:24px 32px 32px;border-top:1px solid ${brand.border};font-family:Helvetica,Arial,sans-serif;">
+      <div class="dm-h" style="font-size:15px;font-weight:800;color:${brand.text};">Puntr</div>
+      <div class="dm-sub" style="font-size:13px;color:${brand.muted};margin-top:2px;">${escapeHtml(t("footer.tagline"))}</div>
+      <div class="dm-sub" style="margin-top:16px;font-size:12px;line-height:1.7;color:#6B7280;">
+        <strong class="dm-h" style="color:${brand.text};">${escapeHtml(t("footer.rgTitle"))}</strong><br />
         ${escapeHtml(t("footer.rgLine1"))}<br />
         ${escapeHtml(t("footer.rgLine2"))}<br />
         ${escapeHtml(t("footer.rgLine3"))} 0800 006 008.
@@ -107,17 +108,15 @@ export function layout(bodyRows: string, previewText: string, locale?: string | 
         .px { padding-left:20px !important; padding-right:20px !important; }
         .btn { display:block !important; margin-bottom:12px !important; }
       }
-      @media (prefers-color-scheme: dark) {
-        .bg-outer { background-color:#0B0F0E !important; }
-      }
+      ${DARK_CSS}
     </style>
   </head>
   <body style="margin:0;padding:0;background-color:${brand.soft};">
     ${preheader(previewText)}
-    <table role="presentation" class="bg-outer" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${brand.soft};padding:28px 12px;">
+    <table role="presentation" class="bg-outer dm-outer" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${brand.soft};padding:28px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background-color:${brand.white};border:1px solid ${brand.border};border-radius:18px;overflow:hidden;">
+          <table role="presentation" class="container dm-card" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background-color:${brand.white};border:1px solid ${brand.border};border-radius:18px;overflow:hidden;">
             ${bodyRows}
           </table>
         </td>
