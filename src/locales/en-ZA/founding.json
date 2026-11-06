@@ -56,6 +56,8 @@
     "already": "You've already claimed place {{position}}. We'll email you when checkout opens.",
     "full": "All {{spots}} places have been claimed.",
     "closed": "This offer closed on {{deadline}}.",
-    "error": "We couldn't claim your place just now. Please try again."
+    "error": "We couldn't claim your place just now. Please try again.",
+    "leftOf": "{{count}} of {{total}} Annual Passes left",
+    "teaser": "Founding Members can reserve one of just 20 Annual Passes: 12 months of Puntr Pro for R299 instead of R1,188 at the standard monthly rate. Reserve after joining; payment is collected later when checkout opens."
   }
 }
