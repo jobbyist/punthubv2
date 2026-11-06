@@ -87,7 +87,7 @@ function MyRecord({ userId }: { userId: string }) {
 function Results() {
   const { t } = useTranslation("results");
   const { profile } = useSession();
-  const { data: days, loading } = useAsync(() => fetchResults(14), []);
+  const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
   const gated = useGated();
   const order = new Map(
     (days ?? []).flatMap((d) => d.fixtures).map((r, i) => [r.fixture.id, i] as const),

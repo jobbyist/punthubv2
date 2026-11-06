@@ -113,8 +113,6 @@ function Predictions() {
         </div>
       )}
 
-
-
       {days.length === 0 && (
         <div className="card-surface p-6">
           <h2 className="text-lg">{t("empty.title")}</h2>
