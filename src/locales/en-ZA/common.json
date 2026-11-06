@@ -53,51 +53,7 @@
     "fixtures": {
       "title": "A look at the fixture experience",
       "body": "Sample match cards across competitions and sports. These are design examples, not scheduled fixtures or available markets.",
-      "kickoff": "Sample kick-off",
-      "fixtures": [
-        {
-          "home": "Orlando Pirates",
-          "away": "Kaizer Chiefs",
-          "sport": "soccer",
-          "competition": "Betway Premiership",
-          "time": "19:30 SAST"
-        },
-        {
-          "home": "Arsenal",
-          "away": "Liverpool",
-          "sport": "soccer",
-          "competition": "Premier League",
-          "time": "18:30 SAST"
-        },
-        {
-          "home": "Real Madrid",
-          "away": "Bayern Munich",
-          "sport": "soccer",
-          "competition": "UEFA Champions League",
-          "time": "03:00 SAST"
-        },
-        {
-          "home": "South Africa",
-          "away": "New Zealand",
-          "sport": "rugby",
-          "competition": "International Rugby",
-          "time": "17:00 SAST"
-        },
-        {
-          "home": "Golden State Warriors",
-          "away": "Boston Celtics",
-          "sport": "basketball",
-          "competition": "NBA",
-          "time": "02:30 SAST"
-        },
-        {
-          "home": "South Africa",
-          "away": "India",
-          "sport": "cricket",
-          "competition": "International Cricket",
-          "time": "10:00 SAST"
-        }
-      ]
+      "kickoff": "Sample kick-off"
     },
     "leaderboard": {
       "title": "What the leaderboard can look like",
@@ -153,20 +109,11 @@
       "newsBody": "Example publisher cards show how aggregated coverage could appear. No live articles are being fetched here.",
       "sourcePreview": "Source preview",
       "refresh": "Planned refresh schedule: every 24 hours at 12:00 SAST",
-      "stories": [
-        {
-          "source": "SuperSport",
-          "title": "Example: team news and selection update"
-        },
-        {
-          "source": "BBC Sport",
-          "title": "Example: competition form and fixture context"
-        },
-        {
-          "source": "ESPN",
-          "title": "Example: analysis and wider sports headlines"
-        }
-      ]
+      "stories": {
+        "supersport": "Example: team news and selection update",
+        "bbcsport": "Example: competition form and fixture context",
+        "espn": "Example: analysis and wider sports headlines"
+      }
     }
   }
 }
