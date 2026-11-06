@@ -7,6 +7,7 @@ import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/session";
+import { UserAvatar } from "@/components/user-avatar";
 import { usePoints } from "@/hooks/use-points";
 import { points as formatPoints } from "@/lib/format";
 import {
@@ -126,9 +127,7 @@ export function SiteHeader() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-1.5 rounded-full border border-border py-1 pl-1 pr-2.5 text-sm font-medium">
-                  <span className="grid size-7 place-items-center rounded-full bg-muted text-xs font-semibold uppercase">
-                    {profile.username.slice(0, 1)}
-                  </span>
+                  <UserAvatar username={profile.username} url={profile.avatar_url} />
                   <span className="hidden max-w-[10rem] truncate sm:inline">
                     {profile.username}
                   </span>

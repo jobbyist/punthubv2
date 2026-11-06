@@ -10,6 +10,9 @@ export const esc = (v: string) =>
 /** Limited offer terms. Keep in step with claim_annual_pass() in the database. */
 export const PASS_SPOTS = 20;
 export const PASS_DEADLINE_TEXT = "16 November 2026";
+/** Claiming includes payment. Keep in step with /founding and the Terms. */
+export const PASS_PAYMENT_TEXT =
+  "Claiming includes payment: R299 once-off through PayFast, our payment provider. Your place is confirmed when your payment is received; if you do not finish paying, it is released after 48 hours.";
 export const PASS_CLAIM_URL = `${SITE}/founding#annual-pass`;
 
 export const RG_LINE =

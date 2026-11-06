@@ -12,6 +12,7 @@ import {
   DARK_CSS,
   PASS_CLAIM_URL,
   PASS_DEADLINE_TEXT,
+  PASS_PAYMENT_TEXT,
   PASS_SPOTS,
   RG_LINE,
 } from "./founding-shared";
@@ -64,9 +65,8 @@ export function renderFoundingWelcomeEmail({ name, unsubscribeUrl }: FoundingWel
     "Your feedback shapes what we build next. Reply to this email any time with ideas, questions or things that do not feel right. It comes straight to me and the team.";
   const passTitle = "A quiet offer for our first 20";
   const passBody = `If you would like to lock in 12 months of Puntr Pro for a once-off R299 (standard Pro is R99 a month, R1,188 a year), the Founding Annual Pass is open to the first ${PASS_SPOTS} founding members who claim it before ${PASS_DEADLINE_TEXT}. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.`;
-  const passNote =
-    "Claiming reserves your place and the price. You pay nothing today: we will email you when checkout opens before launch. If you do not want it, simply ignore this section.";
-  const passCta = "Claim my Annual Pass place";
+  const passNote = `${PASS_PAYMENT_TEXT} If you do not want it, simply ignore this section.`;
+  const passCta = "Claim and pay R299";
   const sign = ["Michael", "Founder, Puntr"];
   const reason =
     "You are getting this because you joined Puntr as a Founding Member and opted in to updates.";

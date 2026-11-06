@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import { MfaChallenge } from "@/components/mfa-challenge";
 import { RgNotice } from "@/components/rg-notice";
+import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -783,6 +784,7 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
           </Link>
         </p>
       )}
+      {number && <AnnualPassClaim onboarding />}
       <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link to="/predictions">{t("join.done.cta")}</Link>
