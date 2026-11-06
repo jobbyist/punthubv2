@@ -2,22 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-/**
- * Founding Annual Pass: claiming includes payment (R299 once-off, PayFast).
- * Payments stay off until PAYFAST_ENABLED=true (owner go-ahead, PayFast task). Until then nobody can start a claim,
- * so no place is held without a way to pay for it.
- */
-export const getPassPaymentStatus = createServerFn({ method: "GET" }).handler(async () => ({
-  paymentsOpen: process.env["PAYFAST_ENABLED"] === "true",
-}));
-
-export type StartCheckoutResult =
-  | { ok: true; checkoutUrl: string; fields: Record<string, string> }
+export type ReserveAnnualPassResult =
+  | { ok: true; holdExpiresAt: string }
   | {
       ok: false;
       reason:
-        | "payments_not_open"
-        | "checkout_unavailable"
+        | "email_not_configured"
+        | "email_failed"
+        | "missing_email"
         | "already_paid"
         | "full"
         | "closed"
@@ -25,25 +17,93 @@ export type StartCheckoutResult =
         | "error";
     };
 
-export const startAnnualPassCheckout = createServerFn({ method: "POST" })
+const PAYFAST_HOSTS = new Set([
+  "www.payfast.co.za",
+  "payfast.co.za",
+  "www.payfast.io",
+  "payfast.io",
+]);
+
+function configuredPayfastUrl(): string | null {
+  const value = process.env["ANNUAL_PASS_PAYFAST_URL"]?.trim();
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !PAYFAST_HOSTS.has(url.hostname)) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Reserve one of the 20 Founding Annual Passes without collecting payment on Puntr.
+ * The existing claim_annual_pass RPC atomically creates/returns a 48-hour hold. Resend then
+ * emails the configured, HTTPS-only PayFast hosted payment link to the authenticated member.
+ */
+export const reserveAnnualPass = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<StartCheckoutResult> => {
-    if (process.env["PAYFAST_ENABLED"] !== "true")
-      return { ok: false, reason: "payments_not_open" };
+  .handler(async ({ context }): Promise<ReserveAnnualPassResult> => {
+    const paymentUrl = configuredPayfastUrl();
+    if (!paymentUrl || !process.env["RESEND_API_KEY"])
+      return { ok: false, reason: "email_not_configured" };
+
+    const claims = context.claims as Record<string, unknown>;
+    const email = typeof claims["email"] === "string" ? claims["email"].trim().toLowerCase() : "";
+    if (!email) return { ok: false, reason: "missing_email" };
+
     const rpc = context.supabase.rpc.bind(context.supabase) as unknown as (
       fn: string,
-    ) => Promise<{ data: { status: string } | null; error: unknown }>;
+    ) => Promise<{
+      data: { status: string; hold_expires_at?: string } | null;
+      error: { message: string } | null;
+    }>;
     const { data, error } = await rpc("claim_annual_pass");
-    if (error || !data) return { ok: false, reason: "error" };
-    if (data.status === "already_paid" || data.status === "full" || data.status === "closed")
-      return { ok: false, reason: data.status };
-    if (data.status === "not_member") return { ok: false, reason: "not_member" };
-    // Place held (claimed / already_pending). The PayFast task replaces checkoutReady() and returns the form URL and
-    // signed fields here; its ITN handler calls confirm_annual_pass_payment().
-    return { ok: false, reason: "checkout_unavailable" };
-  });
+    if (error || !data) {
+      console.error("Annual Pass reservation failed", error?.message);
+      return { ok: false, reason: "error" };
+    }
 
-/** True once the PayFast checkout builder exists. Until then no claim is started. */
-function checkoutReady(): boolean {
-  return false;
-}
+    if (data.status === "already_paid") return { ok: false, reason: "already_paid" };
+    if (data.status === "full") return { ok: false, reason: "full" };
+    if (data.status === "closed") return { ok: false, reason: "closed" };
+    if (data.status === "not_member") return { ok: false, reason: "not_member" };
+    if (data.status !== "claimed" && data.status !== "already_pending")
+      return { ok: false, reason: "error" };
+
+    const holdExpiresAt = data.hold_expires_at;
+    if (!holdExpiresAt || new Date(holdExpiresAt).getTime() <= Date.now())
+      return { ok: false, reason: "error" };
+
+    try {
+      const [{ sendViaResend, REPLY_TO }, { renderAnnualPassReservationEmail }] = await Promise.all([
+        import("@/lib/email/resend.server"),
+        import("@/lib/email/annual-pass-reservation"),
+      ]);
+      const { data: profile } = await context.supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const mail = renderAnnualPassReservationEmail({
+        name: profile?.display_name ?? "",
+        paymentUrl,
+        holdExpiresAt,
+      });
+      const sent = await sendViaResend({
+        to: [email],
+        reply_to: REPLY_TO,
+        subject: mail.subject,
+        html: mail.html,
+        text: mail.text,
+      });
+      if (!sent.ok) {
+        console.error("Annual Pass reservation email failed", sent.status, sent.body);
+        return { ok: false, reason: "email_failed" };
+      }
+      return { ok: true, holdExpiresAt };
+    } catch (err) {
+      console.error("Annual Pass reservation email threw", err);
+      return { ok: false, reason: "email_failed" };
+    }
+  });
