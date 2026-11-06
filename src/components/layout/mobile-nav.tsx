@@ -23,6 +23,7 @@ import {
   ChevronRight,
   ChevronDown,
   Map,
+  Wrench,
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -143,7 +144,10 @@ export function MobileNav() {
               {/* Primary links */}
               <div className="space-y-0.5">
                 <NavLink to="/" icon={Home} label={t("mobile.home")} active={path === "/"} />
-                <NavLink to="/predictions" icon={Target} label={t("primary.predictions")} />
+                <NavLink to="/about" icon={Info} label={t("primary.about")} />
+                <NavLink to="/newsroom" icon={Radio} label={t("primary.updates")} />
+                <NavLink to="/coming-soon" icon={BarChart3} label={t("primary.insights")} />
+                <NavLink to="/tools" icon={Wrench} label={t("primary.tools")} />
               </div>
 
               {/* Sports section */}
