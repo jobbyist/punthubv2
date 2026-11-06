@@ -1,6 +1,5 @@
-uundundundefinedfundefinednedfinedundefinedefineduuundefineddefineddefineduundundefinedfinedundefinedundefinedfinedundefinedundefinedundefinedundefined{undefinedundefinedundefinedeundefinedteFileRundefineduteundefined}undefinedfundefinedundefinedundefined undefined@tanundefinedtaundefinedundefinedundefinedreaundefinedtundefinedrundefineduter"undefined
-imundefinedort { AundefinedundefinedShell, PageHeading } from "@/components/layout/app-shell";
-import { Booundefinedmakerundefinedndependenceundefinedotice } from "@/components/undefinedookmaker-independence-notice";
+import { createFileRoute } from "@tanstack/react-router";
+import { AppShell, PageHeading } from "@/components/layout/app-shell";
 
 export const Route = createFileRoute("/affiliate-disclosure")({
   head: () => ({
@@ -20,8 +19,7 @@ function AffiliateDisclosure() {
   return (
     <AppShell>
       <PageHeading title="Affiliate disclosure" subtitle="How partner links work on Puntr." />
-      <BookmakerIndependenceNotice />
-      <div className="card-surface mt-4 space-y-4 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
+      <div className="card-surface space-y-4 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
           Puntr may earn a commission if you click a partner link and sign up with that partner.
           Every such link is labelled &quot;Ad&quot;. A partner appears only after we have checked
