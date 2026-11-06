@@ -31,12 +31,18 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
               isMember,
               unsubscribeUrl: unsubTest(SUPPORT_INBOX, secret),
             });
-            const res = await sendTest({
-              to: [SUPPORT_INBOX],
-              subject: `[TEST ${isMember ? "member" : "reserved"}] ${mail.subject}`,
-              html: mail.html,
-              text: mail.text,
-            });
+            let res: { ok: boolean; status: number };
+            try {
+              res = await sendTest({
+                to: [SUPPORT_INBOX],
+                subject: `[TEST ${isMember ? "member" : "reserved"}] ${mail.subject}`,
+                html: mail.html,
+                text: mail.text,
+              });
+            } catch (err) {
+              console.error("founding-campaign test send failed", err);
+              res = { ok: false, status: 500 };
+            }
             results.push({
               variant: isMember ? "member" : "reserved",
               ok: res.ok,
