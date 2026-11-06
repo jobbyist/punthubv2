@@ -1,4 +1,5 @@
 import { LatestFromPuntr } from "@/components/latest-from-puntr";
+import { ExplainerVideo } from "@/components/explainer-video";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
@@ -348,21 +349,7 @@ function Landing() {
               className="relative overflow-hidden rounded-xl bg-black shadow-2xl"
               style={{ paddingBottom: "56.25%" }}
             >
-              <iframe
-                src="https://www.youtube.com/embed/pBCncBbeWkc?rel=0"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  border: 0,
-                }}
-                allowFullScreen
-                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin"
-                title={t("video.iframeTitle")}
-              />
+              <ExplainerVideo title={t("video.iframeTitle")} />
             </div>
           </div>
         </div>
