@@ -9,6 +9,7 @@ import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
+import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
@@ -344,25 +345,8 @@ function Landing() {
             >
               <CloseIcon className="size-8" />
             </button>
-            <div
-              className="relative overflow-hidden rounded-xl bg-black shadow-2xl"
-              style={{ paddingBottom: "56.25%" }}
-            >
-              <iframe
-                src="https://www.youtube.com/embed/pBCncBbeWkc?rel=0"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  border: 0,
-                }}
-                allowFullScreen
-                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin"
-                title={t("video.iframeTitle")}
-              />
+            <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl">
+              <ExplainerVideo autoPlay />
             </div>
           </div>
         </div>

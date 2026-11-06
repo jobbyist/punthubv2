@@ -11,7 +11,7 @@
   "balance": "Your balance",
   "soon": {
     "title": "PuntPoints are on their way",
-    "body": "Earn PuntPoints for eligible activity and invites, then redeem them for vouchers, sponsored rewards and perks. A planned Tipster Support feature will also let Punters send voluntary PuntPoints tips to eligible verified Tipsters with sustained winning form and strong sport- and competition-specific leaderboard performance. Points have no cash value and cannot be bought."
+    "body": "Earn PuntPoints for eligible activity and invites, then redeem them for vouchers, sponsored rewards and perks. A planned Tipster Support feature will also let Punters recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value."
   },
   "signIn": {
     "body": "Sign in to see your balance, invite friends and redeem rewards.",
@@ -102,6 +102,6 @@
   },
   "tipSupport": {
     "title": "Support standout Tipsters",
-    "body": "Puntr Pro will introduce voluntary PuntPoints tips for verified Tipsters with long winning streaks and strong performance on selected sport- and competition-specific leaderboards. Tipsters can monetise their knowledge with points, not cash. Tips do not affect rankings. This feature is planned and is not available yet."
+    "body": "Puntr Pro will introduce Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value and can't be withdrawn, and support never affects rankings. This feature is planned and is not available yet."
   }
 }

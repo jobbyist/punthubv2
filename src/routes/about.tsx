@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
+import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { analytics } from "@/lib/analytics";
 import { money } from "@/lib/format";
@@ -131,36 +132,10 @@ const EXAMPLE_BOARD = [
   { rank: 3, username: "ExampleTipster3", accuracy: 0.74, predictions: 401 },
 ] as const;
 
-/** Click-to-play so no YouTube request is made until the visitor asks for the video. */
-function ExplainerVideo() {
-  const { t } = useTranslation("about");
-  const [playing, setPlaying] = useState(false);
+function AboutExplainer() {
   return (
-    <div
-      className="relative mx-auto mt-8 max-w-3xl overflow-hidden bg-black"
-      style={{ paddingBottom: "42.1875%" }}
-    >
-      {playing ? (
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/pBCncBbeWkc?rel=0&autoplay=1"
-          className="absolute inset-0 size-full border-0"
-          allowFullScreen
-          allow="autoplay; encrypted-media; picture-in-picture; web-share"
-          referrerPolicy="strict-origin"
-          title={t("video.iframeTitle")}
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setPlaying(true)}
-          className="absolute inset-0 grid place-items-center text-white transition-colors hover:text-primary"
-          aria-label={t("video.play")}
-        >
-          <span className="grid size-16 place-items-center rounded-full border-2 border-current text-2xl">
-            ▶
-          </span>
-        </button>
-      )}
+    <div className="mx-auto mt-8 max-w-3xl overflow-hidden bg-black">
+      <ExplainerVideo />
     </div>
   );
 }
@@ -391,7 +366,7 @@ function About() {
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
-          <ExplainerVideo />
+          <AboutExplainer />
         </motion.section>
 
         {/* Foundation and partners */}
