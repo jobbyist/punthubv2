@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { IllustrativeLeaderboard } from "@/components/illustrative-panels";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
@@ -78,6 +79,7 @@ function Leaderboards() {
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <IllustrativeLeaderboard />
       {!PRIZES_ENABLED && (
         <p className="-mt-3 mb-5 text-sm font-semibold text-primary">{t("pride")}</p>
       )}
