@@ -28,6 +28,7 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
     const paymentSecret = process.env["ANNUAL_PASS_LINK_SECRET"];
     if (
       !paymentSecret ||
+      paymentSecret.length < 32 ||
       !process.env["RESEND_API_KEY"] ||
       !(await import("@/lib/annual-pass-payment.server")).configuredPayfastUrl()
     ) return { ok: false, reason: "email_not_configured" };
