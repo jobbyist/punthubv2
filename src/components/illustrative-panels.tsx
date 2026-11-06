@@ -115,14 +115,14 @@ export function IllustrativeFixtures() {
                 </div>
                 <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
                   <div className="flex min-w-0 flex-col items-center gap-2 text-center">
-                    <TeamLogo team={fixture.home} size="lg" />
+                    <TeamLogo team={fixture.home} sport={fixture.sport} size="lg" />
                     <span className="line-clamp-2 text-xs font-semibold">{fixture.home}</span>
                   </div>
                   <span className="text-[10px] font-semibold uppercase text-muted-foreground">
                     {t("vs")}
                   </span>
                   <div className="flex min-w-0 flex-col items-center gap-2 text-center">
-                    <TeamLogo team={fixture.away} size="lg" />
+                    <TeamLogo team={fixture.away} sport={fixture.sport} size="lg" />
                     <span className="line-clamp-2 text-xs font-semibold">{fixture.away}</span>
                   </div>
                 </div>
@@ -162,6 +162,7 @@ export function IllustrativeFixtures() {
                 score: "24–18",
                 competition: "International Rugby",
                 date: "Full time",
+                sport: "rugby",
               },
             ].map((result) => (
               <article className="card-surface p-4" key={result.competition}>
@@ -173,12 +174,12 @@ export function IllustrativeFixtures() {
                 </div>
                 <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <TeamLogo team={result.home} size="lg" />
+                    <TeamLogo team={result.home} sport={result.sport} size="lg" />
                     <span className="text-xs font-semibold">{result.home}</span>
                   </div>
                   <span className="text-xl font-bold tabular-nums">{result.score}</span>
                   <div className="flex flex-col items-center gap-2">
-                    <TeamLogo team={result.away} size="lg" />
+                    <TeamLogo team={result.away} sport={result.sport} size="lg" />
                     <span className="text-xs font-semibold">{result.away}</span>
                   </div>
                 </div>
