@@ -76,7 +76,7 @@ export function SiteFooter() {
   useEffect(() => {
     const update = () => setCurrentDateTime(formatDateTime(new Date()));
     update();
-    const interval = setInterval(update, 30_000);
+    const interval = setInterval(update, 1_000);
     return () => clearInterval(interval);
   }, []);
 
