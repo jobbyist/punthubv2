@@ -202,16 +202,14 @@ export function MobileNav() {
               {/* Tools & services */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "bookmakers" }}
+                  to="/bookmakers"
                   icon={Building2}
                   label={t("mobile.tools.bookmakers")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
 
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "liveScores" }}
+                  to="/live-scores"
                   icon={Radio}
                   label={t("mobile.tools.liveScores")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -221,16 +219,14 @@ export function MobileNav() {
               {/* Rewards & community */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "puntPoints" }}
+                  to="/puntpoints"
                   icon={Star}
                   label={t("mobile.tools.puntPoints")}
                   badge={tc("badge.new")}
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "referrals" }}
+                  to="/referrals"
                   icon={UserPlus}
                   label={t("mobile.tools.referrals")}
                   right={
