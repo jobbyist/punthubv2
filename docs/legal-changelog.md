@@ -3,6 +3,11 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06 (explainer video, Tipster Support wording), no legal page text changed
+
+- The explainer video is now served from Supabase Storage (a public `media` bucket) instead of a YouTube embed, on the home page and `/about`. No YouTube request or cookie is made; the file only downloads when a visitor presses play. Supabase is already a listed processor, so Privacy §6 is unchanged.
+- Tipster Support copy (from #57) toned down to match the copy rules: "monetise their knowledge" and "long winning streaks" are replaced with "recognise verified Tipsters with a consistent track record", and every mention says it is planned, not available yet, that points have no cash value and that it never affects rankings. Review: the planned transfer of PuntPoints between members still needs Terms §6 and attorney sign-off before it is built `[attorney review]`.
+
 ## 2026-11-06 (KYC), Terms `2026-11-06-r10` and Privacy `2026-11-06-r8` (PR: identity verification, manual phase)
 
 - **Identity verification (owner, 6 Nov 2026):** phase 1 is manual for Founding Members. A member uploads a photo or scan of their SA ID or passport to a private storage bucket; an admin compares it with their name and birth year in `/admin` (ID checks tab) and approves or rejects it. The document is deleted straight after the decision, and within 30 days if never checked (daily `identity-retention` cron). Puntr keeps only the outcome (`identity_verifications`: status, over 18, reviewer, dates). No ID number is ever stored in a column. Phase 2 after launch: VerifyNow API (new processor, to be added to Privacy §6 when built).

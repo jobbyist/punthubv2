@@ -62,7 +62,7 @@
   },
   "rules": "Only settled (won or lost) picks at odds of 1.50 or more count towards the weekly ranking. Void picks add nothing.",
   "tipSupport": {
-    "title": "Standout Tipsters can earn community support",
-    "body": "Puntr Pro will introduce Tipster Support for verified Tipsters with long winning streaks and strong performance on selected sport- and competition-specific leaderboards. They can monetise their knowledge by receiving voluntary PuntPoints tips from Punters who value their insight. Tips earn points, not cash, and never influence rankings or pick grading."
+    "title": "Recognising consistent Tipsters",
+    "body": "Puntr Pro will introduce Tipster Support: Punters will be able to recognise verified Tipsters who show a consistent track record on selected leaderboards by sending them PuntPoints. Points have no cash value and can't be withdrawn, and support never influences rankings or pick grading. It opens only once its rules are published. Not available yet."
   }
 }
