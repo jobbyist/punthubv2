@@ -57,7 +57,7 @@ export function FoundingBar() {
     ? `Founding Sign-Ups: ${counts.foundingClaimed} of ${counts.foundingCap} spots claimed`
     : t("foundingBar.text", { launch });
   const annualText = counts
-    ? ` · ${counts.annualPassRemaining} /${ANNUAL_PASS_CAP} Annual Passes remaining`
+    ? ` · ${counts.annualPassRemaining}/${ANNUAL_PASS_CAP} Annual Passes remaining`
     : "";
 
   return (
