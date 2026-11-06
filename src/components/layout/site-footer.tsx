@@ -6,6 +6,7 @@ import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SocialLinks } from "@/components/social-links";
 import { HELPLINE_DISPLAY, RgNotice } from "@/components/rg-notice";
+import { useSession } from "@/components/session";
 import { formatDateTime } from "@/lib/format";
 
 const columns = [
@@ -70,6 +71,7 @@ function ComingSoonBadge({ store }: { store: "apple" | "google" }) {
 export function SiteFooter() {
   const { t } = useTranslation("nav");
   const { t: tRg } = useTranslation("rg");
+  const { isSignedIn } = useSession();
   const { t: tc } = useTranslation("common");
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
 
@@ -81,7 +83,7 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="mt-10 bg-surface pb-28 lg:pb-0">
+    <footer className={`mt-10 bg-surface lg:pb-0 ${isSignedIn ? "pb-28" : "pb-6"}`}>
       <div className="px-4 pb-8 sm:px-6">
         <RgNotice />
       </div>

@@ -27,6 +27,14 @@ const entries: SitemapEntry[] = [
   { path: "/newsroom", changefreq: "daily", priority: "0.7", lastmod: today },
   { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
   { path: "/roadmap", changefreq: "weekly", priority: "0.6", lastmod: today },
+  ...["soccer", "basketball", "rugby", "racing", "combat", "athletics", "cricket", "tennis"].map(
+    (s): SitemapEntry => ({
+      path: `/sports/${s}`,
+      changefreq: "weekly",
+      priority: s === "soccer" ? "0.8" : "0.6",
+      lastmod: today,
+    }),
+  ),
   // Legal / trust pages (important for SA gambling compliance & YMYL)
   { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: today },
   { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },

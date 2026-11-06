@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
+import { IntelPanel } from "@/components/intel/intel-panel";
 import { TeamLogo } from "@/components/team-logo";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
@@ -70,6 +73,9 @@ function Predictions() {
   ).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   const shown = competition ? fixtures.filter((f) => f.competition === competition) : fixtures;
   const days = groupFixturesByDay(shown);
+  const gated = useGated();
+  // Position of each fixture across all days, so the first FREE_ITEMS stay open for guests.
+  const order = new Map(days.flatMap((d) => d.fixtures).map((f, i) => [f.id, i]));
 
   return (
     <AppShell>
@@ -123,41 +129,52 @@ function Predictions() {
               {day.label}
             </h2>
             <ul className="card-surface divide-y divide-border">
-              {day.fixtures.map((f) => (
-                <li key={f.id}>
-                  <Link
-                    to="/match/$fixtureId"
-                    params={{ fixtureId: f.id }}
-                    className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/40 sm:grid-cols-[6.5rem_1fr_auto]"
-                  >
-                    <div className="text-sm font-semibold tnum">
-                      {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[11px] text-muted-foreground">
-                        {f.competition} ·{" "}
-                        {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
-                      </p>
-                      <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
-                        <span className="inline-flex items-center gap-2">
-                          <TeamLogo team={f.home} size="sm" />
-                          {f.home}
+              {day.fixtures.map((f) => {
+                const i = order.get(f.id) ?? 0;
+                return (
+                  <Fragment key={f.id}>
+                    {i === FREE_ITEMS && gated(i) && <FoundingGateCard as="li" />}
+                    <li>
+                      <Link
+                        to="/match/$fixtureId"
+                        params={{ fixtureId: f.id }}
+                        className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/40 sm:grid-cols-[6.5rem_1fr_auto]"
+                      >
+                        <div className="text-sm font-semibold tnum">
+                          {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] text-muted-foreground">
+                            {f.competition} ·{" "}
+                            {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
+                          </p>
+                          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+                            <span className="inline-flex items-center gap-2">
+                              <TeamLogo team={f.home} size="sm" />
+                              {f.home}
+                            </span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              {tc("vs")}
+                            </span>
+                            <span className="inline-flex items-center gap-2">
+                              <TeamLogo team={f.away} size="sm" />
+                              {f.away}
+                            </span>
+                          </p>
+                        </div>
+                        <span className="hidden text-sm font-medium text-primary sm:block">
+                          {t("pick")}
                         </span>
-                        <span className="text-xs font-normal text-muted-foreground">
-                          {tc("vs")}
-                        </span>
-                        <span className="inline-flex items-center gap-2">
-                          <TeamLogo team={f.away} size="sm" />
-                          {f.away}
-                        </span>
-                      </p>
-                    </div>
-                    <span className="hidden text-sm font-medium text-primary sm:block">
-                      {t("pick")}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                      </Link>
+                      <div className="px-4 pb-4">
+                        <Blurred gated={gated(i)}>
+                          <IntelPanel />
+                        </Blurred>
+                      </div>
+                    </li>
+                  </Fragment>
+                );
+              })}
             </ul>
           </section>
         ))}
