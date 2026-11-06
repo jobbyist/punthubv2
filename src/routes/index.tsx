@@ -346,7 +346,7 @@ function Landing() {
               <CloseIcon className="size-8" />
             </button>
             <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl">
-              <ExplainerVideo autoPlay />
+              <ExplainerVideo autoPlay ns="home" />
             </div>
           </div>
         </div>

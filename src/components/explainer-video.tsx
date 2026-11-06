@@ -12,11 +12,14 @@ export const EXPLAINER_POSTER_URL = "/explainer-poster.jpg";
 export function ExplainerVideo({
   autoPlay = false,
   className = "",
+  ns = "about",
 }: {
   autoPlay?: boolean;
   className?: string;
+  /** Namespace whose video.iframeTitle labels the player. */
+  ns?: "about" | "home";
 }) {
-  const { t } = useTranslation("about");
+  const { t } = useTranslation(ns);
   return (
     <video
       className={`block aspect-video w-full bg-black ${className}`}
@@ -24,7 +27,7 @@ export function ExplainerVideo({
       poster={EXPLAINER_POSTER_URL}
       controls
       playsInline
-      preload="none"
+      preload={autoPlay ? "auto" : "none"}
       autoPlay={autoPlay}
       aria-label={t("video.iframeTitle")}
     >
