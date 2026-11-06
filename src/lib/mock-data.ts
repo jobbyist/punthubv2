@@ -26,12 +26,9 @@ export const platforms: Platform[] = [
   { name: "Sportingbet", logo: "/logos/sportingbet.png" },
   { name: "Hollywoodbets", logo: "/logos/hollywoodbets.png" },
   { name: "Supabets", logo: "/logos/supabets.png" },
-  { name: "Betfair", logo: "/logos/betfair.png" },
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
-  { name: "Stake", logo: "/logos/stake.png" },
   { name: "Easybet", logo: "/logos/easybet.png" },
-  { name: "1xBet", logo: "/logos/1xbet.png" },
   { name: "WorldSportsBetting", logo: "/logos/wsb.PNG" },
 ];
 
