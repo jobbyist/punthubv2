@@ -345,12 +345,7 @@ function Landing() {
             >
               <CloseIcon className="size-8" />
             </button>
-            <div
-              className="relative overflow-hidden rounded-xl bg-black shadow-2xl"
-              style={{ paddingBottom: "56.25%" }}
-            >
-              <ExplainerVideo title={t("video.iframeTitle")} />
-            </div>
+            <ExplainerVideo title={t("video.iframeTitle")} />
           </div>
         </div>
       )}
