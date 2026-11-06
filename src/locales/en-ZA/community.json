@@ -42,4 +42,19 @@
       "mine": "You haven't posted a pick yet."
     },
     "loadMore": "Load more",
-    "loading": "Loading¶»§q«^
+    "loading": "Loadingâ€¦",
+    "error": "We couldn't load the feed. Please refresh the page."
+  },
+  "discussions": {
+    "preview": "Illustrative community preview",
+    "title": "Sports discussions",
+    "description": "Team-started conversations with sample replies and founding-member vote counts. These are illustrative examples, not live member activity.",
+    "upvotes": "upvotes",
+    "comments": "comments",
+    "sampleVotes": "Example votes"
+  },
+  "tipSupport": {
+    "title": "Recognise standout Tipsters",
+    "body": "Puntr Pro will let eligible verified Tipsters with long winning streaks and strong performance on selected sport- and competition-specific leaderboards receive voluntary PuntPoints tips from Punters. Points, not cash; tips never change rankings or pick grading."
+  }
+}
