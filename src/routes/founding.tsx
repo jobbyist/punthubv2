@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { FoundingCounter } from "@/components/founding-counter";
-import { RgNotice } from "@/components/rg-notice";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -107,7 +106,6 @@ function Founding() {
       </section>
 
       <p className="mt-8 text-xs text-muted-foreground">{t("fine")}</p>
-      <RgNotice className="mt-4" />
     </div>
   );
 }

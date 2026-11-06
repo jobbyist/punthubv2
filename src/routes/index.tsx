@@ -7,6 +7,7 @@ import { PlatformRail } from "@/components/affiliate";
 import { Em } from "@/components/em";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
+import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
@@ -141,6 +142,8 @@ function Landing() {
           <MatchPreview />
         </motion.div>
       </section>
+
+      <IllustrativeFixtures />
 
       {/* Why a locked record matters */}
       <motion.section {...fade} className="grid gap-4 md:grid-cols-3">

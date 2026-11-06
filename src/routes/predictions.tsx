@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { TeamLogo } from "@/components/team-logo";
+import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
 import { formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -73,6 +74,7 @@ function Predictions() {
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <IllustrativeFixtures />
 
       {leagues.length > 1 && (
         <div
