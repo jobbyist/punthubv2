@@ -142,12 +142,104 @@ function Landing() {
       <IllustrativeFixtures />
 
       {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
-      <motion.section {...fade} className="card-surface mt-8 p-5 sm:p-7" aria-labelledby="proof-demo-title">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Predict smarter. Prove it.</p><h2 id="proof-demo-title" className="mt-2 text-2xl">The difference is the record.</h2><p className="mt-1 max-w-xl text-sm text-muted-foreground">See what changes when every pick has a verifiable outcome.</p></div>
-          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Choose a tipster record"><button type="button" aria-pressed={!showVerified} onClick={() => setShowVerified(false)} className={"min-h-10 rounded-lg border px-3 text-xs font-semibold " + (!showVerified ? "border-foreground bg-muted" : "border-border text-muted-foreground")}>Traditional tipster</button><button type="button" aria-pressed={showVerified} onClick={() => setShowVerified(true)} className={"min-h-10 rounded-lg border px-3 text-xs font-semibold " + (showVerified ? "border-primary bg-primary-soft text-primary" : "border-border text-muted-foreground")}>Puntr verified</button></div>
+      <motion.section
+        {...fade}
+        className="card-surface mt-8 p-5 sm:p-7"
+        aria-labelledby="proof-demo-title"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
+              Predict smarter. Prove it.
+            </p>
+            <h2 id="proof-demo-title" className="mt-2 text-2xl">
+              The difference is the record.
+            </h2>
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+              See what changes when every pick has a verifiable outcome.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Choose a tipster record">
+            <button
+              type="button"
+              aria-pressed={!showVerified}
+              onClick={() => setShowVerified(false)}
+              className={
+                "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
+                (!showVerified
+                  ? "border-foreground bg-muted"
+                  : "border-border text-muted-foreground")
+              }
+            >
+              Traditional tipster
+            </button>
+            <button
+              type="button"
+              aria-pressed={showVerified}
+              onClick={() => setShowVerified(true)}
+              className={
+                "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
+                (showVerified
+                  ? "border-primary bg-primary-soft text-primary"
+                  : "border-border text-muted-foreground")
+              }
+            >
+              Puntr verified
+            </button>
+          </div>
         </div>
-        <div className="mt-5 rounded-xl border p-5" aria-live="polite"><p className="text-sm font-bold">{showVerified ? "Puntr Verified Tipster" : "Traditional social tipster"}</p>{showVerified ? <ul className="mt-4 grid gap-3 sm:grid-cols-3"><li className="text-sm"><strong className="block">Locked at kick-off</strong><span className="text-xs text-muted-foreground">Timestamped; cannot be edited or deleted.</span></li><li className="text-sm"><strong className="block">Auto-graded</strong><span className="text-xs text-muted-foreground">Settled outcomes update the public record.</span></li><li className="text-sm"><strong className="block">Public performance</strong><span className="text-xs text-muted-foreground">ROI and unit history stay visible.</span></li></ul> : <ul className="mt-4 grid gap-3 sm:grid-cols-3"><li className="text-sm"><strong className="block">Editable picks</strong><span className="text-xs text-muted-foreground">Claims can be changed after the match.</span></li><li className="text-sm"><strong className="block">Deleted losses</strong><span className="text-xs text-muted-foreground">Poor calls can disappear from the feed.</span></li><li className="text-sm"><strong className="block">Unverified ROI</strong><span className="text-xs text-muted-foreground">No complete, checkable track record.</span></li></ul>}</div>
-        <p className="mt-3 text-xs text-muted-foreground">Puntr records are database-backed and publicly auditable. Blockchain verification is not claimed.</p>
+        <div className="mt-5 rounded-xl border p-5" aria-live="polite">
+          <p className="text-sm font-bold">
+            {showVerified ? "Puntr Verified Tipster" : "Traditional social tipster"}
+          </p>
+          {showVerified ? (
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+              <li className="text-sm">
+                <strong className="block">Locked at kick-off</strong>
+                <span className="text-xs text-muted-foreground">
+                  Timestamped; cannot be edited or deleted.
+                </span>
+              </li>
+              <li className="text-sm">
+                <strong className="block">Auto-graded</strong>
+                <span className="text-xs text-muted-foreground">
+                  Settled outcomes update the public record.
+                </span>
+              </li>
+              <li className="text-sm">
+                <strong className="block">Public performance</strong>
+                <span className="text-xs text-muted-foreground">
+                  ROI and unit history stay visible.
+                </span>
+              </li>
+            </ul>
+          ) : (
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+              <li className="text-sm">
+                <strong className="block">Editable picks</strong>
+                <span className="text-xs text-muted-foreground">
+                  Claims can be changed after the match.
+                </span>
+              </li>
+              <li className="text-sm">
+                <strong className="block">Deleted losses</strong>
+                <span className="text-xs text-muted-foreground">
+                  Poor calls can disappear from the feed.
+                </span>
+              </li>
+              <li className="text-sm">
+                <strong className="block">Unverified ROI</strong>
+                <span className="text-xs text-muted-foreground">
+                  No complete, checkable track record.
+                </span>
+              </li>
+            </ul>
+          )}
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Puntr records are database-backed and publicly auditable. Blockchain verification is not
+          claimed.
+        </p>
       </motion.section>
 
       {/* Why a locked record matters */}
@@ -210,7 +302,9 @@ function Landing() {
           <div className="mt-8">
             <PlatformRail />
           </div>
-          <div className="mx-auto mt-5 max-w-3xl text-left"><BookmakerIndependenceNotice compact /></div>
+          <div className="mx-auto mt-5 max-w-3xl text-left">
+            <BookmakerIndependenceNotice compact />
+          </div>
           <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
           <RgNotice variant="compact" className="mt-1" />
         </motion.section>
@@ -223,10 +317,17 @@ function Landing() {
         <h3 className="text-lg">{t("join.title")}</h3>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {(["f1", "f2", "f3", "f4", "f5", "f6"] as const).map((f) => (
-            <li key={f} className="flex items-center gap-3 text-sm"><span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">✓</span><Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} /></li>
+            <li key={f} className="flex items-center gap-3 text-sm">
+              <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">
+                ✓
+              </span>
+              <Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} />
+            </li>
           ))}
         </ul>
-        <Button className="mt-6" onClick={() => navigate({ to: "/join" })}>{tc("cta.createAccount")}</Button>
+        <Button className="mt-6" onClick={() => navigate({ to: "/join" })}>
+          {tc("cta.createAccount")}
+        </Button>
         <RgNotice variant="compact" className="mt-4" />
       </motion.section>
 

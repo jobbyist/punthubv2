@@ -182,7 +182,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <LeftRail />
       <main className="min-w-0 flex-1 py-6">
         {children}
-        <div className="mt-6"><BookmakerIndependenceNotice compact /></div>
+        <div className="mt-6">
+          <BookmakerIndependenceNotice compact />
+        </div>
         <div className="mt-6">
           <AffiliateBanner />
         </div>

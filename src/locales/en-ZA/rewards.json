@@ -70,8 +70,10 @@
       "daily_limit": "You've reached today's redemption limit. Try again tomorrow.",
       "insufficient_points": "You don't have enough points for that.",
       "out_of_stock": "That reward just ran out.",
-      "generic": "We couldn't redeem that. Please try again."
-    }
+      "generic": "We couldn't redeem that. Please try again.",
+      "identity_not_verified": "Please verify your identity on your account page before redeeming rewards."
+    },
+    "verifyCta": "Verify my identity"
   },
   "redemptions": {
     "title": "Your redemptions",

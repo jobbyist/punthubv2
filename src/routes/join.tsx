@@ -769,8 +769,16 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">{t("join.done.celebrationEyebrow")}</p>
-        <h2 className="mt-2 text-2xl">{number ? t("join.done.founding", { number, cap: FOUNDING_CAP }) : emailConfirmed ? t("join.done.full") : t("join.done.unconfirmed")}</h2>
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
+          {t("join.done.celebrationEyebrow")}
+        </p>
+        <h2 className="mt-2 text-2xl">
+          {number
+            ? t("join.done.founding", { number, cap: FOUNDING_CAP })
+            : emailConfirmed
+              ? t("join.done.full")
+              : t("join.done.unconfirmed")}
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
       </div>
       {emailConfirmed && <AnnualPassClaim />}

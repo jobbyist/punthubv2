@@ -84,7 +84,15 @@ function Catalogue({ balance, onChange }: { balance: number; onChange: () => voi
     setBusy(false);
     setConfirm(null);
     if (error) {
-      toast.error(t(`redeem.error.${redeemErrorKey(error)}`));
+      const key = redeemErrorKey(error);
+      if (key === "identity_not_verified")
+        toast.error(t("redeem.error.identity_not_verified"), {
+          action: {
+            label: t("redeem.verifyCta"),
+            onClick: () => window.location.assign("/account#identity"),
+          },
+        });
+      else toast.error(t(`redeem.error.${key}`));
     } else {
       toast.success(t("redeem.done"));
     }

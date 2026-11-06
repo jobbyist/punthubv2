@@ -41,6 +41,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; email and profile details are removed when you delete it",
   ],
   [
+    "Verifying your identity (before redeeming rewards)",
+    "A photo or scan of your ID or passport (deleted once checked), and the result: verified, 18 or older, who checked it and when",
+    "Legal obligation (keeping gambling promotions to adults) and our interest in preventing fraud [attorney review]",
+    "The document: until it is checked, at most 30 days. The result: while your account is open",
+  ],
+  [
     "Keeping accounts secure",
     "Whether your email is confirmed, authenticator-app two-factor details, sign-in sessions",
     "Contract and our interest in keeping accounts safe",
@@ -95,7 +101,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r6). Draft pending
+          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r8). Draft pending
           attorney review.
         </p>
 
@@ -138,10 +144,15 @@ function Privacy() {
             </table>
           </div>
           <p className="mt-3">
-            We do not collect your ID document, a selfie or biometrics. We do not store your IP
-            address or device details with your sign-up. Puntr does not take payments at launch, so
-            we hold no card or bank details. We never see your password: our sign-in provider keeps
-            only a one-way hash of it.
+            We collect your ID document only if you choose to verify your identity, which you need
+            to do before redeeming rewards. You upload a photo or scan of your ID or passport; a
+            Puntr admin compares it with your name and birth year and we delete the document as soon
+            as the check is done (and within 30 days if it is never checked). We keep only the
+            result: verified or not, that you are 18 or older, who checked it and when. We never
+            record your ID number, and we do not collect a selfie or biometrics. [attorney review]
+            We do not store your IP address or device details with your sign-up. Puntr does not take
+            payments at launch, so we hold no card or bank details. We never see your password: our
+            sign-in provider keeps only a one-way hash of it.
           </p>
         </section>
 

@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r8). Draft pending
+            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r10). Draft pending
             attorney review.
           </p>
 
@@ -157,7 +157,8 @@ function Terms() {
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               You can redeem PuntPoints for the vouchers, sponsored rewards and perks listed on the
-              Rewards page, while they last. Rewards are provided by our partners and are subject to
+              Rewards page, while they last. You must verify your identity on your account page
+              before you redeem any reward. Rewards are provided by our partners and are subject to
               their terms. Not every reward is open to every member: a reward may need a confirmed
               email, and betting vouchers, if we offer them, are only for members aged 18 or older
               who are not on a break. We may refuse, or reverse, points and redemptions obtained

@@ -135,5 +135,26 @@
     "saved": "Details saved",
     "error": "Could not save your details. Check the mobile number and try again.",
     "under18": "You must be 18 or older to use Puntr."
+  },
+  "identity": {
+    "title": "Verify your identity",
+    "why": "You need to verify your identity before you can redeem rewards. It confirms you're 18 or older and stops anyone from claiming rewards in your name.",
+    "how": "Upload a clear photo or scan of your South African ID (green ID book or smart ID card, both sides in one image if you can) or your passport. JPG, PNG, WebP or PDF, under 10 MB. A Puntr admin checks it against your name and birth year, usually within 2 working days.",
+    "privacy": "We delete your document as soon as we've checked it. We keep only the result: verified or not, and the date. We never store your ID number.",
+    "upload": "Upload ID document",
+    "replace": "Upload a different document",
+    "working": "Uploading...",
+    "status": {
+      "none": "Not verified yet.",
+      "pending": "Submitted {{date}}. We're checking it.",
+      "approved": "Verified {{date}}.",
+      "rejected": "We couldn't verify the document you sent: {{reason}} Please upload a new one."
+    },
+    "noReason": "it wasn't clear enough or didn't match your details.",
+    "tooBig": "That file is 10 MB or larger. Please choose a smaller one.",
+    "badType": "Please choose a JPG, PNG, WebP or PDF file.",
+    "failed": "We couldn't upload your document. Please try again.",
+    "sent": "Thanks. Your document is with our team.",
+    "detailsHint": "Add your first and last name under your details first, so we can match them."
   }
 }
