@@ -28,7 +28,11 @@ import { analytics } from "@/lib/analytics";
 import { inviteText, whatsappUrl } from "@/lib/referral";
 
 export const primaryNav = [
-  { key: "predictions", to: "/predictions" },
+  { key: "home", to: "/" },
+  { key: "about", to: "/about" },
+  { key: "updates", to: "/newsroom" },
+  { key: "insights", to: "/coming-soon" },
+  { key: "tools", to: "/tools" },
   { key: "leaderboards", to: "/leaderboards" },
   { key: "results", to: "/results" },
   { key: "community", to: "/community" },
