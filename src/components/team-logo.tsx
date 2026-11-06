@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 type TeamLogoProps = {
   team: string;
   /** Sport key (e.g. "rugby", "cricket"), so shared national-team names get the right badge. */
-  sport?: string;
+  sport?: string | undefined;
   size?: "sm" | "md" | "lg";
   className?: string;
 };
