@@ -156,9 +156,9 @@ function Privacy() {
             as the check is done (and within 30 days if it is never checked). We keep only the
             result: verified or not, that you are 18 or older, who checked it and when. We never
             record your ID number, and we do not collect a selfie or biometrics. [attorney review]
-            We do not store your IP address or device details with your sign-up. Payments are made on
-            PayFast, so we hold no card or bank details. We never see your password: our
-            sign-in provider keeps only a one-way hash of it.
+            We do not store your IP address or device details with your sign-up. Payments are made
+            on PayFast, so we hold no card or bank details. We never see your password: our sign-in
+            provider keeps only a one-way hash of it.
           </p>
         </section>
 
