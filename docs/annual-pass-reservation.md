@@ -16,13 +16,13 @@ Do not place PayFast credentials, Resend keys or Supabase service credentials in
 
 1. An authenticated, non-admin member selects **Reserve my Annual Pass**.
 2. The server calls the existing `public.claim_annual_pass()` RPC. Its transaction creates or returns a 48-hour pending hold and enforces the 20-place allocation.
-3. Resend emails the account's verified-auth email address with the configured PayFast hosted link and the exact SAST hold expiry.
+3. Resend emails the authenticated account email address with the configured PayFast hosted link and the exact SAST hold expiry.
 4. The member completes R299 payment directly with PayFast. No payment form or payment details are collected by Puntr.
 5. Unpaid pending holds stop counting toward availability after 48 hours. The member can retry while the offer remains open; an existing unexpired hold is reused and the payment email can be resent.
 
 The PayFast URL is configured by the owner in the PayFast dashboard and supplied as an environment variable. This implementation does not create PayFast payment links, receive PayFast ITN callbacks, or automatically reconcile a payment against a member. Confirm received payments through the existing approved operations process before marking an Annual Pass paid. Do not describe a reservation as paid until payment has been verified.
 
-## Operational checks
+## Database prerequisite\n\nConfirm that migration `20261106220000_annual_pass_payment_avatars.sql` has been applied to the active Supabase project. It adds the pending/paid state and 48-hour hold logic used by this flow.\n\n## Operational checks
 
 - Verify the PayFast link is the correct R299 product/link before setting `ANNUAL_PASS_PAYFAST_URL`.
 - Verify the sender domain in Resend and test the transactional email with a real controlled reservation.
