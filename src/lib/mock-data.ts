@@ -45,6 +45,8 @@ export const teamLogos: Record<string, string> = {
   "Kaizer Chiefs": "/teams/kaizer.jpg",
   "Real Madrid": "/teams/realmadrid.png",
   "Bayern Munich": "/teams/bayernmunich.png",
+  "Arsenal": "/teams/arsenal.webp",
+  "Liverpool": "/teams/liverpool.webp",
 };
 
 export function getTeamLogo(teamName: string): string | undefined {
