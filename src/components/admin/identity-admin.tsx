@@ -80,7 +80,7 @@ export function IdentityTab() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
-                  disabled={busy === r.user_id}
+                  disabled={busy === r.user_id || !r.url}
                   onClick={() => decide(r.user_id, true)}
                 >
                   {t("identity.approve")}

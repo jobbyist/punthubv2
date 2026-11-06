@@ -14,7 +14,9 @@ create table if not exists public.identity_verifications (
   submitted_at timestamptz not null default now(),
   reviewed_at timestamptz,
   reviewed_by uuid references auth.users (id) on delete set null,
-  reject_reason text check (reject_reason is null or char_length(reject_reason) <= 300)
+  reject_reason text check (reject_reason is null or char_length(reject_reason) <= 300),
+  -- Approved always means 18+ confirmed; nothing else carries an age result.
+  constraint identity_verifications_over_18 check ((status = 'approved') = coalesce(over_18, false))
 );
 alter table public.identity_verifications enable row level security;
 drop policy if exists identity_verifications_select on public.identity_verifications;
@@ -46,7 +48,8 @@ begin
   if v_uid is null or not exists (select 1 from public.profiles where id = v_uid) then
     raise exception 'not_member' using errcode = 'P0001';
   end if;
-  if p_path is null or split_part(p_path, '/', 1) <> v_uid::text then
+  -- Exactly "<own user id>/<file name>": one level, no other folders.
+  if p_path is null or p_path !~ ('^' || v_uid::text || '/[^/]+$') then
     raise exception 'bad_path' using errcode = 'P0001';
   end if;
   if exists (select 1 from public.identity_verifications where user_id = v_uid and status = 'approved') then

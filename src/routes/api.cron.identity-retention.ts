@@ -32,7 +32,7 @@ export const Route = createFileRoute("/api/cron/identity-retention")({
             console.error("identity-retention remove failed", rmErr.message);
             continue;
           }
-          await db
+          const { error: updateErr } = await db
             .from("identity_verifications")
             .update({
               status: "rejected",
@@ -41,6 +41,10 @@ export const Route = createFileRoute("/api/cron/identity-retention")({
               reviewed_at: new Date().toISOString(),
             })
             .eq("user_id", r.user_id);
+          if (updateErr) {
+            console.error("identity-retention update failed", updateErr.message);
+            continue;
+          }
           removed += 1;
         }
         return Response.json({ ok: true, removed });
