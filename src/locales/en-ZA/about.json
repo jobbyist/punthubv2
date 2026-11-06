@@ -6,8 +6,8 @@
   },
   "hero": {
     "title1": "Sports knowledge",
-    "title2": "deserves a",
-    "title3": "proper record.",
+    "title2": "proper record",
+    "title3": "deserves a",
     "body": "Puntr is a <1>community-first sports platform</1> for South African fans who want more than big claims and screenshots. Publish picks before kick-off, see them locked and automatically graded, and build a public record that shows the full picture. <1>AI-powered insights</1> are part of the platform’s wider roadmap.",
     "cta": "Join Puntr",
     "meet": "Meet the platform"
@@ -106,7 +106,7 @@
     "title1": "Built Around The Sports You",
     "title2": "Love",
     "body": "We are starting with football competitions followed by South African fans. Coverage will expand as the data and grading are ready.",
-    "heading": "Competitions we cover"
+    "heading": "SPORTS COVERAGE"
   },
   "tech": {
     "title1": "Built On A",
