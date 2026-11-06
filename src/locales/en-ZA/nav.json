@@ -14,7 +14,7 @@
     "openMenu": "Open menu",
     "menu": "Menu",
     "version": "Version 2.0 - © 2026 Puntr",
-    "getEarlyAccess": "Become a Founding Member",
+    "getEarlyAccess": "Join free",
     "home": "Puntr home",
     "founding": "Founding Member #{{number}}",
     "myRecord": "My record",
@@ -106,7 +106,8 @@
       "facebook": "Puntr on Facebook",
       "youtube": "Puntr on YouTube",
       "instagram": "Puntr on Instagram",
-      "tiktok": "Puntr on TikTok"
+      "tiktok": "Puntr on TikTok",
+      "telegram": "Puntr on Telegram"
     },
     "store": {
       "comingSoonTo": "Coming soon to",
@@ -114,5 +115,15 @@
       "googlePlay": "Google Play"
     },
     "copyright": "© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only."
+  },
+  "notifications": {
+    "label": "Notifications",
+    "title": "Updates from Puntr",
+    "unread": "{{count}} unread",
+    "markAll": "Mark all as read",
+    "empty": "You are all caught up. Team updates will show up here.",
+    "error": "Could not load updates. Try again shortly.",
+    "retry": "Try again",
+    "loading": "Loading updates"
   }
 }

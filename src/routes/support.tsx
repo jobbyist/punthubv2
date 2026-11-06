@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MessageSquare, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { submitForm } from "@/lib/forms.functions";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
@@ -127,34 +128,65 @@ function Support() {
         <p className="mt-1 text-sm text-muted-foreground">{t("contact.body")}</p>
         <form
           className="mt-4 grid gap-4 sm:grid-cols-2"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
+            const form = e.currentTarget;
+            const f = new FormData(form);
+            const res = await submitForm({
+              data: {
+                form: "support",
+                name: String(f.get("name") ?? ""),
+                email: String(f.get("email") ?? ""),
+                message: String(f.get("message") ?? ""),
+                meta: { subject: String(f.get("subject") ?? "").slice(0, 300) },
+                website: String(f.get("website") ?? ""),
+              },
+            }).catch(() => ({ ok: false }));
+            if (!res.ok) {
+              toast.error(t("contact.errorTitle"));
+              return;
+            }
             toast.success(t("contact.toastTitle"), { description: t("contact.toastBody") });
-            (e.target as HTMLFormElement).reset();
+            form.reset();
           }}
         >
           <div className="space-y-1.5">
             <Label htmlFor="s-name">{t("contact.name")}</Label>
-            <Input id="s-name" required placeholder={t("contact.namePh")} />
+            <Input id="s-name" name="name" required placeholder={t("contact.namePh")} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="s-email">{t("contact.email")}</Label>
-            <Input id="s-email" type="email" required placeholder={t("contact.emailPh")} />
+            <Input
+              id="s-email"
+              name="email"
+              type="email"
+              required
+              placeholder={t("contact.emailPh")}
+            />
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="s-subject">{t("contact.subject")}</Label>
-            <Input id="s-subject" required placeholder={t("contact.subjectPh")} />
+            <Input id="s-subject" name="subject" required placeholder={t("contact.subjectPh")} />
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="s-msg">{t("contact.message")}</Label>
             <Textarea
               id="s-msg"
+              name="message"
               required
               rows={5}
               maxLength={1000}
               placeholder={t("contact.messagePh")}
             />
           </div>
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+          />
           <Button type="submit" className="sm:w-fit">
             {t("contact.submit")}
           </Button>

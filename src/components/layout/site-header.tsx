@@ -18,6 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { openMobileMenu } from "@/components/layout/mobile-nav";
+import { NotificationBell } from "@/components/notification-bell";
+import { SocialLinks } from "@/components/social-links";
 import { FoundingCounter } from "@/components/founding-counter";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { copyInviteLink } from "@/lib/invite";
@@ -30,11 +32,8 @@ export const primaryNav = [
   { key: "leaderboards", to: "/leaderboards" },
   { key: "results", to: "/results" },
   { key: "community", to: "/community" },
-  { key: "insights", to: "/insights" },
-  { key: "roadmap", to: "/roadmap" },
-  { key: "howItWorks", to: "/how-it-works", guestOnly: true, wideOnly: true },
-  { key: "pricing", to: "/pricing", guestOnly: true, wideOnly: true },
-  { key: "support", to: "/support" },
+  { key: "howItWorks", to: "/how-it-works", guestOnly: true },
+  { key: "pricing", to: "/pricing" },
 ] as const;
 
 export function SiteHeader() {
@@ -87,6 +86,11 @@ export function SiteHeader() {
               </nav>
               <div className="border-t border-border px-5 py-4">
                 <p className="text-xs text-muted-foreground">{t("header.version")}</p>
+                <SocialLinks
+                  className="mt-3"
+                  iconClassName="size-4"
+                  itemClassName="grid size-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                />
                 <LanguageSwitcher className="mt-3" />
               </div>
             </SheetContent>
@@ -102,8 +106,8 @@ export function SiteHeader() {
                 key={l.to}
                 to={l.to}
                 className={`relative whitespace-nowrap px-2 py-2 text-sm font-medium transition-colors xl:px-3 ${
-                  "wideOnly" in l && l.wideOnly ? "hidden xl:inline-block" : ""
-                } ${active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {t(`primary.${l.key}`)}
                 {active && (
@@ -117,6 +121,7 @@ export function SiteHeader() {
         <div className="flex min-w-0 items-center justify-end gap-2">
           {/* The language switcher lives in the footer and the mobile menu: the desktop bar has no room for it
               next to eight links. Only en-ZA is enabled until P13; revisit placement then (e.g. a globe icon). */}
+          {isSignedIn && profile && <NotificationBell />}
           {isSignedIn && profile ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -196,10 +201,7 @@ export function SiteHeader() {
           ) : (
             <>
               <FoundingCounter className="hidden xl:inline-block" />
-              <Button
-                asChild
-                className="h-10 max-w-[9.5rem] whitespace-normal px-3 text-center text-sm leading-tight sm:max-w-none sm:px-5"
-              >
+              <Button asChild className="h-10 whitespace-nowrap px-4 text-sm sm:px-5">
                 <Link to="/join">{t("header.getEarlyAccess")}</Link>
               </Button>
             </>

@@ -1,8 +1,8 @@
 {
   "meta": {
-    "title": "About Puntr | A Community-First Platform for South African sport",
-    "description": "Puntr is a Community-First Platform where South African sports fans post picks, lock them at kick-off and build a public record. AI-Powered Insights are coming.",
-    "ogTitle": "About Puntr"
+    "title": "About Puntr | The future of football intelligence for South Africa",
+    "description": "Puntr is a community-first platform building the Puntr Football Intelligence Engine. Join free as a Founding Member before the official launch on 1 December 2026.",
+    "ogTitle": "About Puntr | The future of football intelligence"
   },
   "hero": {
     "title1": "Where Sports Knowledge",
@@ -95,11 +95,11 @@
     },
     "ai": {
       "title": "AI-Powered Insights",
-      "body": "Match previews, coming soon"
+      "body": "Match previews, available at launch"
     },
     "pro": {
       "title": "Puntr Pro",
-      "body": "Advanced analytics for serious predictors, coming soon"
+      "body": "Advanced analytics for serious predictors, available at launch"
     }
   },
   "sports": {
@@ -110,33 +110,11 @@
   },
   "tech": {
     "title1": "Built On A",
-    "title2": "Modern",
-    "title3": "Foundation",
-    "body": "A fast, secure web app designed for real-time sports data and a growing community.",
-    "react": {
-      "cat": "Frontend",
-      "body": "Component-driven interfaces for a fast product."
-    },
-    "ts": {
-      "cat": "Frontend",
-      "body": "Type-safe code for reliability."
-    },
-    "tailwind": {
-      "cat": "Frontend",
-      "body": "Consistent, accessible styling."
-    },
-    "tanstack": {
-      "cat": "Framework",
-      "body": "Server-rendered pages and data loading."
-    },
-    "supabase": {
-      "cat": "Backend",
-      "body": "Database and email-code sign-in."
-    },
-    "vercel": {
-      "cat": "Infrastructure",
-      "body": "Hosting and fast delivery across South Africa."
-    }
+    "title2": "World-Class",
+    "title3": "Foundation, Strategic Partnership Network And Next-Generation Technology…",
+    "body": "Reliable infrastructure, trusted data and a growing partner network behind every prediction on Puntr.",
+    "logosLabel": "Puntr partners and technology",
+    "logoPlaceholder": "Logo {{n}}"
   },
   "fits": {
     "title1": "How Puntr",
@@ -200,5 +178,20 @@
     "body": "Put your predictions on the record.",
     "join": "Join Puntr",
     "explore": "Explore predictions"
+  },
+  "video": {
+    "title": "Watch the Puntr explainer",
+    "body": "A short look at what Puntr is and where it is going.",
+    "play": "Play the explainer video",
+    "iframeTitle": "Puntr explainer video"
+  },
+  "launch": {
+    "eyebrow": "Join the founding community",
+    "title": "Official launch: 1 December 2026",
+    "body": "Founding Member registration is free. The Founding Member Annual Pass is {{pass}} once-off for 12 months of Puntr Pro, against {{annual}} at the standard {{monthly}} per month, a saving of {{saving}}. Membership activates on 1 December 2026 and does not renew automatically.",
+    "note": "Insights on Puntr are informational and do not guarantee outcomes. The Founding Member Annual Pass is a prepaid membership, not an investment or donation.",
+    "free": "Join free",
+    "pricing": "See pricing",
+    "newsroom": "Read the Newsroom"
   }
 }

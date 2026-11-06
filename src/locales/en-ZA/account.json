@@ -121,5 +121,19 @@
       "invalid": "This link isn't valid. Use the unsubscribe link in the email, or send a privacy request.",
       "error": "Something went wrong. Please try again."
     }
+  },
+  "details": {
+    "title": "Your details",
+    "body": "Optional. We use these to run your Founding Member account and to contact you about it. Only you and Puntr admins can see them, and they are never shown on your public profile.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Mobile number",
+    "dob": "Date of birth",
+    "province": "Province",
+    "provinceNone": "Choose a province",
+    "save": "Save details",
+    "saved": "Details saved",
+    "error": "Could not save your details. Check the mobile number and try again.",
+    "under18": "You must be 18 or older to use Puntr."
   }
 }

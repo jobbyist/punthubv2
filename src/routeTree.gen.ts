@@ -16,6 +16,7 @@ import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
+import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as FoundingRouteImport } from './routes/founding'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
@@ -39,9 +40,12 @@ import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
+import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
+import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -80,6 +84,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DevRoute = DevRouteImport.update({
   id: '/dev',
   path: '/dev',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FoundingRoute = FoundingRouteImport.update({
@@ -197,6 +206,16 @@ const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
   path: '/match/$fixtureId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsroomIndexRoute = NewsroomIndexRouteImport.update({
+  id: '/newsroom/',
+  path: '/newsroom/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsroomSlugRoute = NewsroomSlugRouteImport.update({
+  id: '/newsroom/$slug',
+  path: '/newsroom/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
   path: '/privacy/request',
@@ -210,6 +229,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
 const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
   id: '/api/cron/chain-head',
   path: '/api/cron/chain-head',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
+  id: '/api/cron/founding-campaign',
+  path: '/api/cron/founding-campaign',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
@@ -241,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -262,11 +287,14 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -280,6 +308,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -301,11 +330,14 @@ export interface FileRoutesByTo {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/newsroom': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -320,6 +352,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -341,11 +374,14 @@ export interface FileRoutesById {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/newsroom/': typeof NewsroomIndexRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -361,6 +397,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/feedback'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -382,11 +419,14 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
+    | '/newsroom/$slug'
     | '/privacy/request'
     | '/u/$username'
     | '/account/'
     | '/admin/'
+    | '/newsroom/'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -400,6 +440,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/feedback'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -421,11 +462,14 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
+    | '/newsroom/$slug'
     | '/privacy/request'
     | '/u/$username'
     | '/account'
     | '/admin'
+    | '/newsroom'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -439,6 +483,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/feedback'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -460,11 +505,14 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/match/$fixtureId'
+    | '/newsroom/$slug'
     | '/privacy_/request'
     | '/u/$username'
     | '/account/'
     | '/admin/'
+    | '/newsroom/'
     | '/api/cron/chain-head'
+    | '/api/cron/founding-campaign'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -479,6 +527,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
+  FeedbackRoute: typeof FeedbackRoute
   FoundingRoute: typeof FoundingRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
@@ -500,11 +549,14 @@ export interface RootRouteChildren {
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
+  NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
@@ -560,6 +612,13 @@ declare module '@tanstack/react-router' {
       path: '/dev'
       fullPath: '/dev'
       preLoaderRoute: typeof DevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/founding': {
@@ -723,6 +782,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MatchFixtureIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/newsroom/': {
+      id: '/newsroom/'
+      path: '/newsroom'
+      fullPath: '/newsroom/'
+      preLoaderRoute: typeof NewsroomIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsroom/$slug': {
+      id: '/newsroom/$slug'
+      path: '/newsroom/$slug'
+      fullPath: '/newsroom/$slug'
+      preLoaderRoute: typeof NewsroomSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy_/request': {
       id: '/privacy_/request'
       path: '/privacy/request'
@@ -742,6 +815,13 @@ declare module '@tanstack/react-router' {
       path: '/api/cron/chain-head'
       fullPath: '/api/cron/chain-head'
       preLoaderRoute: typeof ApiCronChainHeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/founding-campaign': {
+      id: '/api/cron/founding-campaign'
+      path: '/api/cron/founding-campaign'
+      fullPath: '/api/cron/founding-campaign'
+      preLoaderRoute: typeof ApiCronFoundingCampaignRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cron/launch-notify': {
@@ -783,6 +863,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
+  FeedbackRoute: FeedbackRoute,
   FoundingRoute: FoundingRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
@@ -804,11 +885,14 @@ const rootRouteChildren: RootRouteChildren = {
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
+  NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  NewsroomIndexRoute: NewsroomIndexRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,

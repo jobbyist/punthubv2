@@ -46,4 +46,18 @@ export const analytics = {
   shareClicked: (what: "pick" | "invite") => trackEvent("share_clicked", { what }),
   otpVerified: () => trackEvent("otp_verified"),
   profileCreated: () => trackEvent("profile_created"),
+  newsroomViewed: () => trackEvent("newsroom_viewed"),
+  newsroomArticleViewed: (slug: string) => trackEvent("newsroom_article_viewed", { slug }),
+  newsroomCategorySelected: (category: string) =>
+    trackEvent("newsroom_category_selected", { category }),
+  newsroomArticleShared: (slug: string, channel: string) =>
+    trackEvent("newsroom_article_shared", { slug, channel }),
+  notificationDropdownOpened: () => trackEvent("notification_dropdown_opened"),
+  notificationClicked: () => trackEvent("notification_clicked"),
+  notificationMarkedRead: () => trackEvent("notification_marked_read"),
+  notificationsMarkedAllRead: () => trackEvent("notifications_marked_all_read"),
+  aboutPageViewed: () => trackEvent("about_page_viewed"),
+  aboutFoundingCtaClicked: () => trackEvent("about_founding_cta_clicked"),
+  aboutNewsroomClicked: () => trackEvent("about_newsroom_clicked"),
+  surveySubmitted: (draw: boolean) => trackEvent("survey_submitted", { draw }),
 };

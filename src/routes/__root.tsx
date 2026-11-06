@@ -263,7 +263,7 @@ function RootComponent() {
           <FoundingBar />
           <SiteHeader />
           <SecurityPrompt />
-          <div className="flex-1 pb-20 lg:pb-0">
+          <div className="flex-1">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </div>

@@ -89,3 +89,33 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - Name the Information Officer and register with the Information Regulator (`/privacy` §1).
 - Retention periods marked `[attorney review]` on `/privacy`.
 - Whether unconfirmed email sign-up creates any obligation to verify before the public leaderboard shows a member.
+
+## 2026-11-06: Pay-As-You-Go and Puntr Pro "available at launch" copy
+
+- **Changed**: `/pricing` and `/about` now say Pay-As-You-Go credits and Puntr Pro (indicative R99 per month) are available
+  at the official launch on 1 December 2026 (previously "coming later"). Nothing is on sale yet and the CTA stays
+  disabled until the PayFast work, its legal copy and the owner's go-ahead are done.
+- **Review** `[attorney review]`: Terms still need a subscription clause and the Refunds page needs the credits and
+  subscription position before either product goes on sale on 1 December.
+
+## 2026-11-06: member survey, R500 OTT voucher draw, Newsroom, in-app notifications
+
+- **New data**: `survey_responses` (rating, free-text feedback, features wanted, pricing view, optional draw entry and
+  contact consent, one row per member). `notifications` and `user_notifications` (read state per member).
+  `newsroom_articles` (public company updates). No new processor or tracker. Newsroom analytics events use the existing
+  consent-gated helper.
+- **Pages to update** `[attorney review]`: `/privacy` data table (survey answers: purpose, retention, who sees them)
+  and `/terms` or a dedicated draw rule for the R500 OTT voucher draw. The draw is a promotional competition: closing
+  date, eligibility, how the winner is chosen and told, and the prize-draw rules (Consumer Protection Act and
+  Regulation 11 of the CPA regulations) are not yet written. The `/feedback` page says the rules will be published
+  there; they must be before the first winner is chosen.
+- **Founding Member Annual Pass (R299 once-off, 12 months of Puntr Pro, no auto-renewal)** is announced in the bell
+  and on `/about` as a prepaid membership, not an investment or donation. Checkout is not built. Refunds and Terms
+  need the pass position before it goes on sale.
+
+## 6 Nov 2026: forms to support, member details, Founding-only survey, campaign email
+- Every public form now also writes to `form_submissions` and emails support@puntr.co.za. Contact form: name, email, subject, message. Privacy request: email and request type (details stay in the database). Survey: member number, rating, Annual Pass answer. Pages: `/privacy` (what we collect, who receives it) [attorney review].
+- New private table `member_details` (first and last name, mobile, date of birth, province), optional, member and admins only, never on public profiles. Pages: `/privacy` [attorney review].
+- Survey is for Founding Members only, stores structured answers and Annual Pass interest. R500 OTT voucher draw rules and closing date still to be published [attorney review].
+- One-off marketing email about the Founding Member Annual Pass, sent only to people who opted in, with unsubscribe. Pages: `/privacy`, `/refunds` (Annual Pass is prepaid, no auto-renewal; checkout not live yet) [attorney review].
+- Email sender is now Puntr - South Africa <support@puntr.co.za> through Resend (processor already disclosed).

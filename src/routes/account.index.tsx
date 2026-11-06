@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AccountPage, RequireMember } from "@/components/account-gate";
+import { MemberDetailsForm } from "@/components/member-details-form";
 import { ReferralCard } from "@/components/referral-card";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useSession } from "@/components/session";
@@ -33,6 +34,8 @@ function Account() {
           <p className="mt-1 text-sm text-muted-foreground">
             {t("home.subtitle", { email: user?.email ?? "" })}
           </p>
+
+          {user ? <MemberDetailsForm userId={user.id} /> : null}
 
           <dl className="card-surface mt-6 divide-y divide-border">
             <div className="flex items-center justify-between gap-4 p-4 text-sm">

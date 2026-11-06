@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "Newsroom | Latest updates from Puntr",
+    "description": "Official company and product updates from the Puntr team: development progress, features, community news and launch announcements.",
+    "ogTitle": "Puntr Newsroom"
+  },
+  "eyebrow": "Newsroom",
+  "title": "The latest from Puntr",
+  "lead": "Official updates, developments and announcements from the Puntr team.",
+  "all": "All",
+  "cat": {
+    "company": "Company Updates",
+    "product": "Product Development",
+    "pfie": "PFIE & Technology",
+    "features": "Features & Improvements",
+    "community": "Community",
+    "launch": "Launch Announcements"
+  },
+  "featured": "Latest update",
+  "empty": "No updates published yet. Check back soon.",
+  "emptyCat": "No updates in this category yet.",
+  "loading": "Loading updates",
+  "error": "Could not load updates. Please try again shortly.",
+  "readMore": "Read more",
+  "back": "Back to the Newsroom",
+  "by": "By {{author}}",
+  "share": "Share",
+  "shareWhatsapp": "Share on WhatsApp",
+  "shareX": "Share on X",
+  "copyLink": "Copy link",
+  "copied": "Link copied",
+  "related": "Related updates",
+  "notFound": "We could not find that update.",
+  "home": {
+    "eyebrow": "Latest from Puntr",
+    "title": "LATEST FROM PUNTR",
+    "lead": "The latest updates, developments and announcements from the Puntr team.",
+    "cta": "Visit the Newsroom"
+  }
+}

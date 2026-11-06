@@ -34,6 +34,7 @@ import { Logo } from "@/components/brand";
 import { useSession } from "@/components/session";
 import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { SocialLinks } from "@/components/social-links";
 
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
@@ -327,34 +328,11 @@ export function MobileNav() {
                   <Share2 className="size-5 text-muted-foreground" />
                   <span className="flex-1">{t("mobile.followPuntr")}</span>
                 </div>
-                <div className="mt-1 flex items-center gap-2 px-3 pb-2">
-                  {[
-                    { href: "https://x.com/puntr_za", label: "X" },
-                    { href: "https://facebook.com/puntrza", label: "f" },
-                    { href: "https://instagram.com/puntr_za", label: "ig" },
-                    { href: "https://youtube.com/@puntr_za", label: "yt" },
-                    { href: "https://tiktok.com/@puntr_za", label: "tt" },
-                  ].map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="grid size-9 place-items-center rounded-full border border-border text-xs font-bold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                      aria-label={s.label}
-                    >
-                      {s.label === "X"
-                        ? "𝕏"
-                        : s.label === "f"
-                          ? "f"
-                          : s.label === "ig"
-                            ? "◎"
-                            : s.label === "yt"
-                              ? "▶"
-                              : "♪"}
-                    </a>
-                  ))}
-                </div>
+                <SocialLinks
+                  className="px-3 pb-2"
+                  iconClassName="size-4"
+                  itemClassName="grid size-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                />
               </div>
 
               {/* Press + logout */}
@@ -381,8 +359,8 @@ export function MobileNav() {
       {/* Bottom Navigation Bar */}
       <nav
         aria-label={t("mobile.primary")}
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur-xl lg:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
+        style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <ul className="grid grid-cols-5">
           {bottomNavItems.map(({ key, to, icon: Icon }) => {
