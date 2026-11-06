@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
-import { IllustrativeInsights } from "@/components/illustrative-panels";
+import { IllustrativeInsights } from "@/components/illustrative-insights";
 import { Button } from "@/components/ui/button";
 import { Em } from "@/components/em";
 import { headT } from "@/lib/i18n/head";
