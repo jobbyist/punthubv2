@@ -61,7 +61,6 @@
     "paid": "Paid. Your Founding Annual Pass starts on 1 December 2026.",
     "full": "All {{spots}} places have been claimed.",
     "closed": "This offer closed on {{deadline}}.",
-    
     "error": "We couldn't start your claim just now. Please try again.",
     "onboardingTitle": "One more thing: the Founding Annual Pass",
     "leftOf": "{{count}}/{{total}} Annual Passes remaining",
