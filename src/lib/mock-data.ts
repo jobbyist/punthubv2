@@ -46,14 +46,14 @@ export const teamLogos: Record<string, string> = {
   Liverpool: "/teams/liverpool.svg",
   "Golden State Warriors": "https://puntr.co.za/teams/goldenstate.JPG",
   "Boston Celtics": "https://puntr.co.za/teams/celtics.PNG",
-  "South Africa Springboks (Rugby)": "https://puntr.co.za/teams/springboks.jpg",
-  Springboks: "https://puntr.co.za/teams/springboks.jpg",
-  "South Africa (Rugby)": "https://puntr.co.za/teams/springboks.jpg",
-  "New Zealand All Blacks (Rugby)": "https://puntr.co.za/teams/newzealand.JPG",
-  "All Blacks": "https://puntr.co.za/teams/newzealand.JPG",
-  "New Zealand (Rugby)": "https://puntr.co.za/teams/newzealand.JPG",
-  "South Africa (Cricket)": "https://puntr.co.za/teams/za.PNG",
-  "India (Cricket)": "https://puntr.co.za/teams/india.PNG",
+  "South Africa Springboks (Rugby)": "/teams/springboks.jpg",
+  Springboks: "/teams/springboks.jpg",
+  "South Africa (Rugby)": "/teams/springboks.jpg",
+  "New Zealand All Blacks (Rugby)": "/teams/allblacks.jpg",
+  "All Blacks": "/teams/allblacks.jpg",
+  "New Zealand (Rugby)": "/teams/allblacks.jpg",
+  "South Africa (Cricket)": "/teams/southafrica.png",
+  "India (Cricket)": "/teams/india.png",
 };
 
 export function getTeamLogo(teamName: string): string | undefined {
