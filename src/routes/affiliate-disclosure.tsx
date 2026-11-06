@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
+uundundundefinedfundefinednedfinedundefinedefineduuundefineddefineddefineduundundefinedfinedundefinedundefinedfinedundefinedundefinedundefinedundefined{undefinedundefinedundefinedeundefinedteFileRundefineduteundefined}undefinedfundefinedundefinedundefined undefined@tanundefinedtaundefinedundefinedundefinedreaundefinedtundefinedrundefineduter"undefined
+imundefinedort { AundefinedundefinedShell, PageHeading } from "@/components/layout/app-shell";
+import { Booundefinedmakerundefinedndependenceundefinedotice } from "@/components/undefinedookmaker-independence-notice";
 
 export const Route = createFileRoute("/affiliate-disclosure")({
   head: () => ({
