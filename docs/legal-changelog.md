@@ -144,3 +144,11 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - Survey is for Founding Members only, stores structured answers and Annual Pass interest. R500 OTT voucher draw rules and closing date still to be published [attorney review].
 - One-off marketing email about the Founding Member Annual Pass, sent only to people who opted in, with unsubscribe. Pages: `/privacy`, `/refunds` (Annual Pass is prepaid, no auto-renewal; checkout not live yet) [attorney review].
 - Email sender is now Puntr - South Africa <support@puntr.co.za> through Resend (processor already disclosed).
+
+
+## 6 November 2026 — South African English and plain-language review
+
+- **Pages reviewed:** Terms and Conditions, Privacy Policy, Affiliate Disclosure and Refunds.
+- **Changes:** Refined page introductions and descriptions for clarity, applied South African English spelling where relevant, and clarified that commercial partners do not control Puntr's prediction assessments, editorial content or leaderboards.
+- **Policy impact:** No new data processing, product capability, payment commitment, user obligation or legal right was introduced or removed. Existing policy substance and version references remain unchanged.
+- **Counsel review:** Please review the wording refinements alongside the existing draft legal notices before approval.

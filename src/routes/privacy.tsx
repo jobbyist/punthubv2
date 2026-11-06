@@ -97,7 +97,7 @@ function Privacy() {
     <AppShell>
       <PageHeading
         title="Privacy Policy"
-        subtitle="Plain English. What we collect, why, and what you can do about it."
+        subtitle="A clear explanation of the personal information we handle, why we need it and the choices and rights available to you."
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>

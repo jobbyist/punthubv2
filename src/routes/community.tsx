@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { Target } from "lucide-react";
+import { CommunityDiscussions } from "@/components/community-discussions";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
@@ -121,6 +122,8 @@ function Community() {
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
+
+      <CommunityDiscussions />
 
       <div className="card-surface mb-5 p-4">
         <div className="flex items-center gap-3">

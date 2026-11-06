@@ -16,7 +16,6 @@ const columns = [
       ["leaderboards", "/leaderboards"],
       ["results", "/results"],
       ["insights", "/insights"],
-      ["founding", "/founding"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
     ],
@@ -36,8 +35,8 @@ const columns = [
       ["about", "/about"],
       ["terms", "/terms"],
       ["privacy", "/privacy"],
-      ["privacyChoices", "/cookies"],
-      ["affiliate", "/affiliate-disclosure"],
+      ["cookies", "/cookies"],
+      ["disclosures", "/affiliate-disclosure"],
       ["refunds", "/refunds"],
     ],
   },
@@ -77,7 +76,7 @@ export function SiteFooter() {
   useEffect(() => {
     const update = () => setCurrentDateTime(formatDateTime(new Date()));
     update();
-    const interval = setInterval(update, 30_000);
+    const interval = setInterval(update, 1_000);
     return () => clearInterval(interval);
   }, []);
 

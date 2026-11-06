@@ -8,7 +8,12 @@
     "roadmap": "Roadmap",
     "howItWorks": "How it works",
     "pricing": "Pricing",
-    "support": "Support"
+    "support": "Support",
+    "feedback": "Feedback",
+    "home": "Home",
+    "about": "About",
+    "updates": "Updates",
+    "tools": "Tools"
   },
   "header": {
     "openMenu": "Open menu",
@@ -93,13 +98,12 @@
       "about": "About",
       "terms": "Terms",
       "privacy": "Privacy",
-      "privacyChoices": "Privacy choices",
-      "affiliate": "Affiliate disclosure",
       "refunds": "Refunds",
       "grading": "How we grade picks",
       "verify": "Verify the record",
       "roadmap": "Roadmap",
-      "founding": "Become a Founding Member"
+      "cookies": "Cookies",
+      "disclosures": "Disclosures"
     },
     "social": {
       "x": "Puntr on X",

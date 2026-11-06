@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
+import { IllustrativeInsights } from "@/components/illustrative-insights";
 import { Button } from "@/components/ui/button";
 import { Em } from "@/components/em";
 import { headT } from "@/lib/i18n/head";
@@ -81,6 +82,8 @@ function Insights() {
         </div>
         <p className="mt-6 text-sm text-muted-foreground">{t("fine")}</p>
       </motion.section>
+
+      <IllustrativeInsights />
 
       <section className="card-surface p-6">
         <h2 className="text-lg">{t("perks.title")}</h2>

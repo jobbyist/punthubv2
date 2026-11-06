@@ -19,7 +19,7 @@ export function PlatformRail() {
   const { t } = useTranslation("affiliate");
   return (
     <div className="flex flex-wrap items-center justify-center gap-3">
-      {platforms.map((p) => (
+      {platforms.slice(0, 9).map((p) => (
         <div
           key={p.name}
           className="grid h-16 min-w-[100px] sm:min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-3 sm:px-5 shadow-soft transition-transform hover:-translate-y-0.5"

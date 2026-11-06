@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
+import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { LiveBadge } from "@/components/live-badge";
 import { Button } from "@/components/ui/button";
 import { sports } from "@/lib/mock-data";
@@ -181,6 +182,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <LeftRail />
       <main className="min-w-0 flex-1 py-6">
         {children}
+        <div className="mt-6">
+          <BookmakerIndependenceNotice compact />
+        </div>
         <div className="mt-6">
           <AffiliateBanner />
         </div>

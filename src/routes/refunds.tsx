@@ -27,7 +27,10 @@ export const Route = createFileRoute("/refunds")({
 function Refunds() {
   return (
     <AppShell>
-      <PageHeading title="Refunds" subtitle="A short policy while Puntr prepares for launch." />
+      <PageHeading
+        title="Refunds"
+        subtitle="Our current position on refunds and cancellations, including what applies before paid features go on sale."
+      />
 
       <div className="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
         <section className="card-surface p-6">

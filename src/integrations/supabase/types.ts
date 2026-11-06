@@ -65,6 +65,36 @@ export type Database = {
           },
         ]
       }
+      annual_pass_claims: {
+        Row: {
+          amount_cents: number | null
+          claimed_at: string
+          hold_expires_at: string | null
+          paid_at: string | null
+          payment_reference: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       breach_register: {
         Row: {
           contained_at: string | null
@@ -278,6 +308,78 @@ export type Database = {
         }
         Relationships: []
       }
+      form_submissions: {
+        Row: {
+          created_at: string
+          email: string | null
+          emailed: boolean
+          form: string
+          id: string
+          message: string | null
+          meta: Json
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          emailed?: boolean
+          form: string
+          id?: string
+          message?: string | null
+          meta?: Json
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          emailed?: boolean
+          form?: string
+          id?: string
+          message?: string | null
+          meta?: Json
+          name?: string | null
+        }
+        Relationships: []
+      }
+      founding_campaign_sends: {
+        Row: {
+          campaign: string
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          campaign: string
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          campaign?: string
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      founding_welcome_sends: {
+        Row: {
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       hidden_predictions: {
         Row: {
           admin_id: string
@@ -351,6 +453,51 @@ export type Database = {
           wave?: number
         }
         Relationships: []
+      }
+      member_details: {
+        Row: {
+          date_of_birth: string | null
+          first_name: string | null
+          last_name: string | null
+          phone: string | null
+          province: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          date_of_birth?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          province?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          date_of_birth?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          province?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       newsroom_articles: {
         Row: {
@@ -643,6 +790,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           birth_year: number | null
           created_at: string
           display_name: string
@@ -660,6 +808,7 @@ export type Database = {
           username: string
         }
         Insert: {
+          avatar_url?: string | null
           birth_year?: number | null
           created_at?: string
           display_name: string
@@ -677,6 +826,7 @@ export type Database = {
           username: string
         }
         Update: {
+          avatar_url?: string | null
           birth_year?: number | null
           created_at?: string
           display_name?: string
@@ -1199,38 +1349,47 @@ export type Database = {
       }
       survey_responses: {
         Row: {
+          answers: Json
           contact_ok: boolean
           created_at: string
           draw_entry: boolean
           id: string
           improve: string | null
           liked: string | null
+          pass_interest: string | null
           pricing_view: string | null
-          rating: number
+          rating: number | null
+          survey_version: number
           user_id: string
           wanted_features: string[]
         }
         Insert: {
+          answers?: Json
           contact_ok?: boolean
           created_at?: string
           draw_entry?: boolean
           id?: string
           improve?: string | null
           liked?: string | null
+          pass_interest?: string | null
           pricing_view?: string | null
-          rating: number
+          rating?: number | null
+          survey_version?: number
           user_id: string
           wanted_features?: string[]
         }
         Update: {
+          answers?: Json
           contact_ok?: boolean
           created_at?: string
           draw_entry?: boolean
           id?: string
           improve?: string | null
           liked?: string | null
+          pass_interest?: string | null
           pricing_view?: string | null
-          rating?: number
+          rating?: number | null
+          survey_version?: number
           user_id?: string
           wanted_features?: string[]
         }
@@ -1388,6 +1547,7 @@ export type Database = {
       }
       public_profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           display_name: string | null
           founding_number: number | null
@@ -1395,6 +1555,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           display_name?: string | null
           founding_number?: number | null
@@ -1402,6 +1563,7 @@ export type Database = {
           username?: never
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           display_name?: string | null
           founding_number?: number | null
@@ -1599,6 +1761,17 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_member_details: {
+        Args: never
+        Returns: {
+          date_of_birth: string
+          first_name: string
+          last_name: string
+          phone: string
+          province: string
+          user_id: string
+        }[]
+      }
       admin_referral_review: {
         Args: never
         Returns: {
@@ -1635,6 +1808,8 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      annual_pass_offer: { Args: never; Returns: Json }
+      annual_pass_taken: { Args: never; Returns: number }
       anonymise_account: {
         Args: { p_email: string; p_user: string }
         Returns: undefined
@@ -1650,6 +1825,7 @@ export type Database = {
         Returns: number
       }
       can_post: { Args: { p_user: string }; Returns: boolean }
+      claim_annual_pass: { Args: never; Returns: Json }
       claim_reserved_founding: { Args: { p_user: string }; Returns: number }
       complete_signup: {
         Args: {
@@ -1661,6 +1837,10 @@ export type Database = {
           p_username: string
         }
         Returns: number
+      }
+      confirm_annual_pass_payment: {
+        Args: { p_amount_cents: number; p_reference: string; p_user: string }
+        Returns: Json
       }
       create_prediction: {
         Args: {
@@ -1695,8 +1875,23 @@ export type Database = {
         }
       }
       export_my_data: { Args: never; Returns: Json }
+      founding_campaign_recipients: {
+        Args: { p_campaign: string }
+        Returns: {
+          is_member: boolean
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
       founding_spots_held: { Args: never; Returns: number }
       founding_spots_taken: { Args: never; Returns: number }
+      founding_welcome_recipients: {
+        Args: never
+        Returns: {
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
       invoke_cron: { Args: { p_path: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
       launch_audience: {

@@ -44,5 +44,13 @@
     "loadMore": "Load more",
     "loading": "Loading…",
     "error": "We couldn't load the feed. Please refresh the page."
+  },
+  "discussions": {
+    "preview": "Illustrative community preview",
+    "title": "Sports discussions",
+    "description": "Team-started conversations with sample replies and founding-member vote counts. These are illustrative examples, not live member activity.",
+    "upvotes": "upvotes",
+    "comments": "comments",
+    "sampleVotes": "Example votes"
   }
 }

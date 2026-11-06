@@ -140,7 +140,7 @@ function ComingSoon() {
               <Button
                 size="lg"
                 className="h-12 px-6 text-[15px]"
-                onClick={() => navigate({ to: "/join" })}
+                onClick={() => navigate({ to: "/pricing" })}
               >
                 {t("cta")} <ArrowRight className="size-4" />
               </Button>

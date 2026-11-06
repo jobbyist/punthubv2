@@ -1,14 +1,14 @@
 {
   "meta": {
     "title": "Become a Founding Member | Puntr",
-    "description": "Get in early. Become a Puntr Founding Member: the first 100 members get a permanent numbered badge and full access, free. 18+. Predict what's next. Prove your worth.",
+    "description": "Join Puntr’s founding community. The first 100 members receive a permanent numbered badge and free access. Build a transparent sports prediction record from day one. 18+.",
     "ogTitle": "Puntr: Predict what's next. Prove your worth."
   },
   "eyebrow": "Founding Member sign-ups are open",
   "title1": "Predict what's next.",
   "title2": "Prove your worth.",
-  "lead": "Get in early. Become a Founding Member. Be part of what's next.",
-  "body": "The first 100 members get a permanent, numbered Founding badge and full access, free. No card needed. Puntr launches on {{launch}}.",
+  "lead": "A new standard for sports predictions starts with the community.",
+  "body": "Be among the first 100 members to help shape Puntr. Claim your permanent numbered Founding badge and get access at no cost. No card needed. Puntr launches on {{launch}}.",
   "cta": "Claim your Founding spot",
   "how": "See how it works",
   "dates": {
@@ -18,7 +18,7 @@
     "launchValue": "{{date}}"
   },
   "perks": {
-    "title": "What Founding Members get",
+    "title": "Your Founding Member benefits",
     "f1": "A permanent Founding badge, numbered #1 to #100",
     "f2": "Full access to posting, your record and the weekly leaderboard",
     "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch"
@@ -38,10 +38,10 @@
       "body": "Picks are graded automatically, so your record speaks for you."
     }
   },
-  "fine": "Puntr is a prediction community, not a bookmaker. Joining is free and Founding spots are limited to the first 100 members.",
+  "fine": "Puntr is a sports prediction community, not a bookmaker. Founding Membership is free and limited to the first 100 members.",
   "last": {
     "title": "Be part of what's next",
-    "body": "Once the 100 spots are taken, Founding badges are closed for good."
+    "body": "The first 100 places are the only opportunity to receive a permanent numbered Founding badge."
   },
   "pass": {
     "title": "Founding Annual Pass",
@@ -59,6 +59,8 @@
     "closed": "This offer closed on {{deadline}}.",
     "unavailable": "Checkout isn't available just yet. Your place is held; please try again shortly.",
     "error": "We couldn't start your claim just now. Please try again.",
-    "onboardingTitle": "One more thing: the Founding Annual Pass"
+    "onboardingTitle": "One more thing: the Founding Annual Pass",
+    "leftOf": "{{count}} of {{total}} Annual Passes left",
+    "teaser": "Founding Members can claim one of just 20 Annual Passes: 12 months of Puntr Pro for R299 once-off instead of R1,188 at the standard monthly rate. Claiming includes payment through PayFast, after you join."
   }
 }

@@ -40,10 +40,80 @@
   "vs": "vs",
   "sport": {
     "soccer": "Soccer",
-    "rugby": "Rugby"
+    "rugby": "Rugby",
+    "basketball": "Basketball",
+    "cricket": "Cricket"
   },
   "founding": {
     "left": "{{left}} of {{cap}} Founding spots left",
     "full": "Founding spots are full"
+  },
+  "illustrative": {
+    "badge": "Illustrative example",
+    "fixtures": {
+      "title": "A look at the fixture experience",
+      "body": "Sample match cards across competitions and sports. These are design examples, not scheduled fixtures or available markets.",
+      "kickoff": "Sample kick-off"
+    },
+    "leaderboard": {
+      "title": "What the leaderboard can look like",
+      "body": "Sample profiles and performance figures to demonstrate the ranking layout. No real member data is shown.",
+      "rank": "Rank",
+      "member": "Member",
+      "units": "Units",
+      "roi": "ROI",
+      "picks": "Settled",
+      "rows": [
+        {
+          "name": "CapeTownCall",
+          "units": "34.2",
+          "roi": "+22.4%",
+          "picks": "18"
+        },
+        {
+          "name": "SowetoScout",
+          "units": "29.8",
+          "roi": "+18.7%",
+          "picks": "16"
+        },
+        {
+          "name": "DurbanData",
+          "units": "26.4",
+          "roi": "+16.1%",
+          "picks": "15"
+        },
+        {
+          "name": "MzansiMind",
+          "units": "23.1",
+          "roi": "+13.8%",
+          "picks": "14"
+        },
+        {
+          "name": "JoziTactician",
+          "units": "20.6",
+          "roi": "+11.2%",
+          "picks": "12"
+        }
+      ]
+    },
+    "insights": {
+      "title": "Inside the Insights experience",
+      "body": "Illustrative match analysis, visual performance trends and a multi-source news feed preview.",
+      "matches": "Matches analysed",
+      "competitions": "Competitions",
+      "form": "Sample form trend",
+      "chartTitle": "Illustrative accuracy by match round",
+      "chartNote": "Example percentages only — not Puntr member performance.",
+      "accuracy": "Illustrative accuracy",
+      "newsTitle": "Sports news feed preview",
+      "newsBody": "Example publisher cards show how aggregated coverage could appear. No live articles are being fetched here.",
+      "sourcePreview": "Source preview",
+      "refresh": "Planned refresh schedule: every 24 hours at 12:00 SAST",
+      "stories": {
+        "supersport": "Example: team news and selection update",
+        "bbcsport": "Example: competition form and fixture context",
+        "espn": "Example: analysis and wider sports headlines"
+      }
+    }
   }
 }

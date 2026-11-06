@@ -1,17 +1,17 @@
 {
   "meta": {
-    "title": "Coming soon | Puntr",
-    "description": "Puntr is built in stages. AI-Powered Insights, Puntr Pro and more are on the way for South African sports fans.",
-    "ogDescription": "More from Puntr is on the way."
+    "title": "AI-Powered Insights | Puntr Pro",
+    "description": "Understand the game with AI-Powered Insights, available with Puntr Pro for R99 per month.",
+    "ogDescription": "AI-powered sports intelligence for Puntr Pro members."
   },
-  "badge": "Coming soon",
-  "title1": "More from Puntr is",
-  "title2": "on the way.",
-  "body": "We're building in stages. Predictions, locked records and the weekly leaderboard come first. <1>AI-Powered Insights</1> and more follow once they're ready.",
-  "queue": "<1>{{feature}}</1> is in the build queue",
-  "cta": "Get started",
-  "explore": "Explore Puntr",
-  "fine": "Free to join. 18+ only. Gamble responsibly.",
+  "badge": "Puntr Pro feature",
+  "title1": "See the game",
+  "title2": "differently.",
+  "body": "AI-Powered Insights brings match context, performance trends and data-led summaries together to help you make more informed decisions. Coming soon with <1>Puntr Pro</1>.",
+  "queue": "<1>{{feature}}</1> is being prepared for Puntr Pro",
+  "cta": "Explore Puntr Pro",
+  "explore": "Explore predictions",
+  "fine": "Puntr Pro: R99 per month. 18+ only. Gamble responsibly.",
   "example": "Example",
   "card": {
     "confidence": "Example confidence",

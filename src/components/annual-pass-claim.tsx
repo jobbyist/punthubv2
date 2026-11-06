@@ -140,8 +140,8 @@ export function AnnualPassClaim({
           {onboarding ? t("pass.onboardingTitle") : t("pass.title")}
         </h2>
         {offer?.open && (
-          <span className="text-xs font-semibold text-primary tnum">
-            {t("pass.left", { count: offer.remaining })}
+          <span className="text-xs font-semibold text-primary tnum" aria-live="polite">
+            {t("pass.leftOf", { count: offer.remaining, total: SPOTS })}
           </span>
         )}
       </div>
