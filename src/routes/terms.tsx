@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Separator } from "@/components/ui/separator";
+import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -35,6 +36,7 @@ function Terms() {
           </p>
 
           <Separator className="my-6" />
+          <BookmakerIndependenceNotice compact />
 
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">1. Introduction</h2>
