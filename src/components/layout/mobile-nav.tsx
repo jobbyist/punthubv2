@@ -11,10 +11,7 @@ import {
   HelpCircle,
   DollarSign,
   Info,
-  Brain,
-  Mic,
   Building2,
-  Wrench,
   Radio,
   Star,
   UserPlus,
@@ -26,6 +23,7 @@ import {
   ChevronRight,
   ChevronDown,
   Map,
+  Wrench,
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,7 +45,7 @@ const bottomNavItems = [
 ] as const;
 
 const sports = [
-  { key: "soccer", emoji: "⚽", to: "/predictions", active: true },
+  { key: "soccer", emoji: "⚽", active: true },
   { key: "rugby", emoji: "🏉", active: false },
   { key: "basketball", emoji: "🏀", active: false },
   { key: "tennis", emoji: "🎾", active: false },
@@ -146,26 +144,10 @@ export function MobileNav() {
               {/* Primary links */}
               <div className="space-y-0.5">
                 <NavLink to="/" icon={Home} label={t("mobile.home")} active={path === "/"} />
-                <NavLink to="/predictions" icon={Target} label={t("primary.predictions")} />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "aiPicks" }}
-                  icon={Brain}
-                  label={t("mobile.tools.aiPicks")}
-                  badge={tc("badge.pro")}
-                  badgeColor="bg-primary/15 text-primary"
-                />
-                <NavLink
-                  to="/insights"
-                  icon={TrendingUp}
-                  label={t("mobile.tools.marketInsights")}
-                />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "podcast" }}
-                  icon={Mic}
-                  label={t("mobile.tools.podcast")}
-                />
+                <NavLink to="/about" icon={Info} label={t("primary.about")} />
+                <NavLink to="/newsroom" icon={Radio} label={t("primary.updates")} />
+                <NavLink to="/coming-soon" icon={BarChart3} label={t("primary.insights")} />
+                <NavLink to="/tools" icon={Wrench} label={t("primary.tools")} />
               </div>
 
               {/* Sports section */}
@@ -192,7 +174,8 @@ export function MobileNav() {
                       s.active ? (
                         <Link
                           key={s.key}
-                          to={s.to}
+                          to="/sports/$sport"
+                          params={{ sport: s.key }}
                           onClick={close}
                           className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
                         >
@@ -203,9 +186,12 @@ export function MobileNav() {
                           {s.key === "soccer" && <LiveBadge />}
                         </Link>
                       ) : (
-                        <div
+                        <Link
                           key={s.key}
-                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-70"
+                          to="/sports/$sport"
+                          params={{ sport: s.key }}
+                          onClick={close}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-80 transition-colors hover:opacity-100"
                         >
                           <span className="text-xl leading-none grayscale">{s.emoji}</span>
                           <span className="text-[11px] font-medium text-foreground">
@@ -214,7 +200,7 @@ export function MobileNav() {
                           <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
                             {tc("badge.comingSoon")}
                           </span>
-                        </div>
+                        </Link>
                       ),
                     )}
                   </div>
@@ -224,22 +210,14 @@ export function MobileNav() {
               {/* Tools & services */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "bookmakers" }}
+                  to="/bookmakers"
                   icon={Building2}
                   label={t("mobile.tools.bookmakers")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
+
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "tools" }}
-                  icon={Wrench}
-                  label={t("mobile.tools.tools")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "liveScores" }}
+                  to="/live-scores"
                   icon={Radio}
                   label={t("mobile.tools.liveScores")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -249,16 +227,14 @@ export function MobileNav() {
               {/* Rewards & community */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "puntPoints" }}
+                  to="/puntpoints"
                   icon={Star}
                   label={t("mobile.tools.puntPoints")}
                   badge={tc("badge.new")}
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "referrals" }}
+                  to="/referrals"
                   icon={UserPlus}
                   label={t("mobile.tools.referrals")}
                   right={
@@ -277,13 +253,6 @@ export function MobileNav() {
 
               {/* Content & support */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "podcast" }}
-                  icon={Mic}
-                  label={t("mobile.tools.podcast")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
                 <a
                   href={HELPLINE_TEL}
                   onClick={close}
@@ -317,12 +286,7 @@ export function MobileNav() {
               {/* Help links */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink to="/support" icon={HelpCircle} label={t("mobile.helpCentre")} />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "feedback" }}
-                  icon={MessageCircle}
-                  label={t("mobile.feedback")}
-                />
+                <NavLink to="/feedback" icon={MessageCircle} label={t("mobile.feedback")} />
               </div>
 
               {/* Social */}
@@ -359,42 +323,44 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Bottom Navigation Bar */}
-      <nav
-        aria-label={t("mobile.primary")}
-        className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
-        style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
-      >
-        <ul className="grid grid-cols-5">
-          {bottomNavItems.map(({ key, to, icon: Icon }) => {
-            const active = path === to;
-            return (
-              <li key={key}>
-                <Link
-                  to={to}
-                  className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                    active ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon className="size-5" />
-                  <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
-                </Link>
-              </li>
-            );
-          })}
-          <li key="more">
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className={`flex min-h-[56px] w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                isMenuOpen ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <Menu className="size-5" />
-              <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      {/* Bottom Navigation Bar: members only. Guests get the full screen height and the header's Sign in / Join free. */}
+      {isSignedIn && (
+        <nav
+          aria-label={t("mobile.primary")}
+          className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
+          style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          <ul className="grid grid-cols-5">
+            {bottomNavItems.map(({ key, to, icon: Icon }) => {
+              const active = path === to;
+              return (
+                <li key={key}>
+                  <Link
+                    to={to}
+                    className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                      active ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="size-5" />
+                    <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
+                  </Link>
+                </li>
+              );
+            })}
+            <li key="more">
+              <button
+                onClick={() => setIsMenuOpen(true)}
+                className={`flex min-h-[56px] w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                  isMenuOpen ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Menu className="size-5" />
+                <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
     </>
   );
 }

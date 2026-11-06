@@ -11,7 +11,7 @@
   "balance": "Your balance",
   "soon": {
     "title": "PuntPoints are on their way",
-    "body": "You will earn points for confirming your email, posting picks and inviting friends, and redeem them for vouchers, sponsored rewards and perks. We switch them on once the rules are final. There is no cash value and points can never be bought."
+    "body": "Earn PuntPoints for eligible activity and invites, then redeem them for vouchers, sponsored rewards and perks. A planned Tipster Support feature will also let Punters send voluntary PuntPoints tips to eligible verified Tipsters with sustained winning form and strong sport- and competition-specific leaderboard performance. Points have no cash value and cannot be bought."
   },
   "signIn": {
     "body": "Sign in to see your balance, invite friends and redeem rewards.",
@@ -70,8 +70,10 @@
       "daily_limit": "You've reached today's redemption limit. Try again tomorrow.",
       "insufficient_points": "You don't have enough points for that.",
       "out_of_stock": "That reward just ran out.",
-      "generic": "We couldn't redeem that. Please try again."
-    }
+      "generic": "We couldn't redeem that. Please try again.",
+      "identity_not_verified": "Please verify your identity on your account page before redeeming rewards."
+    },
+    "verifyCta": "Verify my identity"
   },
   "redemptions": {
     "title": "Your redemptions",
@@ -96,6 +98,10 @@
     }
   },
   "rules": {
-    "note": "PuntPoints have no cash value, cannot be bought, exchanged for money or transferred, and never change rankings or the leaderboard. We may reverse points earned through fraud or abuse. Rewards are provided by our partners and subject to their terms."
+    "note": "PuntPoints have no cash value, cannot be bought or exchanged for money, and never change rankings or leaderboard results. Until Tipster Support launches under its published rules, PuntPoints cannot be transferred between members. We may reverse points earned through fraud or abuse. Rewards are provided by our partners and subject to their terms."
+  },
+  "tipSupport": {
+    "title": "Support standout Tipsters",
+    "body": "Puntr Pro will introduce voluntary PuntPoints tips for verified Tipsters with long winning streaks and strong performance on selected sport- and competition-specific leaderboards. Tipsters can monetise their knowledge with points, not cash. Tips do not affect rankings. This feature is planned and is not available yet."
   }
 }

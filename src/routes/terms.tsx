@@ -10,7 +10,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Read Puntr's Terms & Conditions including payment provider terms, user responsibilities and betting guidelines.",
+          "Read the terms governing your use of Puntr, including account responsibilities, predictions, rewards and third-party links.",
       },
       { property: "og:title", content: "Terms & Conditions | Puntr" },
       { property: "og:description", content: "Puntr Terms & Conditions and user agreement." },
@@ -24,13 +24,13 @@ function Terms() {
     <AppShell>
       <PageHeading
         title="Terms & Conditions"
-        subtitle="Please read these terms carefully before using Puntr."
+        subtitle="These terms explain how Puntr works, what you can expect from the platform and what we expect from members."
       />
 
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r7). Draft pending
+            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r10). Draft pending
             attorney review.
           </p>
 
@@ -78,7 +78,7 @@ function Terms() {
                 sign-in
               </li>
               <li>Maintain the security of your account credentials</li>
-              <li>Notify us immediately of any unauthorized access or security breach</li>
+              <li>Notify us immediately of any unauthorised access or security breach</li>
               <li>Accept responsibility for all activities that occur under your account</li>
             </ul>
             <p className="leading-relaxed text-muted-foreground">
@@ -106,11 +106,13 @@ function Terms() {
               <li>Founding Membership for the first 100 members, free</li>
               <li>
                 A limited Founding Annual Pass offer: the first 20 Founding Members to claim it
-                before 16 November 2026 reserve 12 months of Puntr Pro for a once-off R299, starting
-                on 1 December 2026, with no automatic renewal. Claiming takes no payment; payment
-                opens at checkout before launch, and refund terms will be shown before you pay.
-                Referral rewards on qualifying purchases (up to 30%) are planned and are not
-                available until we publish their terms [attorney review]
+                before 16 November 2026 get 12 months of Puntr Pro for a once-off R299, starting on
+                1 December 2026, with no automatic renewal. Claiming includes payment through
+                PayFast: a claim holds a place for 48 hours and the place is confirmed when payment
+                is received; unpaid places are released. Refunds are covered on the Refunds page.
+                Referral rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases
+                made by people you invite (never cash), are not available until we publish their
+                terms [attorney review]
               </li>
               <li>Educational content and betting resources</li>
               <li>Links to licensed partners, marked &quot;Ad&quot;</li>
@@ -156,7 +158,8 @@ function Terms() {
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               You can redeem PuntPoints for the vouchers, sponsored rewards and perks listed on the
-              Rewards page, while they last. Rewards are provided by our partners and are subject to
+              Rewards page, while they last. You must verify your identity on your account page
+              before you redeem any reward. Rewards are provided by our partners and are subject to
               their terms. Not every reward is open to every member: a reward may need a confirmed
               email, and betting vouchers, if we offer them, are only for members aged 18 or older
               who are not on a break. We may refuse, or reverse, points and redemptions obtained
@@ -230,7 +233,7 @@ function Terms() {
               <li>Manipulate predictions, odds, or PuntPoints through automated means or bots</li>
               <li>Create multiple accounts to abuse rewards or referral programs</li>
               <li>Impersonate others or provide false information</li>
-              <li>Attempt to gain unauthorized access to the Service or other users' accounts</li>
+              <li>Attempt to gain unauthorised access to the Service or other users' accounts</li>
               <li>Interfere with or disrupt the Service's operation</li>
               <li>Scrape, mine, or harvest data from the platform</li>
               <li>Share or encourage gambling by persons under 18</li>
@@ -310,7 +313,7 @@ function Terms() {
             <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
               <li>Your use or inability to use the Service</li>
               <li>Betting losses incurred through third-party platforms</li>
-              <li>Unauthorized access to or alteration of your account or data</li>
+              <li>Unauthorised access to or alteration of your account or data</li>
               <li>Errors or inaccuracies in odds, predictions, or other content</li>
               <li>Actions of third-party bookmakers or payment providers</li>
             </ul>

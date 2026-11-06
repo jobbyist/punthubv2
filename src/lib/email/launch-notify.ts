@@ -2,6 +2,7 @@
  * The launch emails to early-access people who have not signed up yet (waves 1 to 3), and the reminder to the
  * admin. English only. Relative imports only. Nothing here implies profit; the perks are the ones on /pricing.
  */
+import { DARK_CSS, themedLogo } from "./theme";
 import { firstName, SITE, type Wave } from "../launch";
 
 export interface LaunchEmailInput {
@@ -87,30 +88,30 @@ export function renderLaunchEmail({ wave, name, unsubscribeUrl }: LaunchEmailInp
     .join("\n");
 
   const html = `<!doctype html>
-<html lang="en-ZA"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(c.subject)}</title></head>
-<body style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
+<html lang="en-ZA"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="color-scheme" content="light dark" /><meta name="supported-color-schemes" content="light dark" /><style>${DARK_CSS}</style><title>${esc(c.subject)}</title></head>
+<body class="dm-outer" style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
   <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(c.preheader)}</span>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
-    <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
+    <table role="presentation" class="dm-card" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
       <tr><td style="padding:28px 28px 8px;">
-        <div style="font-size:26px;font-weight:800;letter-spacing:-1px;">puntr<span style="color:#16a34a;">.</span></div>
-        <div style="margin-top:2px;font-size:12px;color:#6b7280;">Predict smarter. Prove it.</div>
+        ${themedLogo(104, 56)}
+        <div class="dm-sub" style="margin-top:2px;font-size:12px;color:#6b7280;">Predict smarter. Prove it.</div>
       </td></tr>
       <tr><td style="padding:8px 28px 0;">
-        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;">${esc(c.title)}</h1>
-        <p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#374151;">${esc(hi)}</p>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;">${esc(c.lead)}</p>
-        <p style="margin:0 0 6px;font-size:14px;font-weight:700;">As a Founding Member you get:</p>
-        <ul style="margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.7;color:#374151;">
+        <h1 class="dm-h" style="margin:0 0 12px;font-size:22px;line-height:1.3;">${esc(c.title)}</h1>
+        <p class="dm-p" style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#374151;">${esc(hi)}</p>
+        <p class="dm-p" style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;">${esc(c.lead)}</p>
+        <p class="dm-h" style="margin:0 0 6px;font-size:14px;font-weight:700;">As a Founding Member you get:</p>
+        <ul class="dm-p" style="margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.7;color:#374151;">
           ${PERKS.map((p) => `<li>${esc(p)}</li>`).join("\n          ")}
         </ul>
-        <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#374151;">${esc(how)}</p>
+        <p class="dm-p" style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#374151;">${esc(how)}</p>
         <p style="margin:0 0 20px;"><a href="${esc(join)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;">${esc(c.cta)}</a></p>
-        ${c.closing ? `<p style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(c.closing)}</p>` : ""}
-        <p style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(reason)}</p>
+        ${c.closing ? `<p class="dm-sub" style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(c.closing)}</p>` : ""}
+        <p class="dm-sub" style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(reason)}</p>
       </td></tr>
-      <tr><td style="padding:16px 28px 28px;border-top:1px solid #e5e7eb;font-size:12px;line-height:1.7;color:#6b7280;">
-        <a href="${esc(unsubscribeUrl)}" style="color:#4b5563;">Unsubscribe</a> &middot; <a href="${esc(privacy)}" style="color:#4b5563;">Privacy notice</a><br />
+      <tr><td class="dm-sub dm-line" style="padding:16px 28px 28px;border-top:1px solid #e5e7eb;font-size:12px;line-height:1.7;color:#6b7280;">
+        <a class="dm-link" href="${esc(unsubscribeUrl)}" style="color:#4b5563;">Unsubscribe</a> &middot; <a class="dm-link" href="${esc(privacy)}" style="color:#4b5563;">Privacy notice</a><br />
         ${esc(rg)}
       </td></tr>
     </table>
@@ -148,20 +149,20 @@ export function renderAdminReminder({ whatsapp, sms, adminUrl }: AdminReminderIn
     "Check each person's marketing consent column first. Email-only for anyone who did not tick it.",
   ].join("\n");
   const block = (t: string) =>
-    `<p style="margin:0 0 16px;padding:12px;background:#f3f4f6;font-size:14px;line-height:1.6;white-space:pre-wrap;">${esc(t)}</p>`;
+    `<p class="dm-box dm-p" style="margin:0 0 16px;padding:12px;background:#f3f4f6;font-size:14px;line-height:1.6;white-space:pre-wrap;">${esc(t)}</p>`;
   const html = `<!doctype html>
-<html lang="en-ZA"><head><meta charset="utf-8" /><title>${esc(subject)}</title></head>
-<body style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
+<html lang="en-ZA"><head><meta charset="utf-8" /><meta name="color-scheme" content="light dark" /><meta name="supported-color-schemes" content="light dark" /><style>${DARK_CSS}</style><title>${esc(subject)}</title></head>
+<body class="dm-outer" style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
-    <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
+    <table role="presentation" class="dm-card" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
       <tr><td style="padding:28px;">
-        <div style="font-size:26px;font-weight:800;letter-spacing:-1px;">puntr<span style="color:#16a34a;">.</span></div>
-        <h1 style="margin:16px 0 12px;font-size:20px;">Founding sign-ups reminder</h1>
-        <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#374151;">The early-access emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list. The list, with one-tap links, is in the admin panel.</p>
+        ${themedLogo(104, 56)}
+        <h1 class="dm-h" style="margin:16px 0 12px;font-size:20px;">Founding sign-ups reminder</h1>
+        <p class="dm-p" style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#374151;">The early-access emails go out this morning. Please also send the message below by WhatsApp and SMS to the early-access list. The list, with one-tap links, is in the admin panel.</p>
         <p style="margin:0 0 20px;"><a href="${esc(adminUrl)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;">Open the admin panel</a></p>
-        <p style="margin:0 0 6px;font-size:13px;font-weight:700;">WhatsApp</p>${block(whatsapp)}
-        <p style="margin:0 0 6px;font-size:13px;font-weight:700;">SMS</p>${block(sms)}
-        <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">Check each person's marketing consent column first. Email only for anyone who did not tick it.</p>
+        <p class="dm-h" style="margin:0 0 6px;font-size:13px;font-weight:700;">WhatsApp</p>${block(whatsapp)}
+        <p class="dm-h" style="margin:0 0 6px;font-size:13px;font-weight:700;">SMS</p>${block(sms)}
+        <p class="dm-sub" style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">Check each person's marketing consent column first. Email only for anyone who did not tick it.</p>
       </td></tr>
     </table>
   </td></tr></table>

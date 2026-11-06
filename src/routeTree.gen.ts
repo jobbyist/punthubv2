@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AffiliateDisclosureRouteImport } from './routes/affiliate-disclosure'
+import { Route as BookmakersRouteImport } from './routes/bookmakers'
 import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
@@ -22,9 +23,13 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
+import { Route as LiveScoresRouteImport } from './routes/live-scores'
+import { Route as NewsroomRouteImport } from './routes/newsroom'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PuntpointsRouteImport } from './routes/puntpoints'
+import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
@@ -32,6 +37,7 @@ import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
@@ -43,10 +49,12 @@ import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
+import { Route as SportsSportRouteImport } from './routes/sports.$sport'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
+import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -65,6 +73,11 @@ const AboutRoute = AboutRouteImport.update({
 const AffiliateDisclosureRoute = AffiliateDisclosureRouteImport.update({
   id: '/affiliate-disclosure',
   path: '/affiliate-disclosure',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmakersRoute = BookmakersRouteImport.update({
+  id: '/bookmakers',
+  path: '/bookmakers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComingSoonRoute = ComingSoonRouteImport.update({
@@ -117,6 +130,16 @@ const LeaderboardsRoute = LeaderboardsRouteImport.update({
   path: '/leaderboards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiveScoresRoute = LiveScoresRouteImport.update({
+  id: '/live-scores',
+  path: '/live-scores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsroomRoute = NewsroomRouteImport.update({
+  id: '/newsroom',
+  path: '/newsroom',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PredictionsRoute = PredictionsRouteImport.update({
   id: '/predictions',
   path: '/predictions',
@@ -130,6 +153,16 @@ const PricingRoute = PricingRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PuntpointsRoute = PuntpointsRouteImport.update({
+  id: '/puntpoints',
+  path: '/puntpoints',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundsRoute = RefundsRouteImport.update({
@@ -165,6 +198,11 @@ const SupportRoute = SupportRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -208,18 +246,23 @@ const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsroomIndexRoute = NewsroomIndexRouteImport.update({
-  id: '/newsroom/',
-  path: '/newsroom/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewsroomRoute,
 } as any)
 const NewsroomSlugRoute = NewsroomSlugRouteImport.update({
-  id: '/newsroom/$slug',
-  path: '/newsroom/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsroomRoute,
 } as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
   path: '/privacy/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SportsSportRoute = SportsSportRouteImport.update({
+  id: '/sports/$sport',
+  path: '/sports/$sport',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UUsernameRoute = UUsernameRouteImport.update({
@@ -242,6 +285,12 @@ const ApiCronFoundingWelcomeRoute = ApiCronFoundingWelcomeRouteImport.update({
   path: '/api/cron/founding-welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronIdentityRetentionRoute =
+  ApiCronIdentityRetentionRouteImport.update({
+    id: '/api/cron/identity-retention',
+    path: '/api/cron/identity-retention',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   id: '/api/cron/launch-notify',
   path: '/api/cron/launch-notify',
@@ -267,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
@@ -277,9 +327,13 @@ export interface FileRoutesByFullPath {
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
+  '/newsroom': typeof NewsroomRouteWithChildren
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
@@ -287,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
@@ -295,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -302,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -311,6 +368,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
@@ -321,9 +379,12 @@ export interface FileRoutesByTo {
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
@@ -331,6 +392,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
@@ -339,6 +401,7 @@ export interface FileRoutesByTo {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -346,6 +409,7 @@ export interface FileRoutesByTo {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -356,6 +420,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
@@ -366,9 +431,13 @@ export interface FileRoutesById {
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
+  '/newsroom': typeof NewsroomRouteWithChildren
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
@@ -376,6 +445,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
   '/account/privacy': typeof AccountPrivacyRoute
@@ -384,6 +454,7 @@ export interface FileRoutesById {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -391,6 +462,7 @@ export interface FileRoutesById {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -402,6 +474,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/affiliate-disclosure'
+    | '/bookmakers'
     | '/coming-soon'
     | '/community'
     | '/cookies'
@@ -412,9 +485,13 @@ export interface FileRouteTypes {
     | '/insights'
     | '/join'
     | '/leaderboards'
+    | '/live-scores'
+    | '/newsroom'
     | '/predictions'
     | '/pricing'
     | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
     | '/refunds'
     | '/results'
     | '/rewards'
@@ -422,6 +499,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/tools'
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
@@ -430,6 +508,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -437,6 +516,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -446,6 +526,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/affiliate-disclosure'
+    | '/bookmakers'
     | '/coming-soon'
     | '/community'
     | '/cookies'
@@ -456,9 +537,12 @@ export interface FileRouteTypes {
     | '/insights'
     | '/join'
     | '/leaderboards'
+    | '/live-scores'
     | '/predictions'
     | '/pricing'
     | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
     | '/refunds'
     | '/results'
     | '/rewards'
@@ -466,6 +550,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/tools'
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
@@ -474,6 +559,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account'
     | '/admin'
@@ -481,6 +567,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -490,6 +577,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/affiliate-disclosure'
+    | '/bookmakers'
     | '/coming-soon'
     | '/community'
     | '/cookies'
@@ -500,9 +588,13 @@ export interface FileRouteTypes {
     | '/insights'
     | '/join'
     | '/leaderboards'
+    | '/live-scores'
+    | '/newsroom'
     | '/predictions'
     | '/pricing'
     | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
     | '/refunds'
     | '/results'
     | '/rewards'
@@ -510,6 +602,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/terms'
+    | '/tools'
     | '/unsubscribe'
     | '/verify'
     | '/account/privacy'
@@ -518,6 +611,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy_/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -525,6 +619,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -535,6 +630,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AffiliateDisclosureRoute: typeof AffiliateDisclosureRoute
+  BookmakersRoute: typeof BookmakersRoute
   ComingSoonRoute: typeof ComingSoonRoute
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
@@ -545,9 +641,13 @@ export interface RootRouteChildren {
   InsightsRoute: typeof InsightsRoute
   JoinRoute: typeof JoinRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
+  LiveScoresRoute: typeof LiveScoresRoute
+  NewsroomRoute: typeof NewsroomRouteWithChildren
   PredictionsRoute: typeof PredictionsRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
+  PuntpointsRoute: typeof PuntpointsRoute
+  ReferralsRoute: typeof ReferralsRoute
   RefundsRoute: typeof RefundsRoute
   ResultsRoute: typeof ResultsRoute
   RewardsRoute: typeof RewardsRoute
@@ -555,21 +655,22 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
-  NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
+  SportsSportRoute: typeof SportsSportRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
-  NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
+  ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
@@ -597,6 +698,13 @@ declare module '@tanstack/react-router' {
       path: '/affiliate-disclosure'
       fullPath: '/affiliate-disclosure'
       preLoaderRoute: typeof AffiliateDisclosureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookmakers': {
+      id: '/bookmakers'
+      path: '/bookmakers'
+      fullPath: '/bookmakers'
+      preLoaderRoute: typeof BookmakersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coming-soon': {
@@ -669,6 +777,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live-scores': {
+      id: '/live-scores'
+      path: '/live-scores'
+      fullPath: '/live-scores'
+      preLoaderRoute: typeof LiveScoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsroom': {
+      id: '/newsroom'
+      path: '/newsroom'
+      fullPath: '/newsroom'
+      preLoaderRoute: typeof NewsroomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/predictions': {
       id: '/predictions'
       path: '/predictions'
@@ -688,6 +810,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/puntpoints': {
+      id: '/puntpoints'
+      path: '/puntpoints'
+      fullPath: '/puntpoints'
+      preLoaderRoute: typeof PuntpointsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refunds': {
@@ -737,6 +873,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unsubscribe': {
@@ -797,23 +940,30 @@ declare module '@tanstack/react-router' {
     }
     '/newsroom/': {
       id: '/newsroom/'
-      path: '/newsroom'
+      path: '/'
       fullPath: '/newsroom/'
       preLoaderRoute: typeof NewsroomIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NewsroomRoute
     }
     '/newsroom/$slug': {
       id: '/newsroom/$slug'
-      path: '/newsroom/$slug'
+      path: '/$slug'
       fullPath: '/newsroom/$slug'
       preLoaderRoute: typeof NewsroomSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NewsroomRoute
     }
     '/privacy_/request': {
       id: '/privacy_/request'
       path: '/privacy/request'
       fullPath: '/privacy/request'
       preLoaderRoute: typeof PrivacyRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sports/$sport': {
+      id: '/sports/$sport'
+      path: '/sports/$sport'
+      fullPath: '/sports/$sport'
+      preLoaderRoute: typeof SportsSportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/u/$username': {
@@ -842,6 +992,13 @@ declare module '@tanstack/react-router' {
       path: '/api/cron/founding-welcome'
       fullPath: '/api/cron/founding-welcome'
       preLoaderRoute: typeof ApiCronFoundingWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/identity-retention': {
+      id: '/api/cron/identity-retention'
+      path: '/api/cron/identity-retention'
+      fullPath: '/api/cron/identity-retention'
+      preLoaderRoute: typeof ApiCronIdentityRetentionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cron/launch-notify': {
@@ -875,10 +1032,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface NewsroomRouteChildren {
+  NewsroomSlugRoute: typeof NewsroomSlugRoute
+  NewsroomIndexRoute: typeof NewsroomIndexRoute
+}
+
+const NewsroomRouteChildren: NewsroomRouteChildren = {
+  NewsroomSlugRoute: NewsroomSlugRoute,
+  NewsroomIndexRoute: NewsroomIndexRoute,
+}
+
+const NewsroomRouteWithChildren = NewsroomRoute._addFileChildren(
+  NewsroomRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AffiliateDisclosureRoute: AffiliateDisclosureRoute,
+  BookmakersRoute: BookmakersRoute,
   ComingSoonRoute: ComingSoonRoute,
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
@@ -889,9 +1061,13 @@ const rootRouteChildren: RootRouteChildren = {
   InsightsRoute: InsightsRoute,
   JoinRoute: JoinRoute,
   LeaderboardsRoute: LeaderboardsRoute,
+  LiveScoresRoute: LiveScoresRoute,
+  NewsroomRoute: NewsroomRouteWithChildren,
   PredictionsRoute: PredictionsRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
+  PuntpointsRoute: PuntpointsRoute,
+  ReferralsRoute: ReferralsRoute,
   RefundsRoute: RefundsRoute,
   ResultsRoute: ResultsRoute,
   RewardsRoute: RewardsRoute,
@@ -899,21 +1075,22 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
-  NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
+  SportsSportRoute: SportsSportRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
-  NewsroomIndexRoute: NewsroomIndexRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
+  ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,

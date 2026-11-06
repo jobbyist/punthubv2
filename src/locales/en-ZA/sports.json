@@ -1,0 +1,178 @@
+{
+  "breadcrumb": "Sports",
+  "status": {
+    "live": "Live on Puntr",
+    "launching": "Launches {{date}}",
+    "window": "Target: {{from}} to {{to}}"
+  },
+  "sections": {
+    "sa": "In South Africa",
+    "engine": "How Puntr will cover it",
+    "when": "When it goes live",
+    "competitions": "Competitions we're looking at",
+    "markets": "What you'll be able to predict"
+  },
+  "whenBody": "{{name}} is planned for week {{weeks}} after launch (Puntr launches on {{launch}}). A sport only switches on once its fixture data and automatic grading are working, so the date can move. The roadmap always shows the current status.",
+  "whenBodyLive": "{{name}} is live on Puntr now.",
+  "cta": {
+    "predictions": "See football predictions",
+    "roadmap": "See the full roadmap",
+    "join": "Join free as a Founding Member"
+  },
+  "disclaimer": "Puntr is a prediction and analysis community. Insights are informational and never guarantee an outcome. 18+ only.",
+  "others": "Other sports on Puntr",
+  "items": {
+    "soccer": {
+      "name": "Football",
+      "metaTitle": "Football predictions South Africa: Betway Premiership, EPL, UCL | Puntr",
+      "metaDescription": "Football is Puntr's launch sport: Betway Premiership, EPL, Champions League and more. Lock in picks before kick-off, get graded automatically and build a verified record.",
+      "intro": "Football is South Africa's most-watched sport and Puntr's launch sport. Every pick is locked at kick-off, graded automatically from the final score, and added to a public track record.",
+      "sa": "From Soweto derbies between Kaizer Chiefs and Orlando Pirates to Mamelodi Sundowns' dominance in the Betway Premiership and Bafana Bafana's qualifiers, football fills weekends across the country. South African fans follow the Premier League and the Champions League just as closely as the local game.",
+      "engine": "Puntr pulls fixtures and results from a licensed sports-data provider, so every match is real and every pick is graded the same way. On top of community picks, Puntr's sports intelligence engine will add an Algorithmic Read for each match: form, head-to-head records and a Confidence Score, explained in plain language.",
+      "competitions": [
+        "Betway Premiership (PSL)",
+        "English Premier League",
+        "UEFA Champions League",
+        "Nedbank Cup and MTN8",
+        "CAF Champions League",
+        "Bafana Bafana fixtures"
+      ],
+      "markets": [
+        "Match result (home, draw, away)",
+        "Both teams to score",
+        "Over and under goals",
+        "Correct score (for the record)"
+      ]
+    },
+    "basketball": {
+      "name": "Basketball",
+      "metaTitle": "Basketball predictions South Africa | Puntr",
+      "metaDescription": "Basketball joins Puntr in week 2 after launch. Predict NBA and African basketball fixtures, get graded automatically and build a verified record.",
+      "intro": "Basketball joins Puntr two weeks after launch. It's a fast-growing sport in South Africa, and most fans here follow the NBA closely.",
+      "sa": "South African interest in basketball has grown through school and university leagues, the Basketball National League and the continent-wide Basketball Africa League. The NBA is the most-followed competition, with late-night and early-morning games that suit pre-match picks.",
+      "engine": "Basketball scores are high and margins matter, so Puntr's engine will model points totals and winning margins as well as the winner. The Algorithmic Read will weigh pace, recent form and rest days, and each pick is graded from the official final score.",
+      "competitions": [
+        "NBA",
+        "Basketball Africa League (BAL)",
+        "Basketball National League (BNL)",
+        "FIBA international fixtures"
+      ],
+      "markets": [
+        "Match winner",
+        "Points handicap",
+        "Total points over and under"
+      ]
+    },
+    "rugby": {
+      "name": "Rugby",
+      "metaTitle": "Rugby predictions South Africa: Springboks, URC | Puntr",
+      "metaDescription": "Rugby joins Puntr in week 2 after launch: Springbok Tests, the United Rugby Championship and more, graded automatically on a verified record.",
+      "intro": "Rugby joins Puntr two weeks after launch. Few sports unite South Africa like the Springboks.",
+      "sa": "The Springboks are among the most successful sides in rugby history, and the Bulls, Stormers, Sharks and Lions compete in the United Rugby Championship against Irish, Welsh, Scottish and Italian sides. The Currie Cup and Varsity Cup keep the domestic game busy too.",
+      "engine": "Rugby picks are about winners and margins. Puntr's engine will weigh home advantage, travel, set-piece form and head-to-head records, and grade every pick from the official final score.",
+      "competitions": [
+        "Springbok Tests",
+        "United Rugby Championship (URC)",
+        "Rugby Championship",
+        "Currie Cup"
+      ],
+      "markets": [
+        "Match winner",
+        "Winning margin",
+        "Total points over and under"
+      ]
+    },
+    "racing": {
+      "name": "Horse racing",
+      "metaTitle": "Horse racing predictions South Africa: Durban July | Puntr",
+      "metaDescription": "Horse racing is planned for Puntr in week 4 after launch, covering South African race meetings with automatic grading and verified records.",
+      "intro": "Horse racing is planned for week 4 after launch. It needs its own data model, because a race has many runners rather than two teams.",
+      "sa": "South Africa has a long racing tradition, with meetings at Turffontein, Kenilworth, Greyville and Scottsville, and big days like the Durban July and the Cape Town Met drawing national attention.",
+      "engine": "Racing works differently from team sports, so Puntr is building a separate model for race cards, runners, jockeys and official results. The Algorithmic Read will consider recent form, draw, distance and going, and picks will be graded from official race results.",
+      "competitions": [
+        "Durban July",
+        "Cape Town Met",
+        "Summer Cup",
+        "Major race days at Turffontein, Kenilworth and Greyville"
+      ],
+      "markets": [
+        "Winner",
+        "Place (top finishers)"
+      ]
+    },
+    "combat": {
+      "name": "Combat sports",
+      "metaTitle": "Boxing and MMA predictions South Africa | Puntr",
+      "metaDescription": "Combat sports (boxing and MMA) are planned for Puntr in weeks 6 to 8 after launch, with picks graded from official results.",
+      "intro": "Boxing and MMA are planned for weeks 6 to 8 after launch.",
+      "sa": "South Africa has a proud boxing history and a home-grown MMA promotion in EFC, while UFC events draw big local audiences. Fight nights are a natural fit for pre-event picks.",
+      "engine": "Fights are one-off events, so Puntr's engine will focus on record, reach, activity and style match-ups. Picks lock before the first bell and are graded from the official result, including the method of victory.",
+      "competitions": [
+        "UFC",
+        "EFC (Extreme Fighting Championship)",
+        "World title boxing",
+        "South African boxing bills"
+      ],
+      "markets": [
+        "Fight winner",
+        "Method of victory",
+        "Goes the distance (yes or no)"
+      ]
+    },
+    "athletics": {
+      "name": "Athletics",
+      "metaTitle": "Athletics predictions South Africa: track, field, Comrades | Puntr",
+      "metaDescription": "Athletics is planned for Puntr in weeks 6 to 8 after launch: track and field meetings and major races, graded from official results.",
+      "intro": "Athletics is planned for weeks 6 to 8 after launch, alongside combat sports.",
+      "sa": "South Africa produces world-class sprinters and distance runners, and road races like the Comrades Marathon and the Two Oceans Marathon are national events. Fans also follow the Diamond League and the World Athletics Championships.",
+      "engine": "Athletics is about individual performances, so Puntr's engine will look at season-best times, recent results and championship form. Picks lock before the start and are graded from official results.",
+      "competitions": [
+        "Diamond League meetings",
+        "World Athletics Championships",
+        "Comrades Marathon",
+        "Two Oceans Marathon"
+      ],
+      "markets": [
+        "Event winner",
+        "Podium finish",
+        "Head-to-head between athletes"
+      ]
+    },
+    "cricket": {
+      "name": "Cricket",
+      "metaTitle": "Cricket predictions South Africa: Proteas, SA20 | Puntr",
+      "metaDescription": "Cricket is planned for Puntr in week 10 after launch: Proteas internationals and the SA20, with picks graded from official results.",
+      "intro": "Cricket is planned for week 10 after launch, just in time for the summer season.",
+      "sa": "The Proteas play Tests, ODIs and T20 internationals, and the SA20 franchise league has become a highlight of the South African summer. Cricket's long formats and changing conditions make it a sport where analysis really matters.",
+      "engine": "Cricket outcomes depend on format, venue, toss and weather, so Puntr's engine will model each format separately. Picks lock before the first ball and are graded from the official result, including draws and no-results.",
+      "competitions": [
+        "Proteas Tests, ODIs and T20Is",
+        "SA20",
+        "ICC tournaments"
+      ],
+      "markets": [
+        "Match result",
+        "Top batter",
+        "Total runs over and under"
+      ]
+    },
+    "tennis": {
+      "name": "Tennis",
+      "metaTitle": "Tennis predictions South Africa: Grand Slams, ATP, WTA | Puntr",
+      "metaDescription": "Tennis is planned for Puntr in week 12 after launch: Grand Slams and ATP and WTA tournaments, with picks graded from official results.",
+      "intro": "Tennis is planned for week 12 after launch, ahead of the Australian Open season.",
+      "sa": "South African fans follow the four Grand Slams and the ATP and WTA tours year-round, with local players competing on the international circuit.",
+      "engine": "Tennis is head-to-head, so Puntr's engine will weigh surface, ranking, recent form and fatigue from earlier rounds. Picks lock before the first serve and are graded from the official result, with retirements handled by clear rules.",
+      "competitions": [
+        "Australian Open, Roland-Garros, Wimbledon and US Open",
+        "ATP Tour",
+        "WTA Tour"
+      ],
+      "markets": [
+        "Match winner",
+        "Number of sets",
+        "Total games over and under"
+      ]
+    }
+  }
+}

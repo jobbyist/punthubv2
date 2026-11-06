@@ -11,6 +11,7 @@ import {
   WaitlistTab,
 } from "@/components/admin/admin-tabs";
 import { CampaignsTab } from "@/components/admin/campaigns-admin";
+import { IdentityTab } from "@/components/admin/identity-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { RewardsTab } from "@/components/admin/rewards-admin";
 import { useSession } from "@/components/session";
@@ -28,6 +29,7 @@ const TABS = [
   "settlement",
   "reports",
   "users",
+  "identity",
   "rewards",
   "waitlist",
   "campaigns",
@@ -67,6 +69,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="users" className="mt-5">
                   <UsersTab />
+                </TabsContent>
+                <TabsContent value="identity" className="mt-5">
+                  <IdentityTab />
                 </TabsContent>
                 <TabsContent value="rewards" className="mt-5">
                   <RewardsTab />

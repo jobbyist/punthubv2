@@ -58,7 +58,7 @@ function Founding() {
   useLandingView("founding");
 
   return (
-    <div className="mx-auto max-w-[920px] px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto w-full max-w-[920px] px-4 py-7 sm:px-6 sm:py-14">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
         {t("eyebrow")}
       </p>
@@ -67,20 +67,35 @@ function Founding() {
         <br />
         <span className="text-primary">{t("title2")}</span>
       </h1>
-      <p className="mt-5 text-lg font-semibold">{t("lead")}</p>
-      <p className="mt-3 max-w-[640px] text-muted-foreground">{t("body", { launch })}</p>
+      <p className="mt-5 text-lg font-semibold sm:text-xl">{t("lead")}</p>
+      <p className="mt-3 max-w-[640px] text-sm leading-relaxed text-muted-foreground sm:text-base">
+        {t("body", { launch })}
+      </p>
 
-      <div className="mt-7 flex flex-wrap items-center gap-3">
-        <Button asChild size="lg" className="h-12 px-6 text-[15px]">
+      <p className="mt-3 max-w-[640px] border-l-2 border-primary pl-3 text-sm text-muted-foreground">
+        {t("pass.teaser")}
+      </p>
+      <FoundingCounter className="mt-6" />
+      <p className="mt-3 max-w-xl text-xs font-semibold text-primary">
+        Only the first 100 members receive a permanent numbered Founding badge. Once all places are
+        claimed, the allocation closes.
+      </p>
+
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <Button asChild size="lg" className="h-12 w-full px-6 text-[15px] sm:w-auto">
           <Link to="/join" onClick={() => analytics.foundingCtaClicked("hero")}>
             {t("cta")}
           </Link>
         </Button>
-        <Button asChild size="lg" variant="outline" className="h-12 px-6 text-[15px]">
+        <Button
+          asChild
+          size="lg"
+          variant="outline"
+          className="h-12 w-full px-6 text-[15px] sm:w-auto"
+        >
           <Link to="/how-it-works">{t("how")}</Link>
         </Button>
       </div>
-      <FoundingCounter className="mt-4" />
       <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
         {(["t1", "t2", "t3"] as const).map((k) => (
           <li key={k} className="flex items-center gap-2">

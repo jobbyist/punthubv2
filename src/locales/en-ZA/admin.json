@@ -40,6 +40,7 @@
     "users": "Users",
     "waitlist": "Waitlist",
     "rewards": "Rewards",
+    "identity": "ID checks",
     "campaigns": "Campaigns"
   },
   "settle": {
@@ -254,6 +255,23 @@
         "void": "Reversed or void"
       }
     }
+  },
+  "identity": {
+    "title": "Identity checks",
+    "intro": "Compare each document with the member's name and birth year. The document is deleted as soon as you decide. Never copy an ID number anywhere.",
+    "empty": "No documents are waiting.",
+    "member": "Member",
+    "name": "Name on Puntr",
+    "birthYear": "Birth year",
+    "submitted": "Submitted",
+    "view": "Open document (link expires in 10 minutes)",
+    "noDoc": "Document missing",
+    "approve": "Approve (18+ confirmed)",
+    "reject": "Reject",
+    "reason": "Reason shown to the member (optional)",
+    "done": "Saved. The document has been deleted.",
+    "error": "That didn't save. Please try again.",
+    "loadError": "Couldn't load the queue."
   },
   "campaigns": {
     "title": "Campaign tracking",

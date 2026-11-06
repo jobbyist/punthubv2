@@ -1,14 +1,6 @@
 import { Clock3, Newspaper, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const SAMPLE_TREND = [
   { round: "R1", accuracy: 44 },
@@ -38,9 +30,7 @@ export function IllustrativeInsights() {
         <h2 id="illustrative-insights-title" className="mt-1 text-xl">
           {t("illustrative.insights.title")}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("illustrative.insights.body")}
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{t("illustrative.insights.body")}</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -69,10 +59,18 @@ export function IllustrativeInsights() {
               {t("illustrative.badge")}
             </span>
           </div>
-          <div className="mt-4 h-[230px] w-full" role="img" aria-label={t("illustrative.insights.chartNote")}>
+          <div
+            className="mt-4 h-[230px] w-full"
+            role="img"
+            aria-label={t("illustrative.insights.chartNote")}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={SAMPLE_TREND} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
-                <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid
+                  stroke="var(--color-border)"
+                  strokeDasharray="3 3"
+                  vertical={false}
+                />
                 <XAxis dataKey="round" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
                 <YAxis
                   domain={[0, 100]}
@@ -94,7 +92,9 @@ export function IllustrativeInsights() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">{t("illustrative.insights.chartNote")}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t("illustrative.insights.chartNote")}
+          </p>
         </div>
 
         <div className="card-surface p-5">

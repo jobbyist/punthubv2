@@ -14,7 +14,7 @@ X's gambling policy lists "sites or services providing tips, odds, handicapping,
 ## 1. Deploy (before any ad goes live)
 
 1. Merge the `mvp/launch` changes so Vercel deploys `/founding`, the tracking and the admin Campaigns tab.
-2. Apply the database migration `supabase/migrations/20261106210000_campaign_events.sql` to the live Supabase project (SQL editor, paste, run). Until it runs, the Campaigns tab shows an error and no events are stored.
+2. Database: `supabase/migrations/20261106235000_campaign_events.sql` was applied to the live Supabase project on 6 Nov, plus `20261106235100_privacy_r9_campaign_tracking.sql` (notice version row). If you ever rebuild the database, run both, or the Campaigns tab shows an error and no events are stored.
 3. Test the tracking: open the link in section 2 in a private window, accept Analytics in the banner, click "Claim your Founding spot", then open `/admin` > Campaigns. You should see a landing view and a CTA click under `x / founding_x_nov26 / test`.
 4. Note today's baseline in the Campaigns tab: "Founding spots taken (all)". Write it down. This is your true sign-up count; the funnel table only counts visitors who accepted Analytics.
 

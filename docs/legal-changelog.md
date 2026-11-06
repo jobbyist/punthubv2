@@ -3,13 +3,43 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
-## 2026-11-06, Privacy `2026-11-06-r6` (PR: X Ads Founding campaign tracking)
+## 2026-11-06, Privacy `2026-11-06-r9` (PR: X Ads Founding campaign tracking)
 
 - Analytics events (already consent-gated) are now also stored first-party in Supabase (`campaign_events`) with the ad's UTM tags (source, medium, campaign, content, term), the page path and the random browser ID from the `puntr_consent` cookie. No account ID, name, email, IP address or user agent. Kept up to 14 months (daily purge). Only admins can read it (admin Campaigns tab).
 - UTM tags from an ad link are kept in sessionStorage for the visit before consent; they are not personal information and are sent nowhere unless the visitor accepts Analytics.
 - No new tracker, pixel or processor: the X (Twitter) conversion pixel is NOT installed. `/founding` gains Open Graph/Twitter card tags, trust points and an FAQ (free, not a bookmaker, 18+, email confirmation).
 - Privacy §4 Analytics row updated. Review: whether storing UTM tags with a consent-cookie ID needs any wording beyond the Analytics row `[attorney review]`; the X Ads creatives say "Free to join", "First 100", "18+" and carry no profit claim. Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
-- New `notice_versions` row: `privacy` `2026-11-06-r6`.
+- New `notice_versions` row: `privacy` `2026-11-06-r9`.
+
+## 2026-11-06 (KYC), Terms `2026-11-06-r10` and Privacy `2026-11-06-r8` (PR: identity verification, manual phase)
+
+- **Identity verification (owner, 6 Nov 2026):** phase 1 is manual for Founding Members. A member uploads a photo or scan of their SA ID or passport to a private storage bucket; an admin compares it with their name and birth year in `/admin` (ID checks tab) and approves or rejects it. The document is deleted straight after the decision, and within 30 days if never checked (daily `identity-retention` cron). Puntr keeps only the outcome (`identity_verifications`: status, over 18, reviewer, dates). No ID number is ever stored in a column. Phase 2 after launch: VerifyNow API (new processor, to be added to Privacy §6 when built).
+- **Required before redeeming any reward** (owner): enforced by a trigger on `redemptions`. Terms §6 updated.
+- Privacy: the "we do not collect your ID document" statement is replaced; new row in the data table; "no payments at launch" line corrected (payments are made on PayFast).
+- Review `[attorney review]`: lawful basis for ID documents (legal obligation for gambling promotions vs legitimate interest), whether an ID document is special personal information under POPIA s26 (it isn't by itself, but it shows race on the green ID book; collecting it may still need care), the 30-day retention, admin access controls, and a breach plan for the bucket. Staff must never copy an ID number.
+
+## 2026-11-06 (intel cards), no legal page text changed (PR: intelligence fixture cards, guest gate, mobile nav, sports pages)
+
+- Fixture cards show Confidence Score, Algorithmic Pick and model analysis as "available at launch" placeholders (owner decision: no model data yet), and "Odds comparison coming soon" with no bookmaker names (launch rule: no odds comparison).
+- Guests see the first two items in full; later items' intelligence fields are blurred under a Founding conversion card. The card says the account is free and the Founding Annual Pass is R299 once-off (claiming includes payment), first 20, before 16 November.
+- New `/sports/<sport>` pages describe each sport and how Puntr plans to cover it, in future tense, with dates from `src/lib/roadmap.ts`. They don't claim coverage of a sport that isn't switched on.
+- No new data collected, stored, shared or sent. Review: whether the "FOUNDING ACCESS • 100 SPOTS" tag and the placeholder Confidence Score read as a promise before the model exists `[attorney review]`.
+
+## 2026-11-06 (PayFast prep), Terms `2026-11-06-r9` and Privacy `2026-11-06-r7` (PR: Annual Pass payment onboarding, profile pictures)
+
+- **Annual Pass claim includes payment (owner, 6 Nov 2026):** R299 once-off through PayFast. A claim holds a place for 48 hours; the place is confirmed when payment is received; unpaid places are released. Shown in the join flow's last step (Founding members), `/founding`, `/account`, both Founding emails and the survey upsell. Payments stay off until `PAYFAST_ENABLED=true` (PayFast task, owner go-ahead). Terms §4, Privacy (table, §4, §6) and Refunds updated.
+- **New processor: PayFast** (payments only; receives payment details directly, we store reference, amount and date). Owner decision under the compliance policy.
+- **Refunds page** no longer says Puntr charges nothing: it covers the Founding Annual Pass and states statutory rights (CPA, ECTA cooling-off) are unaffected `[attorney review]`: whether a fixed refund window should be stated, and how a refund interacts with a pass that starts on 1 December.
+- **Profile pictures:** optional, compressed in the browser (512 px square, WebP), public on the member's profile and in the header; removable on `/account`. Privacy table and §4 updated `[attorney review]`: moderation of uploaded images and a takedown route.
+- New `notice_versions` rows: `terms` `2026-11-06-r9`, `privacy` `2026-11-06-r7`.
+
+## 2026-11-06 (later), Terms `2026-11-06-r8` and Privacy `2026-11-06-r6` (PR: welcome-cron fix, referral wording, confirm-before-sign-in)
+
+- **Referral wording (owner, 6 Nov 2026):** referrals are described as "Earn up to 30% in bonus PuntPoints" on qualifying purchases made by invited people, never cash. Roadmap, Terms §4 and the welcome email now say this and that PuntPoints are redeemable only for vouchers, sponsored rewards and perks. Still a plan: nothing is built or promised as available `[attorney review]` (is a purchase-linked bonus a commission or an inducement; qualifying-purchase terms before it opens).
+- **Confirm email before sign-in (owner, 6 Nov 2026):** join copy, How it works, Founding steps and Privacy §3 now say the address is confirmed with an emailed code before sign-in. Terms §4 ("Posting needs a confirmed email address") still holds for members who signed up before this change.
+- Welcome-cron sends now stop and log if the send record cannot be saved. Email templates now support light and dark mode with the real logo. No new data collected.
+- Review: none beyond the referral item above. Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` rows: `terms` `2026-11-06-r8`, `privacy` `2026-11-06-r6`.
 
 ## 2026-11-06, Terms `2026-11-06-r7` and Privacy `2026-11-06-r5` (PR: Founding welcome email, Annual Pass offer)
 
@@ -136,3 +166,11 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - Survey is for Founding Members only, stores structured answers and Annual Pass interest. R500 OTT voucher draw rules and closing date still to be published [attorney review].
 - One-off marketing email about the Founding Member Annual Pass, sent only to people who opted in, with unsubscribe. Pages: `/privacy`, `/refunds` (Annual Pass is prepaid, no auto-renewal; checkout not live yet) [attorney review].
 - Email sender is now Puntr - South Africa <support@puntr.co.za> through Resend (processor already disclosed).
+
+
+## 6 November 2026 — South African English and plain-language review
+
+- **Pages reviewed:** Terms and Conditions, Privacy Policy, Affiliate Disclosure and Refunds.
+- **Changes:** Refined page introductions and descriptions for clarity, applied South African English spelling where relevant, and clarified that commercial partners do not control Puntr's prediction assessments, editorial content or leaderboards.
+- **Policy impact:** No new data processing, product capability, payment commitment, user obligation or legal right was introduced or removed. Existing policy substance and version references remain unchanged.
+- **Counsel review:** Please review the wording refinements alongside the existing draft legal notices before approval.

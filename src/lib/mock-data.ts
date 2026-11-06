@@ -26,12 +26,9 @@ export const platforms: Platform[] = [
   { name: "Sportingbet", logo: "/logos/sportingbet.png" },
   { name: "Hollywoodbets", logo: "/logos/hollywoodbets.png" },
   { name: "Supabets", logo: "/logos/supabets.png" },
-  { name: "Betfair", logo: "/logos/betfair.png" },
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
-  { name: "Stake", logo: "/logos/stake.png" },
   { name: "Easybet", logo: "/logos/easybet.png" },
-  { name: "1xBet", logo: "/logos/1xbet.png" },
   { name: "WorldSportsBetting", logo: "/logos/wsb.PNG" },
 ];
 
@@ -45,6 +42,18 @@ export const teamLogos: Record<string, string> = {
   "Kaizer Chiefs": "/teams/kaizer.jpg",
   "Real Madrid": "/teams/realmadrid.png",
   "Bayern Munich": "/teams/bayernmunich.png",
+  Arsenal: "/teams/arsenal.svg",
+  Liverpool: "/teams/liverpool.svg",
+  "Golden State Warriors": "https://puntr.co.za/teams/goldenstate.JPG",
+  "Boston Celtics": "https://puntr.co.za/teams/celtics.PNG",
+  "South Africa Springboks (Rugby)": "/teams/springboks.jpg",
+  Springboks: "/teams/springboks.jpg",
+  "South Africa (Rugby)": "/teams/springboks.jpg",
+  "New Zealand All Blacks (Rugby)": "/teams/allblacks.jpg",
+  "All Blacks": "/teams/allblacks.jpg",
+  "New Zealand (Rugby)": "/teams/allblacks.jpg",
+  "South Africa (Cricket)": "/teams/southafrica.png",
+  "India (Cricket)": "/teams/india.png",
 };
 
 export function getTeamLogo(teamName: string): string | undefined {

@@ -41,22 +41,22 @@ export function renderWelcomeEmail({ name, plan, locale }: WelcomeEmailProps): s
   const perkRows = perks
     .map(
       (p) =>
-        `<tr><td style="padding:5px 0;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:${brand.text};">✅&nbsp; ${escapeHtml(p)}</td></tr>`,
+        `<tr><td class="dm-h" style="padding:5px 0;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:${brand.text};">✅&nbsp; ${escapeHtml(p)}</td></tr>`,
     )
     .join("");
 
   const nextRows = nextUp
     .map(
       (p) =>
-        `<tr><td style="padding:4px 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:${brand.muted};">•&nbsp; ${escapeHtml(p)}</td></tr>`,
+        `<tr><td class="dm-sub" style="padding:4px 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:${brand.muted};">•&nbsp; ${escapeHtml(p)}</td></tr>`,
     )
     .join("");
 
   const planRow = plan
     ? card(
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td style="font-size:14px;color:${brand.muted};">Plan reserved</td>
-          <td align="right" style="font-size:14px;font-weight:800;color:${brand.green};">${escapeHtml(plan)}</td>
+          <td class="dm-sub" style="font-size:14px;color:${brand.muted};">Plan reserved</td>
+          <td align="right" class="dm-green" style="font-size:14px;font-weight:800;color:${brand.green};">${escapeHtml(plan)}</td>
         </tr></table>`,
       )
     : "";
@@ -75,15 +75,15 @@ export function renderWelcomeEmail({ name, plan, locale }: WelcomeEmailProps): s
           "We're building more than another betting app. Puntr combines AI-powered insights, real-time data, bookmaker comparisons, educational content and responsible gambling tools into one premium platform.",
         )}
         ${planRow}
-        <p style="margin:24px 0 8px;font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:${brand.text};">As an Early Access member you'll receive:</p>
+        <p class="dm-h" style="margin:24px 0 8px;font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:${brand.text};">As an Early Access member you'll receive:</p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${perkRows}</table>
 
         ${divider()}
 
-        <h2 style="margin:0 0 10px;font-family:Helvetica,Arial,sans-serif;font-size:19px;color:${brand.text};font-weight:800;">What happens next?</h2>
+        <h2 class="dm-h" style="margin:0 0 10px;font-family:Helvetica,Arial,sans-serif;font-size:19px;color:${brand.text};font-weight:800;">What happens next?</h2>
         ${paragraph("While we're putting the finishing touches on Puntr:")}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${nextRows}</table>
-        <p style="margin:14px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;color:${brand.muted};">No spam. Only meaningful updates.</p>
+        <p class="dm-sub" style="margin:14px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;color:${brand.muted};">No spam. Only meaningful updates.</p>
       </td>
     </tr>
     <tr>
@@ -95,8 +95,8 @@ export function renderWelcomeEmail({ name, plan, locale }: WelcomeEmailProps): s
     <tr>
       <td class="px" style="padding:16px 32px 28px;">
         ${card(
-          `<div style="font-size:16px;font-weight:800;color:${brand.text};">Help us build South Africa's smartest betting community.</div>
-           <div style="margin-top:8px;font-size:14px;line-height:1.6;color:${brand.muted};">Invite your friends to join the Early Access list and stay tuned for referral rewards coming soon.</div>`,
+          `<div class="dm-h" style="font-size:16px;font-weight:800;color:${brand.text};">Help us build South Africa's smartest betting community.</div>
+           <div class="dm-sub" style="margin-top:8px;font-size:14px;line-height:1.6;color:${brand.muted};">Invite your friends to join the Early Access list and stay tuned for referral rewards coming soon.</div>`,
           "#F0FDF4",
         )}
       </td>

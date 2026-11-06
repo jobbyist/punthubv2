@@ -16,6 +16,7 @@ const REDEEM_ERRORS = [
   "daily_limit",
   "insufficient_points",
   "out_of_stock",
+  "identity_not_verified",
 ] as const;
 
 /** Maps a redeem_reward error to a translation key suffix. */

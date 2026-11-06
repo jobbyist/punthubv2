@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { Target } from "lucide-react";
+import { CommunityDiscussions } from "@/components/community-discussions";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
@@ -75,7 +76,10 @@ function Feed({ sort }: { sort: FeedSort }) {
     void load();
   }, [load]);
 
-  if (failed) return <p className="card-surface p-5 text-sm text-destructive">{t("feed.error")}</p>;
+  if (failed)
+    return (
+      <p className="card-surface p-5 text-sm text-muted-foreground">{t(`feed.empty.${sort}`)}</p>
+    );
   if (items === null) return <p className="text-sm text-muted-foreground">{t("feed.loading")}</p>;
   if (items.length === 0) {
     return (
@@ -122,6 +126,8 @@ function Community() {
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
+      <CommunityDiscussions />
+
       <div className="card-surface mb-5 p-4">
         <div className="flex items-center gap-3">
           <span className="size-10 shrink-0 rounded-full bg-muted" />
@@ -162,6 +168,13 @@ function Community() {
       </div>
 
       <Feed sort={sort} />
+
+      <section className="card-surface mt-6 p-5" aria-labelledby="community-tipster-support">
+        <h2 id="community-tipster-support" className="text-lg">
+          {t("tipSupport.title")}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("tipSupport.body")}</p>
+      </section>
     </AppShell>
   );
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
 import { useSession } from "@/components/session";
 import { TeamLogo } from "@/components/team-logo";
 import { useAsync } from "@/hooks/use-async";
@@ -87,15 +88,84 @@ function Results() {
   const { t } = useTranslation("results");
   const { profile } = useSession();
   const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
+  const gated = useGated();
+  const order = new Map(
+    (days ?? []).flatMap((d) => d.fixtures).map((r, i) => [r.fixture.id, i] as const),
+  );
+  const anyGated = gated(order.size - 1);
 
   return (
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
+      <section
+        className="card-surface mb-6 overflow-hidden"
+        aria-labelledby="results-example-title"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-5">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+              {t("example.badge")}
+            </p>
+            <h2 id="results-example-title" className="mt-1 text-lg">
+              {t("example.title")}
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">{t("example.description")}</p>
+          </div>
+          <span className="border border-primary/30 bg-primary-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+            {t("example.badge")}
+          </span>
+        </div>
+        <div className="divide-y divide-border">
+          {[
+            {
+              competition: "Premier League",
+              home: "Arsenal",
+              away: "Liverpool",
+              score: "2 – 1",
+              detail: "Illustrative final score",
+            },
+            {
+              competition: "Betway Premiership",
+              home: "Orlando Pirates",
+              away: "Kaizer Chiefs",
+              score: "1 – 1",
+              detail: "Illustrative final score",
+            },
+            {
+              competition: "International Rugby",
+              home: "South Africa",
+              away: "New Zealand",
+              score: "24 – 19",
+              detail: "Illustrative final score",
+            },
+          ].map((match) => (
+            <div key={match.competition} className="flex flex-wrap items-center gap-3 px-5 py-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  {match.competition}
+                </p>
+                <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
+                  <TeamLogo team={match.home} size="sm" />
+                  <span>{match.home}</span>
+                  <span className="text-xs font-normal text-muted-foreground">v</span>
+                  <TeamLogo team={match.away} size="sm" />
+                  <span>{match.away}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-display text-xl font-extrabold tabular-nums">{match.score}</p>
+                <p className="text-[10px] text-muted-foreground">{match.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {profile && <MyRecord userId={profile.id} />}
 
       {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
-      {!failed && !loading && (days ?? []).length === 0 && (
+      {!loading && (days ?? []).length === 0 && (
         <div className="card-surface p-6">
           <h2 className="text-lg">{t("empty.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>
@@ -103,7 +173,8 @@ function Results() {
       )}
 
       {(days ?? []).length > 0 && (
-        <section className="card-surface overflow-hidden">
+        <section className="card-surface relative overflow-hidden">
+          {anyGated && <FoundingGateCard top="13rem" />}
           <h2 className="p-5 pb-3 text-lg">{t("byDate")}</h2>
           {(days ?? []).map((day) => (
             <div key={day.label}>
@@ -146,31 +217,38 @@ function Results() {
                           {r.fixture.home_score} – {r.fixture.away_score}
                         </td>
                         <td className="px-3 py-3 text-xs">
-                          {r.crowdWinRate === null
-                            ? r.picks > 0
-                              ? t("crowd.picks", { count: r.picks })
-                              : t("crowd.none")
-                            : t("crowd.won", { percent: pct(r.crowdWinRate, 0), count: r.settled })}
+                          <Blurred gated={gated(order.get(r.fixture.id) ?? 0)}>
+                            {r.crowdWinRate === null
+                              ? r.picks > 0
+                                ? t("crowd.picks", { count: r.picks })
+                                : t("crowd.none")
+                              : t("crowd.won", {
+                                  percent: pct(r.crowdWinRate, 0),
+                                  count: r.settled,
+                                })}
+                          </Blurred>
                         </td>
                         <td className="px-5 py-3">
-                          {r.leaders.length === 0 ? (
-                            <span className="text-xs text-muted-foreground">
-                              {t("leader.none")}
-                            </span>
-                          ) : (
-                            <ul className="space-y-1">
-                              {r.leaders.map((l) => (
-                                <li key={l.id} className="flex items-center gap-2 text-xs">
-                                  <span className="font-medium">{l.username}</span>
-                                  <span
-                                    className={`px-1.5 py-0.5 font-semibold ${CHIP[l.result ?? "void"]}`}
-                                  >
-                                    {t(`leader.${l.result ?? "pending"}`)}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                          <Blurred gated={gated(order.get(r.fixture.id) ?? 0)}>
+                            {r.leaders.length === 0 ? (
+                              <span className="text-xs text-muted-foreground">
+                                {t("leader.none")}
+                              </span>
+                            ) : (
+                              <ul className="space-y-1">
+                                {r.leaders.map((l) => (
+                                  <li key={l.id} className="flex items-center gap-2 text-xs">
+                                    <span className="font-medium">{l.username}</span>
+                                    <span
+                                      className={`px-1.5 py-0.5 font-semibold ${CHIP[l.result ?? "void"]}`}
+                                    >
+                                      {t(`leader.${l.result ?? "pending"}`)}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </Blurred>
                         </td>
                       </tr>
                     ))}

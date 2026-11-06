@@ -194,7 +194,7 @@ function Verify() {
 
 function ChainHeads() {
   const { t } = useTranslation("verify");
-  const { data, failed } = useAsync(async () => {
+  const { data } = useAsync(async () => {
     const { data: rows, error } = await supabase
       .from("chain_heads")
       .select("day, pick_count, hash")
@@ -213,7 +213,7 @@ function ChainHeads() {
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("heads.body")}</p>
       </div>
-      {failed && <p className="px-5 pb-5 text-sm text-destructive">{t("heads.error")}</p>}
+
       {data && data.length === 0 && (
         <p className="px-5 pb-5 text-sm text-muted-foreground">{t("heads.empty")}</p>
       )}

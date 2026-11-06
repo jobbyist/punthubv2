@@ -1,30 +1,25 @@
 {
   "meta": {
     "title": "Support centre | Puntr",
-    "description": "Get help with Puntr: FAQs, email support@puntr.co.za or call +27 12 880 6560.",
+    "description": "Get help with Puntr. Email support@puntr.co.za and our support team will typically reply within 24 hours.",
     "ogTitle": "Puntr support centre",
     "ogDescription": "Find answers, get in touch and we'll sort it out."
   },
   "title": "Support centre",
-  "subtitle": "We're here to help. Find your answer below or get in touch and we'll sort it out.",
+  "subtitle": "Need a hand? Browse the answers below or email our support team. We’ll point you in the right direction.",
   "email": {
     "title": "Email us",
-    "note": "We aim to reply within 24 hours."
-  },
-  "phone": {
-    "title": "Call us",
-    "hours": "Mon – Fri: 08:00 – 18:00 · Sat – Sun: 09:00 – 16:00 SAST",
-    "display": "+27 12 880 6560"
+    "note": "Our friendly support team typically replies within 24 hours."
   },
   "chat": {
     "title": "Live chat",
-    "body": "Live chat is not available yet. Email us and we'll reply.",
+    "body": "Live chat is not available yet. Email us and our friendly support team will get back to you, typically within 24 hours.",
     "badge": "Not yet available"
   },
   "faq": {
     "title": "Frequently asked questions",
     "q1": "What is Puntr?",
-    "a1": "Puntr is a place to post sports predictions that are locked at kick-off, graded automatically and kept as a public record, so you can build a track record people can trust.",
+    "a1": "Puntr is a community platform for sports fans to publish predictions before kick-off, then see each pick locked, automatically graded and kept in a public record. It gives your sporting knowledge a transparent track record.",
     "q2": "How do PuntPoints work?",
     "a2": "PuntPoints are a loyalty scheme. You earn them for activity such as confirming your email, posting picks, settled picks and inviting friends, never for winning. You can redeem them for vouchers, sponsored rewards and perks on the Rewards page. They have no cash value and cannot be bought.",
     "q3": "Can I invite friends?",
@@ -32,15 +27,15 @@
     "q4": "Is Puntr free to use?",
     "a4": "Yes. Puntr is free during the Founding 100 launch. Any paid features later will be announced first and never switched on without notice.",
     "q5": "How accurate are predictions?",
-    "a5": "Every tipster has a public record with units, ROI and sample size. Past results do not predict future results. Gamble responsibly: 0800 006 008.",
+    "a5": "Every member’s record shows settled picks and performance context, including units, ROI and sample size. Past results are not a guide to future outcomes. Gamble responsibly: 0800 006 008.",
     "q6": "Can I withdraw my PuntPoints?",
     "a6": "No. PuntPoints have no monetary value and cannot be withdrawn or exchanged for cash. You can only redeem them for the rewards on the Rewards page.",
     "q7": "Does Puntr take bets?",
-    "a7": "No. Puntr does not accept bets, set odds or handle winnings. It is a place to record and review predictions."
+    "a7": "No. Puntr does not accept bets, set odds or hold betting funds. It helps members record, review and compare sports predictions."
   },
   "contact": {
     "title": "Contact us",
-    "body": "Send us a message and we'll get back to you as soon as we can.",
+    "body": "Have a question or need help? Send us a message and our team will get back to you, typically within 24 hours.",
     "name": "Full name",
     "namePh": "Enter your full name",
     "email": "Email address",

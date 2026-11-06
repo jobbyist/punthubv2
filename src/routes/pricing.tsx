@@ -26,7 +26,7 @@ export const Route = createFileRoute("/pricing")({
 });
 
 const FOUNDING = ["f1", "f2", "f3"] as const;
-const PRO = ["f1", "f2", "f3", "f4", "f5"] as const;
+const PRO = ["f1", "f2", "f3", "f4", "f5", "f6"] as const;
 
 const PACKS = [
   ["starter", 25, 25],
@@ -51,6 +51,35 @@ function Pricing() {
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
+      <section
+        className="card-surface mb-6 grid gap-5 border-primary/50 p-6 md:grid-cols-[1fr_auto] md:items-center"
+        aria-labelledby="annual-pass-pricing"
+      >
+        <div>
+          <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
+            Limited founding offer · 20 places
+          </span>
+          <h2 id="annual-pass-pricing" className="mt-3 text-2xl">
+            Founding Annual Pass
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            12 months of Puntr Pro. One payment, no auto-renewal. Reserve your place after creating
+            your free account; payment opens before launch.
+          </p>
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="font-display text-3xl font-extrabold tnum">R299</span>
+            <span className="text-sm text-muted-foreground line-through">R1,188 at R99/month</span>
+            <span className="text-sm font-semibold text-primary">Save R889 · 75% less</span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Includes the Puntr Pro benefits below for 12 months from launch day. Claiming reserves
+            the offer and price; it does not charge you today.
+          </p>
+        </div>
+        <Button asChild size="lg" className="w-full md:w-auto">
+          <a href="/join">Create an account &amp; reserve</a>
+        </Button>
+      </section>
       <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
         <section className="card-surface flex flex-col p-6" aria-labelledby="founding-title">
           <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">

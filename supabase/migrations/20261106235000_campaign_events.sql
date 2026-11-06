@@ -116,7 +116,7 @@ begin
   end if;
 end $$;
 
--- Privacy r6: Analytics row now names the campaign source and first-party storage.
+-- (Privacy r6 already existed on main; the real notice version for this change is r9, see the next migration.)
 insert into public.notice_versions (kind, version, effective_at, url)
 values ('privacy', '2026-11-06-r6', now(), '/privacy')
 on conflict (kind, version) do nothing;

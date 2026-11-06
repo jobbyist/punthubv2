@@ -58,7 +58,7 @@ export const Route = createFileRoute("/api/cron/founding-welcome")({
             upsert: (
               row: Record<string, unknown>,
               o: { onConflict: string; ignoreDuplicates?: boolean },
-            ) => Promise<unknown>;
+            ) => Promise<{ error: { message: string } | null }>;
           };
         };
         const { data, error } = await db.rpc("founding_welcome_recipients");
@@ -93,11 +93,20 @@ export const Route = createFileRoute("/api/cron/founding-welcome")({
           const status = ok ? "sent" : "failed";
           if (ok) sent += 1;
           else failed += 1;
-          await db.from("founding_welcome_sends").upsert(
+          const { error: recordError } = await db.from("founding_welcome_sends").upsert(
             { email: r.recipient_email, status, sent_at: new Date().toISOString() },
             // A failure never overwrites a recorded send.
             { onConflict: "email", ignoreDuplicates: status === "failed" },
           );
+          // If the send went out but the record did not save, the next run would email this person again. Log it
+          // loudly so it is seen, and stop this run so a database fault cannot repeat-send to the rest of the batch.
+          if (recordError) {
+            console.error("founding-welcome record failed", recordError.message);
+            return Response.json(
+              { ok: false, error: "record_failed", sent, failed },
+              { status: 500 },
+            );
+          }
         }
         console.info("founding-welcome", JSON.stringify({ sent, failed }));
         return Response.json({ ok: true, sent, failed });
