@@ -45,9 +45,10 @@ export function CampaignsTab() {
 
   const { data, failed } = useAsync(async () => {
     const since = new Date(Date.now() - HOURS[period] * 3600_000).toISOString();
+    const campaign = applied.trim();
     const { data: rows, error } = await supabase.rpc("admin_campaign_report", {
       p_since: since,
-      p_campaign: applied.trim() || undefined,
+      ...(campaign ? { p_campaign: campaign } : {}),
     });
     if (error) throw error;
     return rows ?? [];
