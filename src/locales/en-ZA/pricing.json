@@ -64,5 +64,13 @@
     "f5": "A Pro badge on your profile",
     "cta": "Available at launch",
     "fine": "Pro never changes your ranking, points or prize eligibility."
+  },
+  "annualPass": {
+    "badge": "Limited founding offer · 20 places",
+    "title": "Founding Annual Pass",
+    "description": "12 months of Puntr Pro for R299 instead of R1,188 at the standard monthly rate. No automatic renewal.",
+    "saving": "Save R889 · 75% less",
+    "fine": "Claiming reserves your place and price. No payment is collected today; checkout opens before launch.",
+    "cta": "Create an account & reserve"
   }
 }

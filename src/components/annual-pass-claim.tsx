@@ -68,9 +68,9 @@ export function AnnualPassClaim() {
         <h2 id="annual-pass-title" className="text-xl">
           {t("pass.title")}
         </h2>
-        {offer?.open && (
-          <span className="text-xs font-semibold text-primary tnum">
-            {t("pass.left", { count: offer.remaining })}
+        {(!offer || offer.open) && (
+          <span className="text-xs font-semibold text-primary tnum" aria-live="polite">
+            {t("pass.leftOf", { count: offer?.remaining ?? 4, total: SPOTS })}
           </span>
         )}
       </div>

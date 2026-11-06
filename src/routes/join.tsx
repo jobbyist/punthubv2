@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { MfaChallenge } from "@/components/mfa-challenge";
+import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { RgNotice } from "@/components/rg-notice";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
@@ -754,14 +755,12 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
   const number = foundingNumber ?? profile?.founding_number ?? null;
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl">
-        {number
-          ? t("join.done.founding", { number, cap: FOUNDING_CAP })
-          : emailConfirmed
-            ? t("join.done.full")
-            : t("join.done.unconfirmed")}
-      </h2>
-      <p className="text-sm text-muted-foreground">{t("join.done.body")}</p>
+      <div className="rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">{t("join.done.celebrationEyebrow")}</p>
+        <h2 className="mt-2 text-2xl">{number ? t("join.done.founding", { number, cap: FOUNDING_CAP }) : emailConfirmed ? t("join.done.full") : t("join.done.unconfirmed")}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
+      </div>
+      {emailConfirmed && <AnnualPassClaim />}
       {!emailConfirmed && (
         <p className="border border-border bg-muted/40 p-3 text-sm">
           {t("join.done.confirmPrompt")}{" "}

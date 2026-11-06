@@ -43,6 +43,7 @@ function Founding() {
       <p className="mt-5 text-lg font-semibold sm:text-xl">{t("lead")}</p>
       <p className="mt-3 max-w-[640px] text-sm leading-relaxed text-muted-foreground sm:text-base">{t("body", { launch })}</p>
 
+      <p className="mt-3 max-w-[640px] border-l-2 border-primary pl-3 text-sm text-muted-foreground">{t("pass.teaser")}</p>
       <FoundingCounter className="mt-6" />
       <p className="mt-3 max-w-xl text-xs font-semibold text-primary">Only the first 100 members receive a permanent numbered Founding badge. Once all places are claimed, the allocation closes.</p>
 
