@@ -61,9 +61,10 @@ create or replace function public.annual_pass_offer()
 returns jsonb
 language sql stable security definer set search_path = public, pg_temp as $$
   select jsonb_build_object(
-    'remaining', greatest(20 - public.annual_pass_taken(), 0),
-    'open', now() <= timestamptz '2026-11-16 23:59:59+02' and public.annual_pass_taken() < 20
-  );
+    'remaining', greatest(20 - t.taken, 0),
+    'open', now() <= timestamptz '2026-11-16 23:59:59+02' and t.taken < 20
+  )
+  from (select public.annual_pass_taken() as taken) t;
 $$;
 grant execute on function public.annual_pass_offer() to anon, authenticated;
 

@@ -66,10 +66,14 @@ export function AvatarUploader() {
     setBusy(true);
     setNote(null);
     try {
+      // Delete the file first: if that fails nothing changes and the member can retry.
+      const old = pathFromPublicUrl(current);
+      if (old) {
+        const { error: rmErr } = await supabase.storage.from("avatars").remove([old]);
+        if (rmErr) throw rmErr;
+      }
       const { error } = await profiles().update({ avatar_url: null }).eq("id", profile.id);
       if (error) throw error;
-      const old = pathFromPublicUrl(current);
-      if (old) await supabase.storage.from("avatars").remove([old]);
       await refreshProfile();
       setNote({ text: t("avatar.removed"), error: false });
     } catch (err) {

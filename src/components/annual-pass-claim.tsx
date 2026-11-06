@@ -43,6 +43,7 @@ function postToCheckout(url: string, fields: Record<string, string>) {
   }
   document.body.appendChild(form);
   form.submit();
+  form.remove();
 }
 
 /**

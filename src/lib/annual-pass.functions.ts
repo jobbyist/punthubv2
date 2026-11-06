@@ -38,7 +38,12 @@ export const startAnnualPassCheckout = createServerFn({ method: "POST" })
     if (data.status === "already_paid" || data.status === "full" || data.status === "closed")
       return { ok: false, reason: data.status };
     if (data.status === "not_member") return { ok: false, reason: "not_member" };
-    // Place held (claimed / already_pending). The PayFast checkout is built in the PayFast task: it returns the
-    // form URL and signed fields for this user, and its ITN handler calls confirm_annual_pass_payment().
+    // Place held (claimed / already_pending). The PayFast task replaces checkoutReady() and returns the form URL and
+    // signed fields here; its ITN handler calls confirm_annual_pass_payment().
     return { ok: false, reason: "checkout_unavailable" };
   });
+
+/** True once the PayFast checkout builder exists. Until then no claim is started. */
+function checkoutReady(): boolean {
+  return false;
+}
