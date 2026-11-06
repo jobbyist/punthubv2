@@ -29,7 +29,13 @@ function configuredPayfastUrl(): string | null {
   if (!value) return null;
   try {
     const url = new URL(value);
-    if (url.protocol !== "https:" || !PAYFAST_HOSTS.has(url.hostname)) return null;
+    if (
+      url.protocol !== "https:" ||
+      !PAYFAST_HOSTS.has(url.hostname) ||
+      url.username ||
+      url.password ||
+      (url.port && url.port !== "443")
+    ) return null;
     return url.toString();
   } catch {
     return null;
@@ -48,7 +54,7 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
     if (!paymentUrl || !process.env["RESEND_API_KEY"])
       return { ok: false, reason: "email_not_configured" };
 
-    const claims = context.claims as Record<string, unknown>;
+    const claims = context.claims as unknown as Record<string, unknown>;
     const email = typeof claims["email"] === "string" ? claims["email"].trim().toLowerCase() : "";
     if (!email) return { ok: false, reason: "missing_email" };
 
