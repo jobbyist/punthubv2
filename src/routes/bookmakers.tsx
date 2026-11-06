@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { Button } from "@/components/ui/button";
 import { platforms } from "@/lib/mock-data";
 
@@ -19,7 +20,8 @@ function BookmakersPage() {
   return (
     <AppShell>
       <PageHeading title="Bookmakers" subtitle="A directory of betting brands South African sports fans may come across." />
-      <section className="card-surface p-5 sm:p-6">
+      <BookmakerIndependenceNotice />
+      <section className="card-surface mt-4 p-5 sm:p-6">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
           <div>
