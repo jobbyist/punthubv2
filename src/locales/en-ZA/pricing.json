@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Pricing | Free for Founding Members, Pay-As-You-Go and Puntr Pro",
-    "description": "Puntr is free for the first 100 Founding Members. Pay-As-You-Go credits and Puntr Pro (R99 per month) are available at launch on 1 December 2026. Posting and the leaderboard are always free.",
+    "description": "Puntr is free for the first 100 Founding Members. Puntr Pro adds deeper sports analysis, advanced Tipster tools and planned PuntPoints Tipster Support from 1 December 2026.",
     "ogTitle": "Puntr pricing: free for Founding Members",
     "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
   },
@@ -16,61 +16,10 @@
     "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch",
     "cta": "Claim a Founding spot"
   },
-  "never": "Paying never earns extra points, a higher ranking or prize eligibility.",
+  "never": "Paying never buys points, a higher ranking or prize eligibility. Eligible Tipsters may receive voluntary PuntPoints tips through the separate Tipster Support programme.",
   "faq": {
     "title": "Pricing questions",
     "q1": "Is Puntr free?",
     "a1": "Yes. Founding Members use Puntr free. Posting, voting and the leaderboard are always free.",
     "q2": "When do Pay-As-You-Go and Puntr Pro launch?",
-    "a2": "Both are available from the official launch on 1 December 2026. We will confirm final prices and terms before anything goes on sale. The prices here are indicative.",
-    "q3": "What is the difference between Pay-As-You-Go and Puntr Pro?",
-    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro is an optional monthly subscription for members who want deeper analysis and additional tools.",
-    "q4": "Can paying improve my ranking?",
-    "a4": "No. Payment does not buy points, improve your position on the leaderboard or change prize eligibility. Rankings are based on recorded performance.",
-    "q5": "Is Puntr a bookmaker?",
-    "a5": "No. Puntr does not take bets, set odds or hold betting funds."
-  },
-  "payg": {
-    "badge": "At launch",
-    "title": "Pay-As-You-Go",
-    "tagline": "Buy credits only when you need them. No subscription.",
-    "note": "Indicative prices. They may change before launch.",
-    "packs": "Credit packs",
-    "uses": "What credits buy",
-    "pack": {
-      "starter": "Starter",
-      "matchday": "Match Day",
-      "season": "Season",
-      "credits": "{{count}} credits"
-    },
-    "use": {
-      "preview": "AI match preview",
-      "slip": "AI slip check",
-      "stats": "Deep tipster stats",
-      "cost": "{{count}} credits"
-    },
-    "alwaysFree": "Posting, voting and the leaderboard are always free."
-  },
-  "pro": {
-    "badge": "At launch",
-    "title": "Puntr Pro",
-    "tagline": "For sports fans and tipsters who want more context, deeper analysis and useful tools.",
-    "price": "{{price}} per month",
-    "note": "One simple monthly subscription. Not on sale yet: we will publish the full terms and cancellation rules before it opens.",
-    "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
-    "f2": "Advanced tipster analytics: units, ROI and form by market, sport and odds range",
-    "f3": "Custom alerts for fixtures and settled picks you follow",
-    "f4": "Early access to new tools",
-    "f5": "A Pro badge on your profile",
-    "cta": "Available at launch",
-    "fine": "Pro never changes your ranking, points or prize eligibility."
-  },
-  "annualPass": {
-    "badge": "Limited founding offer Â· 20 places",
-    "title": "Founding Annual Pass",
-    "description": "12 months of Puntr Pro for R299 instead of R1,188 at the standard monthly rate. No automatic renewal.",
-    "saving": "Save R889 Â· 75% less",
-    "fine": "Claiming includes payment: R299 once-off through PayFast. Your place is confirmed when payment is received.",
-    "cta": "Create an account & claim"
-  }
-}
+    "a2": "Both are available from the official laun¶»§q«^
