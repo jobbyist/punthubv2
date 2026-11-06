@@ -64,7 +64,7 @@ export function renderFoundingWelcomeEmail({ name, unsubscribeUrl }: FoundingWel
   const outro =
     "Your feedback shapes what we build next. Reply to this email any time with ideas, questions or things that do not feel right. It comes straight to me and the team.";
   const passTitle = "A quiet offer for our first 20";
-  const passBody = `If you would like to reserve 12 months of Puntr Pro for a once-off R299 (standard Pro is R99 a month, R1,188 a year), the Founding Annual Pass is open to the first ${PASS_SPOTS} founding members who claim it before ${PASS_DEADLINE_TEXT}. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.`;
+  const passBody = `If you would like to reserve 12 months of Puntr Pro for a once-off R299 (standard Pro is R99 a month, R1,188 a year), the Founding Annual Pass is open to the first ${PASS_SPOTS} founding members who reserve it before ${PASS_DEADLINE_TEXT}. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.`;
   const passNote = `${PASS_PAYMENT_TEXT} If you do not want it, simply ignore this section.`;
   const passCta = "Reserve my Annual Pass";
   const sign = ["Michael", "Founder, Puntr"];
