@@ -626,6 +626,7 @@ function OnboardingStep({
     }
     forgetRef();
     analytics.profileCreated();
+    analytics.signupCompleted(result.foundingNumber !== null);
     await onDone(result.foundingNumber);
   };
 

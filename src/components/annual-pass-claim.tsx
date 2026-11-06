@@ -7,6 +7,7 @@ import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
+import { analytics } from "@/lib/analytics";
 import {
   getPassPaymentStatus,
   startAnnualPassCheckout,
@@ -163,7 +164,9 @@ export function AnnualPassClaim({
           </>
         ) : (
           <Button asChild size="lg" className="h-11 px-6">
-            <Link to="/join">{t("pass.join")}</Link>
+            <Link to="/join" onClick={() => analytics.foundingCtaClicked("pass")}>
+              {t("pass.join")}
+            </Link>
           </Button>
         )}
         {reasonText && <p className="text-sm text-muted-foreground">{reasonText}</p>}
