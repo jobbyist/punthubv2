@@ -10,7 +10,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Read Puntr's Terms & Conditions including payment provider terms, user responsibilities and betting guidelines.",
+          "Read the terms governing your use of Puntr, including account responsibilities, predictions, rewards and third-party links.",
       },
       { property: "og:title", content: "Terms & Conditions | Puntr" },
       { property: "og:description", content: "Puntr Terms & Conditions and user agreement." },
@@ -24,7 +24,7 @@ function Terms() {
     <AppShell>
       <PageHeading
         title="Terms & Conditions"
-        subtitle="Please read these terms carefully before using Puntr."
+        subtitle="These terms explain how Puntr works, what you can expect from the platform and what we expect from members."
       />
 
       <div className="card-surface p-6 sm:p-8">
@@ -78,7 +78,7 @@ function Terms() {
                 sign-in
               </li>
               <li>Maintain the security of your account credentials</li>
-              <li>Notify us immediately of any unauthorized access or security breach</li>
+              <li>Notify us immediately of any unauthorised access or security breach</li>
               <li>Accept responsibility for all activities that occur under your account</li>
             </ul>
             <p className="leading-relaxed text-muted-foreground">
@@ -230,7 +230,7 @@ function Terms() {
               <li>Manipulate predictions, odds, or PuntPoints through automated means or bots</li>
               <li>Create multiple accounts to abuse rewards or referral programs</li>
               <li>Impersonate others or provide false information</li>
-              <li>Attempt to gain unauthorized access to the Service or other users' accounts</li>
+              <li>Attempt to gain unauthorised access to the Service or other users' accounts</li>
               <li>Interfere with or disrupt the Service's operation</li>
               <li>Scrape, mine, or harvest data from the platform</li>
               <li>Share or encourage gambling by persons under 18</li>
@@ -310,7 +310,7 @@ function Terms() {
             <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
               <li>Your use or inability to use the Service</li>
               <li>Betting losses incurred through third-party platforms</li>
-              <li>Unauthorized access to or alteration of your account or data</li>
+              <li>Unauthorised access to or alteration of your account or data</li>
               <li>Errors or inaccuracies in odds, predictions, or other content</li>
               <li>Actions of third-party bookmakers or payment providers</li>
             </ul>

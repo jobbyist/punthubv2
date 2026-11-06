@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MessageSquare, Phone } from "lucide-react";
+import { Mail, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { submitForm } from "@/lib/forms.functions";
 import { useTranslation } from "react-i18next";
@@ -40,24 +40,9 @@ export const Route = createFileRoute("/support")({
               {
                 "@type": "ContactPoint",
                 contactType: "customer support",
-                telephone: "+27128806560",
                 email: "support@puntr.co.za",
                 areaServed: "ZA",
                 availableLanguage: ["en"],
-                hoursAvailable: [
-                  {
-                    "@type": "OpeningHoursSpecification",
-                    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                    opens: "08:00",
-                    closes: "18:00",
-                  },
-                  {
-                    "@type": "OpeningHoursSpecification",
-                    dayOfWeek: ["Saturday", "Sunday"],
-                    opens: "09:00",
-                    closes: "16:00",
-                  },
-                ],
               },
             ],
           }),
@@ -76,7 +61,7 @@ function Support() {
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="card-surface p-5 text-center">
           <span className="mx-auto grid size-11 place-items-center rounded-xl bg-primary-soft text-primary">
             <Mail className="size-5" />
@@ -86,16 +71,6 @@ function Support() {
             support@puntr.co.za
           </a>
           <p className="mt-2 text-xs text-muted-foreground">{t("email.note")}</p>
-        </div>
-        <div className="card-surface p-5 text-center">
-          <span className="mx-auto grid size-11 place-items-center rounded-xl bg-primary-soft text-primary">
-            <Phone className="size-5" />
-          </span>
-          <p className="mt-3 font-semibold">{t("phone.title")}</p>
-          <a href="tel:+27128806560" className="text-sm text-primary tnum">
-            {t("phone.display")}
-          </a>
-          <p className="mt-2 text-xs text-muted-foreground">{t("phone.hours")}</p>
         </div>
         <div className="card-surface p-5 text-center">
           <span className="mx-auto grid size-11 place-items-center rounded-xl bg-primary-soft text-primary">

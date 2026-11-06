@@ -1,44 +1,44 @@
 {
   "meta": {
-    "title": "Puntr | Predict what's next. Prove your worth.",
-    "description": "Get in early. Become a Founding Member of Puntr, a Community-First Platform for South African sports fans. Picks locked at kick-off, graded automatically and kept forever. PSL, EPL, UCL and more football. 18+.",
-    "ogDescription": "Every pick is locked at kick-off, graded automatically and kept forever. Build a record people can trust."
+    "title": "Puntr | Sports predictions with a record that speaks for itself",
+    "description": "A South African sports prediction community built on transparency. Publish picks before kick-off, get them automatically graded and build a public record you can stand behind. Join free. 18+.",
+    "ogDescription": "No edited history. No disappearing losses. Just timestamped sports predictions, transparent grading and a public record."
   },
   "hero": {
-    "badge": "Founding Member sign-ups are open",
-    "title1": "Predict what's next.",
-    "title2": "Prove your worth.",
-    "tagline": "Get in early. Become a Founding Member. Be part of what's next.",
-    "body": "Puntr is where South African sports fans back their judgement in public. Every pick is <1>locked at kick-off</1>, graded automatically and kept forever, so your <1>public record</1> speaks for you.",
+    "badge": "South Africa’s home for accountable sports predictions",
+    "title1": "Know your sport.",
+    "title2": "Back your call.",
+    "tagline": "Predict smarter. Prove it.",
+    "body": "Puntr gives South African sports fans a fair place to put their knowledge to the test. Publish your picks before kick-off. Each one is <1>timestamped and locked</1>, graded automatically and kept in your <1>public record</1> — wins and losses included.",
     "watch": "Watch the video"
   },
   "pillars": {
     "locked": {
       "title": "Locked at kick-off",
-      "sub": "No edits. No deletes."
+      "sub": "Timestamped. No edits. No deletes."
     },
     "graded": {
       "title": "Graded automatically",
-      "sub": "Settled from the official result"
+      "sub": "Consistent, transparent results"
     },
     "kept": {
       "title": "Kept forever",
-      "sub": "One public record"
+      "sub": "Your track record, in public"
     }
   },
   "why": {
-    "title": "Why a locked record matters",
+    "title": "A track record beats a big claim",
     "stamped": {
       "title": "Timestamped before kick-off",
-      "body": "A pick only counts if it was posted before the match started."
+      "body": "Every pick must be published before kick-off to count. The timestamp is part of the record."
     },
     "noEdits": {
       "title": "No edits, no deletes",
-      "body": "Wins and losses stay on your record. Nothing disappears afterwards."
+      "body": "Every settled pick stays visible. No rewriting history when a call goes wrong."
     },
     "public": {
       "title": "Public units, ROI and sample size",
-      "body": "See how many picks sit behind a result before you trust it."
+      "body": "Performance is shown with units, ROI and sample size, so there is context behind the numbers."
     }
   },
   "steps": {
@@ -67,7 +67,7 @@
     "units": "{{units}} units"
   },
   "join": {
-    "title": "Why join Puntr?",
+    "title": "Put your sports knowledge on the record",
     "f1": "Picks <1>locked at kick-off</1>",
     "f2": "Automatic, transparent grading",
     "f3": "A public record you can share",
@@ -81,7 +81,7 @@
   },
   "platforms": {
     "title": "Predictions across South Africa's bookmakers",
-    "body": "Tipsters on Puntr record picks against the odds these platforms offer. Puntr does not take bets, and is not affiliated with or endorsed by them.",
+    "body": "Members can record predictions against fixtures and odds offered by the platforms shown. Puntr does not accept bets and is not necessarily affiliated with or endorsed by those platforms.",
     "fine": "18+ only. T&Cs apply."
   },
   "next": {
