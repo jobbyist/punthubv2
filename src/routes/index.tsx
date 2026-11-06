@@ -8,6 +8,7 @@ import { Em } from "@/components/em";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
+import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
@@ -16,9 +17,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
-import { fetchThisWeeksLeaders } from "@/lib/records";
-import { formatDate, formatTime, formatUnits } from "@/lib/format";
-import { useAsync } from "@/hooks/use-async";
+import { formatDate, formatTime } from "@/lib/format";
 import { TeamLogo } from "@/components/team-logo";
 
 export const Route = createFileRoute("/")({
@@ -54,15 +53,11 @@ const fade = {
   transition: { duration: 0.5 },
 };
 
-const STEP_KEYS = ["s1", "s2", "s3", "s4"] as const;
-
 function Landing() {
   const { t } = useTranslation("home");
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
-  const { data: leadersData } = useAsync(() => fetchThisWeeksLeaders(3), []);
-  const leaders = leadersData ?? [];
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
@@ -215,83 +210,24 @@ function Landing() {
           <div className="mt-8">
             <PlatformRail />
           </div>
-          <p className="mt-5 text-xs text-muted-foreground">{t("platforms.fine")}</p>
+          <div className="mx-auto mt-5 max-w-3xl text-left"><BookmakerIndependenceNotice compact /></div>
+          <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
           <RgNotice variant="compact" className="mt-1" />
         </motion.section>
       )}
 
-      {/* How it works */}
-      <motion.section {...fade} className="card-surface mt-8 p-6 sm:p-8">
-        <h2 className="text-center text-2xl">{t("steps.title")}</h2>
-        <div className="mt-7 grid gap-4 md:grid-cols-4">
-          {STEP_KEYS.map((k, i) => (
-            <div key={k} className="flex gap-3 rounded-xl border border-border p-4">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary tnum">
-                {i + 1}
-              </span>
-              <div>
-                <p className="text-sm font-semibold">{t(`steps.${k}.title`)}</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  <Trans t={t} i18nKey={`steps.${k}.body`} components={{ 1: <Em /> }} />
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.section>
-
       <LatestFromPuntr />
 
-      {/* Leaderboard + why join */}
-      <motion.section {...fade} className="mt-8 grid gap-5 lg:grid-cols-2">
-        <div className="card-surface p-5">
-          <h3 className="text-lg">{t("board.title")}</h3>
-          {leaders.length === 0 ? (
-            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("board.empty")}</p>
-          ) : (
-            <ul className="mt-4 space-y-2.5">
-              {leaders.map((tp, i) => (
-                <li key={tp.user_id} className="flex items-center gap-3">
-                  <span className="grid size-6 place-items-center bg-muted text-[11px] font-bold tnum">
-                    {i + 1}
-                  </span>
-                  <span className="size-7 rounded-full bg-muted" />
-                  <Link
-                    to="/u/$username"
-                    params={{ username: tp.username }}
-                    className="flex-1 truncate text-sm font-medium hover:underline"
-                  >
-                    {tp.username}
-                  </Link>
-                  <span className="text-xs font-semibold text-primary tnum">
-                    {t("board.units", { units: formatUnits(tp.units) })}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <Button variant="outline" className="mt-4 w-full" asChild>
-            <Link to="/leaderboards">{t("board.view")}</Link>
-          </Button>
-        </div>
-
-        <div className="card-surface p-5">
-          <h3 className="text-lg">{t("join.title")}</h3>
-          <ul className="mt-4 space-y-3.5">
-            {(["f1", "f2", "f3", "f4", "f5", "f6"] as const).map((f) => (
-              <li key={f} className="flex items-center gap-3 text-sm">
-                <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">
-                  ✓
-                </span>
-                <Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} />
-              </li>
-            ))}
-          </ul>
-          <Button className="mt-6 w-full" onClick={() => navigate({ to: "/join" })}>
-            {tc("cta.createAccount")}
-          </Button>
-          <RgNotice variant="compact" className="mt-4" />
-        </div>
+      {/* Join CTA */}
+      <motion.section {...fade} className="card-surface mt-8 p-5 sm:p-6">
+        <h3 className="text-lg">{t("join.title")}</h3>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {(["f1", "f2", "f3", "f4", "f5", "f6"] as const).map((f) => (
+            <li key={f} className="flex items-center gap-3 text-sm"><span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">✓</span><Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} /></li>
+          ))}
+        </ul>
+        <Button className="mt-6" onClick={() => navigate({ to: "/join" })}>{tc("cta.createAccount")}</Button>
+        <RgNotice variant="compact" className="mt-4" />
       </motion.section>
 
       {isVideoModalOpen && (
