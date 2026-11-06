@@ -41,7 +41,7 @@ export function renderFoundingPassEmail({ name, isMember, unsubscribeUrl }: Foun
   const note =
     "The Annual Pass is a prepaid membership for the Puntr platform and tools. It is not an investment and it does not change how predictions are graded. " +
     PASS_PAYMENT_TEXT;
-  const cta = isMember ? "Claim and pay R299" : "Claim my Founding spot";
+  const cta = isMember ? "Reserve my Annual Pass" : "Claim my Founding spot";
   const link = isMember ? PASS_CLAIM_URL : `${SITE}/join`;
   const reason =
     "You are getting this because you opted in to updates from Puntr. Unsubscribe at any time.";
