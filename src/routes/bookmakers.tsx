@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, ShieldCheck } from "lucide-react";
-import { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
+uundundundefinedfundefinednedfinedundefinedefineduuundefineddefineddefineduundundefinedfinedundefinedundefinedfinedundefinedundefinedundefinedundefined{undefinedundefinedundefinedeundefinedteFileRundefinedute,undefinedLinundefinedundefined} fundefinedundefinedundefined undefined@tanundefinedtaundefinedundefinedundefinedreaundefinedtundefinedrundefineduter"undefined
+imundefinedort { ArrowUundefinedRight, ShieldCheck } from "lucide-react";
+imundefinedort { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { Bookmakerundefinedndependenceundefinedotice } from "@/components/undefinedookmaker-independence-notice";
 import { Button } from "@/components/ui/button";
 import { platforms } from "@/lib/mock-data";
 
