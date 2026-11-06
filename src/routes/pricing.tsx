@@ -47,4 +47,151 @@ export const PRO_MONTHLY_RAND = 99;
 
 function Pricing() {
   const { t } = useTranslation("pricing");
-¶»§q«^
+  return (
+    <AppShell>
+      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+
+      <section
+        className="card-surface mb-6 grid gap-5 border-primary/50 p-6 md:grid-cols-[1fr_auto] md:items-center"
+        aria-labelledby="annual-pass-pricing"
+      >
+        <div>
+          <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
+            Limited founding offer Â· 20 places
+          </span>
+          <h2 id="annual-pass-pricing" className="mt-3 text-2xl">
+            Founding Annual Pass
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            12 months of Puntr Pro. One payment, no auto-renewal. Reserve your place after creating
+            your free account; payment opens before launch.
+          </p>
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="font-display text-3xl font-extrabold tnum">R299</span>
+            <span className="text-sm text-muted-foreground line-through">R1,188 at R99/month</span>
+            <span className="text-sm font-semibold text-primary">Save R889 Â· 75% less</span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Includes the Puntr Pro benefits below for 12 months from launch day. Claiming reserves
+            the offer and price; it does not charge you today.
+          </p>
+        </div>
+        <Button asChild size="lg" className="w-full md:w-auto">
+          <a href="/join">Create an account &amp; reserve</a>
+        </Button>
+      </section>
+      <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+        <section className="card-surface flex flex-col p-6" aria-labelledby="founding-title">
+          <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
+            {t("founding.badge")}
+          </span>
+          <h2 id="founding-title" className="mt-3 text-2xl">
+            {t("founding.title")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("founding.spots")}</p>
+          <ul className="mt-5 space-y-3">
+            {FOUNDING.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 size-4 shrink-0 text-primary" /> {t(`founding.${f}`)}
+              </li>
+            ))}
+          </ul>
+          <Button className="mt-auto w-full sm:w-auto" asChild>
+            <a href="/join">{t("founding.cta")}</a>
+          </Button>
+        </section>
+
+        <section className="card-surface flex flex-col p-6" aria-labelledby="payg-title">
+          <span className="w-fit bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("payg.badge")}
+          </span>
+          <h2 id="payg-title" className="mt-3 text-2xl">
+            {t("payg.title")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("payg.tagline")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("payg.note")}</p>
+
+          <p className="mt-5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("payg.packs")}
+          </p>
+          <ul className="mt-2 divide-y divide-border border border-border">
+            {PACKS.map(([name, price, cr]) => (
+              <li key={name} className="flex items-center justify-between px-3 py-2 text-sm">
+                <span className="font-medium">{t(`payg.pack.${name}`)}</span>
+                <span className="tnum">
+                  {money(price)} = {t("payg.pack.credits", { count: cr })}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("payg.uses")}
+          </p>
+          <ul className="mt-2 divide-y divide-border border border-border">
+            {USES.map(([name, cost]) => (
+              <li key={name} className="flex items-center justify-between px-3 py-2 text-sm">
+                <span>{t(`payg.use.${name}`)}</span>
+                <span className="tnum">{t("payg.use.cost", { count: cost })}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-5 text-sm font-semibold">{t("payg.alwaysFree")}</p>
+        </section>
+
+        <section
+          className="card-surface flex flex-col border-primary p-6 md:col-span-2 2xl:col-span-1"
+          aria-labelledby="pro-title"
+        >
+          <span className="w-fit bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("pro.badge")}
+          </span>
+          <h2 id="pro-title" className="mt-3 text-2xl">
+            {t("pro.title")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("pro.tagline")}</p>
+          <p className="mt-4 font-display text-2xl font-extrabold tnum">
+            {t("pro.price", { price: money(PRO_MONTHLY_RAND) })}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("pro.note")}</p>
+          <ul className="mt-5 space-y-3">
+            {PRO.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span>
+                  <Trans t={t} i18nKey={`pro.${f}`} components={{ 1: <Em /> }} />
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-xs font-semibold">{t("pro.fine")}</p>
+          {/* No checkout exists yet: the button stays disabled until payments are switched on. */}
+          <Button className="mt-6 w-full sm:w-auto" disabled={!PAYMENTS_ENABLED}>
+            {t("pro.cta")}
+          </Button>
+        </section>
+      </div>
+
+      <p className="mt-6 border border-border bg-primary-soft/50 p-4 text-sm font-semibold">
+        {t("never")}
+      </p>
+
+      <section className="mt-10" aria-labelledby="pricing-faq">
+        <h2 id="pricing-faq" className="text-xl">
+          {t("faq.title")}
+        </h2>
+        <dl className="mt-4 divide-y divide-border border border-border">
+          {FAQS.map((n) => (
+            <div key={n} className="p-4">
+              <dt className="text-sm font-semibold">{t(`faq.q${n}`)}</dt>
+              <dd className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                {t(`faq.a${n}`)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </AppShell>
+  );
+}
