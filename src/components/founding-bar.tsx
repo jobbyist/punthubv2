@@ -31,7 +31,6 @@ async function fetchScarcityCounts(): Promise<ScarcityCounts | null> {
 /** Sitewide founding strip. Counts are fetched from the live founding and Annual Pass RPCs; never hard-coded. */
 export function FoundingBar() {
   const { t } = useTranslation("common");
-  const { profile } = useSession();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [counts, setCounts] = useState<ScarcityCounts | null>(null);
 
@@ -52,7 +51,7 @@ export function FoundingBar() {
     };
   }, []);
 
-  if (profile || path === "/join" || path === "/founding" || path.startsWith("/admin")) return null;
+  if (path === "/join" || path === "/founding" || path.startsWith("/admin")) return null;
 
   const launch = formatDate(`${DEFAULT_LAUNCH_DATE}T12:00:00+02:00`);
   const foundingText = counts
