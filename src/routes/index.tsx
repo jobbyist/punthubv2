@@ -1,3 +1,4 @@
+import { LatestFromPuntr } from "@/components/latest-from-puntr";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
@@ -225,6 +226,8 @@ function Landing() {
           ))}
         </div>
       </motion.section>
+
+      <LatestFromPuntr />
 
       {/* Leaderboard + why join */}
       <motion.section {...fade} className="mt-8 grid gap-5 lg:grid-cols-2">

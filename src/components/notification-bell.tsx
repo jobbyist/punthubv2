@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/session";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useNotifications } from "@/hooks/use-notifications";
+import { analytics } from "@/lib/analytics";
 import { formatDateTime } from "@/lib/format";
 
 /** Bell with an unread badge and a dropdown of recent Puntr team updates. Signed-in members only. */
@@ -21,7 +22,10 @@ export function NotificationBell() {
       open={open}
       onOpenChange={(v) => {
         setOpen(v);
-        if (v) void reload();
+        if (v) {
+          analytics.notificationDropdownOpened();
+          void reload();
+        }
       }}
     >
       <PopoverTrigger asChild>
@@ -53,7 +57,10 @@ export function NotificationBell() {
             <button
               type="button"
               className="text-xs font-semibold text-primary hover:underline"
-              onClick={() => void markRead(items.filter((n) => !n.read).map((n) => n.id))}
+              onClick={() => {
+                analytics.notificationsMarkedAllRead();
+                void markRead(items.filter((n) => !n.read).map((n) => n.id));
+              }}
             >
               {t("notifications.markAll")}
             </button>
@@ -90,6 +97,8 @@ export function NotificationBell() {
                     type="button"
                     className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted"
                     onClick={() => {
+                      analytics.notificationClicked();
+                      if (!n.read) analytics.notificationMarkedRead();
                       void markRead([n.id]);
                       setOpen(false);
                       if (n.target_url) {

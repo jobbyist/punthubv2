@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Feedback survey | Win a R500 OTT voucher | Puntr",
+    "description": "Tell us what you think of Puntr in a short survey and enter the draw for a free R500 OTT voucher.",
+    "ogTitle": "Share your feedback and enter to win a R500 OTT voucher"
+  },
+  "eyebrow": "Member survey",
+  "title1": "Tell us what you think.",
+  "title2": "Win a R500 OTT voucher.",
+  "lead": "Two minutes of honest feedback helps us build the right things before launch on 1 December 2026.",
+  "signIn": "Sign in or join free to take the survey.",
+  "signInCta": "Join free",
+  "done": "Thank you. Your feedback has been received.",
+  "doneDraw": "You are entered into the draw.",
+  "already": "You have already completed this survey. Thank you.",
+  "q1": "How would you rate Puntr so far?",
+  "q1hint": "1 is poor, 5 is excellent",
+  "q2": "What do you like most?",
+  "q3": "What should we improve?",
+  "q4": "Which of these would you use most? (pick any)",
+  "features": {
+    "picks": "Posting and locking picks",
+    "board": "Leaderboards and public record",
+    "insights": "Match insights",
+    "ai": "AI-powered insights",
+    "points": "PuntPoints and rewards",
+    "sports": "More sports",
+    "app": "A mobile app"
+  },
+  "q5": "What do you think of the planned pricing?",
+  "pricing": {
+    "too_high": "Too high",
+    "fair": "Fair",
+    "good_value": "Good value",
+    "unsure": "Not sure yet"
+  },
+  "draw": "Enter me into the draw for a R500 OTT voucher (optional)",
+  "contact": "You may contact me about my feedback (optional)",
+  "rules": "One entry per member. 18+ only. Entering the draw is optional and does not change your Puntr account. Full draw rules, the closing date and how the winner is chosen and told will be published on this page. T&Cs apply.",
+  "privacy": "We use your answers to improve Puntr. Read how we handle your data in our Privacy Policy.",
+  "submit": "Submit feedback",
+  "sending": "Sending",
+  "error": "We could not save your feedback. Please try again.",
+  "pickRating": "Please choose a rating."
+}

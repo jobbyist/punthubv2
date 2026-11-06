@@ -97,3 +97,18 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
   disabled until the PayFast work, its legal copy and the owner's go-ahead are done.
 - **Review** `[attorney review]`: Terms still need a subscription clause and the Refunds page needs the credits and
   subscription position before either product goes on sale on 1 December.
+
+## 2026-11-06: member survey, R500 OTT voucher draw, Newsroom, in-app notifications
+
+- **New data**: `survey_responses` (rating, free-text feedback, features wanted, pricing view, optional draw entry and
+  contact consent, one row per member). `notifications` and `user_notifications` (read state per member).
+  `newsroom_articles` (public company updates). No new processor or tracker. Newsroom analytics events use the existing
+  consent-gated helper.
+- **Pages to update** `[attorney review]`: `/privacy` data table (survey answers: purpose, retention, who sees them)
+  and `/terms` or a dedicated draw rule for the R500 OTT voucher draw. The draw is a promotional competition: closing
+  date, eligibility, how the winner is chosen and told, and the prize-draw rules (Consumer Protection Act and
+  Regulation 11 of the CPA regulations) are not yet written. The `/feedback` page says the rules will be published
+  there; they must be before the first winner is chosen.
+- **Founding Member Annual Pass (R299 once-off, 12 months of Puntr Pro, no auto-renewal)** is announced in the bell
+  and on `/about` as a prepaid membership, not an investment or donation. Checkout is not built. Refunds and Terms
+  need the pass position before it goes on sale.

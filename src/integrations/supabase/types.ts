@@ -352,6 +352,78 @@ export type Database = {
         }
         Relationships: []
       }
+      newsroom_articles: {
+        Row: {
+          author_name: string
+          body: string
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          excerpt: string
+          id: string
+          og_image_url: string | null
+          published_at: string | null
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          body?: string
+          category: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt: string
+          id?: string
+          og_image_url?: string | null
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          id?: string
+          og_image_url?: string | null
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsroom_articles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsroom_articles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notice_versions: {
         Row: {
           effective_at: string
@@ -1125,6 +1197,60 @@ export type Database = {
           },
         ]
       }
+      survey_responses: {
+        Row: {
+          contact_ok: boolean
+          created_at: string
+          draw_entry: boolean
+          id: string
+          improve: string | null
+          liked: string | null
+          pricing_view: string | null
+          rating: number
+          user_id: string
+          wanted_features: string[]
+        }
+        Insert: {
+          contact_ok?: boolean
+          created_at?: string
+          draw_entry?: boolean
+          id?: string
+          improve?: string | null
+          liked?: string | null
+          pricing_view?: string | null
+          rating: number
+          user_id: string
+          wanted_features?: string[]
+        }
+        Update: {
+          contact_ok?: boolean
+          created_at?: string
+          draw_entry?: boolean
+          id?: string
+          improve?: string | null
+          liked?: string | null
+          pricing_view?: string | null
+          rating?: number
+          user_id?: string
+          wanted_features?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notifications: {
         Row: {
           created_at: string
@@ -1439,6 +1565,18 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      admin_founding_members: {
+        Args: never
+        Returns: {
+          email: string
+          first_name: string
+          founding_number: number
+          phone: string
+          signed_up_at: string
+          status: string
+          surname: string
+        }[]
       }
       admin_fulfil_redemption: {
         Args: { p_note?: string; p_redemption: string }

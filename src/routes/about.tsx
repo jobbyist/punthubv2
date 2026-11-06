@@ -17,7 +17,11 @@ import {
 } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { analytics } from "@/lib/analytics";
+import { money } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 
 export const Route = createFileRoute("/about")({
@@ -30,6 +34,39 @@ export const Route = createFileRoute("/about")({
         { name: "description", content: t("meta.description") },
         { property: "og:title", content: t("meta.ogTitle") },
         { property: "og:description", content: t("meta.description") },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://puntr.co.za/about" },
+        { property: "og:site_name", content: "Puntr" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: t("meta.ogTitle") },
+        { name: "twitter:description", content: t("meta.description") },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                name: "Puntr",
+                url: "https://puntr.co.za/",
+                sameAs: [
+                  "https://x.com/puntrza",
+                  "https://instagram.com/puntrza",
+                  "https://tiktok.com/@puntrza",
+                  "https://t.me/puntrza",
+                ],
+              },
+              {
+                "@type": "AboutPage",
+                url: "https://puntr.co.za/about",
+                name: t("meta.ogTitle"),
+                description: t("meta.description"),
+              },
+            ],
+          }),
+        },
       ],
     };
   },
@@ -93,10 +130,48 @@ const EXAMPLE_BOARD = [
   { rank: 3, username: "ExampleTipster3", accuracy: 0.74, predictions: 401 },
 ] as const;
 
+/** Click-to-play so no YouTube request is made until the visitor asks for the video. */
+function ExplainerVideo() {
+  const { t } = useTranslation("about");
+  const [playing, setPlaying] = useState(false);
+  return (
+    <div
+      className="relative mx-auto mt-8 max-w-3xl overflow-hidden bg-black"
+      style={{ paddingBottom: "42.1875%" }}
+    >
+      {playing ? (
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/pBCncBbeWkc?rel=0&autoplay=1"
+          className="absolute inset-0 size-full border-0"
+          allowFullScreen
+          allow="autoplay; encrypted-media; picture-in-picture; web-share"
+          referrerPolicy="strict-origin"
+          title={t("video.iframeTitle")}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          className="absolute inset-0 grid place-items-center text-white transition-colors hover:text-primary"
+          aria-label={t("video.play")}
+        >
+          <span className="grid size-16 place-items-center rounded-full border-2 border-current text-2xl">
+            ▶
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
+
 function About() {
   const { t } = useTranslation("about");
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    analytics.aboutPageViewed();
+  }, []);
 
   return (
     <div className="overflow-hidden bg-background">
@@ -309,6 +384,15 @@ function About() {
           </div>
         </motion.section>
 
+        {/* Explainer video */}
+        <motion.section {...fade} className="py-16">
+          <div className="text-center">
+            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
+          </div>
+          <ExplainerVideo />
+        </motion.section>
+
         {/* Foundation and partners */}
         <motion.section {...fade} className="py-16 lg:py-24">
           <div className="text-center">
@@ -454,6 +538,46 @@ function About() {
           </div>
         </motion.section>
       </div>
+
+      {/* Launch and Founding Member offer */}
+      <section className="border-t border-border bg-background">
+        <div className="mx-auto max-w-[900px] px-4 py-16 text-center sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+            {t("launch.eyebrow")}
+          </p>
+          <h2 className="mt-3 text-[clamp(1.8rem,4vw,2.6rem)] font-bold">{t("launch.title")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            {t("launch.body", {
+              pass: money(299),
+              annual: money(1188),
+              monthly: money(99),
+              saving: money(889),
+            })}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              size="lg"
+              onClick={() => {
+                analytics.aboutFoundingCtaClicked();
+                void navigate({ to: "/join" });
+              }}
+            >
+              {t("launch.free")}
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link to="/pricing">{t("launch.pricing")}</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link to="/newsroom" onClick={() => analytics.aboutNewsroomClicked()}>
+                {t("launch.newsroom")}
+              </Link>
+            </Button>
+          </div>
+          <p className="mx-auto mt-6 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+            {t("launch.note")}
+          </p>
+        </div>
+      </section>
 
       {/* Final CTA */}
       <section className="bg-[#111111] text-white">
