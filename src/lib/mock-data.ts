@@ -11,6 +11,7 @@ export const sports: Sport[] = [
   { name: "Tennis", active: false },
   { name: "Cricket", active: false },
   { name: "Combat sports", active: false },
+  { name: "Athletics", active: false },
   { name: "Horse racing", active: false },
 ];
 

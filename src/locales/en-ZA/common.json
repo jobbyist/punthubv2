@@ -19,6 +19,7 @@
   "badge": {
     "example": "Example",
     "comingSoon": "Coming soon",
+    "live": "LIVE",
     "new": "New",
     "pro": "Pro"
   },

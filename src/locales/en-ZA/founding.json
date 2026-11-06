@@ -42,5 +42,20 @@
   "last": {
     "title": "Be part of what's next",
     "body": "Once the 100 spots are taken, Founding badges are closed for good."
+  },
+  "pass": {
+    "title": "Founding Annual Pass",
+    "body": "12 months of Puntr Pro for a once-off R299 (standard Pro is R99 a month, R1,188 a year). Open to the first {{spots}} founding members who claim it before {{deadline}}. Your 12 months start on launch day and it does not renew automatically.",
+    "note": "Claiming reserves your place and the price. You pay nothing today: we'll email you when checkout opens before launch.",
+    "left_one": "{{count}} place left",
+    "left_other": "{{count}} places left",
+    "claim": "Claim my place",
+    "claiming": "Claiming...",
+    "join": "Join free to claim",
+    "claimed": "You're in. You hold place {{position}} of {{spots}}. We'll email you when checkout opens.",
+    "already": "You've already claimed place {{position}}. We'll email you when checkout opens.",
+    "full": "All {{spots}} places have been claimed.",
+    "closed": "This offer closed on {{deadline}}.",
+    "error": "We couldn't claim your place just now. Please try again."
   }
 }

@@ -95,7 +95,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 5 November 2026 (version 2026-11-05-r4). Draft pending
+          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r5). Draft pending
           attorney review.
         </p>
 
@@ -176,6 +176,13 @@ function Privacy() {
               your privacy page
             </Link>{" "}
             or by using the unsubscribe link.
+          </p>
+          <p className="mt-3">
+            If you join as a Founding Member and ticked marketing, we also send you one welcome
+            email from the Founder shortly after you sign up, and we record that it was sent. If you
+            claim a place on the limited Founding Annual Pass offer, we store your account ID and
+            the time you claimed. A claim only reserves your place and price; it takes no payment
+            and you can ignore it. [attorney review]
           </p>
         </section>
 

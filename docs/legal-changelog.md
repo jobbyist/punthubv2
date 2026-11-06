@@ -3,6 +3,15 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06, Terms `2026-11-06-r7` and Privacy `2026-11-06-r5` (PR: Founding welcome email, Annual Pass offer)
+
+- New Founding Member welcome email from the Founder (new sign-ups only, opted-in members, one per address, logged in `founding_welcome_sends`). Privacy §4 says so.
+- New limited Founding Annual Pass offer: the first 20 founding members to claim it before 16 November 2026 (23:59 SAST) reserve 12 months of Puntr Pro for a once-off R299, starting 1 December 2026, no auto-renewal. A claim takes no payment. It is stored in `annual_pass_claims` (account ID, time). The 12:00 campaign email and `/founding` carry the same terms. Terms §4 and Privacy §4 updated.
+- "Refer and earn 30%" added to the roadmap "Also on the way" as a plan only (owner wording, 6 Nov 2026): the earlier launch rule was no cash referrals at launch, so nothing is built or promised as available. Terms §4 says referral rewards are planned and unavailable until terms are published.
+- Athletics added to the roadmap (weeks 6 to 8 with combat sports), the sidebar and mobile sports list; Terms §4 sports list updated. A LIVE marker now shows beside Soccer in the sports menus.
+- Review: whether the reservation-before-payment wording and the 20-place limit are acceptable under the Consumer Protection Act and the ECT Act `[attorney review]`; whether "earn up to 30%" on the roadmap reads as a profit or income claim, and whether referral payments on purchases need Terms and Affiliate-disclosure wording before launch `[attorney review]`; the LIVE marker before launch day (soccer starts 1 December). Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed (Refunds still says no paid products; revisit when checkout opens).
+- New `notice_versions` rows: `terms` `2026-11-06-r7`, `privacy` `2026-11-06-r5`.
+
 ## 2026-11-05, no legal page text changed (PR: Founding Member landing page and sitewide copy)
 
 - New public page `/founding`, a sitewide Founding Member strip, a new home hero ("Predict what's next. Prove your worth." / "Get in early. Become a Founding Member. Be part of what's next."), a footer link and a clearer header button. They link to the existing `/join` sign-up. No new data is collected, stored or sent, and no new tracker, processor or sign-in method.

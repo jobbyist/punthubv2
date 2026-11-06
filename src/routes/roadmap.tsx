@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, CircleDot, Clock, Languages, Gift, Smartphone, Sparkles } from "lucide-react";
+import {
+  Check,
+  CircleDot,
+  Clock,
+  Gift,
+  Languages,
+  Share2,
+  Smartphone,
+  Sparkles,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -122,6 +131,7 @@ const ALSO = [
   ["languages", Languages],
   ["rewards", Gift],
   ["pro", Sparkles],
+  ["referrals", Share2],
   ["apps", Smartphone],
 ] as const;
 

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
+import { LiveBadge } from "@/components/live-badge";
 import { Button } from "@/components/ui/button";
 import { sports } from "@/lib/mock-data";
 import { useAsync } from "@/hooks/use-async";
@@ -27,6 +28,7 @@ const SPORT_KEYS: Record<string, string> = {
   Tennis: "tennis",
   Cricket: "cricket",
   "Combat sports": "combat",
+  Athletics: "athletics",
   "Horse racing": "racing",
 };
 
@@ -58,9 +60,10 @@ function LeftRail() {
             {s.active ? (
               <Link
                 to="/predictions"
-                className="flex items-center justify-between px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="flex flex-col items-start gap-0.5 px-3 py-2 text-sm transition-colors hover:bg-muted"
               >
                 <span>{sportName(s.name)}</span>
+                {s.name === "Soccer" && <LiveBadge />}
               </Link>
             ) : (
               <span className="flex items-center justify-between px-3 py-2 text-sm text-muted-foreground">

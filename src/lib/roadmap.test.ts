@@ -22,6 +22,14 @@ describe("roadmap", () => {
     expect(stage(items, "racing")).toBe("planned");
   });
 
+  it("plans athletics alongside combat sports in weeks 6 to 8", () => {
+    const items = buildRoadmap({ today: "2026-11-05", launch, enabled: ["soccer"] });
+    const a = items.find((i) => i.sport === "athletics");
+    const c = items.find((i) => i.sport === "combat");
+    expect(a?.weeks).toEqual([6, 8]);
+    expect([a?.from, a?.to]).toEqual([c?.from, c?.to]);
+  });
+
   it("only shows a sport as live when it is switched on", () => {
     const items = buildRoadmap({ today: "2026-12-10", launch, enabled: ["soccer"] });
     expect(stage(items, "soccer")).toBe("live");
