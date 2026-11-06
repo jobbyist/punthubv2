@@ -14,11 +14,6 @@ export interface AppNotification {
 
 type Status = "loading" | "ready" | "error";
 
-// The notifications tables arrive with supabase/migrations/20261106120000_notifications_founding_fix.sql and are not
-// in the generated types until that migration is applied and types.ts is regenerated.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as any;
-
 /**
  * Recent team updates for the bell, with the signed-in member's own read state. RLS limits every row to what the
  * member may see: published notifications for everyone, read rows for their own user only.
@@ -33,13 +28,16 @@ export function useNotifications(userId: string | undefined) {
     if (!userId) return;
     try {
       const [{ data: notes, error: e1 }, { data: reads, error: e2 }] = await Promise.all([
-        db
+        supabase
           .from("notifications")
           .select("id, title, message, category, target_url, published_at")
           .lte("published_at", new Date().toISOString())
           .order("published_at", { ascending: false })
           .limit(20),
-        db.from("user_notifications").select("notification_id, read_at").eq("user_id", userId),
+        supabase
+          .from("user_notifications")
+          .select("notification_id, read_at")
+          .eq("user_id", userId),
       ]);
       if (e1 || e2) throw e1 ?? e2;
       const readIds = new Set(
@@ -80,7 +78,7 @@ export function useNotifications(userId: string | undefined) {
       if (!userId || ids.length === 0) return;
       setItems((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n)));
       const now = new Date().toISOString();
-      const { error } = await db.from("user_notifications").upsert(
+      const { error } = await supabase.from("user_notifications").upsert(
         ids.map((id) => ({ user_id: userId, notification_id: id, read_at: now })),
         { onConflict: "user_id,notification_id" },
       );

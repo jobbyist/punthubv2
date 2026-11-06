@@ -14,54 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      reward_settings: {
-        Row: { enabled: boolean; key: string; updated_at: string; updated_by: string | null }
-        Insert: { enabled?: boolean; key: string; updated_at?: string; updated_by?: string | null }
-        Update: { enabled?: boolean; key?: string; updated_at?: string; updated_by?: string | null }
-        Relationships: []
-      }
-      point_rules: {
-        Row: { active: boolean; cap_per_day: number | null; cap_per_month: number | null; code: string; points: number; sort: number; title: string; updated_at: string }
-        Insert: { active?: boolean; cap_per_day?: number | null; cap_per_month?: number | null; code: string; points: number; sort?: number; title: string; updated_at?: string }
-        Update: { active?: boolean; cap_per_day?: number | null; cap_per_month?: number | null; code?: string; points?: number; sort?: number; title?: string; updated_at?: string }
-        Relationships: []
-      }
-      referral_milestones: {
-        Row: { active: boolean; bonus_points: number; threshold: number; title: string }
-        Insert: { active?: boolean; bonus_points: number; threshold: number; title: string }
-        Update: { active?: boolean; bonus_points?: number; threshold?: number; title?: string }
-        Relationships: []
-      }
-      puntpoints_ledger: {
-        Row: { admin_id: string | null; created_at: string; id: string; kind: string; points: number; reason: string | null; ref_id: string | null; rule_code: string | null; seq: number; user_id: string }
-        Insert: { admin_id?: string | null; created_at?: string; id?: string; kind: string; points: number; reason?: string | null; ref_id?: string | null; rule_code?: string | null; seq?: number; user_id: string }
-        Update: { admin_id?: string | null; created_at?: string; id?: string; kind?: string; points?: number; reason?: string | null; ref_id?: string | null; rule_code?: string | null; seq?: number; user_id?: string }
-        Relationships: []
-      }
-      rewards: {
-        Row: { active: boolean; code: string; created_at: string; description: string | null; id: string; kind: string; points_cost: number; requires_approval: boolean; sponsor: string | null; stock: number | null; title: string }
-        Insert: { active?: boolean; code: string; created_at?: string; description?: string | null; id?: string; kind: string; points_cost: number; requires_approval?: boolean; sponsor?: string | null; stock?: number | null; title: string }
-        Update: { active?: boolean; code?: string; created_at?: string; description?: string | null; id?: string; kind?: string; points_cost?: number; requires_approval?: boolean; sponsor?: string | null; stock?: number | null; title?: string }
-        Relationships: []
-      }
-      reward_codes: {
-        Row: { code: string; created_at: string; id: string; redemption_id: string | null; reward_id: string }
-        Insert: { code: string; created_at?: string; id?: string; redemption_id?: string | null; reward_id: string }
-        Update: { code?: string; created_at?: string; id?: string; redemption_id?: string | null; reward_id?: string }
-        Relationships: []
-      }
-      redemptions: {
-        Row: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null }
-        Insert: { admin_id?: string | null; created_at?: string; id?: string; note?: string | null; points: number; reward_id: string; status?: string; updated_at?: string; user_id: string; voucher_code?: string | null }
-        Update: { admin_id?: string | null; created_at?: string; id?: string; note?: string | null; points?: number; reward_id?: string; status?: string; updated_at?: string; user_id?: string; voucher_code?: string | null }
-        Relationships: []
-      }
-      launch_email_sends: {
-        Row: { detail: string | null; email: string; sent_at: string; status: string; wave: number }
-        Insert: { detail?: string | null; email: string; sent_at?: string; status?: string; wave: number }
-        Update: { detail?: string | null; email?: string; sent_at?: string; status?: string; wave?: number }
-        Relationships: []
-      }
       admin_notifications: {
         Row: {
           body: string
@@ -96,7 +48,22 @@ export type Database = {
           sms_body?: string | null
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_notifications_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_notifications_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       breach_register: {
         Row: {
@@ -361,6 +328,30 @@ export type Database = {
           },
         ]
       }
+      launch_email_sends: {
+        Row: {
+          detail: string | null
+          email: string
+          sent_at: string
+          status: string
+          wave: number
+        }
+        Insert: {
+          detail?: string | null
+          email: string
+          sent_at?: string
+          status?: string
+          wave: number
+        }
+        Update: {
+          detail?: string | null
+          email?: string
+          sent_at?: string
+          status?: string
+          wave?: number
+        }
+        Relationships: []
+      }
       notice_versions: {
         Row: {
           effective_at: string
@@ -382,6 +373,75 @@ export type Database = {
           kind?: string
           url?: string
           version?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          message: string
+          newsroom_article_id: string | null
+          published_at: string
+          target_url: string | null
+          title: string
+          visibility: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          newsroom_article_id?: string | null
+          published_at?: string
+          target_url?: string | null
+          title: string
+          visibility?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          newsroom_article_id?: string | null
+          published_at?: string
+          target_url?: string | null
+          title?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      point_rules: {
+        Row: {
+          active: boolean
+          cap_per_day: number | null
+          cap_per_month: number | null
+          code: string
+          points: number
+          sort: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          cap_per_day?: number | null
+          cap_per_month?: number | null
+          code: string
+          points: number
+          sort?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          cap_per_day?: number | null
+          cap_per_month?: number | null
+          code?: string
+          points?: number
+          sort?: number
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -578,6 +638,170 @@ export type Database = {
           },
         ]
       }
+      puntpoints_ledger: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          points: number
+          reason: string | null
+          ref_id: string | null
+          rule_code: string | null
+          seq: number
+          user_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          points: number
+          reason?: string | null
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: never
+          user_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          points?: number
+          reason?: string | null
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: never
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puntpoints_ledger_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puntpoints_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      redemptions: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points: number
+          reward_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          voucher_code?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points?: number
+          reward_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          voucher_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redemptions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_milestones: {
+        Row: {
+          active: boolean
+          bonus_points: number
+          threshold: number
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          bonus_points: number
+          threshold: number
+          title: string
+        }
+        Update: {
+          active?: boolean
+          bonus_points?: number
+          threshold?: number
+          title?: string
+        }
+        Relationships: []
+      }
       referral_rewards: {
         Row: {
           created_at: string
@@ -587,10 +811,10 @@ export type Database = {
           referred_id: string
           referrer_credits: number
           referrer_id: string
+          reversed_at: string | null
           status: string
           vested_at: string | null
           vests_at: string
-          reversed_at: string | null
         }
         Insert: {
           created_at?: string
@@ -600,10 +824,10 @@ export type Database = {
           referred_id: string
           referrer_credits?: number
           referrer_id: string
+          reversed_at?: string | null
           status?: string
           vested_at?: string | null
           vests_at?: string
-          reversed_at?: string | null
         }
         Update: {
           created_at?: string
@@ -613,12 +837,55 @@ export type Database = {
           referred_id?: string
           referrer_credits?: number
           referrer_id?: string
+          reversed_at?: string | null
           status?: string
           vested_at?: string | null
           vests_at?: string
-          reversed_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
+            columns: ["qualifying_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
+            columns: ["qualifying_prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {
@@ -676,16 +943,121 @@ export type Database = {
           },
         ]
       }
-      waitlist_invites: {
-        Row: { detail: string | null; email: string; sent_at: string; status: string }
-        Insert: { detail?: string | null; email: string; sent_at?: string; status?: string }
-        Update: { detail?: string | null; email?: string; sent_at?: string; status?: string }
-        Relationships: []
+      reward_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          redemption_id: string | null
+          reward_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          redemption_id?: string | null
+          reward_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          redemption_id?: string | null
+          reward_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_codes_redemption_fk"
+            columns: ["redemption_id"]
+            isOneToOne: true
+            referencedRelation: "redemptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reward_codes_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      waitlist_unsubscribes: {
-        Row: { created_at: string; email: string }
-        Insert: { created_at?: string; email: string }
-        Update: { created_at?: string; email?: string }
+      reward_settings: {
+        Row: {
+          enabled: boolean
+          key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reward_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          points_cost: number
+          requires_approval: boolean
+          sponsor: string | null
+          stock: number | null
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: string
+          points_cost: number
+          requires_approval?: boolean
+          sponsor?: string | null
+          stock?: number | null
+          title: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          points_cost?: number
+          requires_approval?: boolean
+          sponsor?: string | null
+          stock?: number | null
+          title?: string
+        }
         Relationships: []
       }
       settlement_events: {
@@ -752,6 +1124,88 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          notification_id: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notification_id: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notification_id?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waitlist_invites: {
+        Row: {
+          detail: string | null
+          email: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          detail?: string | null
+          email: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          detail?: string | null
+          email?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      waitlist_unsubscribes: {
+        Row: {
+          created_at: string
+          email: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -961,6 +1415,68 @@ export type Database = {
       }
     }
     Functions: {
+      admin_adjust_points: {
+        Args: { p_points: number; p_reason: string; p_user: string }
+        Returns: number
+      }
+      admin_cancel_redemption: {
+        Args: { p_reason: string; p_redemption: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_fulfil_redemption: {
+        Args: { p_note?: string; p_redemption: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_referral_review: {
+        Args: never
+        Returns: {
+          burst: boolean
+          created_at: string
+          id: string
+          referred: string
+          referrer: string
+          status: string
+          vests_at: string
+        }[]
+      }
+      admin_reverse_referral: {
+        Args: { p_reason: string; p_referral: string }
+        Returns: undefined
+      }
       admin_settle_prediction: {
         Args: { p_prediction: string; p_reason: string; p_result: string }
         Returns: {
@@ -981,51 +1497,22 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      mfa_ok: { Args: never; Returns: boolean }
-      claim_reserved_founding: { Args: { p_user: string }; Returns: number }
-      reward_setting: { Args: { p_key: string }; Returns: boolean }
-      member_may_redeem: { Args: { p_user: string }; Returns: boolean }
-      award_points: { Args: { p_points?: number; p_ref: string; p_rule: string; p_user: string }; Returns: number }
-      sync_my_points: { Args: never; Returns: number }
-      my_puntpoints: { Args: never; Returns: number }
-      rewards_status: { Args: never; Returns: { points_enabled: boolean; rewards_enabled: boolean }[] }
-      point_rules_public: { Args: never; Returns: { cap_per_day: number | null; cap_per_month: number | null; code: string; points: number; title: string }[] }
-      vest_referrals: { Args: never; Returns: number }
-      my_referral_overview: { Args: never; Returns: { next_threshold: number | null; next_title: string | null; pending: number; qualified: number; reversed: number; signed_up: number; vested: number }[] }
-      list_rewards: { Args: never; Returns: { code: string; description: string | null; id: string; in_stock: boolean; kind: string; points_cost: number; sponsor: string | null; title: string }[] }
-      redeem_reward: { Args: { p_reward: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
-      admin_fulfil_redemption: { Args: { p_note?: string; p_redemption: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
-      admin_cancel_redemption: { Args: { p_reason: string; p_redemption: string }; Returns: { admin_id: string | null; created_at: string; id: string; note: string | null; points: number; reward_id: string; status: string; updated_at: string; user_id: string; voucher_code: string | null } }
-      admin_adjust_points: { Args: { p_points: number; p_reason: string; p_user: string }; Returns: number }
-      admin_referral_review: { Args: never; Returns: { burst: boolean; created_at: string; id: string; referred: string; referrer: string; status: string; vests_at: string }[] }
-      admin_reverse_referral: { Args: { p_reason: string; p_referral: string }; Returns: undefined }
-      launch_recipients: {
-        Args: { p_wave: number }
-        Returns: { recipient_email: string; recipient_name: string }[]
-      }
-      launch_audience: {
-        Args: never
-        Returns: {
-          email_address: string
-          full_name: string
-          joined_at: string
-          marketing_ok: boolean
-          phone_number: string
-          reserved: boolean
-          signed_up: boolean
-          unsubscribed: boolean
-        }[]
-      }
-      founding_spots_held: { Args: never; Returns: number }
-      write_chain_head: {
-        Args: { p_day: string }
-        Returns: { head_day: string; head_hash: string; head_pick_count: number }[]
-      }
-      apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
       anonymise_account: {
         Args: { p_email: string; p_user: string }
         Returns: undefined
       }
+      apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
+      award_points: {
+        Args: {
+          p_points?: number
+          p_ref: string
+          p_rule: string
+          p_user: string
+        }
+        Returns: number
+      }
+      can_post: { Args: { p_user: string }; Returns: boolean }
+      claim_reserved_founding: { Args: { p_user: string }; Returns: number }
       complete_signup: {
         Args: {
           p_birth_year: number
@@ -1070,16 +1557,70 @@ export type Database = {
         }
       }
       export_my_data: { Args: never; Returns: Json }
+      founding_spots_held: { Args: never; Returns: number }
       founding_spots_taken: { Args: never; Returns: number }
+      invoke_cron: { Args: { p_path: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      launch_audience: {
+        Args: never
+        Returns: {
+          email_address: string
+          full_name: string
+          joined_at: string
+          marketing_ok: boolean
+          phone_number: string
+          reserved: boolean
+          signed_up: boolean
+          unsubscribed: boolean
+        }[]
+      }
+      launch_recipients: {
+        Args: { p_wave: number }
+        Returns: {
+          recipient_email: string
+          recipient_name: string
+        }[]
+      }
+      list_rewards: {
+        Args: never
+        Returns: {
+          code: string
+          description: string
+          id: string
+          in_stock: boolean
+          kind: string
+          points_cost: number
+          sponsor: string
+          title: string
+        }[]
+      }
+      member_may_redeem: { Args: { p_user: string }; Returns: boolean }
+      mfa_ok: { Args: never; Returns: boolean }
+      my_puntpoints: { Args: never; Returns: number }
       my_referral_counts: {
         Args: never
-        Returns: { joined: number; signed_up: number }[]
+        Returns: {
+          joined: number
+          signed_up: number
+        }[]
+      }
+      my_referral_overview: {
+        Args: never
+        Returns: {
+          next_threshold: number
+          next_title: string
+          pending: number
+          qualified: number
+          reversed: number
+          signed_up: number
+          vested: number
+        }[]
       }
       pending_settlements: {
         Args: never
         Returns: {
           away_score: number
+          home_score: number
           line: number
           market: string
           odds: number
@@ -1087,7 +1628,16 @@ export type Database = {
           selection: string
           sport: string
           status: string
-          home_score: number
+        }[]
+      }
+      point_rules_public: {
+        Args: never
+        Returns: {
+          cap_per_day: number
+          cap_per_month: number
+          code: string
+          points: number
+          title: string
         }[]
       }
       record_consent: {
@@ -1099,10 +1649,49 @@ export type Database = {
         }
         Returns: undefined
       }
-      username_available: { Args: { p_username: string }; Returns: boolean }
+      redeem_reward: {
+        Args: { p_reward: string }
+        Returns: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "redemptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      reward_setting: { Args: { p_key: string }; Returns: boolean }
+      rewards_status: {
+        Args: never
+        Returns: {
+          points_enabled: boolean
+          rewards_enabled: boolean
+        }[]
+      }
       submit_privacy_request: {
         Args: { p_details: string; p_email: string; p_kind: string }
         Returns: string
+      }
+      sync_my_points: { Args: never; Returns: number }
+      username_available: { Args: { p_username: string }; Returns: boolean }
+      vest_referrals: { Args: never; Returns: number }
+      write_chain_head: {
+        Args: { p_day: string }
+        Returns: {
+          head_day: string
+          head_hash: string
+          head_pick_count: number
+        }[]
       }
     }
     Enums: {

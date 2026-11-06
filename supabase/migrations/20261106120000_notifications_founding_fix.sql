@@ -64,7 +64,7 @@ end $$;
 -- 2. Founding numbers.
 -- Cause of "#3 when 6 have signed up": the assigner gave the LOWEST unused number (min free), so a gap left by a
 -- deleted/cleared profile or an admin test account was refilled, and the public counter added held early-access
--- emails and counted the admin account. New rule: numbers are never reused (next = highest ever + 1), admin
+-- emails and counted the admin account (the admin took #1 at launch). New rule: numbers are never reused (next = highest ever + 1), admin
 -- accounts never take a number, and the counter is the live count of members who hold a number.
 -- ---------------------------------------------------------------------------
 create or replace function public.profiles_assign_founding()
@@ -137,7 +137,8 @@ end;
 $$;
 revoke all on function public.claim_reserved_founding(uuid) from public, anon, authenticated;
 
--- Public counter = live count of Founding Members (admin accounts hold no number).
+-- Public counter = Founding Members who hold a number (admin account excluded) + early-access emails held for a
+-- spot that have not registered yet, so the number matches the sign-ups logged in the database.
 create or replace function public.founding_spots_taken()
 returns integer
 language sql
@@ -145,8 +146,10 @@ stable
 security definer
 set search_path = public, pg_temp
 as $$
-  select count(*)::integer from public.profiles where founding_number is not null and role <> 'admin';
+  select (select count(*)::integer from public.profiles where founding_number is not null and role <> 'admin')
+       + public.founding_spots_held();
 $$;
+-- Live check 6 Nov 2026: 3 profiles (admin #1, members #2 and #3) + 5 held early-access emails.
 revoke all on function public.founding_spots_taken() from public;
 grant execute on function public.founding_spots_taken() to anon, authenticated, service_role;
 
