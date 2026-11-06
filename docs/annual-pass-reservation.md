@@ -23,7 +23,11 @@ Do not place PayFast credentials, Resend keys or Supabase service credentials in
 
 The PayFast URL is configured by the owner in the PayFast dashboard and supplied as a server-only environment variable. The email contains a signed Puntr redirect, not the underlying PayFast URL; the redirect checks the signature, member reservation and database expiry before forwarding to PayFast. This implementation does not create PayFast payment links, receive PayFast ITN callbacks, or automatically reconcile a payment against a member. Confirm received payments through the existing approved operations process before marking an Annual Pass paid. Do not describe a reservation as paid until payment has been verified.
 
-## Database prerequisite\n\nConfirm that migration `20261106220000_annual_pass_payment_avatars.sql` has been applied to the active Supabase project. It adds the pending/paid state and 48-hour hold logic used by this flow.\n\n## Operational checks
+## Database prerequisite
+
+Confirm that migration `20261106220000_annual_pass_payment_avatars.sql` has been applied to the active Supabase project. It adds the pending/paid state and 48-hour hold logic used by this flow.
+
+## Operational checks
 
 - Verify the PayFast link is the correct R299 product/link before setting `ANNUAL_PASS_PAYFAST_URL`.
 - Generate a high-entropy `ANNUAL_PASS_LINK_SECRET` (at least 32 characters) and store it only in Vercel server-side environment variables.
