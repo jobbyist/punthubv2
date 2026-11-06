@@ -92,6 +92,41 @@ function Results() {
     <AppShell>
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
+      <section className="card-surface mb-6 overflow-hidden" aria-labelledby="results-example-title">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-5">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">{t("example.badge")}</p>
+            <h2 id="results-example-title" className="mt-1 text-lg">{t("example.title")}</h2>
+            <p className="mt-1 text-xs text-muted-foreground">{t("example.description")}</p>
+          </div>
+          <span className="border border-primary/30 bg-primary-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">{t("example.badge")}</span>
+        </div>
+        <div className="divide-y divide-border">
+          {[
+            { competition: "Premier League", home: "Arsenal", away: "Liverpool", score: "2 – 1", detail: "Illustrative final score" },
+            { competition: "Betway Premiership", home: "Orlando Pirates", away: "Kaizer Chiefs", score: "1 – 1", detail: "Illustrative final score" },
+            { competition: "International Rugby", home: "South Africa", away: "New Zealand", score: "24 – 19", detail: "Illustrative final score" },
+          ].map((match) => (
+            <div key={match.competition} className="flex flex-wrap items-center gap-3 px-5 py-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{match.competition}</p>
+                <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
+                  <TeamLogo team={match.home} size="sm" />
+                  <span>{match.home}</span>
+                  <span className="text-xs font-normal text-muted-foreground">v</span>
+                  <TeamLogo team={match.away} size="sm" />
+                  <span>{match.away}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-display text-xl font-extrabold tabular-nums">{match.score}</p>
+                <p className="text-[10px] text-muted-foreground">{match.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {profile && <MyRecord userId={profile.id} />}
 
       {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}

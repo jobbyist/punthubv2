@@ -32,6 +32,7 @@ export const primaryNav = [
   { key: "leaderboards", to: "/leaderboards" },
   { key: "results", to: "/results" },
   { key: "community", to: "/community" },
+  { key: "feedback", to: "/feedback" },
   { key: "howItWorks", to: "/how-it-works", guestOnly: true },
   { key: "pricing", to: "/pricing" },
 ] as const;

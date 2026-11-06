@@ -45,5 +45,10 @@
     "title": "No results yet",
     "body": "Finished matches appear here, usually within a few hours of full time."
   },
-  "error": "We couldn't load results. Please refresh the page."
+  "error": "We couldn't load results. Please refresh the page.",
+  "example": {
+    "badge": "Illustrative example",
+    "title": "A preview of the Results experience",
+    "description": "Sample scores and fixtures demonstrate the layout only. They are not actual match results."
+  }
 }
