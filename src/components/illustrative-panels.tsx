@@ -91,3 +91,57 @@ export function IllustrativeFixtures() {
     </section>
   );
 }
+
+/** A separate sample board; the live weekly leaderboard continues to use Supabase data. */
+export function IllustrativeLeaderboard() {
+  const { t } = useTranslation("common");
+
+  return (
+    <section className="card-surface mb-6 overflow-hidden" aria-labelledby="illustrative-board-title">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-5">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+            {t("illustrative.badge")}
+          </p>
+          <h2 id="illustrative-board-title" className="mt-1 text-lg">
+            {t("illustrative.leaderboard.title")}
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("illustrative.leaderboard.body")}
+          </p>
+        </div>
+        <span className="border border-primary/30 bg-primary-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+          {t("illustrative.badge")}
+        </span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[500px] text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-[11px] text-muted-foreground">
+              <th className="px-4 py-3 font-medium">{t("illustrative.leaderboard.rank")}</th>
+              <th className="px-4 py-3 font-medium">{t("illustrative.leaderboard.member")}</th>
+              <th className="px-4 py-3 font-medium">{t("illustrative.leaderboard.units")}</th>
+              <th className="px-4 py-3 font-medium">{t("illustrative.leaderboard.roi")}</th>
+              <th className="px-4 py-3 font-medium">{t("illustrative.leaderboard.picks")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SAMPLE_LEADERS.map((member, index) => (
+              <tr key={member.name} className="border-b border-border last:border-0">
+                <td className="px-4 py-3">
+                  <span className="grid size-7 place-items-center rounded-full bg-muted text-xs font-bold tabular-nums">
+                    {index + 1}
+                  </span>
+                </td>
+                <td className="px-4 py-3 font-semibold">{member.name}</td>
+                <td className="px-4 py-3 font-semibold text-primary tabular-nums">{member.units}</td>
+                <td className="px-4 py-3 tabular-nums">{member.roi}</td>
+                <td className="px-4 py-3 tabular-nums">{member.picks}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
