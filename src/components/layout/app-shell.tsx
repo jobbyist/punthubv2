@@ -59,19 +59,24 @@ function LeftRail() {
           <li key={s.name}>
             {s.active ? (
               <Link
-                to="/predictions"
+                to="/sports/$sport"
+                params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
                 className="flex flex-col items-start gap-0.5 px-3 py-2 text-sm transition-colors hover:bg-muted"
               >
                 <span>{sportName(s.name)}</span>
                 {s.name === "Soccer" && <LiveBadge />}
               </Link>
             ) : (
-              <span className="flex items-center justify-between px-3 py-2 text-sm text-muted-foreground">
+              <Link
+                to="/sports/$sport"
+                params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
+                className="flex items-center justify-between px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
                 <span>{sportName(s.name)}</span>
                 <span className="text-[10px] font-semibold uppercase tracking-wide">
                   {tc("badge.comingSoon")}
                 </span>
-              </span>
+              </Link>
             )}
           </li>
         ))}

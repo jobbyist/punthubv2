@@ -47,7 +47,7 @@ const bottomNavItems = [
 ] as const;
 
 const sports = [
-  { key: "soccer", emoji: "⚽", to: "/predictions", active: true },
+  { key: "soccer", emoji: "⚽", active: true },
   { key: "rugby", emoji: "🏉", active: false },
   { key: "basketball", emoji: "🏀", active: false },
   { key: "tennis", emoji: "🎾", active: false },
@@ -192,7 +192,8 @@ export function MobileNav() {
                       s.active ? (
                         <Link
                           key={s.key}
-                          to={s.to}
+                          to="/sports/$sport"
+                          params={{ sport: s.key }}
                           onClick={close}
                           className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-1 py-3 text-center transition-colors hover:border-primary/40 hover:bg-primary-soft"
                         >
@@ -203,9 +204,12 @@ export function MobileNav() {
                           {s.key === "soccer" && <LiveBadge />}
                         </Link>
                       ) : (
-                        <div
+                        <Link
                           key={s.key}
-                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-70"
+                          to="/sports/$sport"
+                          params={{ sport: s.key }}
+                          onClick={close}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-1 py-3 text-center opacity-80 transition-colors hover:opacity-100"
                         >
                           <span className="text-xl leading-none grayscale">{s.emoji}</span>
                           <span className="text-[11px] font-medium text-foreground">
@@ -214,7 +218,7 @@ export function MobileNav() {
                           <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
                             {tc("badge.comingSoon")}
                           </span>
-                        </div>
+                        </Link>
                       ),
                     )}
                   </div>
@@ -359,42 +363,44 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Bottom Navigation Bar */}
-      <nav
-        aria-label={t("mobile.primary")}
-        className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
-        style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
-      >
-        <ul className="grid grid-cols-5">
-          {bottomNavItems.map(({ key, to, icon: Icon }) => {
-            const active = path === to;
-            return (
-              <li key={key}>
-                <Link
-                  to={to}
-                  className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                    active ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon className="size-5" />
-                  <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
-                </Link>
-              </li>
-            );
-          })}
-          <li key="more">
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className={`flex min-h-[56px] w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                isMenuOpen ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <Menu className="size-5" />
-              <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      {/* Bottom Navigation Bar: members only. Guests get the full screen height and the header's Sign in / Join free. */}
+      {isSignedIn && (
+        <nav
+          aria-label={t("mobile.primary")}
+          className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
+          style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          <ul className="grid grid-cols-5">
+            {bottomNavItems.map(({ key, to, icon: Icon }) => {
+              const active = path === to;
+              return (
+                <li key={key}>
+                  <Link
+                    to={to}
+                    className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                      active ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="size-5" />
+                    <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
+                  </Link>
+                </li>
+              );
+            })}
+            <li key="more">
+              <button
+                onClick={() => setIsMenuOpen(true)}
+                className={`flex min-h-[56px] w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                  isMenuOpen ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Menu className="size-5" />
+                <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
     </>
   );
 }

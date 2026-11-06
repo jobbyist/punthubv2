@@ -1,0 +1,19 @@
+{
+  "confidence": "Confidence Score",
+  "confidencePending": "Available at launch",
+  "algoPick": "Algorithmic Pick",
+  "algoPickPending": "Algorithmic Read coming at launch",
+  "consensus": "Consensus Pick",
+  "odds": "Odds comparison",
+  "oddsSoon": "Odds comparison coming soon",
+  "analysis": "Model analysis",
+  "analysisPending": "Form and head-to-head analysis for this match will appear here when the Puntr model goes live on 1 December.",
+  "gate": {
+    "tag": "FOUNDING ACCESS • 100 SPOTS",
+    "title": "Unlock All Matchday Predictions & Model Confidence",
+    "body": "Create your free founding account to view full algorithmic picks and head-to-head records. Then claim the Founding Annual Pass: R299 once-off, first 20 founding members only, before 16 November.",
+    "cta": "Claim Free Founding Access",
+    "reassure": "Free account • No card needed to join • Instant access",
+    "srHidden": "Sign in to see the full analysis for this item."
+  }
+}

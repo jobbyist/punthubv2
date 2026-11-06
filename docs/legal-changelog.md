@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06 (intel cards), no legal page text changed (PR: intelligence fixture cards, guest gate, mobile nav, sports pages)
+
+- Fixture cards show Confidence Score, Algorithmic Pick and model analysis as "available at launch" placeholders (owner decision: no model data yet), and "Odds comparison coming soon" with no bookmaker names (launch rule: no odds comparison).
+- Guests see the first two items in full; later items' intelligence fields are blurred under a Founding conversion card. The card says the account is free and the Founding Annual Pass is R299 once-off (claiming includes payment), first 20, before 16 November.
+- New `/sports/<sport>` pages describe each sport and how Puntr plans to cover it, in future tense, with dates from `src/lib/roadmap.ts`. They don't claim coverage of a sport that isn't switched on.
+- No new data collected, stored, shared or sent. Review: whether the "FOUNDING ACCESS • 100 SPOTS" tag and the placeholder Confidence Score read as a promise before the model exists `[attorney review]`.
+
 ## 2026-11-06 (PayFast prep), Terms `2026-11-06-r9` and Privacy `2026-11-06-r7` (PR: Annual Pass payment onboarding, profile pictures)
 
 - **Annual Pass claim includes payment (owner, 6 Nov 2026):** R299 once-off through PayFast. A claim holds a place for 48 hours; the place is confirmed when payment is received; unpaid places are released. Shown in the join flow's last step (Founding members), `/founding`, `/account`, both Founding emails and the survey upsell. Payments stay off until `PAYFAST_ENABLED=true` (PayFast task, owner go-ahead). Terms §4, Privacy (table, §4, §6) and Refunds updated.

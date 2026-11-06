@@ -43,6 +43,7 @@ import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
+import { Route as SportsSportRouteImport } from './routes/sports.$sport'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
@@ -222,6 +223,11 @@ const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   path: '/privacy/request',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SportsSportRoute = SportsSportRouteImport.update({
+  id: '/sports/$sport',
+  path: '/sports/$sport',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
@@ -295,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -339,6 +346,7 @@ export interface FileRoutesByTo {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -430,6 +439,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -474,6 +484,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account'
     | '/admin'
@@ -518,6 +529,7 @@ export interface FileRouteTypes {
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy_/request'
+    | '/sports/$sport'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -563,6 +575,7 @@ export interface RootRouteChildren {
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
+  SportsSportRoute: typeof SportsSportRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -816,6 +829,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sports/$sport': {
+      id: '/sports/$sport'
+      path: '/sports/$sport'
+      fullPath: '/sports/$sport'
+      preLoaderRoute: typeof SportsSportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/u/$username': {
       id: '/u/$username'
       path: '/u/$username'
@@ -907,6 +927,7 @@ const rootRouteChildren: RootRouteChildren = {
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
+  SportsSportRoute: SportsSportRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,

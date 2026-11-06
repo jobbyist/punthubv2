@@ -62,6 +62,8 @@ export const locales: readonly LocaleConfig[] = [
 /** Namespaces, one JSON file per language per namespace under src/locales/<code>/. */
 export const NAMESPACES = [
   "common",
+  "sports",
+  "intel",
   "nav",
   "home",
   "predictions",

@@ -24,7 +24,8 @@
     "copyInvite": "Copy invite link",
     "shareInvite": "Share on WhatsApp",
     "invite": "Invite friends",
-    "puntPoints": "PuntPoints and rewards"
+    "puntPoints": "PuntPoints and rewards",
+    "signIn": "Sign in"
   },
   "mobile": {
     "primary": "Primary",

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { useSession } from "@/components/session";
+import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { PRIZES_ENABLED } from "@/lib/flags";
@@ -56,6 +57,7 @@ function Leaderboards() {
 
   const ranked = (data ?? []).filter((r) => r.eligible);
   const unranked = (data ?? []).filter((r) => !r.eligible);
+  const gated = useGated();
   const mine: BoardRow | undefined = (data ?? []).find((r) => r.user_id === profile?.id);
 
   const stats = [
@@ -122,7 +124,8 @@ function Leaderboards() {
         </div>
       )}
 
-      <section className="card-surface overflow-hidden">
+      <section className="card-surface relative overflow-hidden">
+        {gated(ranked.length + unranked.length - 1) && <FoundingGateCard top="9rem" />}
         {failed && <p className="p-5 text-sm text-destructive">{t("error")}</p>}
         {!failed && !loading && (data ?? []).length === 0 && (
           <p className="p-5 text-sm text-muted-foreground">{t("empty")}</p>
@@ -168,11 +171,17 @@ function Leaderboards() {
                       </Link>
                     </td>
                     <td className="px-4 py-3 font-semibold text-primary tnum">
-                      {formatUnits(r.units)}
+                      <Blurred gated={gated(i)}>{formatUnits(r.units)}</Blurred>
                     </td>
-                    <td className="px-4 py-3 tnum">{pct(r.roi, 1)}</td>
-                    <td className="px-4 py-3 tnum">{r.picks_settled}</td>
-                    <td className="px-4 py-3 tnum">{r.wins}</td>
+                    <td className="px-4 py-3 tnum">
+                      <Blurred gated={gated(i)}>{pct(r.roi, 1)}</Blurred>
+                    </td>
+                    <td className="px-4 py-3 tnum">
+                      <Blurred gated={gated(i)}>{r.picks_settled}</Blurred>
+                    </td>
+                    <td className="px-4 py-3 tnum">
+                      <Blurred gated={gated(i)}>{r.wins}</Blurred>
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
@@ -187,7 +196,7 @@ function Leaderboards() {
               {t("unrankedNote", { count: 10 })}
             </p>
             <ul className="divide-y divide-border">
-              {unranked.map((r) => (
+              {unranked.map((r, j) => (
                 <li
                   key={r.user_id}
                   className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 text-sm"
@@ -199,8 +208,10 @@ function Leaderboards() {
                   >
                     {r.username}
                   </Link>
-                  <span className="tnum text-muted-foreground">{formatUnits(r.units)}</span>
-                  <span className="tnum text-muted-foreground">{r.picks_settled}</span>
+                  <Blurred gated={gated(ranked.length + j)}>
+                    <span className="tnum text-muted-foreground">{formatUnits(r.units)}</span>{" "}
+                    <span className="tnum text-muted-foreground">{r.picks_settled}</span>
+                  </Blurred>
                   <span className="ml-auto text-xs text-muted-foreground">
                     {t("table.needs", { count: picksNeeded(r.picks_settled) })}
                   </span>
