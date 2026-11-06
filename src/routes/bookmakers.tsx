@@ -1,7 +1,6 @@
-uundundundefinedfundefinednedfinedundefinedefineduuundefineddefineddefineduundundefinedfinedundefinedundefinedfinedundefinedundefinedundefinedundefined{undefinedundefinedundefinedeundefinedteFileRundefinedute,undefinedLinundefinedundefined} fundefinedundefinedundefined undefined@tanundefinedtaundefinedundefinedundefinedreaundefinedtundefinedrundefineduter"undefined
-imundefinedort { ArrowUundefinedRight, ShieldCheck } from "lucide-react";
-imundefinedort { AppShell, PageHeading } from "@/components/layout/app-shell";
-import { Bookmakerundefinedndependenceundefinedotice } from "@/components/undefinedookmaker-independence-notice";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
+import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { platforms } from "@/lib/mock-data";
 
@@ -20,8 +19,7 @@ function BookmakersPage() {
   return (
     <AppShell>
       <PageHeading title="Bookmakers" subtitle="A directory of betting brands South African sports fans may come across." />
-      <BookmakerIndependenceNotice />
-      <section className="card-surface mt-4 p-5 sm:p-6">
+      <section className="card-surface p-5 sm:p-6">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
           <div>
