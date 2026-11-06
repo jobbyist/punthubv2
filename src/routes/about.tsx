@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { ExplainerVideo } from "@/components/explainer-video";
 
 import { Button } from "@/components/ui/button";
 import { analytics } from "@/lib/analytics";
@@ -98,13 +99,16 @@ const PRINCIPLES = [
 
 const LAYERS = ["data", "record", "community", "board", "points", "ai", "pro"] as const;
 
-/** What is covered at launch. Names are proper nouns and are not translated. Other sports follow after launch (see /roadmap and src/lib/roadmap.ts). */
-const COMPETITIONS = [
-  ["Betway Premiership", "soccer"],
-  ["Premier League", "soccer"],
-  ["UEFA Champions League", "soccer"],
-  ["Rugby", "soon"],
-  ["Horse racing", "soon"],
+/** All eight sports with dedicated landing pages, aligned to the canonical sports roadmap. */
+const SPORTS_COVERAGE = [
+  ["soccer", "Football"],
+  ["basketball", "Basketball"],
+  ["rugby", "Rugby"],
+  ["racing", "Racing"],
+  ["combat", "Combat sports"],
+  ["athletics", "Athletics"],
+  ["cricket", "Cricket"],
+  ["tennis", "Tennis"],
 ] as const;
 
 /** Ten logo slots for the partnership network. Replace with approved partner logos as agreements are confirmed. */
@@ -130,40 +134,6 @@ const EXAMPLE_BOARD = [
   { rank: 2, username: "ExampleTipster2", accuracy: 0.76, predictions: 289 },
   { rank: 3, username: "ExampleTipster3", accuracy: 0.74, predictions: 401 },
 ] as const;
-
-/** Click-to-play so no YouTube request is made until the visitor asks for the video. */
-function ExplainerVideo() {
-  const { t } = useTranslation("about");
-  const [playing, setPlaying] = useState(false);
-  return (
-    <div
-      className="relative mx-auto mt-8 max-w-3xl overflow-hidden bg-black"
-      style={{ paddingBottom: "42.1875%" }}
-    >
-      {playing ? (
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/pBCncBbeWkc?rel=0&autoplay=1"
-          className="absolute inset-0 size-full border-0"
-          allowFullScreen
-          allow="autoplay; encrypted-media; picture-in-picture; web-share"
-          referrerPolicy="strict-origin"
-          title={t("video.iframeTitle")}
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setPlaying(true)}
-          className="absolute inset-0 grid place-items-center text-white transition-colors hover:text-primary"
-          aria-label={t("video.play")}
-        >
-          <span className="grid size-16 place-items-center rounded-full border-2 border-current text-2xl">
-            ▶
-          </span>
-        </button>
-      )}
-    </div>
-  );
-}
 
 function About() {
   const { t } = useTranslation("about");
@@ -357,28 +327,26 @@ function About() {
         {/* Sports */}
         <motion.section {...fade} className="py-16">
           <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("sports.title1")} <span className="text-primary">{t("sports.title2")}</span>.
-            </h2>
+            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">SPORTS COVERAGE</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("sports.body")}</p>
           </div>
           <div className="mt-12">
             <div className="rounded-xl border border-border bg-card p-8">
               <h3 className="text-center text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                {t("sports.heading")}
+                SPORTS COVERAGE
               </h3>
-              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                {COMPETITIONS.map(([name, sport]) => (
-                  <div
-                    key={name}
-                    className="flex flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:shadow-md"
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {SPORTS_COVERAGE.map(([sport, name]) => (
+                  <Link
+                    key={sport}
+                    to="/sports/$sport"
+                    params={{ sport }}
+                    className="group flex min-h-28 flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:bg-primary/5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
-                    <Trophy className="size-8 text-primary opacity-60" />
-                    <p className="mt-2 text-xs font-medium">{name}</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      {sport === "soon" ? tc("comingSoon") : tc(`sport.${sport}`)}
-                    </p>
-                  </div>
+                    <Trophy className="size-8 text-primary opacity-60 transition-transform group-hover:scale-110" />
+                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">{name}</span>
+                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Explore sport</span>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -391,7 +359,7 @@ function About() {
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
-          <ExplainerVideo />
+          <ExplainerVideo title={t("video.iframeTitle")} />
         </motion.section>
 
         {/* Foundation and partners */}
