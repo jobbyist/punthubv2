@@ -11,10 +11,7 @@ import {
   HelpCircle,
   DollarSign,
   Info,
-  Brain,
-  Mic,
   Building2,
-  Wrench,
   Radio,
   Star,
   UserPlus,
@@ -147,25 +144,6 @@ export function MobileNav() {
               <div className="space-y-0.5">
                 <NavLink to="/" icon={Home} label={t("mobile.home")} active={path === "/"} />
                 <NavLink to="/predictions" icon={Target} label={t("primary.predictions")} />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "aiPicks" }}
-                  icon={Brain}
-                  label={t("mobile.tools.aiPicks")}
-                  badge={tc("badge.pro")}
-                  badgeColor="bg-primary/15 text-primary"
-                />
-                <NavLink
-                  to="/insights"
-                  icon={TrendingUp}
-                  label={t("mobile.tools.marketInsights")}
-                />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "podcast" }}
-                  icon={Mic}
-                  label={t("mobile.tools.podcast")}
-                />
               </div>
 
               {/* Sports section */}
@@ -230,13 +208,7 @@ export function MobileNav() {
                   label={t("mobile.tools.bookmakers")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "tools" }}
-                  icon={Wrench}
-                  label={t("mobile.tools.tools")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
+
                 <NavLink
                   to="/coming-soon"
                   search={{ feature: "liveScores" }}
@@ -277,13 +249,7 @@ export function MobileNav() {
 
               {/* Content & support */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "podcast" }}
-                  icon={Mic}
-                  label={t("mobile.tools.podcast")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
-                />
+
                 <a
                   href={HELPLINE_TEL}
                   onClick={close}
@@ -318,8 +284,7 @@ export function MobileNav() {
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink to="/support" icon={HelpCircle} label={t("mobile.helpCentre")} />
                 <NavLink
-                  to="/coming-soon"
-                  search={{ feature: "feedback" }}
+                  to="/feedback"
                   icon={MessageCircle}
                   label={t("mobile.feedback")}
                 />
