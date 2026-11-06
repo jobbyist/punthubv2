@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
 import { useSession } from "@/components/session";
 import { TeamLogo } from "@/components/team-logo";
 import { useAsync } from "@/hooks/use-async";
@@ -87,6 +88,11 @@ function Results() {
   const { t } = useTranslation("results");
   const { profile } = useSession();
   const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
+  const gated = useGated();
+  const order = new Map(
+    (days ?? []).flatMap((d) => d.fixtures).map((r, i) => [r.fixture.id, i] as const),
+  );
+  const anyGated = gated(order.size - 1);
 
   return (
     <AppShell>
@@ -167,7 +173,8 @@ function Results() {
       )}
 
       {(days ?? []).length > 0 && (
-        <section className="card-surface overflow-hidden">
+        <section className="card-surface relative overflow-hidden">
+          {anyGated && <FoundingGateCard top="13rem" />}
           <h2 className="p-5 pb-3 text-lg">{t("byDate")}</h2>
           {(days ?? []).map((day) => (
             <div key={day.label}>
@@ -210,31 +217,38 @@ function Results() {
                           {r.fixture.home_score} – {r.fixture.away_score}
                         </td>
                         <td className="px-3 py-3 text-xs">
-                          {r.crowdWinRate === null
-                            ? r.picks > 0
-                              ? t("crowd.picks", { count: r.picks })
-                              : t("crowd.none")
-                            : t("crowd.won", { percent: pct(r.crowdWinRate, 0), count: r.settled })}
+                          <Blurred gated={gated(order.get(r.fixture.id) ?? 0)}>
+                            {r.crowdWinRate === null
+                              ? r.picks > 0
+                                ? t("crowd.picks", { count: r.picks })
+                                : t("crowd.none")
+                              : t("crowd.won", {
+                                  percent: pct(r.crowdWinRate, 0),
+                                  count: r.settled,
+                                })}
+                          </Blurred>
                         </td>
                         <td className="px-5 py-3">
-                          {r.leaders.length === 0 ? (
-                            <span className="text-xs text-muted-foreground">
-                              {t("leader.none")}
-                            </span>
-                          ) : (
-                            <ul className="space-y-1">
-                              {r.leaders.map((l) => (
-                                <li key={l.id} className="flex items-center gap-2 text-xs">
-                                  <span className="font-medium">{l.username}</span>
-                                  <span
-                                    className={`px-1.5 py-0.5 font-semibold ${CHIP[l.result ?? "void"]}`}
-                                  >
-                                    {t(`leader.${l.result ?? "pending"}`)}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                          <Blurred gated={gated(order.get(r.fixture.id) ?? 0)}>
+                            {r.leaders.length === 0 ? (
+                              <span className="text-xs text-muted-foreground">
+                                {t("leader.none")}
+                              </span>
+                            ) : (
+                              <ul className="space-y-1">
+                                {r.leaders.map((l) => (
+                                  <li key={l.id} className="flex items-center gap-2 text-xs">
+                                    <span className="font-medium">{l.username}</span>
+                                    <span
+                                      className={`px-1.5 py-0.5 font-semibold ${CHIP[l.result ?? "void"]}`}
+                                    >
+                                      {t(`leader.${l.result ?? "pending"}`)}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </Blurred>
                         </td>
                       </tr>
                     ))}
