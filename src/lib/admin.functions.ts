@@ -285,7 +285,7 @@ export const adminLaunchStatus = createServerFn({ method: "GET" })
     const { data } = await supabaseAdmin.from("launch_email_sends").select("wave, status");
     return {
       enabled: process.env["LAUNCH_EMAILS_ENABLED"] === "true",
-      emailConfigured: Boolean(process.env["LOVABLE_API_KEY"] && process.env["RESEND_API_KEY"]),
+      emailConfigured: Boolean(process.env["RESEND_API_KEY"]),
       launchDate: launch,
       signupOpenDate: signupOpen,
       waves: waveDates(signupOpen).map(({ wave, date }) => ({

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { submitForm } from "@/lib/forms.functions";
 
 export const Route = createFileRoute("/privacy_/request")({
   head: () => ({
@@ -50,6 +51,10 @@ function PrivacyRequest() {
       );
       return;
     }
+    // Tell support@puntr.co.za a request arrived (type and address only; the details stay in the database).
+    void submitForm({
+      data: { form: "privacy_request", email, meta: { type: kind } },
+    }).catch(() => undefined);
     setDone(true);
   };
 

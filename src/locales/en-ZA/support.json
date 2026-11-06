@@ -51,6 +51,7 @@
     "messagePh": "Type your message here…",
     "submit": "Send message",
     "toastTitle": "Message sent",
+    "errorTitle": "Could not send your message. Please try again or email support@puntr.co.za.",
     "toastBody": "Our team will reply within 24 hours."
   }
 }
