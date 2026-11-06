@@ -54,6 +54,7 @@ import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
+import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
@@ -284,6 +285,12 @@ const ApiCronFoundingWelcomeRoute = ApiCronFoundingWelcomeRouteImport.update({
   path: '/api/cron/founding-welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronIdentityRetentionRoute =
+  ApiCronIdentityRetentionRouteImport.update({
+    id: '/api/cron/identity-retention',
+    path: '/api/cron/identity-retention',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   id: '/api/cron/launch-notify',
   path: '/api/cron/launch-notify',
@@ -351,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -401,6 +409,7 @@ export interface FileRoutesByTo {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -453,6 +462,7 @@ export interface FileRoutesById {
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -607,6 +619,7 @@ export interface FileRouteTypes {
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
@@ -657,6 +670,7 @@ export interface RootRouteChildren {
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
+  ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
@@ -980,6 +994,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronFoundingWelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/identity-retention': {
+      id: '/api/cron/identity-retention'
+      path: '/api/cron/identity-retention'
+      fullPath: '/api/cron/identity-retention'
+      preLoaderRoute: typeof ApiCronIdentityRetentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/launch-notify': {
       id: '/api/cron/launch-notify'
       path: '/api/cron/launch-notify'
@@ -1069,6 +1090,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
+  ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,

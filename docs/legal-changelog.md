@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06 (KYC), Terms `2026-11-06-r10` and Privacy `2026-11-06-r8` (PR: identity verification, manual phase)
+
+- **Identity verification (owner, 6 Nov 2026):** phase 1 is manual for Founding Members. A member uploads a photo or scan of their SA ID or passport to a private storage bucket; an admin compares it with their name and birth year in `/admin` (ID checks tab) and approves or rejects it. The document is deleted straight after the decision, and within 30 days if never checked (daily `identity-retention` cron). Puntr keeps only the outcome (`identity_verifications`: status, over 18, reviewer, dates). No ID number is ever stored in a column. Phase 2 after launch: VerifyNow API (new processor, to be added to Privacy §6 when built).
+- **Required before redeeming any reward** (owner): enforced by a trigger on `redemptions`. Terms §6 updated.
+- Privacy: the "we do not collect your ID document" statement is replaced; new row in the data table; "no payments at launch" line corrected (payments are made on PayFast).
+- Review `[attorney review]`: lawful basis for ID documents (legal obligation for gambling promotions vs legitimate interest), whether an ID document is special personal information under POPIA s26 (it isn't by itself, but it shows race on the green ID book; collecting it may still need care), the 30-day retention, admin access controls, and a breach plan for the bucket. Staff must never copy an ID number.
+
 ## 2026-11-06 (intel cards), no legal page text changed (PR: intelligence fixture cards, guest gate, mobile nav, sports pages)
 
 - Fixture cards show Confidence Score, Algorithmic Pick and model analysis as "available at launch" placeholders (owner decision: no model data yet), and "Odds comparison coming soon" with no bookmaker names (launch rule: no odds comparison).

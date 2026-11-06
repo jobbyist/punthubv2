@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AccountPage, RequireMember } from "@/components/account-gate";
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { AvatarUploader } from "@/components/avatar-uploader";
+import { IdentityCard } from "@/components/identity-card";
 import { MemberDetailsForm } from "@/components/member-details-form";
 import { ReferralCard } from "@/components/referral-card";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -46,6 +47,8 @@ function Account() {
           ) : null}
 
           {user ? <MemberDetailsForm userId={user.id} /> : null}
+
+          <IdentityCard />
 
           <dl className="card-surface mt-6 divide-y divide-border">
             <div className="flex items-center justify-between gap-4 p-4 text-sm">
