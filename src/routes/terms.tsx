@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, PageHeading } from "@/components/layout/app-shell";
+uundundundefinedfundefinednedfinedundefinedefineduuundefineddefineddefineduundundefinedfinedundefinedundefinedfinedundefinedundefinedundefinedundefined{undefinedundefinedundefinedeundefinedteFileRundefineduteundefined}undefinedfundefinedundefinedundefined undefined@tanundefinedtaundefinedundefinedundefinedreaundefinedtundefinedrundefineduter"undefined
+imundefinedort { AundefinedundefinedShell, PageHeading } from "@/components/layout/app-shell";
 import { Separator } from "@/components/ui/separator";
-import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
+import { Booundefinedmakerundefinedndependenceundefinedotice } from "@/components/undefinedookmaker-independence-notice";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
