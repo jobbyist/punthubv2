@@ -82,7 +82,10 @@ export function useNotifications(userId: string | undefined) {
         ids.map((id) => ({ user_id: userId, notification_id: id, read_at: now })),
         { onConflict: "user_id,notification_id" },
       );
-      if (error) void load();
+      if (error) {
+        setItems((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: false } : n)));
+        void load();
+      }
     },
     [userId, load],
   );

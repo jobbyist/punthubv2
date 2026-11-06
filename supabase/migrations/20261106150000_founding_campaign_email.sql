@@ -36,4 +36,4 @@ grant execute on function public.founding_campaign_recipients(text) to service_r
 
 -- 12:00 SAST = 10:00 UTC on 6 Nov 2026, then every 10 minutes until 13:00 SAST to retry failures. Idempotent.
 select cron.unschedule('founding-campaign-pass') where exists (select 1 from cron.job where jobname = 'founding-campaign-pass');
-select cron.schedule('founding-campaign-pass', '0,10,20,30,40,50 10-10 6 11 *', $$select public.invoke_cron('/api/cron/founding-campaign')$$);
+select cron.schedule('founding-campaign-pass', '0,10,20,30,40,50 10-11 6 11 *', $$select public.invoke_cron('/api/cron/founding-campaign')$$);

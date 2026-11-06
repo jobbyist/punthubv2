@@ -34,7 +34,10 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
             error: { message: string } | null;
           }>;
           from: (t: string) => {
-            upsert: (row: Record<string, unknown>, o: { onConflict: string }) => Promise<unknown>;
+            upsert: (
+              row: Record<string, unknown>,
+              o: { onConflict: string; ignoreDuplicates?: boolean },
+            ) => Promise<unknown>;
           };
         };
         const { REPLY_TO, sendViaResend } = await import("@/lib/email/resend.server");
@@ -78,7 +81,8 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
               status,
               sent_at: new Date().toISOString(),
             },
-            { onConflict: "email,campaign" },
+            // A failure never overwrites an existing row, so a recorded send cannot be downgraded.
+            { onConflict: "email,campaign", ignoreDuplicates: status === "failed" },
           );
         }
         console.info("founding-campaign", JSON.stringify({ sent, failed }));

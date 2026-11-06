@@ -39,7 +39,7 @@ export const submitForm = createServerFn({ method: "POST" })
         .from("form_submissions")
         .select("id", { count: "exact", head: true })
         .gte("created_at", since)
-        .ilike("email", data.email);
+        .eq("email", data.email);
       if ((count ?? 0) >= 5) return { ok: false, error: "rate_limited" };
     }
     const { data: row, error } = await db
