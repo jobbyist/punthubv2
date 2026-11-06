@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AccountPage, RequireMember } from "@/components/account-gate";
+import { AnnualPassClaim } from "@/components/annual-pass-claim";
+import { AvatarUploader } from "@/components/avatar-uploader";
 import { IdentityCard } from "@/components/identity-card";
 import { MemberDetailsForm } from "@/components/member-details-form";
 import { ReferralCard } from "@/components/referral-card";
@@ -35,6 +37,14 @@ function Account() {
           <p className="mt-1 text-sm text-muted-foreground">
             {t("home.subtitle", { email: user?.email ?? "" })}
           </p>
+
+          <AvatarUploader />
+
+          {profile.founding_number ? (
+            <div className="mt-6">
+              <AnnualPassClaim compact />
+            </div>
+          ) : null}
 
           {user ? <MemberDetailsForm userId={user.id} /> : null}
 

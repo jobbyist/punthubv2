@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { MfaChallenge } from "@/components/mfa-challenge";
-import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { RgNotice } from "@/components/rg-notice";
+import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -781,7 +781,7 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
       </div>
-      {emailConfirmed && <AnnualPassClaim />}
+      {emailConfirmed && <AnnualPassClaim onboarding />}
       {!emailConfirmed && (
         <p className="border border-border bg-muted/40 p-3 text-sm">
           {t("join.done.confirmPrompt")}{" "}

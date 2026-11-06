@@ -14,7 +14,7 @@ type ScarcityCounts = { foundingClaimed: number; foundingCap: number; annualPass
 async function fetchScarcityCounts(): Promise<ScarcityCounts | null> {
   const [founding, annual] = await Promise.all([
     getFoundingSpots(),
-    supabase.rpc("annual_pass_offer" as never),
+    supabase.rpc("annual_pass_offer"),
   ]);
   if (!founding || annual.error || !annual.data) return null;
 

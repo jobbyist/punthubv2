@@ -6,6 +6,7 @@ import { PickCard } from "@/components/pick-card";
 import { ReferralCard } from "@/components/referral-card";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
 import { useAsync } from "@/hooks/use-async";
 import { formatDate, formatUnits, pct } from "@/lib/format";
 import { fetchFeed, type FeedPick } from "@/lib/pick-data";
@@ -99,7 +100,15 @@ function PublicProfile() {
 
   return (
     <Shell>
-      <h1 className="text-3xl">{profile.username}</h1>
+      <div className="flex items-center gap-4">
+        <UserAvatar
+          username={profile.username}
+          url={profile.avatar_url}
+          alt={t("avatar.alt", { username: profile.username })}
+          className="size-16 text-lg"
+        />
+        <h1 className="text-3xl">{profile.username}</h1>
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">
         {profile.founding_number
           ? t("record.founding", { number: profile.founding_number })

@@ -10,12 +10,12 @@ export const Route = createFileRoute("/refunds")({
       {
         name: "description",
         content:
-          "Puntr has no paid products at launch. Refund and cancellation terms for Pay-As-You-Go credits and Puntr Pro will be published before either goes on sale.",
+          "Refunds for the Founding Annual Pass (R299 once-off, paid through PayFast). Refund and cancellation terms for Pay-As-You-Go credits and Puntr Pro will be published before either goes on sale.",
       },
       { property: "og:title", content: "Refunds | Puntr" },
       {
         property: "og:description",
-        content: "No paid products at launch, so there is nothing to refund yet.",
+        content: "How refunds work for the Founding Annual Pass.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -34,10 +34,15 @@ function Refunds() {
 
       <div className="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
         <section className="card-surface p-6">
-          <h2 className="text-xl">No paid products at launch</h2>
+          <h2 className="text-xl">Founding Annual Pass</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Puntr is free for Founding Members. We do not charge for anything, so there is nothing
-            to refund.
+            Founding Membership is free. The only thing we sell before launch is the Founding Annual
+            Pass: 12 months of Puntr Pro for R299 once-off, paid through PayFast, starting on 1
+            December 2026 and not renewing automatically. It is offered to the first 20 Founding
+            Members who claim it before 16 November 2026. To ask for a refund, email
+            support@puntr.co.za from the address on your account. Your rights under the Consumer
+            Protection Act and the Electronic Communications and Transactions Act, including any
+            cooling-off period, are not affected. [attorney review]
           </p>
         </section>
 

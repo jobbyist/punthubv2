@@ -36,9 +36,15 @@ const PURPOSES: [string, string, string, string][] = [
   ],
   [
     "Running your account",
-    "Email (from your email or Google sign-in), a one-way hash of your password if you set one, username, display name, 18+ confirmation, birth year, language, Founding number, referral code",
+    "Email (from your email or Google sign-in), a one-way hash of your password if you set one, username, display name, profile picture (optional), 18+ confirmation, birth year, language, Founding number, referral code",
     "Contract (providing Puntr to you)",
     "While your account is open; email and profile details are removed when you delete it",
+  ],
+  [
+    "Founding Annual Pass",
+    "Account ID, claim time, hold expiry, and once paid the PayFast payment reference, amount and date",
+    "Contract (selling you the pass)",
+    "For as long as tax and accounting law requires us to keep payment records",
   ],
   [
     "Verifying your identity (before redeeming rewards)",
@@ -150,8 +156,8 @@ function Privacy() {
             as the check is done (and within 30 days if it is never checked). We keep only the
             result: verified or not, that you are 18 or older, who checked it and when. We never
             record your ID number, and we do not collect a selfie or biometrics. [attorney review]
-            We do not store your IP address or device details with your sign-up. Puntr does not take
-            payments at launch, so we hold no card or bank details. We never see your password: our
+            We do not store your IP address or device details with your sign-up. Payments are made on
+            PayFast, so we hold no card or bank details. We never see your password: our
             sign-in provider keeps only a one-way hash of it.
           </p>
         </section>
@@ -192,9 +198,12 @@ function Privacy() {
           <p className="mt-3">
             If you join as a Founding Member and ticked marketing, we also send you one welcome
             email from the Founder shortly after you sign up, and we record that it was sent. If you
-            claim a place on the limited Founding Annual Pass offer, we store your account ID and
-            the time you claimed. A claim only reserves your place and price; it takes no payment
-            and you can ignore it. [attorney review]
+            claim the limited Founding Annual Pass, we store your account ID, when you claimed, how
+            long your place is held, and once you pay, the payment reference, amount and date.
+            Payment is made on PayFast, our payment provider, which receives your payment details
+            directly; we never see or store card or bank details. If you add a profile picture, we
+            store a compressed copy and show it publicly on your profile and next to your username;
+            you can remove it at any time on your account page. [attorney review]
           </p>
         </section>
 
@@ -220,13 +229,14 @@ function Privacy() {
           <p>
             Supabase (database, sign-in and live notifications to our admins, hosted in Ireland,
             EU), Vercel (website hosting), Resend (sending email, through an email gateway) and
-            Google (only if you choose Google to sign in). We also get match fixtures and results
-            from a sports-data provider; no personal information is sent to it. Reward sponsors do
-            not receive your personal information from us: vouchers come from bulk codes the sponsor
-            supplies, and a sponsor&apos;s own site collects data when you use a code. Sending data
-            outside South Africa is allowed under POPIA section 72 where the receiving country or
-            contract gives comparable protection. We never send personal data to AI services. We do
-            not sell your data.
+            Google (only if you choose Google to sign in), and PayFast (South Africa, only if you
+            buy the Founding Annual Pass: it takes the payment and tells us the reference and
+            amount). We also get match fixtures and results from a sports-data provider; no personal
+            information is sent to it. Reward sponsors do not receive your personal information from
+            us: vouchers come from bulk codes the sponsor supplies, and a sponsor&apos;s own site
+            collects data when you use a code. Sending data outside South Africa is allowed under
+            POPIA section 72 where the receiving country or contract gives comparable protection. We
+            never send personal data to AI services. We do not sell your data.
           </p>
         </section>
 
