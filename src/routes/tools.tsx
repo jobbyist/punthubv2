@@ -49,8 +49,8 @@ function ToolsPage() {
           <span className="inline-flex items-center gap-2 border border-primary/30 bg-primary-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
             <Wrench className="size-3.5" /> Puntr toolkit
           </span>
-          <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">Useful tools. <span className="text-primary">Sharper insight.</span></h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">A growing collection of practical tools for sports fans. These features are in development and are not yet available to use.</p>
+          <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">Practical tools. <span className="text-primary">Sharper insight.</span></h1>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">A growing toolkit for South African sports fans who want clearer context and better ways to understand the game. The features below are in development and are not yet available.</p>
         </div>
         <div className="mt-9 grid gap-4 md:grid-cols-3">
           {TOOLS.map((tool) => (
@@ -70,12 +70,12 @@ function ToolsPage() {
         </div>
         <section className="mt-7 flex flex-col gap-4 border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
-            <h2 className="font-bold">Get ready for Puntr Pro</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Paid tools are planned as part of Puntr Pro, priced at R99 per month.</p>
+            <h2 className="font-bold">Go deeper with Puntr Pro</h2>
+            <p className="mt-1 text-sm text-muted-foreground">These optional tools are planned for Puntr Pro at R99 per month. Core community features remain free.</p>
           </div>
           <Button asChild className="shrink-0"><Link to="/pricing">Explore Pro <ArrowRight className="size-4" /></Link></Button>
         </section>
-        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Tools are informational and for entertainment. AI-generated content can be incomplete or incorrect and should not be treated as financial advice or a guarantee of outcomes. 18+ only. Gamble responsibly.</p>
+        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Tools provide information and context for general use. AI-generated content may be incomplete or inaccurate; check important details independently. Nothing on Puntr guarantees an outcome or constitutes financial advice. 18+ only. Gamble responsibly.</p>
       </div>
     </AppShell>
   );
