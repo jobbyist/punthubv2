@@ -54,7 +54,7 @@ function Leaderboards() {
   const [which, setWhich] = useState<"this" | "last">("this");
   const weekStart = which === "this" ? currentWeekStart() : previousWeekStart(currentWeekStart());
   const range = weekRange(weekStart);
-  const { data, failed, loading } = useAsync(() => fetchWeeklyBoard(weekStart), [weekStart]);
+  const { data, loading } = useAsync(() => fetchWeeklyBoard(weekStart), [weekStart]);
 
   const ranked = (data ?? []).filter((r) => r.eligible);
   const unranked = (data ?? []).filter((r) => !r.eligible);
@@ -129,7 +129,7 @@ function Leaderboards() {
       <section className="card-surface relative overflow-hidden">
         {gated(ranked.length + unranked.length - 1) && <FoundingGateCard top="9rem" />}
         {failed && <p className="p-5 text-sm text-destructive">{t("error")}</p>}
-        {!failed && !loading && (data ?? []).length === 0 && (
+        {!loading && (data ?? []).length === 0 && (
           <p className="p-5 text-sm text-muted-foreground">{t("empty")}</p>
         )}
         {ranked.length > 0 && (
@@ -227,7 +227,7 @@ function Leaderboards() {
         </p>
       </section>
 
-      <section className="card-surface mt-6 p-6 text-center">
+      <section className="card-surface mt-6 p-5" aria-labelledby="tipster-support-title">\n        <h2 id="tipster-support-title" className="text-lg">{t("tipSupport.title")}</h2>\n        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{t("tipSupport.body")}</p>\n      </section>\n\n      <section className="card-surface mt-6 p-6 text-center">
         <h2 className="text-2xl">{t("how.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("how.subtitle")}</p>
         <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

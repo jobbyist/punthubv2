@@ -121,6 +121,7 @@ const POINTS = [
   [Target, "accuracy"],
   [Users, "engagement"],
   [Gift, "referrals"],
+  [Trophy, "tipsters"],
 ] as const;
 
 /** Fictional names and numbers, labelled as an example on the page. */

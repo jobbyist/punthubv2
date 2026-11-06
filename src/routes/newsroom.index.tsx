@@ -86,8 +86,8 @@ function Newsroom() {
           {t("loading")}
         </p>
       )}
-      {failed && <p className="mt-10 text-sm text-muted-foreground">{t("error")}</p>}
-      {!loading && !failed && (data ?? []).length === 0 && (
+
+      {!loading && (failed || (data ?? []).length === 0) && (
         <p className="mt-10 text-muted-foreground">{category ? t("emptyCat") : t("empty")}</p>
       )}
 

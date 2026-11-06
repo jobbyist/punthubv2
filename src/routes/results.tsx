@@ -87,7 +87,7 @@ function MyRecord({ userId }: { userId: string }) {
 function Results() {
   const { t } = useTranslation("results");
   const { profile } = useSession();
-  const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
+  const { data: days, loading } = useAsync(() => fetchResults(14), []);
   const gated = useGated();
   const order = new Map(
     (days ?? []).flatMap((d) => d.fixtures).map((r, i) => [r.fixture.id, i] as const),
@@ -165,7 +165,7 @@ function Results() {
       {profile && <MyRecord userId={profile.id} />}
 
       {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
-      {!failed && !loading && (days ?? []).length === 0 && (
+      {!loading && (days ?? []).length === 0 && (
         <div className="card-surface p-6">
           <h2 className="text-lg">{t("empty.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>

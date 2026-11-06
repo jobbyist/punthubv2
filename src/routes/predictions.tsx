@@ -62,7 +62,7 @@ export const Route = createFileRoute("/predictions")({
 function Predictions() {
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
-  const { fixtures, failed } = Route.useLoaderData();
+  const { fixtures } = Route.useLoaderData();
   const { sport, competition } = Route.useSearch();
   // League chips come from what is actually loaded, so a league appears only when it has fixtures.
   const leagues = Array.from(
@@ -113,9 +113,9 @@ function Predictions() {
         </div>
       )}
 
-      {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
 
-      {!failed && days.length === 0 && (
+
+      {days.length === 0 && (
         <div className="card-surface p-6">
           <h2 className="text-lg">{t("empty.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>
