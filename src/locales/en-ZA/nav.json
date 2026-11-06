@@ -9,7 +9,11 @@
     "howItWorks": "How it works",
     "pricing": "Pricing",
     "support": "Support",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "home": "Home",
+    "about": "About",
+    "updates": "Updates",
+    "tools": "Tools"
   },
   "header": {
     "openMenu": "Open menu",
