@@ -56,4 +56,4 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 - Do not enable a new sign-in provider, tracker, processor or paid product without saying so in the PR; the owner decides under their compliance policy.
 
 ## Before every commit
-`bun run lint && bun run build` must pass.
+`bun run lint && bun run typecheck && bun run build` must pass. (`vite build` does not type-check: a missing import once shipped a site-wide 500.)

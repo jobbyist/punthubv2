@@ -40,19 +40,20 @@ async function storeEvent(event: string, payload: AnalyticsPayload) {
   const visitor = readConsent()?.id;
   if (!visitor) return;
   const utm = currentUtm();
-  const detailValue = payload.position ?? payload.plan ?? payload.source ?? payload.what;
+  const detailValue =
+    payload["position"] ?? payload["plan"] ?? payload["source"] ?? payload["what"];
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     await supabase.rpc("log_campaign_event", {
       p_event: event,
       p_visitor: visitor,
-      p_utm_source: utm.utm_source,
-      p_utm_medium: utm.utm_medium,
-      p_utm_campaign: utm.utm_campaign,
-      p_utm_content: utm.utm_content,
-      p_utm_term: utm.utm_term,
-      p_path: typeof location !== "undefined" ? location.pathname : undefined,
-      p_detail: detailValue === undefined ? undefined : String(detailValue),
+      ...(utm.utm_source ? { p_utm_source: utm.utm_source } : {}),
+      ...(utm.utm_medium ? { p_utm_medium: utm.utm_medium } : {}),
+      ...(utm.utm_campaign ? { p_utm_campaign: utm.utm_campaign } : {}),
+      ...(utm.utm_content ? { p_utm_content: utm.utm_content } : {}),
+      ...(utm.utm_term ? { p_utm_term: utm.utm_term } : {}),
+      ...(typeof location !== "undefined" ? { p_path: location.pathname } : {}),
+      ...(detailValue === undefined ? {} : { p_detail: String(detailValue) }),
     });
   } catch {
     /* analytics must never break the UI */
