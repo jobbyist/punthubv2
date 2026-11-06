@@ -311,10 +311,14 @@ function Rewards() {
       {on && <Earn />}
       {on && (
         <section className="card-surface mt-5 p-5" aria-labelledby="tipster-support-rewards">
-          <h2 id="tipster-support-rewards" className="text-lg">{t("tipSupport.title")}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("tipSupport.body")}</p>
+          <h2 id="tipster-support-rewards" className="text-lg">
+            {t("tipSupport.title")}
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {t("tipSupport.body")}
+          </p>
         </section>
-      )}}
+      )}
       {on && profile && <ReferralCard />}
       {on && profile && status.data.rewards && (
         <Catalogue balance={bal.data ?? 0} onChange={() => setTick((n) => n + 1)} />
