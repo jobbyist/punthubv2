@@ -112,3 +112,10 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - **Founding Member Annual Pass (R299 once-off, 12 months of Puntr Pro, no auto-renewal)** is announced in the bell
   and on `/about` as a prepaid membership, not an investment or donation. Checkout is not built. Refunds and Terms
   need the pass position before it goes on sale.
+
+## 6 Nov 2026: forms to support, member details, Founding-only survey, campaign email
+- Every public form now also writes to `form_submissions` and emails support@puntr.co.za. Contact form: name, email, subject, message. Privacy request: email and request type (details stay in the database). Survey: member number, rating, Annual Pass answer. Pages: `/privacy` (what we collect, who receives it) [attorney review].
+- New private table `member_details` (first and last name, mobile, date of birth, province), optional, member and admins only, never on public profiles. Pages: `/privacy` [attorney review].
+- Survey is for Founding Members only, stores structured answers and Annual Pass interest. R500 OTT voucher draw rules and closing date still to be published [attorney review].
+- One-off marketing email about the Founding Member Annual Pass, sent only to people who opted in, with unsubscribe. Pages: `/privacy`, `/refunds` (Annual Pass is prepaid, no auto-renewal; checkout not live yet) [attorney review].
+- Email sender is now Puntr - South Africa <support@puntr.co.za> through Resend (processor already disclosed).
