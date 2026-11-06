@@ -67,15 +67,12 @@ function Match() {
   useEffect(() => rememberRef(ref), [ref]);
 
   const [picks, setPicks] = useState<PickRow[] | null>(null);
-  const [failed, setFailed] = useState(false);
 
   const load = useCallback(async () => {
     try {
       setPicks(await fetchPicksForFixture(fixture.id));
-      setFailed(false);
     } catch (error) {
       console.error("picks load failed", error);
-      setFailed(true);
     }
   }, [fixture.id]);
 
@@ -152,7 +149,7 @@ function Match() {
           <h2 id="picks-title" className="mb-3 text-lg">
             {t("picks.title")}
           </h2>
-          {failed && <p className="text-sm text-destructive">{t("picks.loadError")}</p>}
+
           {picks && picks.length === 0 && (
             <p className="card-surface p-5 text-sm text-muted-foreground">{t("picks.empty")}</p>
           )}

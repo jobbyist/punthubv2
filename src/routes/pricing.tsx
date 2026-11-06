@@ -26,7 +26,7 @@ export const Route = createFileRoute("/pricing")({
 });
 
 const FOUNDING = ["f1", "f2", "f3"] as const;
-const PRO = ["f1", "f2", "f3", "f4", "f5"] as const;
+const PRO = ["f1", "f2", "f3", "f4", "f5", "f6"] as const;
 
 const PACKS = [
   ["starter", 25, 25],

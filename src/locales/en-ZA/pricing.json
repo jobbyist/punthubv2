@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Pricing | Free for Founding Members, Pay-As-You-Go and Puntr Pro",
-    "description": "Puntr is free for the first 100 Founding Members. Pay-As-You-Go credits and Puntr Pro (R99 per month) are available at launch on 1 December 2026. Posting and the leaderboard are always free.",
+    "description": "Puntr is free for the first 100 Founding Members. Puntr Pro adds deeper sports analysis, advanced Tipster tools and planned PuntPoints Tipster Support from 1 December 2026.",
     "ogTitle": "Puntr pricing: free for Founding Members",
     "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
   },
@@ -16,7 +16,7 @@
     "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch",
     "cta": "Claim a Founding spot"
   },
-  "never": "Paying never earns extra points, a higher ranking or prize eligibility.",
+  "never": "Paying never buys points, a higher ranking or prize eligibility. Eligible Tipsters may receive voluntary PuntPoints tips through the separate Tipster Support programme.",
   "faq": {
     "title": "Pricing questions",
     "q1": "Is Puntr free?",
@@ -24,7 +24,7 @@
     "q2": "When do Pay-As-You-Go and Puntr Pro launch?",
     "a2": "Both are available from the official launch on 1 December 2026. We will confirm final prices and terms before anything goes on sale. The prices here are indicative.",
     "q3": "What is the difference between Pay-As-You-Go and Puntr Pro?",
-    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro is an optional monthly subscription for members who want deeper analysis and additional tools.",
+    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro adds deeper analysis, additional tools and the planned Tipster Support benefit for eligible verified Tipsters.",
     "q4": "Can paying improve my ranking?",
     "a4": "No. Payment does not buy points, improve your position on the leaderboard or change prize eligibility. Rankings are based on recorded performance.",
     "q5": "Is Puntr a bookmaker?",
@@ -54,16 +54,17 @@
   "pro": {
     "badge": "At launch",
     "title": "Puntr Pro",
-    "tagline": "For sports fans and tipsters who want more context, deeper analysis and useful tools.",
+    "tagline": "For sports fans and Tipsters who want deeper analysis, stronger tools and ways to be recognised for proven knowledge.",
     "price": "{{price}} per month",
-    "note": "One simple monthly subscription. Not on sale yet: we will publish the full terms and cancellation rules before it opens.",
+    "note": "Tipster Support launches subject to verification, eligibility thresholds and published programme rules. Tips earn PuntPoints, not cash; points cannot be withdrawn and never affect rankings.",
     "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
     "f2": "Advanced tipster analytics: units, ROI and form by market, sport and odds range",
     "f3": "Custom alerts for fixtures and settled picks you follow",
     "f4": "Early access to new tools",
     "f5": "A Pro badge on your profile",
     "cta": "Available at launch",
-    "fine": "Pro never changes your ranking, points or prize eligibility."
+    "fine": "Puntr Pro does not buy a higher ranking or prize eligibility. Tipster Support is based on verified performance and voluntary community tips, not payment.",
+    "f6": "Tipster Support: verified Tipsters with long winning streaks and strong rankings in selected sport and competition leaderboards can monetise their knowledge by receiving voluntary PuntPoints tips from Punters."
   },
   "annualPass": {
     "badge": "Limited founding offer · 20 places",

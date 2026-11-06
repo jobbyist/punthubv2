@@ -5,6 +5,7 @@ import {
   BellRing,
   Filter,
   Gauge,
+  Gift,
   Lock,
   ShieldOff,
   Sparkles,
@@ -42,6 +43,7 @@ const PERKS = [
   [BellRing, "alerts"],
   [Gauge, "tracking"],
   [ShieldOff, "adfree"],
+  [Gift, "tipsterSupport"],
 ] as const;
 
 function Insights() {

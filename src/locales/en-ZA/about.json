@@ -99,7 +99,7 @@
     },
     "pro": {
       "title": "Puntr Pro",
-      "body": "Advanced analytics for serious predictors, available at launch"
+      "body": "Advanced analytics, deeper tools and Tipster Support for eligible verified Tipsters, available with Puntr Pro."
     }
   },
   "sports": {
@@ -158,7 +158,7 @@
   "points": {
     "title1": "Every Prediction",
     "title2": "Counts",
-    "body": "PuntPoints recognise eligible activity and community contribution. They can be redeemed for available vouchers, sponsored rewards and perks. They have no cash value, cannot be bought and do not affect rankings.",
+    "body": "PuntPoints recognise eligible activity and community contribution. They can be redeemed for available vouchers, sponsored rewards and perks. A planned Tipster Support feature will let Punters send voluntary PuntPoints tips to eligible verified Tipsters. Points have no cash value and do not affect rankings.",
     "accuracy": {
       "title": "Accuracy",
       "body": "Be recognised for getting it right."
@@ -170,6 +170,10 @@
     "referrals": {
       "title": "Referrals",
       "body": "Invite friends and watch the community grow."
+    },
+    "tipsters": {
+      "title": "Tipster Support",
+      "body": "Verified Tipsters with long winning streaks and strong rankings in selected sport and competition leaderboards can monetise their knowledge by receiving voluntary PuntPoints tips from Punters. Tips earn points, not cash, and never affect rankings."
     }
   },
   "cta": {

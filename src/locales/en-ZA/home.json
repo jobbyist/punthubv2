@@ -73,14 +73,15 @@
     "f3": "A public record you can share",
     "f4": "A <1>Community-First Platform</1> to learn from",
     "f5": "<1>AI-Powered Insights</1>, coming soon",
-    "f6": "Free for Founding Members"
+    "f6": "Free for Founding Members",
+    "f7": "Eligible verified Tipsters can monetise their knowledge by receiving voluntary PuntPoints tips from Punters."
   },
   "video": {
     "close": "Close video",
     "iframeTitle": "How Puntr works"
   },
   "platforms": {
-    "title": "Predictions across South Africa's bookmakers",
+    "title": "Predictions, trends and deep analytical insights across South Africa's most popular bookmakers",
     "body": "Members can record predictions against fixtures and odds offered by the platforms shown. Puntr does not accept bets and is not necessarily affiliated with or endorsed by those platforms.",
     "fine": "18+ only. T&Cs apply."
   },

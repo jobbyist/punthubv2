@@ -52,5 +52,9 @@
     "upvotes": "upvotes",
     "comments": "comments",
     "sampleVotes": "Example votes"
+  },
+  "tipSupport": {
+    "title": "Recognise standout Tipsters",
+    "body": "Puntr Pro will let eligible verified Tipsters with long winning streaks and strong performance on selected sport- and competition-specific leaderboards receive voluntary PuntPoints tips from Punters. Points, not cash; tips never change rankings or pick grading."
   }
 }

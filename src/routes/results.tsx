@@ -165,7 +165,7 @@ function Results() {
       {profile && <MyRecord userId={profile.id} />}
 
       {failed && <p className="card-surface p-5 text-sm text-destructive">{t("error")}</p>}
-      {!failed && !loading && (days ?? []).length === 0 && (
+      {!loading && (days ?? []).length === 0 && (
         <div className="card-surface p-6">
           <h2 className="text-lg">{t("empty.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>

@@ -66,12 +66,7 @@ function PublicProfile() {
     void load();
   }, [load]);
 
-  if (failed)
-    return (
-      <Shell>
-        <p className="text-sm text-destructive">{t("record.error")}</p>
-      </Shell>
-    );
+  if (failed) return <Shell>{null}</Shell>;
   if (loading) return <Shell>{null}</Shell>;
   if (!profile) {
     return (

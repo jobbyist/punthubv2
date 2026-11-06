@@ -316,7 +316,7 @@ function Landing() {
       <motion.section {...fade} className="card-surface mt-8 p-5 sm:p-6">
         <h3 className="text-lg">{t("join.title")}</h3>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-          {(["f1", "f2", "f3", "f4", "f5", "f6"] as const).map((f) => (
+          {(["f1", "f2", "f3", "f4", "f5", "f6", "f7"] as const).map((f) => (
             <li key={f} className="flex items-center gap-3 text-sm">
               <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">
                 ✓

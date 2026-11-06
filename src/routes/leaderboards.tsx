@@ -129,7 +129,7 @@ function Leaderboards() {
       <section className="card-surface relative overflow-hidden">
         {gated(ranked.length + unranked.length - 1) && <FoundingGateCard top="9rem" />}
         {failed && <p className="p-5 text-sm text-destructive">{t("error")}</p>}
-        {!failed && !loading && (data ?? []).length === 0 && (
+        {!loading && (data ?? []).length === 0 && (
           <p className="p-5 text-sm text-muted-foreground">{t("empty")}</p>
         )}
         {ranked.length > 0 && (
@@ -224,6 +224,15 @@ function Leaderboards() {
         )}
         <p className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
           {t("rules")}
+        </p>
+      </section>
+
+      <section className="card-surface mt-6 p-5" aria-labelledby="tipster-support-title">
+        <h2 id="tipster-support-title" className="text-lg">
+          {t("tipSupport.title")}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          {t("tipSupport.body")}
         </p>
       </section>
 
