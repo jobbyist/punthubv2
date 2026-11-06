@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Feedback survey | Win a R500 OTT voucher | Puntr",
-    "description": "Tell us what you think of Puntr in a short survey and enter the draw for a free R500 OTT voucher.",
-    "ogTitle": "Share your feedback and enter to win a R500 OTT voucher"
+    "title": "Founding Member survey | Win a R500 OTT voucher | Puntr",
+    "description": "Founding Members: tell us what you want from Puntr at launch and enter the draw for a R500 OTT voucher.",
+    "ogTitle": "Founding Member survey: help shape Puntr"
   },
-  "eyebrow": "Member survey",
-  "title1": "Tell us what you think.",
+  "eyebrow": "Founding Member survey",
+  "title1": "Help shape Puntr.",
   "title2": "Win a R500 OTT voucher.",
-  "lead": "Two minutes of honest feedback helps us build the right things before launch on 1 December 2026.",
-  "signIn": "Sign in or join free to take the survey.",
+  "lead": "A few quick questions, one at a time. Your answers decide what we build first before launch on 1 December 2026.",
+  "signIn": "Sign in or join free to take the Founding Member survey.",
   "signInCta": "Join free",
   "done": "Thank you. Your feedback has been received.",
   "doneDraw": "You are entered into the draw.",
@@ -41,5 +41,112 @@
   "submit": "Submit feedback",
   "sending": "Sending",
   "error": "We could not save your feedback. Please try again.",
-  "pickRating": "Please choose a rating."
+  "pickRating": "Please choose a rating.",
+  "membersOnly": "This survey is for Founding Members only. Claim your Founding spot to take part.",
+  "membersOnlyCta": "Become a Founding Member",
+  "start": "Let's go",
+  "next": "Next",
+  "back": "Back",
+  "skip": "Skip",
+  "stepOf": "Question {{n}} of {{total}}",
+  "optional": "Optional",
+  "pickOne": "Please choose an option to continue.",
+  "steps": {
+    "who": {
+      "q": "First, which sounds most like you?",
+      "opts": {
+        "tipster": "I share predictions and want a public record",
+        "bettor": "I bet for fun and want better information",
+        "analyst": "I like stats and analysis",
+        "curious": "I'm just curious"
+      }
+    },
+    "freq": {
+      "q": "How often do you follow or make football predictions?",
+      "opts": {
+        "daily": "Almost every day",
+        "weekly": "A few times a week",
+        "weekends": "Mostly weekends",
+        "rarely": "Rarely"
+      }
+    },
+    "leagues": {
+      "q": "Which competitions matter most to you?",
+      "hint": "Pick any",
+      "opts": {
+        "psl": "Betway Premiership (PSL)",
+        "epl": "English Premier League",
+        "ucl": "UEFA Champions League",
+        "laliga": "La Liga",
+        "other": "Other leagues"
+      }
+    },
+    "expect": {
+      "q": "What do you expect from Puntr at launch?",
+      "hint": "Pick any",
+      "opts": {
+        "record": "A verified, public prediction record",
+        "board": "Leaderboards to compete on",
+        "insights": "Match insights and stats",
+        "ai": "AI-powered insights",
+        "points": "PuntPoints and rewards",
+        "community": "A friendly, trusted community"
+      }
+    },
+    "sports": {
+      "q": "After football, which sport should come first?",
+      "hint": "Pick any",
+      "opts": {
+        "basketball": "Basketball",
+        "rugby": "Rugby",
+        "racing": "Horse racing",
+        "combat": "Boxing and MMA",
+        "cricket": "Cricket",
+        "tennis": "Tennis"
+      }
+    },
+    "trust": {
+      "q": "What would make you trust a tipster's record?",
+      "opts": {
+        "graded": "Every pick graded automatically on results",
+        "locked": "Picks locked before kick-off",
+        "history": "A long, public history",
+        "reasoning": "Seeing their reasoning"
+      }
+    },
+    "frustration": {
+      "q": "What frustrates you most about tipster sites and groups today?",
+      "ph": "Tell us in your own words"
+    },
+    "price": {
+      "q": "What do you think of Puntr Pro at R99 a month?",
+      "opts": {
+        "too_high": "Too high",
+        "fair": "Fair",
+        "good_value": "Good value",
+        "unsure": "Not sure yet"
+      }
+    },
+    "pass": {
+      "q": "Would the Founding Member Annual Pass suit you? 12 months of Puntr Pro for a once-off R299, starting 1 December 2026. No auto-renewal.",
+      "opts": {
+        "interested": "Yes, I'm interested",
+        "maybe": "Maybe, tell me more",
+        "not_now": "Not for now",
+        "already": "I've already claimed it"
+      }
+    },
+    "final": {
+      "q": "Last one. How would you rate Puntr so far?",
+      "hint": "1 is poor, 5 is excellent",
+      "improveLabel": "Anything else we should improve?",
+      "improvePh": "Optional"
+    }
+  },
+  "upsell": {
+    "title": "The Founding Member Annual Pass",
+    "body": "12 months of Puntr Pro for a once-off R299, instead of R1,188 on R99 a month. You save R889. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.",
+    "note": "A prepaid membership, not an investment. Checkout opens before launch and we will email you when it does.",
+    "cta": "See the Founding offer"
+  }
 }

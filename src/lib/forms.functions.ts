@@ -64,7 +64,7 @@ export const submitForm = createServerFn({ method: "POST" })
         ...Object.entries(data.meta ?? {}),
       ]
         .map(
-          ([k, v]) =>
+          ([k = "", v = ""]) =>
             `<tr><td style="padding:4px 12px 4px 0;color:#4B5563;">${esc(k)}</td><td style="padding:4px 0;font-weight:700;">${esc(String(v))}</td></tr>`,
         )
         .join("");
