@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-06 (later), Terms `2026-11-06-r8` and Privacy `2026-11-06-r6` (PR: welcome-cron fix, referral wording, confirm-before-sign-in)
+
+- **Referral wording (owner, 6 Nov 2026):** referrals are described as "Earn up to 30% in bonus PuntPoints" on qualifying purchases made by invited people, never cash. Roadmap, Terms §4 and the welcome email now say this and that PuntPoints are redeemable only for vouchers, sponsored rewards and perks. Still a plan: nothing is built or promised as available `[attorney review]` (is a purchase-linked bonus a commission or an inducement; qualifying-purchase terms before it opens).
+- **Confirm email before sign-in (owner, 6 Nov 2026):** join copy, How it works, Founding steps and Privacy §3 now say the address is confirmed with an emailed code before sign-in. Terms §4 ("Posting needs a confirmed email address") still holds for members who signed up before this change.
+- Welcome-cron sends now stop and log if the send record cannot be saved. Email templates now support light and dark mode with the real logo. No new data collected.
+- Review: none beyond the referral item above. Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` rows: `terms` `2026-11-06-r8`, `privacy` `2026-11-06-r6`.
+
 ## 2026-11-06, Terms `2026-11-06-r7` and Privacy `2026-11-06-r5` (PR: Founding welcome email, Annual Pass offer)
 
 - New Founding Member welcome email from the Founder (new sign-ups only, opted-in members, one per address, logged in `founding_welcome_sends`). Privacy §4 says so.

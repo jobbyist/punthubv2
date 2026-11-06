@@ -4,6 +4,7 @@
  */
 import { firstName, SITE } from "../launch";
 import {
+  DARK_CSS,
   esc,
   logoFooter,
   logoHeader,
@@ -66,21 +67,21 @@ export function renderFoundingPassEmail({ name, isMember, unsubscribeUrl }: Foun
   ].join("\n");
 
   const html = `<!doctype html>
-<html lang="en-ZA"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(FOUNDING_PASS_SUBJECT)}</title></head>
-<body style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
+<html lang="en-ZA"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="color-scheme" content="light dark" /><meta name="supported-color-schemes" content="light dark" /><style>${DARK_CSS}</style><title>${esc(FOUNDING_PASS_SUBJECT)}</title></head>
+<body class="dm-outer" style="margin:0;padding:24px 12px;background:#f8fafc;font-family:Helvetica,Arial,sans-serif;color:#0d0d0d;">
   <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(preheader)}</span>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
-    <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
+    <table role="presentation" class="dm-card" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e5e7eb;">
       ${logoHeader()}
       <tr><td style="padding:24px 28px 0;">
-        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;">12 months of Puntr Pro for R299</h1>
-        <p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#374151;">${esc(hi)}</p>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;">${esc(lead)}</p>
-        <p style="margin:0 0 6px;font-size:14px;font-weight:700;">The Founding Member Annual Pass</p>
-        <ul style="margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.7;color:#374151;">
+        <h1 class="dm-h" style="margin:0 0 12px;font-size:22px;line-height:1.3;">12 months of Puntr Pro for R299</h1>
+        <p class="dm-p" style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#374151;">${esc(hi)}</p>
+        <p class="dm-p" style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;">${esc(lead)}</p>
+        <p class="dm-h" style="margin:0 0 6px;font-size:14px;font-weight:700;">The Founding Member Annual Pass</p>
+        <ul class="dm-p" style="margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.7;color:#374151;">
           ${offer.map((o) => `<li>${esc(o)}</li>`).join("\n          ")}
         </ul>
-        <p style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(note)}</p>
+        <p class="dm-sub" style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(note)}</p>
         <p style="margin:0 0 20px;"><a href="${esc(link)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;">${esc(cta)}</a></p>
       </td></tr>
       ${logoFooter(unsubscribeUrl, reason)}

@@ -274,6 +274,11 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
       // Sign in with a password: by email directly, by username through the server.
       if (id.kind === "email") {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+        if (err?.code === "email_not_confirmed") {
+          // Signed up but never confirmed: send a fresh code and continue on the code step.
+          await supabase.auth.resend({ type: "signup", email, options: { ...redirectOption } });
+          return onNeedsCode(email, "signup");
+        }
         if (err) setError(err.status === 429 ? t("join.error.rate") : t("join.error.credentials"));
         return;
       }
