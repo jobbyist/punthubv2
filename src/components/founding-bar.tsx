@@ -2,7 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useSession } from "@/components/session";
 import { formatDate } from "@/lib/format";
 import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { getFoundingSpots } from "@/lib/founding.functions";
@@ -58,7 +57,7 @@ export function FoundingBar() {
     ? `Founding Sign-Ups: ${counts.foundingClaimed} of ${counts.foundingCap} spots claimed`
     : t("foundingBar.text", { launch });
   const annualText = counts
-    ? ` · ${counts.annualPassRemaining} of ${ANNUAL_PASS_CAP} Annual Passes remaining`
+    ? ` · ${counts.annualPassRemaining} /${ANNUAL_PASS_CAP} Annual Passes remaining`
     : "";
 
   return (
