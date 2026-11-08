@@ -120,14 +120,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content:
             match.context.locale === "en-ZA" ? "en_ZA" : match.context.locale.replace("-", "_"),
         },
-        { property: "og:image", content: "https://puntr.co.za/puntrlogo.png" },
+        { property: "og:image", content: "https://puntr.co.za/og/puntr.png" },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
         { property: "og:image:alt", content: t("meta.ogImageAlt") },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:site", content: "@puntr_za" },
         { name: "twitter:creator", content: "@puntr_za" },
         { name: "twitter:title", content: t("meta.title") },
         { name: "twitter:description", content: t("meta.ogDescription") },
-        { name: "twitter:image", content: "https://puntr.co.za/puntrlogo.png" },
+        { name: "twitter:image", content: "https://puntr.co.za/og/puntr.png" },
       ],
       links: [
         {

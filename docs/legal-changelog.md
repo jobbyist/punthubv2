@@ -197,3 +197,6 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - What changed: the three Newsroom articles were rewritten in full (author Michael C., publish dates 6, 7 and 8 Nov 2026) and the Newsroom pages now render them. No new data is collected, stored or sent.
 - Pages: none of `/terms`, `/privacy`, `/cookies`, `/affiliate-disclosure` or `/refunds` needed changing.
 - Counsel should look at: the Annual Pass article (R299 once-off, R99/month comparison, "saves R889", no auto-renewal) and the roadmap article ("not launching with" list, PuntPoints never cash). `[attorney review]`
+
+## 9 Nov 2026: Default share image
+- What changed: a new default Open Graph / Twitter image (`/og/puntr.png`) with the brand line, "18+ | T&Cs apply | Helpline 0800 006 008". No data collected; no legal page changed.
