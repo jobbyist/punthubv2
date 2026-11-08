@@ -150,3 +150,13 @@ Founder, Puntr
 
 Puntr is for people aged 18 and older. T&Cs apply. If gambling is a problem for you or someone you know, call the helpline on 0800 006 008.$body$
 where slug = 'puntr-roadmap-and-launch-1-december';
+
+-- Fail loudly if any slug above did not match a row.
+do $$
+begin
+  if (select count(*) from public.newsroom_articles
+      where author_name = 'Michael C.'
+        and slug in ('founding-member-sign-ups-are-open', 'founding-member-annual-pass', 'puntr-roadmap-and-launch-1-december')) <> 3 then
+    raise exception 'newsroom_full_articles: expected 3 articles updated';
+  end if;
+end $$;

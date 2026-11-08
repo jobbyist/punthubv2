@@ -10,37 +10,37 @@ interface SitemapEntry {
   lastmod?: string;
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
-const entries: SitemapEntry[] = [
-  // Real public routes only. Add new routes here when they ship.
-  { path: "/", changefreq: "daily", priority: "1.0", lastmod: today },
-  { path: "/founding", changefreq: "weekly", priority: "0.9", lastmod: today },
-  { path: "/join", changefreq: "monthly", priority: "0.8", lastmod: today },
-  { path: "/predictions", changefreq: "hourly", priority: "0.95", lastmod: today },
-  { path: "/results", changefreq: "hourly", priority: "0.9", lastmod: today },
-  { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
-  { path: "/community", changefreq: "daily", priority: "0.85", lastmod: today },
-  { path: "/pricing", changefreq: "weekly", priority: "0.8", lastmod: today },
-  { path: "/how-it-works", changefreq: "monthly", priority: "0.75", lastmod: today },
-  { path: "/support", changefreq: "monthly", priority: "0.7", lastmod: today },
-  { path: "/newsroom", changefreq: "daily", priority: "0.7", lastmod: today },
-  { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
-  { path: "/roadmap", changefreq: "weekly", priority: "0.6", lastmod: today },
-  ...["soccer", "basketball", "rugby", "racing", "combat", "athletics", "cricket", "tennis"].map(
-    (s): SitemapEntry => ({
-      path: `/sports/${s}`,
-      changefreq: "weekly",
-      priority: s === "soccer" ? "0.8" : "0.6",
-      lastmod: today,
-    }),
-  ),
-  // Legal / trust pages (important for SA gambling compliance & YMYL)
-  { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: today },
-  { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },
-  { path: "/cookies", changefreq: "yearly", priority: "0.3", lastmod: today },
-  { path: "/refunds", changefreq: "yearly", priority: "0.3", lastmod: today },
-];
+function staticEntries(today: string): SitemapEntry[] {
+  return [
+    // Real public routes only. Add new routes here when they ship.
+    { path: "/", changefreq: "daily", priority: "1.0", lastmod: today },
+    { path: "/founding", changefreq: "weekly", priority: "0.9", lastmod: today },
+    { path: "/join", changefreq: "monthly", priority: "0.8", lastmod: today },
+    { path: "/predictions", changefreq: "hourly", priority: "0.95", lastmod: today },
+    { path: "/results", changefreq: "hourly", priority: "0.9", lastmod: today },
+    { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
+    { path: "/community", changefreq: "daily", priority: "0.85", lastmod: today },
+    { path: "/pricing", changefreq: "weekly", priority: "0.8", lastmod: today },
+    { path: "/how-it-works", changefreq: "monthly", priority: "0.75", lastmod: today },
+    { path: "/support", changefreq: "monthly", priority: "0.7", lastmod: today },
+    { path: "/newsroom", changefreq: "daily", priority: "0.7", lastmod: today },
+    { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
+    { path: "/roadmap", changefreq: "weekly", priority: "0.6", lastmod: today },
+    ...["soccer", "basketball", "rugby", "racing", "combat", "athletics", "cricket", "tennis"].map(
+      (s): SitemapEntry => ({
+        path: `/sports/${s}`,
+        changefreq: "weekly",
+        priority: s === "soccer" ? "0.8" : "0.6",
+        lastmod: today,
+      }),
+    ),
+    // Legal / trust pages (important for SA gambling compliance & YMYL)
+    { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: today },
+    { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },
+    { path: "/cookies", changefreq: "yearly", priority: "0.3", lastmod: today },
+    { path: "/refunds", changefreq: "yearly", priority: "0.3", lastmod: today },
+  ];
+}
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
@@ -58,7 +58,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         } catch {
           /* sitemap still serves the static routes */
         }
-        const urls = [...entries, ...articleEntries].map((e) =>
+        const today = new Date().toISOString().slice(0, 10);
+        const urls = [...staticEntries(today), ...articleEntries].map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
