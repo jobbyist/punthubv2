@@ -134,6 +134,48 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          event: string
+          id: number
+          path: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          event: string
+          id?: never
+          path?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          event?: string
+          id?: never
+          path?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor?: string
+        }
+        Relationships: []
+      }
       chain_heads: {
         Row: {
           created_at: string
@@ -1703,6 +1745,17 @@ export type Database = {
       }
     }
     Functions: {
+      admin_campaign_report: {
+        Args: { p_campaign?: string; p_since: string }
+        Returns: {
+          event: string
+          events: number
+          utm_campaign: string
+          utm_content: string
+          utm_source: string
+          visitors: number
+        }[]
+      }
       admin_adjust_points: {
         Args: { p_points: number; p_reason: string; p_user: string }
         Returns: number
@@ -1926,6 +1979,20 @@ export type Database = {
           sponsor: string
           title: string
         }[]
+      }
+      log_campaign_event: {
+        Args: {
+          p_detail?: string
+          p_event: string
+          p_path?: string
+          p_utm_campaign?: string
+          p_utm_content?: string
+          p_utm_medium?: string
+          p_utm_source?: string
+          p_utm_term?: string
+          p_visitor: string
+        }
+        Returns: undefined
       }
       member_may_redeem: { Args: { p_user: string }; Returns: boolean }
       mfa_ok: { Args: never; Returns: boolean }

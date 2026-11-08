@@ -16,7 +16,7 @@ Supabase (EU, eu-west-1), Vercel, email provider (TBD). Cross-border: POPIA s72.
 
 ## Data map
 
-early_access (waitlist), profiles, predictions (public, permanent, pseudonymous after deletion), settlement_events, consent_records, privacy_requests, breach_register.
+early_access (waitlist), profiles, member_details (optional name, phone, date of birth, province; deleted on account deletion), survey_responses (kept pseudonymised after deletion), predictions (public, permanent, pseudonymous after deletion), settlement_events, consent_records, privacy_requests, breach_register.
 
 ## Breach runbook
 

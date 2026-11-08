@@ -99,13 +99,16 @@ const PRINCIPLES = [
 
 const LAYERS = ["data", "record", "community", "board", "points", "ai", "pro"] as const;
 
-/** What is covered at launch. Names are proper nouns and are not translated. Other sports follow after launch (see /roadmap and src/lib/roadmap.ts). */
-const COMPETITIONS = [
-  ["Betway Premiership", "soccer"],
-  ["Premier League", "soccer"],
-  ["UEFA Champions League", "soccer"],
-  ["Rugby", "soon"],
-  ["Horse racing", "soon"],
+/** All eight sports with dedicated landing pages, aligned to the canonical sports roadmap. */
+const SPORTS_COVERAGE = [
+  ["soccer", "Football"],
+  ["basketball", "Basketball"],
+  ["rugby", "Rugby"],
+  ["racing", "Racing"],
+  ["combat", "Combat sports"],
+  ["athletics", "Athletics"],
+  ["cricket", "Cricket"],
+  ["tennis", "Tennis"],
 ] as const;
 
 /** Ten logo slots for the partnership network. Replace with approved partner logos as agreements are confirmed. */
@@ -340,20 +343,24 @@ function About() {
           <div className="mt-12">
             <div className="rounded-xl border border-border bg-card p-8">
               <h3 className="text-center text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                {t("sports.heading")}
+                SPORTS COVERAGE
               </h3>
-              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                {COMPETITIONS.map(([name, sport]) => (
-                  <div
-                    key={name}
-                    className="flex flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:shadow-md"
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {SPORTS_COVERAGE.map(([sport, name]) => (
+                  <Link
+                    key={sport}
+                    to="/sports/$sport"
+                    params={{ sport }}
+                    className="group flex min-h-28 flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:bg-primary/5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
-                    <Trophy className="size-8 text-primary opacity-60" />
-                    <p className="mt-2 text-xs font-medium">{name}</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      {sport === "soon" ? tc("comingSoon") : tc(`sport.${sport}`)}
-                    </p>
-                  </div>
+                    <Trophy className="size-8 text-primary opacity-60 transition-transform group-hover:scale-110" />
+                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">
+                      {name}
+                    </span>
+                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Explore sport
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>

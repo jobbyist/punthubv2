@@ -7,6 +7,21 @@ at. Everything is a draft until approved; approvals are recorded here once given
 
 - The explainer video is now served from Supabase Storage (a public `media` bucket) instead of a YouTube embed, on the home page and `/about`. No YouTube request or cookie is made; the file only downloads when a visitor presses play. Supabase is already a listed processor, so Privacy §6 is unchanged.
 - Tipster Support copy (from #57) toned down to match the copy rules: "monetise their knowledge" and "long winning streaks" are replaced with "recognise verified Tipsters with a consistent track record", and every mention says it is planned, not available yet, that points have no cash value and that it never affects rankings. Review: the planned transfer of PuntPoints between members still needs Terms §6 and attorney sign-off before it is built `[attorney review]`.
+## 2026-11-06, Privacy `2026-11-06-r10` (PR: account deletion erases member details; survey retention)
+
+- **Gap fixed:** deleting an account anonymises the profile row but keeps it (pick chain), so the optional `member_details` (first/last name, phone, date of birth, province) were NOT removed. `anonymise_account()` now deletes that row. The authenticated role loses `DELETE` on `member_details` (erasure is server-side).
+- **Survey responses are kept** after deletion (owner, 6 Nov 2026), linked only to the anonymised profile id; `contact_ok` is switched off so we stop contacting. Free-text comments could contain personal details a member typed.
+- Privacy data table: two new rows, "Your details (optional)" and "Founding Member survey" (these were not listed before). Previously nothing in the policy covered either.
+- Review `[attorney review]`: lawful basis and purpose for keeping pseudonymised survey data after deletion, whether the free-text field needs a "do not include personal information" notice at the form, retention length for survey data (none set), and how the draw entry is handled for an anonymised member. Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` row: `privacy` `2026-11-06-r10`.
+
+## 2026-11-06, Privacy `2026-11-06-r9` (PR: X Ads Founding campaign tracking)
+
+- Analytics events (already consent-gated) are now also stored first-party in Supabase (`campaign_events`) with the ad's UTM tags (source, medium, campaign, content, term), the page path and the random browser ID from the `puntr_consent` cookie. No account ID, name, email, IP address or user agent. Kept up to 14 months (daily purge). Only admins can read it (admin Campaigns tab).
+- UTM tags from an ad link are kept in sessionStorage for the visit before consent; they are not personal information and are sent nowhere unless the visitor accepts Analytics.
+- No new tracker, pixel or processor: the X (Twitter) conversion pixel is NOT installed. `/founding` gains Open Graph/Twitter card tags, trust points and an FAQ (free, not a bookmaker, 18+, email confirmation).
+- Privacy §4 Analytics row updated. Review: whether storing UTM tags with a consent-cookie ID needs any wording beyond the Analytics row `[attorney review]`; the X Ads creatives say "Free to join", "First 100", "18+" and carry no profit claim. Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- New `notice_versions` row: `privacy` `2026-11-06-r9`.
 
 ## 2026-11-06 (KYC), Terms `2026-11-06-r10` and Privacy `2026-11-06-r8` (PR: identity verification, manual phase)
 
