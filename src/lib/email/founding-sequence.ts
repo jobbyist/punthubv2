@@ -11,6 +11,8 @@ export interface SequenceInput {
   unsubscribeUrl: string;
   /** Send time, used by the countdown. */
   now?: Date;
+  /** Held Founding Member number, used by the early-access claim email. */
+  foundingNumber?: number | undefined;
 }
 
 type Mail = { subject: string; html: string; text: string };
@@ -24,6 +26,42 @@ export function daysToLaunch(now: Date, launchIso = "2026-12-01"): number {
   const sast = new Date(now.getTime() + 2 * 3600_000).toISOString().slice(0, 10);
   const ms = Date.parse(`${launchIso}T00:00:00Z`) - Date.parse(`${sast}T00:00:00Z`);
   return Math.max(0, Math.round(ms / 86_400_000));
+}
+
+export const CLAIM_CAMPAIGN = "founding-claim-1";
+export function renderClaimEmail({ name, unsubscribeUrl, foundingNumber }: SequenceInput): Mail {
+  const label = foundingNumber
+    ? `Founding Member #${foundingNumber}`
+    : "your Founding Member number";
+  return buildEmail({
+    subject: foundingNumber
+      ? `Founding Member #${foundingNumber} is held for you: create your Puntr account`
+      : "Your Founding Member number is held: create your Puntr account",
+    preheader: "You joined early access. Create your account to claim your numbered badge.",
+    heading: foundingNumber ? `Your number: #${foundingNumber}` : "Your number is held",
+    greeting: hi(name),
+    paragraphs: [
+      `Thank you for joining Puntr early access. ${label} is held for you, in the order you signed up.`,
+      "Founding Members get a permanent numbered badge on their profile. To claim yours, create your account with this same email address and confirm it. It takes about two minutes.",
+      `Puntr launches officially on ${LAUNCH_TEXT}. Set up now and you can post your first pick the moment it opens.`,
+    ],
+    panel: {
+      title: "How to claim your number",
+      lines: [
+        "1. Tap the button below and create your account with this email address.",
+        "2. Confirm your email from the message we send you.",
+        "3. Your Founding Member number appears on your profile.",
+      ],
+    },
+    cta: {
+      label: foundingNumber ? `Claim #${foundingNumber}` : "Create my account",
+      url: tracked("/join", CLAIM_CAMPAIGN),
+    },
+    afterCta: ["Puntr is for adults only. You must be 18 or older to create an account."],
+    sign: ["Michael", "Founder, Puntr"],
+    unsubscribeUrl,
+    reason: "You are getting this because you joined Puntr early access and opted in to updates.",
+  });
 }
 
 export const CHECKLIST_CAMPAIGN = "founding-checklist-1";
@@ -156,11 +194,17 @@ export function renderCountdownEmail({
   });
 }
 
-/** Campaigns the sequence runner can send, by id. Member-only ones need a Puntr account to make sense. */
-export const SEQUENCE: Record<string, { memberOnly: boolean; render: (i: SequenceInput) => Mail }> =
-  {
-    [CHECKLIST_CAMPAIGN]: { memberOnly: true, render: renderChecklistEmail },
-    [SURVEY_CAMPAIGN]: { memberOnly: true, render: renderSurveyEmail },
-    [REFERRAL_CAMPAIGN]: { memberOnly: true, render: renderReferralEmail },
-    [COUNTDOWN_CAMPAIGN]: { memberOnly: false, render: renderCountdownEmail },
-  };
+/**
+ * Campaigns the sequence runner can send, by id. Member-only ones need a Puntr account to make sense;
+ * early-only ones go to early-access sign-ups who have not created an account yet.
+ */
+export const SEQUENCE: Record<
+  string,
+  { memberOnly: boolean; earlyOnly?: boolean; render: (i: SequenceInput) => Mail }
+> = {
+  [CLAIM_CAMPAIGN]: { memberOnly: false, earlyOnly: true, render: renderClaimEmail },
+  [CHECKLIST_CAMPAIGN]: { memberOnly: true, render: renderChecklistEmail },
+  [SURVEY_CAMPAIGN]: { memberOnly: true, render: renderSurveyEmail },
+  [REFERRAL_CAMPAIGN]: { memberOnly: true, render: renderReferralEmail },
+  [COUNTDOWN_CAMPAIGN]: { memberOnly: false, render: renderCountdownEmail },
+};
