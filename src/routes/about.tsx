@@ -18,8 +18,8 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 
 import { useEffect } from "react";
-import { ExplainerVideo } from "@/components/explainer-video";
 
+import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { analytics } from "@/lib/analytics";
 import { money } from "@/lib/format";
@@ -134,6 +134,14 @@ const EXAMPLE_BOARD = [
   { rank: 2, username: "ExampleTipster2", accuracy: 0.76, predictions: 289 },
   { rank: 3, username: "ExampleTipster3", accuracy: 0.74, predictions: 401 },
 ] as const;
+
+function AboutExplainer() {
+  return (
+    <div className="mx-auto mt-8 max-w-3xl overflow-hidden bg-black">
+      <ExplainerVideo />
+    </div>
+  );
+}
 
 function About() {
   const { t } = useTranslation("about");
@@ -346,8 +354,12 @@ function About() {
                     className="group flex min-h-28 flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:bg-primary/5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <Trophy className="size-8 text-primary opacity-60 transition-transform group-hover:scale-110" />
-                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">{name}</span>
-                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Explore sport</span>
+                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">
+                      {name}
+                    </span>
+                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Explore sport
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -361,7 +373,7 @@ function About() {
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
-          <div className="mx-auto mt-8 max-w-3xl"><ExplainerVideo title={t("video.iframeTitle")} /></div>
+          <AboutExplainer />
         </motion.section>
 
         {/* Foundation and partners */}

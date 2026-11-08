@@ -54,7 +54,7 @@
   "pro": {
     "badge": "At launch",
     "title": "Puntr Pro",
-    "tagline": "For sports fans and Tipsters who want deeper analysis, stronger tools and ways to be recognised for proven knowledge.",
+    "tagline": "For sports fans and Tipsters who want deeper analysis, stronger tools and recognition for a consistent track record.",
     "price": "{{price}} per month",
     "note": "Tipster Support launches subject to verification, eligibility thresholds and published programme rules. Tips earn PuntPoints, not cash; points cannot be withdrawn and never affect rankings.",
     "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
@@ -64,7 +64,7 @@
     "f5": "A Pro badge on your profile",
     "cta": "Available at launch",
     "fine": "Puntr Pro does not buy a higher ranking or prize eligibility. Tipster Support is based on verified performance and voluntary community tips, not payment.",
-    "f6": "Tipster Support: verified Tipsters with long winning streaks and strong rankings in selected sport and competition leaderboards can monetise their knowledge by receiving voluntary PuntPoints tips from Punters."
+    "f6": "Planned Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash."
   },
   "annualPass": {
     "badge": "Limited founding offer · 20 places",

@@ -1,5 +1,4 @@
 import { LatestFromPuntr } from "@/components/latest-from-puntr";
-import { ExplainerVideo } from "@/components/explainer-video";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
@@ -10,6 +9,7 @@ import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
+import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
@@ -345,7 +345,9 @@ function Landing() {
             >
               <CloseIcon className="size-8" />
             </button>
-            <ExplainerVideo title={t("video.iframeTitle")} />
+            <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl">
+              <ExplainerVideo autoPlay ns="home" />
+            </div>
           </div>
         </div>
       )}
