@@ -22,6 +22,13 @@ export type ReserveAnnualPassResult =
  * The existing claim_annual_pass RPC atomically creates/returns a 48-hour hold. Resend then
  * emails a signed, expiring Puntr redirect which forwards to the configured PayFast hosted link.
  */
+const deadline = (iso: string) =>
+  new Intl.DateTimeFormat("en-ZA", {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "Africa/Johannesburg",
+  }).format(new Date(iso));
+
 export const reserveAnnualPass = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ReserveAnnualPassResult> => {
@@ -96,6 +103,20 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
         console.error("Annual Pass reservation email failed", sent.status, sent.body);
         return { ok: false, reason: "email_failed" };
       }
+      const { notifySupportOnce } = await import("@/lib/support-notify.server");
+      await notifySupportOnce({
+        event: "annual_pass_reserved",
+        key: `pass:${context.userId}:${holdExpiresAt}`,
+        subject: `Annual Pass reserved: ${profile?.display_name || email}`,
+        rows: [
+          ["Name", profile?.display_name || "-"],
+          ["Email", email],
+          ["Status", data.status === "claimed" ? "New reservation" : "Payment email resent"],
+          ["Pay by (SAST)", deadline(holdExpiresAt)],
+          ["Amount", "R299 once-off via PayFast"],
+        ],
+        replyTo: email,
+      });
       return { ok: true, holdExpiresAt };
     } catch (err) {
       console.error("Annual Pass reservation email threw", err);

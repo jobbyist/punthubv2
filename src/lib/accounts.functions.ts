@@ -91,6 +91,29 @@ export const claimFoundingSpot = createServerFn({ method: "POST" })
       console.error("claim founding failed", error.message);
       return { number: null };
     }
+    if (data != null) {
+      // Tell the support inbox once per member that a Founding spot was claimed (email confirmed, number assigned).
+      const claims = context.claims as unknown as Record<string, unknown>;
+      const email = typeof claims["email"] === "string" ? claims["email"] : "";
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("display_name, username")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const { notifySupportOnce } = await import("@/lib/support-notify.server");
+      await notifySupportOnce({
+        event: "founding_signup",
+        key: `founding:${context.userId}`,
+        subject: `New Founding Member #${data}: ${profile?.display_name || profile?.username || "member"}`,
+        rows: [
+          ["Founding number", String(data)],
+          ["Name", profile?.display_name || "-"],
+          ["Username", profile?.username || "-"],
+          ["Email", email || "-"],
+        ],
+        replyTo: email || undefined,
+      });
+    }
     return { number: data ?? null };
   });
 

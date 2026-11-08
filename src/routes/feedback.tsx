@@ -130,10 +130,14 @@ function Feedback() {
     void submitForm({
       data: {
         form: "survey",
+        ...(improve.trim() ? { message: improve.trim().slice(0, 4000) } : {}),
         meta: {
           member: String(profile.founding_number ?? ""),
+          username: String(profile.username ?? ""),
           rating: String(rating),
+          price: String(typeof answers["price"] === "string" ? answers["price"] : ""),
           pass: String(passInterest ?? ""),
+          follow_up_ok: contact ? "yes" : "no",
         },
       },
     }).catch(() => undefined);

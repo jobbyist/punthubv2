@@ -87,7 +87,10 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
         }
         let sent = 0;
         let failed = 0;
+        // Resend's free plan allows 100 emails a day. Stop at the cap; the next scheduled run carries on.
+        const cap = Math.max(1, Number(process.env["EMAIL_DAILY_CAP"]) || 90);
         for (const r of data ?? []) {
+          if (sent + failed >= cap) break;
           const unsub = unsubscribeUrl(r.recipient_email, secret);
           const mail = renderFoundingPassEmail({
             name: r.recipient_name ?? "",
