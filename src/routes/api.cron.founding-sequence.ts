@@ -82,7 +82,10 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
           console.error("founding-sequence recipients failed", error.message);
           return Response.json({ ok: false, error: "recipients_failed" }, { status: 500 });
         }
-        const cap = Math.max(1, Number(process.env["EMAIL_DAILY_CAP"]) || 90);
+        const dailyCap = Math.max(1, Number(process.env["EMAIL_DAILY_CAP"]) || 90);
+        // ?limit=N lets a schedule take only part of the day's allowance, so two campaigns can share it.
+        const asked = Number(new URL(request.url).searchParams.get("limit"));
+        const cap = asked > 0 ? Math.min(dailyCap, asked) : dailyCap;
         const queue = (data ?? []).filter((r) => r.is_member || !entry.memberOnly);
         let sent = 0;
         let failed = 0;

@@ -88,7 +88,10 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
         let sent = 0;
         let failed = 0;
         // Resend's free plan allows 100 emails a day. Stop at the cap; the next scheduled run carries on.
-        const cap = Math.max(1, Number(process.env["EMAIL_DAILY_CAP"]) || 90);
+        const dailyCap = Math.max(1, Number(process.env["EMAIL_DAILY_CAP"]) || 90);
+        // ?limit=N lets a schedule take only part of the day's allowance, so two campaigns can share it.
+        const asked = Number(new URL(request.url).searchParams.get("limit"));
+        const cap = asked > 0 ? Math.min(dailyCap, asked) : dailyCap;
         for (const r of data ?? []) {
           if (sent + failed >= cap) break;
           const unsub = unsubscribeUrl(r.recipient_email, secret);
