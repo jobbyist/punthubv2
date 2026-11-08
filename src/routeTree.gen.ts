@@ -54,6 +54,7 @@ import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
+import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.founding-sequence'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
 import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
@@ -286,6 +287,11 @@ const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
   path: '/api/cron/founding-campaign',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronFoundingSequenceRoute = ApiCronFoundingSequenceRouteImport.update({
+  id: '/api/cron/founding-sequence',
+  path: '/api/cron/founding-sequence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronFoundingWelcomeRoute = ApiCronFoundingWelcomeRouteImport.update({
   id: '/api/cron/founding-welcome',
   path: '/api/cron/founding-welcome',
@@ -364,6 +370,7 @@ export interface FileRoutesByFullPath {
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
@@ -470,6 +478,7 @@ export interface FileRoutesById {
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
@@ -525,6 +534,7 @@ export interface FileRouteTypes {
     | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
@@ -577,6 +587,7 @@ export interface FileRouteTypes {
     | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
@@ -630,6 +641,7 @@ export interface FileRouteTypes {
     | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
@@ -682,6 +694,7 @@ export interface RootRouteChildren {
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
+  ApiCronFoundingSequenceRoute: typeof ApiCronFoundingSequenceRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
   ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
@@ -1007,6 +1020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronFoundingCampaignRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/founding-sequence': {
+      id: '/api/cron/founding-sequence'
+      path: '/api/cron/founding-sequence'
+      fullPath: '/api/cron/founding-sequence'
+      preLoaderRoute: typeof ApiCronFoundingSequenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/founding-welcome': {
       id: '/api/cron/founding-welcome'
       path: '/api/cron/founding-welcome'
@@ -1110,6 +1130,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
+  ApiCronFoundingSequenceRoute: ApiCronFoundingSequenceRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
   ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { submitForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 
 import { useSession } from "@/components/session";
@@ -47,6 +48,9 @@ export function ReportButton({ predictionId }: { predictionId: string }) {
       if (error.code === "23505") setOpen(false);
       return;
     }
+    void submitForm({
+      data: { form: "report", meta: { prediction: String(predictionId).slice(0, 60) } },
+    }).catch(() => undefined);
     toast.success(t("report.thanks"));
     setOpen(false);
     setReason("");
