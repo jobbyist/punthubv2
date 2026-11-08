@@ -192,3 +192,8 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - **Support inbox alerts (support@puntr.co.za):** now also sent when a Founding spot is claimed (number, name, username, email), when an Annual Pass is reserved (name, email, pay-by time), when a survey is submitted (now includes the free-text comment, price view, username and whether follow-up is allowed) and when a prediction is reported. Each alert is sent once; the only thing stored for that is a dedupe key in `form_submissions`.
 - **Pages to check `[attorney review]`:** `/privacy` (support inbox receives these alerts; survey comment now included in the alert), `/affiliate-disclosure` and `/terms` (referral wording stays "coming soon"). No legal page text changed in this PR.
 - **Sending limits:** Resend's free plan allows 100 emails a day, so the senders stop at `EMAIL_DAILY_CAP` (default 90) and continue on the next run.
+
+## 9 Nov 2026: Newsroom articles
+- What changed: the three Newsroom articles were rewritten in full (author Michael C., publish dates 6, 7 and 8 Nov 2026) and the Newsroom pages now render them. No new data is collected, stored or sent.
+- Pages: none of `/terms`, `/privacy`, `/cookies`, `/affiliate-disclosure` or `/refunds` needed changing.
+- Counsel should look at: the Annual Pass article (R299 once-off, R99/month comparison, "saves R889", no auto-renewal) and the roadmap article ("not launching with" list, PuntPoints never cash). `[attorney review]`

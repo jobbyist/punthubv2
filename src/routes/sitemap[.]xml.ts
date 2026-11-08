@@ -46,7 +46,19 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const urls = entries.map((e) =>
+        let articleEntries: SitemapEntry[] = [];
+        try {
+          const { fetchPublished } = await import("@/lib/newsroom");
+          articleEntries = (await fetchPublished({ limit: 500 })).map((a) => ({
+            path: `/newsroom/${a.slug}`,
+            changefreq: "monthly",
+            priority: "0.6",
+            lastmod: a.published_at.slice(0, 10),
+          }));
+        } catch {
+          /* sitemap still serves the static routes */
+        }
+        const urls = [...entries, ...articleEntries].map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
