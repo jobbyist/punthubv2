@@ -10,6 +10,7 @@ import {
   UsersTab,
   WaitlistTab,
 } from "@/components/admin/admin-tabs";
+import { CampaignsTab } from "@/components/admin/campaigns-admin";
 import { IdentityTab } from "@/components/admin/identity-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { RewardsTab } from "@/components/admin/rewards-admin";
@@ -31,6 +32,7 @@ const TABS = [
   "identity",
   "rewards",
   "waitlist",
+  "campaigns",
 ] as const;
 
 /** The database and every server function re-check the role; hiding the UI is only a convenience. */
@@ -76,6 +78,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="waitlist" className="mt-5">
                   <WaitlistTab />
+                </TabsContent>
+                <TabsContent value="campaigns" className="mt-5">
+                  <CampaignsTab />
                 </TabsContent>
               </Tabs>
             </>

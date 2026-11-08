@@ -346,8 +346,12 @@ function About() {
                     className="group flex min-h-28 flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:bg-primary/5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <Trophy className="size-8 text-primary opacity-60 transition-transform group-hover:scale-110" />
-                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">{name}</span>
-                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Explore sport</span>
+                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">
+                      {name}
+                    </span>
+                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Explore sport
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -361,7 +365,9 @@ function About() {
             <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">{t("video.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
-          <div className="mx-auto mt-8 max-w-3xl"><ExplainerVideo title={t("video.iframeTitle")} /></div>
+          <div className="mx-auto mt-8 max-w-3xl">
+            <ExplainerVideo title={t("video.iframeTitle")} />
+          </div>
         </motion.section>
 
         {/* Foundation and partners */}

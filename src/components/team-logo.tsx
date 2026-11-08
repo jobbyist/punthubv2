@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 
 type TeamLogoProps = {
   team: string;
+  /** Sport key (e.g. "rugby", "cricket"), so shared national-team names get the right badge. */
+  sport?: string | undefined;
   size?: "sm" | "md" | "lg";
   className?: string;
 };
@@ -17,8 +19,8 @@ const sizeMap = {
  * Consistent rounded team logo. Falls back to a neutral circle with initials
  * when no logo asset exists for the team.
  */
-export function TeamLogo({ team, size = "md", className }: TeamLogoProps) {
-  const src = getTeamLogo(team);
+export function TeamLogo({ team, sport, size = "md", className }: TeamLogoProps) {
+  const src = getTeamLogo(team, sport);
   const dim = sizeMap[size];
 
   if (src) {

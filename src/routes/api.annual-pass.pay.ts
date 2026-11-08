@@ -11,20 +11,27 @@ export const Route = createFileRoute("/api/annual-pass/pay")({
         const token = new URL(request.url).searchParams.get("token");
         const secret = process.env["ANNUAL_PASS_LINK_SECRET"];
         if (!token || !secret)
-          return new Response("This Annual Pass payment link is invalid or has expired.", { status: 410 });
+          return new Response("This Annual Pass payment link is invalid or has expired.", {
+            status: 410,
+          });
 
         const { verifyAnnualPassPaymentToken, configuredPayfastUrl } =
           await import("@/lib/annual-pass-payment.server");
         const verified = verifyAnnualPassPaymentToken(token, secret);
         if (!verified)
-          return new Response("This Annual Pass payment link is invalid or has expired.", { status: 410 });
+          return new Response("This Annual Pass payment link is invalid or has expired.", {
+            status: 410,
+          });
 
         const { supabaseAdmin: adminClient } =
           await import("@/integrations/supabase/client.server");
         const db = adminClient as unknown as {
           from: (table: string) => {
             select: (columns: string) => {
-              eq: (column: string, value: string) => {
+              eq: (
+                column: string,
+                value: string,
+              ) => {
                 maybeSingle: () => Promise<{
                   data: { status: string; hold_expires_at: string | null } | null;
                   error: { message: string } | null;
@@ -40,9 +47,12 @@ export const Route = createFileRoute("/api/annual-pass/pay")({
           .maybeSingle();
         if (error) {
           console.error("Annual Pass payment link lookup failed", error.message);
-          return new Response("We could not verify this reservation. Please contact support@puntr.co.za.", {
-            status: 503,
-          });
+          return new Response(
+            "We could not verify this reservation. Please contact support@puntr.co.za.",
+            {
+              status: 503,
+            },
+          );
         }
 
         const holdExpiry = data?.hold_expires_at
@@ -53,15 +63,22 @@ export const Route = createFileRoute("/api/annual-pass/pay")({
           !holdExpiry ||
           holdExpiry !== verified.expiresAt ||
           holdExpiry <= Math.floor(Date.now() / 1000)
-        ) return new Response("This Annual Pass payment window has expired. Please make a new reservation if the offer is still open.", {
-          status: 410,
-        });
+        )
+          return new Response(
+            "This Annual Pass payment window has expired. Please make a new reservation if the offer is still open.",
+            {
+              status: 410,
+            },
+          );
 
         const payfastUrl = configuredPayfastUrl();
         if (!payfastUrl)
-          return new Response("PayFast checkout is temporarily unavailable. Please contact support@puntr.co.za.", {
-            status: 503,
-          });
+          return new Response(
+            "PayFast checkout is temporarily unavailable. Please contact support@puntr.co.za.",
+            {
+              status: 503,
+            },
+          );
         return Response.redirect(payfastUrl, 303);
       },
     },

@@ -41,6 +41,18 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; email and profile details are removed when you delete it",
   ],
   [
+    "Your details (optional)",
+    "First name, last name, phone number, date of birth and province, only if you choose to save them in your account. Only you and Puntr admins can see them; they are never public",
+    "Your consent (you choose to add them)",
+    "While your account is open; deleted when you delete your account",
+  ],
+  [
+    "Founding Member survey",
+    "Your answers (ratings, what you expect, pricing view, Annual Pass interest, free-text comments), whether you want to enter the draw, and whether we may contact you about it",
+    "Your consent (the survey and draw are optional)",
+    "Kept after you delete your account, linked only to an anonymous id, without your name, email or other details; we stop contacting you [attorney review]",
+  ],
+  [
     "Founding Annual Pass",
     "Account ID, claim time, hold expiry, and once paid the PayFast payment reference, amount and date",
     "Contract (selling you the pass)",
@@ -82,7 +94,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Your request (using an invite link)",
     "While your account is open",
   ],
-  ["Analytics", "Page views and button use", "Your consent", "Up to 14 months [attorney review]"],
+  [
+    "Analytics",
+    "Page views and button use, with the campaign tags of the ad or link that brought you (for example utm_source=x). Stored on our own database with a random browser ID, never with your name, email or account",
+    "Your consent",
+    "Up to 14 months [attorney review]",
+  ],
   ["Affiliate tracking", "Which ad you clicked", "Your consent", "Up to 90 days [attorney review]"],
   [
     "Marketing email, WhatsApp and SMS",
@@ -107,7 +124,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r8). Draft pending
+          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r10). Draft pending
           attorney review.
         </p>
 

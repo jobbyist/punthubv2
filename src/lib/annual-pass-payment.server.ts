@@ -18,7 +18,8 @@ export function configuredPayfastUrl(): string | null {
       url.username ||
       url.password ||
       (url.port && url.port !== "443")
-    ) return null;
+    )
+      return null;
     return url.toString();
   } catch {
     return null;
@@ -33,11 +34,13 @@ export function createAnnualPassPaymentToken(
   const expiresAt = Math.floor(new Date(holdExpiresAt).getTime() / 1000);
   if (!Number.isFinite(expiresAt) || expiresAt <= Math.floor(Date.now() / 1000))
     throw new Error("Annual Pass hold expiry is invalid");
-  const payload = Buffer.from(JSON.stringify({
-    sub: userId,
-    exp: expiresAt,
-    nonce: randomBytes(16).toString("hex"),
-  })).toString("base64url");
+  const payload = Buffer.from(
+    JSON.stringify({
+      sub: userId,
+      exp: expiresAt,
+      nonce: randomBytes(16).toString("hex"),
+    }),
+  ).toString("base64url");
   const signature = createHmac("sha256", secret).update(payload).digest("base64url");
   return `${payload}.${signature}`;
 }
@@ -69,13 +72,16 @@ export function verifyAnnualPassPaymentToken(
     };
     if (
       typeof decoded.sub !== "string" ||
-      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(decoded.sub) ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        decoded.sub,
+      ) ||
       typeof decoded.exp !== "number" ||
       !Number.isInteger(decoded.exp) ||
       typeof decoded.nonce !== "string" ||
       !/^[0-9a-f]{32}$/.test(decoded.nonce) ||
       decoded.exp <= Math.floor(Date.now() / 1000)
-    ) return null;
+    )
+      return null;
     return { userId: decoded.sub, expiresAt: decoded.exp };
   } catch {
     return null;

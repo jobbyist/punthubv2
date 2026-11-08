@@ -1,9 +1,11 @@
 /**
  * Lightweight analytics helper.
- * Pushes events to any installed analytics layer (GA4 / GTM) and logs in dev.
+ * Pushes events to any installed analytics layer (GA4 / GTM), stores them first-party in Supabase
+ * (campaign_events, with the ad's UTM tags) for the admin Campaigns tab, and logs in dev.
  * Nothing is sent or queued until the visitor has said yes to the Analytics purpose (POPIA).
  */
-import { hasConsent } from "@/lib/consent";
+import { currentUtm } from "@/lib/campaign";
+import { hasConsent, readConsent } from "@/lib/consent";
 
 type AnalyticsPayload = Record<string, string | number | boolean | undefined>;
 
@@ -28,7 +30,34 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
     /* analytics must never break the UI */
   }
 
+  void storeEvent(event, payload);
+
   if (import.meta.env.DEV) console.info("[analytics]", event, payload);
+}
+
+/** First-party copy for the admin dashboard. Only the consent cookie's random id identifies the browser. */
+async function storeEvent(event: string, payload: AnalyticsPayload) {
+  const visitor = readConsent()?.id;
+  if (!visitor) return;
+  const utm = currentUtm();
+  const detailValue =
+    payload["position"] ?? payload["plan"] ?? payload["source"] ?? payload["what"];
+  try {
+    const { supabase } = await import("@/integrations/supabase/client");
+    await supabase.rpc("log_campaign_event", {
+      p_event: event,
+      p_visitor: visitor,
+      ...(utm.utm_source ? { p_utm_source: utm.utm_source } : {}),
+      ...(utm.utm_medium ? { p_utm_medium: utm.utm_medium } : {}),
+      ...(utm.utm_campaign ? { p_utm_campaign: utm.utm_campaign } : {}),
+      ...(utm.utm_content ? { p_utm_content: utm.utm_content } : {}),
+      ...(utm.utm_term ? { p_utm_term: utm.utm_term } : {}),
+      ...(typeof location !== "undefined" ? { p_path: location.pathname } : {}),
+      ...(detailValue === undefined ? {} : { p_detail: String(detailValue) }),
+    });
+  } catch {
+    /* analytics must never break the UI */
+  }
 }
 
 export const analytics = {
@@ -60,4 +89,8 @@ export const analytics = {
   aboutFoundingCtaClicked: () => trackEvent("about_founding_cta_clicked"),
   aboutNewsroomClicked: () => trackEvent("about_newsroom_clicked"),
   surveySubmitted: (draw: boolean) => trackEvent("survey_submitted", { draw }),
+  landingViewed: (page: string) => trackEvent("landing_viewed", { source: page }),
+  foundingCtaClicked: (position: string) => trackEvent("founding_cta_clicked", { position }),
+  signupCompleted: (founding: boolean) =>
+    trackEvent("signup_completed", { what: founding ? "founding" : "member" }),
 };

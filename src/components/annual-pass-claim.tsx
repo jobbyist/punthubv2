@@ -7,10 +7,8 @@ import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  reserveAnnualPass,
-  type ReserveAnnualPassResult,
-} from "@/lib/annual-pass.functions";
+import { analytics } from "@/lib/analytics";
+import { reserveAnnualPass, type ReserveAnnualPassResult } from "@/lib/annual-pass.functions";
 
 const SPOTS = 20;
 const DEADLINE = "16 November 2026";
@@ -133,27 +131,27 @@ export function AnnualPassClaim({
           <>
             {holdValid && <p className="text-sm font-semibold">{t("pass.pending", { until })}</p>}
             <Button onClick={submitReservation} disabled={busy} size="lg" className="h-11 px-6">
-              {busy
-                ? t("pass.reserving")
-                : holdValid
-                  ? t("pass.resendEmail")
-                  : t("pass.reserve")}
+              {busy ? t("pass.reserving") : holdValid ? t("pass.resendEmail") : t("pass.reserve")}
             </Button>
             {result?.ok && (
               <p className="text-sm font-semibold text-primary">
-                {t("pass.emailSent", { until: new Date(result.holdExpiresAt).toLocaleString(i18n.language, {
-                  day: "numeric",
-                  month: "long",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  timeZone: "Africa/Johannesburg",
-                }) })}
+                {t("pass.emailSent", {
+                  until: new Date(result.holdExpiresAt).toLocaleString(i18n.language, {
+                    day: "numeric",
+                    month: "long",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "Africa/Johannesburg",
+                  }),
+                })}
               </p>
             )}
           </>
         ) : (
           <Button asChild size="lg" className="h-11 px-6">
-            <Link to="/join">{t("pass.join")}</Link>
+            <Link to="/join" onClick={() => analytics.foundingCtaClicked("pass")}>
+              {t("pass.join")}
+            </Link>
           </Button>
         )}
         {reasonText && <p className="text-sm text-muted-foreground">{reasonText}</p>}

@@ -44,8 +44,8 @@ export const teamLogos: Record<string, string> = {
   "Bayern Munich": "/teams/bayernmunich.png",
   Arsenal: "/teams/arsenal.svg",
   Liverpool: "/teams/liverpool.svg",
-  "Golden State Warriors": "https://puntr.co.za/teams/goldenstate.JPG",
-  "Boston Celtics": "https://puntr.co.za/teams/celtics.PNG",
+  "Golden State Warriors": "/teams/goldenstate.jpg",
+  "Boston Celtics": "/teams/celtics.png",
   "South Africa Springboks (Rugby)": "/teams/springboks.jpg",
   Springboks: "/teams/springboks.jpg",
   "South Africa (Rugby)": "/teams/springboks.jpg",
@@ -56,6 +56,17 @@ export const teamLogos: Record<string, string> = {
   "India (Cricket)": "/teams/india.png",
 };
 
-export function getTeamLogo(teamName: string): string | undefined {
+const SPORT_SUFFIX: Record<string, string> = { rugby: "Rugby", cricket: "Cricket" };
+
+/**
+ * Logo for a team. National sides share names across sports ("South Africa" plays rugby and cricket), so
+ * pass the sport to pick the right badge; it looks up "South Africa (Rugby)" when the plain name has none.
+ */
+export function getTeamLogo(teamName: string, sport?: string): string | undefined {
+  const suffix = sport ? SPORT_SUFFIX[sport.toLowerCase()] : undefined;
+  if (suffix) {
+    const qualified = teamLogos[`${teamName} (${suffix})`];
+    if (qualified) return qualified;
+  }
   return teamLogos[teamName];
 }

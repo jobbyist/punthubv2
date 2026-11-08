@@ -31,15 +31,14 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
       paymentSecret.length < 32 ||
       !process.env["RESEND_API_KEY"] ||
       !(await import("@/lib/annual-pass-payment.server")).configuredPayfastUrl()
-    ) return { ok: false, reason: "email_not_configured" };
+    )
+      return { ok: false, reason: "email_not_configured" };
 
     const claims = context.claims as unknown as Record<string, unknown>;
     const email = typeof claims["email"] === "string" ? claims["email"].trim().toLowerCase() : "";
     if (!email) return { ok: false, reason: "missing_email" };
 
-    const rpc = context.supabase.rpc.bind(context.supabase) as unknown as (
-      fn: string,
-    ) => Promise<{
+    const rpc = context.supabase.rpc.bind(context.supabase) as unknown as (fn: string) => Promise<{
       data: { status: string; hold_expires_at?: string } | null;
       error: { message: string } | null;
     }>;

@@ -107,12 +107,13 @@ function Terms() {
               <li>
                 A limited Founding Annual Pass offer: the first 20 Founding Members to reserve it
                 before 16 November 2026 get 12 months of Puntr Pro for a once-off R299, starting on
-                1 December 2026, with no automatic renewal. Reserving is free on Puntr. We email a secure PayFast payment link; payment must be completed
-                within 48 hours or the reservation expires and the place is released. The Annual Pass is
-                confirmed only after payment is received. Refunds are covered on the Refunds page.
-                Referral rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases
-                made by people you invite (never cash), are not available until we publish their
-                terms [attorney review]
+                1 December 2026, with no automatic renewal. Reserving is free on Puntr. We email a
+                secure PayFast payment link; payment must be completed within 48 hours or the
+                reservation expires and the place is released. The Annual Pass is confirmed only
+                after payment is received. Refunds are covered on the Refunds page. Referral
+                rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases made by
+                people you invite (never cash), are not available until we publish their terms
+                [attorney review]
               </li>
               <li>Educational content and betting resources</li>
               <li>Links to licensed partners, marked &quot;Ad&quot;</li>
@@ -128,7 +129,9 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">5. Payments & Third-Party Services</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Annual Pass payments:</strong> Reserving an Annual Pass is free on Puntr. We email a secure PayFast payment link, and PayFast processes the R299 payment directly. Puntr does not hold payment funds, accept bets, set odds or handle winnings.
+              <strong>Annual Pass payments:</strong> Reserving an Annual Pass is free on Puntr. We
+              email a secure PayFast payment link, and PayFast processes the R299 payment directly.
+              Puntr does not hold payment funds, accept bets, set odds or handle winnings.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               <strong>Third-Party Terms:</strong> If you follow a link to a licensed operator or
