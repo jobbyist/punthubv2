@@ -2,7 +2,7 @@
  * Internal alerts to the single support inbox (support@puntr.co.za): Founding Member sign-ups, Annual Pass
  * reservations and similar events. Server-only.
  *
- * Each event is sent once: a row in form_submissions (form = 'other') holds only the dedupe key and the event
+ * Each event is sent once: a unique index on the dedupe key (form_submissions_dedupe_idx) decides who wins a race, and a row in form_submissions (form = 'other') holds only the dedupe key and the event
  * name, no name or email, so repeat calls (a page reload, a resent email) do not alert twice. A failed send
  * never breaks the member's action; it is logged and the row keeps emailed = false.
  */
@@ -38,6 +38,8 @@ export async function notifySupportOnce(e: SupportEvent): Promise<void> {
       .insert({ form: "other", meta: { event: e.event, dedupe: e.key } })
       .select("id")
       .single();
+    // 23505: another request recorded the same key first (unique index form_submissions_dedupe_idx). Skip quietly.
+    if (error?.code === "23505") return;
     if (error || !row) {
       console.error("support notice not recorded", e.event, error?.message);
       return;
