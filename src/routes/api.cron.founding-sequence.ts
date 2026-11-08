@@ -97,13 +97,15 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
         // The claim email carries each person's held number.
         const numbers = new Map<string, number>();
         if (entry.earlyOnly && queue.length > 0) {
+          // Small table (at most 100 reserved spots): read them all and match on lower-cased email, so mixed-case
+          // addresses still line up with the recipient list.
           const { data: held } = await (
             typedAdmin as unknown as {
               from: (t: string) => {
                 select: (c: string) => {
-                  in: (
+                  eq: (
                     col: string,
-                    v: string[],
+                    v: boolean,
                   ) => Promise<{
                     data: { email: string; founding_number: number | null }[] | null;
                   }>;
@@ -113,10 +115,7 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
           )
             .from("early_access")
             .select("email, founding_number")
-            .in(
-              "email",
-              queue.map((r) => r.recipient_email),
-            );
+            .eq("founding_reserved", true);
           for (const h of held ?? [])
             if (h.founding_number) numbers.set(h.email.toLowerCase(), h.founding_number);
         }
