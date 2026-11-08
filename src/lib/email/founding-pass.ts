@@ -32,7 +32,7 @@ export function renderFoundingPassEmail({ name, isMember, unsubscribeUrl }: Foun
     ? "Thank you for getting in early. Founding Member sign-ups opened on 2 November and Puntr launches on Tuesday 1 December 2026. Predict what's next. Prove your worth."
     : "Founding Member sign-ups opened on 2 November and Puntr launches on Tuesday 1 December 2026. Your Founding spot is waiting. Get in early. Become a founding member. Be part of what's next.";
   const offer = [
-    `Open to the first ${PASS_SPOTS} founding members who claim it before ${PASS_DEADLINE_TEXT}`,
+    `Open to the first ${PASS_SPOTS} founding members who reserve it before ${PASS_DEADLINE_TEXT}`,
     "12 months of Puntr Pro for a once-off R299",
     "Standard Puntr Pro is R99 a month (R1,188 a year), so you save R889",
     "Your 12 months start on launch day, 1 December 2026",
@@ -41,7 +41,7 @@ export function renderFoundingPassEmail({ name, isMember, unsubscribeUrl }: Foun
   const note =
     "The Annual Pass is a prepaid membership for the Puntr platform and tools. It is not an investment and it does not change how predictions are graded. " +
     PASS_PAYMENT_TEXT;
-  const cta = isMember ? "Claim and pay R299" : "Claim my Founding spot";
+  const cta = isMember ? "Reserve my Annual Pass" : "Claim my Founding spot";
   const link = isMember ? PASS_CLAIM_URL : `${SITE}/join`;
   const reason =
     "You are getting this because you opted in to updates from Puntr. Unsubscribe at any time.";

@@ -51,6 +51,7 @@ import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as SportsSportRouteImport } from './routes/sports.$sport'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
@@ -270,6 +271,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAnnualPassPayRoute = ApiAnnualPassPayRouteImport.update({
+  id: '/api/annual-pass/pay',
+  path: '/api/annual-pass/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
   id: '/api/cron/chain-head',
   path: '/api/cron/chain-head',
@@ -355,6 +361,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -406,6 +413,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -459,6 +467,7 @@ export interface FileRoutesById {
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -513,6 +522,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/newsroom/'
+    | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
@@ -564,6 +574,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/newsroom'
+    | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
@@ -616,6 +627,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/newsroom/'
+    | '/api/annual-pass/pay'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-welcome'
@@ -667,6 +679,7 @@ export interface RootRouteChildren {
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
@@ -973,6 +986,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/annual-pass/pay': {
+      id: '/api/annual-pass/pay'
+      path: '/api/annual-pass/pay'
+      fullPath: '/api/annual-pass/pay'
+      preLoaderRoute: typeof ApiAnnualPassPayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/chain-head': {
       id: '/api/cron/chain-head'
       path: '/api/cron/chain-head'
@@ -1087,6 +1107,7 @@ const rootRouteChildren: RootRouteChildren = {
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
