@@ -1,22 +1,37 @@
-type ExplainerVideoProps = {
-  title: string;
-};
+import { useTranslation } from "react-i18next";
 
-/** Shared Puntr explainer player used by the homepage and About page. */
-export function ExplainerVideo({ title }: ExplainerVideoProps) {
+/**
+ * The Puntr explainer, self-hosted in Supabase Storage (public "media" bucket) instead of YouTube, so no third-party
+ * player or cookies load. 720p H.264, ~10 MB, faststart so it begins playing before it fully downloads.
+ * preload="none": nothing is downloaded until the visitor presses play.
+ */
+export const EXPLAINER_VIDEO_URL =
+  "https://hucjuekhitjuygcoomhw.supabase.co/storage/v1/object/public/media/explainer/puntr-explainer-720p.mp4";
+export const EXPLAINER_POSTER_URL = "/explainer-poster.jpg";
+
+export function ExplainerVideo({
+  autoPlay = false,
+  className = "",
+  ns = "about",
+}: {
+  autoPlay?: boolean;
+  className?: string;
+  /** Namespace whose video.iframeTitle labels the player. */
+  ns?: "about" | "home";
+}) {
+  const { t } = useTranslation(ns);
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-xl bg-black"
-      style={{ aspectRatio: "16 / 9" }}
+    <video
+      className={`block aspect-video w-full bg-black ${className}`}
+      src={EXPLAINER_VIDEO_URL}
+      poster={EXPLAINER_POSTER_URL}
+      controls
+      playsInline
+      preload={autoPlay ? "auto" : "none"}
+      autoPlay={autoPlay}
+      aria-label={t("video.iframeTitle")}
     >
-      <iframe
-        src="https://www.youtube-nocookie.com/embed/pBCncBbeWkc?rel=0"
-        className="absolute inset-0 size-full border-0"
-        allowFullScreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin"
-        title={title}
-      />
-    </div>
+      <a href={EXPLAINER_VIDEO_URL}>{t("video.iframeTitle")}</a>
+    </video>
   );
 }
