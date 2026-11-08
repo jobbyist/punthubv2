@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * Sends one Founding Member sequence campaign (checklist, survey, referral, countdown) to opted-in recipients,
+ * Sends one Founding Member sequence campaign (claim, checklist, survey, referral, countdown) to opted-in recipients,
  * once per address per campaign (founding_campaign_sends). Safe to call repeatedly.
  *
  *   GET /api/cron/founding-sequence?campaign=founding-survey-1          sends the campaign (needs LAUNCH_EMAILS_ENABLED=true)
@@ -43,6 +43,7 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
           const mail = entry.render({
             name: "Test",
             unsubscribeUrl: unsubscribeUrl(SUPPORT_INBOX, secret),
+            foundingNumber: 3,
           });
           const res = await sendViaResend({
             to: [SUPPORT_INBOX],
@@ -90,13 +91,45 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
         // ?limit=N lets a schedule take only part of the day's allowance, so two campaigns can share it.
         const asked = Number(new URL(request.url).searchParams.get("limit"));
         const cap = asked > 0 ? Math.min(dailyCap, asked) : dailyCap;
-        const queue = (data ?? []).filter((r) => r.is_member || !entry.memberOnly);
+        const queue = (data ?? []).filter((r) =>
+          entry.earlyOnly ? !r.is_member : r.is_member || !entry.memberOnly,
+        );
+        // The claim email carries each person's held number.
+        const numbers = new Map<string, number>();
+        if (entry.earlyOnly && queue.length > 0) {
+          const { data: held } = await (
+            typedAdmin as unknown as {
+              from: (t: string) => {
+                select: (c: string) => {
+                  in: (
+                    col: string,
+                    v: string[],
+                  ) => Promise<{
+                    data: { email: string; founding_number: number | null }[] | null;
+                  }>;
+                };
+              };
+            }
+          )
+            .from("early_access")
+            .select("email, founding_number")
+            .in(
+              "email",
+              queue.map((r) => r.recipient_email),
+            );
+          for (const h of held ?? [])
+            if (h.founding_number) numbers.set(h.email.toLowerCase(), h.founding_number);
+        }
         let sent = 0;
         let failed = 0;
         for (const r of queue) {
           if (sent + failed >= cap) break;
           const unsub = unsubscribeUrl(r.recipient_email, secret);
-          const mail = entry.render({ name: r.recipient_name ?? "", unsubscribeUrl: unsub });
+          const mail = entry.render({
+            name: r.recipient_name ?? "",
+            unsubscribeUrl: unsub,
+            foundingNumber: numbers.get(r.recipient_email.toLowerCase()),
+          });
           const res = await sendViaResend({
             to: [r.recipient_email],
             reply_to: REPLY_TO,
