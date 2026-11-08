@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import { AppShell } from "@/components/layout/app-shell";
 import { useAsync } from "@/hooks/use-async";
 import { analytics } from "@/lib/analytics";
 import { formatDate } from "@/lib/format";
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/newsroom/$slug")({
     return {
       links: [{ rel: "canonical", href: url }],
       meta: [
-        { title: `${title} | Puntr` },
+        { title: /\bPuntr\b/.test(title) ? title : `${title} | Puntr` },
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
@@ -33,9 +34,38 @@ export const Route = createFileRoute("/newsroom/$slug")({
         { property: "og:url", content: url },
         ...(image ? [{ property: "og:image", content: image }] : []),
         { name: "twitter:card", content: image ? "summary_large_image" : "summary" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(image ? [{ name: "twitter:image", content: image }] : []),
+        { property: "og:site_name", content: "Puntr" },
+        { property: "og:locale", content: "en_ZA" },
         { property: "article:published_time", content: loaderData.published_at },
+        {
+          property: "article:modified_time",
+          content: loaderData.updated_at ?? loaderData.published_at,
+        },
+        { property: "article:author", content: loaderData.author_name },
+        { property: "article:section", content: loaderData.category },
+        { name: "author", content: loaderData.author_name },
       ],
       scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Puntr", item: "https://puntr.co.za/" },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Newsroom",
+                item: "https://puntr.co.za/newsroom",
+              },
+              { "@type": "ListItem", position: 3, name: loaderData.title, item: url },
+            ],
+          }),
+        },
         {
           type: "application/ld+json",
           children: JSON.stringify({
@@ -44,9 +74,17 @@ export const Route = createFileRoute("/newsroom/$slug")({
             headline: loaderData.title,
             description,
             datePublished: loaderData.published_at,
-            author: { "@type": "Organization", name: loaderData.author_name },
-            publisher: { "@type": "Organization", name: "Puntr", url: "https://puntr.co.za/" },
-            mainEntityOfPage: url,
+            dateModified: loaderData.updated_at ?? loaderData.published_at,
+            inLanguage: "en-ZA",
+            articleSection: loaderData.category,
+            author: { "@type": "Person", name: loaderData.author_name },
+            publisher: {
+              "@type": "Organization",
+              name: "Puntr",
+              url: "https://puntr.co.za/",
+              logo: { "@type": "ImageObject", url: "https://puntr.co.za/puntrlogo.png" },
+            },
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
             ...(image ? { image } : {}),
           }),
         },
@@ -83,89 +121,158 @@ function Article() {
     analytics.newsroomArticleViewed(a.slug);
   }, [a.slug]);
 
-  // Body is plain text: blank lines separate paragraphs. It is never rendered as HTML.
-  const paragraphs = a.body.split(/\n{2,}/).filter((p) => p.trim().length > 0);
+  const blocks = parseBody(a.body);
+  const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const enc = encodeURIComponent;
 
   return (
-    <article className="mx-auto max-w-[720px] px-4 py-10 sm:px-6 sm:py-14">
-      <Link to="/newsroom" className="text-sm font-semibold text-primary hover:underline">
-        {t("back")}
-      </Link>
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-primary">
-        {t(`cat.${a.category}`)}
-      </p>
-      <h1 className="mt-3 text-[clamp(2rem,5vw,3rem)] leading-[1.1]">{a.title}</h1>
-      <p className="mt-4 text-sm text-muted-foreground tnum">
-        {formatDate(a.published_at)} · {t("by", { author: a.author_name })}
-      </p>
-      {a.cover_image_url && (
-        <img src={a.cover_image_url} alt="" className="mt-6 w-full border border-border" />
-      )}
-      <p className="mt-6 text-lg font-medium">{a.excerpt}</p>
-      <div className="mt-6 space-y-4 leading-relaxed">
-        {paragraphs.map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
-      </div>
+    <AppShell>
+      <article className="mx-auto max-w-[720px] px-4 py-10 sm:px-6 sm:py-14">
+        <Link to="/newsroom" className="text-sm font-semibold text-primary hover:underline">
+          {t("back")}
+        </Link>
+        <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-primary">
+          {t(`cat.${a.category}`)}
+        </p>
+        <h1 className="mt-3 text-[clamp(2rem,5vw,3rem)] leading-[1.1]">{a.title}</h1>
+        <p className="mt-4 text-sm text-muted-foreground tnum">
+          {formatDate(a.published_at)} · {t("by", { author: a.author_name })}
+        </p>
+        {a.cover_image_url && (
+          <img
+            src={a.cover_image_url}
+            alt={a.title}
+            width={1200}
+            height={630}
+            className="mt-6 h-auto w-full border border-border"
+          />
+        )}
+        <p className="mt-6 text-lg font-medium">{a.excerpt}</p>
+        <div className="mt-6 space-y-4 leading-relaxed">
+          {blocks.map((b, i) =>
+            b.type === "h2" ? (
+              <h2 key={i} className="pt-4 text-2xl">
+                {b.text}
+              </h2>
+            ) : b.type === "ul" ? (
+              <ul key={i} className="list-disc space-y-1.5 pl-6">
+                {b.items.map((it, j) => (
+                  <li key={j}>{it}</li>
+                ))}
+              </ul>
+            ) : (
+              <p key={i}>{b.text}</p>
+            ),
+          )}
+        </div>
 
-      <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-border pt-6 text-sm">
-        <span className="font-semibold">{t("share")}</span>
-        <a
-          className="text-primary hover:underline"
-          href={`https://wa.me/?text=${encodeURIComponent(`${a.title} ${url}`)}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          onClick={() => analytics.newsroomArticleShared(a.slug, "whatsapp")}
-        >
-          {t("shareWhatsapp")}
-        </a>
-        <a
-          className="text-primary hover:underline"
-          href={`https://x.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent(url)}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          onClick={() => analytics.newsroomArticleShared(a.slug, "x")}
-        >
-          {t("shareX")}
-        </a>
-        <button
-          type="button"
-          className="text-primary hover:underline"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(url);
-              toast.success(t("copied"));
-              analytics.newsroomArticleShared(a.slug, "copy");
-            } catch {
-              /* clipboard unavailable */
-            }
-          }}
-        >
-          {t("copyLink")}
-        </button>
-      </div>
+        <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-border pt-6 text-sm">
+          <span className="font-semibold">{t("share")}</span>
+          {canNativeShare && (
+            <button
+              type="button"
+              className="text-primary hover:underline"
+              onClick={() => {
+                analytics.newsroomArticleShared(a.slug, "native");
+                void navigator
+                  .share({ title: a.title, text: a.excerpt, url })
+                  .catch(() => undefined);
+              }}
+            >
+              {t("shareNative")}
+            </button>
+          )}
+          {[
+            ["whatsapp", t("shareWhatsapp"), `https://wa.me/?text=${enc(`${a.title} ${url}`)}`],
+            ["x", t("shareX"), `https://x.com/intent/tweet?text=${enc(a.title)}&url=${enc(url)}`],
+            [
+              "facebook",
+              t("shareFacebook"),
+              `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`,
+            ],
+            [
+              "linkedin",
+              t("shareLinkedin"),
+              `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`,
+            ],
+            [
+              "email",
+              t("shareEmail"),
+              `mailto:?subject=${enc(a.title)}&body=${enc(`${a.excerpt}\n\n${url}`)}`,
+            ],
+          ].map(([channel, label, href]) => (
+            <a
+              key={channel}
+              className="text-primary hover:underline"
+              href={href}
+              target={channel === "email" ? undefined : "_blank"}
+              rel="noreferrer noopener"
+              onClick={() => analytics.newsroomArticleShared(a.slug, channel as string)}
+            >
+              {label}
+            </a>
+          ))}
+          <button
+            type="button"
+            className="text-primary hover:underline"
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(url);
+                toast.success(t("copied"));
+                analytics.newsroomArticleShared(a.slug, "copy");
+              } catch {
+                /* clipboard unavailable */
+              }
+            }}
+          >
+            {t("copyLink")}
+          </button>
+        </div>
 
-      {related.length > 0 && (
-        <section className="mt-10">
-          <h2 className="text-xl">{t("related")}</h2>
-          <ul className="mt-4 space-y-3">
-            {related.map((r) => (
-              <li key={r.id}>
-                <Link
-                  to="/newsroom/$slug"
-                  params={{ slug: r.slug }}
-                  className="font-semibold hover:underline"
-                >
-                  {r.title}
-                </Link>
-                <span className="ml-2 text-xs text-muted-foreground tnum">
-                  {formatDate(r.published_at)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </article>
+        {related.length > 0 && (
+          <section className="mt-10">
+            <h2 className="text-xl">{t("related")}</h2>
+            <ul className="mt-4 space-y-3">
+              {related.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    to="/newsroom/$slug"
+                    params={{ slug: r.slug }}
+                    className="font-semibold hover:underline"
+                  >
+                    {r.title}
+                  </Link>
+                  <span className="ml-2 text-xs text-muted-foreground tnum">
+                    {formatDate(r.published_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </article>
+    </AppShell>
   );
+}
+
+type Block =
+  { type: "h2"; text: string } | { type: "p"; text: string } | { type: "ul"; items: string[] };
+
+/**
+ * Body is plain text, never HTML. Blank lines separate blocks; a block starting "## " is a heading and a block
+ * whose lines all start "- " is a bullet list.
+ */
+function parseBody(body: string): Block[] {
+  return body
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter((b) => b.length > 0)
+    .map((b): Block => {
+      if (b.startsWith("## ")) return { type: "h2", text: b.slice(3).trim() };
+      const lines = b.split("\n");
+      if (lines.every((l) => l.startsWith("- "))) {
+        return { type: "ul", items: lines.map((l) => l.slice(2).trim()) };
+      }
+      return { type: "p", text: lines.join(" ") };
+    });
 }

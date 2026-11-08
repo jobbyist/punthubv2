@@ -20,6 +20,7 @@ export interface NewsroomArticle {
   category: NewsroomCategory;
   author_name: string;
   published_at: string;
+  updated_at: string | null;
   seo_title: string | null;
   seo_description: string | null;
   og_image_url: string | null;
@@ -28,7 +29,7 @@ export interface NewsroomArticle {
 export type NewsroomSummary = Omit<NewsroomArticle, "body">;
 
 const SUMMARY_COLUMNS =
-  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, seo_title, seo_description, og_image_url";
+  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, updated_at, seo_title, seo_description, og_image_url";
 
 export function isCategory(value: unknown): value is NewsroomCategory {
   return typeof value === "string" && (NEWSROOM_CATEGORIES as readonly string[]).includes(value);

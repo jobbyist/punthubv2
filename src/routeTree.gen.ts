@@ -24,7 +24,6 @@ import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
 import { Route as LiveScoresRouteImport } from './routes/live-scores'
-import { Route as NewsroomRouteImport } from './routes/newsroom'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -137,11 +136,6 @@ const LiveScoresRoute = LiveScoresRouteImport.update({
   path: '/live-scores',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsroomRoute = NewsroomRouteImport.update({
-  id: '/newsroom',
-  path: '/newsroom',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PredictionsRoute = PredictionsRouteImport.update({
   id: '/predictions',
   path: '/predictions',
@@ -248,14 +242,14 @@ const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsroomIndexRoute = NewsroomIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NewsroomRoute,
+  id: '/newsroom/',
+  path: '/newsroom/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NewsroomSlugRoute = NewsroomSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => NewsroomRoute,
+  id: '/newsroom/$slug',
+  path: '/newsroom/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
   id: '/privacy_/request',
@@ -340,7 +334,6 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
-  '/newsroom': typeof NewsroomRouteWithChildren
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -448,7 +441,6 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
-  '/newsroom': typeof NewsroomRouteWithChildren
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -504,7 +496,6 @@ export interface FileRouteTypes {
     | '/join'
     | '/leaderboards'
     | '/live-scores'
-    | '/newsroom'
     | '/predictions'
     | '/pricing'
     | '/privacy'
@@ -611,7 +602,6 @@ export interface FileRouteTypes {
     | '/join'
     | '/leaderboards'
     | '/live-scores'
-    | '/newsroom'
     | '/predictions'
     | '/pricing'
     | '/privacy'
@@ -666,7 +656,6 @@ export interface RootRouteChildren {
   JoinRoute: typeof JoinRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
   LiveScoresRoute: typeof LiveScoresRoute
-  NewsroomRoute: typeof NewsroomRouteWithChildren
   PredictionsRoute: typeof PredictionsRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -686,11 +675,13 @@ export interface RootRouteChildren {
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
+  NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   SportsSportRoute: typeof SportsSportRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
@@ -808,13 +799,6 @@ declare module '@tanstack/react-router' {
       path: '/live-scores'
       fullPath: '/live-scores'
       preLoaderRoute: typeof LiveScoresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/newsroom': {
-      id: '/newsroom'
-      path: '/newsroom'
-      fullPath: '/newsroom'
-      preLoaderRoute: typeof NewsroomRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predictions': {
@@ -966,17 +950,17 @@ declare module '@tanstack/react-router' {
     }
     '/newsroom/': {
       id: '/newsroom/'
-      path: '/'
+      path: '/newsroom'
       fullPath: '/newsroom/'
       preLoaderRoute: typeof NewsroomIndexRouteImport
-      parentRoute: typeof NewsroomRoute
+      parentRoute: typeof rootRouteImport
     }
     '/newsroom/$slug': {
       id: '/newsroom/$slug'
-      path: '/$slug'
+      path: '/newsroom/$slug'
       fullPath: '/newsroom/$slug'
       preLoaderRoute: typeof NewsroomSlugRouteImport
-      parentRoute: typeof NewsroomRoute
+      parentRoute: typeof rootRouteImport
     }
     '/privacy_/request': {
       id: '/privacy_/request'
@@ -1072,20 +1056,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface NewsroomRouteChildren {
-  NewsroomSlugRoute: typeof NewsroomSlugRoute
-  NewsroomIndexRoute: typeof NewsroomIndexRoute
-}
-
-const NewsroomRouteChildren: NewsroomRouteChildren = {
-  NewsroomSlugRoute: NewsroomSlugRoute,
-  NewsroomIndexRoute: NewsroomIndexRoute,
-}
-
-const NewsroomRouteWithChildren = NewsroomRoute._addFileChildren(
-  NewsroomRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -1102,7 +1072,6 @@ const rootRouteChildren: RootRouteChildren = {
   JoinRoute: JoinRoute,
   LeaderboardsRoute: LeaderboardsRoute,
   LiveScoresRoute: LiveScoresRoute,
-  NewsroomRoute: NewsroomRouteWithChildren,
   PredictionsRoute: PredictionsRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
@@ -1122,11 +1091,13 @@ const rootRouteChildren: RootRouteChildren = {
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
+  NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   SportsSportRoute: SportsSportRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  NewsroomIndexRoute: NewsroomIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
