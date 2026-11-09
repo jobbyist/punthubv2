@@ -20,7 +20,7 @@
   "perks": {
     "title": "Your Founding Member benefits",
     "f1": "A permanent Founding badge, numbered #1 to #100",
-    "f2": "Full access to posting, your record and the weekly leaderboard",
+    "f2": "Full access to posting, your record and the weekly leaderboard from launch on 1 December 2026",
     "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch"
   },
   "steps": {
@@ -31,11 +31,11 @@
     },
     "s2": {
       "title": "Back your call",
-      "body": "Post picks on upcoming football matches before kick-off. Each pick is locked and cannot be edited or deleted."
+      "body": "From launch on 1 December 2026, post picks on upcoming football matches before kick-off. Each pick is locked and cannot be edited or deleted."
     },
     "s3": {
       "title": "Build a public record",
-      "body": "Picks are graded automatically, so your record speaks for you."
+      "body": "Picks will be graded automatically, so your record speaks for you."
     }
   },
   "fine": "Puntr is a sports prediction community, not a bookmaker. Founding Membership is free and limited to the first 100 members.",
