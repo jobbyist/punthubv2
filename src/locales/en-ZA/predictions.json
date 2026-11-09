@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "Fixtures and predictions | Puntr",
-    "description": "Upcoming Betway Premiership, Premier League, Champions League and more football fixtures. Post a pick before kick-off and build a locked, public record.",
+    "description": "Upcoming Betway Premiership, Premier League, Champions League and more football fixtures. Picks open at launch on 1 December 2026. Join free now. 18+.",
     "ogTitle": "Fixtures and predictions | Puntr",
     "ogDescription": "Upcoming PSL, EPL, UCL and more football fixtures."
   },
   "title": "Predictions",
-  "subtitle": "Upcoming fixtures in South African time. Picks close at kick-off.",
+  "subtitle": "Upcoming fixtures in South African time. Picks open at launch on 1 December 2026 and close at kick-off.",
   "filter": {
     "all": "All leagues",
     "soccer": "Soccer",
@@ -26,8 +26,8 @@
     "all": "All fixtures"
   },
   "gate": {
-    "label": "Create a free account to unlock today's predictions.",
-    "values": "Create a free account to see odds and confidence.",
+    "label": "Create a free account to be ready when predictions open on 1 December 2026.",
+    "values": "Create a free account to see odds and confidence at launch.",
     "valuesAria": "Locked. Create a free account to view."
   },
   "pick": "Make a pick"

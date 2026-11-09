@@ -11,12 +11,12 @@
   "title": "Community",
   "subtitle": "The latest locked picks from across Puntr. Every pick stays on the record, win or lose.",
   "composer": {
-    "prompt": "Post a pick on an upcoming match",
-    "locked": "Create a free account to post picks.",
+    "prompt": "Picks open on 1 December 2026",
+    "locked": "Create a free account now to be ready for launch day.",
     "soccer": "Soccer",
     "rugby": "Rugby",
     "fixtures": "All fixtures",
-    "post": "Choose a match",
+    "post": "See fixtures",
     "avatar": "You"
   },
   "tabs": {
@@ -37,7 +37,7 @@
   },
   "feed": {
     "empty": {
-      "new": "No picks yet. Be the first: choose a match and lock a pick.",
+      "new": "No picks yet. Posting opens when Puntr launches on 1 December 2026.",
       "top": "Top tipsters appear once this week's first picks are settled.",
       "mine": "You haven't posted a pick yet."
     },

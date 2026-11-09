@@ -793,7 +793,7 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
       )}
       <div className="flex flex-wrap gap-3">
         <Button asChild>
-          <Link to="/predictions">{t("join.done.cta")}</Link>
+          <Link to="/roadmap">{t("join.done.cta")}</Link>
         </Button>
         {profile && (
           <Button asChild variant="outline">
