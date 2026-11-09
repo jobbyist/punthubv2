@@ -206,3 +206,6 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 
 ## 9 Nov 2026: Pre-launch copy sweep
 - What changed: copy on home, community, predictions, how-it-works, Founding, pricing, rewards, matchday gate and sign-up now states that picks, the leaderboard and rewards open at launch on 1 Dec 2026, instead of implying they are live. Home hero now carries the owner's campaign positioning. No data collection changed; no legal page text changed. List of strings to flip at launch: `docs/launch-day-copy.md`.
+
+## 9 Nov 2026: Annual Pass PayFast short links
+- What changed: the Annual Pass payment redirect now also accepts PayFast's own short-link domain `payf.st` (https only). No new processor, no data collected, no legal page changed; PayFast was already the stated processor.

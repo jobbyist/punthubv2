@@ -33,13 +33,16 @@ export const reserveAnnualPass = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ReserveAnnualPassResult> => {
     const paymentSecret = process.env["ANNUAL_PASS_LINK_SECRET"];
-    if (
-      !paymentSecret ||
-      paymentSecret.length < 32 ||
-      !process.env["RESEND_API_KEY"] ||
-      !(await import("@/lib/annual-pass-payment.server")).configuredPayfastUrl()
-    )
+    const missing: string[] = [];
+    if (!paymentSecret || paymentSecret.length < 32) missing.push("ANNUAL_PASS_LINK_SECRET");
+    if (!process.env["RESEND_API_KEY"]) missing.push("RESEND_API_KEY");
+    if (!(await import("@/lib/annual-pass-payment.server")).configuredPayfastUrl())
+      missing.push("ANNUAL_PASS_PAYFAST_URL");
+    if (missing.length > 0 || !paymentSecret) {
+      // Names only, never values.
+      console.error("Annual Pass reservation not configured:", missing.join(", "));
       return { ok: false, reason: "email_not_configured" };
+    }
 
     const claims = context.claims as unknown as Record<string, unknown>;
     const email = typeof claims["email"] === "string" ? claims["email"].trim().toLowerCase() : "";

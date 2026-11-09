@@ -5,6 +5,8 @@ const PAYFAST_HOSTS = new Set([
   "payfast.co.za",
   "www.payfast.io",
   "payfast.io",
+  // PayFast hosted payment links are issued on this short domain.
+  "payf.st",
 ]);
 
 export function configuredPayfastUrl(): string | null {
