@@ -200,3 +200,6 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 
 ## 9 Nov 2026: Default share image
 - What changed: a new default Open Graph / Twitter image (`/og/puntr.png`) with the brand line, "18+ | T&Cs apply | Helpline 0800 006 008". No data collected; no legal page changed.
+
+## 9 Nov 2026: Sign-up confirmation wording
+- What changed: the post-sign-up card no longer says "Post your first pick before kick-off" (the platform is not live until 1 Dec 2026). It now states the launch date. CTA changed from "See predictions" to "See the roadmap". No legal page changed; this removes a claim the product did not match.
