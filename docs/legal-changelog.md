@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-11, no legal page text changed (PR: Annual Pass payment reminder email)
+
+- One service email is now sent automatically, once per reservation, to a member whose unpaid Founding Annual Pass hold lapses within 24 hours. It uses the same signed PayFast redirect as the reservation email. It is sent to the address the member reserved with, is about a reservation they made, and carries no marketing content or unsubscribe link (same basis as the reservation email).
+- No new data is collected or stored: the send is recorded in the existing `founding_campaign_sends` ledger (email, campaign id, status, time). No new processor (Resend and PayFast are already listed). Privacy, Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed.
+- Review `[attorney review]`: whether Privacy should say we send a reminder about an unpaid reservation, and whether a lapsed hold should be described anywhere beyond the existing "expires and the place is released" wording.
+
 ## 2026-11-06 (explainer video, Tipster Support wording), no legal page text changed
 
 - The explainer video is now served from Supabase Storage (a public `media` bucket) instead of a YouTube embed, on the home page and `/about`. No YouTube request or cookie is made; the file only downloads when a visitor presses play. Supabase is already a listed processor, so Privacy §6 is unchanged.
