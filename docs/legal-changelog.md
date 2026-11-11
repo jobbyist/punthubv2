@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-11, no legal page text changed (PR: Annual Pass expiry notice, Practice Mode feedback email)
+
+- **Annual Pass expiry notice (service email):** sent once per reservation, an hour or more after an unpaid Founding Annual Pass hold has lapsed, to the address the member reserved with. While the offer is open (to 16 November 2026) it says nothing was charged, the place was released and they may reserve again; after it closes it says the offer has closed. No marketing content or unsubscribe link (same basis as the reservation and reminder emails). Recorded in the existing `founding_campaign_sends` ledger.
+- **Practice Mode + feedback email (marketing, opted-in Founding Members only, unsubscribe included):** invites members to Practice Mode (made-up fixtures, practice points that never convert to real PuntPoints, demo rewards with no value) and to leave feedback at `/feedback` for a chance to be entered into the R500 OTT voucher draw. **Sending is gated** on `PRACTICE_MODE_ENABLED=true` and nothing is scheduled: Practice Mode does not exist yet, so no real recipient gets this email until it ships.
+- No new data collected or stored, no new processor or tracker. Privacy, Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed. No `notice_versions` change.
+- Review `[attorney review]`: (1) the R500 OTT voucher draw is a promotional competition (CPA s36 and the CPA regulations). The `/feedback` page says the draw rules, closing date and how the winner is chosen and told "will be published on this page"; they are NOT published yet and must be before this email is sent and before any winner is chosen. The email repeats that wording and does not claim the rules exist. (2) Whether Privacy should say we email a notice when an unpaid reservation lapses. (3) Practice Mode itself (practice points, demo rewards) needs its own legal review when it is built.
+
 ## 2026-11-11, no legal page text changed (PR: Annual Pass payment reminder email)
 
 - One service email is now sent automatically, once per reservation, to a member whose unpaid Founding Annual Pass hold lapses within 24 hours. It uses the same signed PayFast redirect as the reservation email. It is sent to the address the member reserved with, is about a reservation they made, and carries no marketing content or unsubscribe link (same basis as the reservation email).

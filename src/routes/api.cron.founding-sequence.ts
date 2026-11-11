@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * Sends one Founding Member sequence campaign (claim, checklist, survey, referral, countdown) to opted-in recipients,
+ * Sends one Founding Member sequence campaign (claim, checklist, survey, referral, countdown, practice) to opted-in recipients,
  * once per address per campaign (founding_campaign_sends). Safe to call repeatedly.
  *
  *   GET /api/cron/founding-sequence?campaign=founding-survey-1          sends the campaign (needs LAUNCH_EMAILS_ENABLED=true)
@@ -56,6 +56,15 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
 
         if (process.env["LAUNCH_EMAILS_ENABLED"] !== "true")
           return Response.json({ ok: true, enabled: false, sent: 0 });
+        // Some campaigns wait for a feature to exist (Practice Mode), so no email points at a page that is not live.
+        if (entry.requiresEnv && process.env[entry.requiresEnv] !== "true")
+          return Response.json({
+            ok: true,
+            enabled: false,
+            sent: 0,
+            campaign,
+            waitingFor: entry.requiresEnv,
+          });
 
         const { supabaseAdmin: typedAdmin } = await import("@/integrations/supabase/client.server");
         // Narrow view for the campaign function and table until types.ts is regenerated.

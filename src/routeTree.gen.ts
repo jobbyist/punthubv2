@@ -51,6 +51,7 @@ import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as SportsSportRouteImport } from './routes/sports.$sport'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
+import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.annual-pass-expired'
 import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
@@ -272,6 +273,12 @@ const ApiAnnualPassPayRoute = ApiAnnualPassPayRouteImport.update({
   path: '/api/annual-pass/pay',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronAnnualPassExpiredRoute =
+  ApiCronAnnualPassExpiredRouteImport.update({
+    id: '/api/cron/annual-pass-expired',
+    path: '/api/cron/annual-pass-expired',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiCronAnnualPassReminderRoute =
   ApiCronAnnualPassReminderRouteImport.update({
     id: '/api/cron/annual-pass-reminder',
@@ -368,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
@@ -422,6 +430,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
@@ -477,6 +486,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
@@ -533,6 +543,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
+    | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
@@ -587,6 +598,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/newsroom'
     | '/api/annual-pass/pay'
+    | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
@@ -641,6 +653,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
+    | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/founding-campaign'
@@ -696,6 +709,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
+  ApiCronAnnualPassExpiredRoute: typeof ApiCronAnnualPassExpiredRoute
   ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
@@ -1004,6 +1018,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAnnualPassPayRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/annual-pass-expired': {
+      id: '/api/cron/annual-pass-expired'
+      path: '/api/cron/annual-pass-expired'
+      fullPath: '/api/cron/annual-pass-expired'
+      preLoaderRoute: typeof ApiCronAnnualPassExpiredRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/annual-pass-reminder': {
       id: '/api/cron/annual-pass-reminder'
       path: '/api/cron/annual-pass-reminder'
@@ -1120,6 +1141,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
+  ApiCronAnnualPassExpiredRoute: ApiCronAnnualPassExpiredRoute,
   ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
