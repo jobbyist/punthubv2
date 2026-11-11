@@ -42,7 +42,8 @@
     "rewards": "Rewards",
     "identity": "ID checks",
     "campaigns": "Campaigns",
-    "affiliates": "Affiliates"
+    "affiliates": "Affiliates",
+    "draw": "Draw"
   },
   "settle": {
     "title": "Settlement",
@@ -378,6 +379,44 @@
         "call": "Call",
         "payment": "Payment"
       }
+    }
+  },
+  "draw": {
+    "title": "R500 OTT voucher draw",
+    "body": "Entries are Founding Members who tried Practice Mode at least once and submitted the feedback survey with the draw box ticked. The system picks one winner at random and records the draw.",
+    "entries": "Valid entries",
+    "closes": "Draw closes",
+    "status": "Status",
+    "closed": "Closed: a draw can be run",
+    "open": "Open: entries still coming in",
+    "refresh": "Refresh",
+    "loading": "Loading…",
+    "loadError": "Couldn't load the draw. Check that the practice_mode migration is applied.",
+    "runTitle": "Run the draw",
+    "runBody": "Run it once, after the draw closes, with a witness present. The result is saved in the draw log. Type DRAW to confirm.",
+    "notClosed": "The draw closes when Puntr goes live on Tuesday 1 December 2026. It cannot be run before then.",
+    "witness": "Witness (full name)",
+    "note": "Note (optional)",
+    "confirm": "Type DRAW to confirm",
+    "run": "Pick the winner",
+    "running": "Picking…",
+    "winner": "Winner",
+    "announce": "Announce by username and Founding number only: @{{username}}, Founding Member #{{number}}. Tell the winner by email, or by phone if a number was given. Never publish contact details.",
+    "entriesTitle": "Valid entries",
+    "noEntries": "No valid entries yet.",
+    "col": {
+      "member": "Member",
+      "picks": "Practice picks",
+      "entered": "Entered"
+    },
+    "logTitle": "Draw log",
+    "noLog": "No draw has been run.",
+    "logLine": "{{count}} entries, witness {{witness}}",
+    "error": {
+      "not_closed": "The draw has not closed yet.",
+      "no_entries": "There are no valid entries.",
+      "witness_required": "A witness name is required.",
+      "failed": "The draw could not be run. Please try again."
     }
   }
 }
