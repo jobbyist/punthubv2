@@ -58,10 +58,11 @@ export const getDrawOverview = createServerFn({ method: "GET" })
     const ids = (log ?? []).flatMap((l) => (l.winner_user_id ? [l.winner_user_id] : []));
     const names = new Map<string, string>();
     if (ids.length) {
-      const { data: profiles } = await supabaseAdmin
+      const { data: profiles, error: profilesError } = await supabaseAdmin
         .from("profiles")
         .select("id, username")
         .in("id", ids);
+      if (profilesError) throw new Error(profilesError.message);
       for (const p of profiles ?? []) names.set(p.id, String(p.username));
     }
     return {

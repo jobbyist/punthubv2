@@ -47,7 +47,11 @@ export function PracticeDrawTab() {
     return <p className="text-sm text-muted-foreground">{t("draw.loadError")}</p>;
 
   const canRun =
-    data.closed && data.entries.length > 0 && witness.trim().length >= 2 && confirm === "DRAW";
+    !result &&
+    data.closed &&
+    data.entries.length > 0 &&
+    witness.trim().length >= 2 &&
+    confirm === "DRAW";
 
   return (
     <div className="space-y-5">
@@ -165,7 +169,7 @@ export function PracticeDrawTab() {
             {data.log.map((l) => (
               <li key={l.id} className="py-2">
                 <span className="font-semibold">
-                  @{l.winner_username ?? "?"} · #{l.winner_founding_number}
+                  @{l.winner_username ?? "?"} · #{l.winner_founding_number ?? "?"}
                 </span>{" "}
                 <span className="text-muted-foreground">
                   {formatDateTime(l.drawn_at)} ·{" "}
