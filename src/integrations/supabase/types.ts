@@ -65,74 +65,54 @@ export type Database = {
           },
         ]
       }
-      annual_pass_claims: {
+      affiliate_partner_events: {
         Row: {
-          amount_cents: number | null
-          claimed_at: string
-          hold_expires_at: string | null
-          paid_at: string | null
-          payment_reference: string | null
-          status: string
-          user_id: string
-        }
-        Insert: {
-          amount_cents?: number | null
-          claimed_at?: string
-          hold_expires_at?: string | null
-          paid_at?: string | null
-          payment_reference?: string | null
-          status?: string
-          user_id: string
-        }
-        Update: {
-          amount_cents?: number | null
-          claimed_at?: string
-          hold_expires_at?: string | null
-          paid_at?: string | null
-          payment_reference?: string | null
-          status?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      breach_register: {
-        Row: {
-          contained_at: string | null
+          body: string
           created_at: string
-          data_types: string | null
-          description: string
-          discovered_at: string
+          created_by: string | null
           id: string
-          outcome: string | null
-          regulator_notified_at: string | null
-          subjects_affected: number | null
-          subjects_notified_at: string | null
+          kind: string
+          partner_id: string
         }
         Insert: {
-          contained_at?: string | null
+          body: string
           created_at?: string
-          data_types?: string | null
-          description: string
-          discovered_at: string
+          created_by?: string | null
           id?: string
-          outcome?: string | null
-          regulator_notified_at?: string | null
-          subjects_affected?: number | null
-          subjects_notified_at?: string | null
+          kind?: string
+          partner_id: string
         }
         Update: {
-          contained_at?: string | null
+          body?: string
           created_at?: string
-          data_types?: string | null
-          description?: string
-          discovered_at?: string
+          created_by?: string | null
           id?: string
-          outcome?: string | null
-          regulator_notified_at?: string | null
-          subjects_affected?: number | null
-          subjects_notified_at?: string | null
+          kind?: string
+          partner_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_partner_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_partner_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_partner_events_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_partners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       affiliate_partners: {
         Row: {
@@ -216,32 +196,89 @@ export type Database = {
           website_url?: string | null
           went_live_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_partners_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_partners_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      affiliate_partner_events: {
+      annual_pass_claims: {
         Row: {
-          body: string
-          created_at: string
-          created_by: string | null
-          id: string
-          kind: string
-          partner_id: string
+          amount_cents: number | null
+          claimed_at: string
+          hold_expires_at: string | null
+          paid_at: string | null
+          payment_reference: string | null
+          status: string
+          user_id: string
         }
         Insert: {
-          body: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          kind?: string
-          partner_id: string
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id: string
         }
         Update: {
-          body?: string
+          amount_cents?: number | null
+          claimed_at?: string
+          hold_expires_at?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      breach_register: {
+        Row: {
+          contained_at: string | null
+          created_at: string
+          data_types: string | null
+          description: string
+          discovered_at: string
+          id: string
+          outcome: string | null
+          regulator_notified_at: string | null
+          subjects_affected: number | null
+          subjects_notified_at: string | null
+        }
+        Insert: {
+          contained_at?: string | null
           created_at?: string
-          created_by?: string | null
+          data_types?: string | null
+          description: string
+          discovered_at: string
           id?: string
-          kind?: string
-          partner_id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
+        }
+        Update: {
+          contained_at?: string | null
+          created_at?: string
+          data_types?: string | null
+          description?: string
+          discovered_at?: string
+          id?: string
+          outcome?: string | null
+          regulator_notified_at?: string | null
+          subjects_affected?: number | null
+          subjects_notified_at?: string | null
         }
         Relationships: []
       }
@@ -585,6 +622,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      identity_verifications: {
+        Row: {
+          document_path: string | null
+          method: string
+          over_18: boolean | null
+          reject_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          document_path?: string | null
+          method?: string
+          over_18?: boolean | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          document_path?: string | null
+          method?: string
+          over_18?: boolean | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       launch_email_sends: {
         Row: {
@@ -1859,6 +1932,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_adjust_points: {
+        Args: { p_points: number; p_reason: string; p_user: string }
+        Returns: number
+      }
       admin_campaign_report: {
         Args: { p_campaign?: string; p_since: string }
         Returns: {
@@ -1869,10 +1946,6 @@ export type Database = {
           utm_source: string
           visitors: number
         }[]
-      }
-      admin_adjust_points: {
-        Args: { p_points: number; p_reason: string; p_user: string }
-        Returns: number
       }
       admin_cancel_redemption: {
         Args: { p_reason: string; p_redemption: string }
@@ -1928,6 +2001,19 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_identity_queue: {
+        Args: never
+        Returns: {
+          birth_year: number
+          display_name: string
+          document_path: string
+          first_name: string
+          last_name: string
+          submitted_at: string
+          user_id: string
+          username: string
+        }[]
+      }
       admin_member_details: {
         Args: never
         Returns: {
@@ -1954,6 +2040,10 @@ export type Database = {
       admin_reverse_referral: {
         Args: { p_reason: string; p_referral: string }
         Returns: undefined
+      }
+      admin_review_identity: {
+        Args: { p_approve: boolean; p_reason?: string; p_user: string }
+        Returns: string
       }
       admin_settle_prediction: {
         Args: { p_prediction: string; p_reason: string; p_result: string }
@@ -2059,6 +2149,13 @@ export type Database = {
           recipient_name: string
         }[]
       }
+      identity_expired_documents: {
+        Args: never
+        Returns: {
+          document_path: string
+          user_id: string
+        }[]
+      }
       invoke_cron: { Args: { p_path: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
       launch_audience: {
@@ -2130,6 +2227,7 @@ export type Database = {
           vested: number
         }[]
       }
+      next_founding_number: { Args: never; Returns: number }
       pending_settlements: {
         Args: never
         Returns: {
@@ -2154,6 +2252,7 @@ export type Database = {
           title: string
         }[]
       }
+      purge_old_campaign_events: { Args: never; Returns: undefined }
       record_consent: {
         Args: {
           p_granted: boolean
@@ -2192,6 +2291,7 @@ export type Database = {
           rewards_enabled: boolean
         }[]
       }
+      submit_identity_document: { Args: { p_path: string }; Returns: Json }
       submit_privacy_request: {
         Args: { p_details: string; p_email: string; p_kind: string }
         Returns: string
