@@ -111,7 +111,26 @@ export const Route = createFileRoute("/api/cron/annual-pass-reminder")({
 
         let sent = 0;
         let failed = 0;
+        const record = async (email: string, campaign: string, status: "sent" | "failed") => {
+          const written = await db
+            .from("founding_campaign_sends")
+            .upsert(
+              { email, campaign, status, sent_at: new Date().toISOString() },
+              { onConflict: "email,campaign" },
+            );
+          const writeError = (written as { error?: { message: string } | null } | undefined)?.error;
+          if (writeError)
+            console.error("annual-pass-reminder ledger write failed", status, writeError.message);
+          return !writeError;
+        };
         for (const r of due.slice(0, MAX_PER_RUN)) {
+          // Claim first: record the send BEFORE emailing. If the ledger cannot be written, nothing is sent, so a
+          // broken ledger can never cause repeat emails (the 8 Nov welcome incident). If the send then fails, the
+          // claim is downgraded to 'failed' so the next run retries. Worst case is a missed reminder, never a duplicate.
+          if (!(await record(r.recipient_email, r.campaign, "sent"))) {
+            failed += 1;
+            continue;
+          }
           const mail = renderAnnualPassReminderEmail({
             name: r.recipient_name ?? "",
             paymentUrl: payLink(r.user_id, r.hold_expires_at),
@@ -124,25 +143,13 @@ export const Route = createFileRoute("/api/cron/annual-pass-reminder")({
             html: mail.html,
             text: mail.text,
           });
-          const status = res.ok ? "sent" : "failed";
-          if (res.ok) sent += 1;
-          else {
+          if (res.ok) {
+            sent += 1;
+          } else {
             failed += 1;
             console.error("annual-pass-reminder send failed", res.status, res.body);
+            await record(r.recipient_email, r.campaign, "failed");
           }
-          const written = await db.from("founding_campaign_sends").upsert(
-            {
-              email: r.recipient_email,
-              campaign: r.campaign,
-              status,
-              sent_at: new Date().toISOString(),
-            },
-            // A failure never overwrites an existing row, so a recorded send cannot be downgraded.
-            { onConflict: "email,campaign", ignoreDuplicates: status === "failed" },
-          );
-          const writeError = (written as { error?: { message: string } | null } | undefined)?.error;
-          if (writeError)
-            console.error("annual-pass-reminder ledger write failed", writeError.message);
         }
         console.info("annual-pass-reminder", JSON.stringify({ due: due.length, sent, failed }));
         return Response.json({ ok: true, due: due.length, sent, failed });
