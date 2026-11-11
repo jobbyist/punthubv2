@@ -24,6 +24,7 @@ import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
 import { Route as LiveScoresRouteImport } from './routes/live-scores'
+import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -59,6 +60,7 @@ import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.f
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
 import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
+import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.practice-tick'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
@@ -136,6 +138,11 @@ const LeaderboardsRoute = LeaderboardsRouteImport.update({
 const LiveScoresRoute = LiveScoresRouteImport.update({
   id: '/live-scores',
   path: '/live-scores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PracticeRoute = PracticeRouteImport.update({
+  id: '/practice',
+  path: '/practice',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PredictionsRoute = PredictionsRouteImport.update({
@@ -316,6 +323,11 @@ const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   path: '/api/cron/launch-notify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronPracticeTickRoute = ApiCronPracticeTickRouteImport.update({
+  id: '/api/cron/practice-tick',
+  path: '/api/cron/practice-tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
   id: '/api/cron/settle',
   path: '/api/cron/settle',
@@ -348,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -383,6 +396,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -403,6 +417,7 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -438,6 +453,7 @@ export interface FileRoutesByTo {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -459,6 +475,7 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
   '/predictions': typeof PredictionsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -494,6 +511,7 @@ export interface FileRoutesById {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
@@ -516,6 +534,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/leaderboards'
     | '/live-scores'
+    | '/practice'
     | '/predictions'
     | '/pricing'
     | '/privacy'
@@ -551,6 +570,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -571,6 +591,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/leaderboards'
     | '/live-scores'
+    | '/practice'
     | '/predictions'
     | '/pricing'
     | '/privacy'
@@ -606,6 +627,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -626,6 +648,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/leaderboards'
     | '/live-scores'
+    | '/practice'
     | '/predictions'
     | '/pricing'
     | '/privacy'
@@ -661,6 +684,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
@@ -682,6 +706,7 @@ export interface RootRouteChildren {
   JoinRoute: typeof JoinRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
   LiveScoresRoute: typeof LiveScoresRoute
+  PracticeRoute: typeof PracticeRoute
   PredictionsRoute: typeof PredictionsRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -717,6 +742,7 @@ export interface RootRouteChildren {
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
   ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
+  ApiCronPracticeTickRoute: typeof ApiCronPracticeTickRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
@@ -827,6 +853,13 @@ declare module '@tanstack/react-router' {
       path: '/live-scores'
       fullPath: '/live-scores'
       preLoaderRoute: typeof LiveScoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/practice': {
+      id: '/practice'
+      path: '/practice'
+      fullPath: '/practice'
+      preLoaderRoute: typeof PracticeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predictions': {
@@ -1074,6 +1107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/practice-tick': {
+      id: '/api/cron/practice-tick'
+      path: '/api/cron/practice-tick'
+      fullPath: '/api/cron/practice-tick'
+      preLoaderRoute: typeof ApiCronPracticeTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/settle': {
       id: '/api/cron/settle'
       path: '/api/cron/settle'
@@ -1114,6 +1154,7 @@ const rootRouteChildren: RootRouteChildren = {
   JoinRoute: JoinRoute,
   LeaderboardsRoute: LeaderboardsRoute,
   LiveScoresRoute: LiveScoresRoute,
+  PracticeRoute: PracticeRoute,
   PredictionsRoute: PredictionsRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
@@ -1149,6 +1190,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
   ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
+  ApiCronPracticeTickRoute: ApiCronPracticeTickRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,

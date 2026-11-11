@@ -291,6 +291,18 @@ function Feedback() {
                   {t("contact")}
                 </label>
                 <p className="text-xs leading-relaxed text-muted-foreground">{t("rules")}</p>
+                <section aria-labelledby="draw-rules-title" className="border border-border p-3">
+                  <h3 id="draw-rules-title" className="text-xs font-bold uppercase tracking-wide">
+                    {t("drawRules.title")}
+                  </h3>
+                  <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+                    {(t("drawRules.items", { returnObjects: true }) as unknown as string[]).map(
+                      (line) => (
+                        <li key={line}>{line}</li>
+                      ),
+                    )}
+                  </ul>
+                </section>
                 <p className="text-xs text-muted-foreground">
                   {t("privacy")}{" "}
                   <Link to="/privacy" className="text-primary hover:underline">

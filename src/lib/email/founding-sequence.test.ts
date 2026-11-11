@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   PRACTICE_CAMPAIGN,
-  PRACTICE_ENV_GATE,
+  PRACTICE_GATE,
   renderPracticeEmail,
   SEQUENCE,
 } from "./founding-sequence";
@@ -19,14 +19,20 @@ describe("founding practice + feedback email", () => {
     expect(m.text).toContain("utm_campaign=founding-practice-1");
   });
 
-  it("describes the draw accurately: optional, one entry, 18+, T&Cs, rules to follow, not cash", () => {
+  it("states the approved draw terms: both steps, founding only, 18+, one entry, closes at launch, random winner", () => {
     expect(m.text).toContain("R500 OTT voucher");
-    expect(m.text).toContain("optional");
-    expect(m.text).toContain("One entry per member");
+    expect(m.text).toContain("try Practice Mode at least once");
+    expect(m.text).toContain("Both steps are needed");
+    expect(m.text).toContain("Founding Members only");
     expect(m.text).toContain("18+");
+    expect(m.text).toContain("One entry per member");
     expect(m.text).toContain("T&Cs apply");
-    expect(m.text).toContain("will be published on the feedback page");
-    expect(m.text.toLowerCase()).not.toContain("cash prize");
+    expect(m.text).toContain("closes when Puntr goes live on Tuesday 1 December 2026");
+    expect(m.text).toContain("picked at random");
+    expect(m.text).toContain("by username and Founding number");
+    expect(m.text).toContain("email or phone");
+    expect(m.text).toContain("no cash alternative");
+    expect(m.text).toContain("full draw rules are on the feedback page");
   });
 
   it("says practice points never become real PuntPoints and demo rewards have no value", () => {
@@ -46,7 +52,6 @@ describe("founding practice + feedback email", () => {
   it("is a member-only campaign that waits for Practice Mode to be live", () => {
     const entry = SEQUENCE[PRACTICE_CAMPAIGN];
     expect(entry?.memberOnly).toBe(true);
-    expect(entry?.requiresEnv).toBe(PRACTICE_ENV_GATE);
-    expect(PRACTICE_ENV_GATE).toBe("PRACTICE_MODE_ENABLED");
+    expect(entry?.requires).toBe(PRACTICE_GATE);
   });
 });

@@ -34,9 +34,9 @@
     "good_value": "Good value",
     "unsure": "Not sure yet"
   },
-  "draw": "Enter me into the draw for a R500 OTT voucher (optional)",
+  "draw": "Enter me into the draw for a R500 OTT voucher (Founding Members who have tried Practice Mode)",
   "contact": "You may contact me about my feedback (optional)",
-  "rules": "One entry per member. 18+ only. Entering the draw is optional and does not change your Puntr account. Full draw rules, the closing date and how the winner is chosen and told will be published on this page. T&Cs apply.",
+  "rules": "One entry per member. 18+ only. Entering the draw is optional and does not change your Puntr account. T&Cs apply. Full draw rules are below.",
   "privacy": "We use your answers to improve Puntr. Read how we handle your data in our Privacy Policy.",
   "submit": "Submit feedback",
   "sending": "Sending",
@@ -148,5 +148,18 @@
     "body": "12 months of Puntr Pro for a once-off R299, instead of R1,188 on R99 a month. You save R889. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.",
     "note": "A prepaid membership, not an investment. Claiming includes payment of R299 once-off through PayFast, for the first 20 founding members before 16 November 2026.",
     "cta": "See the Founding offer"
+  },
+  "drawRules": {
+    "title": "R500 OTT voucher draw: rules",
+    "items": [
+      "Open to Founding Members only, aged 18 or older.",
+      "To enter, you must have tried Practice Mode at least once and submit this survey with the draw box ticked. Both steps are needed. One entry per member.",
+      "The draw closes when Puntr goes live on Tuesday 1 December 2026.",
+      "One winner is picked at random from all valid entries. The pick is recorded with a witness.",
+      "The winner is announced on puntr.co.za and our social channels by username and Founding number only.",
+      "We tell the winner by email, or by phone if they gave us a number. If we cannot reach the winner, we may pick another.",
+      "The prize is a R500 OTT voucher. There is no cash alternative and it cannot be transferred.",
+      "Puntr team members and their immediate family cannot enter. T&Cs apply. Helpline 0800 006 008."
+    ]
   }
 }

@@ -131,6 +131,11 @@ export function SiteHeader() {
                     </DropdownMenuItem>
                   </>
                 )}
+                {profile.founding_number && (
+                  <DropdownMenuItem onSelect={() => navigate({ to: "/practice" })}>
+                    {t("header.practice")}
+                  </DropdownMenuItem>
+                )}
                 {pp.enabled && (
                   <DropdownMenuItem onSelect={() => navigate({ to: "/rewards" })}>
                     {t("header.puntPoints")}

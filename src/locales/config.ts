@@ -95,6 +95,7 @@ export const NAMESPACES = [
   "verify",
   "feedback",
   "newsroom",
+  "practice",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];

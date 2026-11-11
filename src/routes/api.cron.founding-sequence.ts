@@ -56,17 +56,24 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
 
         if (process.env["LAUNCH_EMAILS_ENABLED"] !== "true")
           return Response.json({ ok: true, enabled: false, sent: 0 });
-        // Some campaigns wait for a feature to exist (Practice Mode), so no email points at a page that is not live.
-        if (entry.requiresEnv && process.env[entry.requiresEnv] !== "true")
-          return Response.json({
-            ok: true,
-            enabled: false,
-            sent: 0,
-            campaign,
-            waitingFor: entry.requiresEnv,
-          });
-
         const { supabaseAdmin: typedAdmin } = await import("@/integrations/supabase/client.server");
+        // Some campaigns wait for a feature to exist (Practice Mode), so no email points at a page that is not live.
+        if (entry.requires === "practice") {
+          const { data: flag } = await typedAdmin
+            .from("practice_settings")
+            .select("enabled")
+            .eq("id", 1)
+            .maybeSingle();
+          if (!flag?.enabled)
+            return Response.json({
+              ok: true,
+              enabled: false,
+              sent: 0,
+              campaign,
+              waitingFor: "practice_settings.enabled",
+            });
+        }
+
         // Narrow view for the campaign function and table until types.ts is regenerated.
         const db = typedAdmin as unknown as {
           rpc: (

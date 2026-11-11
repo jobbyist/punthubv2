@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 6 November 2026 (version 2026-11-06-r10). Draft pending
+            <strong>Last Updated:</strong> 11 November 2026 (version 2026-11-11-r11). Draft pending
             attorney review.
           </p>
 
@@ -152,6 +152,13 @@ function Terms() {
               as confirming your email, posting predictions, having a prediction settle and inviting
               friends, never for winning and never for spending money. What earns points, how many
               and any daily or monthly limits are shown on the Rewards page and may change.
+              [attorney review]
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              Practice Mode, open to Founding Members before launch, uses a fictional league with
+              invented teams, results and prices. Practice points and demo rewards have no value,
+              are separate from your PuntPoints and cannot be converted, redeemed for anything real
+              or exchanged for money. Practice picks never count towards your public record.
               [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
