@@ -53,6 +53,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Kept after you delete your account, linked only to an anonymous id, without your name, email or other details; we stop contacting you [attorney review]",
   ],
   [
+    "Practice Mode",
+    "Your practice picks, practice points, demo reward redemptions and the leaderboard username. These use a fictional league, are kept apart from your real picks and PuntPoints, and are never public except your username on the practice leaderboard",
+    "Your consent (you choose to try it); Founding Members only",
+    "While your account is open; deleted when you delete your account [attorney review]",
+  ],
+  [
     "Founding Annual Pass",
     "Account ID, claim time, hold expiry, and once paid the PayFast payment reference, amount and date",
     "Contract (selling you the pass)",
@@ -124,7 +130,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 6 November 2026 (version 2026-11-06-r10). Draft pending
+          <strong>Last updated:</strong> 11 November 2026 (version 2026-11-11-r11). Draft pending
           attorney review.
         </p>
 

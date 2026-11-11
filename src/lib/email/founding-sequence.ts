@@ -195,8 +195,8 @@ export function renderCountdownEmail({
 }
 
 export const PRACTICE_CAMPAIGN = "founding-practice-1";
-/** Real sends stay off until Practice Mode is live (PRACTICE_MODE_ENABLED=true), so no email points at a page that is not there. */
-export const PRACTICE_ENV_GATE = "PRACTICE_MODE_ENABLED";
+/** Real sends wait until Practice Mode is switched on (practice_settings.enabled), so no email points at a page that is not there. */
+export const PRACTICE_GATE = "practice" as const;
 export function renderPracticeEmail({ name, unsubscribeUrl }: SequenceInput): Mail {
   return buildEmail({
     subject: "Try Puntr in Practice Mode, then tell us what you think",
@@ -225,8 +225,10 @@ export function renderPracticeEmail({ name, unsubscribeUrl }: SequenceInput): Ma
     panel: {
       title: "Feedback draw: a chance at a R500 OTT voucher",
       lines: [
-        "Leave your feedback and tick the draw box to be entered into the draw for a R500 OTT voucher. Entering the draw is optional.",
-        "One entry per member. 18+ only. T&Cs apply. The draw rules, closing date and how the winner is chosen and told will be published on the feedback page.",
+        "To be entered into the draw for a R500 OTT voucher, try Practice Mode at least once, then leave your feedback and tick the draw box. Both steps are needed.",
+        "Open to Founding Members only. 18+. One entry per member. T&Cs apply.",
+        "The draw closes when Puntr goes live on Tuesday 1 December 2026. One winner is picked at random, announced on puntr.co.za and our social channels (by username and Founding number) and told by email or phone. There is no cash alternative.",
+        "The full draw rules are on the feedback page.",
       ],
       link: { label: "Give feedback", url: tracked("/feedback", PRACTICE_CAMPAIGN) },
     },
@@ -249,8 +251,8 @@ export const SEQUENCE: Record<
   {
     memberOnly: boolean;
     earlyOnly?: boolean;
-    /** Env var that must be "true" before this campaign is sent to real recipients (test sends are always allowed). */
-    requiresEnv?: string;
+    /** A feature that must be switched on before this campaign goes to real recipients (test sends are always allowed). */
+    requires?: typeof PRACTICE_GATE;
     render: (i: SequenceInput) => Mail;
   }
 > = {
@@ -261,7 +263,7 @@ export const SEQUENCE: Record<
   [COUNTDOWN_CAMPAIGN]: { memberOnly: false, render: renderCountdownEmail },
   [PRACTICE_CAMPAIGN]: {
     memberOnly: true,
-    requiresEnv: PRACTICE_ENV_GATE,
+    requires: PRACTICE_GATE,
     render: renderPracticeEmail,
   },
 };

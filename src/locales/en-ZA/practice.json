@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "title": "Practice Mode | Puntr",
+    "description": "Founding Members: try Puntr with a fictional league, practice points and demo rewards before launch on 1 December 2026."
+  },
+  "badge": "Practice",
+  "eyebrow": "Practice Mode",
+  "title": "Try Puntr before launch.",
+  "lead": "A fictional league plays out in minutes, not weeks. Post picks, watch results arrive and see how points and rewards will work. Nothing here is real: the teams, results and prices are invented, and practice points have no value.",
+  "simulated": "Simulated",
+  "closed": {
+    "title": "Practice Mode opens soon",
+    "body": "We will email Founding Members the moment it opens."
+  },
+  "foundingOnly": {
+    "title": "Practice Mode is for Founding Members",
+    "body": "Claim your Founding spot to try Puntr before launch.",
+    "cta": "Claim your Founding spot"
+  },
+  "draw": {
+    "title": "Win a R500 OTT voucher",
+    "body": "Try Practice Mode at least once, then leave your feedback and tick the draw box. Both steps are needed. Open to Founding Members only.",
+    "cta": "Leave feedback",
+    "rules": "Draw rules"
+  },
+  "kpi": {
+    "points": "Practice points",
+    "picks": "Picks posted",
+    "settled": "Picks settled",
+    "graduate": "Practice Graduate"
+  },
+  "graduate": {
+    "earned": "Practice Graduate",
+    "progress": "{{count}} of {{total}} settled picks to become a Practice Graduate"
+  },
+  "season": "Season {{number}}, round {{round}}",
+  "fixtures": {
+    "title": "Fixtures",
+    "empty": "The next round is being drawn. Check back in a minute.",
+    "kickoff": "Kick-off {{time}}",
+    "lockAt": "Picks lock at {{time}}",
+    "phase": {
+      "upcoming": "Opens soon",
+      "open": "Open for picks",
+      "locked": "Picks locked",
+      "live": "In play",
+      "finished": "Full time"
+    }
+  },
+  "market": {
+    "1X2": "Match result",
+    "DC": "Double chance",
+    "OU25": "Total goals 2.5",
+    "BTTS": "Both teams to score"
+  },
+  "selection": {
+    "home": "Home",
+    "draw": "Draw",
+    "away": "Away",
+    "1X": "Home or draw",
+    "X2": "Draw or away",
+    "12": "Home or away",
+    "over": "Over 2.5",
+    "under": "Under 2.5",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "pick": {
+    "confidence": "Confidence",
+    "price": "Practice price {{price}}",
+    "submit": "Lock in pick",
+    "locked": "Locked in",
+    "done": "Pick posted. Points added.",
+    "error": {
+      "kickoff_passed": "Picks for this fixture have locked.",
+      "fixture_not_open": "This fixture is no longer open.",
+      "practice_closed": "Practice Mode is not open right now.",
+      "age_not_attested": "Confirm that you are 18 or older in your account first.",
+      "invalid_selection": "That selection is not available for this market.",
+      "generic": "We could not post that pick. Please try again."
+    }
+  },
+  "crowd": {
+    "title": "How Founding Members picked",
+    "sample": "{{percent}}% picked {{team}}",
+    "count": "{{count}} picks"
+  },
+  "mine": {
+    "title": "My practice picks",
+    "empty": "No picks yet. Choose a fixture above.",
+    "result": {
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void",
+      "pending": "Pending"
+    }
+  },
+  "board": {
+    "title": "Practice leaderboard",
+    "empty": "No one is on the board yet.",
+    "you": "You",
+    "rank": "Rank",
+    "member": "Member",
+    "points": "Points",
+    "settled": "Settled"
+  },
+  "rewards": {
+    "title": "Demo rewards",
+    "body": "Redeem practice points to see how rewards will feel. These have no real value and are not shown on your real profile.",
+    "cost": "{{points}} practice points",
+    "redeem": "Redeem",
+    "done": "Redeemed. Your demo code is masked: {{code}}",
+    "error": {
+      "not_enough_points": "You need more practice points for that.",
+      "generic": "We could not redeem that. Please try again."
+    }
+  },
+  "rules": {
+    "title": "How Practice Mode works",
+    "items": [
+      "Fictional teams, simulated results and invented prices. Nothing here is real or a prediction of real matches.",
+      "Practice points and demo rewards are separate from your real PuntPoints and cannot be converted.",
+      "Practice points have no cash value and never will."
+    ]
+  },
+  "unit": "pts"
+}

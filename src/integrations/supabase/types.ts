@@ -893,6 +893,303 @@ export type Database = {
         }
         Relationships: []
       }
+      practice_draw_log: {
+        Row: {
+          drawn_at: string
+          drawn_by: string | null
+          entries: number
+          id: string
+          note: string | null
+          winner_founding_number: number | null
+          winner_user_id: string | null
+          witness: string
+        }
+        Insert: {
+          drawn_at?: string
+          drawn_by?: string | null
+          entries: number
+          id?: string
+          note?: string | null
+          winner_founding_number?: number | null
+          winner_user_id?: string | null
+          witness: string
+        }
+        Update: {
+          drawn_at?: string
+          drawn_by?: string | null
+          entries?: number
+          id?: string
+          note?: string | null
+          winner_founding_number?: number | null
+          winner_user_id?: string | null
+          witness?: string
+        }
+        Relationships: []
+      }
+      practice_fixture_plans: {
+        Row: {
+          fixture_id: string
+          planned_away: number
+          planned_home: number
+        }
+        Insert: {
+          fixture_id: string
+          planned_away: number
+          planned_home: number
+        }
+        Update: {
+          fixture_id?: string
+          planned_away?: number
+          planned_home?: number
+        }
+        Relationships: []
+      }
+      practice_fixtures: {
+        Row: {
+          away: string
+          away_score: number | null
+          created_at: string
+          home: string
+          home_score: number | null
+          id: string
+          kickoff_at: string
+          lambda_away: number
+          lambda_home: number
+          odds: Json
+          round: number
+          season_id: string
+          status: string
+        }
+        Insert: {
+          away: string
+          away_score?: number | null
+          created_at?: string
+          home: string
+          home_score?: number | null
+          id?: string
+          kickoff_at: string
+          lambda_away: number
+          lambda_home: number
+          odds: Json
+          round: number
+          season_id: string
+          status?: string
+        }
+        Update: {
+          away?: string
+          away_score?: number | null
+          created_at?: string
+          home?: string
+          home_score?: number | null
+          id?: string
+          kickoff_at?: string
+          lambda_away?: number
+          lambda_home?: number
+          odds?: Json
+          round?: number
+          season_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      practice_points_ledger: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          points: number
+          ref_id: string | null
+          rule_code: string | null
+          seq: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          points: number
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          points?: number
+          ref_id?: string | null
+          rule_code?: string | null
+          seq?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      practice_predictions: {
+        Row: {
+          confidence: number
+          created_at: string
+          fixture_id: string
+          id: string
+          market: string
+          odds: number
+          result: string | null
+          selection: string
+          settled_at: string | null
+          units: number | null
+          user_id: string
+        }
+        Insert: {
+          confidence: number
+          created_at?: string
+          fixture_id: string
+          id?: string
+          market: string
+          odds: number
+          result?: string | null
+          selection: string
+          settled_at?: string | null
+          units?: number | null
+          user_id: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          fixture_id?: string
+          id?: string
+          market?: string
+          odds?: number
+          result?: string | null
+          selection?: string
+          settled_at?: string | null
+          units?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      practice_redemptions: {
+        Row: {
+          created_at: string
+          demo_code: string
+          id: string
+          points: number
+          reward_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          demo_code: string
+          id?: string
+          points: number
+          reward_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          demo_code?: string
+          id?: string
+          points?: number
+          reward_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      practice_rewards: {
+        Row: {
+          active: boolean
+          code: string
+          description: string | null
+          id: string
+          kind: string
+          points_cost: number
+          sort: number
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          description?: string | null
+          id?: string
+          kind: string
+          points_cost: number
+          sort?: number
+          title: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          points_cost?: number
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      practice_seasons: {
+        Row: {
+          created_at: string
+          full_time_seconds: number
+          id: string
+          lock_seconds: number
+          number: number
+          round_seconds: number
+          seed: number
+          started_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          full_time_seconds: number
+          id?: string
+          lock_seconds: number
+          number: number
+          round_seconds: number
+          seed: number
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          full_time_seconds?: number
+          id?: string
+          lock_seconds?: number
+          number?: number
+          round_seconds?: number
+          seed?: number
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      practice_settings: {
+        Row: {
+          enabled: boolean
+          full_time_seconds: number
+          id: number
+          lock_seconds: number
+          round_seconds: number
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          full_time_seconds?: number
+          id?: number
+          lock_seconds?: number
+          round_seconds?: number
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          full_time_seconds?: number
+          id?: number
+          lock_seconds?: number
+          round_seconds?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       predictions: {
         Row: {
           confidence: number
@@ -2025,6 +2322,29 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_practice_draw_entries: {
+        Args: never
+        Returns: {
+          email: string
+          entered_at: string
+          founding_number: number
+          phone: string
+          practice_picks: number
+          user_id: string
+          username: string
+        }[]
+      }
+      admin_practice_draw_run: {
+        Args: { p_note?: string; p_witness: string }
+        Returns: {
+          drawn_at: string
+          entries: number
+          winner_email: string
+          winner_founding_number: number
+          winner_phone: string
+          winner_username: string
+        }[]
+      }
       admin_referral_review: {
         Args: never
         Returns: {
@@ -2250,6 +2570,79 @@ export type Database = {
           code: string
           points: number
           title: string
+        }[]
+      }
+      practice_award: {
+        Args: { p_ref: string; p_rule: string; p_user: string }
+        Returns: number
+      }
+      practice_balance: {
+        Args: never
+        Returns: number
+      }
+      practice_can_access: {
+        Args: never
+        Returns: boolean
+      }
+      practice_crowd: {
+        Args: { p_season: string }
+        Returns: {
+          away: number
+          draw: number
+          fixture_id: string
+          home: number
+        }[]
+      }
+      practice_leaderboard: {
+        Args: { p_limit?: number }
+        Returns: {
+          graduate: boolean
+          is_me: boolean
+          points: number
+          rank: number
+          settled: number
+          units: number
+          username: string
+          won: number
+        }[]
+      }
+      practice_post_pick: {
+        Args: {
+          p_confidence: number
+          p_fixture: string
+          p_market: string
+          p_selection: string
+        }
+        Returns: {
+          confidence: number
+          created_at: string
+          fixture_id: string
+          id: string
+          market: string
+          odds: number
+          result: string | null
+          selection: string
+          settled_at: string | null
+          units: number | null
+          user_id: string
+        }
+      }
+      practice_redeem_demo: {
+        Args: { p_reward: string }
+        Returns: {
+          created_at: string
+          demo_code: string
+          id: string
+          points: number
+          reward_id: string
+          user_id: string
+        }
+      }
+      practice_status: {
+        Args: never
+        Returns: {
+          enabled: boolean
+          is_founding: boolean
         }[]
       }
       purge_old_campaign_events: { Args: never; Returns: undefined }
