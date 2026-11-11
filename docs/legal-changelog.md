@@ -231,3 +231,7 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 
 ## 11 Nov 2026: Draw admin screen
 - What changed: admin-only `/admin` Draw tab to run the R500 OTT voucher draw (lists valid entries, picks one winner at random through a service-role-only database function, records witness and result in `practice_draw_log`). It cannot run before the draw closes (Tue 1 Dec 2026, 00:00 SAST). The winner's email and phone are shown to admins only; the announcement uses username and Founding number only, as the published rules say. No new data is collected and no legal page changed.
+
+## 11 Nov 2026: Draw terms confirmed by owner
+- What changed: no copy change. The owner confirmed (11 Nov 2026, 21:53 SAST) the two terms already published on `/feedback`: Puntr team members and their immediate family cannot enter, and if the winner cannot be reached we may pick another winner. The Draw admin screen (PR #80) is merged.
+- Pages changed: none. Counsel retroactive review remains optional per the owner.
