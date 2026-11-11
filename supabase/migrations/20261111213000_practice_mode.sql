@@ -22,7 +22,7 @@ create table if not exists public.practice_settings (
 insert into public.practice_settings (id) values (1) on conflict (id) do nothing;
 alter table public.practice_settings enable row level security;
 revoke all on public.practice_settings from anon, authenticated;
-grant select, insert, update on public.practice_settings to service_role;
+grant select, update on public.practice_settings to service_role;
 
 create or replace function public.practice_can_access()
 returns boolean language sql stable security definer set search_path = public, pg_temp as $$
@@ -147,7 +147,7 @@ create index if not exists practice_redemptions_user on public.practice_redempti
 create table if not exists public.practice_draw_log (
   id uuid primary key default gen_random_uuid(),
   drawn_at timestamptz not null default now(),
-  drawn_by uuid not null references public.profiles (id),
+  drawn_by uuid references public.profiles (id), -- null when run by the service role
   witness text not null,
   entries int not null,
   winner_user_id uuid references public.profiles (id),
@@ -213,6 +213,7 @@ declare
   v_today int;
   v_day_start timestamptz := date_trunc('day', now() at time zone 'Africa/Johannesburg') at time zone 'Africa/Johannesburg';
   v_points int;
+  v_inserted int;
 begin
   select * into v_rule from public.point_rules where code = p_rule;
   if not found then return 0; end if;
@@ -226,7 +227,9 @@ begin
   insert into public.practice_points_ledger (user_id, kind, rule_code, points, ref_id)
     values (p_user, 'earn', p_rule, v_points, p_ref)
     on conflict do nothing;
-  return v_points;
+  -- Report what actually landed: a repeated call for the same pick pays nothing and returns 0.
+  get diagnostics v_inserted = row_count;
+  return case when v_inserted > 0 then v_points else 0 end;
 end;
 $$;
 revoke all on function public.practice_award(uuid, text, text) from public, anon, authenticated;
@@ -368,7 +371,7 @@ declare
 begin
   if v_uid is null then raise exception 'not_authenticated' using errcode = '28000'; end if;
   if not public.practice_can_access() then raise exception 'practice_closed' using errcode = 'P0001'; end if;
-  perform pg_advisory_xact_lock(hashtext('practice_redeem:' || v_uid::text));
+  perform pg_advisory_xact_lock(hashtext('practice_redeem'), hashtext(v_uid::text));
   select * into v_reward from public.practice_rewards where id = p_reward and active;
   if not found then raise exception 'reward_not_found' using errcode = 'P0001'; end if;
   select coalesce(sum(points), 0) into v_balance from public.practice_points_ledger where user_id = v_uid;
@@ -393,7 +396,7 @@ create or replace function public.admin_practice_draw_entries()
 returns table (user_id uuid, username text, founding_number int, email text, phone text, practice_picks bigint, entered_at timestamptz)
 language plpgsql stable security definer set search_path = public, auth, pg_temp as $$
 begin
-  if not public.is_admin() then raise exception 'admin only' using errcode = 'insufficient_privilege'; end if;
+  -- Service role only (granted below). Never callable by members, so no in-function admin check is needed.
   return query
   select p.id, p.username::text, p.founding_number, u.email::text, md.phone::text,
          (select count(*) from public.practice_predictions x where x.user_id = p.id),
@@ -407,8 +410,8 @@ begin
   order by s.created_at;
 end;
 $$;
-revoke all on function public.admin_practice_draw_entries() from public, anon;
-grant execute on function public.admin_practice_draw_entries() to authenticated;
+revoke all on function public.admin_practice_draw_entries() from public, anon, authenticated;
+grant execute on function public.admin_practice_draw_entries() to service_role;
 
 create or replace function public.admin_practice_draw_run(p_witness text, p_note text default null)
 returns table (winner_username text, winner_founding_number int, winner_email text, winner_phone text, entries int, drawn_at timestamptz)
@@ -418,7 +421,6 @@ declare
   v_win record;
   v_at timestamptz := now();
 begin
-  if not public.is_admin() then raise exception 'admin only' using errcode = 'insufficient_privilege'; end if;
   if p_witness is null or btrim(p_witness) = '' then raise exception 'witness_required' using errcode = 'P0001'; end if;
   select count(*) into v_entries from public.admin_practice_draw_entries();
   if v_entries = 0 then raise exception 'no_entries' using errcode = 'P0001'; end if;
@@ -428,8 +430,8 @@ begin
   return query select v_win.username, v_win.founding_number, v_win.email, v_win.phone, v_entries, v_at;
 end;
 $$;
-revoke all on function public.admin_practice_draw_run(text, text) from public, anon;
-grant execute on function public.admin_practice_draw_run(text, text) to authenticated;
+revoke all on function public.admin_practice_draw_run(text, text) from public, anon, authenticated;
+grant execute on function public.admin_practice_draw_run(text, text) to service_role;
 
 -- ---------------------------------------------------------------------------------------------------------
 -- Account deletion also erases a member's practice activity (unlike the kept, pseudonymised survey answers).

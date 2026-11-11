@@ -77,13 +77,15 @@ export const Route = createFileRoute("/api/cron/practice-tick")({
             .limit(1)
             .maybeSingle();
           const number = (last?.number ?? 0) + 1;
+          // Read the clock now, not at request start: a rollover happens after the settlement work.
+          const seasonStart = new Date();
           const seed = Math.floor(Math.random() * 2_000_000_000) + 1;
           const { data: season, error } = await db
             .from("practice_seasons")
             .insert({
               number,
               seed,
-              started_at: now.toISOString(),
+              started_at: seasonStart.toISOString(),
               round_seconds: roundSeconds,
               lock_seconds: lockSeconds,
               full_time_seconds: fullTimeSeconds,
@@ -97,7 +99,7 @@ export const Route = createFileRoute("/api/cron/practice-tick")({
             return false;
           }
           const planned = buildSeason(seed, {
-            startMs: now.getTime(),
+            startMs: seasonStart.getTime(),
             roundSeconds,
             lockSeconds,
             fullTimeSeconds,

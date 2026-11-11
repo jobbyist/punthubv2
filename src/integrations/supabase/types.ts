@@ -896,7 +896,7 @@ export type Database = {
       practice_draw_log: {
         Row: {
           drawn_at: string
-          drawn_by: string
+          drawn_by: string | null
           entries: number
           id: string
           note: string | null
@@ -906,7 +906,7 @@ export type Database = {
         }
         Insert: {
           drawn_at?: string
-          drawn_by: string
+          drawn_by?: string | null
           entries: number
           id?: string
           note?: string | null
@@ -916,7 +916,7 @@ export type Database = {
         }
         Update: {
           drawn_at?: string
-          drawn_by?: string
+          drawn_by?: string | null
           entries?: number
           id?: string
           note?: string | null
