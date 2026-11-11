@@ -134,6 +134,117 @@ export type Database = {
         }
         Relationships: []
       }
+      affiliate_partners: {
+        Row: {
+          applied_at: string | null
+          approved_at: string | null
+          category: string
+          commission_summary: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          dashboard_url: string | null
+          id: string
+          licence_checked_at: string | null
+          licence_notes: string | null
+          min_payout_zar: number | null
+          name: string
+          network: string | null
+          notes: string | null
+          responded_at: string | null
+          response_due_at: string | null
+          slug: string
+          status: string
+          terms_accepted_at: string | null
+          tracking_link: string | null
+          updated_at: string
+          updated_by: string | null
+          website_url: string | null
+          went_live_at: string | null
+        }
+        Insert: {
+          applied_at?: string | null
+          approved_at?: string | null
+          category?: string
+          commission_summary?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          dashboard_url?: string | null
+          id?: string
+          licence_checked_at?: string | null
+          licence_notes?: string | null
+          min_payout_zar?: number | null
+          name: string
+          network?: string | null
+          notes?: string | null
+          responded_at?: string | null
+          response_due_at?: string | null
+          slug: string
+          status?: string
+          terms_accepted_at?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          website_url?: string | null
+          went_live_at?: string | null
+        }
+        Update: {
+          applied_at?: string | null
+          approved_at?: string | null
+          category?: string
+          commission_summary?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          dashboard_url?: string | null
+          id?: string
+          licence_checked_at?: string | null
+          licence_notes?: string | null
+          min_payout_zar?: number | null
+          name?: string
+          network?: string | null
+          notes?: string | null
+          responded_at?: string | null
+          response_due_at?: string | null
+          slug?: string
+          status?: string
+          terms_accepted_at?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          website_url?: string | null
+          went_live_at?: string | null
+        }
+        Relationships: []
+      }
+      affiliate_partner_events: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          partner_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          partner_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          partner_id?: string
+        }
+        Relationships: []
+      }
       campaign_events: {
         Row: {
           created_at: string
