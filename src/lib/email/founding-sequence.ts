@@ -194,17 +194,74 @@ export function renderCountdownEmail({
   });
 }
 
+export const PRACTICE_CAMPAIGN = "founding-practice-1";
+/** Real sends stay off until Practice Mode is live (PRACTICE_MODE_ENABLED=true), so no email points at a page that is not there. */
+export const PRACTICE_ENV_GATE = "PRACTICE_MODE_ENABLED";
+export function renderPracticeEmail({ name, unsubscribeUrl }: SequenceInput): Mail {
+  return buildEmail({
+    subject: "Try Puntr in Practice Mode, then tell us what you think",
+    preheader:
+      "Practice picks on made-up fixtures. Share feedback for a chance at a R500 OTT voucher.",
+    heading: "Try Puntr before launch day",
+    greeting: hi(name),
+    paragraphs: [
+      "Practice Mode is open for Founding Members. It is a safe place to get a feel for Puntr: fixtures, results and teams are made up, so nothing here is a real match.",
+      "Post practice picks, watch them settle, see where you land on the practice leaderboard and look through the demo rewards. It works the way the real thing will, with none of the real thing at stake.",
+    ],
+    bullets: [
+      {
+        title: "Made-up fixtures and results",
+        body: "Fictional teams and leagues only. Practice picks never count towards your real record.",
+      },
+      {
+        title: "Practice points and demo rewards",
+        body: "Practice points are for Practice Mode only and cannot be turned into real PuntPoints. Demo rewards show how redeeming will feel and carry no real value.",
+      },
+      {
+        title: "Then tell us what you think",
+        body: "Our short feedback form takes a couple of minutes. What felt clear, what confused you, what is missing?",
+      },
+    ],
+    panel: {
+      title: "Feedback draw: a chance at a R500 OTT voucher",
+      lines: [
+        "Leave your feedback and tick the draw box to be entered into the draw for a R500 OTT voucher. Entering the draw is optional.",
+        "One entry per member. 18+ only. T&Cs apply. The draw rules, closing date and how the winner is chosen and told will be published on the feedback page.",
+      ],
+      link: { label: "Give feedback", url: tracked("/feedback", PRACTICE_CAMPAIGN) },
+    },
+    cta: { label: "Open Practice Mode", url: tracked("/practice", PRACTICE_CAMPAIGN) },
+    afterCta: [
+      `Puntr launches officially on ${LAUNCH_TEXT}. Puntr is for adults only: you must be 18 or older.`,
+    ],
+    sign: ["Michael", "Founder, Puntr"],
+    unsubscribeUrl,
+    reason: MARKETING_REASON,
+  });
+}
+
 /**
  * Campaigns the sequence runner can send, by id. Member-only ones need a Puntr account to make sense;
  * early-only ones go to early-access sign-ups who have not created an account yet.
  */
 export const SEQUENCE: Record<
   string,
-  { memberOnly: boolean; earlyOnly?: boolean; render: (i: SequenceInput) => Mail }
+  {
+    memberOnly: boolean;
+    earlyOnly?: boolean;
+    /** Env var that must be "true" before this campaign is sent to real recipients (test sends are always allowed). */
+    requiresEnv?: string;
+    render: (i: SequenceInput) => Mail;
+  }
 > = {
   [CLAIM_CAMPAIGN]: { memberOnly: false, earlyOnly: true, render: renderClaimEmail },
   [CHECKLIST_CAMPAIGN]: { memberOnly: true, render: renderChecklistEmail },
   [SURVEY_CAMPAIGN]: { memberOnly: true, render: renderSurveyEmail },
   [REFERRAL_CAMPAIGN]: { memberOnly: true, render: renderReferralEmail },
   [COUNTDOWN_CAMPAIGN]: { memberOnly: false, render: renderCountdownEmail },
+  [PRACTICE_CAMPAIGN]: {
+    memberOnly: true,
+    requiresEnv: PRACTICE_ENV_GATE,
+    render: renderPracticeEmail,
+  },
 };
