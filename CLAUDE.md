@@ -32,7 +32,8 @@ Repo: jobbyist/punthubv2. TanStack Start + Vite (React 19, Tailwind v4, shadcn/u
 - Payments: the owner confirmed on 6 Nov 2026 that Pay-As-You-Go and Puntr Pro will be available at launch (1 Dec 2026). The owner decided on 29 Oct 2026 to add Pay-As-You-Go credits and recurring billing (Puntr Pro) through PayFast before launch. They are built in the PayFast task (30 Oct, 12:00 SAST) and stay off until that work, its legal copy and the owner's go-ahead are done. Until then: no payments or subscriptions.
 
 ## Affiliates
-- Links and creatives only for partners in the `affiliate_partners` registry with status 'live' (approved: Supabets, Playbet, Mr Price Sport via Admarula).
+- Links and creatives only for partners in the `affiliate_partners` registry with status 'live'. The registry is managed in the admin Affiliates tab (statuses: applied, info_requested, approved, live, paused, declined, terminated). As of 11 Nov 2026: Hollywoodbets (questionnaire due 20 Nov) and Yesplay.bet (approved); Supabets and Playbet pending. None is live yet.
+- Partner terms to respect (Hollywoodbets): use only partner-issued links and approved creatives, never alter them; no marketing email/SMS about the partner without prior written consent; no incentivising sign-ups (no PuntPoints or rewards for registering through a partner link); no brand bidding or partner names in meta keywords; South Africa only.
 - A bookmaker goes live only with a recorded provincial licence check.
 - Every gambling creative is labelled "Ad" and carries 18+, "T&Cs apply" and 0800 006 008.
 - No affiliate units for users who aren't 18+ attested or who are on a break.

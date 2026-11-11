@@ -41,7 +41,8 @@
     "waitlist": "Waitlist",
     "rewards": "Rewards",
     "identity": "ID checks",
-    "campaigns": "Campaigns"
+    "campaigns": "Campaigns",
+    "affiliates": "Affiliates"
   },
   "settle": {
     "title": "Settlement",
@@ -307,5 +308,76 @@
     "empty": "No tracked visits in this period yet.",
     "error": "Couldn't load campaign data. If this is new, apply the campaign_events migration in Supabase.",
     "note": "Counts only visitors who accepted Analytics. Founding spots taken counts everyone, so compare the two to estimate untracked sign-ups. Times are rolling from now."
+  },
+  "affiliates": {
+    "title": "Affiliate partners",
+    "body": "Track applications, terms, licence checks and go-live for every partner. Links and creatives may only run for partners marked Live.",
+    "rules": "Rules: a bookmaker goes Live only with a recorded provincial licence check. Every gambling creative is labelled Ad with 18+, T&Cs apply and 0800 006 008. Never put personal information in a partner link. Commission terms are confidential to Puntr.",
+    "new": "Add partner",
+    "cancel": "Cancel",
+    "add": "Add partner",
+    "save": "Save changes",
+    "saved": "Saved.",
+    "error": "Couldn't save. Check the details and try again.",
+    "needLicence": "A bookmaker can only be Live once a licence check date is recorded.",
+    "loadError": "Couldn't load affiliate partners.",
+    "added": "Added to the registry.",
+    "statusChanged": "Status changed from {{from}} to {{to}}.",
+    "licencePending": "Licence check not recorded yet: cannot go Live.",
+    "overdue_one": "{{count}} day overdue",
+    "overdue_other": "{{count}} days overdue",
+    "dueToday": "Reply due today",
+    "dueIn_one": "Reply due in {{count}} day",
+    "dueIn_other": "Reply due in {{count}} days",
+    "status": {
+      "applied": "Applied",
+      "info_requested": "Info requested",
+      "approved": "Approved",
+      "live": "Live",
+      "paused": "Paused",
+      "declined": "Declined",
+      "terminated": "Terminated"
+    },
+    "category": {
+      "bookmaker": "Bookmaker",
+      "retail": "Retail",
+      "other": "Other"
+    },
+    "f": {
+      "name": "Partner name",
+      "network": "Network or programme",
+      "category": "Category",
+      "status": "Status",
+      "website": "Website",
+      "dashboard": "Affiliate dashboard URL",
+      "trackingLink": "Tracking link (partner-issued)",
+      "trackingHint": "Use only the link the partner provides. No personal information in it.",
+      "contactName": "Contact name",
+      "contactEmail": "Contact email",
+      "commission": "Commission terms",
+      "minPayout": "Minimum payout (R)",
+      "applied_at": "Applied",
+      "response_due_at": "Reply due",
+      "responded_at": "Replied",
+      "approved_at": "Approved",
+      "terms_accepted_at": "Terms accepted",
+      "licence_checked_at": "Licence checked",
+      "went_live_at": "Went live",
+      "licenceNotes": "Licence check notes (licence number, province, source)",
+      "notes": "Notes"
+    },
+    "log": {
+      "title": "Activity",
+      "placeholder": "Add a note, email, call or payment",
+      "add": "Add",
+      "empty": "No activity yet.",
+      "kind": {
+        "note": "Note",
+        "status": "Status",
+        "email": "Email",
+        "call": "Call",
+        "payment": "Payment"
+      }
+    }
   }
 }
