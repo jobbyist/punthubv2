@@ -60,6 +60,8 @@ create policy affiliate_events_admin_select on public.affiliate_partner_events
 create policy affiliate_events_admin_insert on public.affiliate_partner_events
   for insert to authenticated with check (public.is_admin());
 
+-- No DELETE for authenticated on purpose: partners and their activity log are a record.
+-- Retire a partner with status 'terminated' or 'declined'; remove test rows as service_role only.
 revoke all on public.affiliate_partners, public.affiliate_partner_events from anon, authenticated;
 grant select, insert, update on public.affiliate_partners to authenticated;
 grant select, insert on public.affiliate_partner_events to authenticated;

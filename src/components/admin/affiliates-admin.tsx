@@ -118,6 +118,7 @@ function PartnerForm({ partner, onDone }: { partner?: Partner; onDone: () => voi
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
+      if (!slug) return void toast.error(t("affiliates.error"));
       const { data, error } = await supabase
         .from("affiliate_partners")
         .insert({ ...row, slug })
