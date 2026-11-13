@@ -147,7 +147,7 @@ function Catalogue({
       return (
         <Button className="mt-auto w-full" variant="outline" disabled>
           <Lock className="mr-1.5 size-3.5" aria-hidden="true" />
-          {t("catalogue.opens", { date: formatDate(opensAt ?? Date.now()) })}
+          {t("catalogue.opens", { date: formatDate(r.available_from ?? opensAt ?? Date.now()) })}
         </Button>
       );
     if (!signedIn)
