@@ -40,27 +40,50 @@ const NOT_ARTICLE = /^(File|Category|Template|Talk|Special|Help|Portal|Wikipedia
 const NOT_CLUB_TITLE = /(season|stadium|academy|reserves|_u\d\d|under-\d\d|_\d{4}[–-]\d{2})/i;
 const WOMEN = /(women|ladies)/i;
 
-/** First search hit that is an English Wikipedia article about the club itself. Returns the article title. */
-export function pickWikipediaTitle(
+const CLUBBY_TITLE =
+  /(F\.?C\.?|A\.?F\.?C\.?|S\.?C\.?|C\.?F\.?|football|club|united|city|national)/i;
+
+/**
+ * English Wikipedia articles in the search hits that could be the club, best first: titles that look like a club
+ * ("Bournemouth" the town comes after "AFC Bournemouth"). The caller tries them in order until one passes the crest
+ * checks.
+ */
+export function wikipediaCandidates(
   hits: { url: string; title?: string }[],
   name: string,
-): string | null {
+): string[] {
   const words = badgeKey(name)
     .split(" ")
     .filter((w) => w.length >= 3);
+  const clubby: string[] = [];
+  const other: string[] = [];
   for (const h of hits) {
     const m = WIKI.exec(h.url.split("#")[0] ?? "");
     if (!m) continue;
-    const title = decodeURIComponent(m[1]!);
+    let title: string;
+    try {
+      title = decodeURIComponent(m[1]!).replace(/ /g, "_");
+    } catch {
+      continue;
+    }
     if (NOT_ARTICLE.test(title) || NOT_CLUB_TITLE.test(title)) continue;
     // A men's side must not pick up the women's team article, and the reverse.
     if (WOMEN.test(title) !== WOMEN.test(name)) continue;
     const t = badgeKey(title.replace(/_/g, " "));
     // The title must share a real word with the team name (or an alias of it).
     if (words.length > 0 && !words.some((w) => t.includes(w))) continue;
-    return title;
+    const list = CLUBBY_TITLE.test(title) ? clubby : other;
+    if (!clubby.includes(title) && !other.includes(title)) list.push(title);
   }
-  return null;
+  return [...clubby, ...other].slice(0, 3);
+}
+
+/** Best single candidate (kept for callers and tests). */
+export function pickWikipediaTitle(
+  hits: { url: string; title?: string }[],
+  name: string,
+): string | null {
+  return wikipediaCandidates(hits, name)[0] ?? null;
 }
 
 export interface WikiSummary {
@@ -77,6 +100,8 @@ const CLUB_WORDS =
 const PERSON_WORDS = /\b(born|footballer|player|manager|coach|politician|singer|actor)\b/i;
 const CREST_FILE = /(logo|crest|badge|emblem|fc|f\.c\.|afc|club|united|city|\.svg)/i;
 const PHOTO_FILE = /(stadium|ground|arena|park|squad|team_photo|players|kit|\.jpe?g$)/i;
+
+const WIKIMEDIA_HOSTS = new Set(["upload.wikimedia.org", "thumb.wikimedia.org"]);
 
 export type CrestCheck = { ok: true; image: string } | { ok: false; reason: string };
 
@@ -98,8 +123,9 @@ export function pickCrestImage(summary: WikiSummary): CrestCheck {
   } catch {
     return { ok: false, reason: "bad image url" };
   }
-  if (url.protocol !== "https:" || url.hostname !== "upload.wikimedia.org")
-    return { ok: false, reason: "image not on upload.wikimedia.org" };
+  // Wikimedia serves images from upload.wikimedia.org and, since 2026, thumbnails from thumb.wikimedia.org.
+  if (url.protocol !== "https:" || !WIKIMEDIA_HOSTS.has(url.hostname))
+    return { ok: false, reason: `image not on Wikimedia (${url.hostname})` };
   const file =
     decodeURIComponent(original || image)
       .split("/")
@@ -108,7 +134,8 @@ export function pickCrestImage(summary: WikiSummary): CrestCheck {
     return { ok: false, reason: `lead image looks like a photo (${file})` };
   if (!CREST_FILE.test(file) && !/\.(svg|png)$/i.test(file))
     return { ok: false, reason: `lead image does not look like a crest (${file})` };
-  return { ok: true, image };
+  url.search = "";
+  return { ok: true, image: url.toString() };
 }
 
 /** A manual badge URL from an admin: https only, no credentials. */

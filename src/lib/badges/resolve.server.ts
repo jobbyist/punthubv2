@@ -10,7 +10,7 @@ import {
   badgePath,
   badgeSearchRequest,
   pickCrestImage,
-  pickWikipediaTitle,
+  wikipediaCandidates,
   type WikiSummary,
 } from "@/lib/badges/resolve";
 
@@ -68,11 +68,21 @@ async function fetchSummary(title: string): Promise<WikiSummary | null> {
   return (await res.json()) as WikiSummary;
 }
 
-async function mirror(client: SupabaseClient, imageUrl: string, path: string): Promise<string> {
+async function mirror(
+  client: SupabaseClient,
+  imageUrl: string,
+  path: string,
+  trusted = false,
+): Promise<string> {
+  // Admin URLs: no redirects, so the host that was checked is the host we fetch from. Wikimedia: redirects are
+  // allowed but the final host must still be Wikimedia.
   const res = await fetch(imageUrl, {
     headers: { "User-Agent": UA },
+    redirect: trusted ? "follow" : "error",
     signal: AbortSignal.timeout(10_000),
   });
+  if (trusted && !/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(res.url || imageUrl))
+    throw new Error("image redirected away from Wikimedia");
   if (!res.ok) throw new Error(`image ${res.status}`);
   const type = res.headers.get("content-type") ?? "";
   // PNG/JPEG/WebP only (the bucket refuses others; SVG could carry script).
@@ -132,17 +142,21 @@ export async function resolveTeamBadge(
     const { createParallelSearch } = await import("@/lib/content/providers.server");
     const req = badgeSearchRequest(team.name, team.competition, team.sport);
     const hits = await createParallelSearch(apiKey).search({ ...req, maxResults: 8 });
-    const title = pickWikipediaTitle(hits, team.name);
-    if (!title) {
+    const titles = wikipediaCandidates(hits, team.name);
+    if (titles.length === 0) {
       await save({ status: "failed", last_error: "no Wikipedia article found" });
       return "failed";
     }
-    const summary = await fetchSummary(title);
-    if (!summary) {
-      await save({ status: "failed", last_error: `summary unavailable for ${title}` });
-      return "failed";
+    let title = "";
+    let crest: ReturnType<typeof pickCrestImage> = { ok: false, reason: "not checked" };
+    for (const candidate of titles) {
+      const summary = await fetchSummary(candidate);
+      crest = summary
+        ? pickCrestImage(summary)
+        : { ok: false, reason: `summary unavailable for ${candidate}` };
+      title = candidate;
+      if (crest.ok) break;
     }
-    const crest = pickCrestImage(summary);
     if (!crest.ok) {
       await save({
         status: "failed",
@@ -151,7 +165,7 @@ export async function resolveTeamBadge(
       });
       return "failed";
     }
-    const logoUrl = await mirror(client, crest.image, badgePath(team.sport, team.name));
+    const logoUrl = await mirror(client, crest.image, badgePath(team.sport, team.name), true);
     await save({
       status: "verified",
       method: "parallel_wikipedia",
