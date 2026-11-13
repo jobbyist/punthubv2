@@ -395,7 +395,7 @@ export function MobileNav() {
               className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
               onClick={() => close()}
             >
-              Claim Spot
+              {t("mobile.dock.claimSpot")}
             </Link>
           </div>
         </div>
