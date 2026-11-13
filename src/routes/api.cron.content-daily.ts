@@ -47,6 +47,21 @@ export const Route = createFileRoute("/api/cron/content-daily")({
                 (r) => guardExtract(r, claim),
               ),
               llm: env.geminiKey ? guardLlm(createGemini(env.geminiKey), claim) : null,
+              notify: async (notice) => {
+                const { newsroomAlertEmail, NEWSROOM_ALERT_TO } =
+                  await import("@/lib/email/newsroom-alert");
+                const { sendViaResend, REPLY_TO } = await import("@/lib/email/resend.server");
+                const email = newsroomAlertEmail(notice);
+                const res = await sendViaResend({
+                  to: [process.env["NEWSROOM_ALERT_EMAIL"] || NEWSROOM_ALERT_TO],
+                  subject: email.subject,
+                  html: email.html,
+                  text: email.text,
+                  reply_to: REPLY_TO,
+                  tags: [{ name: "category", value: "newsroom_alert" }],
+                });
+                if (!res.ok) console.error("content-daily: admin alert not sent", res.status);
+              },
             },
             {
               trigger: manual ? "manual" : "cron",

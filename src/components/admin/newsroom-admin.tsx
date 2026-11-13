@@ -234,6 +234,14 @@ function EngineSettings({
           {t("desk.autoPublish")}
         </label>
         <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={s.publishOnSchedule}
+            onChange={(e) => setS({ ...s, publishOnSchedule: e.target.checked })}
+          />
+          {t("desk.publishOnSchedule")}
+        </label>
+        <label className="flex items-center gap-2">
           {t("desk.minQuality")}
           <Input
             className="h-8 w-20"

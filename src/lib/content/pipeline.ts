@@ -37,7 +37,21 @@ export interface PipelineDeps {
   llm: LlmProvider | null;
   now?: () => Date;
   sleep?: (ms: number) => Promise<void>;
+  /** Tells the owner about every scheduled article (and failed runs). Optional; never blocks the run. */
+  notify?: (event: ContentNotice) => Promise<void>;
 }
+
+export type ContentNotice =
+  | {
+      kind: "article";
+      title: string;
+      slug: string;
+      published: boolean;
+      passed: boolean;
+      score: number;
+      issues: string[];
+    }
+  | { kind: "failure"; error: string; attempt: number };
 
 export interface RunOptions {
   trigger: JobTrigger;
@@ -279,12 +293,11 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
 
     // `enabled` guards publishing for every trigger: a manual run while the engine is off (the validation
     // workflow) can only ever produce a review-queue article.
+    const passed = reviewRan && !quality.critical && quality.score >= settings.minQuality;
     const publish =
       settings.enabled &&
       settings.autoPublish &&
-      reviewRan &&
-      !quality.critical &&
-      quality.score >= settings.minQuality;
+      (passed || (options.trigger === "cron" && settings.publishOnSchedule));
 
     if (options.dry) {
       await store.finishJob(job.id, {
@@ -328,6 +341,20 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       model: written.model,
       report: { quality, reviewRan, published: publish, sources: sources.length },
     });
+    if (deps.notify)
+      await deps
+        .notify({
+          kind: "article",
+          title: draft.title,
+          slug: slugFor(draft.title, sastDate(started)),
+          published: publish,
+          passed,
+          score: quality.score,
+          issues: quality.issues.map(
+            (i) => `${i.critical ? "CRITICAL " : ""}${i.code}: ${i.detail}`,
+          ),
+        })
+        .catch(() => undefined);
     return {
       ok: true,
       status: publish ? "published" : "queued_for_review",
@@ -341,6 +368,10 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     const message = describe(error);
     await log("failure", "error", message);
     await store.finishJob(job.id, { status: "failed", error: message }).catch(() => undefined);
+    if (deps.notify && options.trigger === "cron")
+      await deps
+        .notify({ kind: "failure", error: message, attempt: job.attempt })
+        .catch(() => undefined);
     return { ok: false, status: "failed", jobId: job.id, kind, error: message };
   }
 }

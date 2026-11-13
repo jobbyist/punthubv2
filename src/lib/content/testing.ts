@@ -40,6 +40,7 @@ export function memoryStore(overrides: Partial<ContentSettings> = {}): MemorySto
       settings: {
         enabled: true,
         autoPublish: true,
+        publishOnSchedule: false,
         minQuality: 85,
         scheduleMode: "sports",
         nextKindOverride: null,

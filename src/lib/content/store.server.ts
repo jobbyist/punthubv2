@@ -34,6 +34,7 @@ export function createContentStore(): ContentStore {
         // No settings row means the engine is off.
         enabled: row["enabled"] === true,
         autoPublish: row["auto_publish"] === true,
+        publishOnSchedule: row["publish_on_schedule"] === true,
         minQuality: typeof row["min_quality"] === "number" ? row["min_quality"] : 85,
         scheduleMode: mode === "sports" || mode === "development" ? mode : "alternate",
         nextKindOverride: override === "sports" || override === "development" ? override : null,

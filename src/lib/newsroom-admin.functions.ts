@@ -92,6 +92,7 @@ export interface DeskData {
   settings: {
     enabled: boolean;
     autoPublish: boolean;
+    publishOnSchedule: boolean;
     minQuality: number;
     scheduleMode: string;
     nextKindOverride: string | null;
@@ -165,6 +166,7 @@ export const adminNewsroomDesk = createServerFn({ method: "GET" })
       settings: {
         enabled: s["enabled"] === true,
         autoPublish: s["auto_publish"] === true,
+        publishOnSchedule: s["publish_on_schedule"] === true,
         minQuality: Number(s["min_quality"] ?? 85),
         scheduleMode: String(s["schedule_mode"] ?? "alternate"),
         nextKindOverride: (s["next_kind_override"] as string | null) ?? null,
@@ -365,6 +367,7 @@ export const adminNewsroomSettings = createServerFn({ method: "POST" })
     return {
       enabled: o["enabled"] === true,
       autoPublish: o["autoPublish"] === true,
+      publishOnSchedule: o["publishOnSchedule"] === true,
       minQuality,
       scheduleMode,
       nextKindOverride: next,
@@ -379,6 +382,7 @@ export const adminNewsroomSettings = createServerFn({ method: "POST" })
       .update({
         enabled: data.enabled,
         auto_publish: data.autoPublish,
+        publish_on_schedule: data.publishOnSchedule,
         min_quality: data.minQuality,
         schedule_mode: data.scheduleMode,
         next_kind_override: data.nextKindOverride,
