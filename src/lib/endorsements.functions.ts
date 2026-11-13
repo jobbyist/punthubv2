@@ -371,14 +371,24 @@ export const adminSendEndorsementEmail = createServerFn({ method: "POST" })
     const { sendViaResend } = await import("@/lib/email/resend.server");
     const sender = SENDERS[email.sender];
     const text = finalBody(email.body, org.contactName, email.sender);
-    const res = await sendViaResend({
-      from: sender.from,
-      to: [org.contactEmail],
-      reply_to: sender.address,
-      subject: email.subject,
-      text,
-      html: toHtml(text),
-    });
+    let res: { ok: boolean; status: number; body: string };
+    try {
+      res = await sendViaResend({
+        from: sender.from,
+        to: [org.contactEmail],
+        reply_to: sender.address,
+        subject: email.subject,
+        text,
+        html: toHtml(text),
+      });
+    } catch (error) {
+      // A thrown network error must not leave the draft marked as sent.
+      res = {
+        ok: false,
+        status: 0,
+        body: error instanceof Error ? error.message : "network error",
+      };
+    }
     if (!res.ok) {
       await db
         .from("endorsement_emails")
