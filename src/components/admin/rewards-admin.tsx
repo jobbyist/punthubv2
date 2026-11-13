@@ -241,6 +241,17 @@ function Catalogue() {
     setTick((n) => n + 1);
   }
 
+  async function setCost(id: string, current: number) {
+    const raw = window.prompt(t("rewards.catalogue.costPrompt"), String(current));
+    if (raw === null) return;
+    const cost = num(raw);
+    if (!cost || cost < 1) return void toast.error(t("rewards.error"));
+    const { error } = await supabase.from("rewards").update({ points_cost: cost }).eq("id", id);
+    if (error) toast.error(t("rewards.error"));
+    else toast.success(t("rewards.saved"));
+    setTick((n) => n + 1);
+  }
+
   async function addCodes() {
     if (!codesFor) return;
     const rows = [
@@ -286,6 +297,13 @@ function Catalogue() {
                       : t("rewards.catalogue.stock", { count: r.stock })}
                 </span>
                 <span className="ml-auto flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="text-xs underline"
+                    onClick={() => void setCost(r.id, r.points_cost)}
+                  >
+                    {t("rewards.catalogue.editCost")}
+                  </button>
                   <button
                     type="button"
                     className="text-xs underline"

@@ -27,6 +27,30 @@ export async function fetchRewards() {
   return data ?? [];
 }
 
+export interface CatalogueReward {
+  id: string;
+  code: string;
+  title: string;
+  description: string | null;
+  kind: string;
+  category: string | null;
+  points_cost: number;
+  face_value_cents: number | null;
+  sponsor: string | null;
+  fulfilment: string;
+  terms: string | null;
+  in_stock: boolean;
+  available: boolean;
+  available_from: string;
+}
+
+/** Public catalogue preview (signed in or not), with whether each reward can be redeemed yet. */
+export async function fetchCatalogue(): Promise<CatalogueReward[]> {
+  const { data, error } = await supabase.rpc("rewards_catalogue");
+  if (error) throw error;
+  return (data ?? []) as CatalogueReward[];
+}
+
 export async function fetchHistory(limit = 20) {
   const { data, error } = await supabase
     .from("puntpoints_ledger")

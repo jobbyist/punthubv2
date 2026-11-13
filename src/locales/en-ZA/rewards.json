@@ -52,7 +52,9 @@
     "empty": "No rewards are available right now. Check back soon.",
     "soon": "Rewards open once our sponsors confirm them. Your points keep building in the meantime.",
     "sponsor": "Sponsored by {{name}}",
-    "error": "Couldn't load rewards. Please try again."
+    "error": "Couldn't load rewards. Please try again.",
+    "preview": "Preview: rewards can be redeemed from {{date}}. Keep building your PuntPoints until then.",
+    "opens": "Opens {{date}}"
   },
   "redeem": {
     "button": "Redeem",
@@ -71,7 +73,8 @@
       "insufficient_points": "You don't have enough points for that.",
       "out_of_stock": "That reward just ran out.",
       "generic": "We couldn't redeem that. Please try again.",
-      "identity_not_verified": "Please verify your identity on your account page before redeeming rewards."
+      "identity_not_verified": "Please verify your identity on your account page before redeeming rewards.",
+      "not_yet_available": "Rewards open at launch on 1 December 2026."
     },
     "verifyCta": "Verify my identity"
   },
@@ -103,5 +106,13 @@
   "tipSupport": {
     "title": "Support standout Tipsters",
     "body": "Puntr Pro will introduce Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value and can't be withdrawn, and support never affects rankings. This feature is planned and is not available yet."
+  },
+  "category": {
+    "ott_voucher": "OTT vouchers",
+    "credit_pack": "Pay-As-You-Go credit packs",
+    "pro_pass": "Puntr Pro passes",
+    "puntr_merch": "Puntr merchandise",
+    "sports_merch": "Sports merchandise and accessories",
+    "match_tickets": "Match tickets"
   }
 }

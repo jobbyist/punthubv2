@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, Privacy and Terms r13 (PR: rewards catalogue)
+
+- **Terms (`/terms`, 2026-11-13-r13), section 6:** names the catalogue types (OTT vouchers, Pay-As-You-Go credit packs, free Puntr Pro passes, Puntr and sports merchandise, match tickets); redemption opens at launch on 1 December 2026 (preview before); costs and stock may change; how each type is delivered; Pro passes never renew or bill; physical rewards and tickets to SA addresses only; tickets depend on availability and exclude travel; rewards provided by Puntr or partners.
+- **Privacy (`/privacy`, 2026-11-13-r13):** new row "Reward delivery (from launch)": redemptions, and delivery details sent by email for physical rewards and tickets (name, address, phone, size or club, ticket holder names). Retention proposed: 12 months after delivery.
+- **Product:** 16 starter rewards seeded (proposed points costs, owner edits in Admin > Rewards), public preview on `/rewards`, redemption refused before launch (`not_yet_available`) except for admins testing.
+- `notice_versions` rows in migration `20261113220000_rewards_catalogue.sql`. Cookies, Affiliate disclosure, Refunds: not changed.
+- Review `[attorney review]`: (1) OTT is a third-party brand: use of the name and whether a reseller/partner agreement is needed before listing; (2) club scarves/jerseys and match tickets use club and league marks, and PSL ticket resale/transfer rules; (3) Puntr funding rewards itself (CLAUDE.md said sponsors unless the owner decides otherwise; the owner asked for this catalogue on 13 Nov): any Consumer Protection Act promotional-competition or loyalty-programme rules; (4) the 12-month retention for delivery details.
+
 ## 2026-11-13, no legal page text changed (PR: real team badges)
 
 - **What was added:** every team in fixtures and results shows its real club badge. Badges are found with Parallel Search (the club's Wikipedia article), the crest is checked and copied to Puntr's own storage, so visitors' browsers never load images from third parties. Fixtures and results whose teams have no verified badge are hidden until one is verified or set by an admin.
