@@ -12,7 +12,7 @@ import {
   adminSaveLogo,
   adminUploadLogo,
 } from "@/lib/logos.functions";
-import { compressLogo } from "@/lib/logos.client";
+import { compressLogo } from "@/lib/logo-compress";
 import { LOGO_KINDS, LOGO_PLACEMENTS, type BrandLogo, type LogoPlacement } from "@/lib/logos";
 
 /** Admin > Logos/Branding. Team badges keep their own resolver; everything else is managed here. */
