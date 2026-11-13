@@ -6,6 +6,8 @@ import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { AvatarUploader } from "@/components/avatar-uploader";
 import { IdentityCard } from "@/components/identity-card";
 import { MemberDetailsForm } from "@/components/member-details-form";
+import { ProfileCompletion } from "@/components/profile-completion";
+import { QuestsChecklist } from "@/components/quests-checklist";
 import { ReferralCard } from "@/components/referral-card";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useSession } from "@/components/session";
@@ -37,6 +39,12 @@ function Account() {
           <p className="mt-1 text-sm text-muted-foreground">
             {t("home.subtitle", { email: user?.email ?? "" })}
           </p>
+
+          <ProfileCompletion />
+
+          <div id="get-started">
+            <QuestsChecklist />
+          </div>
 
           <AvatarUploader />
 

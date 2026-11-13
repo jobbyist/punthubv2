@@ -85,7 +85,7 @@ export function AvatarUploader() {
   };
 
   return (
-    <section className="card-surface mt-6 p-4" aria-labelledby="avatar-title">
+    <section id="avatar" className="card-surface mt-6 p-4" aria-labelledby="avatar-title">
       <h2 id="avatar-title" className="text-base font-semibold">
         {t("avatar.title")}
       </h2>

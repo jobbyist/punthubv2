@@ -22,6 +22,7 @@ import { parseIdentifier } from "@/lib/identifier";
 import { mfaRequired } from "@/lib/mfa";
 import { validatePassword } from "@/lib/password";
 import { FoundingCounter } from "@/components/founding-counter";
+import { QuestsChecklist } from "@/components/quests-checklist";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
 import { FOUNDING_CAP } from "@/lib/flags";
 import { headT } from "@/lib/i18n/head";
@@ -799,8 +800,14 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
           </Link>
         </p>
       )}
+      <QuestsChecklist compact />
       <div className="flex flex-wrap gap-3">
         <Button asChild>
+          <Link to="/account" hash="get-started">
+            {t("join.done.accountCta")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
           <Link to="/roadmap">{t("join.done.cta")}</Link>
         </Button>
         {profile && (

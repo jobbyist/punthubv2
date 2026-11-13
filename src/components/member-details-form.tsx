@@ -87,11 +87,14 @@ export function MemberDetailsForm({ userId }: { userId: string }) {
     });
     setBusy(false);
     if (error) toast.error(t("details.error"));
-    else toast.success(t("details.saved"));
+    else {
+      toast.success(t("details.saved"));
+      window.dispatchEvent(new Event("puntr:details-saved"));
+    }
   };
 
   return (
-    <form onSubmit={save} className="card-surface mt-6 grid gap-4 p-4 sm:grid-cols-2">
+    <form id="details" onSubmit={save} className="card-surface mt-6 grid gap-4 p-4 sm:grid-cols-2">
       <div className="sm:col-span-2">
         <h2 className="text-lg">{t("details.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("details.body")}</p>

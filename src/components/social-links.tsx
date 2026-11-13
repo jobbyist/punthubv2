@@ -46,3 +46,18 @@ export function SocialLinks({
     </div>
   );
 }
+
+/** One platform logo on its own (used by the onboarding quests). */
+export function SocialIcon({
+  name,
+  className = "size-5",
+}: {
+  name: SocialKey;
+  className?: string;
+}) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" className={className}>
+      <path d={PATHS[name]} />
+    </svg>
+  );
+}

@@ -2605,6 +2605,126 @@ export type Database = {
           },
         ]
       }
+      quest_progress: {
+        Row: {
+          evidence: string | null
+          points_awarded: number
+          quest_code: string
+          review_note: string | null
+          reviewed_by: string | null
+          started_at: string
+          status: string
+          submitted_at: string | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          evidence?: string | null
+          points_awarded?: number
+          quest_code: string
+          review_note?: string | null
+          reviewed_by?: string | null
+          started_at?: string
+          status?: string
+          submitted_at?: string | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          evidence?: string | null
+          points_awarded?: number
+          quest_code?: string
+          review_note?: string | null
+          reviewed_by?: string | null
+          started_at?: string
+          status?: string
+          submitted_at?: string | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quest_progress_quest_code_fkey"
+            columns: ["quest_code"]
+            isOneToOne: false
+            referencedRelation: "quests"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "quest_progress_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quest_progress_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quest_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quest_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quests: {
+        Row: {
+          action_url: string | null
+          active: boolean
+          category: string
+          code: string
+          coming_soon: boolean
+          description: string
+          handle_label: string | null
+          points: number
+          sort: number
+          title: string
+          updated_at: string
+          verification: string
+        }
+        Insert: {
+          action_url?: string | null
+          active?: boolean
+          category: string
+          code: string
+          coming_soon?: boolean
+          description: string
+          handle_label?: string | null
+          points: number
+          sort?: number
+          title: string
+          updated_at?: string
+          verification: string
+        }
+        Update: {
+          action_url?: string | null
+          active?: boolean
+          category?: string
+          code?: string
+          coming_soon?: boolean
+          description?: string
+          handle_label?: string | null
+          points?: number
+          sort?: number
+          title?: string
+          updated_at?: string
+          verification?: string
+        }
+        Relationships: []
+      }
       redemptions: {
         Row: {
           admin_id: string | null
@@ -2920,41 +3040,59 @@ export type Database = {
       rewards: {
         Row: {
           active: boolean
+          available_from: string | null
+          category: string | null
           code: string
           created_at: string
           description: string | null
+          face_value_cents: number | null
+          fulfilment: string
           id: string
           kind: string
           points_cost: number
           requires_approval: boolean
+          sort: number
           sponsor: string | null
           stock: number | null
+          terms: string | null
           title: string
         }
         Insert: {
           active?: boolean
+          available_from?: string | null
+          category?: string | null
           code: string
           created_at?: string
           description?: string | null
+          face_value_cents?: number | null
+          fulfilment?: string
           id?: string
           kind: string
           points_cost: number
           requires_approval?: boolean
+          sort?: number
           sponsor?: string | null
           stock?: number | null
+          terms?: string | null
           title: string
         }
         Update: {
           active?: boolean
+          available_from?: string | null
+          category?: string | null
           code?: string
           created_at?: string
           description?: string | null
+          face_value_cents?: number | null
+          fulfilment?: string
           id?: string
           kind?: string
           points_cost?: number
           requires_approval?: boolean
+          sort?: number
           sponsor?: string | null
           stock?: number | null
+          terms?: string | null
           title?: string
         }
         Relationships: []
@@ -3684,6 +3822,15 @@ export type Database = {
           winner_username: string
         }[]
       }
+      admin_quest_review: {
+        Args: {
+          p_approve: boolean
+          p_code: string
+          p_note?: string
+          p_user: string
+        }
+        Returns: number
+      }
       admin_referral_review: {
         Args: never
         Returns: {
@@ -4178,6 +4325,26 @@ export type Database = {
       puntpoints_balance: { Args: { p_user: string }; Returns: number }
       puntpoints_transferable: { Args: { p_user: string }; Returns: number }
       purge_old_campaign_events: { Args: never; Returns: undefined }
+      quest_auto_done: {
+        Args: { p_code: string; p_user: string }
+        Returns: boolean
+      }
+      quest_award: {
+        Args: { p_code: string; p_reviewer?: string; p_user: string }
+        Returns: number
+      }
+      quest_claim_device: { Args: { p_code: string }; Returns: number }
+      quest_consent: {
+        Args: { p_purpose: string; p_user: string }
+        Returns: boolean
+      }
+      quest_member_ok: { Args: { p_user: string }; Returns: boolean }
+      quest_start: { Args: { p_code: string }; Returns: undefined }
+      quest_submit: {
+        Args: { p_code: string; p_evidence: string }
+        Returns: string
+      }
+      quests_sync: { Args: never; Returns: number }
       record_consent: {
         Args: {
           p_granted: boolean
@@ -4209,6 +4376,25 @@ export type Database = {
         }
       }
       reward_setting: { Args: { p_key: string }; Returns: boolean }
+      rewards_catalogue: {
+        Args: never
+        Returns: {
+          available: boolean
+          available_from: string
+          category: string
+          code: string
+          description: string
+          face_value_cents: number
+          fulfilment: string
+          id: string
+          in_stock: boolean
+          kind: string
+          points_cost: number
+          sponsor: string
+          terms: string
+          title: string
+        }[]
+      }
       rewards_status: {
         Args: never
         Returns: {

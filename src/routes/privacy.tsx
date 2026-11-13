@@ -77,6 +77,12 @@ const PURPOSES: [string, string, string, string][] = [
     "For as long as tax and accounting law requires us to keep payment records",
   ],
   [
+    "Get-started quests",
+    "Which quests you started and completed, the points given, and for social quests the username or display name you give us (for example your Instagram or X handle, or your WhatsApp name), which our team checks on that platform",
+    "Your consent (you choose to do a quest); our interest in preventing reward abuse",
+    "While your account is open; social usernames are deleted 90 days after the quest is checked [attorney review]",
+  ],
+  [
     "Verifying your identity (before redeeming rewards)",
     "A photo or scan of your ID or passport (deleted once checked), and the result: verified, 18 or older, who checked it and when",
     "Legal obligation (keeping gambling promotions to adults) and our interest in preventing fraud [attorney review]",
@@ -142,7 +148,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r12). Draft pending
+          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r14). Draft pending
           attorney review.
         </p>
 
