@@ -16,6 +16,7 @@ import { CampaignsTab } from "@/components/admin/campaigns-admin";
 import { IdentityTab } from "@/components/admin/identity-admin";
 import { MembersTab } from "@/components/admin/members-admin";
 import { NewsroomTab } from "@/components/admin/newsroom-admin";
+import { NotificationsTab } from "@/components/admin/notifications-admin";
 import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
@@ -34,6 +35,7 @@ const TABS = [
   "system",
   "users",
   "newsroom",
+  "notifications",
   "analytics",
   "log",
   "fixtures",
@@ -76,6 +78,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="newsroom" className="mt-5">
                   <NewsroomTab />
+                </TabsContent>
+                <TabsContent value="notifications" className="mt-5">
+                  <NotificationsTab />
                 </TabsContent>
                 <TabsContent value="analytics" className="mt-5">
                   <AnalyticsTab />

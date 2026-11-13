@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: admin notifications composer)
+
+- **What was added:** admins can send in-app notifications (the header bell) by hand to all members, Founding Members only or one member, with an optional link and schedule, see read counts and withdraw a notice. Founding-only notices are hidden from other members by the database.
+- **Data:** no new personal data. The admin who sent each notice is recorded for the admin action log; read state was already stored.
+- `/privacy` already covers this under "Account administration" ("messages we send you"). Terms, Privacy choices, Affiliate disclosure and Refunds: not changed.
+- Review: none. Marketing-style notices in the bell are in-app only; email still follows the opt-in rules.
 ## 2026-11-13, no legal page text changed (PR: Annual Pass bank transfers)
 
 - **What was added:** admins can record Founding Annual Pass payments made by bank transfer (EFT) and match them to a member. They count toward the 20-pass cap, so the public counter shows 16/20 after the 4 transfers the owner confirmed.
