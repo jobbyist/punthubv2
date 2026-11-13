@@ -109,6 +109,7 @@ export const adminQuestReview = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const ctx = context as Ctx;
+    if (!(await isAdmin(ctx))) return { ok: false as const, message: "forbidden" };
     const { data: points, error } = await ctx.supabase.rpc("admin_quest_review", {
       p_user: data.userId,
       p_code: data.quest,

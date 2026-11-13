@@ -72,6 +72,8 @@ export async function loadQuests(
   userId: string,
 ): Promise<{ summary: QuestSummary; newlyAwarded: number }> {
   const sync = await supabase.rpc("quests_sync");
+  // A failed check is not fatal: the list still loads and the next visit checks again.
+  if (sync.error) console.error("quests: automatic checks failed", sync.error.message);
   const [{ data: quests, error: e1 }, { data: progress, error: e2 }] = await Promise.all([
     supabase.from("quests").select("*").eq("active", true),
     supabase
