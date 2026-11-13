@@ -81,14 +81,19 @@ export function SiteHeader() {
           <Logo />
         </div>
 
-        <nav aria-label={t("header.desktopNavigation")} className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex">
+        <nav
+          aria-label={t("header.desktopNavigation")}
+          className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex"
+        >
           {navigationGroups.map((group) => {
             const visibleItems = group.items.filter(
               (item) => !("guestOnly" in item && item.guestOnly && isSignedIn),
             );
             if (visibleItems.length === 0) return null;
             const GroupIcon = group.icon;
-            const active = visibleItems.some((item) => path === item.to || path.startsWith(item.to + "/"));
+            const active = visibleItems.some(
+              (item) => path === item.to || path.startsWith(item.to + "/"),
+            );
             return (
               <DropdownMenu key={group.key}>
                 <DropdownMenuTrigger asChild>
@@ -102,7 +107,11 @@ export function SiteHeader() {
                     <ChevronDown className="size-3.5 opacity-60" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" sideOffset={10} className="w-64 rounded-xl p-2 shadow-xl">
+                <DropdownMenuContent
+                  align="start"
+                  sideOffset={10}
+                  className="w-64 rounded-xl p-2 shadow-xl"
+                >
                   <DropdownMenuLabel className="px-3 pb-2 pt-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                     {t(`desktop.groups.${group.key}`)}
                   </DropdownMenuLabel>
@@ -111,7 +120,11 @@ export function SiteHeader() {
                     const ItemIcon = item.icon;
                     const itemActive = path === item.to || path.startsWith(item.to + "/");
                     return (
-                      <DropdownMenuItem key={item.key} asChild className="cursor-pointer rounded-lg px-3 py-2.5">
+                      <DropdownMenuItem
+                        key={item.key}
+                        asChild
+                        className="cursor-pointer rounded-lg px-3 py-2.5"
+                      >
                         <Link to={item.to} className={itemActive ? "text-primary" : ""}>
                           <ItemIcon className="size-4 text-muted-foreground" />
                           <span className="flex-1">{t(`desktop.items.${item.key}`)}</span>
@@ -138,7 +151,9 @@ export function SiteHeader() {
                   className="flex items-center gap-1.5 rounded-full border border-border py-1 pl-1 pr-2.5 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <UserAvatar username={profile.username} url={profile.avatar_url} />
-                  <span className="hidden max-w-[10rem] truncate sm:inline">{profile.username}</span>
+                  <span className="hidden max-w-[10rem] truncate sm:inline">
+                    {profile.username}
+                  </span>
                   <ChevronDown className="size-4 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
@@ -152,7 +167,11 @@ export function SiteHeader() {
                   )}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => navigate({ to: "/u/$username", params: { username: profile.username } })}>
+                <DropdownMenuItem
+                  onSelect={() =>
+                    navigate({ to: "/u/$username", params: { username: profile.username } })
+                  }
+                >
                   {t("header.myRecord")}
                 </DropdownMenuItem>
                 {profile.referral_code && (
@@ -168,7 +187,11 @@ export function SiteHeader() {
                     <DropdownMenuItem
                       onSelect={() => {
                         analytics.shareClicked("invite");
-                        window.open(whatsappUrl(inviteText(profile.referral_code!)), "_blank", "noopener,noreferrer");
+                        window.open(
+                          whatsappUrl(inviteText(profile.referral_code!)),
+                          "_blank",
+                          "noopener,noreferrer",
+                        );
                       }}
                     >
                       {t("header.shareInvite")}
@@ -190,11 +213,19 @@ export function SiteHeader() {
                     )}
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onSelect={() => navigate({ to: "/wallet" })}>{t("header.wallet")}</DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>{t("header.account")}</DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate({ to: "/account/privacy" })}>{t("header.privacy")}</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/wallet" })}>
+                  {t("header.wallet")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
+                  {t("header.account")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/account/privacy" })}>
+                  {t("header.privacy")}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => void signOut()}>{t("header.signOut")}</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => void signOut()}>
+                  {t("header.signOut")}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -206,7 +237,10 @@ export function SiteHeader() {
               >
                 {t("header.signIn")}
               </Link>
-              <Button asChild className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm">
+              <Button
+                asChild
+                className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
+              >
                 <Link to="/join">{t("header.claimFoundingAccess")}</Link>
               </Button>
             </>

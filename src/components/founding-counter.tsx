@@ -25,8 +25,14 @@ export function FoundingCounter({
         aria-label={t("foundingCounter.compact", { left: Math.max(0, data.left), cap: data.cap })}
         title={t("foundingCounter.compact", { left: Math.max(0, data.left), cap: data.cap })}
       >
-        <span className={`size-1.5 shrink-0 rounded-full ${full ? "bg-muted-foreground" : "animate-pulse bg-primary"}`} />
-        <span className="truncate tabular-nums">{full ? t("foundingCounter.full") : t("foundingCounter.left", { left: data.left, cap: data.cap })}</span>
+        <span
+          className={`size-1.5 shrink-0 rounded-full ${full ? "bg-muted-foreground" : "animate-pulse bg-primary"}`}
+        />
+        <span className="truncate tabular-nums">
+          {full
+            ? t("foundingCounter.full")
+            : t("foundingCounter.left", { left: data.left, cap: data.cap })}
+        </span>
       </div>
     );
   }
@@ -66,7 +72,10 @@ export function FoundingCounter({
         aria-valuemax={data.cap}
         aria-valuenow={claimed}
       >
-        <div className="h-full rounded-full bg-primary transition-[width] duration-700" style={{ width: `${progress}%` }} />
+        <div
+          className="h-full rounded-full bg-primary transition-[width] duration-700"
+          style={{ width: `${progress}%` }}
+        />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-semibold text-muted-foreground">
         <span>{claimed} claimed</span>

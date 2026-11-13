@@ -62,7 +62,8 @@ export async function sendViaResend(payload: Record<string, unknown>) {
   const first = await post({ from, ...payload });
   const domainProblem =
     !first.ok && (first.status === 403 || first.status === 422) && /verif|domain/i.test(first.body);
-  if (domainProblem && from !== FALLBACK_SENDER) {
+  // A caller that names its own sender ("Michael from Puntr") is never silently switched to another identity.
+  if (domainProblem && from !== FALLBACK_SENDER && !payload["from"]) {
     console.warn("resend: sender domain not verified, retrying from the fallback sender");
     return post({ from: FALLBACK_SENDER, ...payload });
   }

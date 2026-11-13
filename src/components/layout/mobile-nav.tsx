@@ -378,28 +378,34 @@ export function MobileNav() {
       )}
 
       {/* Guests receive a conversion action instead of a persistent navigation dock. */}
-      {!sessionLoading && !isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding" && (
-        <div
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-[0_-8px_28px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden"
-          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
-        >
-          <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-bold leading-tight text-foreground">{t("mobile.dock.foundingTitle")}</p>
-              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                {t("mobile.dock.foundingMessage")}
-              </p>
+      {!sessionLoading &&
+        !isSignedIn &&
+        !path.startsWith("/admin") &&
+        path !== "/join" &&
+        path !== "/founding" && (
+          <div
+            className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-[0_-8px_28px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden"
+            style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+          >
+            <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-bold leading-tight text-foreground">
+                  {t("mobile.dock.foundingTitle")}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                  {t("mobile.dock.foundingMessage")}
+                </p>
+              </div>
+              <Link
+                to="/join"
+                className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
+                onClick={() => close()}
+              >
+                {t("mobile.dock.claimSpot")}
+              </Link>
             </div>
-            <Link
-              to="/join"
-              className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
-              onClick={() => close()}
-            >
-              {t("mobile.dock.claimSpot")}
-            </Link>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
 }
