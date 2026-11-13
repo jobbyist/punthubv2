@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useAsync } from "@/hooks/use-async";
 import { getFoundingSpots } from "@/lib/founding.functions";
 
-export function FoundingCounter({ className = "" }: { className?: string }) {
+export function FoundingCounter({
+  className = "",
+  compact = false,
+}: {
+  className?: string;
+  compact?: boolean;
+}) {
   const { t } = useTranslation("common");
   const { data } = useAsync(() => getFoundingSpots(), []);
   if (!data) return null;
@@ -11,6 +17,19 @@ export function FoundingCounter({ className = "" }: { className?: string }) {
   const claimed = Math.max(0, Math.min(data.cap, data.cap - data.left));
   const progress = data.cap > 0 ? (claimed / data.cap) * 100 : 0;
   const full = data.left <= 0;
+
+  if (compact) {
+    return (
+      <div
+        className={`inline-flex h-9 max-w-[156px] items-center gap-2 rounded-lg border border-primary/30 bg-primary-soft/70 px-2.5 text-[11px] font-semibold text-primary ${className}`}
+        aria-label={t("foundingCounter.compact", { left: Math.max(0, data.left), cap: data.cap })}
+        title={t("foundingCounter.compact", { left: Math.max(0, data.left), cap: data.cap })}
+      >
+        <span className={`size-1.5 shrink-0 rounded-full ${full ? "bg-muted-foreground" : "animate-pulse bg-primary"}`} />
+        <span className="truncate tabular-nums">{full ? t("foundingCounter.full") : t("foundingCounter.left", { left: data.left, cap: data.cap })}</span>
+      </div>
+    );
+  }
 
   return (
     <section
@@ -47,10 +66,7 @@ export function FoundingCounter({ className = "" }: { className?: string }) {
         aria-valuemax={data.cap}
         aria-valuenow={claimed}
       >
-        <div
-          className="h-full rounded-full bg-primary transition-[width] duration-700"
-          style={{ width: `${progress}%` }}
-        />
+        <div className="h-full rounded-full bg-primary transition-[width] duration-700" style={{ width: `${progress}%` }} />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-semibold text-muted-foreground">
         <span>{claimed} claimed</span>
