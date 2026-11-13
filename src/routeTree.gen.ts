@@ -55,6 +55,7 @@ import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.p
 import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.annual-pass-expired'
 import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronContentDailyRouteImport } from './routes/api.cron.content-daily'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.founding-sequence'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
@@ -297,6 +298,11 @@ const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
   path: '/api/cron/chain-head',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronContentDailyRoute = ApiCronContentDailyRouteImport.update({
+  id: '/api/cron/content-daily',
+  path: '/api/cron/content-daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
   id: '/api/cron/founding-campaign',
   path: '/api/cron/founding-campaign',
@@ -391,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -448,6 +455,7 @@ export interface FileRoutesByTo {
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -506,6 +514,7 @@ export interface FileRoutesById {
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -565,6 +574,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -622,6 +632,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -737,6 +749,7 @@ export interface RootRouteChildren {
   ApiCronAnnualPassExpiredRoute: typeof ApiCronAnnualPassExpiredRoute
   ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronContentDailyRoute: typeof ApiCronContentDailyRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronFoundingSequenceRoute: typeof ApiCronFoundingSequenceRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
@@ -1072,6 +1085,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronChainHeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/content-daily': {
+      id: '/api/cron/content-daily'
+      path: '/api/cron/content-daily'
+      fullPath: '/api/cron/content-daily'
+      preLoaderRoute: typeof ApiCronContentDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/founding-campaign': {
       id: '/api/cron/founding-campaign'
       path: '/api/cron/founding-campaign'
@@ -1185,6 +1205,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronAnnualPassExpiredRoute: ApiCronAnnualPassExpiredRoute,
   ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronContentDailyRoute: ApiCronContentDailyRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronFoundingSequenceRoute: ApiCronFoundingSequenceRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,

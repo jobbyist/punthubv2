@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: content engine foundation)
+
+- **What was added:** code for an automated newsroom (research from public web pages, drafting by Google Gemini, automated checks, review queue). It is switched off, its database migration is not applied, and nothing is published by it yet. No member-facing behaviour changes with this PR.
+- **New processors when it is switched on (owner decision needed, per the compliance policy):** Google (Gemini API, free tier), Parallel Web Systems (search), Firecrawl (page reading). They receive public web pages and approved Puntr update text only. No personal information is sent; the code has no path that reads member data into a prompt.
+- **No new personal data collected or stored.** Privacy, Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed. No `notice_versions` change.
+- Review `[attorney review]` before switching on: (1) whether Privacy should name the three services even though no personal data goes to them; (2) the label on AI-written articles (proposed: "Written with AI assistance, checked against the sources listed"); (3) reuse of facts from third-party news pages with attribution and links: the engine stores short supporting quotes for checking and shows source links, it does not republish source text; (4) Google's free tier may use submitted content to improve its products.
+
 ## 2026-11-11, no legal page text changed (PR: Annual Pass expiry notice, Practice Mode feedback email)
 
 - **Annual Pass expiry notice (service email):** sent once per reservation, an hour or more after an unpaid Founding Annual Pass hold has lapsed, to the address the member reserved with. While the offer is open (to 16 November 2026) it says nothing was charged, the place was released and they may reserve again; after it closes it says the offer has closed. No marketing content or unsubscribe link (same basis as the reservation and reminder emails). Recorded in the existing `founding_campaign_sends` ledger.
