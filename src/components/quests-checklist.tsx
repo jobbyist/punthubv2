@@ -91,9 +91,9 @@ export function QuestsChecklist({ compact = false }: { compact?: boolean }) {
     return <section className="card-surface mt-6 h-40 animate-pulse" aria-busy="true" />;
 
   const pct = summary.total ? Math.round((summary.done / summary.total) * 100) : 0;
-  const rows = compact
-    ? summary.rows.filter((r) => r.status !== "verified").slice(0, 6)
-    : summary.rows;
+  const quests = summary.rows.filter((r) => r.rewarded !== false);
+  const visits = summary.rows.filter((r) => r.rewarded === false && r.action_url);
+  const rows = compact ? quests.filter((r) => r.status !== "verified").slice(0, 6) : quests;
 
   return (
     <section className="card-surface mt-6 overflow-hidden" aria-labelledby="quests-title">
@@ -134,6 +134,31 @@ export function QuestsChecklist({ compact = false }: { compact?: boolean }) {
           <QuestItem key={r.code} row={r} onChange={() => void reload()} />
         ))}
       </ul>
+      {visits.length > 0 && (
+        <div className="border-t border-border p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+            {t("stayConnected")}
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {visits.map((v) => {
+              const key = SOCIAL[v.code];
+              return (
+                <li key={v.code}>
+                  <a
+                    href={v.action_url ?? "#"}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center gap-2 border border-border px-3 py-1.5 text-xs font-semibold hover:border-primary hover:text-primary"
+                  >
+                    {key && <SocialIcon name={key} className="size-4" />}
+                    {v.title}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
       {compact && (
         <div className="border-t border-border p-4 text-sm">
           <Link

@@ -13,13 +13,14 @@ const q = (code: string, points: number, extra: Partial<Quest> = {}): Quest => (
   handle_label: null,
   sort: 1,
   coming_soon: false,
+  rewarded: true,
   ...extra,
 });
 
 describe("summariseQuests", () => {
   it("counts earned and remaining points and skips coming-soon quests", () => {
     const s = summariseQuests(
-      [q("a", 50), q("b", 100), q("c", 70, { coming_soon: true })],
+      [q("a", 50), q("b", 100), q("c", 70, { coming_soon: true }), q("d", 50, { rewarded: false })],
       [
         {
           quest_code: "a",

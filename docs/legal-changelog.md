@@ -3,6 +3,15 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, Privacy and Terms r15 (PR: no rewarded social follows; reward funding)
+
+- **Owner decision:** remove any incentive that could put Puntr's social media pages at risk. Instagram, Facebook, X and TikTok quests no longer pay points; they are plain "visit" links. Open submissions for them were closed without points. WhatsApp and Telegram community groups keep their quests.
+- **Terms (r15), section 6:** quests list "joining Puntr's WhatsApp or Telegram community"; community groups checked by our team; "Following or liking Puntr's social media pages never earns points."
+- **Privacy (r15):** "Get-started quests" row now names the WhatsApp name or Telegram username only.
+- **Rewards funding:** each reward is marked as funded by Puntr, a sponsor or a partner (Admin > Rewards); the catalogue shows "Reward from Puntr", "Sponsored by X" or "In partnership with X" (sponsor links carry `rel="sponsored"`).
+- `notice_versions` r15 rows in migration `20261113233000_social_quests_reward_funding.sql`.
+- Review `[attorney review]`: WhatsApp (Meta) group joins still earn points; confirm WhatsApp's business/community terms allow this.
+
 ## 2026-11-13, no legal page text changed (PR: motion, preloader, light/dark mode)
 
 - **What changed:** branded preloader (once per browser session), route loading bar, light/dark mode switch, animated hero backgrounds, club-badge strip and scroll reveals on marketing and sports pages.

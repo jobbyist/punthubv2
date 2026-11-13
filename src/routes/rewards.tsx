@@ -226,10 +226,31 @@ function Catalogue({
                   {r.description && (
                     <p className="text-xs text-muted-foreground">{r.description}</p>
                   )}
-                  {r.sponsor && (
+                  {r.funded_by !== "puntr" && r.sponsor && (
                     <p className="text-xs text-muted-foreground">
-                      {t("catalogue.sponsor", { name: r.sponsor })}
+                      {r.sponsor_url ? (
+                        <a
+                          href={r.sponsor_url}
+                          target="_blank"
+                          rel="noreferrer noopener sponsored"
+                          className="underline"
+                        >
+                          {t(
+                            r.funded_by === "partner" ? "catalogue.partner" : "catalogue.sponsor",
+                            {
+                              name: r.sponsor,
+                            },
+                          )}
+                        </a>
+                      ) : (
+                        t(r.funded_by === "partner" ? "catalogue.partner" : "catalogue.sponsor", {
+                          name: r.sponsor,
+                        })
+                      )}
                     </p>
+                  )}
+                  {r.funded_by === "puntr" && (
+                    <p className="text-xs text-muted-foreground">{t("catalogue.byPuntr")}</p>
                   )}
                   <p className="text-lg font-extrabold tnum">
                     {points(r.points_cost)}{" "}

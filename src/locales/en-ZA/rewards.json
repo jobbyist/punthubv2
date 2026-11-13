@@ -55,7 +55,9 @@
     "sponsor": "Sponsored by {{name}}",
     "error": "Couldn't load rewards. Please try again.",
     "preview": "Preview: rewards can be redeemed from {{date}}. Keep building your PuntPoints until then.",
-    "opens": "Opens {{date}}"
+    "opens": "Opens {{date}}",
+    "partner": "In partnership with {{name}}",
+    "byPuntr": "Reward from Puntr"
   },
   "redeem": {
     "button": "Redeem",

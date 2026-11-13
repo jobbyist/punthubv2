@@ -252,6 +252,29 @@ function Catalogue() {
     setTick((n) => n + 1);
   }
 
+  async function setFunding(
+    id: string,
+    fundedBy: string,
+    sponsor: string | null,
+    sponsorUrl: string | null,
+  ) {
+    const url = sponsorUrl?.trim() || null;
+    if (url && !url.startsWith("https://")) return void toast.error(t("rewards.funding.badUrl"));
+    if (fundedBy !== "puntr" && !sponsor?.trim())
+      return void toast.error(t("rewards.funding.needName"));
+    const { error } = await supabase
+      .from("rewards")
+      .update({
+        funded_by: fundedBy,
+        sponsor: fundedBy === "puntr" ? null : sponsor?.trim() || null,
+        sponsor_url: fundedBy === "puntr" ? null : url,
+      })
+      .eq("id", id);
+    if (error) toast.error(t("rewards.error"));
+    else toast.success(t("rewards.saved"));
+    setTick((n) => n + 1);
+  }
+
   async function addCodes() {
     if (!codesFor) return;
     const rows = [
@@ -318,6 +341,12 @@ function Catalogue() {
                   />
                 </span>
               </div>
+              <FundingRow
+                fundedBy={r.funded_by}
+                sponsor={r.sponsor}
+                sponsorUrl={r.sponsor_url}
+                onSave={(f, n, u) => void setFunding(r.id, f, n, u)}
+              />
               {codesFor === r.id && (
                 <div className="mt-2 space-y-2">
                   <Textarea
@@ -607,6 +636,64 @@ export function RewardsTab() {
       <Redemptions />
       <Adjust />
       <Referrals />
+    </div>
+  );
+}
+
+function FundingRow({
+  fundedBy,
+  sponsor,
+  sponsorUrl,
+  onSave,
+}: {
+  fundedBy: string;
+  sponsor: string | null;
+  sponsorUrl: string | null;
+  onSave: (fundedBy: string, sponsor: string | null, sponsorUrl: string | null) => void;
+}) {
+  const { t } = useTranslation("admin");
+  const [f, setF] = useState(fundedBy);
+  const [name, setName] = useState(sponsor ?? "");
+  const [url, setUrl] = useState(sponsorUrl ?? "");
+  const dirty = f !== fundedBy || name !== (sponsor ?? "") || url !== (sponsorUrl ?? "");
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+      <span className="text-muted-foreground">{t("rewards.funding.label")}</span>
+      {(["puntr", "sponsor", "partner"] as const).map((k) => (
+        <button
+          key={k}
+          type="button"
+          onClick={() => setF(k)}
+          className={`border px-2 py-1 font-semibold ${f === k ? "border-primary bg-primary-soft text-primary" : "border-border"}`}
+        >
+          {t(`rewards.funding.${k}`)}
+        </button>
+      ))}
+      {f !== "puntr" && (
+        <>
+          <input
+            className="h-7 w-40 border border-border bg-background px-2"
+            placeholder={t("rewards.funding.name")}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            className="h-7 w-52 border border-border bg-background px-2"
+            placeholder={t("rewards.funding.url")}
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </>
+      )}
+      {dirty && (
+        <button
+          type="button"
+          className="font-semibold text-primary underline"
+          onClick={() => onSave(f, name, url)}
+        >
+          {t("rewards.funding.save")}
+        </button>
+      )}
     </div>
   );
 }

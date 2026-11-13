@@ -78,9 +78,9 @@ const PURPOSES: [string, string, string, string][] = [
   ],
   [
     "Get-started quests",
-    "Which quests you started and completed, the points given, and for social quests the username or display name you give us (for example your Instagram or X handle, or your WhatsApp name), which our team checks on that platform",
+    "Which quests you started and completed, the points given, and for community quests the name or username you give us (your WhatsApp name or Telegram username), which our team checks in that group",
     "Your consent (you choose to do a quest); our interest in preventing reward abuse",
-    "While your account is open; social usernames are deleted 90 days after the quest is checked [attorney review]",
+    "While your account is open; these names are deleted 90 days after the quest is checked [attorney review]",
   ],
   [
     "Reward delivery (from launch)",
@@ -154,7 +154,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r14). Draft pending
+          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r15). Draft pending
           attorney review.
         </p>
 
