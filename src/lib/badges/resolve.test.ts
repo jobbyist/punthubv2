@@ -77,3 +77,25 @@ describe("pickCrestImage", () => {
     expect(cleanManualLogoUrl("https://x.co/a.png")).toBe("https://x.co/a.png");
   });
 });
+
+describe("review fixes", () => {
+  it("refuses internal hosts for manual badges", () => {
+    for (const u of [
+      "https://127.0.0.1/a.png",
+      "https://localhost/a.png",
+      "https://intranet/a.png",
+      "https://x.internal/a.png",
+      "https://[::1]/a.png",
+      "https://x.co:8443/a.png",
+    ])
+      expect(cleanManualLogoUrl(u)).toBeNull();
+  });
+  it("matches women's sides only to women's articles", () => {
+    const hits = [
+      { url: "https://en.wikipedia.org/wiki/Arsenal_W.F.C._Women" },
+      { url: "https://en.wikipedia.org/wiki/Arsenal_F.C." },
+    ];
+    expect(pickWikipediaTitle(hits, "Arsenal")).toBe("Arsenal_F.C.");
+    expect(pickWikipediaTitle(hits, "Arsenal Women")).toBe("Arsenal_W.F.C._Women");
+  });
+});

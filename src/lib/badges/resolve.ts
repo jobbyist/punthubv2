@@ -37,8 +37,8 @@ export function badgeSearchRequest(name: string, competition: string, sport: str
 
 const WIKI = /^https:\/\/en\.(?:m\.)?wikipedia\.org\/wiki\/([^#?]+)$/;
 const NOT_ARTICLE = /^(File|Category|Template|Talk|Special|Help|Portal|Wikipedia|List_of)[:_]/i;
-const NOT_CLUB_TITLE =
-  /(season|stadium|academy|women|ladies|reserves|_u\d\d|under-\d\d|_\d{4}[–-]\d{2})/i;
+const NOT_CLUB_TITLE = /(season|stadium|academy|reserves|_u\d\d|under-\d\d|_\d{4}[–-]\d{2})/i;
+const WOMEN = /(women|ladies)/i;
 
 /** First search hit that is an English Wikipedia article about the club itself. Returns the article title. */
 export function pickWikipediaTitle(
@@ -53,6 +53,8 @@ export function pickWikipediaTitle(
     if (!m) continue;
     const title = decodeURIComponent(m[1]!);
     if (NOT_ARTICLE.test(title) || NOT_CLUB_TITLE.test(title)) continue;
+    // A men's side must not pick up the women's team article, and the reverse.
+    if (WOMEN.test(title) !== WOMEN.test(name)) continue;
     const t = badgeKey(title.replace(/_/g, " "));
     // The title must share a real word with the team name (or an alias of it).
     if (words.length > 0 && !words.some((w) => t.includes(w))) continue;
@@ -114,7 +116,17 @@ export function cleanManualLogoUrl(value: unknown): string | null {
   if (typeof value !== "string") return null;
   try {
     const u = new URL(value.trim());
-    if (u.protocol !== "https:" || u.username || u.password) return null;
+    if (u.protocol !== "https:" || u.username || u.password || u.port) return null;
+    const host = u.hostname.toLowerCase();
+    // Hostnames only: no IP literals, localhost or internal names (the server fetches this URL).
+    if (
+      /^[\d.]+$/.test(host) ||
+      host.includes(":") ||
+      host === "localhost" ||
+      !host.includes(".") ||
+      /\.(local|internal|localhost)$/.test(host)
+    )
+      return null;
     return u.toString();
   } catch {
     return null;

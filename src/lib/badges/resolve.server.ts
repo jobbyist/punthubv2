@@ -147,7 +147,7 @@ export async function resolveTeamBadge(
       await save({
         status: "failed",
         last_error: crest.reason,
-        source_page: `https://en.wikipedia.org/wiki/${title}`,
+        source_page: `https://en.wikipedia.org/wiki/${title}`.slice(0, 500),
       });
       return "failed";
     }
@@ -156,8 +156,8 @@ export async function resolveTeamBadge(
       status: "verified",
       method: "parallel_wikipedia",
       logo_url: logoUrl,
-      source_page: `https://en.wikipedia.org/wiki/${title}`,
-      source_image: crest.image,
+      source_page: `https://en.wikipedia.org/wiki/${title}`.slice(0, 500),
+      source_image: crest.image.slice(0, 500),
       last_error: null,
       verified_at: new Date().toISOString(),
     });

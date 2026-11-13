@@ -36,8 +36,8 @@ export function loadBadges(): Promise<BadgeMap> {
     } else {
       console.error("team badges unavailable", error.message);
     }
-    // Only cache in the browser; on the server each request loads fresh.
-    if (typeof window !== "undefined") cache = map;
+    // Only cache in the browser, and never a failed load; on the server each request loads fresh.
+    if (typeof window !== "undefined" && !error) cache = map;
     inflight = null;
     for (const l of listeners) l(map);
     return map;
