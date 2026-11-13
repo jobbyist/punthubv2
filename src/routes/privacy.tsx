@@ -77,6 +77,12 @@ const PURPOSES: [string, string, string, string][] = [
     "For as long as tax and accounting law requires us to keep payment records",
   ],
   [
+    "Reward delivery (from launch)",
+    "Your redemptions, and for physical rewards and match tickets the name, delivery address, phone number, size or club choice you send us by email; ticket holder names where the venue requires them",
+    "Contract (delivering the reward you redeemed)",
+    "Delivery details: 12 months after delivery, then deleted; redemption records while your account is open [attorney review]",
+  ],
+  [
     "Verifying your identity (before redeeming rewards)",
     "A photo or scan of your ID or passport (deleted once checked), and the result: verified, 18 or older, who checked it and when",
     "Legal obligation (keeping gambling promotions to adults) and our interest in preventing fraud [attorney review]",
@@ -142,7 +148,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r12). Draft pending
+          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r13). Draft pending
           attorney review.
         </p>
 

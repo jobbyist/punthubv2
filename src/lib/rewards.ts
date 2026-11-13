@@ -17,7 +17,28 @@ const REDEEM_ERRORS = [
   "insufficient_points",
   "out_of_stock",
   "identity_not_verified",
+  "not_yet_available",
 ] as const;
+
+export const REWARD_CATEGORIES = [
+  "ott_voucher",
+  "credit_pack",
+  "pro_pass",
+  "puntr_merch",
+  "sports_merch",
+  "match_tickets",
+] as const;
+export type RewardCategory = (typeof REWARD_CATEGORIES)[number];
+
+/** Groups catalogue rows by category in the fixed display order; unknown categories are dropped. */
+export function groupByCategory<T extends { category: string | null }>(
+  rows: T[],
+): { category: RewardCategory; items: T[] }[] {
+  return REWARD_CATEGORIES.map((category) => ({
+    category,
+    items: rows.filter((r) => r.category === category),
+  })).filter((g) => g.items.length > 0);
+}
 
 /** Maps a redeem_reward error to a translation key suffix. */
 export function redeemErrorKey(error: { message?: string } | null | undefined): string {

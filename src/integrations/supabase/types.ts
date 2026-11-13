@@ -2920,41 +2920,59 @@ export type Database = {
       rewards: {
         Row: {
           active: boolean
+          available_from: string | null
+          category: string | null
           code: string
           created_at: string
           description: string | null
+          face_value_cents: number | null
+          fulfilment: string
           id: string
           kind: string
           points_cost: number
           requires_approval: boolean
+          sort: number
           sponsor: string | null
           stock: number | null
+          terms: string | null
           title: string
         }
         Insert: {
           active?: boolean
+          available_from?: string | null
+          category?: string | null
           code: string
           created_at?: string
           description?: string | null
+          face_value_cents?: number | null
+          fulfilment?: string
           id?: string
           kind: string
           points_cost: number
           requires_approval?: boolean
+          sort?: number
           sponsor?: string | null
           stock?: number | null
+          terms?: string | null
           title: string
         }
         Update: {
           active?: boolean
+          available_from?: string | null
+          category?: string | null
           code?: string
           created_at?: string
           description?: string | null
+          face_value_cents?: number | null
+          fulfilment?: string
           id?: string
           kind?: string
           points_cost?: number
           requires_approval?: boolean
+          sort?: number
           sponsor?: string | null
           stock?: number | null
+          terms?: string | null
           title?: string
         }
         Relationships: []
@@ -4209,6 +4227,25 @@ export type Database = {
         }
       }
       reward_setting: { Args: { p_key: string }; Returns: boolean }
+      rewards_catalogue: {
+        Args: never
+        Returns: {
+          available: boolean
+          available_from: string
+          category: string
+          code: string
+          description: string
+          face_value_cents: number
+          fulfilment: string
+          id: string
+          in_stock: boolean
+          kind: string
+          points_cost: number
+          sponsor: string
+          terms: string
+          title: string
+        }[]
+      }
       rewards_status: {
         Args: never
         Returns: {

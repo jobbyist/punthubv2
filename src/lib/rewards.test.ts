@@ -45,3 +45,19 @@ describe("points()", () => {
     expect(points(NaN)).toBe("");
   });
 });
+
+describe("groupByCategory", () => {
+  it("orders categories and drops unknown ones", async () => {
+    const { groupByCategory } = await import("./rewards");
+    const g = groupByCategory([
+      { category: "match_tickets" },
+      { category: "ott_voucher" },
+      { category: null },
+      { category: "ott_voucher" },
+    ]);
+    expect(g.map((x) => [x.category, x.items.length])).toEqual([
+      ["ott_voucher", 2],
+      ["match_tickets", 1],
+    ]);
+  });
+});
