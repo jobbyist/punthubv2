@@ -51,7 +51,8 @@
     "notifications": "Notifications",
     "annualPass": "Annual Pass",
     "quests": "Quests",
-    "logos": "Logos/Branding"
+    "logos": "Logos/Branding",
+    "endorsements": "Endorsements"
   },
   "settle": {
     "title": "Settlement",
@@ -810,5 +811,68 @@
       "partner": "Partner",
       "brand": "Puntr brand"
     }
+  },
+  "endorse": {
+    "title": "Endorsements",
+    "body": "Organisations we are asking for guidance, recognition or an endorsement. Track the status and reasons, draft outreach or follow-up emails with Gemini, edit them, then send through Resend from Michael or Puntr Partners.",
+    "rule": "Never claim an endorsement we do not have. Drafts are checked for banned wording and for claims of approval or partnership. Gemini only sees the organisation's name, type, region, the contact's role, what we ask for, why, and Puntr's fact sheet. It never sees the contact's name or any member data.",
+    "add": "Add organisation",
+    "newOrg": "New organisation",
+    "name": "Organisation name",
+    "kind": "Kind",
+    "statusLabel": "Status",
+    "jurisdiction": "Region or jurisdiction",
+    "website": "Website",
+    "contactName": "Contact name",
+    "contactRole": "Contact role",
+    "contactEmail": "Contact email",
+    "followUpOn": "Follow up on",
+    "whatWeSeek": "What we are asking for",
+    "reasons": "Why this organisation (reasons for the endorsement)",
+    "notes": "Notes",
+    "doNotContact": "Do not contact",
+    "save": "Save organisation",
+    "saved": "Saved",
+    "status": {
+      "prospect": "Prospect",
+      "drafted": "Email drafted",
+      "contacted": "Contacted",
+      "follow_up_due": "Follow-up due",
+      "in_discussion": "In discussion",
+      "endorsed": "Endorsed",
+      "declined": "Declined",
+      "no_response": "No response",
+      "paused": "Paused"
+    },
+    "kindName": {
+      "regulator": "Regulator",
+      "foundation": "Foundation",
+      "industry_body": "Industry body",
+      "partner": "Partner",
+      "media": "Media",
+      "other": "Other"
+    },
+    "emails": "Emails",
+    "draftNote": "A draft is only a starting point: read and edit it before sending. A salutation, signature and a reply-stop line are added when it is sent. One email per organisation per 24 hours.",
+    "sender": "Sender",
+    "extra": "Optional extra instruction for Gemini",
+    "draftOutreach": "Draft outreach with Gemini",
+    "draftFollowUp": "Draft follow-up with Gemini",
+    "drafted": "Draft created",
+    "emailKind": {
+      "outreach": "Outreach",
+      "follow_up": "Follow-up"
+    },
+    "draft": "Draft",
+    "sentOn": "Sent",
+    "subject": "Subject",
+    "bodyLabel": "Email body",
+    "saveDraft": "Save draft",
+    "send": "Send…",
+    "noEmail": "Add a contact email to send",
+    "confirmSend": "Confirm: send to {{to}}",
+    "sentOk": "Email sent",
+    "discard": "Discard",
+    "history": "History"
   }
 }
