@@ -34,7 +34,9 @@ const optText = (v: unknown, max: number): string | null => {
   const t = v.trim();
   return t ? t.slice(0, max) : null;
 };
-const isUuid = (v: unknown): v is string => typeof v === "string" && /^[0-9a-f-]{36}$/i.test(v);
+const isUuid = (v: unknown): v is string =>
+  typeof v === "string" &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 
 export interface OfflinePaymentRow {
   id: string;
@@ -152,17 +154,16 @@ export const adminRecordBankTransfer = createServerFn({ method: "POST" })
     const ctx = context as Ctx;
     const db = await adminDb(ctx);
     if (!db) return { ok: false, code: "forbidden" };
-    const { data: offer } = await db.rpc("annual_pass_offer");
-    if (((offer ?? {}) as { remaining?: number }).remaining === 0)
-      return { ok: false, code: "invalid", message: "All 20 passes are taken" };
-    const { error } = await db.from("annual_pass_offline_payments").insert({
-      payer_label: data.payerLabel,
-      amount_cents: data.amountCents,
-      bank_reference: data.bankReference,
-      note: data.note,
-      ...(data.paidOn ? { paid_on: data.paidOn } : {}),
-      recorded_by: ctx.userId,
+    const { data: res, error } = await db.rpc("annual_pass_record_offline", {
+      p_payer: data.payerLabel,
+      p_amount_cents: data.amountCents,
+      p_reference: data.bankReference,
+      p_note: data.note,
+      p_paid_on: data.paidOn,
+      p_recorded_by: ctx.userId,
     });
+    if (!error && res === "full")
+      return { ok: false, code: "invalid", message: "All 20 passes are taken" };
     if (error) return { ok: false, code: "error", message: error.message };
     await log(db, ctx.userId, "annual_pass.bank_transfer", {
       payer: data.payerLabel,

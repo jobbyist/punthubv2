@@ -87,6 +87,29 @@ $$;
 revoke all on function public.annual_pass_link_offline(uuid, uuid) from public, anon, authenticated;
 grant execute on function public.annual_pass_link_offline(uuid, uuid) to service_role;
 
+-- Record a bank transfer atomically under the same cap (advisory lock shared with every recorder), so two
+-- admins recording at once cannot pass 20. Service role only (called after is_admin()).
+create or replace function public.annual_pass_record_offline(
+  p_payer text, p_amount_cents integer, p_reference text, p_note text, p_paid_on date, p_recorded_by uuid
+)
+returns text
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  perform pg_advisory_xact_lock(hashtext('annual_pass_cap'));
+  if public.annual_pass_taken() >= 20 then return 'full'; end if;
+  insert into public.annual_pass_offline_payments (payer_label, amount_cents, bank_reference, note, paid_on, recorded_by)
+  values (p_payer, p_amount_cents, p_reference, p_note,
+          coalesce(p_paid_on, (now() at time zone 'Africa/Johannesburg')::date), p_recorded_by);
+  return 'recorded';
+end;
+$$;
+
+revoke all on function public.annual_pass_record_offline(text, integer, text, text, date, uuid) from public, anon, authenticated;
+grant execute on function public.annual_pass_record_offline(text, integer, text, text, date, uuid) to service_role;
+
 -- The 4 bank transfers the owner confirmed on 13 Nov. Payers are matched to members later in Admin > Annual Pass.
 -- Idempotent: only seeds when the table is empty.
 insert into public.annual_pass_offline_payments (payer_label, note, paid_on)
