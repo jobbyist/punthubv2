@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
 import { useSession } from "@/components/session";
-import { TeamLogo } from "@/components/team-logo";
+import { FixtureMatchup } from "@/components/fixture-matchup";
 import { useAsync } from "@/hooks/use-async";
 import { formatUnits, pct } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -86,6 +86,7 @@ function MyRecord({ userId }: { userId: string }) {
 
 function Results() {
   const { t } = useTranslation("results");
+  const { t: tc } = useTranslation("common");
   const { profile } = useSession();
   const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
   const gated = useGated();
@@ -140,22 +141,25 @@ function Results() {
               detail: "Illustrative final score",
             },
           ].map((match) => (
-            <div key={match.competition} className="flex flex-wrap items-center gap-3 px-5 py-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+            <div key={match.competition} className="px-5 py-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">
                   {match.competition}
                 </p>
-                <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
-                  <TeamLogo team={match.home} size="sm" />
-                  <span>{match.home}</span>
-                  <span className="text-xs font-normal text-muted-foreground">v</span>
-                  <TeamLogo team={match.away} size="sm" />
-                  <span>{match.away}</span>
-                </div>
+                <p className="shrink-0 text-[10px] text-muted-foreground">{match.detail}</p>
               </div>
-              <div className="text-right">
-                <p className="font-display text-xl font-extrabold tabular-nums">{match.score}</p>
-                <p className="text-[10px] text-muted-foreground">{match.detail}</p>
+              <div className="mt-3">
+                <FixtureMatchup
+                  home={match.home}
+                  away={match.away}
+                  sport={match.competition.includes("Rugby") ? "rugby" : "soccer"}
+                  size="sm"
+                  center={
+                    <span className="font-display text-xl font-extrabold tabular-nums">
+                      {match.score}
+                    </span>
+                  }
+                />
               </div>
             </div>
           ))}
@@ -206,11 +210,19 @@ function Results() {
                           <Link
                             to="/match/$fixtureId"
                             params={{ fixtureId: r.fixture.id }}
-                            className="inline-flex flex-wrap items-center gap-x-2 font-medium hover:underline"
+                            className="mt-1 block min-w-[15rem] hover:opacity-90"
                           >
-                            <TeamLogo team={r.fixture.home} size="sm" /> {r.fixture.home}
-                            <span className="text-xs font-normal text-muted-foreground">v</span>
-                            <TeamLogo team={r.fixture.away} size="sm" /> {r.fixture.away}
+                            <FixtureMatchup
+                              home={r.fixture.home}
+                              away={r.fixture.away}
+                              sport={r.fixture.sport}
+                              size="sm"
+                              center={
+                                <span className="text-xs font-semibold uppercase text-muted-foreground">
+                                  {tc("vs")}
+                                </span>
+                              }
+                            />
                           </Link>
                         </td>
                         <td className="px-3 py-3 font-semibold tnum">

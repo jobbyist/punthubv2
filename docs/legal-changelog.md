@@ -319,3 +319,9 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 ## 13 Nov 2026 (evening): missing database privileges fixed (migration 20261113180000)
 - What changed: table privileges only. Signed-in members can now read their own notifications and ID-check status (the policies already limited them to their own rows), and the server can write notifications and save newsroom articles. TRUNCATE, REFERENCES and TRIGGER removed from client roles on every table.
 - Pages: none. Nothing new is collected, stored, shown or sent; the product now does what the pages already describe.
+
+## 2026-11-13: Mobile-friendly fixture cards
+
+- What changed: layout only. Fixture and result cards (home, predictions, results, pick cards) now stack badge above team name on phones.
+- Pages: none needed. No change to what is collected, stored, shown, sent or promised.
+- Counsel: nothing to review.

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { ReportButton } from "@/components/report-button";
-import { TeamLogo } from "@/components/team-logo";
+import { FixtureMatchup } from "@/components/fixture-matchup";
 import { formatDate, formatTime, odds as formatOdds } from "@/lib/format";
 import { selectionLabel } from "@/lib/pick-labels";
 import type { FeedPick, PickRow } from "@/lib/pick-data";
@@ -81,22 +81,23 @@ export function PickCard({
         <Link
           to="/match/$fixtureId"
           params={{ fixtureId: fixture.id }}
-          className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-border p-4 hover:bg-muted/40"
+          className="mt-4 block rounded-xl border border-border p-4 hover:bg-muted/40"
         >
-          <span className="flex min-w-0 items-center gap-3">
-            <TeamLogo team={fixture.home} size="sm" />
-            <span className="truncate text-sm font-medium">{fixture.home}</span>
-          </span>
-          <span className="text-center text-[11px] text-muted-foreground">
-            <span className="block">{fixture.competition}</span>
-            <span className="block tnum">
-              {formatDate(fixture.kickoff_at)} · {formatTime(fixture.kickoff_at)}
-            </span>
-          </span>
-          <span className="flex min-w-0 items-center justify-end gap-3">
-            <span className="truncate text-sm font-medium">{fixture.away}</span>
-            <TeamLogo team={fixture.away} size="sm" />
-          </span>
+          <FixtureMatchup
+            home={fixture.home}
+            away={fixture.away}
+            sport={fixture.sport}
+            size="sm"
+            center={
+              <span className="block text-[11px] leading-tight text-muted-foreground">
+                <span className="block truncate">{fixture.competition}</span>
+                <span className="block tnum">{formatDate(fixture.kickoff_at)}</span>
+                <span className="block font-semibold tnum text-foreground">
+                  {formatTime(fixture.kickoff_at)}
+                </span>
+              </span>
+            }
+          />
         </Link>
       )}
 
