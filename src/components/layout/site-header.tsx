@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NotificationBell } from "@/components/notification-bell";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { FoundingCounter } from "@/components/founding-counter";
 import { copyInviteLink } from "@/lib/invite";
 import { toast } from "sonner";
@@ -78,6 +79,7 @@ export function SiteHeader() {
         <div className="flex min-w-0 items-center justify-end gap-2">
           {/* The language switcher lives in the footer and the mobile menu: the desktop bar has no room for it
               next to eight links. Only en-ZA is enabled until P13; revisit placement then (e.g. a globe icon). */}
+          <ThemeToggle />
           {isSignedIn && profile && <NotificationBell />}
           {isSignedIn && profile ? (
             <DropdownMenu>

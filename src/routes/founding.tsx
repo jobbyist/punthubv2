@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { FoundingCounter } from "@/components/founding-counter";
+import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { Button } from "@/components/ui/button";
 import { analytics } from "@/lib/analytics";
 import { CONSENT_CHANGED_EVENT, hasConsent } from "@/lib/consent";
@@ -91,7 +92,8 @@ function Founding() {
   useLandingView("founding");
 
   return (
-    <div className="mx-auto w-full max-w-[920px] px-4 py-7 sm:px-6 sm:py-14">
+    <div className="relative isolate mx-auto w-full max-w-[920px] px-4 py-7 sm:px-6 sm:py-14">
+      <HeroBackdrop variant="grid" />
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
         {t("eyebrow")}
       </p>
@@ -149,7 +151,7 @@ function Founding() {
         </div>
       </dl>
 
-      <section className="mt-12" aria-labelledby="founding-perks">
+      <section className="puntr-reveal mt-12" aria-labelledby="founding-perks">
         <h2 id="founding-perks" className="text-xl">
           {t("perks.title")}
         </h2>
@@ -165,7 +167,7 @@ function Founding() {
         </ul>
       </section>
 
-      <section className="mt-12" aria-labelledby="founding-steps">
+      <section className="puntr-reveal mt-12" aria-labelledby="founding-steps">
         <h2 id="founding-steps" className="text-xl">
           {t("steps.title")}
         </h2>
@@ -182,7 +184,7 @@ function Founding() {
 
       <AnnualPassClaim />
 
-      <section className="mt-12" aria-labelledby="founding-faq">
+      <section className="puntr-reveal mt-12" aria-labelledby="founding-faq">
         <h2 id="founding-faq" className="text-xl">
           {t("faq.title")}
         </h2>
@@ -196,7 +198,7 @@ function Founding() {
         </dl>
       </section>
 
-      <section className="mt-12 bg-primary-soft p-6">
+      <section className="puntr-reveal mt-12 bg-primary-soft p-6">
         <h2 className="text-xl">{t("last.title")}</h2>
         <p className="mt-2 text-muted-foreground">{t("last.body")}</p>
         <Button asChild size="lg" className="mt-5 h-12 px-6 text-[15px]">

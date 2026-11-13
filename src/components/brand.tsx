@@ -5,7 +5,8 @@ export function Logo({ className = "" }: { className?: string }) {
   const { t } = useTranslation("nav");
   return (
     <Link to="/" className={`flex items-center gap-2 ${className}`} aria-label={t("header.home")}>
-      <img src="/puntrlogo.png" alt="Puntr" className="h-9" />
+      <img src="/puntrlogo.png" alt="Puntr" className="h-9 dark:hidden" />
+      <img src="/puntrlogo-dark.png" alt="Puntr" className="hidden h-9 dark:block" />
     </Link>
   );
 }

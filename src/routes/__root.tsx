@@ -21,6 +21,9 @@ import { SHOW_PUNT_AI_CHAT } from "@/lib/flags";
 import { ConsentBanner } from "@/components/consent-banner";
 import { captureUtm } from "@/lib/campaign";
 import { Toaster } from "@/components/ui/sonner";
+import { Preloader } from "@/components/motion/preloader";
+import { RouteProgress } from "@/components/motion/route-progress";
+import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { LocaleProvider } from "@/lib/i18n/provider";
 import { detectLocale, detectLocaleOnClient } from "@/lib/i18n/locale";
 import { DEFAULT_LOCALE, type LocaleCode } from "@/locales/config";
@@ -238,8 +241,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   const locale = Route.useRouteContext({ select: (c) => c.locale }) ?? DEFAULT_LOCALE;
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
+        {/* Theme and preloader state before first paint (no flash of the wrong theme). */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
@@ -259,6 +264,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
+        <Preloader />
+        <RouteProgress />
         <div className="flex min-h-dvh flex-col">
           <FoundingBar />
           <SiteHeader />

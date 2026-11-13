@@ -1,5 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+  Activity,
+  BarChart3,
+  CalendarClock,
+  Dumbbell,
+  Flag,
+  Goal,
+  Swords,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+
+import { BadgeMarquee } from "@/components/motion/badge-marquee";
+import { CountUp } from "@/components/motion/count-up";
+import { HeroBackdrop } from "@/components/motion/hero-backdrop";
+import { Reveal } from "@/components/motion/reveal";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { LiveBadge } from "@/components/live-badge";
@@ -10,6 +28,17 @@ import { buildRoadmap, SPORT_ROADMAP, type RoadmapSport } from "@/lib/roadmap";
 import { getRoadmapStatus } from "@/lib/roadmap.functions";
 
 const SPORTS = SPORT_ROADMAP.map((s) => s.sport);
+
+const SPORT_ICON: Record<string, LucideIcon> = {
+  soccer: Goal,
+  basketball: Activity,
+  rugby: Flag,
+  racing: Trophy,
+  combat: Swords,
+  cricket: Activity,
+  tennis: Activity,
+  athletics: Dumbbell,
+};
 const isSport = (v: string): v is RoadmapSport => (SPORTS as readonly string[]).includes(v);
 
 export const Route = createFileRoute("/sports/$sport")({
@@ -102,10 +131,12 @@ function SportPage() {
         / <span aria-current="page">{name}</span>
       </nav>
 
-      <header className="border-b border-border pb-6">
-        <h1 className="text-3xl sm:text-4xl">{name}</h1>
-        <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-          {live ? (
+      <SportHero
+        sport={sport}
+        name={name}
+        intro={t(k("intro"))}
+        status={
+          live ? (
             <>
               <LiveBadge /> {t("status.live")}
             </>
@@ -116,22 +147,33 @@ function SportPage() {
               from: formatDate(`${item.from}T12:00:00+02:00`),
               to: formatDate(`${item.to}T12:00:00+02:00`),
             })
-          ) : null}
-        </p>
-        <p className="mt-3 max-w-2xl text-base text-muted-foreground">{t(k("intro"))}</p>
-      </header>
+          ) : null
+        }
+        live={live}
+        stats={[
+          { icon: Trophy, value: list("competitions").length, label: t("stats.competitions") },
+          { icon: BarChart3, value: list("markets").length, label: t("stats.markets") },
+          {
+            icon: CalendarClock,
+            value: Number(item?.weeks[0] ?? 1),
+            label: t("stats.week"),
+          },
+        ]}
+      />
+
+      {sport === "soccer" && <BadgeMarquee label={t("marquee")} />}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_18rem]">
         <article className="space-y-8">
-          <section>
+          <Reveal as="section">
             <h2 className="text-xl">{t("sections.sa")}</h2>
             <p className="mt-2 leading-relaxed text-muted-foreground">{t(k("sa"))}</p>
-          </section>
-          <section>
+          </Reveal>
+          <Reveal as="section" delay={0.05}>
             <h2 className="text-xl">{t("sections.engine")}</h2>
             <p className="mt-2 leading-relaxed text-muted-foreground">{t(k("engine"))}</p>
-          </section>
-          <section>
+          </Reveal>
+          <Reveal as="section" delay={0.1}>
             <h2 className="text-xl">{t("sections.when")}</h2>
             <p className="mt-2 leading-relaxed text-muted-foreground">
               {live || sport === "soccer"
@@ -142,7 +184,7 @@ function SportPage() {
                     launch: formatDate(`${status.launch}T12:00:00+02:00`),
                   })}
             </p>
-          </section>
+          </Reveal>
           <div className="flex flex-wrap gap-3">
             {sport === "soccer" ? (
               <Button asChild>
@@ -159,7 +201,7 @@ function SportPage() {
           </div>
         </article>
 
-        <aside className="space-y-6">
+        <Reveal as="div" delay={0.1} className="space-y-6">
           <section className="card-surface p-5">
             <h2 className="text-base">{t("sections.competitions")}</h2>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
@@ -192,10 +234,75 @@ function SportPage() {
               ))}
             </ul>
           </section>
-        </aside>
+        </Reveal>
       </div>
 
       <p className="mt-10 text-xs text-muted-foreground">{t("disclaimer")}</p>
     </AppShell>
+  );
+}
+
+function SportHero({
+  sport,
+  name,
+  intro,
+  status,
+  live,
+  stats,
+}: {
+  sport: string;
+  name: string;
+  intro: string;
+  status: ReactNode;
+  live: boolean;
+  stats: { icon: LucideIcon; value: number; label: string }[];
+}) {
+  const reduce = useReducedMotion();
+  const Icon = SPORT_ICON[sport] ?? Trophy;
+  const rise = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.55, delay, ease: [0.2, 0.8, 0.2, 1] as const },
+        };
+  return (
+    <header className="relative isolate -mx-4 overflow-hidden border-b border-border px-4 pb-10 pt-6 sm:-mx-6 sm:px-6">
+      <HeroBackdrop variant={sport === "soccer" ? "pitch" : "grid"} />
+      <motion.div {...rise(0)} className="flex items-center gap-3">
+        <span
+          className={`grid size-14 place-items-center bg-primary text-primary-foreground shadow-glow ${live ? "puntr-pulse" : ""}`}
+        >
+          <Icon className="size-7" aria-hidden="true" />
+        </span>
+        <p className="inline-flex flex-wrap items-center gap-2 border border-primary/30 bg-primary-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
+          {status}
+        </p>
+      </motion.div>
+      <motion.h1 {...rise(0.08)} className="mt-5 text-[clamp(2.4rem,6vw,3.8rem)] leading-[1.02]">
+        {name}
+      </motion.h1>
+      <motion.p
+        {...rise(0.16)}
+        className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg"
+      >
+        {intro}
+      </motion.p>
+      <motion.ul {...rise(0.24)} className="mt-7 grid max-w-xl grid-cols-3 gap-3">
+        {stats.map((st) => (
+          <li key={st.label} className="card-surface p-3 sm:p-4">
+            <st.icon className="size-4 text-primary" aria-hidden="true" />
+            <CountUp
+              to={st.value}
+              className="mt-1 block font-display text-2xl font-extrabold tnum"
+            />
+            <span className="block text-[11px] leading-tight text-muted-foreground">
+              {st.label}
+            </span>
+          </li>
+        ))}
+      </motion.ul>
+    </header>
   );
 }
