@@ -361,6 +361,48 @@ export type Database = {
         }
         Relationships: []
       }
+      annual_pass_offline_payments: {
+        Row: {
+          amount_cents: number | null
+          bank_reference: string | null
+          created_at: string
+          id: string
+          linked_at: string | null
+          note: string | null
+          paid_on: string
+          payer_label: string
+          recorded_by: string | null
+          user_id: string | null
+          voided_at: string | null
+        }
+        Insert: {
+          amount_cents?: number | null
+          bank_reference?: string | null
+          created_at?: string
+          id?: string
+          linked_at?: string | null
+          note?: string | null
+          paid_on?: string
+          payer_label: string
+          recorded_by?: string | null
+          user_id?: string | null
+          voided_at?: string | null
+        }
+        Update: {
+          amount_cents?: number | null
+          bank_reference?: string | null
+          created_at?: string
+          id?: string
+          linked_at?: string | null
+          note?: string | null
+          paid_on?: string
+          payer_label?: string
+          recorded_by?: string | null
+          user_id?: string | null
+          voided_at?: string | null
+        }
+        Relationships: []
+      }
       api_quota_limits: {
         Row: {
           daily_cap: number
@@ -1575,8 +1617,8 @@ export type Database = {
         Row: {
           audience: string
           category: string | null
-          created_by: string | null
           created_at: string
+          created_by: string | null
           id: string
           message: string
           newsroom_article_id: string | null
@@ -1589,8 +1631,8 @@ export type Database = {
         Insert: {
           audience?: string
           category?: string | null
-          created_by?: string | null
           created_at?: string
+          created_by?: string | null
           id?: string
           message: string
           newsroom_article_id?: string | null
@@ -1603,8 +1645,8 @@ export type Database = {
         Update: {
           audience?: string
           category?: string | null
-          created_by?: string | null
           created_at?: string
+          created_by?: string | null
           id?: string
           message?: string
           newsroom_article_id?: string | null
@@ -1615,6 +1657,20 @@ export type Database = {
           visibility?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_recipient_id_fkey"
             columns: ["recipient_id"]
@@ -3094,6 +3150,60 @@ export type Database = {
           },
         ]
       }
+      team_badges: {
+        Row: {
+          attempts: number
+          checked_at: string | null
+          created_at: string
+          id: string
+          last_error: string | null
+          logo_url: string | null
+          method: string | null
+          source_image: string | null
+          source_page: string | null
+          sport: string
+          status: string
+          team_key: string
+          team_name: string
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          checked_at?: string | null
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          logo_url?: string | null
+          method?: string | null
+          source_image?: string | null
+          source_page?: string | null
+          sport?: string
+          status?: string
+          team_key: string
+          team_name: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          checked_at?: string | null
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          logo_url?: string | null
+          method?: string | null
+          source_image?: string | null
+          source_page?: string | null
+          sport?: string
+          status?: string
+          team_key?: string
+          team_name?: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       user_entitlements: {
         Row: {
           created_at: string
@@ -3624,7 +3734,22 @@ export type Database = {
           user_id: string
         }[]
       }
+      annual_pass_link_offline: {
+        Args: { p_payment: string; p_user: string }
+        Returns: string
+      }
       annual_pass_offer: { Args: never; Returns: Json }
+      annual_pass_record_offline: {
+        Args: {
+          p_amount_cents: number
+          p_note: string
+          p_paid_on: string
+          p_payer: string
+          p_recorded_by: string
+          p_reference: string
+        }
+        Returns: string
+      }
       annual_pass_reminder_recipients: {
         Args: { p_within?: string }
         Returns: {
@@ -3831,6 +3956,7 @@ export type Database = {
       }
       invoke_cron: { Args: { p_path: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      is_founding_member: { Args: never; Returns: boolean }
       launch_at: { Args: never; Returns: string }
       launch_audience: {
         Args: never

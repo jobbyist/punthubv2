@@ -201,7 +201,9 @@ export async function fetchResults(days = 14): Promise<ResultDay[]> {
     .order("kickoff_at", { ascending: false })
     .limit(60);
   if (error) throw error;
-  const fixtures = (fx ?? []) as FixtureRow[];
+  // Owner rule: results are listed only for teams with a verified badge (the pick log itself is never filtered).
+  const { onlyBadged } = await import("@/lib/badges/store");
+  const fixtures = await onlyBadged((fx ?? []) as FixtureRow[]);
   if (fixtures.length === 0) return [];
 
   const { data: picks } = await supabase

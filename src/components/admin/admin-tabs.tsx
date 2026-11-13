@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import { TeamBadgesPanel } from "@/components/admin/badges-admin";
 import { FixtureCsvImport } from "@/components/admin/fixture-csv-import";
 import { LaunchAudience } from "@/components/admin/launch-panel";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,7 @@ export function FixturesTab() {
           </p>
         )}
       </section>
+      <TeamBadgesPanel />
       <FixtureCsvImport />
     </div>
   );

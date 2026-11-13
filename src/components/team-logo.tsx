@@ -1,4 +1,4 @@
-import { getTeamLogo } from "@/lib/mock-data";
+import { badgeFor, useBadges } from "@/lib/badges/store";
 import { cn } from "@/lib/utils";
 
 type TeamLogoProps = {
@@ -16,11 +16,13 @@ const sizeMap = {
 };
 
 /**
- * Consistent rounded team logo. Falls back to a neutral circle with initials
- * when no logo asset exists for the team.
+ * Consistent rounded team logo: the verified badge from the team_badges registry (found with Parallel Search and
+ * mirrored to our storage), else a bundled logo. The initials fallback is only for illustrative or practice content;
+ * real fixtures without a verified badge are filtered out before they reach the page (lib/badges/store.ts).
  */
 export function TeamLogo({ team, sport, size = "md", className }: TeamLogoProps) {
-  const src = getTeamLogo(team, sport);
+  const badges = useBadges();
+  const src = badgeFor(badges, team, sport ?? "soccer");
   const dim = sizeMap[size];
 
   if (src) {
@@ -31,7 +33,7 @@ export function TeamLogo({ team, sport, size = "md", className }: TeamLogoProps)
         loading="lazy"
         className={cn(
           dim,
-          "shrink-0 rounded-full object-cover bg-muted ring-1 ring-border",
+          "shrink-0 rounded-full object-contain bg-white p-0.5 ring-1 ring-border",
           className,
         )}
       />

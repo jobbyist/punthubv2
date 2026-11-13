@@ -739,5 +739,25 @@
     "voidConfirm": "Void this transfer? It will stop counting toward the 20.",
     "loading": "Loading…",
     "error": "Something went wrong. Try again."
+  },
+  "badges": {
+    "title": "Team badges",
+    "body": "Rule: every team must show its real badge. Badges are found with Parallel Search (the club's Wikipedia article and its crest), checked, and copied to Puntr's storage. Fixtures and results whose teams have no verified badge are hidden from members until a badge is verified or set here.",
+    "summary": "{{total}} teams in fixtures · {{missing}} without a verified badge",
+    "run": "Find missing badges now",
+    "running": "Searching…",
+    "ran": "Done: {{verified}} verified, {{failed}} failed ({{due}} were due).",
+    "status": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "failed": "Not found yet",
+      "rejected": "Rejected",
+      "missing": "Not checked yet"
+    },
+    "source": "Source page",
+    "urlPlaceholder": "https:// image URL (PNG, JPG, WebP)",
+    "set": "Set badge",
+    "reject": "Reject",
+    "rejectConfirm": "Reject the badge for {{team}}? Its fixtures are hidden until you set a badge by hand."
   }
 }

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { onlyBadged } from "@/lib/badges/store";
 import { formatDate } from "@/lib/format";
 import type { FixtureStatus, Sport } from "@/lib/sports/types";
 
@@ -51,7 +52,8 @@ export async function fetchUpcomingFixtures(opts: {
   if (opts.sport) q = q.eq("sport", opts.sport);
   const { data, error } = await q;
   if (error) throw error;
-  return (data ?? []) as UpcomingFixture[];
+  // Owner rule: a team is only shown with its real badge.
+  return onlyBadged((data ?? []) as UpcomingFixture[]);
 }
 
 /** Matches in play right now, for the side rail. */
@@ -63,5 +65,5 @@ export async function fetchLiveFixtures(limit = 3): Promise<UpcomingFixture[]> {
     .order("kickoff_at", { ascending: true })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as UpcomingFixture[];
+  return onlyBadged((data ?? []) as UpcomingFixture[]);
 }
