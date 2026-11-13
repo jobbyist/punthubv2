@@ -28,14 +28,14 @@ describe("competition points", () => {
     ]);
   });
   it("puts more settled picks first when points, correct picks and accuracy are level", () => {
-    const a = { username: "a", points: 6, correct: 2, settled: 4 };
-    const b = { username: "b", points: 6, correct: 2, settled: 4 };
-    expect(compareScores(a, b)).toBeLessThan(0);
-    expect(
-      compareScores(
-        { ...a, correct: 0, settled: 0, points: 0 },
-        { ...b, correct: 0, settled: 0, points: 0 },
-      ),
-    ).toBeLessThan(0);
+    // Only possible with no correct picks: equal correct and equal accuracy otherwise mean equal settled.
+    const more = { username: "zoe", points: 0, correct: 0, settled: 5 };
+    const fewer = { username: "amy", points: 0, correct: 0, settled: 2 };
+    expect(compareScores(more, fewer)).toBeLessThan(0);
   });
+  it("falls back to username when everything else is level", () => {
+    const a = { username: "a", points: 6, correct: 2, settled: 4 };
+    expect(compareScores(a, { ...a, username: "b" })).toBeLessThan(0);
+  });
+});
 });
