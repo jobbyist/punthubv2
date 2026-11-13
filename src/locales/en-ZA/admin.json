@@ -50,7 +50,8 @@
     "log": "Action log",
     "notifications": "Notifications",
     "annualPass": "Annual Pass",
-    "quests": "Quests"
+    "quests": "Quests",
+    "logos": "Logos/Branding"
   },
   "settle": {
     "title": "Settlement",
@@ -774,5 +775,40 @@
     "set": "Set badge",
     "reject": "Reject",
     "rejectConfirm": "Reject the badge for {{team}}? Its fixtures are hidden until you set a badge by hand."
+  },
+  "logos": {
+    "title": "Logos and branding",
+    "body": "Upload a logo and it is resized (longest edge 480 px) and compressed to WebP in your browser, then stored in the media bucket. Choose where it appears. Nothing shows publicly until a logo has an image and Active is ticked.",
+    "endorsementWarning": "A regulator, payment or partner logo can imply endorsement. Activate it only once that organisation has agreed, and never use a bookmaker logo until its partner status is Live and the creative is partner-issued.",
+    "add": "Add logo",
+    "teamBadges": "Team badges (found and verified automatically)",
+    "noImage": "No image yet",
+    "name": "Name",
+    "kind": "Kind",
+    "order": "Order",
+    "link": "Link (optional)",
+    "linkPlaceholder": "https://… (opens in a new tab)",
+    "active": "Active",
+    "upload": "Upload image",
+    "replace": "Replace image",
+    "removeImage": "Remove image",
+    "save": "Save",
+    "saved": "Saved",
+    "uploaded": "Logo uploaded",
+    "uploadFailed": "Upload failed",
+    "placement": {
+      "all": "All",
+      "footer": "Footer",
+      "about": "About page",
+      "bookmakers": "Bookmaker Directory",
+      "homepage": "Homepage",
+      "brand": "Puntr brand"
+    },
+    "kindName": {
+      "regulator": "Regulator",
+      "payments": "Payments",
+      "partner": "Partner",
+      "brand": "Puntr brand"
+    }
   }
 }

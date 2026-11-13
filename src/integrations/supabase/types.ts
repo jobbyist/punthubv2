@@ -463,6 +463,45 @@ export type Database = {
           },
         ]
       }
+      brand_logos: {
+        Row: {
+          active: boolean
+          code: string
+          id: string
+          image_url: string | null
+          kind: string
+          link_url: string | null
+          name: string
+          placements: string[]
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          id?: string
+          image_url?: string | null
+          kind: string
+          link_url?: string | null
+          name: string
+          placements?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          id?: string
+          image_url?: string | null
+          kind?: string
+          link_url?: string | null
+          name?: string
+          placements?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       breach_register: {
         Row: {
           contained_at: string | null
@@ -899,6 +938,7 @@ export type Database = {
           id: boolean
           min_quality: number
           next_kind_override: string | null
+          publish_on_schedule: boolean
           schedule_mode: string
           updated_at: string
           updated_by: string | null
@@ -909,6 +949,7 @@ export type Database = {
           id?: boolean
           min_quality?: number
           next_kind_override?: string | null
+          publish_on_schedule?: boolean
           schedule_mode?: string
           updated_at?: string
           updated_by?: string | null
@@ -919,6 +960,7 @@ export type Database = {
           id?: boolean
           min_quality?: number
           next_kind_override?: string | null
+          publish_on_schedule?: boolean
           schedule_mode?: string
           updated_at?: string
           updated_by?: string | null
