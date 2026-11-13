@@ -25,13 +25,17 @@ export function useNotifications(userId: string | undefined) {
   const [status, setStatus] = useState<Status>("loading");
 
   const load = useCallback(async () => {
-    if (!userId) return;
+    // userId comes from Supabase Auth; refuse anything that is not a UUID before it goes into a filter string.
+    if (!userId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId))
+      return;
     try {
       const [{ data: notes, error: e1 }, { data: reads, error: e2 }] = await Promise.all([
         supabase
           .from("notifications")
           .select("id, title, message, category, target_url, published_at")
           .lte("published_at", new Date().toISOString())
+          // Admins can read private notices through RLS; the bell shows only broadcasts and the member's own.
+          .or(`recipient_id.is.null,recipient_id.eq.${userId}`)
           .order("published_at", { ascending: false })
           .limit(20),
         supabase
@@ -68,7 +72,10 @@ export function useNotifications(userId: string | undefined) {
         () => void load(),
       )
       .subscribe();
+    // Scheduled notices fire no realtime event when their time arrives, so refresh every 5 minutes as well.
+    const timer = setInterval(() => void load(), 5 * 60_000);
     return () => {
+      clearInterval(timer);
       void supabase.removeChannel(channel);
     };
   }, [userId, load]);

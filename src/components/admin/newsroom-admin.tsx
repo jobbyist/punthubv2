@@ -439,7 +439,23 @@ function ArticleRow({
               {t("desk.saveEdits")}
             </Button>
             {a.status !== "PUBLISHED" && (
-              <Button size="sm" disabled={busy} onClick={() => void status("PUBLISHED")}>
+              <Button
+                size="sm"
+                disabled={busy}
+                onClick={() => {
+                  // Publishing past failed critical checks needs an explicit confirmation listing every issue.
+                  if (
+                    critical.length > 0 &&
+                    !window.confirm(
+                      `${t("desk.publishCriticalConfirm", { count: critical.length })}\n\n${critical
+                        .map((i) => `• ${i.code}: ${i.detail}`)
+                        .join("\n")}`,
+                    )
+                  )
+                    return;
+                  void status("PUBLISHED");
+                }}
+              >
                 {t("desk.publish")}
               </Button>
             )}

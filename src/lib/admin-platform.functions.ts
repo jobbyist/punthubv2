@@ -436,6 +436,9 @@ export const adminBroadcast = createServerFn({ method: "POST" })
       title: data.subject,
       message: data.message.slice(0, 400),
       category: "Announcements",
+      // In-app reach follows the chosen audience; "marketing" is an email-consent filter, so in-app it is everyone.
+      audience: data.audience === "founding" ? "founding" : "all",
+      created_by: ctx.userId,
     });
     if (error) return { ok: false, code: "error", message: error.message };
     let queued = 0;
