@@ -374,6 +374,29 @@ describe("pipeline", () => {
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
     expect((d.store as ReturnType<typeof memoryStore>).articles[0]?.status).toBe("REVIEW");
   });
+  it("publishes on schedule despite a critical issue when publishOnSchedule is on, and tells the owner", async () => {
+    const bad = sampleDraft();
+    bad.body += "\n\nA crowd of 45000 watched.";
+    const notices: unknown[] = [];
+    const d = {
+      ...deps({
+        store: memoryStore({ publishOnSchedule: true }),
+        llm: fakeLlm((_m, r) =>
+          r.system.startsWith("You are a fact checker")
+            ? '{"unsupported":[]}'
+            : JSON.stringify(bad),
+        ),
+      }),
+      notify: async (n: unknown) => {
+        notices.push(n);
+      },
+    };
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
+    expect(notices[0]).toMatchObject({ kind: "article", published: true, passed: false });
+    // A manual run still respects the checks.
+    const m = { ...d, store: memoryStore({ publishOnSchedule: true }) };
+    expect((await runContentJob(m, { trigger: "manual" })).status).toBe("queued_for_review");
+  });
   it("queues for review when the quality gate finds a critical issue", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";

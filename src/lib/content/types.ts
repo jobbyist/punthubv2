@@ -94,6 +94,11 @@ export type JobTrigger = "cron" | "manual";
 export interface ContentSettings {
   enabled: boolean;
   autoPublish: boolean;
+  /**
+   * Owner (13 Nov): the scheduled article is published even when it fails the quality checks, and the owner gets
+   * an email to review it. Manual runs still use the checks.
+   */
+  publishOnSchedule: boolean;
   minQuality: number;
   scheduleMode: "alternate" | "sports" | "development";
   nextKindOverride: ContentKind | null;

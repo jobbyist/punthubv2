@@ -74,6 +74,41 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["Champions League results", "UEFA Champions League full time scores"],
     },
   },
+  // Owner (13 Nov): the top six leagues South African bettors and tipsters follow: Betway Premiership (PSL),
+  // Premier League, Champions League, La Liga, Serie A and the Bundesliga.
+  laliga: {
+    official: ["laliga.com"],
+    pages: {
+      fixtures: ["https://www.laliga.com/en-GB/laliga-easports/calendar"],
+      results: ["https://www.laliga.com/en-GB/laliga-easports/results"],
+    },
+    queries: {
+      fixtures: ["La Liga fixtures this week kick-off times", "LaLiga EA Sports matchday schedule"],
+      results: ["La Liga results", "LaLiga full time scores"],
+    },
+  },
+  seriea: {
+    official: ["legaseriea.it"],
+    pages: {
+      fixtures: ["https://www.legaseriea.it/en/serie-a/calendar"],
+      results: ["https://www.legaseriea.it/en/serie-a/results"],
+    },
+    queries: {
+      fixtures: ["Serie A fixtures this week kick-off times", "Serie A matchday schedule"],
+      results: ["Serie A results", "Serie A full time scores"],
+    },
+  },
+  bundesliga: {
+    official: ["bundesliga.com"],
+    pages: {
+      fixtures: ["https://www.bundesliga.com/en/bundesliga/matchday"],
+      results: ["https://www.bundesliga.com/en/bundesliga/matchday"],
+    },
+    queries: {
+      fixtures: ["Bundesliga fixtures this week kick-off times", "Bundesliga matchday schedule"],
+      results: ["Bundesliga results", "Bundesliga full time scores"],
+    },
+  },
 };
 
 const TRUSTED = [
@@ -91,6 +126,9 @@ const TRUSTED = [
   "uefa.com",
   "premierleague.com",
   "psl.co.za",
+  "laliga.com",
+  "legaseriea.it",
+  "bundesliga.com",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {

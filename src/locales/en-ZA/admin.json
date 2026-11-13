@@ -673,7 +673,8 @@
     "unapprove": "Unapprove",
     "delete": "Delete",
     "publishCriticalConfirm_one": "This article failed {{count}} critical check. Publishing it puts unchecked claims on the site. Publish anyway?",
-    "publishCriticalConfirm_other": "This article failed {{count}} critical checks. Publishing it puts unchecked claims on the site. Publish anyway?"
+    "publishCriticalConfirm_other": "This article failed {{count}} critical checks. Publishing it puts unchecked claims on the site. Publish anyway?",
+    "publishOnSchedule": "Always publish the scheduled article, even if it fails checks (you get an email at admin@puntr.co.za to review it)"
   },
   "notify": {
     "title": "Send an in-app notification",
