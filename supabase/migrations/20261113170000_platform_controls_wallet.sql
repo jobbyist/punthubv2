@@ -287,6 +287,7 @@ create table if not exists public.email_outbox (
   status text not null default 'queued' check (status in ('queued', 'sending', 'sent', 'failed', 'cancelled', 'skipped')),
   not_before timestamptz not null default now(),
   attempts integer not null default 0,
+  claimed_at timestamptz,
   last_error text,
   created_by uuid references public.profiles (id) on delete set null,
   created_at timestamptz not null default now(),
@@ -298,15 +299,25 @@ create index if not exists email_outbox_due_idx on public.email_outbox (priority
 -- Claims the next batch to send (marks them `sending`). Used only by the outbox cron.
 create or replace function public.email_outbox_claim(p_limit integer)
 returns setof public.email_outbox language sql security definer set search_path = public, pg_temp as $$
-  update public.email_outbox o set status = 'sending', attempts = o.attempts + 1
+  update public.email_outbox o set status = 'sending', attempts = o.attempts + 1, claimed_at = now()
   where o.id in (
     select id from public.email_outbox
-    where (status = 'queued' and not_before <= now())
-       or (status = 'sending' and attempts < 3 and not_before <= now() - interval '30 minutes')
+    where (status = 'queued' and not_before <= now() and attempts < 3)
+       or (status = 'sending' and attempts < 3 and coalesce(claimed_at, created_at) <= now() - interval '30 minutes')
     order by priority, not_before
     limit least(greatest(coalesce(p_limit, 0), 0), 50)
     for update skip locked)
   returning o.*;
+$$;
+
+-- Puts claimed rows back without counting the claim as an attempt (used when the daily email cap stops a batch).
+create or replace function public.email_outbox_release(p_ids uuid[])
+returns integer language sql security definer set search_path = public, pg_temp as $$
+  with r as (
+    update public.email_outbox set status = 'queued', attempts = greatest(attempts - 1, 0), claimed_at = null
+    where id = any(p_ids) and status = 'sending'
+    returning 1)
+  select count(*)::integer from r;
 $$;
 
 -- 6. Wallet ------------------------------------------------------------------------------------------------------
@@ -670,12 +681,12 @@ revoke all on public.app_settings, public.user_entitlements, public.admin_action
   public.api_quota_limits, public.email_outbox, public.puntpoints_transfers, public.credit_ledger,
   public.credit_prices, public.practice_credit_ledger from anon, authenticated;
 
-grant select, update on public.app_settings, public.api_quota_limits to authenticated;
+-- Admin writes go through server functions using the service role; signed-in users only get admin-only reads.
+grant select on public.app_settings, public.api_quota_limits to authenticated;
 grant select, insert, update on public.user_entitlements, public.account_warnings to authenticated;
 grant select on public.admin_actions, public.puntpoints_transfers, public.credit_ledger, public.practice_credit_ledger,
   public.email_outbox to authenticated;
 grant select on public.credit_prices to anon, authenticated;
-grant update (active, credits, title) on public.credit_prices to authenticated;
 grant select, insert, update, delete on public.app_settings, public.user_entitlements, public.account_warnings,
   public.api_quota_limits, public.email_outbox, public.credit_prices, public.practice_credit_ledger to service_role;
 grant select, insert on public.admin_actions, public.puntpoints_transfers, public.credit_ledger to service_role;
@@ -741,6 +752,7 @@ revoke all on function public.api_quota_claim(text, integer) from public, anon, 
 revoke all on function public.api_quota_error(text) from public, anon, authenticated;
 revoke all on function public.api_quota_status() from public, anon;
 revoke all on function public.email_outbox_claim(integer) from public, anon, authenticated;
+revoke all on function public.email_outbox_release(uuid[]) from public, anon, authenticated;
 revoke all on function public.setting_int(text, integer) from public, anon, authenticated;
 revoke all on function public.puntpoints_balance(uuid) from public, anon, authenticated;
 revoke all on function public.puntpoints_transferable(uuid) from public, anon, authenticated;
@@ -763,7 +775,7 @@ grant execute on function public.log_admin_action(text, uuid, text, jsonb), publ
   public.my_wallet_history(integer, timestamptz), public.practice_demo_wallet(),
   public.practice_spend_credits(text, text), public.admin_analytics(integer) to authenticated, service_role;
 grant execute on function public.api_quota_claim(text, integer), public.api_quota_error(text),
-  public.email_outbox_claim(integer), public.setting_int(text, integer), public.puntpoints_balance(uuid),
+  public.email_outbox_claim(integer), public.email_outbox_release(uuid[]), public.setting_int(text, integer), public.puntpoints_balance(uuid),
   public.puntpoints_transferable(uuid), public.credit_balance(uuid) to service_role;
 
 -- 10. Schedule: email outbox every 15 minutes between 07:00 and 19:59 SAST. -----------------------------------

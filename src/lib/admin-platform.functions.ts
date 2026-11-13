@@ -313,23 +313,27 @@ export const adminMemberAction = createServerFn({ method: "POST" })
         case "ban":
           await update({ is_banned: a.banned });
           break;
-        case "suspend":
-          await update({ suspended_until: until(a.days), suspension_reason: a.reason });
+        case "suspend": {
+          const suspendedUntil = until(a.days);
+          await update({ suspended_until: suspendedUntil, suspension_reason: a.reason });
           await notify(
             "Your account is suspended",
-            `Your account is suspended until ${until(a.days).slice(0, 10)}. Reason: ${a.reason}`,
+            `Your account is suspended until ${suspendedUntil.slice(0, 10)}. Reason: ${a.reason}`,
           );
           break;
+        }
         case "unsuspend":
           await update({ suspended_until: null, suspension_reason: null });
           break;
-        case "limit":
-          await update({ posting_paused_until: until(a.days) });
+        case "limit": {
+          const limitedUntil = until(a.days);
+          await update({ posting_paused_until: limitedUntil });
           await notify(
             "Some features are paused",
-            `Posting picks and sending PuntPoints are paused until ${until(a.days).slice(0, 10)}. Reason: ${a.reason}`,
+            `Posting picks and sending PuntPoints are paused until ${limitedUntil.slice(0, 10)}. Reason: ${a.reason}`,
           );
           break;
+        }
         case "unlimit":
           await update({ posting_paused_until: null });
           break;
@@ -374,22 +378,19 @@ export const adminMemberAction = createServerFn({ method: "POST" })
           if (a.email) await queueEmail(a.subject, a.message, "admin_message");
           break;
         case "credits": {
-          const { data: bal } = await db
-            .from("credit_ledger")
-            .select("credits")
-            .eq("user_id", data.userId);
-          const balance = ((bal ?? []) as { credits: number }[]).reduce((s, r) => s + r.credits, 0);
-          if (balance + a.credits < 0)
-            return { ok: false, code: "invalid", message: "balance would go below zero" };
-          const { error } = await db.from("credit_ledger").insert({
-            user_id: data.userId,
-            kind: a.credits > 0 ? "grant" : "adjust",
-            credits: a.credits,
-            reason: a.reason,
-            admin_id: ctx.userId,
+          // Atomic in the database (balance check, ledger row and action log in one call),
+          // through the admin's own session so the grant is attributed to them.
+          const { error } = await ctx.supabase.rpc("admin_grant_credits", {
+            p_user: data.userId,
+            p_credits: a.credits,
+            p_reason: a.reason,
           });
-          if (error) throw new Error(error.message);
-          break;
+          if (error) {
+            if (error.message.includes("would_go_negative"))
+              return { ok: false, code: "invalid", message: "balance would go below zero" };
+            throw new Error(error.message);
+          }
+          return { ok: true };
         }
       }
     } catch (error) {

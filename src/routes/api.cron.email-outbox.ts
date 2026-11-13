@@ -65,7 +65,9 @@ export const Route = createFileRoute("/api/cron/email-outbox")({
           if (isEmailQuotaStop(res)) {
             // Put this one and the rest of the batch back for the next run.
             const left = rows.slice(rows.indexOf(row)).map((r) => r.id);
-            await db.from("email_outbox").update({ status: "queued" }).in("id", left);
+            // Release them without using up an attempt: the cap stopped them, not a failed send.
+            const { error: releaseError } = await db.rpc("email_outbox_release", { p_ids: left });
+            if (releaseError) console.error("email-outbox release failed", releaseError.message);
             stopped = true;
             break;
           }
