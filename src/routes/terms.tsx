@@ -184,15 +184,23 @@ function Terms() {
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               You can redeem PuntPoints for the vouchers, sponsored rewards and perks listed on the
-              Rewards page, while they last. You must verify your identity on your account page
-              before you redeem any reward. Rewards are provided by our partners and are subject to
-              their terms. Not every reward is open to every member: a reward may need a confirmed
-              email, and betting vouchers, if we offer them, are only for members aged 18 or older
-              who are not on a break. We may refuse, or reverse, points and redemptions obtained
-              through fraud, abuse, multiple accounts or error, and points earned through an invite
-              can be reversed if either account is removed shortly afterwards. We will give 30 days
-              notice before ending the scheme. What is available at any time is shown on the Rewards
-              page. [attorney review]
+              Rewards page, while they last. The catalogue can include OTT vouchers, Pay-As-You-Go
+              credit packs, free Puntr Pro passes, Puntr and sports merchandise and match tickets.
+              Rewards can be redeemed from the launch on 1 December 2026; before then the Rewards
+              page shows a preview. Points costs, stock and availability may change. Vouchers are
+              emailed as codes; credits and Pro time are added to your account; Pro passes do not
+              renew and are never billed; physical rewards and tickets are delivered to South
+              African addresses only, and we ask for your delivery details by email when you redeem.
+              Match tickets depend on availability for the match you choose and do not include
+              travel. You must verify your identity on your account page before you redeem any
+              reward. Rewards are provided by Puntr or our partners and are subject to their terms.
+              Not every reward is open to every member: a reward may need a confirmed email, and
+              betting vouchers, if we offer them, are only for members aged 18 or older who are not
+              on a break. We may refuse, or reverse, points and redemptions obtained through fraud,
+              abuse, multiple accounts or error, and points earned through an invite can be reversed
+              if either account is removed shortly afterwards. We will give 30 days notice before
+              ending the scheme. What is available at any time is shown on the Rewards page.
+              [attorney review]
             </p>
           </section>
 

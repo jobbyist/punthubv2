@@ -225,7 +225,9 @@
       "approval": "An admin approves each redemption",
       "create": "Add reward",
       "unlimited": "unlimited",
-      "stock": "stock {{count}}"
+      "stock": "stock {{count}}",
+      "editCost": "Edit points",
+      "costPrompt": "New points cost (whole number):"
     },
     "codes": {
       "add": "Add codes",

@@ -83,6 +83,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; social usernames are deleted 90 days after the quest is checked [attorney review]",
   ],
   [
+    "Reward delivery (from launch)",
+    "Your redemptions, and for physical rewards and match tickets the name, delivery address, phone number, size or club choice you send us by email; ticket holder names where the venue requires them",
+    "Contract (delivering the reward you redeemed)",
+    "Delivery details: 12 months after delivery, then deleted; redemption records while your account is open [attorney review]",
+  ],
+  [
     "Verifying your identity (before redeeming rewards)",
     "A photo or scan of your ID or passport (deleted once checked), and the result: verified, 18 or older, who checked it and when",
     "Legal obligation (keeping gambling promotions to adults) and our interest in preventing fraud [attorney review]",
