@@ -57,7 +57,15 @@
       "referrals": "Referrals"
     },
     "signIn": "Sign in",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "dock": {
+      "fixtures": "Fixtures",
+      "duels": "Duels",
+      "puntPoints": "PuntPoints",
+      "foundingTitle": "Founding Access",
+      "foundingMessage": "First 100 spots · Free to reserve",
+      "claimSpot": "Claim Spot"
+    }
   },
   "sport": {
     "soccer": "Soccer",
