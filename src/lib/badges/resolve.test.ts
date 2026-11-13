@@ -7,6 +7,7 @@ import {
   pickCrestImage,
   pickWikipediaTitle,
   searchName,
+  wikipediaCandidates,
 } from "./resolve";
 
 describe("names", () => {
@@ -49,6 +50,28 @@ describe("pickCrestImage", () => {
     },
     originalimage: { source: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
   };
+  it("accepts thumb.wikimedia.org thumbnails and drops tracking parameters", () => {
+    const src =
+      "https://thumb.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/330px-Arsenal_FC.svg.png?utm_source=en.wikipedia.org";
+    expect(
+      pickCrestImage({ ...club, thumbnail: { source: src }, originalimage: { source: src } }),
+    ).toEqual({
+      ok: true,
+      image:
+        "https://thumb.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/330px-Arsenal_FC.svg.png",
+    });
+  });
+  it("ranks club-like titles before town articles", () => {
+    expect(
+      wikipediaCandidates(
+        [
+          { url: "https://en.wikipedia.org/wiki/Bournemouth" },
+          { url: "https://en.wikipedia.org/wiki/AFC_Bournemouth" },
+        ],
+        "Bournemouth",
+      ),
+    ).toEqual(["AFC_Bournemouth", "Bournemouth"]);
+  });
   it("accepts a club crest", () => {
     expect(pickCrestImage(club)).toEqual({ ok: true, image: club.thumbnail.source });
   });
