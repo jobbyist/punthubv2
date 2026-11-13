@@ -21,7 +21,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
 import { formatDate, formatTime } from "@/lib/format";
-import { TeamLogo } from "@/components/team-logo";
+import { FixtureMatchup } from "@/components/fixture-matchup";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -273,23 +273,38 @@ function Landing() {
               {t("next.all")}
             </Link>
           </div>
-          <ul className="mt-4 divide-y divide-border">
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {next.map((f) => (
               <li key={f.id}>
                 <Link
                   to="/match/$fixtureId"
                   params={{ fixtureId: f.id }}
-                  className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 hover:bg-muted/40"
+                  className="card-surface block p-4 transition hover:-translate-y-0.5 hover:shadow-lift"
                 >
-                  <span className="w-44 shrink-0 text-xs text-muted-foreground tnum">
-                    {formatDate(f.kickoff_at)} · {formatTime(f.kickoff_at)}
-                  </span>
-                  <span className="inline-flex min-w-0 flex-1 flex-wrap items-center gap-x-2 text-sm font-semibold">
-                    <TeamLogo team={f.home} size="sm" /> {f.home}
-                    <span className="text-xs font-normal text-muted-foreground">{tc("vs")}</span>
-                    <TeamLogo team={f.away} size="sm" /> {f.away}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{f.competition}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+                      {tc("sport.soccer")}
+                    </span>
+                    <span className="truncate text-[10px] text-muted-foreground">
+                      {f.competition}
+                    </span>
+                  </div>
+                  <div className="mt-4">
+                    <FixtureMatchup
+                      home={f.home}
+                      away={f.away}
+                      sport={f.sport}
+                      center={
+                        <span className="text-[10px] font-semibold uppercase text-muted-foreground">
+                          {tc("vs")}
+                        </span>
+                      }
+                    />
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-[11px]">
+                    <span className="text-muted-foreground">{formatDate(f.kickoff_at)}</span>
+                    <span className="font-semibold tnum">{formatTime(f.kickoff_at)}</span>
+                  </div>
                 </Link>
               </li>
             ))}

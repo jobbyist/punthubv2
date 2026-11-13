@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
 import { IntelPanel } from "@/components/intel/intel-panel";
-import { TeamLogo } from "@/components/team-logo";
+import { FixtureMatchup } from "@/components/fixture-matchup";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
 import { formatTime } from "@/lib/format";
@@ -136,33 +136,29 @@ function Predictions() {
                       <Link
                         to="/match/$fixtureId"
                         params={{ fixtureId: f.id }}
-                        className="grid grid-cols-[5.5rem_1fr] items-center gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/40 sm:grid-cols-[6.5rem_1fr_auto]"
+                        className="block p-4 transition-colors hover:bg-muted/40"
                       >
-                        <div className="text-sm font-semibold tnum">
-                          {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[11px] text-muted-foreground">
+                        <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                          <span className="truncate">
                             {f.competition} ·{" "}
                             {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
-                          </p>
-                          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
-                            <span className="inline-flex items-center gap-2">
-                              <TeamLogo team={f.home} size="sm" />
-                              {f.home}
-                            </span>
-                            <span className="text-xs font-normal text-muted-foreground">
-                              {tc("vs")}
-                            </span>
-                            <span className="inline-flex items-center gap-2">
-                              <TeamLogo team={f.away} size="sm" />
-                              {f.away}
-                            </span>
-                          </p>
+                          </span>
+                          <span className="shrink-0 font-medium text-primary">{t("pick")}</span>
                         </div>
-                        <span className="hidden text-sm font-medium text-primary sm:block">
-                          {t("pick")}
-                        </span>
+                        <div className="mt-3">
+                          <FixtureMatchup
+                            home={f.home}
+                            away={f.away}
+                            sport={f.sport}
+                            center={
+                              <span
+                                className={`text-sm font-bold tnum ${f.status === "live" ? "text-primary" : ""}`}
+                              >
+                                {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
+                              </span>
+                            }
+                          />
+                        </div>
                       </Link>
                       <div className="px-4 pb-4">
                         <Blurred gated={gated(i)}>
