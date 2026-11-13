@@ -20,6 +20,9 @@
     "menu": "Menu",
     "version": "Version 2.0 - © 2026 Puntr",
     "getEarlyAccess": "Join free",
+    "claimFoundingAccess": "Claim Founding Access",
+    "desktopNavigation": "Desktop navigation",
+    "accountMenu": "Account menu for {{username}}",
     "home": "Puntr home",
     "founding": "Founding Member #{{number}}",
     "myRecord": "My record",
@@ -33,6 +36,25 @@
     "practice": "Practice Mode",
     "signIn": "Sign in",
     "wallet": "Wallet"
+  },
+  "desktop": {
+    "groups": {
+      "intelligence": "Intelligence",
+      "community": "Community",
+      "platform": "About / Platform"
+    },
+    "items": {
+      "fixtures": "Fixtures & Predictions",
+      "matchupTools": "AI Matchup Tools",
+      "gradedPicks": "Results & Graded Picks",
+      "leaderboards": "Leaderboards",
+      "headToHead": "Head-to-Head (H2H)",
+      "tipsterRankings": "Tipster Rankings",
+      "howItWorks": "How It Works",
+      "pricing": "Pricing",
+      "newsroom": "Newsroom",
+      "roadmap": "Roadmap"
+    }
   },
   "mobile": {
     "primary": "Primary",
