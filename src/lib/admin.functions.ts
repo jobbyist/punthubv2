@@ -195,8 +195,8 @@ export const adminResync = createServerFn({ method: "POST" })
     > => {
       if (!(await isAdmin(context))) return { ok: false, code: "forbidden" };
       try {
-        const { createProvider } = await import("@/lib/sports/apisports.server");
-        const provider = createProvider();
+        const { createSportsProvider } = await import("@/lib/sports/select.server");
+        const provider = await createSportsProvider();
         if (!provider) return { ok: false, code: "not_configured" };
         const { syncFixtures, syncResults } = await import("@/lib/sports/sync.server");
         const { createFixtureStore } = await import("@/lib/sports/store.server");

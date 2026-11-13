@@ -9,8 +9,8 @@ export const Route = createFileRoute("/api/cron/sync-fixtures")({
         const denied = checkCronAuth(request);
         if (denied) return denied;
 
-        const { createProvider } = await import("@/lib/sports/apisports.server");
-        const provider = createProvider();
+        const { createSportsProvider } = await import("@/lib/sports/select.server");
+        const provider = await createSportsProvider();
         if (!provider)
           return Response.json({ ok: false, error: "sports_api_not_configured" }, { status: 503 });
 

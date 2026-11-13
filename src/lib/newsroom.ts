@@ -7,6 +7,7 @@ export const NEWSROOM_CATEGORIES = [
   "features",
   "community",
   "launch",
+  "sports",
 ] as const;
 export type NewsroomCategory = (typeof NEWSROOM_CATEGORIES)[number];
 
