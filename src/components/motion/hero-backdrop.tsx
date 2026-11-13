@@ -2,11 +2,18 @@
  * Decorative hero background: drifting brand-green glows, a faint grid and pitch markings that draw themselves.
  * Pure CSS/SVG, aria-hidden, paused for prefers-reduced-motion.
  */
-export function HeroBackdrop({ variant = "pitch" }: { variant?: "pitch" | "grid" }) {
+export function HeroBackdrop({
+  variant = "pitch",
+  glow = false,
+}: {
+  variant?: "pitch" | "grid";
+  /** Soft green glows. Off by default: on white they read as a green tint (owner feedback, 13 Nov). */
+  glow?: boolean;
+}) {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <div
-        className="absolute inset-0 opacity-[0.5] dark:opacity-[0.35]"
+        className="absolute inset-0 opacity-[0.35] dark:opacity-[0.3]"
         style={{
           backgroundImage:
             "linear-gradient(to right, var(--color-border) 1px, transparent 1px), linear-gradient(to bottom, var(--color-border) 1px, transparent 1px)",
@@ -16,14 +23,18 @@ export function HeroBackdrop({ variant = "pitch" }: { variant?: "pitch" | "grid"
             "radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 75%)",
         }}
       />
-      <div className="puntr-float absolute -left-24 -top-24 size-[420px] rounded-full bg-primary/20 blur-3xl dark:bg-primary/25" />
-      <div
-        className="puntr-float absolute -right-32 top-24 size-[360px] rounded-full bg-primary/10 blur-3xl dark:bg-primary/20"
-        style={{ animationDelay: "-4s" }}
-      />
+      {glow && (
+        <>
+          <div className="puntr-float absolute -left-24 -top-24 size-[420px] rounded-full bg-primary/[0.06] blur-3xl dark:bg-primary/15" />
+          <div
+            className="puntr-float absolute -right-32 top-24 size-[360px] rounded-full bg-primary/[0.04] blur-3xl dark:bg-primary/10"
+            style={{ animationDelay: "-4s" }}
+          />
+        </>
+      )}
       {variant === "pitch" && (
         <svg
-          className="absolute right-[-120px] top-1/2 hidden h-[520px] w-[820px] -translate-y-1/2 text-primary/25 lg:block"
+          className="absolute right-[-120px] top-1/2 hidden h-[520px] w-[820px] -translate-y-1/2 text-foreground/[0.07] lg:block dark:text-primary/20"
           viewBox="0 0 820 520"
           fill="none"
           stroke="currentColor"
