@@ -261,3 +261,7 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 
 ## 11 Nov 2026: Draw admin screen
 - What changed: admin-only `/admin` Draw tab to run the R500 OTT voucher draw (lists valid entries, picks one winner at random through a service-role-only database function, records witness and result in `practice_draw_log`). It cannot run before the draw closes (Tue 1 Dec 2026, 00:00 SAST). The winner's email and phone are shown to admins only; the announcement uses username and Founding number only, as the published rules say. No new data is collected and no legal page changed.
+
+## 13 Nov 2026 (evening): missing database privileges fixed (migration 20261113180000)
+- What changed: table privileges only. Signed-in members can now read their own notifications and ID-check status (the policies already limited them to their own rows), and the server can write notifications and save newsroom articles. TRUNCATE, REFERENCES and TRIGGER removed from client roles on every table.
+- Pages: none. Nothing new is collected, stored, shown or sent; the product now does what the pages already describe.
