@@ -30,15 +30,23 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const { createContentStore } = await import("@/lib/content/store.server");
         const { runContentJob } = await import("@/lib/content/pipeline");
 
+        const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
+          await import("@/lib/quota.server");
+        const claim = await createQuotaClaim();
         const env = readContentEnv();
         try {
           const outcome = await runContentJob(
             {
               store: createContentStore(),
               env,
-              search: env.parallelKey ? createParallelSearch(env.parallelKey) : null,
-              extract: createPageReader({ firecrawl: env.firecrawlKey, parallel: env.parallelKey }),
-              llm: env.geminiKey ? createGemini(env.geminiKey) : null,
+              search: env.parallelKey
+                ? guardSearch(createParallelSearch(env.parallelKey), claim)
+                : null,
+              extract: createPageReader(
+                { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
+                (r) => guardExtract(r, claim),
+              ),
+              llm: env.geminiKey ? guardLlm(createGemini(env.geminiKey), claim) : null,
             },
             {
               trigger: manual ? "manual" : "cron",

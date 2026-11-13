@@ -178,13 +178,16 @@ export function withExtractFallback(readers: ExtractProvider[]): ExtractProvider
   };
 }
 
-/** Firecrawl first (free allowance), then Parallel Extract. Either key alone also works. */
-export function createPageReader(keys: {
-  firecrawl: string | null;
-  parallel: string | null;
-}): ExtractProvider | null {
+/**
+ * Firecrawl first (free allowance), then Parallel Extract. Either key alone also works. `guard` wraps each reader
+ * (quota claims) so a reader whose cap is reached hands over to the next one.
+ */
+export function createPageReader(
+  keys: { firecrawl: string | null; parallel: string | null },
+  guard: (reader: ExtractProvider) => ExtractProvider = (r) => r,
+): ExtractProvider | null {
   const readers: ExtractProvider[] = [];
-  if (keys.firecrawl) readers.push(createFirecrawlExtract(keys.firecrawl));
-  if (keys.parallel) readers.push(createParallelExtract(keys.parallel));
+  if (keys.firecrawl) readers.push(guard(createFirecrawlExtract(keys.firecrawl)));
+  if (keys.parallel) readers.push(guard(createParallelExtract(keys.parallel)));
   return withExtractFallback(readers);
 }

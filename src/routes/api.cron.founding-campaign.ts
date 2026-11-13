@@ -74,7 +74,8 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
             ) => Promise<unknown>;
           };
         };
-        const { REPLY_TO, sendViaResend } = await import("@/lib/email/resend.server");
+        const { REPLY_TO, sendViaResend, isEmailQuotaStop } =
+          await import("@/lib/email/resend.server");
         const { unsubscribeUrl } = await import("@/lib/waitlist");
         const { FOUNDING_CAMPAIGN, renderFoundingPassEmail } =
           await import("@/lib/email/founding-pass");
@@ -115,6 +116,7 @@ export const Route = createFileRoute("/api/cron/founding-campaign")({
               "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
             },
           });
+          if (isEmailQuotaStop(res)) break;
           const status = res.ok ? "sent" : "failed";
           if (res.ok) sent += 1;
           else failed += 1;

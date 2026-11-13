@@ -39,7 +39,25 @@ async function post(payload: Record<string, unknown>) {
   return { ok: true as const, status: response.status, body: "" };
 }
 
+/** Body returned when Puntr's own email cap is reached. Batch senders stop their run when they see it. */
+export const EMAIL_QUOTA_REACHED = "EMAIL_QUOTA_REACHED";
+
+export function isEmailQuotaStop(res: { status: number; body: string }): boolean {
+  return res.status === 429 && res.body === EMAIL_QUOTA_REACHED;
+}
+
+/**
+ * Every email the app sends claims one unit of the `resend` quota first (Resend's free plan: 100 a day, 3,000 a
+ * month; Puntr caps itself lower to leave room for sign-in emails). A refused claim sends nothing.
+ */
 export async function sendViaResend(payload: Record<string, unknown>) {
+  if (!process.env["RESEND_API_KEY"])
+    return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
+  const { createQuotaClaim } = await import("@/lib/quota.server");
+  if (!(await (await createQuotaClaim())("resend"))) {
+    console.warn("resend: Puntr's daily or monthly email cap is reached; nothing sent");
+    return { ok: false as const, status: 429, body: EMAIL_QUOTA_REACHED };
+  }
   const from = process.env["RESEND_FROM"] || SENDER;
   const first = await post({ from, ...payload });
   const domainProblem =

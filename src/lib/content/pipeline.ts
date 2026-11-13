@@ -46,6 +46,8 @@ export interface RunOptions {
   force?: boolean;
   /** Runs everything except saving the article. */
   dry?: boolean;
+  /** Moves the sports beat on by this many places (several sports articles on one day). */
+  beatOffset?: number;
 }
 
 export type RunOutcome =
@@ -136,7 +138,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources = projectSources(updates);
       await log("research", "info", `${sources.length} approved project update(s)`);
     } else {
-      const brief = sportsBrief(sastDayNumber(started), started);
+      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started);
       beat = brief.beat;
       await log("topic", "info", `beat: ${beat}`, brief.queries);
       sources = await research(deps, brief, log);

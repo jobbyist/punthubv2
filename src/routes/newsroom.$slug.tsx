@@ -8,7 +8,7 @@ import { useAsync } from "@/hooks/use-async";
 import { analytics } from "@/lib/analytics";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { fetchArticle, fetchPublished } from "@/lib/newsroom";
+import { fetchArticle, fetchArticleSources, fetchPublished, shareImage } from "@/lib/newsroom";
 
 export const Route = createFileRoute("/newsroom/$slug")({
   loader: async ({ params }) => {
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/newsroom/$slug")({
     const url = `https://puntr.co.za/newsroom/${loaderData.slug}`;
     const title = loaderData.seo_title || loaderData.title;
     const description = loaderData.seo_description || loaderData.excerpt;
-    const image = loaderData.og_image_url || loaderData.cover_image_url || undefined;
+    const image = shareImage(loaderData);
     return {
       links: [{ rel: "canonical", href: url }],
       meta: [
@@ -85,7 +85,9 @@ export const Route = createFileRoute("/newsroom/$slug")({
               logo: { "@type": "ImageObject", url: "https://puntr.co.za/puntrlogo.png" },
             },
             mainEntityOfPage: { "@type": "WebPage", "@id": url },
-            ...(image ? { image } : {}),
+            image,
+            ...(loaderData.tags?.length ? { keywords: loaderData.tags.join(", ") } : {}),
+            isAccessibleForFree: true,
           }),
         },
       ],
@@ -115,6 +117,10 @@ function Article() {
     [a.category],
   );
   const related = (others ?? []).filter((o) => o.slug !== a.slug).slice(0, 3);
+  const { data: sources } = useAsync(
+    () => (a.origin === "ai" ? fetchArticleSources(a.slug) : Promise.resolve([])),
+    [a.slug, a.origin],
+  );
   const url = `https://puntr.co.za/newsroom/${a.slug}`;
 
   useEffect(() => {
@@ -165,6 +171,38 @@ function Article() {
             ),
           )}
         </div>
+
+        {a.origin === "ai" && (
+          <aside
+            className="mt-10 border-t border-border pt-6 text-sm"
+            aria-labelledby="sources-title"
+          >
+            <p className="font-semibold">{t("ai.label")}</p>
+            {(sources ?? []).length > 0 && (
+              <>
+                <h2 id="sources-title" className="mt-3 text-base">
+                  {t("ai.sources")}
+                </h2>
+                <ol className="mt-2 list-decimal space-y-1 pl-5">
+                  {(sources ?? []).map((s) => (
+                    <li key={s.ordinal}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="text-primary hover:underline"
+                      >
+                        {s.title}
+                      </a>{" "}
+                      <span className="text-muted-foreground">({s.domain})</span>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            )}
+            <p className="mt-3 text-xs text-muted-foreground">{t("ai.note")}</p>
+          </aside>
+        )}
 
         <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-border pt-6 text-sm">
           <span className="font-semibold">{t("share")}</span>

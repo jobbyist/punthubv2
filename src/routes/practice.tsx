@@ -1,4 +1,5 @@
 import { ClubBadge } from "@/components/practice-badge";
+import { DemoWalletCard, MatchInsight } from "@/components/practice-wallet";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -140,6 +141,8 @@ function Arena() {
           {t("graduate.progress", { count: settled, total: GRADUATE_SETTLED_PICKS })}
         </p>
       )}
+
+      <DemoWalletCard nonce={tick} />
 
       <section className="card-surface mt-6 p-5">
         <h2 className="text-lg">{t("draw.title")}</h2>
@@ -386,6 +389,17 @@ function FixtureCard({
           {Math.round((Number(crowd!.draw) / total) * 100)}% /{" "}
           {Math.round((Number(crowd!.away) / total) * 100)}% ({t("crowd.count", { count: total })})
         </p>
+      )}
+
+      {(phase === "open" || phase === "upcoming") && (
+        <div className="mt-3">
+          <MatchInsight
+            fixtureId={fixture.id}
+            lambdaHome={Number(fixture.lambda_home)}
+            lambdaAway={Number(fixture.lambda_away)}
+            onSpent={onPosted}
+          />
+        </div>
       )}
 
       {phase === "open" && (

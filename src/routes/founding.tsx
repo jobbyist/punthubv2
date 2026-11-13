@@ -32,6 +32,39 @@ export const Route = createFileRoute("/founding")({
         { name: "twitter:description", content: t("meta.description") },
         { name: "twitter:image", content: "https://puntr.co.za/og/founding.png" },
       ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: (["1", "2", "3", "4"] as const).map((n) => ({
+              "@type": "Question",
+              name: t(`faq.q${n}`),
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: t(`faq.a${n}`, { launch: "1 December 2026" }),
+              },
+            })),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Puntr", item: "https://puntr.co.za/" },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: t("meta.ogTitle"),
+                item: "https://puntr.co.za/founding",
+              },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: Founding,

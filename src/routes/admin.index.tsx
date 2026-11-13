@@ -13,6 +13,9 @@ import {
 import { AffiliatesTab } from "@/components/admin/affiliates-admin";
 import { CampaignsTab } from "@/components/admin/campaigns-admin";
 import { IdentityTab } from "@/components/admin/identity-admin";
+import { MembersTab } from "@/components/admin/members-admin";
+import { NewsroomTab } from "@/components/admin/newsroom-admin";
+import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { RewardsTab } from "@/components/admin/rewards-admin";
@@ -27,10 +30,14 @@ export const Route = createFileRoute("/admin/")({
 });
 
 const TABS = [
+  "system",
+  "users",
+  "newsroom",
+  "analytics",
+  "log",
   "fixtures",
   "settlement",
   "reports",
-  "users",
   "identity",
   "rewards",
   "waitlist",
@@ -43,11 +50,11 @@ const TABS = [
 function Admin() {
   const { t } = useTranslation("admin");
   const { isAdmin } = useSession();
-  const [tab, setTab] = useState<string>("fixtures");
+  const [tab, setTab] = useState<string>("system");
   return (
     <RequireMember>
       {() => (
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <h1 className="text-3xl">{t("title")}</h1>
           {!isAdmin ? (
             <p className="mt-4 text-sm text-muted-foreground">{t("forbidden")}</p>
@@ -62,6 +69,18 @@ function Admin() {
                     </TabsTrigger>
                   ))}
                 </TabsList>
+                <TabsContent value="system" className="mt-5">
+                  <SystemTab />
+                </TabsContent>
+                <TabsContent value="newsroom" className="mt-5">
+                  <NewsroomTab />
+                </TabsContent>
+                <TabsContent value="analytics" className="mt-5">
+                  <AnalyticsTab />
+                </TabsContent>
+                <TabsContent value="log" className="mt-5">
+                  <ActionLogTab />
+                </TabsContent>
                 <TabsContent value="fixtures" className="mt-5">
                   <FixturesTab />
                 </TabsContent>
@@ -72,7 +91,10 @@ function Admin() {
                   <ReportsTab />
                 </TabsContent>
                 <TabsContent value="users" className="mt-5">
-                  <UsersTab />
+                  <MembersTab />
+                  <div className="mt-5">
+                    <UsersTab />
+                  </div>
                 </TabsContent>
                 <TabsContent value="identity" className="mt-5">
                   <IdentityTab />

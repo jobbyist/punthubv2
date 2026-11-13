@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Wallet | Puntr"
+  },
+  "title": "Wallet",
+  "subtitle": "Your PuntPoints and Pay-As-You-Go credits in one place.",
+  "error": "We could not load your wallet. Please try again.",
+  "points": {
+    "label": "PuntPoints",
+    "transferable_one": "{{count}} point can be sent",
+    "transferable_other": "{{count}} points can be sent",
+    "note": "PuntPoints are loyalty points for vouchers, sponsored rewards and perks. They have no cash value and cannot be exchanged for money."
+  },
+  "credits": {
+    "label": "Pay-As-You-Go credits",
+    "plan": {
+      "free": "Free plan",
+      "payg": "Pay-As-You-Go",
+      "pro": "Puntr Pro: premium features included"
+    },
+    "note": "Credits unlock premium features and tools one use at a time. Credits cannot be sent to other members or refunded as cash.",
+    "buy": "Buy credits (from launch)"
+  },
+  "prices": {
+    "title": "What credits unlock",
+    "credits_one": "{{count}} credit",
+    "credits_other": "{{count}} credits",
+    "note": "Puntr Pro members use these features without spending credits."
+  },
+  "send": {
+    "title": "Send PuntPoints",
+    "to": "Username, e.g. @thandi",
+    "amount": "Points",
+    "note": "Note (optional)",
+    "limits": "Send between {{min}} and {{max}} points at a time, up to {{daily}} a day and {{monthly}} a month. Your account must be at least {{days}} days old. Points earned in the last {{hold}} days and points from referrals cannot be sent.",
+    "max_one": "You can send up to {{count}} point right now.",
+    "max_other": "You can send up to {{count}} points right now.",
+    "review": "Review",
+    "confirm_one": "Send {{count}} point to @{{to}}? Transfers are final.",
+    "confirm_other": "Send {{count}} points to @{{to}}? Transfers are final.",
+    "confirmButton": "Send now",
+    "cancel": "Cancel",
+    "done_one": "Sent {{count}} point to @{{to}}.",
+    "done_other": "Sent {{count}} points to @{{to}}.",
+    "errors": {
+      "not_launched": "Sending opens on 1 December 2026.",
+      "transfers_paused": "Transfers are paused for now.",
+      "invalid_amount": "That amount is outside the transfer limits.",
+      "note_too_long": "The note is too long.",
+      "banned": "Your account cannot send points.",
+      "suspended": "Your account is suspended.",
+      "limited": "Sending points is paused on your account.",
+      "account_too_new": "Your account is too new to send points.",
+      "recipient_not_found": "We could not find that member.",
+      "self_transfer": "You cannot send points to yourself.",
+      "recipient_unavailable": "That member cannot receive points right now.",
+      "daily_cap": "That would pass today's limit.",
+      "monthly_cap": "That would pass this month's limit.",
+      "insufficient_transferable": "You do not have enough points that can be sent.",
+      "unknown": "The transfer did not go through. Nothing was sent."
+    }
+  },
+  "history": {
+    "title": "Transaction history",
+    "empty": "No transactions yet.",
+    "unit": {
+      "points": "pts",
+      "credits": "credits"
+    }
+  }
+}
