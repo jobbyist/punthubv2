@@ -25,7 +25,8 @@ export function useNotifications(userId: string | undefined) {
   const [status, setStatus] = useState<Status>("loading");
 
   const load = useCallback(async () => {
-    if (!userId) return;
+    // userId comes from Supabase Auth; refuse anything that is not a UUID before it goes into a filter string.
+    if (!userId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) return;
     try {
       const [{ data: notes, error: e1 }, { data: reads, error: e2 }] = await Promise.all([
         supabase

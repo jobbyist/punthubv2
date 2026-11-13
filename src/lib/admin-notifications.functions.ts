@@ -64,6 +64,7 @@ export const adminNotificationsOverview = createServerFn({ method: "POST" })
         .from("profiles")
         .select("id", { count: "exact", head: true })
         .eq("is_banned", false)
+        .not("username", "like", "deleted-%")
         .not("founding_number", "is", null),
     ]);
     if (notes.error) throw new Error(notes.error.message);
