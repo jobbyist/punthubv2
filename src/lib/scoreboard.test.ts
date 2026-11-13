@@ -38,4 +38,3 @@ describe("competition points", () => {
     expect(compareScores(a, { ...a, username: "b" })).toBeLessThan(0);
   });
 });
-});
