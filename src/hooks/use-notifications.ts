@@ -32,6 +32,8 @@ export function useNotifications(userId: string | undefined) {
           .from("notifications")
           .select("id, title, message, category, target_url, published_at")
           .lte("published_at", new Date().toISOString())
+          // Admins can read private notices through RLS; the bell shows only broadcasts and the member's own.
+          .or(`recipient_id.is.null,recipient_id.eq.${userId}`)
           .order("published_at", { ascending: false })
           .limit(20),
         supabase
@@ -68,7 +70,10 @@ export function useNotifications(userId: string | undefined) {
         () => void load(),
       )
       .subscribe();
+    // Scheduled notices fire no realtime event when their time arrives, so refresh every 5 minutes as well.
+    const timer = setInterval(() => void load(), 5 * 60_000);
     return () => {
+      clearInterval(timer);
       void supabase.removeChannel(channel);
     };
   }, [userId, load]);

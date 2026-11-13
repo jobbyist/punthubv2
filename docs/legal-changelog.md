@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: admin notifications composer)
+
+- **What was added:** admins can send in-app notifications (the header bell) by hand to all members, Founding Members only or one member, with an optional link and schedule, see read counts and withdraw a notice. Founding-only notices are hidden from other members by the database.
+- **Data:** no new personal data. The admin who sent each notice is recorded for the admin action log; read state was already stored.
+- `/privacy` already covers this under "Account administration" ("messages we send you"). Terms, Privacy choices, Affiliate disclosure and Refunds: not changed.
+- Review: none. Marketing-style notices in the bell are in-app only; email still follows the opt-in rules.
+
 ## 2026-11-13, Privacy and Terms r12 (PR: platform controls, wallet, newsroom desk)
 
 - **Privacy (`/privacy`, version 2026-11-13-r12):** two new rows in the data table: "Wallet (from launch)" (balances, history, PuntPoints sent and received with the other member's username, amount, note and time) and "Account administration" (account type, access granted for testing, warnings, suspensions or paused features with the reason, admin messages, and the admin action log). Section 6 now names Parallel, Firecrawl and Google Gemini as services that read public web pages and Puntr's approved project updates for newsroom articles and fixtures, with no personal data.

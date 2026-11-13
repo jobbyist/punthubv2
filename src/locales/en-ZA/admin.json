@@ -47,7 +47,8 @@
     "system": "System",
     "newsroom": "Newsroom",
     "analytics": "Analytics",
-    "log": "Action log"
+    "log": "Action log",
+    "notifications": "Notifications"
   },
   "settle": {
     "title": "Settlement",
@@ -666,6 +667,46 @@
     "used": "Used in an article",
     "approve": "Approve",
     "unapprove": "Unapprove",
-    "delete": "Delete"
+    "delete": "Delete",
+    "publishCriticalConfirm_one": "This article failed {{count}} critical check. Publishing it puts unchecked claims on the site. Publish anyway?",
+    "publishCriticalConfirm_other": "This article failed {{count}} critical checks. Publishing it puts unchecked claims on the site. Publish anyway?"
+  },
+  "notify": {
+    "title": "Send an in-app notification",
+    "body": "Appears in the bell for signed-in members, live for anyone online. Use it for updates, reminders and announcements. For email, use Users > Message members.",
+    "titleField": "Title (max 140 characters)",
+    "messageField": "Message (max 400 characters)",
+    "linkField": "Link (optional): /founding, /practice or a full https:// address",
+    "category": "Category",
+    "audience": "Who gets it",
+    "aud": {
+      "all": "All members",
+      "founding": "Founding Members",
+      "member": "One member"
+    },
+    "username": "Member username",
+    "schedule": "Send later (optional)",
+    "scheduleHint": "Your local time. Leave empty to send now. Scheduled notices appear when the time comes (members see them next time the bell refreshes).",
+    "sendButton": "Send now",
+    "scheduleButton": "Schedule",
+    "confirm_one": "Send to {{count}} member?",
+    "confirm_other": "Send to about {{count}} members?",
+    "confirmYes": "Yes, send",
+    "cancel": "Cancel",
+    "preview": "Preview",
+    "previewHeader": "Notifications",
+    "reach_one": "Reaches {{count}} member",
+    "reach_other": "Reaches about {{count}} members (excludes banned accounts)",
+    "sent": "Notification sent.",
+    "scheduled": "Notification scheduled.",
+    "error": "Could not send. Check the fields and try again.",
+    "historyTitle": "Sent and scheduled",
+    "none": "No notifications yet.",
+    "isScheduled": "Scheduled",
+    "by": "by {{who}}",
+    "reads_one": "{{count}} read",
+    "reads_other": "{{count}} reads",
+    "withdraw": "Withdraw",
+    "withdrawConfirm": "Withdraw this notification? It disappears from every member's bell."
   }
 }

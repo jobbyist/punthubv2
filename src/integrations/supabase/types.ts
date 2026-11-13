@@ -1573,7 +1573,9 @@ export type Database = {
       }
       notifications: {
         Row: {
+          audience: string
           category: string | null
+          created_by: string | null
           created_at: string
           id: string
           message: string
@@ -1585,7 +1587,9 @@ export type Database = {
           visibility: string
         }
         Insert: {
+          audience?: string
           category?: string | null
+          created_by?: string | null
           created_at?: string
           id?: string
           message: string
@@ -1597,7 +1601,9 @@ export type Database = {
           visibility?: string
         }
         Update: {
+          audience?: string
           category?: string | null
+          created_by?: string | null
           created_at?: string
           id?: string
           message?: string
