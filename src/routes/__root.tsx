@@ -14,6 +14,7 @@ import { SessionProvider } from "@/components/session";
 import { FoundingBar } from "@/components/founding-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SecurityPrompt } from "@/components/security-prompt";
+import { MfaGate } from "@/components/mfa-gate";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { PuntAI } from "@/components/punt-ai";
@@ -266,6 +267,7 @@ function RootComponent() {
       <SessionProvider>
         <Preloader />
         <RouteProgress />
+        <MfaGate />
         <div className="flex min-h-dvh flex-col">
           <FoundingBar />
           <SiteHeader />
