@@ -20,6 +20,7 @@ import { NotificationsTab } from "@/components/admin/notifications-admin";
 import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
+import { QuestsTab } from "@/components/admin/quests-admin";
 import { RewardsTab } from "@/components/admin/rewards-admin";
 import { useSession } from "@/components/session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -43,6 +44,7 @@ const TABS = [
   "reports",
   "identity",
   "rewards",
+  "quests",
   "waitlist",
   "campaigns",
   "annualPass",
@@ -108,6 +110,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="rewards" className="mt-5">
                   <RewardsTab />
+                </TabsContent>
+                <TabsContent value="quests" className="mt-5">
+                  <QuestsTab />
                 </TabsContent>
                 <TabsContent value="waitlist" className="mt-5">
                   <WaitlistTab />

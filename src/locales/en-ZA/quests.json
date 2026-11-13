@@ -1,0 +1,62 @@
+{
+  "eyebrow": "Get started",
+  "title": "Earn free PuntPoints",
+  "subtitle": "Finish these to collect up to {{available}} more PuntPoints. Every step is checked before points are added.",
+  "progressLabel": "Quests completed",
+  "progress": "{{done}}/{{total}} done",
+  "earned": "Earned so far: {{earned}} PuntPoints",
+  "seeAll": "See all quests on your account page",
+  "fineprint": "PuntPoints are a loyalty scheme with no cash value. Social follows are checked by our team, usually within a day. Turning updates off later doesn't remove points already earned. One account per person.",
+  "soon": "Coming soon",
+  "checking": "Checking {{handle}}. Points arrive once we've confirmed it.",
+  "rejected": "We couldn't confirm this. Check the handle and send it again.",
+  "handle": "Your username",
+  "submit": "Send for checking",
+  "submitted": "Thanks. We'll check it and add your points.",
+  "done": "Done",
+  "awarded": "+{{points}} PuntPoints added",
+  "cta": {
+    "open": "Open",
+    "follow_instagram": "Follow",
+    "like_facebook": "Like page",
+    "follow_x": "Follow",
+    "follow_tiktok": "Follow",
+    "join_whatsapp": "Join group",
+    "join_telegram": "Join",
+    "go": "Go",
+    "check": "Check"
+  },
+  "error": {
+    "open_link_first": "Open the link first, then send your username.",
+    "too_soon": "Give it a few seconds after following, then send it.",
+    "bad_evidence": "Enter the username you used (2 to 120 characters).",
+    "notInstalled": "Open Puntr from your home screen first, then tap Check.",
+    "pushOff": "Allow notifications for Puntr in your browser first.",
+    "generic": "Something went wrong. Please try again."
+  },
+  "completion": {
+    "title": "Profile completion",
+    "body": "Complete your profile to unlock every feature and the 150-point quest.",
+    "done": "Your profile is complete.",
+    "item": {
+      "avatar": "Add a profile picture",
+      "name": "Add your display name and full name",
+      "phone": "Add your phone number",
+      "dob": "Add your date of birth",
+      "province": "Add your province",
+      "email": "Confirm your email",
+      "mfa": "Turn on two-step verification",
+      "identity": "Verify your identity"
+    }
+  },
+  "admin": {
+    "title": "Quest reviews",
+    "body": "Social follows and group joins are checked by hand: open the platform, confirm the handle follows or joined Puntr, then approve. Points are added only on approval.",
+    "none": "Nothing to review.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "note": "Reason (shown to the member)",
+    "stats": "Quests verified: {{verified}} · waiting: {{waiting}} · points given: {{points}}",
+    "open": "Open Puntr's page"
+  }
+}

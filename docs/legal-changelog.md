@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, Privacy and Terms r14 (PR: onboarding quests and profile completion)
+
+- **Terms (`/terms`, 2026-11-13-r14), section 6:** new paragraph on get-started quests: one-off PuntPoints per quest, paid only after a check (system, device, or our team for social follows); points for turning on updates are kept if updates are switched off later (no need to stay opted in); refusal/reversal for false usernames, multiple accounts or abuse; quests and points may change.
+- **Privacy (`/privacy`, 2026-11-13-r14):** new row "Get-started quests": quest progress, points, and the social username/display name a member gives us, checked by our team on that platform. Social usernames are deleted 90 days after the check and straight away when the account is deleted (pg_cron `quest-evidence-purge`, daily).
+- **Product:** 15 quests (13 live; install app and push notifications switch on with the PWA work). Profile completion tracker on `/account`. Quest checklist on the sign-up done screen and `/account`. Admin > Quests review queue; approvals and rejections go to the admin action log.
+- `notice_versions` r14 rows in migration `20261113230000_onboarding_quests.sql`. Cookies, Affiliate disclosure, Refunds: not changed.
+- Review `[attorney review]`: (1) POPIA s11 and the Consumer Protection Act on giving points for turning on marketing email and WhatsApp/SMS: consent must stay voluntary and specific, which is why points are kept if consent is withdrawn; (2) points for social follows/likes and the platforms' own promotion rules (Meta, X and TikTok restrict incentivised likes/follows in some cases); (3) "install the app" and "push on" are reported by the member's device and can't be fully proven; (4) 90-day retention for social usernames.
 ## 2026-11-13, Privacy and Terms r13 (PR: rewards catalogue)
 
 - **Terms (`/terms`, 2026-11-13-r13), section 6:** names the catalogue types (OTT vouchers, Pay-As-You-Go credit packs, free Puntr Pro passes, Puntr and sports merchandise, match tickets); redemption opens at launch on 1 December 2026 (preview before); costs and stock may change; how each type is delivered; Pro passes never renew or bill; physical rewards and tickets to SA addresses only; tickets depend on availability and exclude travel; rewards provided by Puntr or partners.

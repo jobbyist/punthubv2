@@ -39,7 +39,8 @@
     "pick_settled": "A pick you posted settles",
     "referral_referred": "Join through a friend's invite",
     "referral_referrer": "A friend you invited posts a first pick",
-    "referral_milestone": "Invite milestone bonus"
+    "referral_milestone": "Invite milestone bonus",
+    "quest": "Get-started quest"
   },
   "kind": {
     "perk": "Perk",

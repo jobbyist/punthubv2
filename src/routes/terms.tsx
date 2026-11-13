@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 13 November 2026 (version 2026-11-13-r13). Draft pending
+            <strong>Last Updated:</strong> 13 November 2026 (version 2026-11-13-r14). Draft pending
             attorney review.
           </p>
 
@@ -153,6 +153,17 @@ function Terms() {
               friends, never for winning and never for spending money. What earns points, how many
               and any daily or monthly limits are shown on the Rewards page and may change.
               [attorney review]
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              Get-started quests on your account page give one-off PuntPoints for steps such as
+              confirming your email, turning on two-step verification, completing your profile,
+              verifying your identity, following or joining Puntr on social media, turning on
+              updates, installing the app and inviting a friend. Each quest pays once per account
+              and only after it is checked: by our systems, by your device, or (for social follows)
+              by our team looking up the username you give us. Points for turning on updates stay if
+              you later switch them off; you never have to keep marketing on to keep your points. We
+              may refuse or reverse quest points obtained with false usernames, multiple accounts or
+              other abuse, and we may change the quests and points. [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               Practice Mode, open to Founding Members before launch, uses a fictional league with
