@@ -265,6 +265,17 @@
         "granted": "Vested",
         "void": "Reversed or void"
       }
+    },
+    "funding": {
+      "label": "Funded by:",
+      "puntr": "Puntr",
+      "sponsor": "Sponsor",
+      "partner": "Partner",
+      "name": "Sponsor or partner name",
+      "url": "https:// link (optional)",
+      "save": "Save funding",
+      "badUrl": "The link must start with https://",
+      "needName": "Add the sponsor or partner name."
     }
   },
   "identity": {

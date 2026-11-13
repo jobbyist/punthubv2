@@ -6,7 +6,7 @@
   "progress": "{{done}}/{{total}} done",
   "earned": "Earned so far: {{earned}} PuntPoints",
   "seeAll": "See all quests on your account page",
-  "fineprint": "PuntPoints are a loyalty scheme with no cash value. Social follows are checked by our team, usually within a day. Turning updates off later doesn't remove points already earned. One account per person.",
+  "fineprint": "PuntPoints are a loyalty scheme with no cash value. Community group joins are checked by our team, usually within a day. Turning updates off later doesn't remove points already earned. One account per person.",
   "soon": "Coming soon",
   "checking": "Checking {{handle}}. Points arrive once we've confirmed it.",
   "rejected": "We couldn't confirm this. Check the handle and send it again.",
@@ -51,12 +51,13 @@
   },
   "admin": {
     "title": "Quest reviews",
-    "body": "Social follows and group joins are checked by hand: open the platform, confirm the handle follows or joined Puntr, then approve. Points are added only on approval.",
+    "body": "Community group joins (WhatsApp, Telegram) are checked by hand: confirm the name joined the group, then approve. Points are added only on approval.",
     "none": "Nothing to review.",
     "approve": "Approve",
     "reject": "Reject",
     "note": "Reason (shown to the member)",
     "stats": "Quests verified: {{verified}} · waiting: {{waiting}} · points given: {{points}}",
     "open": "Open Puntr's page"
-  }
+  },
+  "stayConnected": "Stay connected (no points, just the latest from Puntr)"
 }

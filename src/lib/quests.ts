@@ -15,6 +15,8 @@ export interface Quest {
   handle_label: string | null;
   sort: number;
   coming_soon: boolean;
+  /** False for plain "visit" links (social pages): no points, never completed. */
+  rewarded: boolean;
 }
 
 export type QuestStatus = "todo" | "started" | "submitted" | "verified" | "rejected";
@@ -57,7 +59,7 @@ export function summariseQuests(
         pointsAwarded: p?.points_awarded ?? 0,
       };
     });
-  const live = rows.filter((r) => !r.coming_soon);
+  const live = rows.filter((r) => !r.coming_soon && r.rewarded !== false);
   return {
     rows,
     earned: rows.reduce((n, r) => n + r.pointsAwarded, 0),

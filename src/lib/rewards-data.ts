@@ -37,6 +37,8 @@ export interface CatalogueReward {
   points_cost: number;
   face_value_cents: number | null;
   sponsor: string | null;
+  funded_by: string;
+  sponsor_url: string | null;
   fulfilment: string;
   terms: string | null;
   in_stock: boolean;

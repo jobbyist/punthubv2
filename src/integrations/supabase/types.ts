@@ -2690,6 +2690,7 @@ export type Database = {
           description: string
           handle_label: string | null
           points: number
+          rewarded: boolean
           sort: number
           title: string
           updated_at: string
@@ -2704,6 +2705,7 @@ export type Database = {
           description: string
           handle_label?: string | null
           points: number
+          rewarded?: boolean
           sort?: number
           title: string
           updated_at?: string
@@ -2718,6 +2720,7 @@ export type Database = {
           description?: string
           handle_label?: string | null
           points?: number
+          rewarded?: boolean
           sort?: number
           title?: string
           updated_at?: string
@@ -3047,12 +3050,14 @@ export type Database = {
           description: string | null
           face_value_cents: number | null
           fulfilment: string
+          funded_by: string
           id: string
           kind: string
           points_cost: number
           requires_approval: boolean
           sort: number
           sponsor: string | null
+          sponsor_url: string | null
           stock: number | null
           terms: string | null
           title: string
@@ -3066,12 +3071,14 @@ export type Database = {
           description?: string | null
           face_value_cents?: number | null
           fulfilment?: string
+          funded_by?: string
           id?: string
           kind: string
           points_cost: number
           requires_approval?: boolean
           sort?: number
           sponsor?: string | null
+          sponsor_url?: string | null
           stock?: number | null
           terms?: string | null
           title: string
@@ -3085,12 +3092,14 @@ export type Database = {
           description?: string | null
           face_value_cents?: number | null
           fulfilment?: string
+          funded_by?: string
           id?: string
           kind?: string
           points_cost?: number
           requires_approval?: boolean
           sort?: number
           sponsor?: string | null
+          sponsor_url?: string | null
           stock?: number | null
           terms?: string | null
           title?: string
@@ -4338,6 +4347,7 @@ export type Database = {
         Args: { p_purpose: string; p_user: string }
         Returns: boolean
       }
+      quest_evidence_purge: { Args: never; Returns: number }
       quest_member_ok: { Args: { p_user: string }; Returns: boolean }
       quest_start: { Args: { p_code: string }; Returns: undefined }
       quest_submit: {
@@ -4386,11 +4396,13 @@ export type Database = {
           description: string
           face_value_cents: number
           fulfilment: string
+          funded_by: string
           id: string
           in_stock: boolean
           kind: string
           points_cost: number
           sponsor: string
+          sponsor_url: string
           terms: string
           title: string
         }[]
