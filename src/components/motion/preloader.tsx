@@ -35,6 +35,11 @@ export function Preloader() {
   const [state, setState] = useState<"show" | "leaving" | "gone">("show");
 
   useEffect(() => {
+    // Only a marketing page shows (and uses up) the preloader for this session.
+    if (!isMarketingPath(window.location.pathname)) {
+      setState("gone");
+      return;
+    }
     if (document.documentElement.hasAttribute("data-preloaded")) {
       setState("gone");
       return;
