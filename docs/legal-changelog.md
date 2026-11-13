@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: motion, preloader, light/dark mode)
+
+- **What changed:** branded preloader (once per browser session), route loading bar, light/dark mode switch, animated hero backgrounds, club-badge strip and scroll reveals on marketing and sports pages.
+- **Storage:** the theme choice is kept in the browser's localStorage (`puntr-theme`) and "preloader shown" in sessionStorage (`puntr-preloaded`). Both are strictly necessary/functional preferences, never sent to Puntr or anyone else. `[attorney review]`: whether `/cookies` (Privacy choices) should list these two browser storage keys under functional storage.
+- Privacy, Terms, Affiliate disclosure, Refunds: not changed.
+
 ## 2026-11-13, Privacy and Terms r14 (PR: onboarding quests and profile completion)
 
 - **Terms (`/terms`, 2026-11-13-r14), section 6:** new paragraph on get-started quests: one-off PuntPoints per quest, paid only after a check (system, device, or our team for social follows); points for turning on updates are kept if updates are switched off later (no need to stay opted in); refusal/reversal for false usernames, multiple accounts or abuse; quests and points may change.

@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 
 import { Button } from "@/components/ui/button";
 import { formatDate, formatDateTime } from "@/lib/format";
@@ -143,7 +144,8 @@ function Roadmap() {
   const onTheWay = items.length - live;
 
   return (
-    <div className="mx-auto max-w-[920px] px-4 py-10 sm:px-6 sm:py-14">
+    <div className="relative isolate mx-auto max-w-[920px] px-4 py-10 sm:px-6 sm:py-14">
+      <HeroBackdrop variant="grid" />
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
         {t("eyebrow")}
       </p>
@@ -162,7 +164,7 @@ function Roadmap() {
         </span>
       </div>
 
-      <section className="mt-10" aria-labelledby="roadmap-sports">
+      <section className="puntr-reveal mt-10" aria-labelledby="roadmap-sports">
         <h2 id="roadmap-sports" className="sr-only">
           {t("sportsTitle")}
         </h2>
@@ -179,7 +181,7 @@ function Roadmap() {
         <p className="text-xs text-muted-foreground">{t("note")}</p>
       </section>
 
-      <section className="mt-12" aria-labelledby="roadmap-also">
+      <section className="puntr-reveal mt-12" aria-labelledby="roadmap-also">
         <h2 id="roadmap-also" className="text-2xl">
           {t("alsoTitle")}
         </h2>
@@ -199,7 +201,7 @@ function Roadmap() {
         </div>
       </section>
 
-      <section className="mt-12 flex flex-col items-start justify-between gap-4 bg-ink p-6 text-ink-foreground sm:flex-row sm:items-center">
+      <section className="puntr-reveal mt-12 flex flex-col items-start justify-between gap-4 bg-ink p-6 text-ink-foreground sm:flex-row sm:items-center">
         <div>
           <h2 className="text-xl text-ink-foreground">{t("suggest.title")}</h2>
           <p className="mt-1 text-sm opacity-80">{t("suggest.body")}</p>

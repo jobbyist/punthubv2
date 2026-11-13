@@ -123,5 +123,10 @@
     "practice": "Go to Practice Mode",
     "roadmap": "See the roadmap",
     "preview": "Preview: you can see this before launch because your account has admin or Early access rights. Members see it from 1 December 2026."
+  },
+  "preloader": {
+    "label": "Loading Puntr",
+    "slogan": "Predict smarter. Prove it.",
+    "tag": "South Africa's sports intelligence community"
   }
 }

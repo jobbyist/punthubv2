@@ -105,7 +105,7 @@ function HowItWorks() {
         </ul>
       </section>
 
-      <section className="card-surface mt-6 flex flex-wrap items-center gap-4 bg-primary-soft/50 p-5">
+      <section className="puntr-reveal card-surface mt-6 flex flex-wrap items-center gap-4 bg-primary-soft/50 p-5">
         <div className="min-w-0 flex-1">
           <h3 className="text-lg">{t("cta.title")}</h3>
           <RgNotice variant="compact" className="mt-1" />

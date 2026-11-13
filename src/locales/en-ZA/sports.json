@@ -174,5 +174,11 @@
         "Total games over and under"
       ]
     }
-  }
+  },
+  "stats": {
+    "competitions": "Competitions planned",
+    "markets": "Prediction markets",
+    "week": "Launch week"
+  },
+  "marquee": "Clubs on Puntr"
 }

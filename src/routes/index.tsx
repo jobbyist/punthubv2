@@ -5,6 +5,8 @@ import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
 import { Em } from "@/components/em";
+import { BadgeMarquee } from "@/components/motion/badge-marquee";
+import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
@@ -69,7 +71,8 @@ function Landing() {
   return (
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
       {/* Hero */}
-      <section className="grid gap-10 py-10 grid-cols-[minmax(0,1fr)] lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
+      <section className="relative isolate grid gap-10 py-10 grid-cols-[minmax(0,1fr)] lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
+        <HeroBackdrop />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,6 +144,7 @@ function Landing() {
       </section>
 
       <IllustrativeFixtures />
+      <BadgeMarquee label={t("marquee")} />
 
       {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
       <motion.section

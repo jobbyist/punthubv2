@@ -52,7 +52,7 @@ function Pricing() {
       <PageHeading title={t("title")} subtitle={t("subtitle")} />
 
       <section
-        className="card-surface mb-6 grid gap-5 border-primary/50 p-6 md:grid-cols-[1fr_auto] md:items-center"
+        className="puntr-reveal card-surface mb-6 grid gap-5 border-primary/50 p-6 md:grid-cols-[1fr_auto] md:items-center"
         aria-labelledby="annual-pass-pricing"
       >
         <div>
@@ -81,7 +81,10 @@ function Pricing() {
         </Button>
       </section>
       <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
-        <section className="card-surface flex flex-col p-6" aria-labelledby="founding-title">
+        <section
+          className="puntr-reveal card-surface flex flex-col p-6"
+          aria-labelledby="founding-title"
+        >
           <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
             {t("founding.badge")}
           </span>
@@ -101,7 +104,10 @@ function Pricing() {
           </Button>
         </section>
 
-        <section className="card-surface flex flex-col p-6" aria-labelledby="payg-title">
+        <section
+          className="puntr-reveal card-surface flex flex-col p-6"
+          aria-labelledby="payg-title"
+        >
           <span className="w-fit bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("payg.badge")}
           </span>
@@ -141,7 +147,7 @@ function Pricing() {
         </section>
 
         <section
-          className="card-surface flex flex-col border-primary p-6 md:col-span-2 2xl:col-span-1"
+          className="puntr-reveal card-surface flex flex-col border-primary p-6 md:col-span-2 2xl:col-span-1"
           aria-labelledby="pro-title"
         >
           <span className="w-fit bg-muted px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
@@ -177,7 +183,7 @@ function Pricing() {
         {t("never")}
       </p>
 
-      <section className="mt-10" aria-labelledby="pricing-faq">
+      <section className="puntr-reveal mt-10" aria-labelledby="pricing-faq">
         <h2 id="pricing-faq" className="text-xl">
           {t("faq.title")}
         </h2>

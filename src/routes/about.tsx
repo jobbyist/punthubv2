@@ -523,7 +523,7 @@ function About() {
       </div>
 
       {/* Launch and Founding Member offer */}
-      <section className="border-t border-border bg-background">
+      <section className="puntr-reveal border-t border-border bg-background">
         <div className="mx-auto max-w-[900px] px-4 py-16 text-center sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
             {t("launch.eyebrow")}
@@ -563,7 +563,7 @@ function About() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-[#111111] text-white">
+      <section className="puntr-reveal bg-[#111111] text-white">
         <div className="mx-auto max-w-[1400px] px-4 py-20 text-center sm:px-6 lg:py-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

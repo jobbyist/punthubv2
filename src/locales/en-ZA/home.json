@@ -98,5 +98,6 @@
     "locked": "On Puntr this pick would be timestamped and locked at kick-off. It could not be edited or deleted.",
     "idle": "Picks lock at kick-off and cannot be edited or deleted.",
     "fine": "Sample split for illustration. Not a real prediction. Nothing you tap here is saved."
-  }
+  },
+  "marquee": "Clubs on Puntr"
 }
