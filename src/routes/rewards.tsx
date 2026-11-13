@@ -141,6 +141,7 @@ function Catalogue({
     points_cost: number;
     in_stock: boolean;
     available: boolean;
+    available_from?: string;
   }) => {
     const afford = affordability(balance, r.points_cost);
     if (!r.available)
