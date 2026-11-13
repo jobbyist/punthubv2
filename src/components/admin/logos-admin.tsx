@@ -6,6 +6,7 @@ import { TeamBadgesPanel } from "@/components/admin/badges-admin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsync } from "@/hooks/use-async";
+import { resetBrandLogos } from "@/hooks/use-brand-logos";
 import {
   adminListLogos,
   adminRemoveLogoImage,
@@ -23,7 +24,10 @@ export function LogosTab() {
   const [filter, setFilter] = useState<LogoPlacement | "all">("all");
   const [adding, setAdding] = useState(false);
   const rows = (data ?? []).filter((l) => filter === "all" || l.placements.includes(filter));
-  const reload = () => setTick((n) => n + 1);
+  const reload = () => {
+    resetBrandLogos();
+    setTick((n) => n + 1);
+  };
 
   return (
     <div className="space-y-5">

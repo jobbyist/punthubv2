@@ -73,6 +73,16 @@ export const adminSaveLogo = createServerFn({ method: "POST" })
     if (link && !/^https:\/\/[^\s]+$/.test(link))
       return { ok: false, message: "The link must start with https://" };
     const sortOrder = Number.isFinite(data.sortOrder) ? Math.trunc(data.sortOrder) : 100;
+    if (data.active) {
+      if (!data.id) return { ok: false, message: "Upload an image before activating a logo." };
+      const { data: cur } = await db
+        .from("brand_logos")
+        .select("image_url")
+        .eq("id", data.id)
+        .maybeSingle();
+      if (!(cur as { image_url: string | null } | null)?.image_url)
+        return { ok: false, message: "Upload an image before activating a logo." };
+    }
     const row = {
       name,
       kind: data.kind,
@@ -118,10 +128,11 @@ export const adminUploadLogo = createServerFn({ method: "POST" })
       return { ok: false, message: "Upload a PNG, JPEG or WebP image (SVG is not accepted)." };
     const { data: row } = await db
       .from("brand_logos")
-      .select("code")
+      .select("code, image_url")
       .eq("id", data.id)
       .maybeSingle();
     const code = (row as { code: string } | null)?.code;
+    const oldUrl = (row as { image_url: string | null } | null)?.image_url ?? null;
     if (!code) return { ok: false, message: "Logo not found." };
     const ext = type === "jpeg" ? "jpg" : type;
     const path = `brand/${code}-${Date.now()}.${ext}`;
@@ -135,6 +146,9 @@ export const adminUploadLogo = createServerFn({ method: "POST" })
       .update({ image_url: url })
       .eq("id", data.id);
     if (upErr) return { ok: false, message: upErr.message };
+    // Best effort: remove the file this upload replaced so the bucket does not collect orphans.
+    const oldPath = oldUrl?.split("/object/public/media/")[1];
+    if (oldPath?.startsWith("brand/")) await db.storage.from("media").remove([oldPath]);
     await log(db, ctx.userId, "logo_uploaded", { code, bytes: bytes.byteLength });
     return { ok: true, url };
   });

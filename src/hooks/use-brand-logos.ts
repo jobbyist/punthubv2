@@ -5,6 +5,11 @@ import { toBrandLogo, type BrandLogo, type LogoPlacement } from "@/lib/logos";
 
 let cache: Promise<BrandLogo[]> | null = null;
 
+/** Drop the shared copy so the next hook mount refetches (called after an admin change). */
+export function resetBrandLogos() {
+  cache = null;
+}
+
 /** Active, uploaded logos for one placement. Public read (RLS); fetched once per page load and shared. */
 export function useBrandLogos(placement: LogoPlacement): BrandLogo[] {
   const [logos, setLogos] = useState<BrandLogo[]>([]);
