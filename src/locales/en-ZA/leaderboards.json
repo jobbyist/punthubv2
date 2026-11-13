@@ -64,5 +64,40 @@
   "tipSupport": {
     "title": "Recognising consistent Tipsters",
     "body": "Puntr Pro will introduce Tipster Support: Punters will be able to recognise verified Tipsters who show a consistent track record on selected leaderboards by sending them PuntPoints. Points have no cash value and can't be withdrawn, and support never influences rankings or pick grading. It opens only once its rules are published. Not available yet."
+  },
+  "points": {
+    "title": "Competition points",
+    "subtitle": "Points for correct picks. Only settled picks count, and practice picks never do.",
+    "period": {
+      "week": "This week",
+      "month": "This month",
+      "all": "All time"
+    },
+    "competition": "Competition",
+    "allCompetitions": "All competitions",
+    "col": {
+      "rank": "#",
+      "member": "Member",
+      "points": "Points",
+      "accuracy": "Accuracy",
+      "correct": "Correct",
+      "settled": "Settled"
+    },
+    "empty": "No settled picks for this board yet. Points appear here once a match result is verified.",
+    "error": "We could not load this board. Please try again.",
+    "noRank": "You have no settled picks on this board yet.",
+    "market": {
+      "1X2": "Match result",
+      "BTTS": "Both teams to score",
+      "OU25": "Over/under 2.5 goals",
+      "DC": "Double chance",
+      "HCP": "Handicap"
+    },
+    "rules": {
+      "title": "How points work",
+      "value_one": "{{count}} point",
+      "value_other": "{{count}} points",
+      "note": "A wrong pick scores nothing. A void pick is not counted. Ties are split by correct picks, then accuracy, then settled picks. If an official result is corrected, the pick is re-scored and the change is recorded. Points rank members only: they are not PuntPoints and have no cash value."
+    }
   }
 }

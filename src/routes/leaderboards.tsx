@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { IllustrativeLeaderboard } from "@/components/illustrative-panels";
+import { PointsBoard } from "@/components/points-board";
 import { useSession } from "@/components/session";
 import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,8 @@ function Leaderboards() {
       {!PRIZES_ENABLED && (
         <p className="-mt-3 mb-5 text-sm font-semibold text-primary">{t("pride")}</p>
       )}
+
+      <PointsBoard />
 
       <div className="mb-2 flex flex-wrap gap-2">
         {(["this", "last"] as const).map((w) => (
