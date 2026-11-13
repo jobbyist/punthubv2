@@ -39,9 +39,9 @@ import { SocialLinks } from "@/components/social-links";
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
-  { label: "Fixtures", to: "/results", icon: CalendarDays },
-  { label: "Duels", to: "/leaderboards", icon: Swords },
-  { label: "PuntPoints", to: "/puntpoints", icon: Star },
+  { key: "fixtures", to: "/results", icon: CalendarDays },
+  { key: "duels", to: "/leaderboards", icon: Swords },
+  { key: "puntPoints", to: "/puntpoints", icon: Star },
 ] as const;
 
 const sports = [
@@ -326,15 +326,15 @@ export function MobileNav() {
       {/* Member dock: four destinations, with a compact pill marking the active section. */}
       {isSignedIn && (
         <nav
-          aria-label="Member navigation"
+          aria-label={t("mobile.primary")}
           className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
           style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
         >
           <ul className="grid grid-cols-4">
-            {bottomNavItems.map(({ label, to, icon: Icon }) => {
+            {bottomNavItems.map(({ key, to, icon: Icon }) => {
               const active = path === to || (to === "/results" && path.startsWith("/match/"));
               return (
-                <li key={label}>
+                <li key={key}>
                   <Link
                     to={to}
                     aria-current={active ? "page" : undefined}
@@ -343,7 +343,7 @@ export function MobileNav() {
                     }`}
                   >
                     <Icon className="size-[19px]" />
-                    <span>{label}</span>
+                    <span>{t(`mobile.dock.${key}`)}</span>
                     <span
                       aria-hidden="true"
                       className={`absolute bottom-1 h-1 w-5 rounded-full transition-all ${
@@ -364,7 +364,7 @@ export function MobileNav() {
                 }`}
               >
                 <Menu className="size-[19px]" />
-                <span>More</span>
+                <span>{t("mobile.more")}</span>
                 <span
                   aria-hidden="true"
                   className={`absolute bottom-1 h-1 w-5 rounded-full ${
@@ -385,9 +385,9 @@ export function MobileNav() {
         >
           <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-xs font-bold leading-tight text-foreground">Founding Access</p>
+              <p className="text-xs font-bold leading-tight text-foreground">{t("mobile.dock.foundingTitle")}</p>
               <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                First 100 spots · Free to reserve
+                {t("mobile.dock.foundingMessage")}
               </p>
             </div>
             <Link
