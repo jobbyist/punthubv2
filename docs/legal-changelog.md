@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: competition scoring and points leaderboards)
+
+- **What was added:** a competition points score per member (3 points for a correct match-result pick, 2 for both-teams-to-score and over/under 2.5, 1 for double chance, 2 for handicap), a points leaderboard on `/leaderboards` showing username, profile picture, points, accuracy and pick counts, and badges for the invented Practice Mode clubs.
+- **Data:** the score is calculated from picks and results the platform already stores and already shows publicly. No new information is collected from members. The leaderboard shows only username and profile picture, both already public on profiles. Banned members and hidden picks are left out.
+- The board states that points rank members only, are not PuntPoints and have no cash value. No prize is attached.
+- Privacy, Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed. No `notice_versions` change.
+- Review `[attorney review]`: (1) whether Terms should describe competition points and how a corrected result re-scores a pick; (2) whether the Privacy table should list the derived score next to picks; (3) if a prize is ever attached to this leaderboard it becomes a promotional competition and needs rules first.
+
 ## 2026-11-13, no legal page text changed (PR: PFIE fixtures provider)
 
 - **What was added:** fixtures and results can now be gathered from public web pages (Parallel Search finds them, Google Gemini lists what each page states, code checks and cross-checks). Off until `SPORTS_PROVIDER=pfie` is set. No personal data is sent to either service and none is collected.

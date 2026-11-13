@@ -3,6 +3,26 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 13 November 2026: competition scoring, points leaderboards, practice club badges
+
+Added
+- Migration `20261113160000_competition_scoring.sql`: `scoring_rules` (1X2 3, BTTS 2, OU25 2, DC 1, HCP 2; admin
+  editable, every change logged), append-only `competition_score_ledger` written by a trigger on each settlement
+  event, `competition_leaderboard()` and `my_competition_rank()` (week, month, all time; all or one competition).
+- `/leaderboards`: "Competition points" board with period and competition filters, the member's own row when it is
+  outside the first page, and the scoring rules.
+- `src/lib/scoreboard.ts` with the same rules in TypeScript, tested.
+- Eight original badges for the invented Practice Mode clubs (`public/teams/practice`), shown on practice fixtures.
+
+Tested
+- Scoring migration on a local Postgres 16 with stand-ins: tie-break order, weekly and per-competition boards, a
+  corrected result re-scoring a pick, void picks not counted, hidden picks and banned members left out, rule change
+  applying only to later picks, ledger append-only, member cannot edit rules or read other members' ledger rows.
+
+Not done
+- Leaderboard snapshots, admin screen for scoring rules (the table is editable by admins in Supabase for now),
+  history filters on the profile page.
+
 ## 13 November 2026: PFIE fixtures provider, Parallel page-reader fallback, review fixes
 
 Owner decisions (13 Nov, 14:28 SAST): fixtures come from Parallel Search + Gemini with no data subscription; Parallel

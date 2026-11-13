@@ -1,3 +1,4 @@
+import { ClubBadge } from "@/components/practice-badge";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -360,8 +361,12 @@ function FixtureCard({
   return (
     <li className="card-surface p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-semibold">
-          {fixture.home} <span className="text-muted-foreground">v</span> {fixture.away}
+        <p className="flex flex-wrap items-center gap-2 font-semibold">
+          <ClubBadge team={fixture.home} />
+          <span>{fixture.home}</span>
+          <span className="text-muted-foreground">v</span>
+          <span>{fixture.away}</span>
+          <ClubBadge team={fixture.away} />
         </p>
         <p className="text-xs font-bold uppercase tracking-wide text-primary">
           {t(`fixtures.phase.${phase}`)}

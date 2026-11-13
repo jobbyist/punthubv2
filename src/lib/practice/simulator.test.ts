@@ -1,4 +1,8 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
+
+import { practiceBadgeSlug } from "@/components/practice-badge";
 
 import { grade } from "@/lib/settlement";
 
@@ -106,5 +110,16 @@ describe("practice simulator", () => {
     expect(avg).toBeGreaterThan(1.8);
     expect(avg).toBeLessThan(3.8);
     expect(rng(1)()).toBeLessThan(1);
+  });
+});
+
+describe("practice badges", () => {
+  it("has a badge file for every invented club", () => {
+    for (const team of PRACTICE_TEAMS) {
+      expect(
+        existsSync(`public/teams/practice/${practiceBadgeSlug(team.name)}.svg`),
+        team.name,
+      ).toBe(true);
+    }
   });
 });
