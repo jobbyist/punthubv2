@@ -1,5 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
+  BarChart3,
   CalendarDays,
   Menu,
   Swords,
@@ -14,7 +15,6 @@ import {
   Info,
   Building2,
   Radio,
-  Star,
   UserPlus,
   Shield,
   Crown,
@@ -58,7 +58,7 @@ const sports = [
 export function MobileNav() {
   const { t } = useTranslation("nav");
   const { t: tc } = useTranslation("common");
-  const { isSignedIn, signOut } = useSession();
+  const { isSignedIn, loading: sessionLoading, signOut } = useSession();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -378,7 +378,7 @@ export function MobileNav() {
       )}
 
       {/* Guests receive a conversion action instead of a persistent navigation dock. */}
-      {!isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding" && (
+      {!sessionLoading && !isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding" && (
         <div
           className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-[0_-8px_28px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden"
           style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
