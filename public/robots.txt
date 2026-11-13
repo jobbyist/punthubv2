@@ -1,24 +1,45 @@
-# Puntr – South Africa sports betting predictions & odds comparison
+# Puntr: South African sports prediction community and sports intelligence
 # https://puntr.co.za
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /wallet
+Disallow: /practice
+Disallow: /unsubscribe
 Disallow: /dev
 Disallow: /api/
 
+# Search engines and AI answer engines may read the public pages (news, roadmap, guides, legal pages).
 User-agent: Googlebot
-Allow: /
-
 User-agent: Bingbot
+User-agent: Applebot
+User-agent: DuckDuckBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /wallet
+Disallow: /practice
+Disallow: /unsubscribe
+Disallow: /dev
+Disallow: /api/
+Allow: /api/newsroom-cover/
 
 User-agent: Twitterbot
-Allow: /
-
 User-agent: facebookexternalhit
+User-agent: LinkedInBot
+User-agent: WhatsApp
 Allow: /
-
-# Preferred host for South African search results
-Host: https://puntr.co.za
 
 Sitemap: https://puntr.co.za/sitemap.xml

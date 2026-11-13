@@ -1,0 +1,27 @@
+# Puntr
+
+> Puntr (puntr.co.za) is a South African sports prediction community and sports intelligence platform. Members post picks on football matches, build a public, verifiable track record, compare themselves with the community on leaderboards, and use research tools. Puntr is not a bookmaker: it takes no bets and holds no stakes. 18+ only. National Gambling Helpline: 0800 006 008.
+
+Key facts:
+- Official launch: Tuesday 1 December 2026. Founding Member sign-ups (first 100 members) opened on 2 November 2026.
+- Launch coverage: football (soccer) first: Betway Premiership, English Premier League and UEFA Champions League. Other sports follow on the published roadmap.
+- Every pick is time-stamped and locked at kick-off; the record of picks is hash-chained and can be checked at /verify.
+- Competition points: 3 for a correct match result, 2 for both teams to score, 2 for over/under 2.5 goals. Points rank members only and have no cash value.
+- PuntPoints are a loyalty scheme redeemable for vouchers, sponsored rewards and perks, never cash.
+- Plans at launch: a free account, Pay-As-You-Go credits for premium tools, and Puntr Pro.
+
+## Main pages
+- [Home](https://puntr.co.za/): what Puntr is and how to join
+- [Founding Members](https://puntr.co.za/founding): the Founding Member offer and FAQ
+- [How it works](https://puntr.co.za/how-it-works): posting picks, locking, settlement and verification
+- [Roadmap](https://puntr.co.za/roadmap): launch date and the sports rollout
+- [Pricing](https://puntr.co.za/pricing): free plan, Pay-As-You-Go and Puntr Pro
+- [Leaderboards](https://puntr.co.za/leaderboards): weekly and competition points rankings
+- [Newsroom](https://puntr.co.za/newsroom): Puntr news and football intelligence articles, with sources listed on AI-assisted articles
+- [About](https://puntr.co.za/about): the company and the team
+- [Support](https://puntr.co.za/support): help and contact (support@puntr.co.za)
+
+## Policies
+- [Terms](https://puntr.co.za/terms)
+- [Privacy](https://puntr.co.za/privacy)
+- [Responsible gambling and affiliate disclosure](https://puntr.co.za/affiliate-disclosure)

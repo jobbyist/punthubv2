@@ -123,5 +123,28 @@
       "Practice points have no cash value and never will."
     ]
   },
-  "unit": "pts"
+  "unit": "pts",
+  "wallet": {
+    "title": "Demo wallet",
+    "demo": "Demo",
+    "credits": "Demo PAYG credits",
+    "points": "Practice points",
+    "error": "We could not load your demo wallet.",
+    "note": "Demo credits and practice points are for practice only. They have no value and are never added to your real wallet. When you run low, you get a free top-up once a day.",
+    "history": "Demo wallet history",
+    "kind": {
+      "starter": "Starter demo credits",
+      "topup": "Free top-up",
+      "spend": "Match insight unlocked"
+    }
+  },
+  "insight": {
+    "unlock": "Unlock match insight (2 demo credits)",
+    "title": "Practice model insight",
+    "result": "Home {{home}} · Draw {{draw}} · Away {{away}}",
+    "goals": "Over 2.5 goals {{over}} · Both teams score {{btts}}",
+    "note": "Simulated: worked out from the invented team ratings in Practice Mode. This is how premium match insights will work with real credits after launch; it is not a Puntr prediction.",
+    "noCredits": "Not enough demo credits. A free top-up arrives once a day when you run low.",
+    "error": "That did not work. No demo credits were spent."
+  }
 }

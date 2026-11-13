@@ -59,6 +59,18 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you delete your account [attorney review]",
   ],
   [
+    "Wallet (from launch)",
+    "Your PuntPoints and Pay-As-You-Go credit balances and history; PuntPoints you send or receive (the other member's username, the amount, an optional note and the time)",
+    "Contract (providing the loyalty scheme and the paid features to you)",
+    "While your account is open; transfer records are kept with the anonymous account after deletion so the other member's history stays correct [attorney review]",
+  ],
+  [
+    "Account administration",
+    "Your account type (free, Pay-As-You-Go, Pro), access we grant (such as early access for testing), warnings, suspensions or paused features with the reason, messages we send you, and a log of what our admins changed and when",
+    "Our legitimate interest in running a safe, fair platform, and the contract with you",
+    "While your account is open; the admin log is kept for audit after your account is deleted, without your email [attorney review]",
+  ],
+  [
     "Founding Annual Pass",
     "Account ID, claim time, hold expiry, and once paid the PayFast payment reference, amount and date",
     "Contract (selling you the pass)",
@@ -130,7 +142,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 11 November 2026 (version 2026-11-11-r11). Draft pending
+          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r12). Draft pending
           attorney review.
         </p>
 
@@ -259,7 +271,11 @@ function Privacy() {
             us: vouchers come from bulk codes the sponsor supplies, and a sponsor&apos;s own site
             collects data when you use a code. Sending data outside South Africa is allowed under
             POPIA section 72 where the receiving country or contract gives comparable protection. We
-            never send personal data to AI services. We do not sell your data.
+            never send personal data to AI services. To write newsroom articles and to read football
+            fixtures and results from public web pages we use Parallel (web search), Firecrawl (page
+            reading) and Google Gemini (summarising those pages): they receive only public web pages
+            and Puntr&apos;s own approved project updates, never information about you. We do not
+            sell your data.
           </p>
         </section>
 

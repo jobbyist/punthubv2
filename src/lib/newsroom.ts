@@ -25,12 +25,14 @@ export interface NewsroomArticle {
   seo_title: string | null;
   seo_description: string | null;
   og_image_url: string | null;
+  origin?: string | null;
+  tags?: string[] | null;
 }
 
 export type NewsroomSummary = Omit<NewsroomArticle, "body">;
 
 const SUMMARY_COLUMNS =
-  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, updated_at, seo_title, seo_description, og_image_url";
+  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, updated_at, seo_title, seo_description, og_image_url, origin, tags";
 
 export function isCategory(value: unknown): value is NewsroomCategory {
   return typeof value === "string" && (NEWSROOM_CATEGORIES as readonly string[]).includes(value);
@@ -54,7 +56,7 @@ export async function fetchPublished(opts: {
   if (opts.category) q = q.eq("category", opts.category);
   const { data, error } = await q;
   if (error) throw error;
-  return (data ?? []) as NewsroomSummary[];
+  return (data ?? []) as unknown as NewsroomSummary[];
 }
 
 export async function fetchArticle(slug: string): Promise<NewsroomArticle | null> {
@@ -66,5 +68,32 @@ export async function fetchArticle(slug: string): Promise<NewsroomArticle | null
     .lte("published_at", new Date().toISOString())
     .maybeSingle();
   if (error) throw error;
-  return (data as NewsroomArticle | null) ?? null;
+  return (data as unknown as NewsroomArticle | null) ?? null;
+}
+
+export interface ArticleSource {
+  ordinal: number;
+  url: string;
+  domain: string;
+  title: string;
+}
+
+/** Cited public sources of a published article (editorial transparency). Empty for hand-written articles. */
+export async function fetchArticleSources(slug: string): Promise<ArticleSource[]> {
+  const { data, error } = await (
+    supabase as unknown as import("@supabase/supabase-js").SupabaseClient
+  ).rpc("content_article_sources", { p_slug: slug });
+  if (error) return [];
+  return (data ?? []) as ArticleSource[];
+}
+
+const SITE_URL = "https://puntr.co.za";
+
+/** Absolute share image for an article. SVG covers are not shown by social networks, so they fall back. */
+export function shareImage(a: Pick<NewsroomArticle, "og_image_url" | "cover_image_url">): string {
+  const pick =
+    a.og_image_url ||
+    (a.cover_image_url && !a.cover_image_url.startsWith("/api/") ? a.cover_image_url : null);
+  if (!pick) return `${SITE_URL}/og/puntr.png`;
+  return pick.startsWith("http") ? pick : `${SITE_URL}${pick.startsWith("/") ? "" : "/"}${pick}`;
 }

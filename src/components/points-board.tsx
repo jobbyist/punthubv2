@@ -55,7 +55,7 @@ export function PointsBoard() {
   const mineShown = mine !== null && rows.some((r) => r.username === mine.username);
 
   return (
-    <section className="card-surface mb-8 p-5" aria-labelledby="points-board-title">
+    <section className="card-surface p-5" aria-labelledby="points-board-title">
       <h2 id="points-board-title" className="font-display text-lg font-bold">
         {t("points.title")}
       </h2>

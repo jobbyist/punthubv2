@@ -3,6 +3,34 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 13 November 2026 (evening): launch gate, admin portal, wallet, newsroom desk, API limits
+
+Owner decisions (13 Nov, 16:12 and 16:51 SAST): all recommendations approved; wallet holds PuntPoints and
+Pay-As-You-Go credits with transfers; demo wallet in Practice Mode with demo credits; first newsroom run of 2 to 3
+articles with branded covers; schema, SEO and AI discoverability across the site; Users and Analytics tabs; strict
+limits on every API; emails batched inside Resend's free quota; live MVP features only for admins until 1 December.
+
+Added
+- Migration `20261113170000_platform_controls_wallet.sql`: launch gate (`mvp_open`, picks refused before launch for
+  non-admins), admin action log, account type, entitlements, suspensions, warnings, private notifications, API quota
+  claims (fail closed), email outbox, PuntPoints transfers with limits, PAYG credit ledger and prices, Practice demo
+  wallet, admin analytics, sports articles without notifications, deletion clean-up, notice versions r12.
+- Admin tabs: System (status, API limits, launch and transfer settings, scoring), Users (account controls, messages,
+  broadcast), Newsroom (queue, checks, edit, publish, reject, generate, sources, run log, engine settings, project
+  updates), Analytics, Action log.
+- `/wallet` (launch-gated), demo wallet and paid match insight in `/practice`, launch-gate component, points board
+  gated until launch.
+- Quota guard for Gemini (per model), Parallel search and extract, Firecrawl and Resend; email outbox cron.
+- Generated branded article covers (`/api/newsroom-cover/<slug>`), AI label and source list on articles, absolute
+  share images.
+- `robots.txt` (AI crawlers allowed on public pages, private pages excluded), `llms.txt`, FAQ and breadcrumb data
+  on `/founding`, sitemap additions.
+- Privacy and Terms r12.
+
+Fixed
+- `robots.txt` described Puntr as "odds comparison", which the product does not offer at launch.
+- Article share images were relative URLs, which social networks ignore.
+
 ## 13 November 2026: competition scoring, points leaderboards, practice club badges
 
 Added

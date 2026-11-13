@@ -115,5 +115,13 @@
         "espn": "Example: analysis and wider sports headlines"
       }
     }
+  },
+  "gate": {
+    "badge": "Opens 1 December 2026",
+    "title": "{{feature}} opens at launch",
+    "body": "This part of Puntr goes live for everyone on Tuesday 1 December 2026. Until then you can sharpen your picks in Practice Mode.",
+    "practice": "Go to Practice Mode",
+    "roadmap": "See the roadmap",
+    "preview": "Preview: you can see this before launch because your account has admin or Early access rights. Members see it from 1 December 2026."
   }
 }

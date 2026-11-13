@@ -30,7 +30,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 11 November 2026 (version 2026-11-11-r11). Draft pending
+            <strong>Last Updated:</strong> 13 November 2026 (version 2026-11-13-r12). Draft pending
             attorney review.
           </p>
 
@@ -162,8 +162,14 @@ function Terms() {
               [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              PuntPoints have no cash value. They cannot be bought, sold, transferred or exchanged
-              for money, and they never change rankings, the leaderboard or prize eligibility.
+              PuntPoints have no cash value. They cannot be bought, sold or exchanged for money, and
+              they never change rankings, the leaderboard or prize eligibility. From launch you may
+              send PuntPoints to another member from your Wallet, within the limits shown there
+              (currently 10 to 200 points at a time, 200 a day and 1,000 a month, from an account at
+              least 14 days old). Points earned in the last 7 days and points from invites cannot be
+              sent. Transfers are final. Selling or buying PuntPoints, or moving them between your
+              own accounts, is not allowed, and we may reverse transfers and close accounts that
+              break this rule. [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               You can redeem PuntPoints for the vouchers, sponsored rewards and perks listed on the
@@ -226,10 +232,13 @@ function Terms() {
             <h2 className="mb-3 text-xl font-semibold">10. Paid options (not on sale)</h2>
             <p className="leading-relaxed text-muted-foreground">
               Pay-As-You-Go credits and Puntr Pro, a monthly subscription for advanced bettors and
-              tipsters (indicatively R99 per month), are not on sale. Before anything is sold we
-              will publish its price, billing, cancellation and refund terms and show them before
-              you pay. Paying will never earn extra points, a higher ranking or prize eligibility.
-              [attorney review: subscription terms]
+              tipsters (indicatively R99 per month), are not on sale. Credits, once sold, unlock
+              premium features one use at a time, are shown in your Wallet, and cannot be sent to
+              another member or exchanged for cash. Credits we give you (for example to test a
+              feature) carry no right to a refund. Before anything is sold we will publish its
+              price, billing, cancellation and refund terms and show them before you pay. Paying
+              will never earn extra points, a higher ranking or prize eligibility. [attorney review:
+              subscription terms]
             </p>
           </section>
 
@@ -343,8 +352,11 @@ function Terms() {
             <p className="leading-relaxed text-muted-foreground">
               We reserve the right to suspend or terminate your account and access to the Service at
               our sole discretion, without notice, for conduct that we believe violates these Terms,
-              is harmful to other users, or is otherwise objectionable. You may delete your account
-              at any time from your account page, or by contacting support.
+              is harmful to other users, or is otherwise objectionable. Short of that, we may warn
+              you, pause features such as posting picks or sending PuntPoints for a period, or
+              suspend the account for a period. We tell you in your notifications, and by email for
+              warnings where we think it is needed. [attorney review] You may delete your account at
+              any time from your account page, or by contacting support.
             </p>
           </section>
 

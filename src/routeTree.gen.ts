@@ -40,6 +40,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AccountSecurityRouteImport } from './routes/account.security'
@@ -56,6 +57,7 @@ import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.
 import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
 import { Route as ApiCronContentDailyRouteImport } from './routes/api.cron.content-daily'
+import { Route as ApiCronEmailOutboxRouteImport } from './routes/api.cron.email-outbox'
 import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
 import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.founding-sequence'
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
@@ -65,6 +67,7 @@ import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.pract
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
+import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -221,6 +224,11 @@ const VerifyRoute = VerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
   id: '/account/',
   path: '/account/',
@@ -303,6 +311,11 @@ const ApiCronContentDailyRoute = ApiCronContentDailyRouteImport.update({
   path: '/api/cron/content-daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronEmailOutboxRoute = ApiCronEmailOutboxRouteImport.update({
+  id: '/api/cron/email-outbox',
+  path: '/api/cron/email-outbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
   id: '/api/cron/founding-campaign',
   path: '/api/cron/founding-campaign',
@@ -349,6 +362,11 @@ const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
   path: '/api/cron/sync-results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNewsroomCoverSlugRoute = ApiNewsroomCoverSlugRouteImport.update({
+  id: '/api/newsroom-cover/$slug',
+  path: '/api/newsroom-cover/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -382,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
@@ -398,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -407,6 +427,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -440,6 +461,7 @@ export interface FileRoutesByTo {
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
@@ -456,6 +478,7 @@ export interface FileRoutesByTo {
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -465,6 +488,7 @@ export interface FileRoutesByTo {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -499,6 +523,7 @@ export interface FileRoutesById {
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
@@ -515,6 +540,7 @@ export interface FileRoutesById {
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
   '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
   '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
   '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
@@ -524,6 +550,7 @@ export interface FileRoutesById {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -559,6 +586,7 @@ export interface FileRouteTypes {
     | '/tools'
     | '/unsubscribe'
     | '/verify'
+    | '/wallet'
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
@@ -575,6 +603,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -584,6 +613,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/newsroom-cover/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -617,6 +647,7 @@ export interface FileRouteTypes {
     | '/tools'
     | '/unsubscribe'
     | '/verify'
+    | '/wallet'
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
@@ -633,6 +664,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -642,6 +674,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/newsroom-cover/$slug'
   id:
     | '__root__'
     | '/'
@@ -675,6 +708,7 @@ export interface FileRouteTypes {
     | '/tools'
     | '/unsubscribe'
     | '/verify'
+    | '/wallet'
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
@@ -691,6 +725,7 @@ export interface FileRouteTypes {
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
     | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
     | '/api/cron/founding-campaign'
     | '/api/cron/founding-sequence'
     | '/api/cron/founding-welcome'
@@ -700,6 +735,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/newsroom-cover/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -734,6 +770,7 @@ export interface RootRouteChildren {
   ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
+  WalletRoute: typeof WalletRoute
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
@@ -750,6 +787,7 @@ export interface RootRouteChildren {
   ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
   ApiCronContentDailyRoute: typeof ApiCronContentDailyRoute
+  ApiCronEmailOutboxRoute: typeof ApiCronEmailOutboxRoute
   ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
   ApiCronFoundingSequenceRoute: typeof ApiCronFoundingSequenceRoute
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
@@ -759,6 +797,7 @@ export interface RootRouteChildren {
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
+  ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -980,6 +1019,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account/': {
       id: '/account/'
       path: '/account'
@@ -1092,6 +1138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronContentDailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/email-outbox': {
+      id: '/api/cron/email-outbox'
+      path: '/api/cron/email-outbox'
+      fullPath: '/api/cron/email-outbox'
+      preLoaderRoute: typeof ApiCronEmailOutboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/founding-campaign': {
       id: '/api/cron/founding-campaign'
       path: '/api/cron/founding-campaign'
@@ -1155,6 +1208,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSyncResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/newsroom-cover/$slug': {
+      id: '/api/newsroom-cover/$slug'
+      path: '/api/newsroom-cover/$slug'
+      fullPath: '/api/newsroom-cover/$slug'
+      preLoaderRoute: typeof ApiNewsroomCoverSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1190,6 +1250,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,
+  WalletRoute: WalletRoute,
   AccountPrivacyRoute: AccountPrivacyRoute,
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
@@ -1206,6 +1267,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
   ApiCronContentDailyRoute: ApiCronContentDailyRoute,
+  ApiCronEmailOutboxRoute: ApiCronEmailOutboxRoute,
   ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
   ApiCronFoundingSequenceRoute: ApiCronFoundingSequenceRoute,
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
@@ -1215,6 +1277,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
+  ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

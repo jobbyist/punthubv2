@@ -146,6 +146,9 @@ export function SiteHeader() {
                     )}
                   </DropdownMenuItem>
                 )}
+                <DropdownMenuItem onSelect={() => navigate({ to: "/wallet" })}>
+                  {t("header.wallet")}
+                </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
                   {t("header.account")}
                 </DropdownMenuItem>

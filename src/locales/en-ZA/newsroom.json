@@ -41,5 +41,10 @@
     "title": "LATEST FROM PUNTR",
     "lead": "The latest updates, developments and announcements from the Puntr team.",
     "cta": "Visit the Newsroom"
+  },
+  "ai": {
+    "label": "Written with AI assistance, checked against the sources listed.",
+    "sources": "Sources",
+    "note": "Facts in this article come from the sources above and were checked automatically before publication. Spotted a mistake? Email support@puntr.co.za and we will correct it."
   }
 }

@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
             { status: 400 },
           );
 
-        const { REPLY_TO, SUPPORT_INBOX, sendViaResend } =
+        const { REPLY_TO, SUPPORT_INBOX, sendViaResend, isEmailQuotaStop } =
           await import("@/lib/email/resend.server");
         const { unsubscribeUrl } = await import("@/lib/waitlist");
 
@@ -156,6 +156,7 @@ export const Route = createFileRoute("/api/cron/founding-sequence")({
               "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
             },
           });
+          if (isEmailQuotaStop(res)) break;
           const status = res.ok ? "sent" : "failed";
           if (res.ok) sent += 1;
           else failed += 1;

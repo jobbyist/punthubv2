@@ -116,11 +116,10 @@ export function createPfieStore(): PfieStore {
     },
 
     async countUsage(provider, outcome) {
-      const { error } = await db.rpc("content_count_usage", {
-        p_provider: provider,
-        p_error: outcome === "error",
-      });
-      if (error) throw new Error(`content_count_usage: ${error.message}`);
+      // Calls are counted when the quota is claimed (quota.server.ts); only failures are added here.
+      if (outcome !== "error") return;
+      const { error } = await db.rpc("api_quota_error", { p_provider: provider });
+      if (error) throw new Error(`api_quota_error: ${error.message}`);
     },
 
     async usageToday() {

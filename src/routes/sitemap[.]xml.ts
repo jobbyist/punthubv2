@@ -16,8 +16,8 @@ function staticEntries(today: string): SitemapEntry[] {
     { path: "/", changefreq: "daily", priority: "1.0", lastmod: today },
     { path: "/founding", changefreq: "weekly", priority: "0.9", lastmod: today },
     { path: "/join", changefreq: "monthly", priority: "0.8", lastmod: today },
-    { path: "/predictions", changefreq: "hourly", priority: "0.95", lastmod: today },
-    { path: "/results", changefreq: "hourly", priority: "0.9", lastmod: today },
+    { path: "/predictions", changefreq: "hourly", priority: "0.9", lastmod: today },
+    { path: "/results", changefreq: "hourly", priority: "0.8", lastmod: today },
     { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
     { path: "/community", changefreq: "daily", priority: "0.85", lastmod: today },
     { path: "/pricing", changefreq: "weekly", priority: "0.8", lastmod: today },
@@ -39,6 +39,8 @@ function staticEntries(today: string): SitemapEntry[] {
     { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: today },
     { path: "/cookies", changefreq: "yearly", priority: "0.3", lastmod: today },
     { path: "/refunds", changefreq: "yearly", priority: "0.3", lastmod: today },
+    { path: "/affiliate-disclosure", changefreq: "yearly", priority: "0.3", lastmod: today },
+    { path: "/verify", changefreq: "monthly", priority: "0.4", lastmod: today },
   ];
 }
 

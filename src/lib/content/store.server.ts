@@ -143,6 +143,8 @@ export function createContentStore(): ContentStore {
             quality_score: article.qualityScore,
             quality_issues: article.qualityIssues,
             generation_job_id: jobId,
+            cover_image_url: `/api/newsroom-cover/${article.slug}`,
+            image_attribution: "Puntr",
           },
           { onConflict: "generation_job_id" },
         )
@@ -179,11 +181,10 @@ export function createContentStore(): ContentStore {
     },
 
     async countUsage(provider, outcome) {
-      const { error } = await db.rpc("content_count_usage", {
-        p_provider: provider,
-        p_error: outcome === "error",
-      });
-      fail("content_count_usage", error);
+      // Calls are counted when the quota is claimed (quota.server.ts); only failures are added here.
+      if (outcome !== "error") return;
+      const { error } = await db.rpc("api_quota_error", { p_provider: provider });
+      if (error) throw new Error(`api_quota_error: ${error.message}`);
     },
 
     async usageToday() {

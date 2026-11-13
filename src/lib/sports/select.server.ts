@@ -18,11 +18,16 @@ export async function createSportsProvider(
       await import("@/lib/content/providers.server");
     const { createPfieProvider } = await import("@/lib/pfie/provider");
     const { createPfieStore } = await import("@/lib/pfie/store.server");
+    const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
+      await import("@/lib/quota.server");
+    const claim = await createQuotaClaim();
     const keys = readContentEnv(env);
     return createPfieProvider({
-      search: createParallelSearch(keys.parallelKey!),
-      extract: createPageReader({ firecrawl: keys.firecrawlKey, parallel: keys.parallelKey }),
-      llm: createGemini(keys.geminiKey!),
+      search: guardSearch(createParallelSearch(keys.parallelKey!), claim),
+      extract: createPageReader({ firecrawl: keys.firecrawlKey, parallel: keys.parallelKey }, (r) =>
+        guardExtract(r, claim),
+      ),
+      llm: guardLlm(createGemini(keys.geminiKey!), claim),
       store: createPfieStore(),
       models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? "gemini-3.1-flash-lite,gemini-3.8-flash")
         .models,

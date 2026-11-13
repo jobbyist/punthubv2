@@ -3,6 +3,15 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, Privacy and Terms r12 (PR: platform controls, wallet, newsroom desk)
+
+- **Privacy (`/privacy`, version 2026-11-13-r12):** two new rows in the data table: "Wallet (from launch)" (balances, history, PuntPoints sent and received with the other member's username, amount, note and time) and "Account administration" (account type, access granted for testing, warnings, suspensions or paused features with the reason, admin messages, and the admin action log). Section 6 now names Parallel, Firecrawl and Google Gemini as services that read public web pages and Puntr's approved project updates for newsroom articles and fixtures, with no personal data.
+- **Terms (`/terms`, version 2026-11-13-r12):** section 6: PuntPoints can be sent to another member from launch within published limits; transfers are final; selling, buying or moving points between own accounts is not allowed. Section 10: credits unlock features one use at a time, cannot be sent to another member or exchanged for cash; credits given by Puntr carry no refund right. Section 18: warnings, paused features and time-limited suspensions short of termination.
+- **Product changes behind it:** launch gate (live features for admins and invited testers only until 1 Dec 2026 00:00 SAST), admin portal (members and account controls, action log, analytics, newsroom desk, system and API limits), wallet (PuntPoints transfers with limits, PAYG credit ledger, nothing on sale yet), Practice Mode demo wallet (demo credits with no value), email outbox (admin messages and notices, sent within the daily email cap), AI label and cited sources on AI-assisted articles, generated article covers, daily sports articles no longer notify every member.
+- **Deletion:** when an account is deleted, warnings, queued emails and access grants are removed. Transfer records stay, linked to the anonymous account, so the other member's history stays correct; the admin action log stays for audit.
+- `notice_versions` rows added in migration `20261113170000_platform_controls_wallet.sql`. Cookies, Affiliate disclosure and Refunds: reviewed, not changed.
+- Review `[attorney review]`: (1) PuntPoints transfers between members: points can buy betting vouchers, so transfers may move gambling-promotion value between people; limits, holds and the ban on referral-point transfers are meant to stop farming; (2) whether a transferable loyalty point raises any stored-value or e-money question (no cash in or out exists); (3) keeping transfer records and the admin log after deletion; (4) wording of warnings, suspensions and paused features in Terms; (5) the AI label on articles; (6) admin messages by email: service notices go to everyone, marketing only to members who opted in.
+
 ## 2026-11-13, no legal page text changed (PR: competition scoring and points leaderboards)
 
 - **What was added:** a competition points score per member (3 points for a correct match-result pick, 2 for both-teams-to-score and over/under 2.5, 1 for double chance, 2 for handicap), a points leaderboard on `/leaderboards` showing username, profile picture, points, accuracy and pick counts, and badges for the invented Practice Mode clubs.
@@ -252,3 +261,7 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 
 ## 11 Nov 2026: Draw admin screen
 - What changed: admin-only `/admin` Draw tab to run the R500 OTT voucher draw (lists valid entries, picks one winner at random through a service-role-only database function, records witness and result in `practice_draw_log`). It cannot run before the draw closes (Tue 1 Dec 2026, 00:00 SAST). The winner's email and phone are shown to admins only; the announcement uses username and Founding number only, as the published rules say. No new data is collected and no legal page changed.
+
+## 13 Nov 2026 (evening): missing database privileges fixed (migration 20261113180000)
+- What changed: table privileges only. Signed-in members can now read their own notifications and ID-check status (the policies already limited them to their own rows), and the server can write notifications and save newsroom articles. TRUNCATE, REFERENCES and TRIGGER removed from client roles on every table.
+- Pages: none. Nothing new is collected, stored, shown or sent; the product now does what the pages already describe.
