@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: branded auth emails, password reset)
+
+- **What changed:** Supabase Auth emails (sign-up confirmation, passwordless sign-in code, password reset, email change, invite, re-authentication, and security notices when a password, email, sign-in method or two-step verification changes) are now rendered by Puntr and sent through Resend from "Puntr - South Africa <support@puntr.co.za>" instead of Supabase's default sender. New `/reset-password` page (forgot password) and `/auth/confirm` page for email links.
+- **Data:** the member's email address and a one-time code/link go to Resend, which `/privacy` already lists for sending email. Nothing new is collected or stored by Puntr; codes and addresses are never logged.
+- Security notices are service messages (no unsubscribe), sent for every sign-in change.
+- Privacy, Terms, Privacy choices, Affiliate disclosure, Refunds: reviewed, not changed. Review: none.
+
 ## 2026-11-13, Privacy and Terms r12 (PR: platform controls, wallet, newsroom desk)
 
 - **Privacy (`/privacy`, version 2026-11-13-r12):** two new rows in the data table: "Wallet (from launch)" (balances, history, PuntPoints sent and received with the other member's username, amount, note and time) and "Account administration" (account type, access granted for testing, warnings, suspensions or paused features with the reason, admin messages, and the admin action log). Section 6 now names Parallel, Firecrawl and Google Gemini as services that read public web pages and Puntr's approved project updates for newsroom articles and fixtures, with no personal data.

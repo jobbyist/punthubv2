@@ -68,3 +68,32 @@ export async function sendViaResend(payload: Record<string, unknown>) {
   }
   return first;
 }
+
+/**
+ * Sign-in, confirmation and password-reset emails from the Supabase Auth hook. They are never held back by Puntr's
+ * own cap (a member must always be able to sign in), but each one still claims a unit of the `resend` quota when
+ * there is room, so the marketing and service senders see the real usage and stop earlier.
+ */
+export async function sendAuthViaResend(payload: Record<string, unknown>) {
+  if (!process.env["RESEND_API_KEY"])
+    return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
+  try {
+    const { createQuotaClaim } = await import("@/lib/quota.server");
+    await (
+      await createQuotaClaim()
+    )("resend");
+  } catch (error) {
+    console.warn("resend: quota claim for an auth email failed; sending anyway", error);
+  }
+  const from = process.env["RESEND_FROM"] || SENDER;
+  const first = await post({ from, ...payload });
+  const domainProblem =
+    !first.ok && (first.status === 403 || first.status === 422) && /verif|domain/i.test(first.body);
+  if (domainProblem && from !== FALLBACK_SENDER) {
+    console.warn(
+      "resend: sender domain not verified, retrying auth email from the fallback sender",
+    );
+    return post({ from: FALLBACK_SENDER, ...payload });
+  }
+  return first;
+}
