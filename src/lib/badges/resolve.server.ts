@@ -74,10 +74,15 @@ async function mirror(
   path: string,
   trusted = false,
 ): Promise<string> {
+  // Admin URLs: no redirects, so the host that was checked is the host we fetch from. Wikimedia: redirects are
+  // allowed but the final host must still be Wikimedia.
   const res = await fetch(imageUrl, {
     headers: { "User-Agent": UA },
+    redirect: trusted ? "follow" : "error",
     signal: AbortSignal.timeout(10_000),
   });
+  if (trusted && !/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(res.url || imageUrl))
+    throw new Error("image redirected away from Wikimedia");
   if (!res.ok) throw new Error(`image ${res.status}`);
   const type = res.headers.get("content-type") ?? "";
   // PNG/JPEG/WebP only (the bucket refuses others; SVG could carry script).
