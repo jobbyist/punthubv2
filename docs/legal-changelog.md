@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: Annual Pass bank transfers)
+
+- **What was added:** admins can record Founding Annual Pass payments made by bank transfer (EFT) and match them to a member. They count toward the 20-pass cap, so the public counter shows 16/20 after the 4 transfers the owner confirmed.
+- **Data:** payer label as it appears on the bank statement, optional amount, bank reference and date, visible to admins only. No bank account numbers are stored. Matched transfers mark the member's pass as paid, as a PayFast payment would.
+- Review `[attorney review]`: whether `/privacy` should name "bank transfer details you send us for the Annual Pass" in the payments row (today it names PayFast only). Terms, Privacy choices, Affiliate disclosure and Refunds: not changed.
+
 ## 2026-11-13, Privacy and Terms r12 (PR: platform controls, wallet, newsroom desk)
 
 - **Privacy (`/privacy`, version 2026-11-13-r12):** two new rows in the data table: "Wallet (from launch)" (balances, history, PuntPoints sent and received with the other member's username, amount, note and time) and "Account administration" (account type, access granted for testing, warnings, suspensions or paused features with the reason, admin messages, and the admin action log). Section 6 now names Parallel, Firecrawl and Google Gemini as services that read public web pages and Puntr's approved project updates for newsroom articles and fixtures, with no personal data.
