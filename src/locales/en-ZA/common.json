@@ -128,5 +128,10 @@
     "label": "Loading Puntr",
     "slogan": "Predict smarter. Prove it.",
     "tag": "South Africa's sports intelligence community"
+  },
+  "foundingCounter": {
+    "compact": "{{left}} of {{cap}} founding places left",
+    "left": "{{left}} / {{cap}} left",
+    "full": "Allocation full"
   }
 }
