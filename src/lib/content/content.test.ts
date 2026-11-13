@@ -386,6 +386,25 @@ describe("pipeline", () => {
     expect(out.status).toBe("queued_for_review");
     expect(out.ok && "quality" in out && out.quality.critical).toBe(true);
   });
+  it("asks for one revision when the first draft fails a critical check, and uses the fixed draft", async () => {
+    const bad = sampleDraft();
+    bad.body += "\n\nA crowd of 45000 watched.";
+    const d = deps({
+      llm: fakeLlm((_m, r) =>
+        r.system.startsWith("You are a fact checker")
+          ? '{"unsupported":[]}'
+          : r.prompt.includes("failed these checks")
+            ? JSON.stringify(sampleDraft())
+            : JSON.stringify(bad),
+      ),
+    });
+    const store = d.store as ReturnType<typeof memoryStore>;
+    const out = await runContentJob(d, { trigger: "cron" });
+    expect(out.status).toBe("published");
+    expect(
+      store.logs.some((l) => l.stage === "revision" && l.message.startsWith("revised by")),
+    ).toBe(true);
+  });
   it("queues for review when the independent review cannot run", async () => {
     const d = deps({
       llm: fakeLlm((_m, r) =>

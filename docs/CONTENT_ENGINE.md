@@ -39,6 +39,7 @@ Providers sit behind three small interfaces in `types.ts`. Replacing one is a ne
 - **Development news comes only from `content_project_updates` rows marked approved.** With none waiting, the day
   becomes a sports day. The web is never searched for Puntr news.
 - **House copy rules** (`CLAUDE.md`): banned phrases are critical; a prediction stated as fact costs 15 points.
+- **One revision:** when the first draft fails a critical check (too short, a claim not found in its source), the same model is asked once to rewrite it with the list of problems, if at least 35 seconds of the run are left. The revised draft then goes through the independent review and the quality gate like any other.
 - **Publishing needs all of (for scheduled and manual runs alike):** engine on, automatic publishing on, independent review ran, no critical issue, score
   at or above `min_quality` (default 85). Anything else goes to the review queue.
 - **Once a day, once only.** The job key is the South African date. A succeeded job is never rerun; a failed one is

@@ -91,6 +91,22 @@ export function articleRequest(input: {
   };
 }
 
+/** One revision pass: the same task, the draft that failed the quality gate and the problems found. */
+export function revisionRequest(
+  original: LlmRequest,
+  draft: ArticleDraft,
+  problems: string[],
+): LlmRequest {
+  return {
+    ...original,
+    prompt:
+      `${original.prompt}\n\nYour previous draft failed these checks:\n${problems.map((p) => `- ${p}`).join("\n")}\n\n` +
+      `Rewrite the whole article so that every check passes. Keep to the requested length. Remove any statement ` +
+      `you cannot support word for word from a source rather than guessing.\n\n<previous_draft>\n${draft.title}\n\n` +
+      `${draft.body}\n</previous_draft>`,
+  };
+}
+
 /** Independent pass: a second call (the other model where possible) that only checks, never rewrites. */
 export function reviewRequest(draft: ArticleDraft, sources: ResearchSource[]): LlmRequest {
   return {

@@ -93,3 +93,8 @@ Not done
 Pending
 - Credentials: `GEMINI_API_KEY`, `PARALLEL_API_KEY`, `FIRECRAWL_API_KEY`.
 - Administrator approval: applying the migration; decisions D1 to D6 in the implementation plan.
+
+## 13 Nov 2026 (evening): newsroom first-run fixes
+- Generated articles could not be saved: `on conflict (generation_job_id)` needs a non-partial unique index (migration 20261113190000, applied).
+- Gemini primary timeout 40 s to 30 s so the fallback has time; run budget 50 s to 120 s (a production run took 88 s without being stopped).
+- One revision pass when the first draft fails a critical check.

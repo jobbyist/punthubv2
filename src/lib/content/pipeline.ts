@@ -14,7 +14,7 @@ import { sastDate } from "@/lib/sast";
 import { missingCredentials, type ContentEnv } from "./config";
 import { ProviderError } from "./http";
 import { AllModelsFailed, createModelRouter } from "./model-router";
-import { articleRequest, parseReview, reviewRequest } from "./prompt";
+import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./prompt";
 import { projectSources, rankHits, sportsBrief, toSource } from "./research";
 import { dailyJobKey, kindForDay, sastDayNumber } from "./schedule";
 import type {
@@ -195,6 +195,45 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         "the model's answer was not a valid article twice",
       );
     await log("writing", "info", `draft by ${written.model}: "${draft.title}"`);
+
+    // One revision pass when the draft fails a critical check (too short, a claim not in its source, ...),
+    // as long as there is time left for the revision and the review that follows it.
+    const precheck = validateDraft({
+      draft,
+      kind,
+      sources,
+      recentTitles: recent.map((r) => r.title),
+      reviewerUnsupported: [],
+    });
+    if (precheck.critical && budgetLeft() > 35_000) {
+      const problems = precheck.issues.filter((i) => i.critical).map((i) => i.detail);
+      await log(
+        "revision",
+        "info",
+        `asking ${written.model} to fix ${problems.length} problem(s)`,
+        problems,
+      );
+      try {
+        const revised = await router.generate(
+          revisionRequest(request, draft, problems),
+          written.model,
+        );
+        const revisedDraft = parseDraft(revised.text);
+        if (revisedDraft) {
+          draft = revisedDraft;
+          written = revised;
+          await log("revision", "info", `revised by ${revised.model}: "${revisedDraft.title}"`);
+        } else {
+          await log(
+            "revision",
+            "warn",
+            "the revision was not a valid article; keeping the first draft",
+          );
+        }
+      } catch (error) {
+        await log("revision", "warn", "revision did not run", describe(error));
+      }
+    }
 
     // Independent review by the other model where there is one. Not run = not eligible for automatic publishing.
     let reviewerUnsupported: string[] = [];

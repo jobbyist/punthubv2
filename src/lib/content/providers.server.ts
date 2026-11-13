@@ -96,7 +96,7 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
           },
         },
         // One attempt per model: the router decides whether to retry or move to the fallback.
-        { provider: "gemini", timeoutMs: 40_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+        { provider: "gemini", timeoutMs: 30_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
       );
       const candidates =
         isRecord(json) && Array.isArray(json["candidates"]) ? json["candidates"] : [];
