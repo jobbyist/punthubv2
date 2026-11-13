@@ -152,7 +152,9 @@
       "appStore": "the App Store",
       "googlePlay": "Google Play"
     },
-    "copyright": "© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only."
+    "copyright": "© 2026 Puntr (Pty) Ltd. All rights reserved. 18+ only.",
+    "partnersLabel": "Regulators, payment and technology partners",
+    "partnersPending": "Logos waiting for upload or activation (visible to admins only)"
   },
   "notifications": {
     "label": "Notifications",

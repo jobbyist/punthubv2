@@ -325,3 +325,8 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - What changed: layout only. Fixture and result cards (home, predictions, results, pick cards) now stack badge above team name on phones.
 - Pages: none needed. No change to what is collected, stored, shown, sent or promised.
 - Counsel: nothing to review.
+
+## 2026-11-14: Logos/Branding admin and footer logo strip
+
+- What changed: admin-only Logos/Branding tab (upload, resize, compress, choose placement, activate). A footer strip can show regulator, payment and partner logos; the Bookmaker Directory and About page can use uploaded images. Every logo starts inactive and nothing shows publicly until the owner uploads and activates it. No new data is collected from visitors; the logo list is a public read of active rows.
+- Pages: none changed. `[attorney review]`: showing a regulator's or payment provider's logo can imply endorsement or a relationship; showing a bookmaker logo is an affiliate creative (Hollywoodbets terms: partner-issued, unaltered creatives only; no partner is Live yet). The admin tab warns about both. Counsel should confirm wording of the footer label ("Regulators, payment and technology partners") before any logo is activated.

@@ -21,6 +21,7 @@ import { useEffect } from "react";
 
 import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
+import { useBrandLogos } from "@/hooks/use-brand-logos";
 import { analytics } from "@/lib/analytics";
 import { money } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -147,6 +148,7 @@ function About() {
   const { t } = useTranslation("about");
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
+  const aboutLogos = useBrandLogos("about").filter((l) => l.active && l.imageUrl);
 
   useEffect(() => {
     analytics.aboutPageViewed();
@@ -389,14 +391,28 @@ function About() {
             className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
             aria-label={t("tech.logosLabel")}
           >
-            {PARTNER_SLOTS.map((n) => (
-              <li
-                key={n}
-                className="grid h-20 place-items-center rounded-xl border border-dashed border-border bg-card text-xs font-medium text-muted-foreground"
-              >
-                {t("tech.logoPlaceholder", { n })}
-              </li>
-            ))}
+            {aboutLogos.length > 0
+              ? aboutLogos.map((l) => (
+                  <li
+                    key={l.id}
+                    className="grid h-20 place-items-center rounded-xl border border-border bg-card p-3"
+                  >
+                    <img
+                      src={l.imageUrl ?? ""}
+                      alt={l.name}
+                      loading="lazy"
+                      className="max-h-12 max-w-full object-contain"
+                    />
+                  </li>
+                ))
+              : PARTNER_SLOTS.map((n) => (
+                  <li
+                    key={n}
+                    className="grid h-20 place-items-center rounded-xl border border-dashed border-border bg-card text-xs font-medium text-muted-foreground"
+                  >
+                    {t("tech.logoPlaceholder", { n })}
+                  </li>
+                ))}
           </ul>
         </motion.section>
 

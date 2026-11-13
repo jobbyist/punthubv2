@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
+import { useBrandLogos } from "@/hooks/use-brand-logos";
 import { platforms } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/bookmakers")({
@@ -20,6 +21,11 @@ export const Route = createFileRoute("/bookmakers")({
 });
 
 function BookmakersPage() {
+  const uploaded = new Map(
+    useBrandLogos("bookmakers")
+      .filter((l) => l.active && l.imageUrl)
+      .map((l) => [l.name.toLowerCase(), l.imageUrl as string]),
+  );
   return (
     <AppShell>
       <PageHeading
@@ -51,7 +57,7 @@ function BookmakersPage() {
           {platforms.map((platform) => (
             <li key={platform.name} className="card-surface flex min-h-20 items-center gap-4 p-4">
               <img
-                src={platform.logo}
+                src={uploaded.get(platform.name.toLowerCase()) ?? platform.logo}
                 alt=""
                 loading="lazy"
                 className="size-12 rounded-lg bg-white object-contain p-1"

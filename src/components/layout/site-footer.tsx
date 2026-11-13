@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { LogoShuffle } from "@/components/logo-shuffle";
 import { SocialLinks } from "@/components/social-links";
 import { HELPLINE_DISPLAY, RgNotice } from "@/components/rg-notice";
 import { useSession } from "@/components/session";
@@ -94,6 +95,10 @@ export function SiteFooter() {
           {tRg("footer.helpline")}{" "}
           <span className="font-semibold text-foreground tnum">{HELPLINE_DISPLAY}</span>
         </p>
+      </div>
+
+      <div className="border-t border-border pt-8">
+        <LogoShuffle />
       </div>
 
       <div className="border-t border-border">
