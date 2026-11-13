@@ -11,6 +11,7 @@ import {
   WaitlistTab,
 } from "@/components/admin/admin-tabs";
 import { AffiliatesTab } from "@/components/admin/affiliates-admin";
+import { AnnualPassTab } from "@/components/admin/annual-pass-admin";
 import { CampaignsTab } from "@/components/admin/campaigns-admin";
 import { IdentityTab } from "@/components/admin/identity-admin";
 import { MembersTab } from "@/components/admin/members-admin";
@@ -44,6 +45,7 @@ const TABS = [
   "rewards",
   "waitlist",
   "campaigns",
+  "annualPass",
   "affiliates",
   "draw",
 ] as const;
@@ -112,6 +114,9 @@ function Admin() {
                 </TabsContent>
                 <TabsContent value="campaigns" className="mt-5">
                   <CampaignsTab />
+                </TabsContent>
+                <TabsContent value="annualPass" className="mt-5">
+                  <AnnualPassTab />
                 </TabsContent>
                 <TabsContent value="affiliates" className="mt-5">
                   <AffiliatesTab />

@@ -48,7 +48,8 @@
     "newsroom": "Newsroom",
     "analytics": "Analytics",
     "log": "Action log",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "annualPass": "Annual Pass"
   },
   "settle": {
     "title": "Settlement",
@@ -708,5 +709,35 @@
     "reads_other": "{{count}} reads",
     "withdraw": "Withdraw",
     "withdrawConfirm": "Withdraw this notification? It disappears from every member's bell."
+  },
+  "pass": {
+    "title": "Founding Annual Pass",
+    "body": "20 passes in total. PayFast holds, paid passes and bank transfers all count toward the cap. The public counter updates within a minute.",
+    "remaining": "{{remaining}}/{{cap}} passes available",
+    "open": "Offer open until 16 November 2026, 23:59 SAST.",
+    "closed": "Offer closed or full.",
+    "recordTitle": "Record a bank transfer",
+    "recordBody": "For members who paid by EFT. It counts toward the 20 straight away. Match it to the member's username once you know who paid; their pass then shows as paid.",
+    "payer": "Payer (name or bank statement label)",
+    "amount": "Amount in rand (optional)",
+    "reference": "Bank reference (optional)",
+    "paidOn": "Date paid",
+    "recordButton": "Record transfer",
+    "recorded": "Bank transfer recorded.",
+    "transfersTitle": "Bank transfers",
+    "claimsTitle": "Reservations and PayFast payments",
+    "none": "Nothing yet.",
+    "paid": "Paid",
+    "held": "Held",
+    "lapsed": "Hold lapsed",
+    "holdUntil": "hold until {{when}}",
+    "username": "Member username",
+    "link": "Match to member",
+    "linked": "Matched. The member's pass is now paid.",
+    "linkedTo": "Matched to @{{username}}",
+    "void": "Void",
+    "voidConfirm": "Void this transfer? It will stop counting toward the 20.",
+    "loading": "Loading…",
+    "error": "Something went wrong. Try again."
   }
 }
