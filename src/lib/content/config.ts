@@ -78,7 +78,7 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
     models,
     refusedModels: refused,
     dailyRequestCap: parseDailyCaps(env["CONTENT_GEMINI_RPD"]),
-    runBudgetMs: Number.isFinite(budget) && budget >= 10_000 ? budget : 50_000,
+    runBudgetMs: Number.isFinite(budget) && budget >= 10_000 ? budget : 120_000,
   };
 }
 
