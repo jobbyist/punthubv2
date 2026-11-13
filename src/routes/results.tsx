@@ -86,6 +86,7 @@ function MyRecord({ userId }: { userId: string }) {
 
 function Results() {
   const { t } = useTranslation("results");
+  const { t: tc } = useTranslation("common");
   const { profile } = useSession();
   const { data: days, failed, loading } = useAsync(() => fetchResults(14), []);
   const gated = useGated();
@@ -217,8 +218,8 @@ function Results() {
                               sport={r.fixture.sport}
                               size="sm"
                               center={
-                                <span className="font-display text-base font-extrabold tnum">
-                                  {r.fixture.home_score} – {r.fixture.away_score}
+                                <span className="text-xs font-semibold uppercase text-muted-foreground">
+                                  {tc("vs")}
                                 </span>
                               }
                             />

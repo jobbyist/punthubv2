@@ -283,7 +283,7 @@ function Landing() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
-                      {tc("sport.soccer")}
+                      {f.sport === "rugby" ? tc("sport.rugby") : tc("sport.soccer")}
                     </span>
                     <span className="truncate text-[10px] text-muted-foreground">
                       {f.competition}
