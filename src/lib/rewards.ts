@@ -18,6 +18,7 @@ const REDEEM_ERRORS = [
   "out_of_stock",
   "identity_not_verified",
   "not_yet_available",
+  "mfa_required",
 ] as const;
 
 export const REWARD_CATEGORIES = [

@@ -77,7 +77,8 @@
       "out_of_stock": "That reward just ran out.",
       "generic": "We couldn't redeem that. Please try again.",
       "identity_not_verified": "Please verify your identity on your account page before redeeming rewards.",
-      "not_yet_available": "Rewards open at launch on 1 December 2026."
+      "not_yet_available": "Rewards open at launch on 1 December 2026.",
+      "mfa_required": "Enter your two-step verification code first (sign out and back in if you weren't asked)."
     },
     "verifyCta": "Verify my identity"
   },
