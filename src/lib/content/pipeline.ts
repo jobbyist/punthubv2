@@ -5,7 +5,7 @@
  * Guarantees:
  * - One job per key (idempotent). A second call for the same day stops at the lock.
  * - Every run that starts ends with a job row in `succeeded`, `failed` or `skipped`, and a log trail. No silent exits.
- * - Nothing is published unless automatic publishing is on, the independent review ran, there is no critical issue
+ * - Nothing is published unless the engine is on, automatic publishing is on, the independent review ran, there is no critical issue
  *   and the score reaches the minimum. Otherwise the article waits in the editorial review queue.
  * - If research or every model fails, nothing is written to the newsroom and what is already published stays.
  */
@@ -236,7 +236,10 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       quality.issues,
     );
 
+    // `enabled` guards publishing for every trigger: a manual run while the engine is off (the validation
+    // workflow) can only ever produce a review-queue article.
     const publish =
+      settings.enabled &&
       settings.autoPublish &&
       reviewRan &&
       !quality.critical &&

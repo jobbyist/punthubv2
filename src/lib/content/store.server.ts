@@ -110,6 +110,16 @@ export function createContentStore(): ContentStore {
     },
 
     async saveArticle({ jobId, article, sources, usedSourceIndexes, projectUpdateIds }) {
+      // A job saves its article once. If a taken-over run reaches this point again, the first article stands:
+      // its publication time and any edits an administrator has made since are never overwritten.
+      const existing = await db
+        .from("newsroom_articles")
+        .select("id")
+        .eq("generation_job_id", jobId)
+        .maybeSingle();
+      fail("newsroom_articles", existing.error);
+      if (existing.data) return { id: (existing.data as { id: string }).id };
+
       const now = new Date().toISOString();
       // `generation_job_id` is unique, so a repeated save for the same job updates the same article.
       const { data, error } = await db

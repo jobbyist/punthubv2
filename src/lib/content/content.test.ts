@@ -364,6 +364,11 @@ describe("pipeline", () => {
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("disabled");
     expect((d.llm as ReturnType<typeof fakeLlm>).calls).toHaveLength(0);
   });
+  it("never publishes from a manual run while the engine is switched off", async () => {
+    const d = deps({ store: memoryStore({ enabled: false, autoPublish: true }) });
+    expect((await runContentJob(d, { trigger: "manual" })).status).toBe("queued_for_review");
+    expect((d.store as ReturnType<typeof memoryStore>).articles[0]?.status).toBe("REVIEW");
+  });
   it("queues for review instead of publishing when automatic publishing is off", async () => {
     const d = deps({ store: memoryStore({ autoPublish: false }) });
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");

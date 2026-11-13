@@ -39,7 +39,7 @@ Providers sit behind three small interfaces in `types.ts`. Replacing one is a ne
 - **Development news comes only from `content_project_updates` rows marked approved.** With none waiting, the day
   becomes a sports day. The web is never searched for Puntr news.
 - **House copy rules** (`CLAUDE.md`): banned phrases are critical; a prediction stated as fact costs 15 points.
-- **Publishing needs all of:** engine on, automatic publishing on, independent review ran, no critical issue, score
+- **Publishing needs all of (for scheduled and manual runs alike):** engine on, automatic publishing on, independent review ran, no critical issue, score
   at or above `min_quality` (default 85). Anything else goes to the review queue.
 - **Once a day, once only.** The job key is the South African date. A succeeded job is never rerun; a failed one is
   retried at 04:20 and 04:40 UTC, three attempts at most; an administrator can force a rerun.
