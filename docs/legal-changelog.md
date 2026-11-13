@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: real team badges)
+
+- **What was added:** every team in fixtures and results shows its real club badge. Badges are found with Parallel Search (the club's Wikipedia article), the crest is checked and copied to Puntr's own storage, so visitors' browsers never load images from third parties. Fixtures and results whose teams have no verified badge are hidden until one is verified or set by an admin.
+- **Data:** no personal data. Parallel receives only team and competition names.
+- Review `[attorney review]`: (1) displaying club crests (trademarks) next to fixtures, predictions and results as nominative/identifying use, including whether any league or club (e.g. PSL, Premier League) restricts crest use by prediction or tipster sites; (2) crests copied from Wikipedia are usually non-free logos there (used on Wikipedia under fair use), so Wikipedia is a source, not a licence.
+
 ## 2026-11-13, no legal page text changed (PR: branded auth emails, password reset)
 
 - **What changed:** Supabase Auth emails (sign-up confirmation, passwordless sign-in code, password reset, email change, invite, re-authentication, and security notices when a password, email, sign-in method or two-step verification changes) are now rendered by Puntr and sent through Resend from "Puntr - South Africa <support@puntr.co.za>" instead of Supabase's default sender. New `/reset-password` page (forgot password) and `/auth/confirm` page for email links.

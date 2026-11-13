@@ -70,6 +70,7 @@ import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.pract
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
+import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
 import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -380,6 +381,11 @@ const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
   path: '/api/cron/sync-results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronTeamBadgesRoute = ApiCronTeamBadgesRouteImport.update({
+  id: '/api/cron/team-badges',
+  path: '/api/cron/team-badges',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNewsroomCoverSlugRoute = ApiNewsroomCoverSlugRouteImport.update({
   id: '/api/newsroom-cover/$slug',
   path: '/api/newsroom-cover/$slug',
@@ -448,6 +454,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRoutesByTo {
@@ -512,6 +519,7 @@ export interface FileRoutesByTo {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRoutesById {
@@ -577,6 +585,7 @@ export interface FileRoutesById {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
 export interface FileRouteTypes {
@@ -643,6 +652,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -707,6 +717,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   id:
     | '__root__'
@@ -771,6 +782,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -836,6 +848,7 @@ export interface RootRouteChildren {
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
+  ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
   ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
 }
 
@@ -1268,6 +1281,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSyncResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/team-badges': {
+      id: '/api/cron/team-badges'
+      path: '/api/cron/team-badges'
+      fullPath: '/api/cron/team-badges'
+      preLoaderRoute: typeof ApiCronTeamBadgesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/newsroom-cover/$slug': {
       id: '/api/newsroom-cover/$slug'
       path: '/api/newsroom-cover/$slug'
@@ -1340,6 +1360,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
+  ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,
   ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
 }
 export const routeTree = rootRouteImport
