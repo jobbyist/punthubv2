@@ -56,17 +56,17 @@ Status words used in every Puntr document: **Completed**, **In progress**, **Blo
 
 ## 5. Decisions the owner must make (work continues around them)
 
-- **D1. Research providers and "free only".** Parallel Search publishes a per-request price (about $5 per 1,000
+- **D1 (decided 13 Nov: Parallel is paid from the owner's $50 balance; Firecrawl free, Parallel as fallback).** Research providers and "free only". Parallel Search publishes a per-request price (about $5 per 1,000
   requests) and I found no standing free tier; Firecrawl's free allowance is reported as 500 one-off credits by some
   sources and 1,000 a month by others. One article a day needs about 30 searches and 120 page reads a month. Please
   check both dashboards. If Parallel is paid, options are: accept the small cost, or use Firecrawl's search endpoint
   for discovery (adapter swap, no pipeline change).
-- **D2. Scoring.** The brief's 3/2/2 competition points and the existing PuntPoints loyalty rules are different
+- **D2 (decided 13 Nov: engineering judgement; separate competition score ledger).** Scoring. The brief's 3/2/2 competition points and the existing PuntPoints loyalty rules are different
   things. Proposed: keep PuntPoints as the loyalty currency and add a separate, deterministic competition score
   ledger that drives leaderboards. Needs a yes before phase two.
-- **D3. Practice Mode data.** On 11 Nov you chose fictional teams. The brief asks for real historical fixtures with
+- **D3 (decided 13 Nov: keep fictional teams, add badges).** Practice Mode data. On 11 Nov you chose fictional teams. The brief asks for real historical fixtures with
   hindsight protection. That reverses a recorded decision and needs real results data (see D4).
-- **D4. Fixtures source.** API-Football Pro (about $19 a month) is the only researched source with the current
+- **D4 (decided 13 Nov: Parallel Search + Gemini, see `docs/PFIE_INTEGRATION.md`).** Fixtures source. API-Football Pro (about $19 a month) is the only researched source with the current
   Betway Premiership season. The brief forbids paid APIs without approval, and PFIE's free-source route
   (OpenFootball, football-data.org, extraction) does not cover the PSL reliably. This needs a decision by about
   18 Nov to leave time to test settlement before 1 Dec.

@@ -120,3 +120,71 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
     },
   };
 }
+
+/** Parallel's Extract API: the second page reader, used when Firecrawl is out of credits or down. */
+export function createParallelExtract(apiKey: string, overrides: Overrides = {}): ExtractProvider {
+  return {
+    name: "parallel-extract",
+    async extract(url) {
+      const json = await postJson(
+        "https://api.parallel.ai/v1/extract",
+        { "x-api-key": apiKey },
+        { urls: [url], advanced_settings: { full_content: true } },
+        {
+          provider: "parallel-extract",
+          timeoutMs: 20_000,
+          attempts: 2,
+          baseDelayMs: 1_000,
+          ...overrides,
+        },
+      );
+      const results = isRecord(json) && Array.isArray(json["results"]) ? json["results"] : [];
+      const first = results[0];
+      if (!isRecord(first)) return null;
+      const excerpts = Array.isArray(first["excerpts"])
+        ? first["excerpts"].map(str).join("\n\n")
+        : "";
+      const markdown = str(first["full_content"]) || excerpts;
+      return markdown ? { markdown, title: str(first["title"]) || null } : null;
+    },
+  };
+}
+
+/**
+ * Tries each page reader in order. A reader that errors (quota, auth, timeout, outage) or returns nothing hands
+ * over to the next one. `name` reports the reader that actually answered last, for the usage counters.
+ */
+export function withExtractFallback(readers: ExtractProvider[]): ExtractProvider | null {
+  if (readers.length === 0) return null;
+  let last = readers[0]!.name;
+  return {
+    get name() {
+      return last;
+    },
+    async extract(url) {
+      let failure: unknown = null;
+      for (const reader of readers) {
+        last = reader.name;
+        try {
+          const page = await reader.extract(url);
+          if (page) return page;
+        } catch (error) {
+          failure = error;
+        }
+      }
+      if (failure) throw failure;
+      return null;
+    },
+  };
+}
+
+/** Firecrawl first (free allowance), then Parallel Extract. Either key alone also works. */
+export function createPageReader(keys: {
+  firecrawl: string | null;
+  parallel: string | null;
+}): ExtractProvider | null {
+  const readers: ExtractProvider[] = [];
+  if (keys.firecrawl) readers.push(createFirecrawlExtract(keys.firecrawl));
+  if (keys.parallel) readers.push(createParallelExtract(keys.parallel));
+  return withExtractFallback(readers);
+}

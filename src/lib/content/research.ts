@@ -137,14 +137,14 @@ export function rankHits(hits: SearchHit[], limit: number): SearchHit[] {
 const MAX_SOURCE_CHARS = 6_000;
 
 /** Removes links, images and markup noise; keeps the words. The validator checks quotes against this exact text. */
-export function cleanText(markdown: string): string {
+export function cleanText(markdown: string, maxChars = MAX_SOURCE_CHARS): string {
   return markdown
     .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/[#*_>`|]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, MAX_SOURCE_CHARS);
+    .slice(0, maxChars);
 }
 
 export function toSource(

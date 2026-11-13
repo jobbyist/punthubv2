@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: PFIE fixtures provider)
+
+- **What was added:** fixtures and results can now be gathered from public web pages (Parallel Search finds them, Google Gemini lists what each page states, code checks and cross-checks). Off until `SPORTS_PROVIDER=pfie` is set. No personal data is sent to either service and none is collected.
+- Privacy, Terms, Privacy choices, Affiliate disclosure and Refunds: reviewed, not changed. No `notice_versions` change.
+- Review `[attorney review]`: (1) fixture lists and scores are facts, but they are read from third-party sites, some of whose terms restrict automated reading; the engine stores short quotes and page hashes as evidence and does not republish page text; (2) whether Terms should say how results are verified and that a result can be corrected.
+
 ## 2026-11-13, no legal page text changed (PR: content engine foundation)
 
 - **What was added:** code for an automated newsroom (research from public web pages, drafting by Google Gemini, automated checks, review queue). It is switched off, its database migration is not applied, and nothing is published by it yet. No member-facing behaviour changes with this PR.

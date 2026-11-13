@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const manual = kind !== undefined || force || dry;
 
         const { readContentEnv } = await import("@/lib/content/config");
-        const { createFirecrawlExtract, createGemini, createParallelSearch } =
+        const { createGemini, createPageReader, createParallelSearch } =
           await import("@/lib/content/providers.server");
         const { createContentStore } = await import("@/lib/content/store.server");
         const { runContentJob } = await import("@/lib/content/pipeline");
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
               store: createContentStore(),
               env,
               search: env.parallelKey ? createParallelSearch(env.parallelKey) : null,
-              extract: env.firecrawlKey ? createFirecrawlExtract(env.firecrawlKey) : null,
+              extract: createPageReader({ firecrawl: env.firecrawlKey, parallel: env.parallelKey }),
               llm: env.geminiKey ? createGemini(env.geminiKey) : null,
             },
             {
