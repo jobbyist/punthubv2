@@ -1,8 +1,9 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  BarChart3,
+  CalendarDays,
   Menu,
-  Target,
+  Swords,
+  Star,
   Trophy,
   Users,
   X,
@@ -38,10 +39,9 @@ import { SocialLinks } from "@/components/social-links";
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
-  { key: "predictions", to: "/predictions", icon: Target },
-  { key: "results", to: "/results", icon: BarChart3 },
-  { key: "community", to: "/community", icon: Users },
-  { key: "leaderboards", to: "/leaderboards", icon: Trophy },
+  { label: "Fixtures", to: "/results", icon: CalendarDays },
+  { label: "Duels", to: "/leaderboards", icon: Swords },
+  { label: "PuntPoints", to: "/puntpoints", icon: Star },
 ] as const;
 
 const sports = [
@@ -323,43 +323,82 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Bottom Navigation Bar: members only. Guests get the full screen height and the header's Sign in / Join free. */}
+      {/* Member dock: four destinations, with a compact pill marking the active section. */}
       {isSignedIn && (
         <nav
-          aria-label={t("mobile.primary")}
+          aria-label="Member navigation"
           className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
           style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
         >
-          <ul className="grid grid-cols-5">
-            {bottomNavItems.map(({ key, to, icon: Icon }) => {
-              const active = path === to;
+          <ul className="grid grid-cols-4">
+            {bottomNavItems.map(({ label, to, icon: Icon }) => {
+              const active = path === to || (to === "/results" && path.startsWith("/match/"));
               return (
-                <li key={key}>
+                <li key={label}>
                   <Link
                     to={to}
-                    className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                    aria-current={active ? "page" : undefined}
+                    className={`relative flex min-h-[58px] flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
                       active ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
-                    <Icon className="size-5" />
-                    <span className="max-w-full truncate px-0.5">{t(`primary.${key}`)}</span>
+                    <Icon className="size-[19px]" />
+                    <span>{label}</span>
+                    <span
+                      aria-hidden="true"
+                      className={`absolute bottom-1 h-1 w-5 rounded-full transition-all ${
+                        active ? "bg-primary opacity-100" : "bg-transparent opacity-0"
+                      }`}
+                    />
                   </Link>
                 </li>
               );
             })}
-            <li key="more">
+            <li>
               <button
+                type="button"
+                aria-expanded={isMenuOpen}
                 onClick={() => setIsMenuOpen(true)}
-                className={`flex min-h-[56px] w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                className={`relative flex min-h-[58px] w-full flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
                   isMenuOpen ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                <Menu className="size-5" />
-                <span className="max-w-full truncate px-0.5">{t("mobile.more")}</span>
+                <Menu className="size-[19px]" />
+                <span>More</span>
+                <span
+                  aria-hidden="true"
+                  className={`absolute bottom-1 h-1 w-5 rounded-full ${
+                    isMenuOpen ? "bg-primary" : "bg-transparent"
+                  }`}
+                />
               </button>
             </li>
           </ul>
         </nav>
+      )}
+
+      {/* Guests receive a conversion action instead of a persistent navigation dock. */}
+      {!isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding" && (
+        <div
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-[0_-8px_28px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden"
+          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs font-bold leading-tight text-foreground">Founding Access</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                First 100 spots · Free to reserve
+              </p>
+            </div>
+            <Link
+              to="/join"
+              className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
+              onClick={() => close()}
+            >
+              Claim Spot
+            </Link>
+          </div>
+        </div>
       )}
     </>
   );
