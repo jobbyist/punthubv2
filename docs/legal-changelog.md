@@ -3,6 +3,12 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-13, no legal page text changed (PR: branded auth emails, password reset)
+
+- **What changed:** Supabase Auth emails (sign-up confirmation, passwordless sign-in code, password reset, email change, invite, re-authentication, and security notices when a password, email, sign-in method or two-step verification changes) are now rendered by Puntr and sent through Resend from "Puntr - South Africa <support@puntr.co.za>" instead of Supabase's default sender. New `/reset-password` page (forgot password) and `/auth/confirm` page for email links.
+- **Data:** the member's email address and a one-time code/link go to Resend, which `/privacy` already lists for sending email. Nothing new is collected or stored by Puntr; codes and addresses are never logged.
+- Security notices are service messages (no unsubscribe), sent for every sign-in change.
+- Privacy, Terms, Privacy choices, Affiliate disclosure, Refunds: reviewed, not changed. Review: none.
 ## 2026-11-13, no legal page text changed (PR: admin notifications composer)
 
 - **What was added:** admins can send in-app notifications (the header bell) by hand to all members, Founding Members only or one member, with an optional link and schedule, see read counts and withdraw a notice. Founding-only notices are hidden from other members by the database.

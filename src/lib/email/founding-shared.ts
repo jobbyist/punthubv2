@@ -65,6 +65,8 @@ export interface BuiltEmailInput {
   bullets?: EmailBullet[];
   /** Small boxed note (offer terms and the like). */
   panel?: { title: string; lines: string[]; link?: { label: string; url: string } };
+  /** One-time code shown large above the button (sign-in, confirmation and reset emails). */
+  code?: string;
   cta?: { label: string; url: string };
   afterCta?: string[];
   sign?: [string, string];
@@ -89,6 +91,12 @@ export function buildEmail(i: BuiltEmailInput): { subject: string; html: string;
           <div class="dm-h" style="font-size:13px;font-weight:700;color:#0d0d0d;">${esc(i.panel.title)}</div>
           ${i.panel.lines.map((l) => `<div class="dm-sub" style="margin-top:6px;font-size:13px;line-height:1.6;color:#4b5563;">${esc(l)}</div>`).join("")}
           ${i.panel.link ? `<div style="margin-top:12px;"><a class="dm-green" href="${esc(i.panel.link.url)}" style="display:inline-block;border:1px solid #16a34a;color:#16a34a;text-decoration:none;font-weight:700;font-size:13px;padding:9px 16px;">${esc(i.panel.link.label)}</a></div>` : ""}
+        </td></tr></table>`
+    : "";
+  const code = i.code
+    ? `<table role="presentation" class="dm-box" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;border:1px solid #e5e7eb;background:#f8fafc;"><tr><td style="padding:14px 22px;">
+          <div class="dm-sub" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4b5563;">Your code</div>
+          <div class="dm-h" style="margin-top:4px;font-family:'SFMono-Regular',Menlo,Consolas,monospace;font-size:30px;font-weight:700;letter-spacing:8px;color:#0d0d0d;">${esc(i.code)}</div>
         </td></tr></table>`
     : "";
   const cta = i.cta
@@ -119,6 +127,7 @@ export function buildEmail(i: BuiltEmailInput): { subject: string; html: string;
         ${i.paragraphs.map((t) => p(t)).join("\n        ")}
         ${bullets ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 14px;">${bullets}</table>` : ""}
         ${panel}
+        ${code}
         ${cta}
         ${(i.afterCta ?? []).map((t) => p(t, "font-size:13px;color:#4b5563;")).join("\n        ")}
         ${sign}
@@ -144,6 +153,7 @@ export function buildEmail(i: BuiltEmailInput): { subject: string; html: string;
           "",
         ]
       : []),
+    ...(i.code ? [`Your code: ${i.code}`, ""] : []),
     ...(i.cta ? [`${i.cta.label}: ${i.cta.url}`, ""] : []),
     ...(i.afterCta ?? []).flatMap((t) => [t, ""]),
     ...(i.sign ? [i.sign.join(", "), ""] : []),

@@ -31,6 +31,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PuntpointsRouteImport } from './routes/puntpoints'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
@@ -46,6 +47,7 @@ import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
@@ -53,6 +55,7 @@ import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as SportsSportRouteImport } from './routes/sports.$sport'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
+import { Route as ApiAuthSendEmailRouteImport } from './routes/api.auth.send-email'
 import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.annual-pass-expired'
 import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
@@ -179,6 +182,11 @@ const RefundsRoute = RefundsRouteImport.update({
   path: '/refunds',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResultsRoute = ResultsRouteImport.update({
   id: '/results',
   path: '/results',
@@ -254,6 +262,11 @@ const AdminFixturesRoute = AdminFixturesRouteImport.update({
   path: '/admin/fixtures',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/auth/confirm',
+  path: '/auth/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
   id: '/match/$fixtureId',
   path: '/match/$fixtureId',
@@ -287,6 +300,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
 const ApiAnnualPassPayRoute = ApiAnnualPassPayRouteImport.update({
   id: '/api/annual-pass/pay',
   path: '/api/annual-pass/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSendEmailRoute = ApiAuthSendEmailRouteImport.update({
+  id: '/api/auth/send-email',
+  path: '/api/auth/send-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCronAnnualPassExpiredRoute =
@@ -391,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -404,6 +423,7 @@ export interface FileRoutesByFullPath {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -413,6 +433,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -452,6 +473,7 @@ export interface FileRoutesByTo {
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -465,6 +487,7 @@ export interface FileRoutesByTo {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -474,6 +497,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -514,6 +538,7 @@ export interface FileRoutesById {
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -527,6 +552,7 @@ export interface FileRoutesById {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
@@ -536,6 +562,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -577,6 +604,7 @@ export interface FileRouteTypes {
     | '/puntpoints'
     | '/referrals'
     | '/refunds'
+    | '/reset-password'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -590,6 +618,7 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/auth/confirm'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
@@ -599,6 +628,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -638,6 +668,7 @@ export interface FileRouteTypes {
     | '/puntpoints'
     | '/referrals'
     | '/refunds'
+    | '/reset-password'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -651,6 +682,7 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/auth/confirm'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
@@ -660,6 +692,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/newsroom'
     | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -699,6 +732,7 @@ export interface FileRouteTypes {
     | '/puntpoints'
     | '/referrals'
     | '/refunds'
+    | '/reset-password'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -712,6 +746,7 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/auth/confirm'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy_/request'
@@ -721,6 +756,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -761,6 +797,7 @@ export interface RootRouteChildren {
   PuntpointsRoute: typeof PuntpointsRoute
   ReferralsRoute: typeof ReferralsRoute
   RefundsRoute: typeof RefundsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResultsRoute: typeof ResultsRoute
   RewardsRoute: typeof RewardsRoute
   RoadmapRoute: typeof RoadmapRoute
@@ -774,6 +811,7 @@ export interface RootRouteChildren {
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
+  AuthConfirmRoute: typeof AuthConfirmRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
@@ -783,6 +821,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
+  ApiAuthSendEmailRoute: typeof ApiAuthSendEmailRoute
   ApiCronAnnualPassExpiredRoute: typeof ApiCronAnnualPassExpiredRoute
   ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
@@ -956,6 +995,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RefundsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/results': {
       id: '/results'
       path: '/results'
@@ -1061,6 +1107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFixturesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/auth/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/match/$fixtureId': {
       id: '/match/$fixtureId'
       path: '/match/$fixtureId'
@@ -1108,6 +1161,13 @@ declare module '@tanstack/react-router' {
       path: '/api/annual-pass/pay'
       fullPath: '/api/annual-pass/pay'
       preLoaderRoute: typeof ApiAnnualPassPayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/send-email': {
+      id: '/api/auth/send-email'
+      path: '/api/auth/send-email'
+      fullPath: '/api/auth/send-email'
+      preLoaderRoute: typeof ApiAuthSendEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cron/annual-pass-expired': {
@@ -1241,6 +1301,7 @@ const rootRouteChildren: RootRouteChildren = {
   PuntpointsRoute: PuntpointsRoute,
   ReferralsRoute: ReferralsRoute,
   RefundsRoute: RefundsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResultsRoute: ResultsRoute,
   RewardsRoute: RewardsRoute,
   RoadmapRoute: RoadmapRoute,
@@ -1254,6 +1315,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountPrivacyRoute: AccountPrivacyRoute,
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
+  AuthConfirmRoute: AuthConfirmRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
@@ -1263,6 +1325,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
+  ApiAuthSendEmailRoute: ApiAuthSendEmailRoute,
   ApiCronAnnualPassExpiredRoute: ApiCronAnnualPassExpiredRoute,
   ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,

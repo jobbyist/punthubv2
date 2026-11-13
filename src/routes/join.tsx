@@ -391,7 +391,15 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {create && <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>}
+          {create ? (
+            <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>
+          ) : (
+            <p className="text-xs">
+              <Link to="/reset-password" className="font-semibold text-primary hover:underline">
+                {t("join.forgot")}
+              </Link>
+            </p>
+          )}
         </div>
       ) : (
         <p className="text-xs text-muted-foreground">{t("join.method.codeHint")}</p>
