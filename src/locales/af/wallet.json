@@ -19,7 +19,11 @@
       "pro": "Puntr Pro: premiumfunksies ingesluit"
     },
     "note": "Krediete ontsluit premiumfunksies en -gereedskap een gebruik op 'n slag. Krediete kan nie aan ander lede gestuur of as kontant terugbetaal word nie.",
-    "buy": "Koop krediete (vanaf bekendstelling)"
+    "buy": "Koop krediete (vanaf bekendstelling)",
+    "buyError": "Ons kon nie die betaling begin nie. Probeer asseblief weer.",
+    "packs": "Koop 'n kredietpakket",
+    "buyPack": "Koop",
+    "payfastNote": "Betaling word veilig deur PayFast geneem. Krediete word bygevoeg sodra PayFast die betaling bevestig. 18+. Bepalings en voorwaardes geld."
   },
   "prices": {
     "title": "Wat krediete ontsluit",

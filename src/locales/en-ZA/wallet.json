@@ -19,7 +19,11 @@
       "pro": "Puntr Pro: premium features included"
     },
     "note": "Credits unlock premium features and tools one use at a time. Credits cannot be sent to other members or refunded as cash.",
-    "buy": "Buy credits (from launch)"
+    "buy": "Buy credits (from launch)",
+    "buyError": "We could not start the payment. Please try again.",
+    "packs": "Buy a credit pack",
+    "buyPack": "Buy",
+    "payfastNote": "Payment is taken securely by PayFast. Credits are added once PayFast confirms the payment. 18+. T&Cs apply."
   },
   "prices": {
     "title": "What credits unlock",
