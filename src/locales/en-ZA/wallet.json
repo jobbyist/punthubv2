@@ -71,5 +71,22 @@
       "points": "pts",
       "credits": "credits"
     }
+  },
+  "pro": {
+    "title": "Puntr Pro",
+    "pitch": "Deeper analysis and AI tools included, {{price}} a month. Cancel any time.",
+    "subscribe": "Get Pro, {{price}}/month",
+    "renewsOn": "Active. Renews on {{date}}.",
+    "endsOn": "Cancelled. Pro stays on until {{date}}; you will not be charged again.",
+    "pastDue": "Your last renewal did not go through. PayFast will try again; Pro stays on until the paid period and a 3-day grace run out.",
+    "included": "Pro is included with your account (for example the Founding Annual Pass).",
+    "usage": "AI actions this month: {{used}} of {{cap}} included. Past the limit, actions use credits.",
+    "cancel": "Cancel Pro",
+    "cancelConfirm": "Cancel Puntr Pro? You keep Pro until the end of the month you paid for and will not be charged again.",
+    "cancelled": "Pro cancelled. You keep it until the end of your paid month.",
+    "cancelError": "We could not cancel right now. Please try again or contact support@puntr.co.za.",
+    "error": "Pro checkout could not start. Please try again.",
+    "already": "You already have Puntr Pro.",
+    "terms": "Billed monthly through PayFast until you cancel. Pro never buys a higher ranking or prize eligibility. See Terms and Refunds."
   }
 }

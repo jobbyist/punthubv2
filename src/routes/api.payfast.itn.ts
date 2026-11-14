@@ -43,6 +43,37 @@ export const Route = createFileRoute("/api/payfast/itn")({
         if (!valid) return new Response("invalid", { status: 400 });
 
         const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+        if (itn.kind === "pro") {
+          // Puntr Pro subscription: each COMPLETE is one paid month; FAILED is a failed renewal; CANCELLED ends
+          // renewals. Access always runs to the end of the paid period (see the Pro migration).
+          const rpc = db.rpc.bind(db) as unknown as (
+            fn: string,
+            args: object,
+          ) => Promise<{ data: unknown; error: { message: string } | null }>;
+          const { data, error } =
+            itn.status === "COMPLETE"
+              ? await rpc("grant_pro_payment", {
+                  p_sub: itn.orderId,
+                  p_pf_payment_id: itn.pfPaymentId,
+                  p_token: itn.token ?? "",
+                  p_amount_cents: itn.amountCents,
+                })
+              : itn.status === "FAILED" || itn.status === "CANCELLED"
+                ? await rpc("set_pro_subscription_status", {
+                    p_sub: itn.orderId,
+                    p_status: itn.status === "FAILED" ? "past_due" : "cancelled",
+                  })
+                : { data: "ignored", error: null };
+          if (error) {
+            console.error("pro itn failed", error.message);
+            return new Response("retry", { status: 500 });
+          }
+          if (data === "amount_mismatch" || data === "not_found") {
+            console.error("pro itn rejected", String(data), itn.orderId);
+            return new Response("rejected", { status: 500 });
+          }
+          return new Response("ok", { status: 200 });
+        }
         if (itn.status === "COMPLETE") {
           const { data, error } = await db.rpc(
             "grant_credit_purchase" as never,

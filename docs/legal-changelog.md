@@ -3,6 +3,28 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Puntr Pro recurring billing (PR: feat/puntr-pro-billing), built OFF, no page changed yet
+
+- **Product:** Puntr Pro at R99 a month through a PayFast subscription (monthly, until cancelled). Each paid month
+  adds one month of Pro plus a 3-day grace period; a failed renewal or a cancellation stops renewals and Pro runs to
+  the end of the paid period. Members cancel in `/wallet` (Puntr cancels at PayFast through its API). Pro includes AI
+  actions up to a fair-use limit (default 90 a month, 15 a day, editable in `app_settings`); past it an action costs
+  credits like Pay-As-You-Go. Paid Founding Annual Pass claims get 12 months of Pro from 1 Dec 2026 (as already
+  promised on `/pricing` and `/terms`), same default limit.
+- **Data:** tables `pro_subscriptions`, `pro_payments`, `pro_usage` (migration `20261114230000`). PayFast receives
+  only the subscription id, amount and item name; no personal information. The subscription token is stored to allow
+  cancellation. Subscriptions and payments are financial records kept after account deletion (linked to the
+  anonymised profile id); `pro_usage` is deleted with the account.
+- **Off until go-live:** same switch as the credit packs (`payments_enabled` + PayFast variables). No legal page is
+  changed in this PR because nothing can be bought yet.
+- **Copy to publish before switching on `[attorney review]`:** `/terms` (auto-renewal monthly until cancelled; how to
+  cancel; access to the end of the paid period; fair-use limit and what happens past it; price changes with notice),
+  `/refunds` (ECTA s44 seven-day cooling-off for the first payment; no pro-rata refund after that unless the law
+  requires; failed renewals), `/privacy` (PayFast as payment processor for subscriptions; token kept; retention of
+  payment records), `/pricing` (no longer "planned"; fair-use line). Decide whether the fair-use limit applies to
+  Annual Pass holders: it is set to the same 90 a month by default because their pass was sold without a stated
+  limit.
+
 ## 2026-11-14, Betting slips (PR: feat/bet-slips), Terms and Privacy r18
 
 - **Product:** members can add a bookmaker slip by typing it, pasting its text or uploading a photo, review and edit

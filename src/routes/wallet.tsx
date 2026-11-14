@@ -10,9 +10,15 @@ import { RgNotice } from "@/components/rg-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsync } from "@/hooks/use-async";
-import { formatDateTime, money } from "@/lib/format";
+import { formatDate, formatDateTime, money } from "@/lib/format";
 import { PACKS } from "@/lib/economics";
-import { getPaymentsStatus, startCreditPurchase } from "@/lib/payments.functions";
+import {
+  cancelProSubscription,
+  getPaymentsStatus,
+  getProStatus,
+  startCreditPurchase,
+  startProSubscription,
+} from "@/lib/payments.functions";
 import { headT } from "@/lib/i18n/head";
 import {
   fetchWallet,
@@ -90,6 +96,8 @@ function WalletBody() {
           <BuyCredits />
         </section>
       </div>
+
+      <ProPanel />
 
       <SendForm wallet={w} onSent={refresh} />
 
@@ -238,6 +246,106 @@ function SendForm({ wallet: w, onSent }: { wallet: Wallet; onSent: () => void })
 }
 
 /** Credit packs. Shown as "from launch" until payments are switched on server-side. */
+function postToPayfast(action: string, fields: [string, string][]) {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = action;
+  for (const [k, v] of fields) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = k;
+    input.value = v;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+}
+
+/** Puntr Pro: subscribe (PayFast monthly), see renewal and fair-use usage, cancel. Hidden until payments are on. */
+function ProPanel() {
+  const { t } = useTranslation("wallet");
+  const [nonce, setNonce] = useState(0);
+  const pro = useAsync(() => getProStatus(), [nonce]);
+  const [busy, setBusy] = useState(false);
+  const p = pro.data;
+  if (!p || (!p.available && !p.hasPro)) return null;
+
+  async function subscribe() {
+    setBusy(true);
+    try {
+      const r = await startProSubscription();
+      if (!r.ok) {
+        toast.error(t(r.error === "already_pro" ? "pro.already" : "pro.error"));
+        setBusy(false);
+        return;
+      }
+      postToPayfast(r.action, r.fields);
+    } catch (err) {
+      console.error("start pro failed", err);
+      toast.error(t("pro.error"));
+      setBusy(false);
+    }
+  }
+
+  async function cancel() {
+    if (!window.confirm(t("pro.cancelConfirm"))) return;
+    setBusy(true);
+    try {
+      const r = await cancelProSubscription();
+      if (r.ok) {
+        toast.success(t("pro.cancelled"));
+        setNonce((n) => n + 1);
+      } else toast.error(t("pro.cancelError"));
+    } catch {
+      toast.error(t("pro.cancelError"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const sub = p.subscription;
+  return (
+    <section className="card-surface p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-display text-lg font-bold">{t("pro.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {sub
+              ? sub.cancelRequested
+                ? t("pro.endsOn", {
+                    date: sub.currentPeriodEnd ? formatDate(sub.currentPeriodEnd) : "-",
+                  })
+                : sub.status === "past_due"
+                  ? t("pro.pastDue")
+                  : t("pro.renewsOn", {
+                      date: sub.currentPeriodEnd ? formatDate(sub.currentPeriodEnd) : "-",
+                    })
+              : p.hasPro
+                ? t("pro.included")
+                : t("pro.pitch", { price: money(p.price) })}
+          </p>
+        </div>
+        {!sub && !p.hasPro && p.available && (
+          <Button size="sm" disabled={busy} onClick={() => void subscribe()}>
+            {t("pro.subscribe", { price: money(p.price) })}
+          </Button>
+        )}
+        {sub && !sub.cancelRequested && (
+          <Button size="sm" variant="outline" disabled={busy} onClick={() => void cancel()}>
+            {t("pro.cancel")}
+          </Button>
+        )}
+      </div>
+      {p.hasPro && (
+        <p className="mt-3 text-xs text-muted-foreground tnum">
+          {t("pro.usage", { used: p.usage.month, cap: p.usage.cap })}
+        </p>
+      )}
+      <p className="mt-3 text-xs text-muted-foreground">{t("pro.terms")}</p>
+    </section>
+  );
+}
+
 function BuyCredits() {
   const { t } = useTranslation("wallet");
   const status = useAsync(() => getPaymentsStatus(), []);
@@ -259,18 +367,7 @@ function BuyCredits() {
         setBusy(null);
         return;
       }
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = r.action;
-      for (const [k, v] of r.fields) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = k;
-        input.value = v;
-        form.appendChild(input);
-      }
-      document.body.appendChild(form);
-      form.submit();
+      postToPayfast(r.action, r.fields);
     } catch (err) {
       console.error("start purchase failed", err);
       toast.error(t("credits.buyError"));

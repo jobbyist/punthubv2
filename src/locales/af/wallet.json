@@ -71,5 +71,22 @@
       "points": "pte",
       "credits": "krediete"
     }
+  },
+  "pro": {
+    "title": "Puntr Pro",
+    "pitch": "Dieper ontleding en KI-gereedskap ingesluit, {{price}} per maand. Kanselleer enige tyd.",
+    "subscribe": "Kry Pro, {{price}}/maand",
+    "renewsOn": "Aktief. Hernu op {{date}}.",
+    "endsOn": "Gekanselleer. Pro bly aan tot {{date}}; jy sal nie weer gehef word nie.",
+    "pastDue": "Jou laaste hernuwing het nie deurgegaan nie. PayFast sal weer probeer; Pro bly aan totdat die betaalde tydperk en 'n grasietyd van 3 dae verstryk.",
+    "included": "Pro is by jou rekening ingesluit (byvoorbeeld die Stigterslid-jaarpas).",
+    "usage": "KI-aksies hierdie maand: {{used}} van {{cap}} ingesluit. Ná die limiet gebruik aksies krediete.",
+    "cancel": "Kanselleer Pro",
+    "cancelConfirm": "Kanselleer Puntr Pro? Jy hou Pro tot die einde van die maand waarvoor jy betaal het en sal nie weer gehef word nie.",
+    "cancelled": "Pro gekanselleer. Jy hou dit tot die einde van jou betaalde maand.",
+    "cancelError": "Ons kon nie nou kanselleer nie. Probeer asseblief weer of kontak support@puntr.co.za.",
+    "error": "Pro-betaling kon nie begin nie. Probeer asseblief weer.",
+    "already": "Jy het reeds Puntr Pro.",
+    "terms": "Maandeliks deur PayFast gehef totdat jy kanselleer. Pro koop nooit 'n hoër rangorde of pryskwalifikasie nie. Sien Bepalings en Terugbetalings."
   }
 }

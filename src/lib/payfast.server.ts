@@ -69,12 +69,82 @@ export function buildCheckout(cfg: PayfastConfig, input: CheckoutInput) {
     ["m_payment_id", input.orderId],
     ["amount", centsToAmount(Math.round(input.pack.price * 100))],
     ["item_name", `Puntr credits: ${input.pack.credits}`],
+    ["custom_str1", "credits"],
   ];
   const signature = pfSignature(fields, cfg.passphrase);
   return {
     action: `https://${payfastHost(cfg.sandbox)}/eng/process`,
     fields: [...fields, ["signature", signature]] as [string, string][],
   };
+}
+
+export interface SubscriptionCheckoutInput {
+  subscriptionId: string;
+  amountCents: number;
+  siteUrl: string;
+  /** First billing date, YYYY-MM-DD (South African date). PayFast charges the first month at checkout. */
+  billingDate: string;
+}
+
+/**
+ * Puntr Pro: a monthly PayFast subscription (frequency 3 = monthly, cycles 0 = until cancelled). Field order follows
+ * PayFast's documented order, which the signature depends on. No personal information is sent.
+ */
+export function buildSubscriptionCheckout(cfg: PayfastConfig, input: SubscriptionCheckoutInput) {
+  const base = input.siteUrl.replace(/\/$/, "");
+  const amount = centsToAmount(input.amountCents);
+  const fields: [string, string][] = [
+    ["merchant_id", cfg.merchantId],
+    ["merchant_key", cfg.merchantKey],
+    ["return_url", `${base}/wallet?pro=success`],
+    ["cancel_url", `${base}/wallet?pro=cancelled`],
+    ["notify_url", `${base}/api/payfast/itn`],
+    ["m_payment_id", input.subscriptionId],
+    ["amount", amount],
+    ["item_name", "Puntr Pro (monthly)"],
+    ["custom_str1", "pro"],
+    ["subscription_type", "1"],
+    ["billing_date", input.billingDate],
+    ["recurring_amount", amount],
+    ["frequency", "3"],
+    ["cycles", "0"],
+  ];
+  const signature = pfSignature(fields, cfg.passphrase);
+  return {
+    action: `https://${payfastHost(cfg.sandbox)}/eng/process`,
+    fields: [...fields, ["signature", signature]] as [string, string][],
+  };
+}
+
+/**
+ * Signature for PayFast's REST API (subscriptions): all header and body values, keys sorted alphabetically,
+ * urlencoded, with the passphrase included as a key, md5.
+ */
+export function pfApiSignature(params: Record<string, string>, passphrase: string): string {
+  const all: Record<string, string> = { ...params, passphrase };
+  const joined = Object.keys(all)
+    .sort()
+    .filter((k) => all[k] !== "")
+    .map((k) => `${k}=${pfEncode(all[k]!.trim())}`)
+    .join("&");
+  return createHash("md5").update(joined).digest("hex");
+}
+
+/** Cancels a subscription at PayFast. Returns true when PayFast confirms. */
+export async function cancelPayfastSubscription(
+  cfg: PayfastConfig,
+  token: string,
+  fetcher: typeof fetch = fetch,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const timestamp = now.toISOString().slice(0, 19);
+  const headers = { "merchant-id": cfg.merchantId, version: "v1", timestamp };
+  const signature = pfApiSignature(headers, cfg.passphrase);
+  const url =
+    `https://api.payfast.co.za/subscriptions/${encodeURIComponent(token)}/cancel` +
+    (cfg.sandbox ? "?testing=true" : "");
+  const res = await fetcher(url, { method: "PUT", headers: { ...headers, signature } });
+  return res.ok;
 }
 
 /** PayFast's published ITN source ranges (IPv4). */
@@ -103,6 +173,10 @@ export interface ItnResult {
   pfPaymentId?: string;
   amountCents?: number;
   status?: string;
+  /** "pro" or "credits" (custom_str1 set at checkout). */
+  kind?: string;
+  /** Subscription token, present on Pro ITNs. */
+  token?: string;
 }
 
 /** Local checks on an ITN body (signature, merchant, status, amount). The server postback is done by the route. */
@@ -124,6 +198,8 @@ export function checkItn(body: string, cfg: PayfastConfig): ItnResult {
     pfPaymentId,
     amountCents: Math.round(gross * 100),
     status: get("payment_status"),
+    kind: get("custom_str1") || "credits",
+    token: get("token"),
   };
 }
 
