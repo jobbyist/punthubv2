@@ -39,22 +39,32 @@
   },
   "desktop": {
     "groups": {
-      "intelligence": "Intelligence",
-      "community": "Community",
-      "platform": "About / Platform"
+      "browse": "Browse",
+      "discover": "Discover",
+      "platform": "Platform"
     },
     "items": {
-      "fixtures": "Fixtures & Predictions",
-      "matchupTools": "AI Matchup Tools",
-      "gradedPicks": "Results & Graded Picks",
+      "gradedResults": "Graded Results",
       "leaderboards": "Leaderboards",
+      "bettingTools": "Betting Tools",
+      "liveScores": "Live Scores",
+      "featuredSports": "Featured Sports",
+      "competitions": "Competitions & Leagues",
       "headToHead": "Head-to-Head (H2H)",
-      "tipsterRankings": "Tipster Rankings",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "newsroom": "Newsroom",
-      "roadmap": "Roadmap"
-    }
+      "fantasyLeague": "Fantasy League",
+      "roadmap": "Upcoming Roadmap",
+      "bookmakers": "Bookmaker Directory",
+      "puntPoints": "PuntPoints & Rewards",
+      "about": "About Puntr",
+      "support": "Contact Support"
+    },
+    "direct": {
+      "home": "Home",
+      "fixtures": "Fixtures & Predictions",
+      "community": "Community & Duels"
+    },
+    "comingSoon": "Coming Soon",
+    "liveMatches": "Live matches available"
   },
   "mobile": {
     "primary": "Primary",
