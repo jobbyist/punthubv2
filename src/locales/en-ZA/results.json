@@ -52,5 +52,16 @@
     "description": "Sample scores and fixtures demonstrate the layout only. They are not actual match results.",
     "fullTime": "Full time",
     "detail": "Illustrative final score"
+  },
+  "season": {
+    "title": "Season results",
+    "description": "Final scores from this season and last, gathered by our fixtures engine. Each score is confirmed by the competition's own website or by two different sports sites, and we name them.",
+    "all": "All competitions",
+    "sources": "Confirmed by {{sources}}",
+    "empty": "Season results are being gathered. They appear here as each competition is checked.",
+    "error": "Season results could not load.",
+    "count_one": "{{count}} result",
+    "count_other": "{{count}} results",
+    "more": "Show more"
   }
 }

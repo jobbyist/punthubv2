@@ -10,7 +10,16 @@ import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { formatUnits, pct } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { fetchResults, fetchTipsterStats } from "@/lib/records";
+import { useState } from "react";
+
+import { FilterChips } from "@/components/match/filter-chips";
+import { formatDate } from "@/lib/format";
+import {
+  fetchResults,
+  fetchSeasonResultCompetitions,
+  fetchSeasonResults,
+  fetchTipsterStats,
+} from "@/lib/records";
 
 export const Route = createFileRoute("/results")({
   head: ({ match }) => {
@@ -106,6 +115,82 @@ function MyRecord({ userId }: { userId: string }) {
           <p className="text-xs text-muted-foreground">{t("mine.form")}</p>
         </div>
       </div>
+    </section>
+  );
+}
+
+function SeasonResults() {
+  const { t } = useTranslation("results");
+  const [competition, setCompetition] = useState<string | null>(null);
+  const [limit, setLimit] = useState(40);
+  const { data: comps } = useAsync(() => fetchSeasonResultCompetitions(), []);
+  const { data, failed, loading } = useAsync(
+    () => fetchSeasonResults(competition, limit),
+    [competition, limit],
+  );
+  const total = (comps ?? []).reduce((n, c) => n + c.count, 0);
+  return (
+    <section className="mt-12" aria-labelledby="season-results-title">
+      <h2 id="season-results-title" className="text-xl">
+        {t("season.title")}
+      </h2>
+      <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        {t("season.description")}
+      </p>
+      {(comps ?? []).length > 0 && (
+        <div className="mt-4">
+          <FilterChips
+            id="season-results"
+            label={t("season.title")}
+            active={competition ?? "all"}
+            onSelect={(v) => {
+              setCompetition(v === "all" ? null : v);
+              setLimit(40);
+            }}
+            chips={[
+              { key: "all", label: t("season.all"), count: total },
+              ...(comps ?? []).map((c) => ({
+                key: c.competition,
+                label: c.competition,
+                count: c.count,
+              })),
+            ]}
+          />
+        </div>
+      )}
+      {failed && <p className="mt-4 text-sm text-destructive">{t("season.error")}</p>}
+      {!loading && !failed && (data ?? []).length === 0 && (
+        <p className="card-surface mt-4 p-5 text-sm text-muted-foreground">{t("season.empty")}</p>
+      )}
+      {(data ?? []).length > 0 && (
+        <ul className="card-surface mt-4 divide-y divide-border">
+          {(data ?? []).map((r) => (
+            <li
+              key={r.id}
+              className="grid gap-1 px-4 py-3 sm:grid-cols-[7rem_1fr_auto] sm:items-center"
+            >
+              <span className="text-xs text-muted-foreground tnum">{formatDate(r.matchDate)}</span>
+              <span className="min-w-0 text-sm">
+                <span className="font-medium">{r.home}</span>{" "}
+                <span className="font-display font-extrabold tnum">
+                  {r.homeScore} - {r.awayScore}
+                </span>{" "}
+                <span className="font-medium">{r.away}</span>
+                <span className="block text-[11px] text-muted-foreground">
+                  {r.competition} · {t("season.sources", { sources: r.sources.join(", ") })}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {(data ?? []).length >= limit && (
+        <div className="mt-4">
+          <Button variant="outline" onClick={() => setLimit((n) => n + 40)}>
+            {t("season.more")}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }
@@ -275,6 +360,8 @@ function Results() {
           </div>
         </section>
       )}
+
+      <SeasonResults />
     </AppShell>
   );
 }

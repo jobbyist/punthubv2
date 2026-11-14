@@ -24,7 +24,7 @@ import {
 } from "./standings";
 import type { PfieSource } from "./types";
 
-export type TableJob = "standings" | "history";
+export type TableJob = "standings" | "history" | "season";
 
 export interface SyncStatusRow {
   job: TableJob;
@@ -73,6 +73,35 @@ const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
 const MAX_CHARS = 14_000;
 const HISTORY_DAYS = 42;
+/** Season backfill reads results in windows this long (about three matchdays). */
+const SEASON_WINDOW_DAYS = 21;
+
+/**
+ * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league: from the start of the previous
+ * season up to where the form backfill begins (today - 42 days). Newest first, so the current season fills before
+ * last season. Each window is one idempotent job, recorded in sync_status as `season` / `<key>:<start>`.
+ */
+export function seasonWindows(now: Date): { start: string; end: string }[] {
+  const year = now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
+  const first = Date.UTC(year - 1, 7, 1); // 1 August of the previous season
+  const stop = now.getTime() - HISTORY_DAYS * DAY;
+  const out: { start: string; end: string }[] = [];
+  for (let t = first; t < stop; t += SEASON_WINDOW_DAYS * DAY) {
+    const end = Math.min(t + (SEASON_WINDOW_DAYS - 1) * DAY, stop);
+    out.push({
+      start: new Date(t).toISOString().slice(0, 10),
+      end: new Date(end).toISOString().slice(0, 10),
+    });
+  }
+  // Skip the close season (June and July) when there is usually nothing to read.
+  return out
+    .filter((w) => {
+      const m = Number(w.start.slice(5, 7));
+      const mEnd = Number(w.end.slice(5, 7));
+      return !(m >= 6 && m <= 7 && mEnd >= 6 && mEnd <= 7);
+    })
+    .reverse();
+}
 
 /** Failures wait 20 min, 40 min, then stop until the next day. */
 export function retryDue(s: SyncStatusRow | undefined, now: Date): boolean {
@@ -130,13 +159,29 @@ export async function runTablesSync(
     if (retryDue(s, now())) due.push({ job: "history", key });
   }
 
+  // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
+  const season: { key: CompetitionKey; start: string; end: string }[] = [];
+  if (!opts.job || opts.job === "season") {
+    for (const w of seasonWindows(now())) {
+      for (const key of keys) {
+        const s = status("season", `${key}:${w.start}`);
+        if (!s?.lastSuccessAt && retryDue(s, now())) season.push({ key, ...w });
+      }
+    }
+  }
+
   const report: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-  for (const { job, key } of due.slice(0, maxJobs)) {
+  const daily = opts.job === "season" ? [] : due.slice(0, maxJobs);
+  for (const { job, key } of daily) {
     const r =
       job === "standings" ? await syncStandings(deps, key, now) : await syncHistory(deps, key, now);
     report.push({ job, key, ...r });
   }
-  return { due: due.length, ran: report };
+  for (const w of season.slice(0, Math.max(0, maxJobs - daily.length))) {
+    const r = await syncSeasonWindow(deps, w.key, w.start, w.end, now);
+    report.push({ job: "season", key: `${w.key}:${w.start}`, ...r });
+  }
+  return { due: due.length, seasonDue: season.length, ran: report };
 }
 
 async function gatherSources(
@@ -233,6 +278,60 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     };
   } catch (e) {
     await deps.store.record("standings", key, false, message(e), {}).catch(() => undefined);
+    return { ok: false, detail: message(e) };
+  }
+}
+
+async function syncSeasonWindow(
+  deps: TablesDeps,
+  key: CompetitionKey,
+  start: string,
+  end: string,
+  now: () => Date,
+) {
+  const c = competitions.find((x) => x.key === key)!;
+  const scope = `${key}:${start}`;
+  const from = new Date(`${start}T00:00:00+02:00`);
+  const to = new Date(`${end}T23:59:59+02:00`);
+  try {
+    const known = await deps.store.knownTeams(c.name).catch(() => []);
+    const sources = await gatherSources(
+      deps,
+      key,
+      `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
+        `Prefer the official competition site and established sports news sites.`,
+      [`${c.name} results ${start} to ${end}`, `${c.name} scores ${start.slice(0, 7)}`],
+    );
+    if (sources.length === 0) throw new Error("no usable source");
+    const answer = await generate(
+      deps,
+      extractionRequest({
+        competition: c.name,
+        from: start,
+        to: end,
+        today: sastDate(now()),
+        sources,
+      }),
+    );
+    const raw = parseObservations(answer.text);
+    if (!raw) throw new Error("extraction answer was not valid JSON");
+    const { accepted } = validateObservations(raw, sources, { from, to, now: now() });
+    const { rows, unverified } = verifyHistory(accepted, key, known);
+    const inserted = rows.length
+      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
+      : 0;
+    await deps.store.record("season", scope, true, null, {
+      verified: rows.length,
+      inserted,
+      unverified,
+      model: answer.model,
+    });
+    return {
+      ok: true,
+      detail: `${inserted} new results (${rows.length} verified, ${unverified} unconfirmed)`,
+    };
+  } catch (e) {
+    await deps.store.record("season", scope, false, message(e), {}).catch(() => undefined);
     return { ok: false, detail: message(e) };
   }
 }

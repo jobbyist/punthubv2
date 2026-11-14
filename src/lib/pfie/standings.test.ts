@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { chooseTable, parseStandings, validateTables, type RawStandingRow } from "./standings";
-import { retryDue, standingsDue, type SyncStatusRow } from "./tables";
+import { retryDue, seasonWindows, standingsDue, type SyncStatusRow } from "./tables";
 import type { Observation, PfieSource } from "./types";
 
 const teams = ["Alpha FC", "Bravo United", "Charlie City", "Delta Rovers"];
@@ -186,5 +186,16 @@ describe("scheduling", () => {
     expect(standingsDue(fresh, undefined, now)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-13T15:00:00Z"), now)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-14T15:00:00Z"), now)).toBe(true);
+  });
+});
+
+describe("seasonWindows", () => {
+  it("covers last season and this season up to the form window, newest first, skipping the close season", () => {
+    const w = seasonWindows(new Date("2026-11-15T02:00:00Z"));
+    expect(w[0]!.end <= "2026-10-04").toBe(true);
+    expect(w.at(-1)!.start).toBe("2025-08-01");
+    expect(w.every((x) => x.start <= x.end)).toBe(true);
+    expect(w.some((x) => x.start.startsWith("2026-07") && x.end.slice(5, 7) === "07")).toBe(false);
+    expect(new Set(w.map((x) => x.start)).size).toBe(w.length);
   });
 });
