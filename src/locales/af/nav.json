@@ -94,7 +94,23 @@
       "foundingTitle": "Word 'n stigterslid 👀🇿🇦",
       "foundingMessage": "Eerste 100 plekke · Gratis om te bespreek",
       "claimSpot": "Eis plek op",
-      "community": "Gemeenskap"
+      "community": "Gemeenskap",
+      "platform": "Platform",
+      "flyout": {
+        "fixtures": "Wedstryde",
+        "results": "Uitslae",
+        "insights": "Insigte",
+        "leaderboards": "Ranglyste",
+        "discussions": "Sportgesprekke",
+        "duels": "Kop-aan-kop-duelle",
+        "newsroom": "Besoek die nuuskamer",
+        "tools": "Wedgereedskap",
+        "bookmakers": "Boekmakergids",
+        "puntpoints": "PuntPoints en belonings",
+        "credits": "Betaal-soos-jy-gaan-krediete",
+        "roadmap": "Produkpadkaart",
+        "feedback": "Deel terugvoer"
+      }
     }
   },
   "sport": {

@@ -84,13 +84,15 @@ export function SiteFooter() {
     return () => clearInterval(interval);
   }, []);
 
+  // Mirrors MobileNav: the dock shows for everyone except guests on /join and /admin; guests also get the founding row.
+  const dockVisible = isSignedIn || (path !== "/join" && !path.startsWith("/admin"));
   const guestBarVisible =
     !isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding";
 
   return (
     <footer
       className={`mt-10 bg-surface ${
-        isSignedIn ? "pb-28 lg:pb-0" : guestBarVisible ? "pb-32 md:pb-6" : "pb-6"
+        dockVisible ? (guestBarVisible ? "pb-40 lg:pb-6" : "pb-28 lg:pb-0") : "pb-6"
       }`}
     >
       <div className="px-4 pb-8 sm:px-6">

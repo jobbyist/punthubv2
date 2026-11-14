@@ -1,16 +1,18 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
+  Bug,
   CalendarDays,
-  Menu,
+  Coins,
+  Layers,
   Star,
+  Swords,
   Trophy,
   Users,
   X,
   Home,
   TrendingUp,
   HelpCircle,
-  DollarSign,
   Info,
   Building2,
   Radio,
@@ -18,14 +20,24 @@ import {
   Shield,
   Crown,
   MessageCircle,
+  MessageSquare,
   Share2,
   LogOut,
   ChevronRight,
   ChevronDown,
+  CheckCircle2,
   Map,
   Wrench,
 } from "lucide-react";
-import { useState, type ComponentType, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { Logo } from "@/components/brand";
@@ -34,15 +46,142 @@ import { useSession } from "@/components/session";
 import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SocialLinks } from "@/components/social-links";
-import { FoundingCounter } from "@/components/founding-counter";
 
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
-const bottomNavItems = [
-  { key: "predictions", to: "/predictions", icon: CalendarDays },
-  { key: "community", to: "/community", icon: Users },
-  { key: "puntPoints", to: "/rewards", icon: Star },
-] as const;
+type FlyoutGroupKey = "predictions" | "community" | "platform";
+
+type FlyoutItem = {
+  key: string;
+  to:
+    | "/fixtures"
+    | "/results"
+    | "/insights"
+    | "/leaderboards"
+    | "/community"
+    | "/duels"
+    | "/newsroom"
+    | "/tools"
+    | "/bookmakers"
+    | "/puntpoints"
+    | "/pricing"
+    | "/roadmap"
+    | "/feedback";
+  icon: ComponentType<{ className?: string }>;
+};
+
+/** Sub-menus of the three grouped tabs. `match` lists the path prefixes that light up the parent tab. */
+const flyoutGroups: Record<
+  FlyoutGroupKey,
+  { icon: ComponentType<{ className?: string }>; items: FlyoutItem[]; match: string[] }
+> = {
+  predictions: {
+    icon: TrendingUp,
+    items: [
+      { key: "fixtures", to: "/fixtures", icon: CalendarDays },
+      { key: "results", to: "/results", icon: CheckCircle2 },
+      { key: "insights", to: "/insights", icon: BarChart3 },
+    ],
+    match: ["/predictions", "/fixtures", "/results", "/insights", "/match"],
+  },
+  community: {
+    icon: Users,
+    items: [
+      { key: "leaderboards", to: "/leaderboards", icon: Trophy },
+      { key: "discussions", to: "/community", icon: MessageSquare },
+      { key: "duels", to: "/duels", icon: Swords },
+      { key: "newsroom", to: "/newsroom", icon: Radio },
+    ],
+    match: ["/leaderboards", "/leaderboard", "/community", "/duels", "/newsroom", "/u"],
+  },
+  platform: {
+    icon: Layers,
+    items: [
+      { key: "tools", to: "/tools", icon: Wrench },
+      { key: "bookmakers", to: "/bookmakers", icon: Building2 },
+      { key: "puntpoints", to: "/puntpoints", icon: Star },
+      { key: "credits", to: "/pricing", icon: Coins },
+      { key: "roadmap", to: "/roadmap", icon: Map },
+      { key: "feedback", to: "/feedback", icon: Bug },
+    ],
+    match: [
+      "/tools",
+      "/bookmakers",
+      "/puntpoints",
+      "/rewards",
+      "/wallet",
+      "/referrals",
+      "/pricing",
+      "/roadmap",
+      "/feedback",
+    ],
+  },
+};
+
+const FLYOUT_KEYS = Object.keys(flyoutGroups) as FlyoutGroupKey[];
+
+const pathMatches = (path: string, prefixes: string[]) =>
+  prefixes.some((p) => path === p || path.startsWith(`${p}/`));
+
+/** Scroll tuning: ignore movement under the threshold so finger rests and micro-scrolls never flip the dock. */
+const SCROLL_DELTA = 12;
+const SCROLL_TOP_ZONE = 20;
+
+/**
+ * True while the dock should be tucked away. Hides after a sustained downward scroll, returns on the first sustained
+ * upward scroll, and always shows near the top. `onScroll` fires for every accepted scroll tick (used to dismiss flyouts).
+ */
+function useDockHidden(onScroll: () => void) {
+  const [hidden, setHidden] = useState(false);
+  const onScrollRef = useRef(onScroll);
+  onScrollRef.current = onScroll;
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let anchorY = lastY;
+    let lastDir = 0;
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      // Clamp so iOS rubber-banding above 0 or below the end is not read as a direction change.
+      const y = Math.min(Math.max(window.scrollY, 0), maxY);
+
+      if (y < SCROLL_TOP_ZONE) {
+        setHidden(false);
+        anchorY = y;
+        lastY = y;
+        lastDir = 0;
+        return;
+      }
+      if (y === lastY) return;
+      // Re-anchor whenever direction flips so the threshold measures a sustained run in one direction.
+      const dir = Math.sign(y - lastY);
+      if (dir !== lastDir) {
+        anchorY = lastY;
+        lastDir = dir;
+      }
+      lastY = y;
+      const delta = y - anchorY;
+      if (Math.abs(delta) < SCROLL_DELTA) return;
+      onScrollRef.current();
+      setHidden(delta > 0);
+      anchorY = y;
+    };
+
+    const onScrollEvent = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScrollEvent, { passive: true });
+    return () => window.removeEventListener("scroll", onScrollEvent);
+  }, []);
+
+  return hidden;
+}
 
 const sports = [
   { key: "soccer", emoji: "⚽", active: true },
@@ -63,10 +202,78 @@ export function MobileNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [sportsOpen, setSportsOpen] = useState(true);
+  // `flyout` is the group whose sheet is open; `lastFlyout` keeps its content mounted while the sheet animates out.
+  const [flyout, setFlyout] = useState<FlyoutGroupKey | null>(null);
+  const [lastFlyout, setLastFlyout] = useState<FlyoutGroupKey>("predictions");
+  const triggerRefs = useRef<Partial<Record<FlyoutGroupKey, HTMLButtonElement | null>>>({});
+  const sheetRef = useRef<HTMLDivElement | null>(null);
 
   setMenuOpenExternal = setIsMenuOpen;
 
   const close = () => setIsMenuOpen(false);
+
+  const flyoutRef = useRef<FlyoutGroupKey | null>(null);
+  flyoutRef.current = flyout;
+
+  const closeFlyout = useCallback((restoreFocus = false) => {
+    const current = flyoutRef.current;
+    if (current && restoreFocus) triggerRefs.current[current]?.focus();
+    setFlyout(null);
+  }, []);
+
+  const dockHidden = useDockHidden(() => closeFlyout());
+
+  // Close any flyout on navigation, and on Escape.
+  useEffect(() => {
+    closeFlyout();
+  }, [path, closeFlyout]);
+  useEffect(() => {
+    if (!flyout) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") closeFlyout(true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [flyout, closeFlyout]);
+
+  // Move focus into the sheet when it opens so keyboard and screen-reader users land on the first option.
+  useEffect(() => {
+    if (!flyout) return;
+    sheetRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+  }, [flyout]);
+
+  const toggleFlyout = (key: FlyoutGroupKey) => {
+    if (flyout === key) {
+      closeFlyout(true);
+      return;
+    }
+    setLastFlyout(key);
+    setFlyout(key);
+  };
+
+  const onSheetKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[(index + 1) % items.length]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      items[(index - 1 + items.length) % items.length]?.focus();
+    }
+  };
+
+  const guestStripVisible =
+    !sessionLoading &&
+    !isSignedIn &&
+    !path.startsWith("/admin") &&
+    path !== "/join" &&
+    path !== "/founding";
+  // Guests on the sign-up and admin screens get no dock, so nothing competes with the form.
+  const dockVisible = isSignedIn || (path !== "/join" && !path.startsWith("/admin"));
+  const hideDock = dockHidden && !flyout;
+  const activeGroup = FLYOUT_KEYS.find((k) => pathMatches(path, flyoutGroups[k].match)) ?? null;
+  const sheetGroup = flyoutGroups[lastFlyout];
 
   const NavLink = ({
     to,
@@ -323,94 +530,155 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Member dock: four destinations, with a compact pill marking the active section. */}
-      {isSignedIn && (
-        <nav
-          aria-label={t("mobile.primary")}
-          className="fixed inset-x-3 z-40 overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl lg:hidden"
-          style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
-        >
-          <ul className="grid grid-cols-4">
-            {bottomNavItems.map(({ key, to, icon: Icon }) => {
-              const active =
-                path === to ||
-                (to === "/predictions" &&
-                  (path.startsWith("/match/") || path.startsWith("/predictions/")));
-              return (
-                <li key={key}>
-                  <Link
-                    to={to}
-                    aria-current={active ? "page" : undefined}
-                    className={`relative flex min-h-[58px] flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
-                      active ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    <Icon className="size-[19px]" />
-                    <span>{t(`mobile.dock.${key}`)}</span>
-                    <span
-                      aria-hidden="true"
-                      className={`absolute bottom-1 h-1 w-5 rounded-full transition-all ${
-                        active ? "bg-primary opacity-100" : "bg-transparent opacity-0"
-                      }`}
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-            <li>
-              <button
-                type="button"
-                aria-expanded={isMenuOpen}
-                onClick={() => setIsMenuOpen(true)}
-                className={`relative flex min-h-[58px] w-full flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
-                  isMenuOpen ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Menu className="size-[19px]" />
-                <span>{t("mobile.more")}</span>
-                <span
-                  aria-hidden="true"
-                  className={`absolute bottom-1 h-1 w-5 rounded-full ${
-                    isMenuOpen ? "bg-primary" : "bg-transparent"
-                  }`}
-                />
-              </button>
-            </li>
-          </ul>
-        </nav>
+      {/* Backdrop behind an open flyout: dims and blurs the page, and a tap anywhere on it dismisses the sheet. */}
+      {dockVisible && (
+        <div
+          aria-hidden="true"
+          onClick={() => closeFlyout(true)}
+          className={`fixed inset-0 z-30 bg-black/40 backdrop-blur-sm transition-[opacity,visibility] duration-200 motion-reduce:transition-none lg:hidden ${
+            flyout ? "visible opacity-100" : "invisible pointer-events-none opacity-0"
+          }`}
+        />
       )}
 
-      {/* Guests receive a conversion action instead of a persistent navigation dock. */}
-      {!sessionLoading &&
-        !isSignedIn &&
-        !path.startsWith("/admin") &&
-        path !== "/join" &&
-        path !== "/founding" && (
+      {/*
+        Floating dock. Slides off-screen on a sustained scroll down and returns on scroll up (see useDockHidden).
+        Guests get the same dock with a compact Founding Member conversion row on top, so the offer stays in view
+        without taking over navigation. The flyout sheet is anchored to the top of this container, so it always
+        sits directly above the thumb zone, whatever sits in the dock.
+      */}
+      {dockVisible && (
+        <div
+          inert={hideDock}
+          className={`fixed inset-x-3 z-40 transition-transform duration-[250ms] ease-in-out motion-reduce:transition-none lg:hidden ${
+            hideDock ? "translate-y-[150%]" : "translate-y-0"
+          }`}
+          style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          {/* Flyout bottom sheet */}
           <div
-            className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-2.5 shadow-lg backdrop-blur-xl md:hidden"
-            style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+            ref={sheetRef}
+            id="mobile-dock-flyout"
+            role="menu"
+            aria-label={t(`mobile.dock.${lastFlyout}`)}
+            onKeyDown={onSheetKeyDown}
+            className={`absolute inset-x-0 bottom-full mb-2 origin-bottom overflow-hidden rounded-2xl border border-border bg-background shadow-xl shadow-black/15 transition-[opacity,transform,visibility] duration-200 ease-out motion-reduce:transition-none ${
+              flyout
+                ? "visible translate-y-0 scale-100 opacity-100"
+                : "invisible pointer-events-none translate-y-3 scale-[0.98] opacity-0"
+            }`}
           >
-            <div className="mx-auto flex max-w-lg items-center gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-extrabold leading-tight text-foreground">
-                  {t("mobile.dock.foundingTitle")}
-                </p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
-                  {t("mobile.dock.foundingMessage")}
-                </p>
-                <FoundingCounter tracker className="mt-2" />
-              </div>
-              <Link
-                to="/join"
-                className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-md bg-primary px-3.5 text-xs font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
-                onClick={() => close()}
-              >
-                {t("mobile.dock.claimSpot")}
-              </Link>
-            </div>
+            <p className="px-4 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+              {t(`mobile.dock.${lastFlyout}`)}
+            </p>
+            <ul className="max-h-[60vh] overflow-y-auto overscroll-contain px-2 pb-2">
+              {sheetGroup.items.map(({ key, to, icon: Icon }) => {
+                const active = path === to || path.startsWith(`${to}/`);
+                return (
+                  <li key={key} role="none">
+                    <Link
+                      to={to}
+                      role="menuitem"
+                      tabIndex={flyout ? 0 : -1}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => closeFlyout()}
+                      className={`flex min-h-12 items-center gap-3 rounded-xl border border-transparent px-3 text-[15px] font-medium transition-colors focus-visible:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                        active
+                          ? "bg-primary-soft text-primary"
+                          : "text-foreground hover:bg-muted active:bg-muted"
+                      }`}
+                    >
+                      <Icon
+                        className={`size-5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`}
+                      />
+                      <span className="flex-1 truncate">{t(`mobile.dock.flyout.${key}`)}</span>
+                      <ChevronRight className="size-4 text-muted-foreground" />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        )}
+
+          <div className="overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl">
+            {guestStripVisible && (
+              <div className="flex items-center gap-3 border-b border-border bg-primary-soft px-3 py-2">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-extrabold leading-tight text-foreground">
+                    {t("mobile.dock.foundingTitle")}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] leading-tight text-muted-foreground">
+                    {t("mobile.dock.foundingMessage")}
+                  </p>
+                </div>
+                <Link
+                  to="/join"
+                  className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-md bg-primary px-3.5 text-xs font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
+                >
+                  {t("mobile.dock.claimSpot")}
+                </Link>
+              </div>
+            )}
+            <nav aria-label={t("mobile.primary")}>
+              <ul className="grid grid-cols-4">
+                <li>
+                  <Link
+                    to="/"
+                    aria-current={path === "/" ? "page" : undefined}
+                    onClick={() => closeFlyout()}
+                    className={`relative flex min-h-[58px] flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary ${
+                      path === "/" && !flyout ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    <Home className="size-[19px]" />
+                    <span>{t("mobile.home")}</span>
+                    <DockPill on={path === "/" && !flyout} />
+                  </Link>
+                </li>
+                {FLYOUT_KEYS.map((key) => {
+                  const Icon = flyoutGroups[key].icon;
+                  const open = flyout === key;
+                  const on = open || (!flyout && activeGroup === key);
+                  return (
+                    <li key={key}>
+                      <button
+                        type="button"
+                        ref={(el) => {
+                          triggerRefs.current[key] = el;
+                        }}
+                        aria-haspopup="menu"
+                        aria-expanded={open}
+                        aria-controls="mobile-dock-flyout"
+                        aria-current={!flyout && activeGroup === key ? "page" : undefined}
+                        onClick={() => toggleFlyout(key)}
+                        className={`relative flex min-h-[58px] w-full flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary ${
+                          on ? "text-primary" : "text-muted-foreground"
+                        }`}
+                      >
+                        <Icon className="size-[19px]" />
+                        <span>{t(`mobile.dock.${key}`)}</span>
+                        <DockPill on={on} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      )}
     </>
+  );
+}
+
+function DockPill({ on }: { on: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute bottom-1 h-1 w-5 rounded-full transition-all ${
+        on ? "bg-primary opacity-100" : "bg-transparent opacity-0"
+      }`}
+    />
   );
 }
 

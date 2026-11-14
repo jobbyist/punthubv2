@@ -94,7 +94,23 @@
       "foundingTitle": "Become a Founding Member 👀🇿🇦",
       "foundingMessage": "First 100 spots · Free to reserve",
       "claimSpot": "Claim Spot",
-      "community": "Community"
+      "community": "Community",
+      "platform": "Platform",
+      "flyout": {
+        "fixtures": "Fixtures",
+        "results": "Results",
+        "insights": "Insights",
+        "leaderboards": "Leaderboards",
+        "discussions": "Sports discussions",
+        "duels": "Head-to-head duels",
+        "newsroom": "Visit the Newsroom",
+        "tools": "Betting toolkit",
+        "bookmakers": "Bookmaker directory",
+        "puntpoints": "PuntPoints & rewards",
+        "credits": "Pay-as-you-go credits",
+        "roadmap": "Product roadmap",
+        "feedback": "Share feedback"
+      }
     }
   },
   "sport": {
