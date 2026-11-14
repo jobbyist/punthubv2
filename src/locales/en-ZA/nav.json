@@ -123,7 +123,8 @@
     "navigation": "Desktop side navigation",
     "liveNow": "Live now",
     "duels": "Duels",
-    "standings": "Tables"
+    "standings": "Tables",
+    "slips": "Slips"
   },
   "footer": {
     "platform": "Platform",

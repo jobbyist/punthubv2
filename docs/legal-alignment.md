@@ -10,6 +10,7 @@ legal pages in the same PR. The owner and counsel approve afterwards, so each ch
 |---|---|---|---|---|
 | New sign-in method, provider or password rule | §3 | §3 How you sign in, §6 processors, data table | Essential list if storage changes | `docs/auth-email.md` |
 | Two-factor, email confirmation | §3 | §3, data table (security) | | |
+| Betting slips (upload, OCR, AI reading, slip images) | §6 Betting slips | Data table "Betting slips", §6 processors (Gemini fallback) | | `docs/BETTING_SLIPS.md` |
 | New data field on a profile or table | | Data table in §2 | | `docs/privacy/README.md` data map |
 | New processor or third-party service | | §6 processors | Cookies if it sets any | |
 | New cookie, localStorage or sessionStorage key | | §10 | Essential or optional list | `docs/legal-alignment.md` storage list |

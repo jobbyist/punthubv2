@@ -67,6 +67,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you clear them or delete your account. Used only to order your own Matchday card and shortcuts; never shown to others or shared [attorney review]",
   ],
   [
+    "Betting slips (optional)",
+    "Slips you add: matches, markets, odds, and if you enter them the bookmaker, stake and potential return; an optional photo or screenshot of the slip. The bookmaker is shown only to you; your stake and return are shown on a published slip only if you switch that on. Published legs become normal picks shown with your username",
+    "Your consent (you choose to add a slip) and contract (publishing picks you ask us to publish)",
+    "Slip photos: deleted 30 days after upload, or when you delete the slip or your account. Slip details: while your account is open; on deletion drafts are deleted and the bookmaker, stake, return and note are cleared, while picks already published stay with the anonymous account like every other pick. A count of AI-assisted reads (no slip text) is kept for 24-hour limits and deleted with your account [attorney review]",
+  ],
+  [
     "Community Duels (from launch)",
     "Your duel challenges, calls, stakes, results and votes. Your calls are shown publicly with your username from kick-off; votes are only counted, never shown by name",
     "Contract (providing the duel feature you choose to use)",
@@ -171,7 +177,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r17). Draft pending
+          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r18). Draft pending
           attorney review.
         </p>
 
@@ -300,11 +306,17 @@ function Privacy() {
             us: vouchers come from bulk codes the sponsor supplies, and a sponsor&apos;s own site
             collects data when you use a code. Sending data outside South Africa is allowed under
             POPIA section 72 where the receiving country or contract gives comparable protection. We
-            never send personal data to AI services. To write newsroom articles and to read football
-            fixtures and results from public web pages we use Parallel (web search), Firecrawl (page
-            reading) and Google Gemini (summarising those pages): they receive only public web pages
-            and Puntr&apos;s own approved project updates, never information about you. We do not
-            sell your data.
+            never send personal data to AI services. When you upload a slip photo, its text is read
+            on your own device (the photo is never sent to an AI service). Before slip text is used,
+            we remove the personal details we can detect (email addresses, phone numbers, long
+            account, ID or card numbers, and lines labelled with a name, username, balance, account
+            or ID); if our own reader cannot find the bet, that cleaned text alone may be sent to
+            Google Gemini to read the matches, markets and odds. Please cover your account name and
+            balance before uploading. [attorney review] To write newsroom articles and to read
+            football fixtures and results from public web pages we use Parallel (web search),
+            Firecrawl (page reading) and Google Gemini (summarising those pages): they receive only
+            public web pages and Puntr&apos;s own approved project updates, never information about
+            you. We do not sell your data.
           </p>
         </section>
 

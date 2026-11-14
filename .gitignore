@@ -30,3 +30,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# On-device OCR assets, copied from node_modules at build time
+public/ocr/

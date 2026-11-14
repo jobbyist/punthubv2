@@ -3,6 +3,36 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Betting slips (PR: feat/bet-slips), Terms and Privacy r18
+
+- **Product:** members can add a bookmaker slip by typing it, pasting its text or uploading a photo, review and edit
+  every field, save it as a private draft, then publish. Each leg on a Puntr fixture with a supported market (match
+  result, double chance, BTTS, over/under 2.5) becomes a normal pick through `create_prediction` (launch gate, 18+,
+  limits and grading unchanged); other legs are "tracked only". Published slips are frozen. Up to 20 published slips
+  a day. Tables `bet_slips`, `bet_slip_legs`, `slip_parses`; private storage bucket `slips` (migration
+  `20261114150000_bet_slips.sql`).
+- **Privacy design:** photos are re-encoded in the browser (drops EXIF/location) and read on the device with
+  self-hosted tesseract.js; no image goes to an AI service. Slip text is scrubbed of detectable personal details in
+  the browser and again on the server (emails, SA phone numbers, 8+ digit runs, lines labelled name, username,
+  balance, account, ID, mobile and similar). Only if the deterministic parser finds no legs is the scrubbed text sent
+  to Google Gemini (Flash-Lite first, through the existing quota guards; at most 20 AI-assisted reads per member per
+  day). Photos are private to the owner and deleted after 30 days by the daily `slip-images` job. The bookmaker is
+  visible only to the owner; stake and return are hidden on published slips unless the member opts in.
+- **Pages:** `/privacy` data table ("Betting slips (optional)") and §6 processors paragraph (on-device reading,
+  scrubbing, Gemini fallback); `/terms` §6 new Betting slips paragraph; both version 2026-11-14-r18 (English and
+  Afrikaans in `src/content/legal/af/`). `notice_versions` r18 in `20261114150100_notices_r18.sql`, applied after
+  the copy is deployed. `/cookies`, `/refunds`, `/affiliate-disclosure` unchanged (no new cookies, payments, partner
+  links or partner content).
+- **Review [attorney review]:**
+  1. Whether sending scrubbed slip text to Gemini fits the "never send personal data to AI services" commitment.
+     Scrubbing is pattern-based, so an unlabelled name on a slip could get through; the copy says "personal details
+     we can detect" and asks members to cover their name and balance.
+  2. Showing bookmaker names: shown only to the slip owner, never as a link or promotion, never on public slips. Is
+     that consistent with the affiliate rules (only `live` partners may be promoted) and the Hollywoodbets terms?
+  3. Stake and return amounts on public slips when the member opts in: is publishing a member's own stake a
+     gambling advertisement or inducement concern?
+  4. Retention: slip photos 30 days; published picks stay with the anonymous account after deletion.
+
 ## 2026-11-14 (15:00 SAST), Duel stakes switched on
 
 - **Owner decision:** counsel has reviewed and approved PuntPoints stakes on Community Duels. `duels_stakes_enabled`
