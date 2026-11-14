@@ -8,6 +8,7 @@ import { CrowdSplit } from "@/components/crowd-split";
 import { AppShell } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
 import { PickForm } from "@/components/pick-form";
+import { MatchDuels } from "@/components/duels/match-duels";
 import { AnalyticsDrawer } from "@/components/match/analytics-drawer";
 import { CompetitionBadge } from "@/components/match/competition-badge";
 import { FormGuide } from "@/components/match/form-guide";
@@ -215,6 +216,13 @@ function Match() {
       />
 
       <div className="mt-8 space-y-8">
+        <MatchDuels
+          fixture={fixture}
+          open={
+            fixture.status === "scheduled" &&
+            Date.parse(fixture.kickoff_at) > Date.now() + 5 * 60_000
+          }
+        />
         <PickForm fixture={fixture} onPosted={() => void load()} />
 
         {picks && <CrowdSplit picks={picks} teams={teams} />}

@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "title": "Community Duels: head-to-head calls | Puntr",
+    "description": "Challenge another tipster on an upcoming match. Calls lock at kick-off, the community votes, and Puntr settles it at full time.",
+    "roomTitle": "@{{a}} vs @{{b}}: {{home}} vs {{away}} duel | Puntr"
+  },
+  "title": "Community Duels",
+  "subtitle": "Challenge a tipster on an upcoming match. Calls stay hidden until kick-off, the community votes, and Puntr settles it at full time.",
+  "feature": "Community Duels",
+  "how": {
+    "title": "How duels work",
+    "s1": "Pick a match and make 2 or 3 calls: Match result, Both teams to score, Over/Under 2.5.",
+    "s2": "Challenge a member by username or post an open challenge. Add a friendly PuntPoints stake when staking is on.",
+    "s3": "Calls stay hidden until kick-off, then show side by side. The community votes on who called it better.",
+    "s4": "At full time the member with more correct calls takes the pot and duel XP (win 3, draw 1). Ties and void matches return the stakes."
+  },
+  "tabs": {
+    "label": "Duels",
+    "open": "Open challenges",
+    "live": "Live",
+    "settled": "Settled",
+    "mine": "My duels"
+  },
+  "empty": {
+    "open": "No open challenges right now. Start one from any match.",
+    "live": "No duels in play.",
+    "settled": "No settled duels yet.",
+    "mine": "You have no duels yet."
+  },
+  "board": {
+    "title": "H2H Duel Leaderboard",
+    "week": "7 days",
+    "all": "All time",
+    "rank": "Rank",
+    "member": "Member",
+    "played": "P",
+    "wins": "W",
+    "draws": "D",
+    "losses": "L",
+    "xp": "XP",
+    "empty": "The leaderboard fills as duels settle.",
+    "note": "Ranked by duel XP (3 a win, 1 a draw), then wins. PuntPoints never affect the ranking."
+  },
+  "status": {
+    "pending": "Waiting for opponent",
+    "open": "Open challenge",
+    "active": "Locked in",
+    "settled": "Settled",
+    "void": "Void",
+    "declined": "Declined",
+    "cancelled": "Cancelled",
+    "expired": "Expired"
+  },
+  "stake": {
+    "friendly": "Friendly",
+    "points": "{{points}} PuntPoints",
+    "pot": "Pot {{points}}"
+  },
+  "vs": "vs",
+  "open": "Open",
+  "you": "You",
+  "markets": {
+    "1X2": "Match result",
+    "BTTS": "Both teams to score",
+    "OU25": "Total goals"
+  },
+  "sel": {
+    "draw": "Draw",
+    "yes": "Yes",
+    "no": "No",
+    "over": "Over 2.5",
+    "under": "Under 2.5"
+  },
+  "challenge": {
+    "button": "Challenge a tipster",
+    "title": "Start a duel",
+    "fixture": "Match",
+    "chooseFixture": "Choose a match",
+    "opponent": "Opponent",
+    "opponentHint": "Leave empty to post an open challenge anyone can accept.",
+    "opponentPlaceholder": "username",
+    "calls": "Your calls (choose 2 or 3)",
+    "stake": "PuntPoints stake",
+    "stakeHint": "{{min}} to {{max}} points. You can stake {{available}} now.",
+    "stakeOff": "Friendly duel. PuntPoints stakes open when staking is switched on.",
+    "message": "Message (optional)",
+    "messagePlaceholder": "Bring it on",
+    "submit": "Send challenge",
+    "sending": "Sending…",
+    "hidden": "Your calls stay hidden until kick-off."
+  },
+  "accept": {
+    "title": "Accept this duel",
+    "body": "Make your calls on the same markets. They stay hidden until kick-off.",
+    "submit": "Accept duel",
+    "stake": "Accepting puts {{points}} PuntPoints in the pot."
+  },
+  "room": {
+    "back": "All duels",
+    "hiddenUntil": "Hidden until kick-off",
+    "yourCalls": "Your calls",
+    "waiting": "Waiting for an opponent",
+    "correct": "{{count}} correct",
+    "winner": "@{{name}} wins",
+    "draw": "Drawn: stakes returned",
+    "void": "Match not played: stakes returned",
+    "withdraw": "Cancel challenge",
+    "decline": "Decline",
+    "message": "Message",
+    "share": "Share duel",
+    "copied": "Link copied",
+    "kickoff": "Kick-off"
+  },
+  "poll": {
+    "title": "Who called it better?",
+    "vote": "Vote @{{name}}",
+    "votes": "{{count}} votes",
+    "closed": "Voting closed",
+    "opens": "Voting opens at kick-off",
+    "signin": "Sign in to vote",
+    "yourVote": "Your vote"
+  },
+  "match": {
+    "title": "Duels on this match",
+    "none": "No duels on this match yet."
+  },
+  "errors": {
+    "generic": "That did not work. Try again.",
+    "not_authenticated": "Sign in to duel.",
+    "not_launched": "Duels open on 1 December 2026.",
+    "duels_paused": "Duels are paused for now.",
+    "stakes_paused": "PuntPoints stakes are not switched on yet. Make it a friendly duel.",
+    "invalid_picks": "Choose 2 or 3 different markets, each with a call.",
+    "invalid_amount": "That stake is outside the allowed range.",
+    "account_too_new": "Your account must be at least 14 days old to stake PuntPoints.",
+    "daily_cap": "That would go over today's stake limit.",
+    "insufficient_transferable": "Not enough PuntPoints available to stake (recent and invite points cannot be staked).",
+    "fixture_closed": "This match is too close to kick-off or no longer open.",
+    "recipient_not_found": "No member with that username.",
+    "recipient_unavailable": "That member cannot duel right now.",
+    "self_duel": "You cannot duel yourself.",
+    "pair_limit": "You have reached this week's duel limit with that member.",
+    "open_limit": "You already have the maximum number of open challenges.",
+    "duplicate_duel": "You already have this challenge on this match.",
+    "duel_unavailable": "This duel is no longer available.",
+    "voting_closed": "Voting has closed for this duel.",
+    "voting_not_open": "Voting opens at kick-off.",
+    "participant_vote": "Players cannot vote in their own duel.",
+    "note_too_long": "Keep the message under 140 characters.",
+    "banned": "Your account cannot do this.",
+    "suspended": "Your account is suspended.",
+    "limited": "Your account is limited right now.",
+    "age_not_attested": "Confirm you are 18+ in your account first."
+  }
+}

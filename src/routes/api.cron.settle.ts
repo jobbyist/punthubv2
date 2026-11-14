@@ -14,7 +14,15 @@ export const Route = createFileRoute("/api/cron/settle")({
         try {
           const report = await runSettlement(createSettlementStore());
           console.info("settle", JSON.stringify(report));
-          return Response.json(report);
+          // Duels settle on the same schedule, after picks, from the same final scores.
+          const { runDuelSettlement } = await import("@/lib/duels");
+          const { createDuelSettleStore } = await import("@/lib/duels-store.server");
+          const duels = await runDuelSettlement(createDuelSettleStore()).catch((error: unknown) => {
+            console.error("duel settle failed", error);
+            return { error: "duel_settle_failed" };
+          });
+          console.info("settle-duels", JSON.stringify(duels));
+          return Response.json({ ...report, duels });
         } catch (error) {
           console.error("settle failed", error);
           return Response.json({ ok: false, error: "settle_failed" }, { status: 500 });

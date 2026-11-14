@@ -3980,6 +3980,56 @@ export type Database = {
       }
     }
     Functions: {
+      accept_duel: { Args: { p_duel: string; p_picks: Json }; Returns: Json }
+      create_duel: {
+        Args: {
+          p_fixture: string
+          p_message?: string
+          p_opponent: string | null
+          p_picks: Json
+          p_stake: number
+        }
+        Returns: string
+      }
+      duel_config: { Args: never; Returns: Json }
+      duel_detail: { Args: { p_duel: string }; Returns: Json }
+      duel_leaderboard: {
+        Args: { p_days?: number | null; p_limit?: number }
+        Returns: {
+          draws: number
+          founding_number: number | null
+          losses: number
+          played: number
+          points_won: number
+          username: string
+          wins: number
+          xp: number
+        }[]
+      }
+      duel_vote_totals: { Args: { p_duel: string }; Returns: Json }
+      duels_feed: {
+        Args: { p_fixture?: string | null; p_limit?: number; p_scope: string }
+        Returns: Json
+      }
+      duels_to_settle: {
+        Args: never
+        Returns: {
+          away_score: number | null
+          duel_id: string
+          fixture_status: string
+          home_score: number | null
+          market: string
+          selection: string
+          user_id: string
+        }[]
+      }
+      expire_duels: { Args: never; Returns: number }
+      settle_duel: {
+        Args: { p_duel: string; p_results: Json; p_void: boolean }
+        Returns: string
+      }
+      vote_duel: { Args: { p_duel: string; p_side: string }; Returns: Json }
+      withdraw_duel: { Args: { p_duel: string }; Returns: string }
       acknowledge_warnings: { Args: never; Returns: number }
       admin_adjust_points: {
         Args: { p_points: number; p_reason: string; p_user: string }

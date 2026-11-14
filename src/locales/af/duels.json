@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "title": "Gemeenskapsduelle: kop-teen-kop-voorspellings | Puntr",
+    "description": "Daag 'n ander voorspeller uit op 'n komende wedstryd. Voorspellings sluit by afskop, die gemeenskap stem, en Puntr handel dit by voltyd af.",
+    "roomTitle": "@{{a}} teen @{{b}}: {{home}} teen {{away}}-duel | Puntr"
+  },
+  "title": "Gemeenskapsduelle",
+  "subtitle": "Daag 'n voorspeller uit op 'n komende wedstryd. Voorspellings bly versteek tot afskop, die gemeenskap stem, en Puntr handel dit by voltyd af.",
+  "feature": "Gemeenskapsduelle",
+  "how": {
+    "title": "Hoe duelle werk",
+    "s1": "Kies 'n wedstryd en maak 2 of 3 voorspellings: Wedstrydresultaat, Albei spanne druk, Meer/Minder as 2.5.",
+    "s2": "Daag 'n lid uit met sy gebruikersnaam of plaas 'n oop uitdaging. Voeg 'n vriendskaplike PuntPoints-inset by wanneer insette aan is.",
+    "s3": "Voorspellings bly versteek tot afskop en wys dan langs mekaar. Die gemeenskap stem oor wie dit beter voorspel het.",
+    "s4": "By voltyd neem die lid met die meeste korrekte voorspellings die pot en duel-XP (wen 3, gelykop 1). Gelykop en nietige wedstryde gee die insette terug."
+  },
+  "tabs": {
+    "label": "Duelle",
+    "open": "Oop uitdagings",
+    "live": "Lewendig",
+    "settled": "Afgehandel",
+    "mine": "My duelle"
+  },
+  "empty": {
+    "open": "Geen oop uitdagings nou nie. Begin een vanaf enige wedstryd.",
+    "live": "Geen duelle aan die gang nie.",
+    "settled": "Nog geen afgehandelde duelle nie.",
+    "mine": "Jy het nog geen duelle nie."
+  },
+  "board": {
+    "title": "Kop-teen-kop-duelranglys",
+    "week": "7 dae",
+    "all": "Nog altyd",
+    "rank": "Plek",
+    "member": "Lid",
+    "played": "G",
+    "wins": "W",
+    "draws": "GL",
+    "losses": "V",
+    "xp": "XP",
+    "empty": "Die ranglys vul soos duelle afgehandel word.",
+    "note": "Gerangskik volgens duel-XP (3 vir 'n oorwinning, 1 vir gelykop), dan oorwinnings. PuntPoints raak nooit die rangorde nie."
+  },
+  "status": {
+    "pending": "Wag vir teenstander",
+    "open": "Oop uitdaging",
+    "active": "Vasgelê",
+    "settled": "Afgehandel",
+    "void": "Nietig",
+    "declined": "Van die hand gewys",
+    "cancelled": "Gekanselleer",
+    "expired": "Verval"
+  },
+  "stake": {
+    "friendly": "Vriendskaplik",
+    "points": "{{points}} PuntPoints",
+    "pot": "Pot {{points}}"
+  },
+  "vs": "teen",
+  "open": "Oop",
+  "you": "Jy",
+  "markets": {
+    "1X2": "Wedstrydresultaat",
+    "BTTS": "Albei spanne druk",
+    "OU25": "Totale doele"
+  },
+  "sel": {
+    "draw": "Gelykop",
+    "yes": "Ja",
+    "no": "Nee",
+    "over": "Meer as 2.5",
+    "under": "Minder as 2.5"
+  },
+  "challenge": {
+    "button": "Daag 'n voorspeller uit",
+    "title": "Begin 'n duel",
+    "fixture": "Wedstryd",
+    "chooseFixture": "Kies 'n wedstryd",
+    "opponent": "Teenstander",
+    "opponentHint": "Laat leeg om 'n oop uitdaging te plaas wat enigiemand kan aanvaar.",
+    "opponentPlaceholder": "gebruikersnaam",
+    "calls": "Jou voorspellings (kies 2 of 3)",
+    "stake": "PuntPoints-inset",
+    "stakeHint": "{{min}} tot {{max}} punte. Jy kan nou {{available}} insit.",
+    "stakeOff": "Vriendskaplike duel. PuntPoints-insette open wanneer insette aangeskakel word.",
+    "message": "Boodskap (opsioneel)",
+    "messagePlaceholder": "Kom kry dit",
+    "submit": "Stuur uitdaging",
+    "sending": "Stuur…",
+    "hidden": "Jou voorspellings bly versteek tot afskop."
+  },
+  "accept": {
+    "title": "Aanvaar hierdie duel",
+    "body": "Maak jou voorspellings op dieselfde markte. Dit bly versteek tot afskop.",
+    "submit": "Aanvaar duel",
+    "stake": "As jy aanvaar, gaan {{points}} PuntPoints in die pot."
+  },
+  "room": {
+    "back": "Alle duelle",
+    "hiddenUntil": "Versteek tot afskop",
+    "yourCalls": "Jou voorspellings",
+    "waiting": "Wag vir 'n teenstander",
+    "correct": "{{count}} korrek",
+    "winner": "@{{name}} wen",
+    "draw": "Gelykop: insette terugbetaal",
+    "void": "Wedstryd nie gespeel nie: insette terugbetaal",
+    "withdraw": "Kanselleer uitdaging",
+    "decline": "Wys van die hand",
+    "message": "Boodskap",
+    "share": "Deel duel",
+    "copied": "Skakel gekopieer",
+    "kickoff": "Afskop"
+  },
+  "poll": {
+    "title": "Wie het dit beter voorspel?",
+    "vote": "Stem @{{name}}",
+    "votes": "{{count}} stemme",
+    "closed": "Stemming gesluit",
+    "opens": "Stemming open by afskop",
+    "signin": "Teken in om te stem",
+    "yourVote": "Jou stem"
+  },
+  "match": {
+    "title": "Duelle op hierdie wedstryd",
+    "none": "Nog geen duelle op hierdie wedstryd nie."
+  },
+  "errors": {
+    "generic": "Dit het nie gewerk nie. Probeer weer.",
+    "not_authenticated": "Teken in om te duelleer.",
+    "not_launched": "Duelle open op 1 Desember 2026.",
+    "duels_paused": "Duelle is tans onderbreek.",
+    "stakes_paused": "PuntPoints-insette is nog nie aangeskakel nie. Maak dit 'n vriendskaplike duel.",
+    "invalid_picks": "Kies 2 of 3 verskillende markte, elk met 'n voorspelling.",
+    "invalid_amount": "Daardie inset is buite die toegelate perke.",
+    "account_too_new": "Jou rekening moet minstens 14 dae oud wees om PuntPoints in te sit.",
+    "daily_cap": "Dit sal vandag se insetperk oorskry.",
+    "insufficient_transferable": "Nie genoeg PuntPoints beskikbaar om in te sit nie (onlangse punte en uitnodigingspunte kan nie ingesit word nie).",
+    "fixture_closed": "Hierdie wedstryd is te naby aan afskop of nie meer oop nie.",
+    "recipient_not_found": "Geen lid met daardie gebruikersnaam nie.",
+    "recipient_unavailable": "Daardie lid kan nie nou duelleer nie.",
+    "self_duel": "Jy kan nie teen jouself duelleer nie.",
+    "pair_limit": "Jy het hierdie week se duelperk met daardie lid bereik.",
+    "open_limit": "Jy het reeds die maksimum aantal oop uitdagings.",
+    "duplicate_duel": "Jy het reeds hierdie uitdaging op hierdie wedstryd.",
+    "duel_unavailable": "Hierdie duel is nie meer beskikbaar nie.",
+    "voting_closed": "Stemming vir hierdie duel is gesluit.",
+    "voting_not_open": "Stemming open by afskop.",
+    "participant_vote": "Spelers kan nie in hul eie duel stem nie.",
+    "note_too_long": "Hou die boodskap onder 140 karakters.",
+    "banned": "Jou rekening kan dit nie doen nie.",
+    "suspended": "Jou rekening is opgeskort.",
+    "limited": "Jou rekening is tans beperk.",
+    "age_not_attested": "Bevestig eers in jou rekening dat jy 18+ is."
+  }
+}

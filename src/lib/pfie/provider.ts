@@ -318,7 +318,6 @@ const TRUSTED = [
   "laliga.com",
   "legaseriea.it",
   "bundesliga.com",
-  "uefa.com",
   "ligue1.com",
   "efl.com",
   "thefa.com",

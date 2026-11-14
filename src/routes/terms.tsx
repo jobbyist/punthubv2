@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 13 November 2026 (version 2026-11-13-r15). Draft pending
+            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r16). Draft pending
             attorney review.
           </p>
 
@@ -177,6 +177,20 @@ function Terms() {
               are separate from your PuntPoints and cannot be converted, redeemed for anything real
               or exchanged for money. Practice picks never count towards your public record.
               [attorney review]
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              Community Duels (from launch): you can challenge another member, or post an open
+              challenge, on an upcoming football match with two or three calls (Match result, Both
+              teams to score, Over/Under 2.5). Calls stay hidden until kick-off and are then shown
+              to everyone with your username. A duel is friendly or, when staking is switched on,
+              carries a PuntPoints stake within the limits shown when you create it (currently 10 to
+              100 points a duel and 200 a day, from an account at least 14 days old; points from
+              invites and points earned in the last 7 days cannot be staked). Stakes are held until
+              the match is settled: the member with more correct calls receives both stakes; a tie,
+              a match that is not played or a challenge nobody accepts before kick-off returns them.
+              Duel XP (3 for a win, 1 for a draw) only ranks the Duel leaderboard. Duels never pay
+              money and PuntPoints keep no cash value. We may void duels and reverse points where
+              members collude or use more than one account. [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               PuntPoints have no cash value. They cannot be bought, sold or exchanged for money, and

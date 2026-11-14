@@ -56,8 +56,10 @@ export function AnalyticsDrawer({
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    if (!open || picks) return;
+    if (!open) return;
     let live = true;
+    setPicks(null);
+    setFailed(false);
     fetchPicksForFixture(fixture.id)
       .then((p) => live && setPicks(p))
       .catch((e: unknown) => {
@@ -67,7 +69,7 @@ export function AnalyticsDrawer({
     return () => {
       live = false;
     };
-  }, [open, picks, fixture.id]);
+  }, [open, fixture.id]);
 
   const home = forms[fixture.home];
   const away = forms[fixture.away];

@@ -568,7 +568,14 @@
       "transfer_daily_cap": "Daily limit per sender",
       "transfer_monthly_cap": "Monthly limit per sender",
       "transfer_min_account_days": "Account age before sending (days)",
-      "transfer_hold_days": "Hold on newly earned points (days)"
+      "transfer_hold_days": "Hold on newly earned points (days)",
+      "duels_enabled": "Community Duels (true/false)",
+      "duels_stakes_enabled": "Duel PuntPoints stakes (true/false) [counsel first]",
+      "duel_stake_min": "Smallest duel stake",
+      "duel_stake_max": "Largest duel stake",
+      "duel_daily_stake_cap": "Duel stakes per member per day",
+      "duel_open_limit": "Open challenges per member",
+      "duel_pair_weekly_limit": "Duels between the same two members per week"
     },
     "scoring": "Competition points",
     "scoringBody": "Points for a correct pick. A change applies only to picks settled afterwards and is recorded.",
