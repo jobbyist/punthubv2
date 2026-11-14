@@ -120,7 +120,8 @@
     "support": "Support centre",
     "expandNavigation": "Expand navigation",
     "collapseNavigation": "Collapse navigation",
-    "navigation": "Desktop side navigation"
+    "navigation": "Desktop side navigation",
+    "liveNow": "Live now"
   },
   "footer": {
     "platform": "Platform",

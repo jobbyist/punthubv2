@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { AnimatePresence, LayoutGroup, MotionConfig, motion } from "motion/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,14 +7,16 @@ import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
 import { IntelPanel } from "@/components/intel/intel-panel";
 import { EmptyState } from "@/components/empty-state";
-import { FixtureMatchup } from "@/components/fixture-matchup";
-import { IllustrativeFixtures } from "@/components/illustrative-panels";
+import { FilterChips, type FilterChip } from "@/components/match/filter-chips";
+import { LiveMatchCard } from "@/components/match/live-match-card";
+import { useNow } from "@/hooks/use-now";
+import { useTeamForms } from "@/hooks/use-team-forms";
 import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
-import { formatTime } from "@/lib/format";
+import { saDayKey } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 import type { Sport } from "@/lib/sports/types";
 
-type Search = { sport?: Sport; competition?: string };
+type Search = { sport?: Sport; competition?: string; when?: "today" };
 
 export const Route = createFileRoute("/predictions")({
   validateSearch: (search: Record<string, unknown>): Search => {
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/predictions")({
     if (search["sport"] === "soccer" || search["sport"] === "rugby") out.sport = search["sport"];
     if (typeof search["competition"] === "string" && search["competition"])
       out.competition = search["competition"].slice(0, 80);
+    if (search["when"] === "today") out.when = "today";
     return out;
   },
   loaderDeps: ({ search }) => ({ sport: search.sport }),
@@ -64,8 +67,12 @@ export const Route = createFileRoute("/predictions")({
 function Predictions() {
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
+  const { t: tm } = useTranslation("matchcard");
+  const navigate = useNavigate({ from: "/predictions" });
   const { fixtures } = Route.useLoaderData();
-  const { sport, competition } = Route.useSearch();
+  const { sport, competition, when } = Route.useSearch();
+  const now = useNow(60_000);
+  const todayKey = now ? saDayKey(now) : null;
   // League chips come from what is actually loaded, so a league appears only when it has fixtures.
   const leagues = Array.from(
     fixtures.reduce(
@@ -73,125 +80,112 @@ function Predictions() {
       new Map<string, number>(),
     ),
   ).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  const shown = competition ? fixtures.filter((f) => f.competition === competition) : fixtures;
+  const todayCount = todayKey
+    ? fixtures.filter((f) => saDayKey(f.kickoff_at) === todayKey).length
+    : 0;
+  const shown = fixtures.filter(
+    (f) =>
+      (!competition || f.competition === competition) &&
+      (when !== "today" || (todayKey !== null && saDayKey(f.kickoff_at) === todayKey)),
+  );
   const days = groupFixturesByDay(shown);
   const gated = useGated();
   // Position of each fixture across all days, so the first FREE_ITEMS stay open for guests.
   const order = new Map(days.flatMap((d) => d.fixtures).map((f, i) => [f.id, i]));
+  const { forms, rows } = useTeamForms(fixtures.flatMap((f) => [f.home, f.away]));
+  const active = when === "today" ? "@today" : (competition ?? "@all");
+  const chips: FilterChip[] = [
+    { key: "@all", label: tm("filter.all"), count: fixtures.length },
+    ...(todayCount > 0 ? [{ key: "@today", label: tm("filter.today"), count: todayCount }] : []),
+    ...leagues.map(([name, n]) => ({ key: name, label: name, count: n })),
+  ];
+  const select = (key: string) =>
+    void navigate({
+      search: {
+        ...(sport ? { sport } : {}),
+        ...(key === "@today" ? { when: "today" as const } : {}),
+        ...(key.startsWith("@") ? {} : { competition: key }),
+      },
+      replace: true,
+      resetScroll: false,
+    });
 
   return (
     <AppShell>
       <PageHeading art="pitch" title={t("title")} subtitle={t("subtitle")} />
-      <div className="mb-10">
-        <IllustrativeFixtures />
-      </div>
 
-      {leagues.length > 1 && (
-        <div
-          className="mb-6 flex flex-wrap items-center gap-2"
-          role="group"
-          aria-label={t("filter.label")}
-        >
-          {[
-            [undefined, fixtures.length] as const,
-            ...leagues.map(([name, n]) => [name, n] as const),
-          ].map(([name, n]) => {
-            const active = competition === name;
-            return (
-              <Link
-                key={name ?? "all"}
-                to="/predictions"
-                search={{
-                  ...(sport ? { sport } : {}),
-                  ...(name ? { competition: name } : {}),
-                }}
-                aria-current={active ? "true" : undefined}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  active ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
-                }`}
-              >
-                {name ?? t("filter.all")} <span className="tnum opacity-70">{n}</span>
-              </Link>
-            );
-          })}
-        </div>
+      {chips.length > 2 && (
+        <FilterChips
+          id="predictions-filter"
+          className="mb-6"
+          chips={chips}
+          active={active}
+          onSelect={select}
+          label={t("filter.label")}
+        />
       )}
 
       {days.length === 0 && (
         <EmptyState art="pitch" title={t("empty.title")} body={t("empty.body")} />
       )}
 
-      <div className="space-y-8">
-        {days.map((day) => (
-          <section key={day.label} aria-label={day.label}>
-            <h2 className="mb-3 flex items-center gap-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
-              {day.label}
-              <span className="h-px flex-1 bg-border" aria-hidden="true" />
-              <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] tnum">
-                {day.fixtures.length}
-              </span>
-            </h2>
-            <ul className="card-surface divide-y divide-border">
-              {day.fixtures.map((f) => {
-                const i = order.get(f.id) ?? 0;
-                return (
-                  <Fragment key={f.id}>
-                    {i === FREE_ITEMS && gated(i) && <FoundingGateCard as="li" />}
-                    <li>
-                      <Link
-                        to="/match/$fixtureId"
-                        params={{ fixtureId: f.id }}
-                        className="group block p-4 transition-colors hover:bg-muted/40 sm:p-5"
-                      >
-                        <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                          <span className="flex min-w-0 items-center gap-2">
-                            <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-                              {tc(`sport.${f.sport}`)}
-                            </span>
-                            <span className="truncate">{f.competition}</span>
-                          </span>
-                          <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-primary">
-                            {t("pick")}
-                            <ArrowRight
-                              className="size-3.5 transition-transform group-hover:translate-x-0.5"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </div>
-                        <div className="mt-4">
-                          <FixtureMatchup
-                            home={f.home}
-                            away={f.away}
-                            sport={f.sport}
-                            center={
-                              f.status === "live" ? (
-                                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-primary-foreground">
-                                  <span className="puntr-blink size-1.5 rounded-full bg-primary-foreground" />
-                                  {t("live")}
-                                </span>
-                              ) : (
-                                <span className="inline-flex rounded-lg bg-ink px-2.5 py-1 font-display text-sm font-extrabold text-ink-foreground tnum">
-                                  {formatTime(f.kickoff_at)}
-                                </span>
-                              )
-                            }
-                          />
-                        </div>
-                      </Link>
-                      <div className="px-4 pb-4">
-                        <Blurred gated={gated(i)}>
-                          <IntelPanel />
-                        </Blurred>
-                      </div>
-                    </li>
-                  </Fragment>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
-      </div>
+      <MotionConfig reducedMotion="user">
+        <LayoutGroup id="predictions-grid">
+          <div className="space-y-8">
+            {days.map((day) => (
+              <motion.section key={day.label} layout aria-label={day.label}>
+                <h2 className="mb-3 flex items-center gap-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
+                  {day.label}
+                  <span className="h-px flex-1 bg-border" aria-hidden="true" />
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] tnum">
+                    {day.fixtures.length}
+                  </span>
+                </h2>
+                <ul className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    {day.fixtures.map((f) => {
+                      const i = order.get(f.id) ?? 0;
+                      const locked = gated(i);
+                      return (
+                        <Fragment key={f.id}>
+                          {i === FREE_ITEMS && locked && (
+                            <li className="col-span-full">
+                              <FoundingGateCard />
+                            </li>
+                          )}
+                          <motion.li
+                            layout
+                            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.96 }}
+                            transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                            className="min-w-0"
+                          >
+                            <LiveMatchCard
+                              fixture={f}
+                              forms={forms}
+                              rows={rows}
+                              sportLabel={tc(`sport.${f.sport}`)}
+                              locked={locked}
+                            >
+                              {locked && (
+                                <Blurred gated>
+                                  <IntelPanel compact />
+                                </Blurred>
+                              )}
+                            </LiveMatchCard>
+                          </motion.li>
+                        </Fragment>
+                      );
+                    })}
+                  </AnimatePresence>
+                </ul>
+              </motion.section>
+            ))}
+          </div>
+        </LayoutGroup>
+      </MotionConfig>
 
       <p className="mt-6 text-xs text-muted-foreground">{t("note")}</p>
     </AppShell>

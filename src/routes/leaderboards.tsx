@@ -11,6 +11,7 @@ import { LaunchGate } from "@/components/launch-gate";
 import { PointsBoard } from "@/components/points-board";
 import { useSession } from "@/components/session";
 import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
+import { FilterChips } from "@/components/match/filter-chips";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { PRIZES_ENABLED } from "@/lib/flags";
@@ -92,20 +93,14 @@ function Leaderboards() {
       </div>
 
       <h2 className="mb-4 text-xl">{t("weekly.title")}</h2>
-      <div className="mb-2 flex flex-wrap gap-2">
-        {(["this", "last"] as const).map((w) => (
-          <button
-            key={w}
-            onClick={() => setWhich(w)}
-            aria-pressed={which === w}
-            className={`min-h-10 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              which === w ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
-            }`}
-          >
-            {t(`week.${w}`)}
-          </button>
-        ))}
-      </div>
+      <FilterChips
+        id="weekly-board"
+        className="mb-2"
+        chips={(["this", "last"] as const).map((w) => ({ key: w, label: t(`week.${w}`) }))}
+        active={which}
+        onSelect={(k) => setWhich(k === "last" ? "last" : "this")}
+        label={t("weekly.title")}
+      />
       <p className="mb-6 text-xs text-muted-foreground tnum">{t("week.range", range)}</p>
 
       {profile ? (
