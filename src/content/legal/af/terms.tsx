@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r19.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r20.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r19). Konsep wat
+            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r20). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -110,7 +110,10 @@ export function TermsAf() {
                 Desember 2026, sonder outomatiese hernuwing. Bespreking is gratis op Puntr. Ons
                 e-pos 'n veilige PayFast-betaalskakel; betaling moet binne 48 uur voltooi word,
                 anders verval die bespreking en word die plek vrygestel. Die jaarpas word eers
-                bevestig nadat betaling ontvang is. Terugbetalings word op die Terugbetalings-bladsy
+                bevestig nadat betaling ontvang is. Soos maandelikse Puntr Pro sluit die jaarpas
+                KI-aksies in tot 'n billike-gebruik-limiet van 40 per maand en 15 per dag; ná die
+                limiet gebruik 'n KI-aksie betaal-soos-jy-gaan-krediete. Alle ander Pro-funksies is
+                nie beperk nie [attorney review]. Terugbetalings word op die Terugbetalings-bladsy
                 gedek. Verwysingsbelonings, beplan as tot 30% in bonus-PuntPoints op kwalifiserende
                 aankope deur mense wat jy uitnooi (nooit kontant nie), is nie beskikbaar totdat ons
                 hul voorwaardes publiseer nie [attorney review]

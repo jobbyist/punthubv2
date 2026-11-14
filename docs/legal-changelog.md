@@ -3,6 +3,30 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Puntr Pro recurring billing (PR: feat/puntr-pro-billing), built OFF, no page changed yet
+
+- **Product:** Puntr Pro at R99 a month through a PayFast subscription (monthly, until cancelled). Each paid month
+  adds one month of Pro plus a 3-day grace period; a failed renewal or a cancellation stops renewals and Pro runs to
+  the end of the paid period. Members cancel in `/wallet` (Puntr cancels at PayFast through its API). Pro includes AI
+  actions up to a fair-use limit (default 90 a month, 15 a day, editable in `app_settings`); past it an action costs
+  credits like Pay-As-You-Go. Paid Founding Annual Pass claims get 12 months of Pro from 1 Dec 2026 (as already
+  promised on `/pricing` and `/terms`), same default limit.
+- **Data:** tables `pro_subscriptions`, `pro_payments`, `pro_usage` (migration `20261114230000`). PayFast receives
+  only the subscription id, amount and item name; no personal information. The subscription token is stored to allow
+  cancellation. Subscriptions and payments are financial records kept after account deletion (linked to the
+  anonymised profile id); `pro_usage` is deleted with the account.
+- **Off until go-live:** same switch as the credit packs (`payments_enabled` + PayFast variables). No legal page is
+  changed in this PR because nothing can be bought yet.
+- **Copy to publish before switching on `[attorney review]`:** `/terms` (auto-renewal monthly until cancelled; how to
+  cancel; access to the end of the paid period; fair-use limit and what happens past it; price changes with notice),
+  `/refunds` (ECTA s44 seven-day cooling-off for the first payment; no pro-rata refund after that unless the law
+  requires; failed renewals), `/privacy` (PayFast as payment processor for subscriptions; token kept; retention of
+  payment records), `/pricing` (no longer "planned"; fair-use line).
+- **Annual Pass fair use (owner decision 14 Nov, 20:16 SAST):** Terms r20 (English and Afrikaans) now say the
+  Annual Pass includes AI actions up to 40 a month and 15 a day, past which an action uses credits; every other Pro
+  feature is unlimited. `pro_cap_annual_pass = 40`. `notice_versions` terms r20 (migration `20261114231000`).
+  `[attorney review]`: adding a limit after the pass was sold (4 holders; the limit starts with Pro on 1 Dec, and
+  no AI feature had been promised in numbers); consider telling holders by email before 1 Dec.
 ## 2026-11-14, Fixtures surfacing and season results backfill (PR: feat/fixtures-and-history), no page changed
 
 - **Product:** the daily PFIE fixture sync now writes each competition as soon as it is verified, in several short

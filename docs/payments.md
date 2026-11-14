@@ -20,7 +20,22 @@ Status: built, **off**. Nothing can be bought until all three are true: PayFast 
 - [ ] Sandbox test: pay a Starter pack, see credits once; replay the ITN, see no second grant; pay the wrong amount, see none.
 - [ ] Legal copy (see `docs/legal-changelog.md`, 14 Nov payments entry): `/terms`, `/privacy`, `/refunds`, `/pricing` no longer say "planned"; PayFast named as payment processor.
 - [ ] Owner switches `payments_enabled` to true in Admin > System.
-- [ ] Puntr Pro (recurring) is a separate step; it is not part of this change.
+- [ ] Puntr Pro sandbox test: subscribe, see Pro on `/wallet` with a renewal date; replay the ITN (no second month);
+      cancel in `/wallet` (PayFast shows it cancelled, Pro stays to the period end); a FAILED ITN marks it past due.
+
+## Puntr Pro (monthly subscription)
+1. `startProSubscription` writes a `pro_subscriptions` row (pending) and returns a signed PayFast subscription form
+   (`subscription_type=1`, `frequency=3` monthly, `cycles=0` until cancelled, `custom_str1=pro`).
+2. Every renewal sends an ITN to the same `/api/payfast/itn`. `custom_str1=pro` routes it to `grant_pro_payment()`:
+   one month per `pf_payment_id`, exact amount, entitlement `pro` extended to period end + 3 days.
+3. FAILED -> `past_due`; CANCELLED -> `cancelled`. Access runs out on its own; `pro-lapse` (03:20 SAST) marks
+   subscriptions `ended` and returns the profile to free.
+4. Cancel: `/wallet` > Cancel Pro calls PayFast `PUT /subscriptions/{token}/cancel` (signed headers).
+5. Fair use: `spend_credits()` counts included Pro actions in `pro_usage` (90/month, 15/day by default:
+   `pro_cap_monthly`, `pro_cap_daily`, `pro_cap_annual_pass` in `app_settings`). Past the cap the action is charged in
+   credits (`fair_use_charged`), or refused with `fair_use_reached` when the member has none.
+6. Annual Pass: every paid claim gets a `pro` entitlement from 1 Dec 2026 to 1 Dec 2027 (trigger on
+   `annual_pass_claims`). Offline payments must be recorded as paid claims to get it.
 
 ## Economics
 `docs/PAYG_ECONOMICS.md`. The USD/ZAR rate used there is `app_settings.usd_zar`, editable in Admin > System.

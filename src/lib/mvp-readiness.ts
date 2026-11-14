@@ -155,9 +155,11 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "history-import",
-        title: "Backfill last full season for the 12 tracked leagues (one-off import job)",
+        title: "Backfill this season and last season for the 12 tracked leagues (scheduled job)",
         weight: 2,
         blocker: true,
+        done: true,
+        ref: "PR #129",
       },
       { id: "badges-coverage", title: "Team badges for every team in tracked leagues", weight: 1 },
       {
@@ -192,12 +194,16 @@ export const WORKSTREAMS: Workstream[] = [
         title: "Pay-As-You-Go credit packs: PayFast checkout + ITN webhook",
         weight: 4,
         blocker: true,
+        done: true,
+        ref: "PR #127",
       },
       {
         id: "pro-subscription",
         title: "Puntr Pro: PayFast recurring billing, renewals, cancellations",
         weight: 4,
         blocker: true,
+        done: true,
+        ref: "PR #130",
       },
       {
         id: "payments-sandbox",
@@ -207,7 +213,7 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "payments-legal",
-        title: "Payments legal copy: Terms, Refunds, Privacy (PayFast processor), VAT invoices",
+        title: "Payments legal copy: Terms, Refunds, Privacy (PayFast processor), Pricing",
         weight: 2,
         blocker: true,
       },

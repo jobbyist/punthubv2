@@ -4,11 +4,14 @@ import { describe, expect, it } from "vitest";
 import { PACKS } from "./economics";
 import {
   buildCheckout,
+  buildSubscriptionCheckout,
+  cancelPayfastSubscription,
   checkItn,
   centsToAmount,
   isPayfastIp,
   payfastConfig,
   pfEncode,
+  pfApiSignature,
   pfSignature,
 } from "./payfast.server";
 
@@ -111,5 +114,77 @@ describe("payfast", () => {
       }),
     ).toEqual({ merchantId: "1", merchantKey: "k", passphrase: "p", sandbox: false });
     expect(centsToAmount(6000)).toBe("60.00");
+  });
+
+  it("builds a signed monthly Pro subscription with no personal data", () => {
+    const c = buildSubscriptionCheckout(cfg, {
+      subscriptionId: "s-1",
+      amountCents: 9900,
+      siteUrl: "https://puntr.co.za/",
+      billingDate: "2026-12-01",
+    });
+    const m = new Map(c.fields);
+    expect(m.get("subscription_type")).toBe("1");
+    expect(m.get("frequency")).toBe("3");
+    expect(m.get("cycles")).toBe("0");
+    expect(m.get("recurring_amount")).toBe("99.00");
+    expect(m.get("amount")).toBe("99.00");
+    expect(m.get("custom_str1")).toBe("pro");
+    expect([...m.keys()].some((k) => /email|name_first|name_last|cell/.test(k))).toBe(false);
+    const unsigned = c.fields.filter(([k]) => k !== "signature");
+    expect(m.get("signature")).toBe(pfSignature(unsigned, cfg.passphrase));
+  });
+
+  it("signs API calls with sorted keys and the passphrase", () => {
+    const expected = createHash("md5")
+      .update(
+        "merchant-id=10000100&passphrase=pass+phrase&timestamp=2026-12-01T10%3A00%3A00&version=v1",
+      )
+      .digest("hex");
+    expect(
+      pfApiSignature(
+        { version: "v1", "merchant-id": "10000100", timestamp: "2026-12-01T10:00:00" },
+        cfg.passphrase,
+      ),
+    ).toBe(expected);
+  });
+
+  it("cancels at PayFast with signed headers", async () => {
+    const calls: [string, RequestInit][] = [];
+    const fetcher = (async (url: string, init: RequestInit) => {
+      calls.push([url, init]);
+      return new Response("{}", { status: 200 });
+    }) as unknown as typeof fetch;
+    const ok = await cancelPayfastSubscription(
+      cfg,
+      "tok-1",
+      fetcher,
+      new Date("2026-12-01T10:00:00Z"),
+    );
+    expect(ok).toBe(true);
+    expect(calls[0]![0]).toBe("https://api.payfast.co.za/subscriptions/tok-1/cancel?testing=true");
+    expect((calls[0]![1].headers as Record<string, string>)["signature"]).toMatch(/^[a-f0-9]{32}$/);
+  });
+
+  it("reads the Pro marker and token from an ITN", () => {
+    const fields: [string, string][] = [
+      ["m_payment_id", "s-1"],
+      ["pf_payment_id", "777"],
+      ["payment_status", "COMPLETE"],
+      ["amount_gross", "99.00"],
+      ["custom_str1", "pro"],
+      ["token", "tok-1"],
+      ["merchant_id", cfg.merchantId],
+    ];
+    const body = new URLSearchParams([
+      ...fields,
+      ["signature", pfSignature(fields, cfg.passphrase)],
+    ]).toString();
+    expect(checkItn(body, cfg)).toMatchObject({
+      ok: true,
+      kind: "pro",
+      token: "tok-1",
+      amountCents: 9900,
+    });
   });
 });
