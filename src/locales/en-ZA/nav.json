@@ -39,9 +39,8 @@
   },
   "desktop": {
     "groups": {
-      "browse": "Browse",
-      "discover": "Discover",
-      "platform": "Platform"
+      "platform": "Platform",
+      "more": "More"
     },
     "items": {
       "gradedResults": "Graded Results",
@@ -50,7 +49,6 @@
       "liveScores": "Live Scores",
       "featuredSports": "Featured Sports",
       "competitions": "Competitions & Leagues",
-      "headToHead": "Head-to-Head (H2H)",
       "fantasyLeague": "Fantasy League",
       "roadmap": "Upcoming Roadmap",
       "bookmakers": "Bookmaker Directory",
@@ -60,8 +58,8 @@
     },
     "direct": {
       "home": "Home",
-      "fixtures": "Fixtures & Predictions",
-      "community": "Community & Duels"
+      "fixtures": "Predictions",
+      "community": "Community"
     },
     "comingSoon": "Coming Soon",
     "liveMatches": "Live matches available"
@@ -110,18 +108,19 @@
     "racing": "Horse racing"
   },
   "side": {
-    "predictions": "Predictions",
-    "topPicks": "Top picks",
-    "liveNow": "Live now",
-    "popular": "Popular",
-    "community": "Community",
-    "calendar": "Events calendar",
     "sports": "Sports",
     "topTipsters": "Top tipsters",
     "noLeaders": "No settled picks this week yet",
     "noLive": "No matches in play",
     "inPlay": "In play",
-    "units": "{{units}} units"
+    "units": "{{units}} units",
+    "fixtures": "Fixtures",
+    "results": "Results",
+    "leaderboards": "Leaderboards",
+    "support": "Support centre",
+    "expandNavigation": "Expand navigation",
+    "collapseNavigation": "Collapse navigation",
+    "navigation": "Desktop side navigation"
   },
   "footer": {
     "platform": "Platform",

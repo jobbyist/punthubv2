@@ -12,7 +12,6 @@ import {
   LifeBuoy,
   Map,
   Radio,
-  Swords,
   Target,
   Trophy,
   Users,
@@ -118,21 +117,22 @@ export function SiteHeader() {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/results", "/leaderboards", "/tools", "/live-scores"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/results", "/leaderboards", "/tools", "/live-scores", "/sports", "/predictions", "/roadmap"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
               >
-                <ClipboardCheck className="size-4" />
-                {t("desktop.groups.browse")}
+                <Wrench className="size-4" />
+                {t("desktop.groups.platform")}
                 <ChevronDown className="size-3.5 opacity-60" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" sideOffset={10} className="w-64 rounded-xl p-2 shadow-xl">
-              <DropdownMenuLabel>{t("desktop.groups.browse")}</DropdownMenuLabel>
+            <DropdownMenuContent align="start" sideOffset={10} className="w-72 rounded-xl p-2 shadow-xl">
+              <DropdownMenuLabel>{t("desktop.groups.platform")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {([
                 { key: "gradedResults", to: "/results", icon: ClipboardCheck },
                 { key: "leaderboards", to: "/leaderboards", icon: Trophy },
                 { key: "bettingTools", to: "/tools", icon: Wrench },
                 { key: "liveScores", to: "/live-scores", icon: Radio },
+                { key: "roadmap", to: "/roadmap", icon: Map },
               ] as const).map(({ key, to, icon: Icon }) => (
                 <DropdownMenuItem key={key} asChild className="cursor-pointer rounded-lg px-3 py-2.5">
                   <Link to={to} className={isActive(path, to) ? "text-primary" : ""}>
@@ -142,24 +142,6 @@ export function SiteHeader() {
                   </Link>
                 </DropdownMenuItem>
               ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/sports", "/predictions", "/roadmap", "/leaderboards"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
-              >
-                <Trophy className="size-4" />
-                {t("desktop.groups.discover")}
-                <ChevronDown className="size-3.5 opacity-60" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" sideOffset={10} className="w-72 rounded-xl p-2 shadow-xl">
-              <DropdownMenuLabel>{t("desktop.groups.discover")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="rounded-lg px-3 py-2.5">
                   <Trophy className="size-4 text-muted-foreground" />
@@ -176,7 +158,6 @@ export function SiteHeader() {
                   ))}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
-
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="rounded-lg px-3 py-2.5">
                   <CalendarDays className="size-4 text-muted-foreground" />
@@ -192,27 +173,12 @@ export function SiteHeader() {
                   ))}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
-
-              <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2.5">
-                <Link to="/leaderboards" className={isActive(path, "/leaderboards") ? "text-primary" : ""}>
-                  <Swords className="size-4 text-muted-foreground" />
-                  <span className="flex-1">{t("desktop.items.headToHead")}</span>
-                  {isActive(path, "/leaderboards") && <span className="size-1.5 rounded-full bg-primary" />}
-                </Link>
-              </DropdownMenuItem>
               <DropdownMenuItem disabled className="rounded-lg px-3 py-2.5">
                 <Target className="size-4 text-muted-foreground" />
                 <span className="flex-1">{t("desktop.items.fantasyLeague")}</span>
                 <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
                   {t("desktop.comingSoon")}
                 </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2.5">
-                <Link to="/roadmap" className={isActive(path, "/roadmap") ? "text-primary" : ""}>
-                  <Map className="size-4 text-muted-foreground" />
-                  <span className="flex-1">{t("desktop.items.roadmap")}</span>
-                  {isActive(path, "/roadmap") && <span className="size-1.5 rounded-full bg-primary" />}
-                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -223,13 +189,12 @@ export function SiteHeader() {
                 type="button"
                 className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/bookmakers", "/puntpoints", "/about", "/support"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
               >
-                <Building2 className="size-4" />
-                {t("desktop.groups.platform")}
+                {t("desktop.groups.more")}
                 <ChevronDown className="size-3.5 opacity-60" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" sideOffset={10} className="w-64 rounded-xl p-2 shadow-xl">
-              <DropdownMenuLabel>{t("desktop.groups.platform")}</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("desktop.groups.more")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {([
                 { key: "bookmakers", to: "/bookmakers", icon: Building2 },
