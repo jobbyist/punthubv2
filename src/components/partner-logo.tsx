@@ -8,6 +8,7 @@ const LOGO_IMAGE_CLASSES = [
   "active:scale-105 active:grayscale-0 active:opacity-100 dark:active:brightness-100 dark:active:invert-0",
   "group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100 dark:group-hover:brightness-100 dark:group-hover:invert-0",
   "group-focus-within:scale-105 group-focus-within:grayscale-0 group-focus-within:opacity-100 dark:group-focus-within:brightness-100 dark:group-focus-within:invert-0",
+  "group-active:scale-105 group-active:grayscale-0 group-active:opacity-100 dark:group-active:brightness-100 dark:group-active:invert-0",
 ].join(" ");
 
 type PartnerLogoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "className"> & {
