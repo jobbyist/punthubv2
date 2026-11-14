@@ -332,7 +332,7 @@ export function SiteHeader() {
                 {t("header.signIn")}
               </Link>
               <Button asChild className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm">
-                <Link to="/join">{t("header.claimFoundingAccess")}</Link>
+                <Link to="/join">{t("header.getEarlyAccess")}</Link>
               </Button>
             </>
           )}
