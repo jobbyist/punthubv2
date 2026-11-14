@@ -53,14 +53,22 @@ export const Route = createFileRoute("/api/payfast/itn")({
             console.error("grant_credit_purchase failed", error.message);
             return new Response("retry", { status: 500 });
           }
-          if (data === "amount_mismatch" || data === "not_found")
+          if (data === "amount_mismatch" || data === "not_found") {
+            // PayFast took money we could not match to an order: surface it and let PayFast retry.
             console.error("payfast itn rejected", String(data), itn.orderId);
+            return new Response("rejected", { status: 500 });
+          }
         } else if (itn.status === "FAILED" || itn.status === "CANCELLED") {
-          await (
+          const { error } = await (
             db as never as {
               from: (t: string) => {
                 update: (v: object) => {
-                  eq: (c: string, v: string) => { eq: (c: string, v: string) => Promise<unknown> };
+                  eq: (
+                    c: string,
+                    v: string,
+                  ) => {
+                    eq: (c: string, v: string) => Promise<{ error: { message: string } | null }>;
+                  };
                 };
               };
             }
@@ -69,6 +77,10 @@ export const Route = createFileRoute("/api/payfast/itn")({
             .update({ status: itn.status === "FAILED" ? "failed" : "cancelled" })
             .eq("id", itn.orderId)
             .eq("status", "pending");
+          if (error) {
+            console.error("payment_orders status update failed", error.message);
+            return new Response("retry", { status: 500 });
+          }
         }
         return new Response("ok", { status: 200 });
       },

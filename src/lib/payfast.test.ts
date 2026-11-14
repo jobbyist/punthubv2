@@ -77,6 +77,21 @@ describe("payfast", () => {
     expect(checkItn(body, { ...cfg, passphrase: "other" }).ok).toBe(false);
   });
 
+  it("rejects a signed ITN with no order or PayFast payment id", () => {
+    const fields: [string, string][] = [
+      ["m_payment_id", "o-1"],
+      ["pf_payment_id", ""],
+      ["payment_status", "COMPLETE"],
+      ["amount_gross", "25.00"],
+      ["merchant_id", cfg.merchantId],
+    ];
+    const body = new URLSearchParams([
+      ...fields,
+      ["signature", pfSignature(fields, cfg.passphrase)],
+    ]).toString();
+    expect(checkItn(body, cfg)).toMatchObject({ ok: false, reason: "missing_ids" });
+  });
+
   it("only trusts PayFast source addresses", () => {
     expect(isPayfastIp("197.97.145.150")).toBe(true);
     expect(isPayfastIp("41.74.179.200")).toBe(true);

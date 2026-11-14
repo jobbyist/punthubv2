@@ -115,10 +115,13 @@ export function checkItn(body: string, cfg: PayfastConfig): ItnResult {
   if (get("merchant_id") !== cfg.merchantId) return { ok: false, reason: "wrong_merchant" };
   const gross = Number(get("amount_gross"));
   if (!Number.isFinite(gross) || gross <= 0) return { ok: false, reason: "bad_amount" };
+  const orderId = get("m_payment_id");
+  const pfPaymentId = get("pf_payment_id");
+  if (!orderId || !pfPaymentId) return { ok: false, reason: "missing_ids" };
   return {
     ok: true,
-    orderId: get("m_payment_id"),
-    pfPaymentId: get("pf_payment_id"),
+    orderId,
+    pfPaymentId,
     amountCents: Math.round(gross * 100),
     status: get("payment_status"),
   };
