@@ -120,7 +120,8 @@
     "support": "Hulpsentrum",
     "expandNavigation": "Vou navigasie oop",
     "collapseNavigation": "Vou navigasie toe",
-    "navigation": "Kantnavigasie vir rekenaars"
+    "navigation": "Kantnavigasie vir rekenaars",
+    "liveNow": "Nou lewendig"
   },
   "footer": {
     "platform": "Platform",

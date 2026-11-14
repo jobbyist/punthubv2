@@ -79,6 +79,18 @@ export function formatDate(input: Date | string | number): string {
   return `${p.weekday} ${p.day} ${MONTHS[p.month - 1]} ${p.year}`;
 }
 
+/** "2026-11-21": the calendar day in Africa/Johannesburg, for grouping and "today" checks. */
+export function saDayKey(input: Date | string | number): string {
+  const p = parts(new Date(input));
+  return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+}
+
+/** "Sat 21 Nov" in Africa/Johannesburg (no year), for compact pills. */
+export function formatShortDay(input: Date | string | number): string {
+  const p = parts(new Date(input));
+  return `${p.weekday} ${p.day} ${MONTHS[p.month - 1]}`;
+}
+
 /** "17:30 SAST" (24-hour). */
 export function formatTime(input: Date | string | number): string {
   const p = parts(new Date(input));

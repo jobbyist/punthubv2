@@ -3,6 +3,23 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (batch 1, PR A): modern match cards
+
+Added
+- Match card v2 (`FixtureCard` + `LiveMatchCard`): competition monogram (original artwork, no league logos),
+  kick-off pill ("Today 15:30 SAST", live countdown in the last 6 hours), crests with last-5 W/D/L form guides, a
+  one-line goals-per-game read, and a "View Deep Analytics" sheet (bottom on phones, right on desktop) with form,
+  goals per game, head to head, community split and the model placeholders, without leaving the list.
+- Form, goals and head to head come only from final scores Puntr has stored (`src/lib/match/form.ts`). No xG or
+  third-party stats; averages need 3 recorded results. Empty guides show until results are recorded.
+- Animated filter chips (`FilterChips`, motion shared layout) on /predictions (All, Today, each competition) and
+  the weekly leaderboard; cards animate in and out when filters change (reduced motion respected).
+- Match page header: monogram, kick-off pill, form guides, insight line and the same analytics sheet.
+
+Changed
+- /predictions no longer shows the illustrative sample fixtures above the real feed (Task 1, /predictions part).
+- Fixed the untranslated "side.liveNow" heading in the right rail.
+
 ## 14 November 2026 (later): Afrikaans, Admin > Translations, isiZulu coming soon
 
 Added

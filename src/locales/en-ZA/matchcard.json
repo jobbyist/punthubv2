@@ -1,0 +1,54 @@
+{
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "live": "Live",
+  "fullTime": "Full time",
+  "startsIn": "in {{span}}",
+  "vs": "vs",
+  "pick": "Pick",
+  "form": {
+    "label": "Last 5",
+    "none": "No results yet",
+    "aria": "{{team}}, last {{count}} results: {{results}}",
+    "noneAria": "{{team}}: no recorded results yet",
+    "W": "Win",
+    "D": "Draw",
+    "L": "Loss"
+  },
+  "insight": {
+    "pair": "Last 5: {{home}} scoring {{hgf}} a game · {{away}} conceding {{aga}} a game",
+    "home": "Last 5: {{team}} scoring {{gf}}, conceding {{ga}} a game",
+    "building": "Form builds as Puntr records final scores"
+  },
+  "actions": {
+    "analytics": "View Deep Analytics",
+    "matchRoom": "Match room"
+  },
+  "drawer": {
+    "title": "Match intelligence",
+    "description": "Form, goals and community picks for {{home}} vs {{away}}.",
+    "kickoff": "Kick-off",
+    "formTitle": "Form (last 5)",
+    "goalsTitle": "Goals per game (last 5)",
+    "scored": "Scored",
+    "conceded": "Conceded",
+    "notEnough": "Averages show after 3 recorded results.",
+    "h2hTitle": "Head to head",
+    "h2hNone": "No earlier meetings recorded on Puntr yet.",
+    "crowdTitle": "Community picks",
+    "crowdNone": "No picks yet. Be the first to call it.",
+    "modelTitle": "Puntr model",
+    "openRoom": "Open match room",
+    "makePick": "Make your pick",
+    "loading": "Loading match intelligence…",
+    "error": "Could not load this right now. Try again in a moment.",
+    "source": "From final scores Puntr has recorded. No expected-goals (xG) or third-party stats are shown.",
+    "home": "H",
+    "away": "A"
+  },
+  "filter": {
+    "label": "Filter matches",
+    "all": "All",
+    "today": "Today"
+  }
+}

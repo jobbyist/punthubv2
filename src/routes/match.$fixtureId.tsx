@@ -2,13 +2,20 @@ import { EmptyState } from "@/components/empty-state";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Sparkles } from "lucide-react";
 
 import { CrowdSplit } from "@/components/crowd-split";
 import { AppShell } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
 import { PickForm } from "@/components/pick-form";
+import { AnalyticsDrawer } from "@/components/match/analytics-drawer";
+import { CompetitionBadge } from "@/components/match/competition-badge";
+import { FormGuide } from "@/components/match/form-guide";
+import { KickoffPill } from "@/components/match/kickoff-pill";
+import { useInsight } from "@/components/match/live-match-card";
 import { TeamLogo } from "@/components/team-logo";
 import { useNow } from "@/hooks/use-now";
+import { useTeamForms } from "@/hooks/use-team-forms";
 import { rememberRef } from "@/lib/ref-store";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -61,7 +68,11 @@ function MatchNotFound() {
 function Match() {
   const { t } = useTranslation("match");
   const { t: tc } = useTranslation("common");
+  const { t: tm } = useTranslation("matchcard");
   const { fixture } = Route.useLoaderData();
+  const [drawer, setDrawer] = useState(false);
+  const { forms, rows } = useTeamForms([fixture.home, fixture.away]);
+  const insight = useInsight(fixture.home, fixture.away, forms);
   const now = useNow();
   const { ref } = Route.useSearch();
   // A shared pick link carries the sharer's invite code, kept until the visitor joins.
@@ -109,12 +120,15 @@ function Match() {
           }}
           aria-hidden="true"
         />
-        <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-            {tc(`sport.${fixture.sport}`)}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="flex min-w-0 items-center gap-2">
+            <CompetitionBadge name={fixture.competition} />
+            <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+              {tc(`sport.${fixture.sport}`)}
+            </span>
           </span>
-          {fixture.competition}
-        </p>
+          <KickoffPill kickoff={fixture.kickoff_at} status={fixture.status} />
+        </div>
         {/* One heading for the page; the two team names are parts of it. */}
         <h1 className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 text-base leading-tight sm:text-2xl">
           <span className="puntr-rise flex min-w-0 flex-col items-center gap-2 text-center">
@@ -127,6 +141,7 @@ function Match() {
               />
             </span>
             <span className="break-words">{fixture.home}</span>
+            <FormGuide team={fixture.home} entries={forms[fixture.home]?.entries} size="md" />
           </span>
           <span className="text-center">
             {fixture.status === "finished" &&
@@ -154,8 +169,25 @@ function Match() {
               />
             </span>
             <span className="break-words">{fixture.away}</span>
+            <FormGuide team={fixture.away} entries={forms[fixture.away]?.entries} size="md" />
           </span>
         </h1>
+        {insight && (
+          <p className="mx-auto mt-5 max-w-xl rounded-lg bg-muted/60 px-3 py-2 text-center text-xs text-muted-foreground">
+            {insight}
+          </p>
+        )}
+        <div className="mt-5 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setDrawer(true)}
+            aria-haspopup="dialog"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+          >
+            <Sparkles className="size-4 text-primary" aria-hidden="true" />
+            {tm("actions.analytics")}
+          </button>
+        </div>
         <p className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-sm">
           <span className="tnum">
             {t("header.kickoff")}: {formatDate(fixture.kickoff_at)} ·{" "}
@@ -174,6 +206,13 @@ function Match() {
           )}
         </p>
       </header>
+      <AnalyticsDrawer
+        fixture={fixture}
+        open={drawer}
+        onOpenChange={setDrawer}
+        forms={forms}
+        rows={rows}
+      />
 
       <div className="mt-8 space-y-8">
         <PickForm fixture={fixture} onPosted={() => void load()} />

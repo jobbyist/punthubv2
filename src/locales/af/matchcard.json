@@ -1,0 +1,54 @@
+{
+  "today": "Vandag",
+  "tomorrow": "Môre",
+  "live": "Lewendig",
+  "fullTime": "Voltyd",
+  "startsIn": "oor {{span}}",
+  "vs": "teen",
+  "pick": "Kies",
+  "form": {
+    "label": "Laaste 5",
+    "none": "Nog geen uitslae",
+    "aria": "{{team}}, laaste {{count}} uitslae: {{results}}",
+    "noneAria": "{{team}}: nog geen uitslae aangeteken",
+    "W": "Wen",
+    "D": "Gelykop",
+    "L": "Verloor"
+  },
+  "insight": {
+    "pair": "Laaste 5: {{home}} druk {{hgf}} per wedstryd · {{away}} laat {{aga}} per wedstryd deur",
+    "home": "Laaste 5: {{team}} druk {{gf}} en laat {{ga}} per wedstryd deur",
+    "building": "Vorm bou op soos Puntr eindtellings aanteken"
+  },
+  "actions": {
+    "analytics": "Sien diep ontleding",
+    "matchRoom": "Wedstrydkamer"
+  },
+  "drawer": {
+    "title": "Wedstrydintelligensie",
+    "description": "Vorm, doele en gemeenskapskeuses vir {{home}} teen {{away}}.",
+    "kickoff": "Afskop",
+    "formTitle": "Vorm (laaste 5)",
+    "goalsTitle": "Doele per wedstryd (laaste 5)",
+    "scored": "Gedruk",
+    "conceded": "Deurgelaat",
+    "notEnough": "Gemiddeldes wys ná 3 aangetekende uitslae.",
+    "h2hTitle": "Kop teen kop",
+    "h2hNone": "Nog geen vorige ontmoetings op Puntr aangeteken nie.",
+    "crowdTitle": "Gemeenskapskeuses",
+    "crowdNone": "Nog geen keuses nie. Wees die eerste.",
+    "modelTitle": "Puntr-model",
+    "openRoom": "Maak wedstrydkamer oop",
+    "makePick": "Maak jou keuse",
+    "loading": "Laai wedstrydintelligensie…",
+    "error": "Kon dit nie nou laai nie. Probeer weer oor ’n oomblik.",
+    "source": "Uit eindtellings wat Puntr aangeteken het. Geen verwagte doele (xG) of derdeparty-statistieke word gewys nie.",
+    "home": "T",
+    "away": "W"
+  },
+  "filter": {
+    "label": "Filtreer wedstryde",
+    "all": "Alles",
+    "today": "Vandag"
+  }
+}
