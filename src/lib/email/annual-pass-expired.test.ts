@@ -19,7 +19,7 @@ describe("annual pass expired email", () => {
     expect(m.html).toContain("Hi Thandi,");
     expect(m.html).toContain("Reserve my Annual Pass again");
     expect(m.html).toContain("/founding#annual-pass");
-    expect(m.text).toContain("16 November 2026");
+    expect(m.text).toContain("30 November 2026");
     expect(m.text).toContain("No payment was taken");
   });
 
@@ -37,7 +37,7 @@ describe("annual pass expired email", () => {
     });
     expect(m.html).not.toContain("Reserve my Annual Pass again");
     expect(m.html).not.toContain("/founding#annual-pass");
-    expect(m.text).toContain("closed on 16 November 2026");
+    expect(m.text).toContain("closed on 30 November 2026");
   });
 
   it("is a service email: no unsubscribe link, carries 18+ and the helpline", () => {
@@ -57,8 +57,8 @@ describe("annual pass expired email", () => {
   });
 
   it("knows when the offer closes", () => {
-    expect(isOfferOpen(new Date("2026-11-16T21:00:00Z"))).toBe(true); // 23:00 SAST
-    expect(isOfferOpen(new Date("2026-11-16T22:00:00Z"))).toBe(false); // 00:00 SAST on 17 Nov
-    expect(new Date(ANNUAL_PASS_OFFER_END).toISOString()).toBe("2026-11-16T21:59:59.000Z");
+    expect(isOfferOpen(new Date("2026-11-30T21:00:00Z"))).toBe(true); // 23:00 SAST
+    expect(isOfferOpen(new Date("2026-11-30T22:00:00Z"))).toBe(false); // 00:00 SAST on 1 Dec
+    expect(new Date(ANNUAL_PASS_OFFER_END).toISOString()).toBe("2026-11-30T21:59:59.000Z");
   });
 });

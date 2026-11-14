@@ -44,7 +44,7 @@ function Refunds() {
             Founding Membership is free. The only thing we sell before launch is the Founding Annual
             Pass: 12 months of Puntr Pro for R299 once-off, paid through PayFast, starting on 1
             December 2026 and not renewing automatically. It is offered to the first 20 Founding
-            Members who claim it before 16 November 2026. To ask for a refund, email
+            Members who claim it before 30 November 2026. To ask for a refund, email
             support@puntr.co.za from the address on your account. Your rights under the Consumer
             Protection Act and the Electronic Communications and Transactions Act, including any
             cooling-off period, are not affected. [attorney review]
