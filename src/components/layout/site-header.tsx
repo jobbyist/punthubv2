@@ -12,6 +12,7 @@ import {
   LifeBuoy,
   Map,
   Radio,
+  Swords,
   Target,
   Trophy,
   Users,
