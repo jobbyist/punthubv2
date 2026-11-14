@@ -194,6 +194,63 @@ const sports = [
   { key: "racing", emoji: "🏇", active: false },
 ] as const;
 
+function NavLink({
+  path,
+  onNavigate,
+  to,
+  search,
+  icon: Icon,
+  label,
+  badge,
+  badgeColor = "bg-primary-soft text-primary",
+  right,
+  active: forceActive,
+}: {
+  path: string;
+  onNavigate: () => void;
+  to?: string;
+  search?: Record<string, string>;
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  badge?: string;
+  badgeColor?: string;
+  right?: ReactNode;
+  active?: boolean;
+}) {
+  const active = forceActive ?? (to ? path === to : false);
+  const content = (
+    <div
+      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-colors ${
+        active ? "bg-primary-soft text-primary" : "text-foreground hover:bg-muted"
+      }`}
+    >
+      <Icon className={`size-5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
+      <span className="flex-1 truncate">{label}</span>
+      {badge && (
+        <span
+          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${badgeColor}`}
+        >
+          {badge}
+        </span>
+      )}
+      {right}
+    </div>
+  );
+
+  if (to) {
+    return (
+      <Link to={to} {...(search ? { search } : {})} onClick={onNavigate}>
+        {content}
+      </Link>
+    );
+  }
+  return (
+    <button type="button" onClick={onNavigate} className="w-full text-left">
+      {content}
+    </button>
+  );
+}
+
 export function MobileNav() {
   const { t } = useTranslation("nav");
   const { t: tc } = useTranslation("common");
@@ -208,7 +265,12 @@ export function MobileNav() {
   const triggerRefs = useRef<Partial<Record<FlyoutGroupKey, HTMLButtonElement | null>>>({});
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  setMenuOpenExternal = setIsMenuOpen;
+  useEffect(() => {
+    setMenuOpenExternal = setIsMenuOpen;
+    return () => {
+      setMenuOpenExternal = null;
+    };
+  }, []);
 
   const close = () => setIsMenuOpen(false);
 
@@ -256,10 +318,10 @@ export function MobileNav() {
     const index = items.indexOf(document.activeElement as HTMLElement);
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      items[(index + 1) % items.length]?.focus();
+      items[index === -1 ? 0 : (index + 1) % items.length]?.focus();
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      items[(index - 1 + items.length) % items.length]?.focus();
+      items[index === -1 ? items.length - 1 : (index - 1 + items.length) % items.length]?.focus();
     }
   };
 
@@ -274,59 +336,6 @@ export function MobileNav() {
   const hideDock = dockHidden && !flyout;
   const activeGroup = FLYOUT_KEYS.find((k) => pathMatches(path, flyoutGroups[k].match)) ?? null;
   const sheetGroup = flyoutGroups[lastFlyout];
-
-  const NavLink = ({
-    to,
-    search,
-    icon: Icon,
-    label,
-    badge,
-    badgeColor = "bg-primary-soft text-primary",
-    right,
-    active: forceActive,
-  }: {
-    to?: string;
-    search?: Record<string, string>;
-    icon: ComponentType<{ className?: string }>;
-    label: string;
-    badge?: string;
-    badgeColor?: string;
-    right?: ReactNode;
-    active?: boolean;
-  }) => {
-    const active = forceActive ?? (to ? path === to : false);
-    const content = (
-      <div
-        className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-colors ${
-          active ? "bg-primary-soft text-primary" : "text-foreground hover:bg-muted"
-        }`}
-      >
-        <Icon className={`size-5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
-        <span className="flex-1 truncate">{label}</span>
-        {badge && (
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${badgeColor}`}
-          >
-            {badge}
-          </span>
-        )}
-        {right}
-      </div>
-    );
-
-    if (to) {
-      return (
-        <Link to={to} {...(search ? { search } : {})} onClick={close}>
-          {content}
-        </Link>
-      );
-    }
-    return (
-      <button type="button" onClick={close} className="w-full text-left">
-        {content}
-      </button>
-    );
-  };
 
   return (
     <>
@@ -350,11 +359,42 @@ export function MobileNav() {
             <nav className="px-3 py-3">
               {/* Primary links */}
               <div className="space-y-0.5">
-                <NavLink to="/" icon={Home} label={t("mobile.home")} active={path === "/"} />
-                <NavLink to="/about" icon={Info} label={t("primary.about")} />
-                <NavLink to="/newsroom" icon={Radio} label={t("primary.updates")} />
-                <NavLink to="/coming-soon" icon={BarChart3} label={t("primary.insights")} />
-                <NavLink to="/tools" icon={Wrench} label={t("primary.tools")} />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/"
+                  icon={Home}
+                  label={t("mobile.home")}
+                  active={path === "/"}
+                />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/about"
+                  icon={Info}
+                  label={t("primary.about")}
+                />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/newsroom"
+                  icon={Radio}
+                  label={t("primary.updates")}
+                />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/coming-soon"
+                  icon={BarChart3}
+                  label={t("primary.insights")}
+                />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/tools"
+                  icon={Wrench}
+                  label={t("primary.tools")}
+                />
               </div>
 
               {/* Sports section */}
@@ -417,6 +457,8 @@ export function MobileNav() {
               {/* Tools & services */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/bookmakers"
                   icon={Building2}
                   label={t("mobile.tools.bookmakers")}
@@ -424,6 +466,8 @@ export function MobileNav() {
                 />
 
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/live-scores"
                   icon={Radio}
                   label={t("mobile.tools.liveScores")}
@@ -434,6 +478,8 @@ export function MobileNav() {
               {/* Rewards & community */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/puntpoints"
                   icon={Star}
                   label={t("mobile.tools.puntPoints")}
@@ -441,6 +487,8 @@ export function MobileNav() {
                   badgeColor="bg-primary/15 text-primary"
                 />
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/referrals"
                   icon={UserPlus}
                   label={t("mobile.tools.referrals")}
@@ -451,6 +499,8 @@ export function MobileNav() {
                   }
                 />
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/community"
                   icon={Users}
                   label={t("primary.community")}
@@ -477,12 +527,16 @@ export function MobileNav() {
               {/* Plans & store */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/pricing"
                   icon={Crown}
                   label={t("primary.pricing")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
                 <NavLink
+                  path={path}
+                  onNavigate={close}
                   to="/roadmap"
                   icon={Map}
                   label={t("mobile.roadmap")}
@@ -492,8 +546,20 @@ export function MobileNav() {
 
               {/* Help links */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <NavLink to="/support" icon={HelpCircle} label={t("mobile.helpCentre")} />
-                <NavLink to="/feedback" icon={MessageCircle} label={t("mobile.feedback")} />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/support"
+                  icon={HelpCircle}
+                  label={t("mobile.helpCentre")}
+                />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/feedback"
+                  icon={MessageCircle}
+                  label={t("mobile.feedback")}
+                />
               </div>
 
               {/* Social */}
