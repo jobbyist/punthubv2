@@ -11,6 +11,7 @@ import {
   Info,
   LifeBuoy,
   Map,
+  Menu,
   Radio,
   Swords,
   Target,
@@ -23,6 +24,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { Logo } from "@/components/brand";
+import { openMobileMenu } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { UserAvatar } from "@/components/user-avatar";
@@ -82,7 +84,17 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:h-[72px]">
-        <div className="flex min-w-0 shrink-0 items-center">
+        <div className="flex min-w-0 shrink-0 items-center gap-2">
+          {/* Phones and tablets: the full menu opens from here now that the dock has no More tab. */}
+          <button
+            type="button"
+            onClick={openMobileMenu}
+            aria-label={t("header.openMenu")}
+            aria-haspopup="dialog"
+            className="grid size-10 shrink-0 place-items-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:hidden"
+          >
+            <Menu className="size-5" />
+          </button>
           <Logo />
         </div>
 
