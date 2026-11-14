@@ -1256,6 +1256,157 @@ export type Database = {
           },
         ]
       }
+      endorsement_emails: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          error: string | null
+          id: string
+          kind: string
+          model: string | null
+          org_id: string
+          sender: string
+          sent_at: string | null
+          status: string
+          subject: string
+          to_email: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          id?: string
+          kind: string
+          model?: string | null
+          org_id: string
+          sender: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          to_email?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          id?: string
+          kind?: string
+          model?: string | null
+          org_id?: string
+          sender?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          to_email?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "endorsement_emails_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "endorsement_orgs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      endorsement_events: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          detail: string
+          id: string
+          kind: string
+          org_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          detail?: string
+          id?: string
+          kind: string
+          org_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          detail?: string
+          id?: string
+          kind?: string
+          org_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "endorsement_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "endorsement_orgs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      endorsement_orgs: {
+        Row: {
+          contact_email: string | null
+          contact_name: string
+          contact_role: string
+          created_at: string
+          do_not_contact: boolean
+          id: string
+          jurisdiction: string
+          kind: string
+          last_contacted_at: string | null
+          name: string
+          next_follow_up_at: string | null
+          notes: string
+          reasons: string
+          status: string
+          updated_at: string
+          website: string | null
+          what_we_seek: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string
+          contact_role?: string
+          created_at?: string
+          do_not_contact?: boolean
+          id?: string
+          jurisdiction?: string
+          kind?: string
+          last_contacted_at?: string | null
+          name: string
+          next_follow_up_at?: string | null
+          notes?: string
+          reasons?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+          what_we_seek?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string
+          contact_role?: string
+          created_at?: string
+          do_not_contact?: boolean
+          id?: string
+          jurisdiction?: string
+          kind?: string
+          last_contacted_at?: string | null
+          name?: string
+          next_follow_up_at?: string | null
+          notes?: string
+          reasons?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+          what_we_seek?: string
+        }
+        Relationships: []
+      }
       fixtures: {
         Row: {
           away: string
@@ -3390,6 +3541,84 @@ export type Database = {
           team_name?: string
           updated_at?: string
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      translation_reviews: {
+        Row: {
+          id: string
+          key: string
+          locale: string
+          namespace: string
+          note: string | null
+          reviewed_at: string
+          reviewed_text: string
+          reviewer_id: string | null
+          source_text: string
+          status: string
+          suggestion: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          locale: string
+          namespace: string
+          note?: string | null
+          reviewed_at?: string
+          reviewed_text: string
+          reviewer_id?: string | null
+          source_text: string
+          status: string
+          suggestion?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          locale?: string
+          namespace?: string
+          note?: string | null
+          reviewed_at?: string
+          reviewed_text?: string
+          reviewer_id?: string | null
+          source_text?: string
+          status?: string
+          suggestion?: string | null
+        }
+        Relationships: []
+      }
+      translation_signoffs: {
+        Row: {
+          approved_count: number
+          decision: string
+          id: string
+          locale: string
+          note: string | null
+          reviewer_name: string
+          signed_at: string
+          signed_by: string | null
+          total_count: number
+        }
+        Insert: {
+          approved_count?: number
+          decision: string
+          id?: string
+          locale: string
+          note?: string | null
+          reviewer_name: string
+          signed_at?: string
+          signed_by?: string | null
+          total_count?: number
+        }
+        Update: {
+          approved_count?: number
+          decision?: string
+          id?: string
+          locale?: string
+          note?: string | null
+          reviewer_name?: string
+          signed_at?: string
+          signed_by?: string | null
+          total_count?: number
         }
         Relationships: []
       }
