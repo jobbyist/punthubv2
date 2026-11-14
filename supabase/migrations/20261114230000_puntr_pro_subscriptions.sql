@@ -110,11 +110,13 @@ begin
     where s.status in ('active', 'past_due', 'cancelled')
       and s.current_period_end is not null and s.current_period_end + interval '3 days' < now()
     returning s.user_id
+  ), freed as (
+    update public.profiles p set account_type = 'free'
+    from ended e
+    where p.id = e.user_id and p.account_type = 'pro' and not public.has_entitlement(p.id, 'pro')
+    returning p.id
   )
-  update public.profiles p set account_type = 'free'
-  from ended e
-  where p.id = e.user_id and p.account_type = 'pro' and not public.has_entitlement(p.id, 'pro');
-  get diagnostics v_n = row_count;
+  select count(*) into v_n from ended;
   -- Pending checkouts nobody completed within a day are dropped.
   delete from public.pro_subscriptions where status = 'pending' and created_at < now() - interval '1 day'
     and not exists (select 1 from public.pro_payments pp where pp.subscription_id = pro_subscriptions.id);

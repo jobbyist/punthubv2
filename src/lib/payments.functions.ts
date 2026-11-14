@@ -88,7 +88,10 @@ export interface ProStatus {
 
 type Db = {
   from: (t: string) => {
-    select: (c: string) => {
+    select: (
+      c: string,
+      o?: { count: "exact"; head: boolean },
+    ) => {
       eq: (
         c: string,
         v: string,
@@ -146,7 +149,7 @@ export const getProStatus = createServerFn({ method: "GET" })
     const { data: cap } = await db.rpc("pro_cap", { p_user: ctx.userId });
     const { count } = await db
       .from("pro_usage")
-      .select("ref_id")
+      .select("ref_id", { count: "exact", head: true })
       .eq("user_id", ctx.userId)
       .gte("used_at", new Date(Date.now() - 30 * 86_400_000).toISOString());
     return {
