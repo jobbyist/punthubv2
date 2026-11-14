@@ -39,9 +39,9 @@ import { FoundingCounter } from "@/components/founding-counter";
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
-  { key: "fixtures", to: "/results", icon: CalendarDays },
+  { key: "predictions", to: "/predictions", icon: CalendarDays },
   { key: "community", to: "/community", icon: Users },
-  { key: "puntPoints", to: "/puntpoints", icon: Star },
+  { key: "puntPoints", to: "/rewards", icon: Star },
 ] as const;
 
 const sports = [
@@ -332,7 +332,7 @@ export function MobileNav() {
         >
           <ul className="grid grid-cols-4">
             {bottomNavItems.map(({ key, to, icon: Icon }) => {
-              const active = path === to || (to === "/results" && path.startsWith("/match/"));
+              const active = path === to || (to === "/predictions" && (path.startsWith("/match/") || path.startsWith("/predictions/")));
               return (
                 <li key={key}>
                   <Link
