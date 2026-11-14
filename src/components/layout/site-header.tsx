@@ -128,12 +128,12 @@ export function SiteHeader() {
             <DropdownMenuContent align="start" sideOffset={10} className="w-64 rounded-xl p-2 shadow-xl">
               <DropdownMenuLabel>{t("desktop.groups.browse")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {[
+              {([
                 { key: "gradedResults", to: "/results", icon: ClipboardCheck },
                 { key: "leaderboards", to: "/leaderboards", icon: Trophy },
                 { key: "bettingTools", to: "/tools", icon: Wrench },
                 { key: "liveScores", to: "/live-scores", icon: Radio },
-              ].map(({ key, to, icon: Icon }) => (
+              ] as const).map(({ key, to, icon: Icon }) => (
                 <DropdownMenuItem key={key} asChild className="cursor-pointer rounded-lg px-3 py-2.5">
                   <Link to={to} className={isActive(path, to) ? "text-primary" : ""}>
                     <Icon className="size-4 text-muted-foreground" />
@@ -231,12 +231,12 @@ export function SiteHeader() {
             <DropdownMenuContent align="start" sideOffset={10} className="w-64 rounded-xl p-2 shadow-xl">
               <DropdownMenuLabel>{t("desktop.groups.platform")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {[
+              {([
                 { key: "bookmakers", to: "/bookmakers", icon: Building2 },
                 { key: "puntPoints", to: "/puntpoints", icon: Coins },
                 { key: "about", to: "/about", icon: Info },
                 { key: "support", to: "/support", icon: LifeBuoy },
-              ].map(({ key, to, icon: Icon }) => (
+              ] as const).map(({ key, to, icon: Icon }) => (
                 <DropdownMenuItem key={key} asChild className="cursor-pointer rounded-lg px-3 py-2.5">
                   <Link to={to} className={isActive(path, to) ? "text-primary" : ""}>
                     <Icon className="size-4 text-muted-foreground" />
