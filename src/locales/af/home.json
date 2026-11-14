@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Puntr | Sportvoorspellings met 'n rekord wat vir homself praat",
+    "description": "'n Suid-Afrikaanse sportvoorspellingsgemeenskap gebou op deursigtigheid. Publiseer keuses voor die afskop, laat hulle outomaties gradeer en bou 'n openbare rekord waaragter jy kan staan. Sluit gratis aan. 18+.",
+    "ogDescription": "Geen geredigeerde geskiedenis nie. Geen verliese wat verdwyn nie. Net sportvoorspellings met tydstempels, deursigtige gradering en 'n openbare rekord."
+  },
+  "hero": {
+    "badge": "Suid-Afrika se tuiste vir aanspreeklike sportvoorspellings",
+    "title1": "Voorspel wat volgende kom.",
+    "title2": "Bewys jou waarde.",
+    "tagline": "Kom vroeg in. Word 'n stigterslid. Wees deel van wat volgende kom.",
+    "body": "Puntr is 'n sportvoorspellingsgemeenskap vir Suid-Afrikaanse aanhangers. Keuses open wanneer ons op Dinsdag 1 Desember 2026 bekendgestel word, met sokker eerste. Registrasie vir stigterslede is nou oop: sluit gratis aan en eis 'n genommerde kenteken op. Elke keuse sal 'n <1>tydstempel kry en gesluit word</1>, outomaties gegradeer word en in jou <1>openbare rekord</1> bewaar word — oorwinnings en verliese ingesluit.",
+    "watch": "Kyk na die video"
+  },
+  "pillars": {
+    "locked": {
+      "title": "Gesluit met die afskop",
+      "sub": "Met tydstempel. Geen wysigings. Geen skrappings."
+    },
+    "graded": {
+      "title": "Outomaties gegradeer",
+      "sub": "Konsekwente, deursigtige uitslae"
+    },
+    "kept": {
+      "title": "Vir altyd bewaar",
+      "sub": "Jou rekord, in die openbaar"
+    }
+  },
+  "why": {
+    "title": "'n Rekord klop 'n groot bewering",
+    "stamped": {
+      "title": "Met 'n tydstempel voor die afskop",
+      "body": "Elke keuse moet voor die afskop gepubliseer word om te tel. Die tydstempel is deel van die rekord."
+    },
+    "noEdits": {
+      "title": "Geen wysigings nie, geen skrappings nie",
+      "body": "Elke afgehandelde keuse bly sigbaar. Die geskiedenis word nie herskryf wanneer 'n voorspelling verkeerd uitdraai nie."
+    },
+    "public": {
+      "title": "Openbare eenhede, opbrengs en steekproefgrootte",
+      "body": "Prestasie word met eenhede, opbrengs (ROI) en steekproefgrootte gewys, sodat daar konteks agter die syfers is."
+    }
+  },
+  "steps": {
+    "title": "Hoe Puntr werk",
+    "s1": {
+      "title": "Sluit gratis aan",
+      "body": "Skep jou rekening met jou e-pos en 'n wagwoord. Jy moet 18 of ouer wees."
+    },
+    "s2": {
+      "title": "Plaas jou keuses",
+      "body": "Vanaf die bekendstelling op 1 Desember staan jy voor die afskop by jou voorspelling op komende wedstryde."
+    },
+    "s3": {
+      "title": "Word gegradeer",
+      "body": "Elke keuse word <1>met die afskop gesluit</1> en outomaties afgehandel."
+    },
+    "s4": {
+      "title": "Klim die weeklikse ranglys",
+      "body": "Bou 'n openbare rekord op eenhede, opbrengs en steekproefgrootte. Speel vir die eer."
+    }
+  },
+  "board": {
+    "title": "Weeklikse ranglys",
+    "empty": "Die weeklikse ranglys begin wanneer Puntr op 1 Desember 2026 bekendgestel word.",
+    "view": "Bekyk ranglys",
+    "units": "{{units}} eenhede"
+  },
+  "join": {
+    "title": "Plaas jou sportkennis op rekord",
+    "f1": "Keuses <1>gesluit met die afskop</1>",
+    "f2": "Outomatiese, deursigtige gradering",
+    "f3": "'n Openbare rekord wat jy kan deel",
+    "f4": "'n <1>Platform waar die gemeenskap eerste kom</1> om by te leer",
+    "f5": "<1>KI-aangedrewe insigte</1>, kom binnekort",
+    "f6": "Gratis vir stigterslede",
+    "f7": "Beplande tipgewer-ondersteuning: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie."
+  },
+  "video": {
+    "close": "Maak video toe",
+    "iframeTitle": "Hoe Puntr werk"
+  },
+  "platforms": {
+    "title": "Voorspellings, tendense en diepgaande ontledings oor Suid-Afrika se gewildste boekmakers",
+    "body": "Lede kan voorspellings aanteken teen wedstryde en pryse wat die platforms hieronder aanbied. Puntr aanvaar nie weddenskappe nie en is nie noodwendig by daardie platforms geaffilieer of deur hulle onderskryf nie.",
+    "fine": "Slegs 18+. Bepalings en voorwaardes geld."
+  },
+  "next": {
+    "title": "Volgende wedstryde",
+    "all": "Alle wedstryde"
+  },
+  "preview": {
+    "title": "Soweto-derby",
+    "badge": "Illustratiewe voorbeeld",
+    "fixture": "Betway Premiership · Voorbeeldwedstryd",
+    "try": "Tik om 'n keuse te probeer",
+    "draw": "Gelykop",
+    "locked": "Op Puntr sou hierdie keuse 'n tydstempel kry en met die afskop gesluit word. Dit sou nie gewysig of geskrap kon word nie.",
+    "idle": "Keuses sluit met die afskop en kan nie gewysig of geskrap word nie.",
+    "fine": "Voorbeeldverdeling ter illustrasie. Nie 'n werklike voorspelling nie. Niks wat jy hier tik, word gestoor nie."
+  },
+  "marquee": "Klubs op Puntr",
+  "proof": {
+    "eyebrow": "Voorspel slimmer. Bewys dit.",
+    "title": "Die verskil is die rekord.",
+    "body": "Sien wat verander wanneer elke keuse 'n verifieerbare uitkoms het.",
+    "choose": "Kies 'n tipgewersrekord",
+    "traditional": "Tradisionele tipgewer",
+    "verified": "Puntr-geverifieer",
+    "verifiedTitle": "Puntr-geverifieerde tipgewer",
+    "traditionalTitle": "Tradisionele sosiale-media-tipgewer",
+    "v": {
+      "locked": {
+        "title": "Gesluit met die afskop",
+        "body": "Met 'n tydstempel; kan nie gewysig of geskrap word nie."
+      },
+      "graded": {
+        "title": "Outomaties gegradeer",
+        "body": "Afgehandelde uitkomste werk die openbare rekord by."
+      },
+      "public": {
+        "title": "Openbare prestasie",
+        "body": "Opbrengs- en eenheidgeskiedenis bly sigbaar."
+      }
+    },
+    "t": {
+      "editable": {
+        "title": "Wysigbare keuses",
+        "body": "Bewerings kan ná die wedstryd verander word."
+      },
+      "deleted": {
+        "title": "Geskrapte verliese",
+        "body": "Swak voorspellings kan uit die voer verdwyn."
+      },
+      "roi": {
+        "title": "Ongeverifieerde opbrengs",
+        "body": "Geen volledige, kontroleerbare rekord nie."
+      }
+    },
+    "fine": "Puntr se rekords word in 'n databasis bewaar en kan openbaar geoudit word. Ons maak geen aanspraak op blokketting-verifikasie nie."
+  }
+}

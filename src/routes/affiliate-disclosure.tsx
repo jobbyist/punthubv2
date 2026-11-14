@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { AffiliateDisclosureAf } from "@/content/legal/af/affiliate-disclosure";
+import { useLocale } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/affiliate-disclosure")({
   head: () => ({
@@ -16,6 +18,8 @@ export const Route = createFileRoute("/affiliate-disclosure")({
 });
 
 function AffiliateDisclosure() {
+  const { locale } = useLocale();
+  if (locale === "af") return <AffiliateDisclosureAf />;
   return (
     <AppShell>
       <PageHeading

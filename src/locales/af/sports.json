@@ -1,0 +1,185 @@
+{
+  "breadcrumb": "Sportsoorte",
+  "status": {
+    "live": "Regstreeks op Puntr",
+    "launching": "Word {{date}} bekendgestel",
+    "window": "Teiken: {{from}} tot {{to}}"
+  },
+  "sections": {
+    "sa": "In Suid-Afrika",
+    "engine": "Hoe Puntr dit gaan dek",
+    "when": "Wanneer dit regstreeks gaan",
+    "competitions": "Kompetisies waarna ons kyk",
+    "markets": "Wat jy sal kan voorspel"
+  },
+  "whenBody": "{{name}} word vir week {{weeks}} ná die bekendstelling beplan (Puntr word op {{launch}} bekendgestel). 'n Sport word eers aangeskakel sodra sy wedstryddata en outomatiese gradering werk, dus kan die datum skuif. Die padkaart wys altyd die huidige status.",
+  "whenBodyLive": "{{name}} is nou regstreeks op Puntr.",
+  "cta": {
+    "predictions": "Sien sokkervoorspellings",
+    "roadmap": "Sien die volledige padkaart",
+    "join": "Sluit gratis aan as stigterslid"
+  },
+  "disclaimer": "Puntr is 'n voorspellings- en ontledingsgemeenskap. Insigte is vir inligting en waarborg nooit 'n uitkoms nie. Slegs 18+.",
+  "others": "Ander sportsoorte op Puntr",
+  "items": {
+    "soccer": {
+      "name": "Sokker",
+      "metaTitle": "Sokkervoorspellings Suid-Afrika: Betway Premiership, EPL, UCL | Puntr",
+      "metaDescription": "Sokker is Puntr se bekendstellingsport: Betway Premiership, EPL, Champions League en meer. Sluit keuses voor die afskop, word outomaties gegradeer en bou 'n geverifieerde rekord.",
+      "intro": "Sokker is Suid-Afrika se sport waarna die meeste gekyk word en Puntr se bekendstellingsport. Elke keuse word met die afskop gesluit, outomaties volgens die eindtelling gegradeer en by 'n openbare rekord gevoeg.",
+      "sa": "Van Soweto-derby's tussen Kaizer Chiefs en Orlando Pirates tot Mamelodi Sundowns se oorheersing in die Betway Premiership en Bafana Bafana se kwalifiserende wedstryde: sokker vul naweke regoor die land. Suid-Afrikaanse aanhangers volg die Premier League en die Champions League net so noukeurig soos die plaaslike spel.",
+      "engine": "Puntr haal wedstryde en uitslae by 'n gelisensieerde sportdataverskaffer, sodat elke wedstryd eg is en elke keuse op dieselfde manier gegradeer word. Bo en behalwe gemeenskapskeuses sal Puntr se sportintelligensie-enjin 'n algoritmiese lesing vir elke wedstryd byvoeg: vorm, kop-aan-kop-rekords en 'n vertrouetelling, in eenvoudige taal verduidelik.",
+      "competitions": [
+        "Betway Premiership (PSL)",
+        "English Premier League",
+        "UEFA Champions League",
+        "Nedbank Cup en MTN8",
+        "CAF Champions League",
+        "Bafana Bafana se wedstryde"
+      ],
+      "markets": [
+        "Wedstrydsuitslag (tuis, gelykop, weg)",
+        "Albei spanne score",
+        "Meer of minder doele",
+        "Korrekte telling (vir die rekord)"
+      ]
+    },
+    "basketball": {
+      "name": "Basketbal",
+      "metaTitle": "Basketbalvoorspellings Suid-Afrika | Puntr",
+      "metaDescription": "Basketbal sluit in week 2 ná die bekendstelling by Puntr aan. Voorspel NBA- en Afrika-basketbalwedstryde, word outomaties gegradeer en bou 'n geverifieerde rekord.",
+      "intro": "Basketbal sluit twee weke ná die bekendstelling by Puntr aan. Dit is 'n vinnig groeiende sport in Suid-Afrika, en die meeste aanhangers hier volg die NBA noukeurig.",
+      "sa": "Suid-Afrikaanse belangstelling in basketbal het gegroei deur skool- en universiteitsligas, die Basketball National League en die vastelandwye Basketball Africa League. Die NBA is die kompetisie wat die meeste gevolg word, met wedstryde laat in die nag en vroeg in die oggend wat goed by keuses voor die wedstryd pas.",
+      "engine": "Basketbaltellings is hoog en marges maak saak, daarom sal Puntr se enjin punttotale en wenmarges sowel as die wenner modelleer. Die algoritmiese lesing sal tempo, onlangse vorm en rusdae opweeg, en elke keuse word volgens die amptelike eindtelling gegradeer.",
+      "competitions": [
+        "NBA",
+        "Basketball Africa League (BAL)",
+        "Basketball National League (BNL)",
+        "FIBA se internasionale wedstryde"
+      ],
+      "markets": [
+        "Wedstrydwenner",
+        "Puntevoorgee",
+        "Totale punte meer of minder"
+      ]
+    },
+    "rugby": {
+      "name": "Rugby",
+      "metaTitle": "Rugbyvoorspellings Suid-Afrika: Springbokke, URC | Puntr",
+      "metaDescription": "Rugby sluit in week 2 ná die bekendstelling by Puntr aan: Springbok-toetse, die United Rugby Championship en meer, outomaties gegradeer op 'n geverifieerde rekord.",
+      "intro": "Rugby sluit twee weke ná die bekendstelling by Puntr aan. Min sportsoorte verenig Suid-Afrika soos die Springbokke.",
+      "sa": "Die Springbokke is van die suksesvolste spanne in die rugbygeskiedenis, en die Bulle, Stormers, Haaie en Leeus ding in die United Rugby Championship mee teen Ierse, Walliese, Skotse en Italiaanse spanne. Die Curriebeker en Varsity Cup hou die plaaslike spel ook besig.",
+      "engine": "Rugbykeuses gaan oor wenners en marges. Puntr se enjin sal tuisvoordeel, reis, vorm in die stilstaande spel en kop-aan-kop-rekords opweeg, en elke keuse volgens die amptelike eindtelling gradeer.",
+      "competitions": [
+        "Springbok-toetse",
+        "United Rugby Championship (URC)",
+        "Rugbykampioenskap",
+        "Curriebeker"
+      ],
+      "markets": [
+        "Wedstrydwenner",
+        "Wenmarge",
+        "Totale punte meer of minder"
+      ]
+    },
+    "racing": {
+      "name": "Perdewedrenne",
+      "metaTitle": "Perdewedrenvoorspellings Suid-Afrika: Durban July | Puntr",
+      "metaDescription": "Perdewedrenne word vir week 4 ná die bekendstelling op Puntr beplan, met Suid-Afrikaanse renbyeenkomste, outomatiese gradering en geverifieerde rekords.",
+      "intro": "Perdewedrenne word vir week 4 ná die bekendstelling beplan. Dit het 'n eie datamodel nodig, omdat 'n wedren baie deelnemers het eerder as twee spanne.",
+      "sa": "Suid-Afrika het 'n lang wedrentradisie, met byeenkomste by Turffontein, Kenilworth, Greyville en Scottsville, en groot dae soos die Durban July en die Cape Town Met wat nasionale aandag trek.",
+      "engine": "Wedrenne werk anders as spansport, daarom bou Puntr 'n aparte model vir renkaarte, deelnemers, jokkies en amptelike uitslae. Die algoritmiese lesing sal onlangse vorm, beginposisie, afstand en baantoestand in ag neem, en keuses word volgens amptelike renuitslae gegradeer.",
+      "competitions": [
+        "Durban July",
+        "Cape Town Met",
+        "Summer Cup",
+        "Groot rendae by Turffontein, Kenilworth en Greyville"
+      ],
+      "markets": [
+        "Wenner",
+        "Plek (top-eindigers)"
+      ]
+    },
+    "combat": {
+      "name": "Gevegsport",
+      "metaTitle": "Boks- en MMA-voorspellings Suid-Afrika | Puntr",
+      "metaDescription": "Gevegsport (boks en MMA) word vir weke 6 tot 8 ná die bekendstelling op Puntr beplan, met keuses wat volgens amptelike uitslae gegradeer word.",
+      "intro": "Boks en MMA word vir weke 6 tot 8 ná die bekendstelling beplan.",
+      "sa": "Suid-Afrika het 'n trotse boksgeskiedenis en 'n eie MMA-promosie in EFC, terwyl UFC-geleenthede groot plaaslike gehore trek. Gevegsaande pas natuurlik by keuses voor die geleentheid.",
+      "engine": "Gevegte is eenmalige geleenthede, daarom sal Puntr se enjin fokus op rekord, reikwydte, bedrywigheid en stylverskille. Keuses sluit voor die eerste klok en word volgens die amptelike uitslag gegradeer, insluitend die wyse van oorwinning.",
+      "competitions": [
+        "UFC",
+        "EFC (Extreme Fighting Championship)",
+        "Wêreldtitelboks",
+        "Suid-Afrikaanse boksprogramme"
+      ],
+      "markets": [
+        "Gevegwenner",
+        "Wyse van oorwinning",
+        "Gaan die volle afstand (ja of nee)"
+      ]
+    },
+    "athletics": {
+      "name": "Atletiek",
+      "metaTitle": "Atletiekvoorspellings Suid-Afrika: baan, veld, Comrades | Puntr",
+      "metaDescription": "Atletiek word vir weke 6 tot 8 ná die bekendstelling op Puntr beplan: baan-en-veld-byeenkomste en groot wedlope, gegradeer volgens amptelike uitslae.",
+      "intro": "Atletiek word saam met gevegsport vir weke 6 tot 8 ná die bekendstelling beplan.",
+      "sa": "Suid-Afrika lewer wêreldklas-naellopers en langafstandatlete, en padwedlope soos die Comrades-marathon en die Two Oceans-marathon is nasionale geleenthede. Aanhangers volg ook die Diamond League en die Wêreldatletiekkampioenskappe.",
+      "engine": "Atletiek gaan oor individuele prestasies, daarom sal Puntr se enjin na seisoensbeste tye, onlangse uitslae en kampioenskapsvorm kyk. Keuses sluit voor die wegspring en word volgens amptelike uitslae gegradeer.",
+      "competitions": [
+        "Diamond League-byeenkomste",
+        "Wêreldatletiekkampioenskappe",
+        "Comrades-marathon",
+        "Two Oceans-marathon"
+      ],
+      "markets": [
+        "Wenner van die nommer",
+        "Podiumplek",
+        "Kop-aan-kop tussen atlete"
+      ]
+    },
+    "cricket": {
+      "name": "Krieket",
+      "metaTitle": "Krieketvoorspellings Suid-Afrika: Proteas, SA20 | Puntr",
+      "metaDescription": "Krieket word vir week 10 ná die bekendstelling op Puntr beplan: Proteas se internasionale wedstryde en die SA20, met keuses wat volgens amptelike uitslae gegradeer word.",
+      "intro": "Krieket word vir week 10 ná die bekendstelling beplan, net betyds vir die someroeisoen.",
+      "sa": "Die Proteas speel toetse, eendagwedstryde en internasionale T20-wedstryde, en die SA20-franchiseliga het 'n hoogtepunt van die Suid-Afrikaanse somer geword. Krieket se lang formate en veranderende toestande maak dit 'n sport waar ontleding werklik saak maak.",
+      "engine": "Krieketuitslae hang af van formaat, veld, die opskiet en die weer, daarom sal Puntr se enjin elke formaat afsonderlik modelleer. Keuses sluit voor die eerste bal en word volgens die amptelike uitslag gegradeer, insluitend gelykopuitslae en geen-uitslae.",
+      "competitions": [
+        "Proteas se toetse, eendagwedstryde en T20I's",
+        "SA20",
+        "ICC-toernooie"
+      ],
+      "markets": [
+        "Wedstrydsuitslag",
+        "Topkolwer",
+        "Totale lopies meer of minder"
+      ]
+    },
+    "tennis": {
+      "name": "Tennis",
+      "metaTitle": "Tennisvoorspellings Suid-Afrika: Grand Slams, ATP, WTA | Puntr",
+      "metaDescription": "Tennis word vir week 12 ná die bekendstelling op Puntr beplan: Grand Slams en ATP- en WTA-toernooie, met keuses wat volgens amptelike uitslae gegradeer word.",
+      "intro": "Tennis word vir week 12 ná die bekendstelling beplan, voor die Australiese Ope-seisoen.",
+      "sa": "Suid-Afrikaanse aanhangers volg die vier Grand Slams en die ATP- en WTA-toere regdeur die jaar, met plaaslike spelers wat op die internasionale stoet meeding.",
+      "engine": "Tennis is kop-aan-kop, daarom sal Puntr se enjin baanoppervlak, posisie op die ranglys, onlangse vorm en moegheid van vroeër rondtes opweeg. Keuses sluit voor die eerste afslaan en word volgens die amptelike uitslag gegradeer, met duidelike reëls vir onttrekkings.",
+      "competitions": [
+        "Australiese Ope, Roland-Garros, Wimbledon en VS Ope",
+        "ATP-toer",
+        "WTA-toer"
+      ],
+      "markets": [
+        "Wedstrydwenner",
+        "Aantal stelle",
+        "Totale spelle meer of minder"
+      ]
+    }
+  },
+  "stats": {
+    "competitions": "Beplande kompetisies",
+    "markets": "Voorspellingsmarkte",
+    "week": "Bekendstellingsweek"
+  },
+  "marquee": "Klubs op Puntr",
+  "breadcrumbLabel": "Broodkrummelroete"
+}

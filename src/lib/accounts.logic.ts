@@ -11,7 +11,7 @@ export const signupSchema = z.object({
     .toLowerCase()
     .regex(/^[a-z0-9_]{3,20}$/),
   birthYear: z.number().int().min(1900).max(3000),
-  language: z.enum(["en-ZA", "af", "zu", "xh"]),
+  language: z.enum(["en-ZA", "af", "zu"]),
   marketingEmail: z.boolean(),
   marketingWhatsapp: z.boolean(),
   ref: z.string().trim().max(32).nullable(),

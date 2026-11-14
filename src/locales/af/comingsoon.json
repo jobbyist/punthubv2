@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "KI-aangedrewe insigte | Puntr Pro",
+    "description": "Verstaan die spel met KI-aangedrewe insigte, beskikbaar met Puntr Pro vir R99 per maand.",
+    "ogDescription": "KI-aangedrewe sportintelligensie vir Puntr Pro-lede."
+  },
+  "badge": "Puntr Pro-funksie",
+  "title1": "Sien die spel",
+  "title2": "anders.",
+  "body": "KI-aangedrewe insigte bring wedstrydkonteks, prestasie-tendense en data-gedrewe opsommings saam sodat jy beter ingeligte besluite kan neem. Kom binnekort met <1>Puntr Pro</1>.",
+  "queue": "<1>{{feature}}</1> word vir Puntr Pro voorberei",
+  "cta": "Verken Puntr Pro",
+  "explore": "Verken voorspellings",
+  "fine": "Puntr Pro: R99 per maand. Slegs 18+. Dobbel verantwoordelik.",
+  "example": "Voorbeeld",
+  "card": {
+    "confidence": "Voorbeeld van vertroue",
+    "form": "Voorbeeld van vormindeks",
+    "next": "Voorbeeld van voorspelling",
+    "homeWin": "Tuisoorwinning"
+  },
+  "features": {
+    "aiPicks": "KI-aangedrewe insigte",
+    "podcast": "Podsending",
+    "bookmakers": "Boekmakers",
+    "tools": "Gereedskap",
+    "liveScores": "Regstreekse tellings",
+    "puntPoints": "PuntPoints",
+    "referrals": "Verwysings",
+    "feedback": "Terugvoer"
+  }
+}

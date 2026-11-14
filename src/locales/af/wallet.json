@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Beursie | Puntr"
+  },
+  "title": "Beursie",
+  "subtitle": "Jou PuntPoints en betaal-soos-jy-gebruik-krediete op een plek.",
+  "error": "Ons kon nie jou beursie laai nie. Probeer asseblief weer.",
+  "points": {
+    "label": "PuntPoints",
+    "transferable_one": "{{count}} punt kan gestuur word",
+    "transferable_other": "{{count}} punte kan gestuur word",
+    "note": "PuntPoints is lojaliteitspunte vir koopbewyse, geborgde belonings en voordele. Hulle het geen kontantwaarde nie en kan nie vir geld omgeruil word nie."
+  },
+  "credits": {
+    "label": "Betaal-soos-jy-gebruik-krediete",
+    "plan": {
+      "free": "Gratis plan",
+      "payg": "Betaal soos jy gebruik",
+      "pro": "Puntr Pro: premiumfunksies ingesluit"
+    },
+    "note": "Krediete ontsluit premiumfunksies en -gereedskap een gebruik op 'n slag. Krediete kan nie aan ander lede gestuur of as kontant terugbetaal word nie.",
+    "buy": "Koop krediete (vanaf bekendstelling)"
+  },
+  "prices": {
+    "title": "Wat krediete ontsluit",
+    "credits_one": "{{count}} krediet",
+    "credits_other": "{{count}} krediete",
+    "note": "Puntr Pro-lede gebruik hierdie funksies sonder om krediete te spandeer."
+  },
+  "send": {
+    "title": "Stuur PuntPoints",
+    "to": "Gebruikersnaam, bv. @thandi",
+    "amount": "Punte",
+    "note": "Nota (opsioneel)",
+    "limits": "Stuur tussen {{min}} en {{max}} punte op 'n slag, tot {{daily}} per dag en {{monthly}} per maand. Jou rekening moet ten minste {{days}} dae oud wees. Punte wat in die afgelope {{hold}} dae verdien is en punte uit verwysings kan nie gestuur word nie.",
+    "max_one": "Jy kan nou tot {{count}} punt stuur.",
+    "max_other": "Jy kan nou tot {{count}} punte stuur.",
+    "review": "Hersien",
+    "confirm_one": "Stuur {{count}} punt aan @{{to}}? Oordragte is finaal.",
+    "confirm_other": "Stuur {{count}} punte aan @{{to}}? Oordragte is finaal.",
+    "confirmButton": "Stuur nou",
+    "cancel": "Kanselleer",
+    "done_one": "{{count}} punt aan @{{to}} gestuur.",
+    "done_other": "{{count}} punte aan @{{to}} gestuur.",
+    "errors": {
+      "not_launched": "Stuur open op 1 Desember 2026.",
+      "transfers_paused": "Oordragte is tans onderbreek.",
+      "invalid_amount": "Daardie bedrag val buite die oordraglimiete.",
+      "note_too_long": "Die nota is te lank.",
+      "banned": "Jou rekening kan nie punte stuur nie.",
+      "suspended": "Jou rekening is opgeskort.",
+      "limited": "Die stuur van punte is op jou rekening onderbreek.",
+      "account_too_new": "Jou rekening is te nuut om punte te stuur.",
+      "recipient_not_found": "Ons kon nie daardie lid vind nie.",
+      "self_transfer": "Jy kan nie punte aan jouself stuur nie.",
+      "recipient_unavailable": "Daardie lid kan nie nou punte ontvang nie.",
+      "daily_cap": "Dit sal vandag se limiet oorskry.",
+      "monthly_cap": "Dit sal hierdie maand se limiet oorskry.",
+      "insufficient_transferable": "Jy het nie genoeg punte wat gestuur kan word nie.",
+      "unknown": "Die oordrag het nie deurgegaan nie. Niks is gestuur nie."
+    }
+  },
+  "history": {
+    "title": "Transaksiegeskiedenis",
+    "empty": "Nog geen transaksies nie.",
+    "unit": {
+      "points": "pte",
+      "credits": "krediete"
+    }
+  }
+}

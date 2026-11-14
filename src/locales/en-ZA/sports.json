@@ -180,5 +180,6 @@
     "markets": "Prediction markets",
     "week": "Launch week"
   },
-  "marquee": "Clubs on Puntr"
+  "marquee": "Clubs on Puntr",
+  "breadcrumbLabel": "Breadcrumb"
 }

@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Aantekening en sekuriteit | Puntr",
+    "description": "Bevestig jou e-pos en skakel tweefaktor-aantekening aan."
+  },
+  "title": "Aantekening en sekuriteit",
+  "subtitle": "Hou jou rekening en jou rekord veilig.",
+  "prompt": {
+    "confirm": "Bevestig jou e-pos om keuses te plaas en jou rekening herwinbaar te hou.",
+    "mfa": "Voeg tweefaktor-aantekening by om jou rekening te beskerm.",
+    "cta": "Maak sekuriteit oop",
+    "later": "Nie nou nie"
+  },
+  "email": {
+    "title": "E-pos",
+    "confirmed": "E-pos bevestig",
+    "why": "Bevestiging bewys dat hierdie adres aan jou behoort. Jy het dit nodig om keuses op die voer en die ranglys te plaas, en om jou rekening herwinbaar te hou. Lede met vroeë toegang het dit ook nodig om 'n stigtersplek op te eis.",
+    "send": "Stuur vir my 'n bevestigingskode",
+    "sent": "Ons het 'n 6-syferkode gestuur. Dit kan 'n minuut neem.",
+    "resend": "Stuur 'n nuwe kode",
+    "error": {
+      "code": "Daardie kode is nie reg nie of het verval.",
+      "rate": "Te veel pogings. Wag asseblief 'n minuut.",
+      "generic": "Kon nie die kode stuur nie. Probeer asseblief weer."
+    }
+  },
+  "mfa": {
+    "title": "Tweefaktor-aantekening",
+    "body": "Ná jou wagwoord vra Puntr vir 'n 6-syferkode van 'n verifikasie-toep soos Google Authenticator of Authy. Sodra dit aan is, het plasings en profielveranderings ook daardie kode nodig.",
+    "turnOn": "Skakel tweefaktor-aantekening aan",
+    "turnOff": "Skakel af",
+    "on": "Tweefaktor-aantekening is aan",
+    "offDone": "Tweefaktor-aantekening is af",
+    "scan": "Skandeer hierdie QR-kode met jou verifikasie-toep.",
+    "qrAlt": "QR-kode vir jou verifikasie-toep",
+    "manual": "Kan jy nie skandeer nie? Vul hierdie sleutel in:",
+    "enter": "Vul dan die 6-syferkode in wat dit wys.",
+    "cancel": "Kanselleer",
+    "challenge": {
+      "title": "Vul jou verifikasiekode in",
+      "body": "Maak jou verifikasie-toep oop en vul die 6-syferkode vir Puntr in.",
+      "verify": "Verifieer",
+      "verifying": "Kontroleer tans…",
+      "cancel": "Gebruik 'n ander rekening"
+    },
+    "error": {
+      "start": "Kon nie die opstelling begin nie. Probeer asseblief weer.",
+      "code": "Daardie kode is nie reg nie. Kyk na die toep en probeer weer.",
+      "rate": "Te veel pogings. Wag asseblief 'n minuut.",
+      "noFactor": "Geen verifikasie-toep is op hierdie rekening opgestel nie.",
+      "off": "Kon dit nie afskakel nie. Teken weer met jou kode aan en probeer weer."
+    }
+  },
+  "password": {
+    "title": "Wagwoord",
+    "body": "Stel of verander die wagwoord waarmee jy aanteken.",
+    "label": "Nuwe wagwoord",
+    "save": "Stoor wagwoord",
+    "saved": "Wagwoord gestoor",
+    "error": {
+      "short": "Gebruik ten minste 8 karakters.",
+      "long": "Daardie wagwoord is te lank. Gebruik 72 grepe of minder.",
+      "sameAsEmail": "Jou wagwoord mag nie jou e-pos wees nie.",
+      "common": "Daardie wagwoord is te maklik om te raai. Probeer 'n langer frase.",
+      "generic": "Kon nie die wagwoord stoor nie. Probeer asseblief weer."
+    }
+  }
+}

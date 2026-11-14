@@ -1,0 +1,170 @@
+{
+  "brand": {
+    "tagline": "Voorspel slimmer. Bewys dit."
+  },
+  "language": {
+    "label": "Taal",
+    "comingSoon": "Kom binnekort",
+    "inReview": "In hersiening"
+  },
+  "cta": {
+    "getStarted": "Sluit gratis aan",
+    "createAccount": "Skep jou gratis rekening",
+    "createFreeAccount": "Skep gratis rekening",
+    "joinEarlyAccess": "Begin",
+    "becomeFounding": "Word 'n stigterslid"
+  },
+  "foundingBar": {
+    "text": "Registrasie vir stigterslede is oop: die eerste 100 kry gratis 'n genommerde kenteken. Puntr word {{launch}} bekendgestel.",
+    "cta": "Eis jou plek op"
+  },
+  "badge": {
+    "example": "Voorbeeld",
+    "comingSoon": "Kom binnekort",
+    "live": "REGSTREEKS",
+    "new": "Nuut",
+    "pro": "Pro"
+  },
+  "action": {
+    "close": "Maak toe",
+    "viewAll": "Sien alles",
+    "viewLeaderboard": "Bekyk ranglys",
+    "viewResults": "Bekyk uitslae",
+    "send": "Stuur boodskap",
+    "seeFixtures": "Sien wedstryde"
+  },
+  "meta": {
+    "title": "Puntr | Voorspel slimmer. Bewys dit.",
+    "description": "'n Platform vir Suid-Afrikaanse sportaanhangers waar die gemeenskap eerste kom. Keuses gesluit met die afskop, outomaties gegradeer en vir altyd bewaar. 18+.",
+    "ogDescription": "Elke keuse word met die afskop gesluit, outomaties gegradeer en vir altyd bewaar. Bou 'n rekord wat mense kan vertrou. 18+.",
+    "ogImageAlt": "Puntr: geslote, openbare tipgewersrekords",
+    "orgDescription": "'n Platform vir Suid-Afrikaanse sportaanhangers waar die gemeenskap eerste kom: geslote, outomaties gegradeerde, openbare tipgewersrekords. 18+."
+  },
+  "vs": "teen",
+  "sport": {
+    "soccer": "Sokker",
+    "rugby": "Rugby",
+    "basketball": "Basketbal",
+    "cricket": "Krieket",
+    "tennis": "Tennis",
+    "combat": "Gevegsport",
+    "athletics": "Atletiek",
+    "racing": "Perdewedrenne"
+  },
+  "founding": {
+    "left": "{{left}} van {{cap}} stigtersplekke oor",
+    "full": "Stigtersplekke is vol"
+  },
+  "illustrative": {
+    "badge": "Illustratiewe voorbeeld",
+    "fixtures": {
+      "title": "'n Voorsmakie van die Puntr-ervaring",
+      "body": "Voorbeelde van wedstrydkaarte oor kompetisies en sportsoorte heen. Dit is ontwerpvoorbeelde, nie geskeduleerde wedstryde of beskikbare markte nie.",
+      "kickoff": "Voorbeeld-afskop"
+    },
+    "leaderboard": {
+      "title": "Hoe die ranglys kan lyk",
+      "body": "Voorbeeldprofiele en prestasiesyfers om die uitleg van die ranglys te wys. Geen werklike lededata word gewys nie.",
+      "rank": "Posisie",
+      "member": "Lid",
+      "units": "Eenhede",
+      "roi": "Opbrengs",
+      "picks": "Afgehandel",
+      "rows": [
+        {
+          "name": "CapeTownCall",
+          "units": "34.2",
+          "roi": "+22.4%",
+          "picks": "18"
+        },
+        {
+          "name": "SowetoScout",
+          "units": "29.8",
+          "roi": "+18.7%",
+          "picks": "16"
+        },
+        {
+          "name": "DurbanData",
+          "units": "26.4",
+          "roi": "+16.1%",
+          "picks": "15"
+        },
+        {
+          "name": "MzansiMind",
+          "units": "23.1",
+          "roi": "+13.8%",
+          "picks": "14"
+        },
+        {
+          "name": "JoziTactician",
+          "units": "20.6",
+          "roi": "+11.2%",
+          "picks": "12"
+        }
+      ]
+    },
+    "insights": {
+      "title": "Binne die insigte-ervaring",
+      "body": "Illustratiewe wedstrydontleding, visuele prestasie-tendense en 'n voorskou van 'n nuusvoer uit verskeie bronne.",
+      "matches": "Wedstryde ontleed",
+      "competitions": "Kompetisies",
+      "form": "Voorbeeld van vormtendens",
+      "chartTitle": "Illustratiewe akkuraatheid per wedstrydrondte",
+      "chartNote": "Slegs voorbeeldpersentasies — nie die prestasie van Puntr-lede nie.",
+      "accuracy": "Illustratiewe akkuraatheid",
+      "newsTitle": "Voorskou van sportnuusvoer",
+      "newsBody": "Voorbeelde van uitgewerskaarte wys hoe saamgevoegde dekking kan lyk. Geen regstreekse artikels word hier gehaal nie.",
+      "sourcePreview": "Bronvoorskou",
+      "refresh": "Beplande herlaaiskedule: elke 24 uur om 12:00 SAST",
+      "stories": {
+        "supersport": "Voorbeeld: spannuus en keuring-opdatering",
+        "bbcsport": "Voorbeeld: kompetisievorm en wedstrydkonteks",
+        "espn": "Voorbeeld: ontleding en breër sportopskrifte"
+      }
+    },
+    "experience": {
+      "title": "'n Blik op die wedstryd-ervaring",
+      "body": "Verken hoe wedstryde, afgehandelde uitslae en die gemeenskap se ranglys saamkom.",
+      "tabsLabel": "Voorskou van die wedstryd-ervaring",
+      "tab": {
+        "fixtures": "Wedstryde",
+        "results": "Uitslae",
+        "leaderboard": "Ranglys"
+      },
+      "fullTime": "Volle tyd",
+      "sampleResult": "Voorbeelduitslag",
+      "boardTitle": "Weeklikse ranglys",
+      "boardBody": "Voorbeeld van ledeprestasie. Slegs illustratiewe data.",
+      "unitsShort": "eenhede",
+      "note": "Voorskouinhoud is illustratief en verteenwoordig nie regstreekse wedstryde, uitslae of ledeposisies nie."
+    }
+  },
+  "gate": {
+    "badge": "Open 1 Desember 2026",
+    "title": "{{feature}} open met die bekendstelling",
+    "body": "Hierdie deel van Puntr gaan op Dinsdag 1 Desember 2026 vir almal regstreeks. Tot dan kan jy jou keuses in Oefenmodus skerp slyp.",
+    "practice": "Gaan na Oefenmodus",
+    "roadmap": "Sien die padkaart",
+    "preview": "Voorskou: jy kan dit voor die bekendstelling sien omdat jou rekening admin- of vroeë-toegangsregte het. Lede sien dit vanaf 1 Desember 2026."
+  },
+  "preloader": {
+    "label": "Laai Puntr",
+    "slogan": "Voorspel slimmer. Bewys dit.",
+    "tag": "Suid-Afrika se sportintelligensie-gemeenskap"
+  },
+  "foundingCounter": {
+    "compact": "{{left}} van {{cap}} stigtersplekke oor",
+    "left": "{{left}} / {{cap}} oor",
+    "full": "Toekenning vol",
+    "claimed": "{{claimed}} van {{cap}} plekke opgeneem",
+    "remaining": "oor",
+    "progressLabel": "Stigtersplekke opgeëis",
+    "availability": "Beskikbaarheid van stigtersplekke",
+    "claimedLabel": "Stigtersplekke opgeëis"
+  },
+  "independence": {
+    "title": "Verhoudings met boekmakers en redaksionele onafhanklikheid",
+    "p1": "Tipgewers op Puntr teken keuses aan teen die wedstryde en pryse wat gelisensieerde en plaaslik gereguleerde platforms aanbied. Puntr neem nie weddenskappe nie en is nie noodwendig by hulle geaffilieer of deur hulle onderskryf nie.",
+    "p2": "Puntr sal nooit toelaat dat 'n geaffilieerde, vennoot of borg met spesiale belange sy voorspellingstellings, KI-aanbevelings, redaksionele inhoud of onafhanklike waarskynlikheidsberamings beïnvloed nie."
+  }
+}

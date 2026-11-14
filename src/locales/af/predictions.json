@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "title": "Wedstryde en voorspellings | Puntr",
+    "description": "Komende sokkerwedstryde in die Betway Premiership, Premier League, Champions League en meer. Keuses open met die bekendstelling op 1 Desember 2026. Sluit nou gratis aan. 18+.",
+    "ogTitle": "Wedstryde en voorspellings | Puntr",
+    "ogDescription": "Komende PSL-, EPL-, UCL- en ander sokkerwedstryde."
+  },
+  "title": "Voorspellings",
+  "subtitle": "Komende wedstryde in Suid-Afrikaanse tyd. Keuses open met die bekendstelling op 1 Desember 2026 en sluit met die afskop.",
+  "filter": {
+    "all": "Alle ligas",
+    "soccer": "Sokker",
+    "rugby": "Rugby",
+    "label": "Filtreer volgens liga"
+  },
+  "empty": {
+    "title": "Nog geen wedstryde in die volgende 14 dae nie",
+    "body": "Wedstryde word elke dag bygewerk. Kom kyk binnekort weer."
+  },
+  "error": "Ons kon nie die wedstryde laai nie. Herlaai asseblief die bladsy.",
+  "live": "Aan die gang",
+  "kickoff": "Afskop",
+  "note": "Vorige uitslae voorspel nie toekomstige uitslae nie. 18+.",
+  "upcoming": {
+    "title": "Volgende wedstryde",
+    "all": "Alle wedstryde"
+  },
+  "gate": {
+    "label": "Skep 'n gratis rekening om gereed te wees wanneer voorspellings op 1 Desember 2026 oopmaak.",
+    "values": "Skep 'n gratis rekening om pryse en vertroue met die bekendstelling te sien.",
+    "valuesAria": "Gesluit. Skep 'n gratis rekening om dit te sien."
+  },
+  "pick": "Maak 'n keuse"
+}

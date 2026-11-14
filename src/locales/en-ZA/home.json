@@ -99,5 +99,44 @@
     "idle": "Picks lock at kick-off and cannot be edited or deleted.",
     "fine": "Sample split for illustration. Not a real prediction. Nothing you tap here is saved."
   },
-  "marquee": "Clubs on Puntr"
+  "marquee": "Clubs on Puntr",
+  "proof": {
+    "eyebrow": "Predict smarter. Prove it.",
+    "title": "The difference is the record.",
+    "body": "See what changes when every pick has a verifiable outcome.",
+    "choose": "Choose a tipster record",
+    "traditional": "Traditional tipster",
+    "verified": "Puntr verified",
+    "verifiedTitle": "Puntr Verified Tipster",
+    "traditionalTitle": "Traditional social tipster",
+    "v": {
+      "locked": {
+        "title": "Locked at kick-off",
+        "body": "Timestamped; cannot be edited or deleted."
+      },
+      "graded": {
+        "title": "Auto-graded",
+        "body": "Settled outcomes update the public record."
+      },
+      "public": {
+        "title": "Public performance",
+        "body": "ROI and unit history stay visible."
+      }
+    },
+    "t": {
+      "editable": {
+        "title": "Editable picks",
+        "body": "Claims can be changed after the match."
+      },
+      "deleted": {
+        "title": "Deleted losses",
+        "body": "Poor calls can disappear from the feed."
+      },
+      "roi": {
+        "title": "Unverified ROI",
+        "body": "No complete, checkable track record."
+      }
+    },
+    "fine": "Puntr records are database-backed and publicly auditable. Blockchain verification is not claimed."
+  }
 }

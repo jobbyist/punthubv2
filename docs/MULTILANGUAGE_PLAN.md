@@ -1,19 +1,22 @@
-# Multi-language plan (next session)
+# Multi-language plan
 
-## Already in place
-- Registry `src/locales/config.ts`: en-ZA enabled; af, zu, xh present but `enabled: false, reviewed: false`.
-- `LanguageSwitcher` is already rendered in the footer, the account page and the mobile menu. It shows only when two or more languages are enabled and saves the choice to `profiles.language` for signed-in members.
-- 37 en-ZA namespaces (about 150 KB of JSON), `scripts/i18n-check.ts`, a dev pseudo-locale, `src/lib/i18n/head.ts` for SEO titles.
+## Status (14 Nov 2026)
+- **Afrikaans: translated, in review.** Every public section (36 namespaces plus `pages`) and all six legal pages have an Afrikaans draft (`src/locales/af/`, `src/content/legal/af/`). Admin text stays English. Translation was done in-session, using none of the Gemini quota.
+- **Review happens in Admin > Translations**: English and Afrikaans side by side, approve or suggest wording per string, approve a whole section, legal pages page by page (open English / open translated), then a named sign-off. Decisions live in `translation_reviews` and `translation_signoffs` (migration `20261114050000_translation_reviews.sql`); a review goes stale automatically if either the English or the translated text changes afterwards.
+- **Who sees it:** admins can pick "Afrikaans · In review" in the language selector (sets the `puntr_lang_preview` cookie); everyone else stays on English. After the sign-off, copy any suggested wording into the repo and set `enabled: true`, `reviewed`, `reviewedBy`, `reviewedAt` for `af` in `src/locales/config.ts` in one commit.
+- **Legal pages are translated (owner decision, 14 Nov 2026)** with a notice that the English version applies if the two differ. `[attorney review]`: counsel should confirm the translated legal pages and the precedence notice.
+- **isiZulu:** listed in the selector with a "Coming soon" badge. Revisit scheduled for Fri 20 Nov 2026, 11:00 SAST.
+- **isiXhosa:** removed from the plan (owner, 14 Nov 2026).
 
-## Work for the session
-1. Decide the first language(s): Afrikaans, isiZulu, isiXhosa (owner). Recommend one at a time, starting with the namespaces members see first: `common`, `nav`, `home`, `auth`, `account`, `founding`, `rg` (responsible gambling), `consent`.
-2. Machine-translate drafts (Gemini free tier, router already in `src/lib/content`; no personal data, only UI strings) into `src/locales/<code>/`, keeping `{{placeholders}}` and ICU plurals; run `scripts/i18n-check.ts` for missing keys and placeholder mismatches.
-3. Legal pages (`terms`, `privacy`, `cookies`, `refunds`, `affiliate-disclosure`) stay English-only with a notice until counsel approves a translation. The responsible-gambling notice and the 0800 006 008 helpline must be present and correct in every language.
-4. A native-speaker reviewer approves each language: fill `reviewed`, `reviewedBy`, `reviewedAt` and set `enabled: true` in the same commit (existing rule).
-5. Account: the picker exists; add a "language of emails" choice only if emails are translated (auth, founding, outbox templates are English today). Until then say so next to the picker.
-6. SEO: `hreflang` alternates and `<html lang>`; keep canonical URLs unchanged (no locale prefix) unless the owner wants `/af/...` routes.
-7. Admin and newsroom stay English. Money via `money()`, odds via `odds()`, dates via `src/lib/format.ts` in every locale.
-8. QA: pseudo-locale pass for overflow (mobile cards, nav, footer shuffler), then each language on a phone.
+## Before Afrikaans goes live for everyone
+1. Native-speaker review and sign-off in Admin > Translations.
+2. Translate weekday and month names in dates. `src/lib/format.ts` formats dates in English for every language and is called from 37 files without the visitor's language; it needs a locale-aware hook (`useFormat()`) so server and browser render the same text. Until then dates read "Sat 21 Nov 2026" on Afrikaans pages.
+3. Emails stay English (auth, founding, outbox templates). Say so next to the picker, or translate them.
+4. `hreflang` alternates and `<html lang>` (already set from the resolved language); canonical URLs stay without a locale prefix.
+
+## Translating future copy
+- Any new English key needs its Afrikaans twin: `src/lib/translations.test.ts` fails if a key or placeholder is missing.
+- Options that do not use the content engine's Gemini quota (checked 14 Nov 2026): translate in a Claude session (no API cost, used for the first draft); Microsoft Translator (free tier of 2 million characters a month); Google Cloud Translation (first 500,000 characters a month free, as a monthly credit); DeepL API Free (Afrikaans and isiZulu are listed among its languages). All cover Afrikaans and isiZulu. Machine output is always a draft for the native-speaker review.
 
 ## Legal
-Any translated string that changes what is promised needs the same legal-changelog entry as English. Mark translated legal summaries `[attorney review]`.
+Any translated string that changes what is promised needs the same legal-changelog entry as English. Translated legal pages are `[attorney review]`.

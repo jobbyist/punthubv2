@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "Jou rekening | Puntr",
+    "privacyTitle": "Privaatheid en data | Puntr",
+    "description": "Bestuur jou Puntr-rekening.",
+    "recordTitle": "{{username}} | Puntr"
+  },
+  "signInNeeded": {
+    "title": "Teken aan om voort te gaan",
+    "body": "Hierdie bladsy is vir lede wat aangeteken is.",
+    "cta": "Teken aan of sluit aan"
+  },
+  "home": {
+    "title": "Jou rekening",
+    "subtitle": "Aangeteken as {{email}}",
+    "username": "Gebruikersnaam",
+    "founding": "Stigterslid #{{number}}",
+    "member": "Lid",
+    "language": "Taal",
+    "privacyLink": "Privaatheid en data",
+    "privacyBody": "Laai jou data af, verander jou bemarkingskeuses of skrap jou rekening.",
+    "recordLink": "My openbare rekord",
+    "securityLink": "Aantekening en sekuriteit",
+    "securityBody": "Bevestig jou e-pos, skakel tweefaktor-aantekening aan of stel 'n wagwoord.",
+    "rewardsLink": "PuntPoints en belonings",
+    "rewardsBody": "Jou saldo, hoe om te verdien, uitnodigings en belonings."
+  },
+  "privacy": {
+    "title": "Privaatheid en data",
+    "subtitle": "Jy is in beheer van jou persoonlike inligting. Sien die <1>privaatheidskennisgewing</1> vir die besonderhede.",
+    "export": {
+      "title": "Laai jou data af",
+      "body": "'n JSON-lêer met jou profiel, toestemmings, keuses en verslae.",
+      "cta": "Laai my data af",
+      "working": "Berei tans voor…",
+      "error": "Ons kon nie jou lêer voorberei nie. Probeer asseblief weer."
+    },
+    "marketing": {
+      "title": "Bemarking",
+      "body": "Bemarking is opsioneel en nooit 'n voorwaarde om Puntr te gebruik nie. Diens-e-posse (soos jou aantekenkode) is nie bemarking nie.",
+      "email": "E-pos vir my nuus en aanbiedinge van Puntr",
+      "whatsapp": "Stuur vir my nuus en aanbiedinge van Puntr op WhatsApp",
+      "saved": "Gestoor",
+      "error": "Kon nie daardie keuse stoor nie. Probeer asseblief weer."
+    },
+    "tracking": {
+      "title": "Ontledings- en geaffilieerde opsporing",
+      "body": "Albei is af tensy jy dit aanvaar.",
+      "cta": "Maak privaatheidskeuses oop"
+    },
+    "request": {
+      "title": "Ander versoeke",
+      "body": "Om inligting reg te stel, beswaar teen 'n gebruik te maak of 'n klagte in te dien, stuur 'n privaatheidsversoek.",
+      "cta": "Rig 'n privaatheidsversoek"
+    },
+    "delete": {
+      "title": "Skrap jou rekening",
+      "body": "Dit verwyder jou e-pos, geboortejaar en bemarkingskeuses, en teken jou vir goed uit. Dit kan nie ongedaan gemaak word nie.",
+      "record": "Jou keuses bly op die openbare rekord omdat die rekord permanent en verifieerbaar is. Hulle bly onder 'n naam wat nie meer na jou verwys nie (deleted-xxxxxxxxxx).",
+      "cta": "Skrap my rekening",
+      "confirmTitle": "Skrap jou rekening?",
+      "confirmBody": "Tik SKRAP om te bevestig.",
+      "confirmWord": "SKRAP",
+      "confirm": "Skrap permanent",
+      "cancel": "Kanselleer",
+      "working": "Skrap tans…",
+      "error": "Ons kon nie jou rekening skrap nie. Probeer asseblief weer of stuur 'n privaatheidsversoek.",
+      "done": "Jou rekening is geskrap."
+    }
+  },
+  "record": {
+    "founding": "Stigterslid #{{number}}",
+    "member": "Lid",
+    "joined": "Aangesluit {{date}}",
+    "note": "Elke keuse bly op die rekord - geen kan gewysig of verwyder word nie.",
+    "notFound": "Ons kon nie daardie lid vind nie.",
+    "stats": {
+      "picks": "Keuses",
+      "settled": "Afgehandel",
+      "winRate": "Wenkoers",
+      "units": "Eenhede",
+      "roi": "Opbrengs",
+      "sample": "Steekproefgrootte",
+      "form": "Laaste 10",
+      "formNone": "Nog geen afgehandelde keuses nie",
+      "sampleNote": "{{count}} afgehandelde keuses. 'n Klein steekproef sê min.",
+      "noRoi": "-"
+    },
+    "history": "Keusegeskiedenis",
+    "empty": "Nog geen keuses nie.",
+    "loadMore": "Laai meer",
+    "error": "Ons kon nie hierdie rekord laai nie. Herlaai asseblief die bladsy.",
+    "legend": "W gewen · L verloor · V nietig"
+  },
+  "invite": {
+    "title": "Nooi vriende",
+    "body": "Deel jou skakel. 'n Vriend tel sodra hy of sy 'n eerste keuse plaas.",
+    "copy": "Kopieer skakel",
+    "copied": "Uitnodigingskakel gekopieer",
+    "copyFailed": "Kon nie kopieer nie. Kies die skakel en kopieer dit.",
+    "whatsapp": "Deel op WhatsApp",
+    "joined_one": "Vriende wat aangesluit het: {{count}}",
+    "joined_other": "Vriende wat aangesluit het: {{count}}",
+    "signedUp_one": "{{count}} vriend het met jou skakel geregistreer.",
+    "signedUp_other": "{{count}} vriende het met jou skakel geregistreer.",
+    "rule": "Selfverwysings en vals rekeninge tel nie, en punte kan teruggetrek word as 'n rekening verwyder word.",
+    "overview": "Wag om toe te val: {{pending}} · Toegeval: {{vested}}",
+    "next": "Volgende mylpaal: {{title}} by {{count}} kwalifiserende vriende.",
+    "pointsNote": "Jy en elke vriend verdien PuntPoints sodra die vriend 'n eerste keuse geplaas het en 'n kort wagtydperk verby is.",
+    "rewardsLink": "PuntPoints en belonings",
+    "rewardsSoon": "PuntPoints vir uitnodigings kom binnekort. Uitnodigings word nou reeds aangeteken. PuntPoints het geen kontantwaarde nie."
+  },
+  "unsubscribe": {
+    "title": "Teken uit van e-posse",
+    "body": "Hou op om e-posse oor vroeë toegang na {{email}} te stuur?",
+    "confirm": "Teken uit",
+    "missing": "Hierdie skakel is onvolledig. Gebruik die uitteken-skakel in die e-pos.",
+    "done": "Jy is uitgeteken. Ons sal jou nie weer oor vroeë toegang e-pos nie.",
+    "privacy": "Lees ons privaatheidskennisgewing",
+    "error": {
+      "invalid": "Hierdie skakel is nie geldig nie. Gebruik die uitteken-skakel in die e-pos, of stuur 'n privaatheidsversoek.",
+      "error": "Iets het skeefgeloop. Probeer asseblief weer."
+    }
+  },
+  "details": {
+    "title": "Jou besonderhede",
+    "body": "Opsioneel. Ons gebruik dit om jou stigterslid-rekening te bestuur en om jou daaroor te kontak. Net jy en Puntr se admins kan dit sien, en dit word nooit op jou openbare profiel gewys nie.",
+    "firstName": "Voornaam",
+    "lastName": "Van",
+    "phone": "Selfoonnommer",
+    "dob": "Geboortedatum",
+    "province": "Provinsie",
+    "provinceNone": "Kies 'n provinsie",
+    "save": "Stoor besonderhede",
+    "saved": "Besonderhede gestoor",
+    "error": "Kon nie jou besonderhede stoor nie. Kontroleer die selfoonnommer en probeer weer.",
+    "under18": "Jy moet 18 of ouer wees om Puntr te gebruik."
+  },
+  "identity": {
+    "title": "Verifieer jou identiteit",
+    "why": "Jy moet jou identiteit verifieer voordat jy belonings kan inruil. Dit bevestig dat jy 18 of ouer is en keer dat enigiemand belonings in jou naam opeis.",
+    "how": "Laai 'n duidelike foto of skandering van jou Suid-Afrikaanse ID (groen ID-boek of slim-ID-kaart, albei kante in een beeld as jy kan) of jou paspoort op. JPG, PNG, WebP of PDF, kleiner as 10 MB. 'n Puntr-admin vergelyk dit met jou naam en geboortejaar, gewoonlik binne 2 werksdae.",
+    "privacy": "Ons skrap jou dokument sodra ons dit nagegaan het. Ons hou slegs die uitslag: geverifieer of nie, en die datum. Ons stoor nooit jou ID-nommer nie.",
+    "upload": "Laai ID-dokument op",
+    "replace": "Laai 'n ander dokument op",
+    "working": "Laai tans op...",
+    "status": {
+      "none": "Nog nie geverifieer nie.",
+      "pending": "Op {{date}} ingedien. Ons gaan dit na.",
+      "approved": "Op {{date}} geverifieer.",
+      "rejected": "Ons kon nie die dokument wat jy gestuur het, verifieer nie: {{reason}} Laai asseblief 'n nuwe een op."
+    },
+    "noReason": "dit was nie duidelik genoeg nie of het nie met jou besonderhede ooreengestem nie.",
+    "tooBig": "Daardie lêer is 10 MB of groter. Kies asseblief 'n kleiner een.",
+    "badType": "Kies asseblief 'n JPG-, PNG-, WebP- of PDF-lêer.",
+    "failed": "Ons kon nie jou dokument oplaai nie. Probeer asseblief weer.",
+    "sent": "Dankie. Jou dokument is by ons span.",
+    "detailsHint": "Voeg eers jou voornaam en van onder jou besonderhede by, sodat ons dit kan vergelyk."
+  },
+  "avatar": {
+    "title": "Profielfoto",
+    "hint": "JPG, PNG of WebP, kleiner as 10 MB. Ons sny dit vierkantig en pers dit saam. Dit word op jou openbare profiel gewys.",
+    "upload": "Laai 'n foto op",
+    "change": "Verander foto",
+    "remove": "Verwyder",
+    "working": "Laai tans op...",
+    "tooBig": "Daardie beeld is 10 MB of groter. Kies asseblief 'n kleiner een.",
+    "badType": "Kies asseblief 'n JPG-, PNG- of WebP-beeld.",
+    "failed": "Ons kon nie jou foto oplaai nie. Probeer asseblief weer.",
+    "saved": "Foto gestoor.",
+    "removed": "Foto verwyder.",
+    "alt": "{{username}} se profielfoto"
+  }
+}

@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { RefundsAf } from "@/content/legal/af/refunds";
+import { useLocale } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/refunds")({
   head: () => ({
@@ -25,6 +27,8 @@ export const Route = createFileRoute("/refunds")({
 });
 
 function Refunds() {
+  const { locale } = useLocale();
+  if (locale === "af") return <RefundsAf />;
   return (
     <AppShell>
       <PageHeading

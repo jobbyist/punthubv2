@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "Produkpadkaart | Puntr",
+    "description": "Wat regstreeks op Puntr is en wat volgende kom: sokker met die bekendstelling, dan basketbal, rugby, perdewedrenne, gevegsport, atletiek, krieket en tennis.",
+    "ogTitle": "Puntr se produkpadkaart"
+  },
+  "eyebrow": "Produkpadkaart",
+  "title": "Sokker eerste. Elke paar weke meer sportsoorte.",
+  "intro": "Puntr word op {{launch}} met sokker bekendgestel. Registrasie vir stigterslede is nou oop. Hier is die volgorde waarin die ander sportsoorte aansluit, met teikenweke van die bekendstelling af getel. Hierdie bladsy werk homself by: 'n sport wys eers as regstreeks sodra sy wedstryde op Puntr is.",
+  "summary": {
+    "live_one": "{{count}} sport regstreeks",
+    "live_other": "{{count}} sportsoorte regstreeks",
+    "planned_one": "{{count}} sport op pad",
+    "planned_other": "{{count}} sportsoorte op pad",
+    "checked": "Status nagegaan {{time}}"
+  },
+  "sportsTitle": "Sportsoorte",
+  "week": {
+    "single": "Week {{week}}",
+    "range": "Weke {{from}} tot {{to}}",
+    "launch": "Bekendstellingsweek"
+  },
+  "dates": "{{from}} tot {{to}}",
+  "stage": {
+    "live": "Regstreeks",
+    "launching": "Word {{date}} bekendgestel",
+    "inProgress": "Aan die gang",
+    "next": "Volgende",
+    "planned": "Beplan"
+  },
+  "sport": {
+    "soccer": {
+      "name": "Sokker",
+      "body": "Betway Premiership, Premier League, Champions League en meer ligas soos hulle bygevoeg word. Plaas keuses, word gegradeer, klim die weeklikse ranglys."
+    },
+    "basketball": {
+      "name": "Basketbal",
+      "body": "Keuses op dieselfde geslote, openbare rekord. Ons bevestig die ligas nader aan die tyd."
+    },
+    "rugby": {
+      "name": "Rugby",
+      "body": "United Rugby Championship en Springbok-toetse."
+    },
+    "racing": {
+      "name": "Perdewedrenne",
+      "body": "Renkaarte en keuses. Wedrenne het 'n eie manier nodig om keuses aan te teken, dus volg dit 'n bietjie later."
+    },
+    "combat": {
+      "name": "Gevegsport",
+      "body": "Boks- en MMA-gevegskaarte."
+    },
+    "athletics": {
+      "name": "Atletiek",
+      "body": "Baan-en-veld-byeenkomste. Kompetisies word nader aan die tyd bevestig."
+    },
+    "cricket": {
+      "name": "Krieket",
+      "body": "Kompetisies word nader aan die tyd bevestig."
+    },
+    "tennis": {
+      "name": "Tennis",
+      "body": "Toernooie word nader aan die tyd bevestig."
+    }
+  },
+  "alsoTitle": "Ook op pad",
+  "alsoIntro": "Nog geen datums nie. Ons voeg dit hier by sodra dit vasgestel is.",
+  "also": {
+    "languages": {
+      "title": "Afrikaans en isiZulu",
+      "body": "Elke taal gaan regstreeks sodra 'n moedertaalspreker dit hersien het."
+    },
+    "rewards": {
+      "title": "PuntPoints-belonings",
+      "body": "Punte vir deelname, inruilbaar vir koopbewyse, geborgde belonings en voordele. Nooit kontant nie."
+    },
+    "pro": {
+      "title": "Puntr Pro",
+      "body": "Dieper sportontleding, gevorderde tipgewersgereedskap en beplande tipgewer-ondersteuning, waarmee spelers geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie."
+    },
+    "referrals": {
+      "title": "Verwys en verdien bonus-PuntPoints",
+      "body": "Deel die unieke verwysingskakel of -kode op jou profiel om jou netwerk uit te nooi om by Puntr aan te sluit. Verdien tot 30% in bonus-PuntPoints op kwalifiserende aankope wat hulle doen nadat hulle geregistreer het. PuntPoints kan slegs vir koopbewyse, geborgde belonings en voordele ingeruil word, nooit vir kontant nie. Meer besonderhede volg binnekort."
+    },
+    "apps": {
+      "title": "Mobiele toeps",
+      "body": "Puntr vir iPhone en Android."
+    }
+  },
+  "note": "Teikendatums kan skuif. Ons voeg eerder 'n sport laat by as voordat sy wedstryde en gradering betroubaar is.",
+  "suggest": {
+    "title": "Wil jy 'n sport of liga gouer hê?",
+    "body": "Vertel ons wat jy sou gebruik. Versoeke van lede bepaal die volgorde.",
+    "cta": "Stel iets voor"
+  }
+}

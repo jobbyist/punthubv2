@@ -1,0 +1,182 @@
+{
+  "primary": {
+    "predictions": "Voorspellings",
+    "leaderboards": "Ranglyste",
+    "results": "Uitslae",
+    "community": "Gemeenskap",
+    "insights": "Insigte",
+    "roadmap": "Padkaart",
+    "howItWorks": "Hoe dit werk",
+    "pricing": "Pryse",
+    "support": "Hulp",
+    "feedback": "Terugvoer",
+    "home": "Tuis",
+    "about": "Oor ons",
+    "updates": "Opdaterings",
+    "tools": "Gereedskap"
+  },
+  "header": {
+    "openMenu": "Maak kieslys oop",
+    "menu": "Kieslys",
+    "version": "Weergawe 2.0 - © 2026 Puntr",
+    "getEarlyAccess": "Sluit gratis aan",
+    "claimFoundingAccess": "Eis stigterstoegang op",
+    "desktopNavigation": "Navigasie vir rekenaars",
+    "accountMenu": "Rekeningkieslys vir {{username}}",
+    "home": "Puntr-tuisblad",
+    "founding": "Stigterslid #{{number}}",
+    "myRecord": "My rekord",
+    "account": "Rekening",
+    "privacy": "Privaatheid en data",
+    "signOut": "Teken uit",
+    "copyInvite": "Kopieer uitnodigingskakel",
+    "shareInvite": "Deel op WhatsApp",
+    "invite": "Nooi vriende",
+    "puntPoints": "PuntPoints en belonings",
+    "practice": "Oefenmodus",
+    "signIn": "Teken aan",
+    "wallet": "Beursie"
+  },
+  "desktop": {
+    "groups": {
+      "platform": "Platform",
+      "more": "Meer"
+    },
+    "items": {
+      "gradedResults": "Gegradeerde uitslae",
+      "leaderboards": "Ranglyste",
+      "bettingTools": "Wedgereedskap",
+      "liveScores": "Regstreekse tellings",
+      "featuredSports": "Uitgeligte sportsoorte",
+      "competitions": "Kompetisies en ligas",
+      "fantasyLeague": "Fantasieliga",
+      "roadmap": "Komende padkaart",
+      "bookmakers": "Boekmakergids",
+      "puntPoints": "PuntPoints en belonings",
+      "about": "Oor Puntr",
+      "support": "Kontak ons hulpspan"
+    },
+    "direct": {
+      "home": "Tuis",
+      "fixtures": "Voorspellings",
+      "community": "Gemeenskap"
+    },
+    "comingSoon": "Kom binnekort",
+    "liveMatches": "Regstreekse wedstryde beskikbaar"
+  },
+  "mobile": {
+    "primary": "Hoof",
+    "more": "Meer",
+    "closeMenu": "Maak kieslys toe",
+    "home": "Tuis",
+    "sports": "Sportsoorte",
+    "followPuntr": "Volg Puntr",
+    "logOut": "Teken uit",
+    "responsibleGambling": "Verantwoordelike dobbelary",
+    "helpCentre": "Hulpsentrum",
+    "feedback": "Terugvoer",
+    "invite": "Nooi vriende",
+    "tools": {
+      "aiPicks": "KI-aangedrewe insigte",
+      "marketInsights": "Insigte",
+      "podcast": "Podsending",
+      "bookmakers": "Boekmakers",
+      "tools": "Gereedskap",
+      "liveScores": "Regstreekse tellings",
+      "puntPoints": "PuntPoints",
+      "referrals": "Verwysings"
+    },
+    "signIn": "Teken aan",
+    "roadmap": "Padkaart",
+    "dock": {
+      "predictions": "Voorspellings",
+      "puntPoints": "PuntPoints",
+      "foundingTitle": "Word 'n stigterslid 👀🇿🇦",
+      "foundingMessage": "Eerste 100 plekke · Gratis om te bespreek",
+      "claimSpot": "Eis plek op",
+      "community": "Gemeenskap"
+    }
+  },
+  "sport": {
+    "soccer": "Sokker",
+    "rugby": "Rugby",
+    "basketball": "Basketbal",
+    "tennis": "Tennis",
+    "cricket": "Krieket",
+    "combat": "Gevegsport",
+    "athletics": "Atletiek",
+    "racing": "Perdewedrenne"
+  },
+  "side": {
+    "sports": "Sportsoorte",
+    "topTipsters": "Top-tipgewers",
+    "noLeaders": "Nog geen afgehandelde keuses hierdie week nie",
+    "noLive": "Geen wedstryde aan die gang nie",
+    "inPlay": "Aan die gang",
+    "units": "{{units}} eenhede",
+    "fixtures": "Wedstryde",
+    "results": "Uitslae",
+    "leaderboards": "Ranglyste",
+    "support": "Hulpsentrum",
+    "expandNavigation": "Vou navigasie oop",
+    "collapseNavigation": "Vou navigasie toe",
+    "navigation": "Kantnavigasie vir rekenaars"
+  },
+  "footer": {
+    "platform": "Platform",
+    "communityCol": "Gemeenskap",
+    "company": "Maatskappy",
+    "followUs": "Volg ons",
+    "link": {
+      "predictions": "Voorspellings",
+      "leaderboards": "Ranglyste",
+      "results": "Uitslae",
+      "insights": "Insigte",
+      "pricing": "Pryse",
+      "feed": "Gemeenskapsvoer",
+      "howItWorks": "Hoe dit werk",
+      "puntPoints": "PuntPoints",
+      "support": "Hulp",
+      "about": "Oor ons",
+      "terms": "Bepalings",
+      "privacy": "Privaatheid",
+      "refunds": "Terugbetalings",
+      "grading": "Hoe ons keuses gradeer",
+      "verify": "Verifieer die rekord",
+      "roadmap": "Padkaart",
+      "cookies": "Koekies",
+      "disclosures": "Openbaarmakings"
+    },
+    "social": {
+      "x": "Puntr op X",
+      "whatsapp": "Sluit aan by die Puntr WhatsApp-gemeenskap",
+      "facebook": "Puntr op Facebook",
+      "youtube": "Puntr op YouTube",
+      "instagram": "Puntr op Instagram",
+      "tiktok": "Puntr op TikTok",
+      "telegram": "Puntr op Telegram"
+    },
+    "store": {
+      "comingSoonTo": "Kom binnekort na",
+      "appStore": "die App Store",
+      "googlePlay": "Google Play"
+    },
+    "copyright": "© 2026 Puntr (Edms.) Bpk. Alle regte voorbehou. Slegs 18+.",
+    "partnersLabel": "Reguleerders, betalings- en tegnologievennote",
+    "partnersPending": "Logo's wat wag om opgelaai of geaktiveer te word (slegs vir admins sigbaar)"
+  },
+  "notifications": {
+    "label": "Kennisgewings",
+    "title": "Opdaterings van Puntr",
+    "unread": "{{count}} ongelees",
+    "markAll": "Merk almal as gelees",
+    "empty": "Jy is op hoogte. Spanopdaterings sal hier verskyn.",
+    "error": "Kon nie opdaterings laai nie. Probeer binnekort weer.",
+    "retry": "Probeer weer",
+    "loading": "Laai opdaterings"
+  },
+  "theme": {
+    "toLight": "Skakel oor na ligte modus",
+    "toDark": "Skakel oor na donker modus"
+  }
+}

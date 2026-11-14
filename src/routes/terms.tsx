@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Separator } from "@/components/ui/separator";
+import { TermsAf } from "@/content/legal/af/terms";
+import { useLocale } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -20,6 +22,8 @@ export const Route = createFileRoute("/terms")({
 });
 
 function Terms() {
+  const { locale } = useLocale();
+  if (locale === "af") return <TermsAf />;
   return (
     <AppShell>
       <PageHeading

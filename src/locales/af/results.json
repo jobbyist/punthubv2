@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Uitslae | Puntr",
+    "description": "Eindtellings, en hoe die Puntr-skare en hierdie week se top-tipgewers gevaar het. Elke keuse word outomaties gegradeer.",
+    "ogTitle": "Uitslae | Puntr",
+    "ogDescription": "Eindtellings, en hoe die skare en die top-tipgewers gevaar het."
+  },
+  "title": "Uitslae",
+  "subtitle": "Eindtellings, en hoe die Puntr-skare en hierdie week se top-tipgewers gevaar het.",
+  "mine": {
+    "title": "Jou rekord",
+    "picks": "Keuses",
+    "settled": "Afgehandel",
+    "winRate": "Wenkoers",
+    "units": "Eenhede",
+    "form": "Laaste 10",
+    "none": "-"
+  },
+  "byDate": "Uitslae volgens datum",
+  "day": {
+    "matches_one": "{{count}} wedstryd",
+    "matches_other": "{{count}} wedstryde",
+    "picks_one": "{{count}} keuse",
+    "picks_other": "{{count}} keuses"
+  },
+  "col": {
+    "match": "Wedstryd",
+    "score": "Telling",
+    "crowd": "Die skare",
+    "leaders": "Top-tipgewers hierdie week"
+  },
+  "crowd": {
+    "won": "{{percent}} gewen ({{count}} afgehandel)",
+    "none": "Geen afgehandelde keuses nie",
+    "picks": "{{count}} keuses"
+  },
+  "leader": {
+    "won": "Gewen",
+    "lost": "Verloor",
+    "void": "Nietig",
+    "pending": "Hangend",
+    "none": "Geen keuse nie"
+  },
+  "empty": {
+    "title": "Nog geen uitslae nie",
+    "body": "Voltooide wedstryde verskyn hier, gewoonlik binne 'n paar uur ná die eindfluitjie."
+  },
+  "error": "Ons kon nie die uitslae laai nie. Herlaai asseblief die bladsy.",
+  "example": {
+    "badge": "Illustratiewe voorbeeld",
+    "title": "'n Voorskou van die uitslae-ervaring",
+    "description": "Voorbeeldtellings en -wedstryde wys slegs die uitleg. Dit is nie werklike wedstryduitslae nie.",
+    "fullTime": "Volle tyd",
+    "detail": "Illustratiewe eindtelling"
+  }
+}

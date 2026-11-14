@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import { readConsent, writeConsent } from "@/lib/consent";
 import { toast } from "sonner";
 
+import { CookiesAf } from "@/content/legal/af/cookies";
+import { useLocale } from "@/lib/i18n/provider";
+
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     links: [{ rel: "canonical", href: "https://puntr.co.za/cookies" }],
@@ -29,6 +32,7 @@ export const Route = createFileRoute("/cookies")({
 });
 
 function Cookies() {
+  const { locale } = useLocale();
   const [analytics, setAnalytics] = useState(false);
   const [affiliate, setAffiliate] = useState(false);
 
@@ -44,8 +48,20 @@ function Cookies() {
     setAnalytics(a);
     setAffiliate(f);
     writeConsent({ analytics: a, affiliate_tracking: f });
-    toast.success("Privacy choices saved");
+    toast.success(locale === "af" ? "Privaatheidskeuses gestoor" : "Privacy choices saved");
   };
+
+  if (locale === "af") {
+    return (
+      <CookiesAf
+        analytics={analytics}
+        affiliate={affiliate}
+        setAnalytics={setAnalytics}
+        setAffiliate={setAffiliate}
+        save={save}
+      />
+    );
+  }
 
   return (
     <AppShell>
@@ -71,6 +87,10 @@ function Cookies() {
             </li>
             <li>
               Cookie <code>puntr_lang</code> (1 year): remembers the language you pick.
+            </li>
+            <li>
+              Cookie <code>puntr_lang_preview</code> (30 days): set only when a Puntr admin previews
+              a language that is still being reviewed, so the preview survives a page reload.
             </li>
             <li>
               Browser storage <code>puntr:ref</code>: the invite code from a link you opened, kept

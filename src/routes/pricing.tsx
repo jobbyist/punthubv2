@@ -57,27 +57,25 @@ function Pricing() {
       >
         <div>
           <span className="w-fit bg-primary-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
-            Limited founding offer · 20 places
+            {t("annualPass.badge")}
           </span>
           <h2 id="annual-pass-pricing" className="mt-3 text-2xl">
-            Founding Annual Pass
+            {t("annualPass.title")}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            12 months of Puntr Pro. One payment, no auto-renewal. Reserve your place after creating
-            your free account; payment opens before launch.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("annualPass.description")}</p>
           <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="font-display text-3xl font-extrabold tnum">R299</span>
-            <span className="text-sm text-muted-foreground line-through">R1,188 at R99/month</span>
-            <span className="text-sm font-semibold text-primary">Save R889 · 75% less</span>
+            <span className="font-display text-3xl font-extrabold tnum">
+              {t("annualPass.price")}
+            </span>
+            <span className="text-sm text-muted-foreground line-through">
+              {t("annualPass.was")}
+            </span>
+            <span className="text-sm font-semibold text-primary">{t("annualPass.saving")}</span>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Includes the Puntr Pro benefits below for 12 months from launch day. Claiming reserves
-            the offer and price; it does not charge you today.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("annualPass.fine")}</p>
         </div>
         <Button asChild size="lg" className="w-full md:w-auto">
-          <a href="/join">Create an account &amp; reserve</a>
+          <a href="/join">{t("annualPass.cta")}</a>
         </Button>
       </section>
       <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">

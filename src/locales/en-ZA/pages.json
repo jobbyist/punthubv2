@@ -1,0 +1,132 @@
+{
+  "referrals": {
+    "meta": {
+      "title": "Refer a friend | Puntr",
+      "description": "Invite friends to join Puntr and follow your referral activity from your member account."
+    },
+    "title": "Refer a friend",
+    "subtitle": "Bring your sports community to Puntr.",
+    "heading": "Share the game. Grow the community.",
+    "body": "Invite friends to join Puntr, share sports conversations and build a public record of their picks. Referral tracking is tied to your member invite code.",
+    "invite": {
+      "title": "Invite your people",
+      "body": "Share your personal invite link by copying it or sending it on WhatsApp."
+    },
+    "track": {
+      "title": "Track eligible referrals",
+      "body": "See sign-ups and joined members from your account when referral data is available."
+    },
+    "guest": {
+      "title": "Get your personal invite link",
+      "body": "Create a free Puntr account or sign in to access your referral link and activity.",
+      "cta": "Join or sign in"
+    }
+  },
+  "puntpoints": {
+    "meta": {
+      "title": "PuntPoints | Puntr",
+      "description": "Discover PuntPoints, Puntr's activity-based loyalty points and member rewards programme."
+    },
+    "title": "PuntPoints",
+    "subtitle": "A little recognition for being part of the Puntr community.",
+    "heading": "Points for participation. Never for outcomes.",
+    "body": "PuntPoints are designed to recognise eligible community activity, such as confirming your email, sharing picks and inviting friends. They are not a stake, a betting balance or a reward for winning.",
+    "cards": {
+      "earn": {
+        "title": "Earn through activity",
+        "body": "Eligible actions can earn points under published programme rules."
+      },
+      "explore": {
+        "title": "Explore member rewards",
+        "body": "Redeem points for available partner perks when the programme is enabled."
+      },
+      "transparent": {
+        "title": "Keep it transparent",
+        "body": "Points have no cash value and cannot be bought or exchanged for money."
+      }
+    },
+    "fine": "Availability, earning rules and rewards depend on programme status and eligibility. Points do not affect pick grading or leaderboard rankings.",
+    "cta": "Open rewards"
+  },
+  "liveScores": {
+    "meta": {
+      "title": "Live Scores | Puntr",
+      "description": "The Puntr live scores destination. Follow verified fixture and result updates as live score coverage is introduced."
+    },
+    "title": "Live Scores",
+    "subtitle": "A dedicated matchday destination is being built for Puntr.",
+    "eyebrow": "Match centre",
+    "heading": "Live score coverage is coming",
+    "body": "This page is the home for future live match updates. Live scores are not currently available here, and we will not display sample scores as if they were happening now.",
+    "fixtures": {
+      "title": "Fixtures and results",
+      "body": "Check the Results area for available fixture and completed-result information.",
+      "cta": "View results"
+    },
+    "data": {
+      "title": "Built around reliable data",
+      "body": "Live status and score updates will only appear once a verified data source is connected and operational.",
+      "cta": "Suggest a feature"
+    }
+  },
+  "tools": {
+    "meta": {
+      "title": "Sports Tools | Puntr",
+      "description": "Explore upcoming Puntr tools: a free Betting Slip Converter, AI Edge Finder summary cards and Punt AI v1.0."
+    },
+    "eyebrow": "Puntr toolkit",
+    "title1": "Practical tools.",
+    "title2": "Sharper insight.",
+    "lead": "A growing toolkit for South African sports fans who want clearer context and better ways to understand the game. The features below are in development and are not yet available.",
+    "access": {
+      "free": "Free",
+      "pro": "Puntr Pro"
+    },
+    "status": {
+      "soon": "Coming soon",
+      "paid": "Paid feature"
+    },
+    "price": "R99 / month",
+    "items": {
+      "converter": {
+        "name": "Betting Slip Converter",
+        "description": "Convert supported bookmaker slip formats into a cleaner, easier-to-read format. Designed as a convenience tool, not a way to place bets."
+      },
+      "edge": {
+        "name": "AI \"Edge Finder\" Summary Cards",
+        "description": "Concise, data-led match summary cards that surface relevant form, context and statistical signals. They are decision-support summaries, not guarantees or instructions to wager."
+      },
+      "chat": {
+        "name": "Punt AI v1.0 Chatbot",
+        "description": "An AI sports assistant for exploring match context, asking questions about available data and understanding the numbers behind a fixture."
+      }
+    },
+    "pro": {
+      "title": "Go deeper with Puntr Pro",
+      "body": "These optional tools are planned for Puntr Pro at R99 per month. Core community features remain free.",
+      "cta": "Explore Pro"
+    },
+    "fine": "Tools provide information and context for general use. AI-generated content may be incomplete or inaccurate; check important details independently. Nothing on Puntr guarantees an outcome or constitutes financial advice. 18+ only. Gamble responsibly."
+  },
+  "bookmakers": {
+    "meta": {
+      "title": "Bookmakers | Puntr",
+      "description": "Explore bookmaker brands relevant to South African sports fans. Compare providers independently and check their terms before signing up."
+    },
+    "title": "Bookmakers",
+    "subtitle": "A directory of betting brands South African sports fans may come across.",
+    "independent": {
+      "title": "Choose independently",
+      "body": "Puntr is an independent sports discussion and prediction-record platform. Listings are informational only; they are not endorsements, odds comparisons or recommendations to place a bet. Always check licensing, terms, age restrictions and safer-gambling tools directly with each provider."
+    },
+    "directory": "Provider directory",
+    "brandOnly": "Brand names only",
+    "tag": "Directory",
+    "fine": "Puntr may receive compensation from some partners in future. Any paid relationship will be clearly disclosed. 18+ only. Gamble responsibly.",
+    "cta": "Explore predictions"
+  },
+  "legal": {
+    "translationNotice": "This is a translation of the English page. If the two differ, the English version applies.",
+    "readEnglish": "Read the English version"
+  }
+}

@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { PrivacyAf } from "@/content/legal/af/privacy";
+import { useLocale } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -146,6 +148,8 @@ const PURPOSES: [string, string, string, string][] = [
 ];
 
 function Privacy() {
+  const { locale } = useLocale();
+  if (locale === "af") return <PrivacyAf />;
   return (
     <AppShell>
       <PageHeading

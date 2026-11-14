@@ -1,0 +1,140 @@
+{
+  "meta": {
+    "title": "{{home}} v {{away}} | Puntr",
+    "description": "Plaas 'n keuse op {{home}} v {{away}} ({{competition}}) voor die afskop. Gesluit met die afskop, outomaties gegradeer en vir altyd bewaar.",
+    "notFound": "Wedstryd nie gevind nie | Puntr"
+  },
+  "back": "Alle wedstryde",
+  "notFound": {
+    "title": "Ons kon nie daardie wedstryd vind nie",
+    "body": "Dit is dalk verwyder of die skakel is verkeerd.",
+    "cta": "Sien wedstryde"
+  },
+  "header": {
+    "kickoff": "Afskop",
+    "live": "Aan die gang",
+    "finished": "Volle tyd",
+    "postponed": "Uitgestel",
+    "abandoned": "Gestaak",
+    "cancelled": "Gekanselleer"
+  },
+  "countdown": {
+    "locksIn": "Sluit oor {{span}}",
+    "locked": "Keuses om {{time}} gesluit",
+    "closed": "Keuses vir hierdie wedstryd is gesluit."
+  },
+  "form": {
+    "title": "Plaas jou keuse",
+    "market": "Mark",
+    "selection": "Jou keuse",
+    "line": "Voorgeelyn",
+    "lineHint": "Word by {{home}} se telling getel. -6.5 beteken {{home}} gee 6.5 punte voor; +6.5 beteken hulle kry 6.5.",
+    "odds": "Prys wat jy gekry het",
+    "oddsHint": "Van 1.01 tot 50, byvoorbeeld 2.10.",
+    "confidence": "Vertroue",
+    "confidenceHint": "1 is 'n voorgevoel, 5 is 'n sterk mening.",
+    "reasoning": "Jou redenasie (opsioneel)",
+    "reasoningHint": "Tot 280 karakters. Dit is openbaar.",
+    "counter": "{{count}} / {{max}}",
+    "submit": "Sluit my keuse",
+    "submitting": "Sluit tans…",
+    "permanent": "Sodra 'n keuse gesluit is, kan dit nie gewysig of geskrap word nie. Dit bly op jou openbare rekord.",
+    "signIn": "Skep 'n gratis rekening om 'n keuse op hierdie wedstryd te plaas.",
+    "signInCta": "Sluit gratis aan",
+    "needProfile": "Voltooi jou profiel om keuses te plaas.",
+    "finishCta": "Voltooi registrasie",
+    "success": "Keuse gesluit. Dit is op jou openbare rekord.",
+    "viewRecord": "My rekord",
+    "problem": {
+      "selection": "Kies jou keuse.",
+      "line": "Vul 'n voorgeelyn in soos -6.5.",
+      "odds": "Vul 'n prys tussen 1.01 en 50 in, met hoogstens twee desimale.",
+      "confidence": "Kies 'n vertroue van 1 tot 5.",
+      "reasoning": "Hou jou redenasie tot 280 karakters."
+    },
+    "needEmail": "Bevestig jou e-pos om 'n keuse te plaas.",
+    "needEmailWhy": "Keuses verskyn op die openbare voer en die ranglys, daarom vra ons eers vir 'n bevestigde e-pos. Dit neem 'n minuut.",
+    "needEmailCta": "Bevestig my e-pos"
+  },
+  "error": {
+    "kickoff_passed": "Hierdie wedstryd het afgeskop - keuses is gesluit.",
+    "fixture_not_open": "Hierdie wedstryd is nie meer oop vir keuses nie.",
+    "fixture_not_found": "Ons kon nie daardie wedstryd vind nie.",
+    "duplicate": "Jy het reeds 'n {{market}}-keuse op hierdie wedstryd.",
+    "daily_limit": "Jy het vandag se limiet van 30 keuses bereik. Probeer môre weer.",
+    "posting_paused": "Plasings is op jou rekening onderbreek. Kontak ons hulpspan as jy dink dit is 'n fout.",
+    "banned": "Jou rekening kan nie keuses plaas nie. Kontak ons hulpspan as jy dink dit is 'n fout.",
+    "age_not_attested": "Ons het jou bevestiging dat jy 18+ is nodig voordat jy kan plaas.",
+    "no_profile": "Voltooi jou profiel om keuses te plaas.",
+    "not_authenticated": "Teken asseblief weer aan om 'n keuse te plaas.",
+    "invalid_market": "Daardie mark is nie beskikbaar nie.",
+    "invalid_market_for_sport": "Daardie mark is nie vir hierdie sport beskikbaar nie.",
+    "invalid_selection": "Daardie keuse is nie geldig vir hierdie mark nie.",
+    "invalid_line": "Daardie voorgeelyn is nie geldig nie.",
+    "invalid_odds": "Vul 'n prys tussen 1.01 en 50 in, met hoogstens twee desimale.",
+    "invalid_confidence": "Kies 'n vertroue van 1 tot 5.",
+    "reasoning_too_long": "Hou jou redenasie tot 280 karakters.",
+    "generic": "Ons kon nie jou keuse sluit nie. Probeer asseblief weer.",
+    "email_not_confirmed": "Bevestig jou e-pos om 'n keuse te plaas. Jy kan dit op jou rekening se sekuriteitsbladsy doen."
+  },
+  "market": {
+    "1X2": "Wedstrydsuitslag (1X2)",
+    "DC": "Dubbele kans",
+    "OU25": "Oor/Onder 2.5",
+    "BTTS": "Albei spanne score",
+    "HCP": "Voorgee"
+  },
+  "selection": {
+    "draw": "Gelykop",
+    "over": "Meer as 2.5 doele",
+    "under": "Minder as 2.5 doele",
+    "yes": "Ja",
+    "no": "Nee",
+    "homeOrDraw": "{{home}} of gelykop",
+    "drawOrAway": "Gelykop of {{away}}",
+    "homeOrAway": "{{home}} of {{away}}",
+    "handicap": "{{team}} {{line}}"
+  },
+  "picks": {
+    "title": "Keuses op hierdie wedstryd",
+    "empty": "Nog geen keuses nie. Wees die eerste om een te plaas.",
+    "founding": "Stigter #{{number}}",
+    "odds": "Prys",
+    "confidence": "Vertroue {{value}}/5",
+    "lockedBefore": "{{span}} voor die afskop gesluit",
+    "hash": "Hash",
+    "verify": "Verifieer",
+    "won": "Gewen",
+    "lost": "Verloor",
+    "void": "Nietig",
+    "pending": "Hangend",
+    "units": "{{units}} eenhede",
+    "loadError": "Ons kon nie die keuses laai nie. Herlaai asseblief die bladsy."
+  },
+  "crowd": {
+    "title": "Skareverdeling (wedstrydsuitslag)",
+    "sample": "{{percent}}% {{team}} - {{count}} keuses",
+    "draw": "Gelykop",
+    "note": "Gebaseer op {{count}} keuses vir die wedstrydsuitslag. Steekproefgrootte maak saak: 'n klein steekproef sê min."
+  },
+  "report": {
+    "cta": "Rapporteer",
+    "title": "Rapporteer hierdie keuse",
+    "body": "Vertel ons wat verkeerd is. 'n Persoon sal daarna kyk.",
+    "placeholder": "Wat is die probleem?",
+    "submit": "Stuur verslag",
+    "cancel": "Kanselleer",
+    "thanks": "Dankie. Ons sal daarna kyk.",
+    "already": "Jy het hierdie keuse reeds gerapporteer.",
+    "signIn": "Teken aan om 'n keuse te rapporteer.",
+    "error": "Ons kon nie jou verslag stuur nie. Probeer asseblief weer."
+  },
+  "share": {
+    "title": "Deel jou keuse",
+    "body": "Jou keuse is gesluit. Deel dit met vriende.",
+    "whatsapp": "Deel op WhatsApp",
+    "copy": "Kopieer teks",
+    "copied": "Gekopieer",
+    "toWin": "{{team}} om te wen"
+  }
+}

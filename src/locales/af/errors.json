@@ -1,0 +1,12 @@
+{
+  "notFound": {
+    "title": "Bladsy nie gevind nie",
+    "body": "Die bladsy wat jy soek, bestaan nie of het geskuif.",
+    "home": "Gaan tuis toe"
+  },
+  "generic": {
+    "title": "Hierdie deel van Puntr neem 'n blaaskans",
+    "body": "Probeer asseblief oor 'n oomblik weer, of gaan terug na die tuisblad.",
+    "retry": "Probeer weer"
+  }
+}

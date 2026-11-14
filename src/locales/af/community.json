@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "Gemeenskap | Puntr",
+    "description": "Deel jou keuses, gesels oor die wedstryde en leer by ander Suid-Afrikaanse sportaanhangers op 'n platform waar die gemeenskap eerste kom.",
+    "ogDescription": "Deel keuses, bespreek wedstryde en leer by mekaar."
+  },
+  "ld": {
+    "name": "Puntr-gemeenskap",
+    "description": "Gemeenskapsvoer waar Suid-Afrikaanse sportaanhangers keuses en gesprekke deel."
+  },
+  "title": "Gemeenskap",
+  "subtitle": "Die jongste geslote keuses van oral op Puntr. Elke keuse bly op rekord, wen of verloor.",
+  "composer": {
+    "prompt": "Keuses open op 1 Desember 2026",
+    "locked": "Skep nou 'n gratis rekening om gereed te wees vir bekendstellingsdag.",
+    "soccer": "Sokker",
+    "rugby": "Rugby",
+    "fixtures": "Alle wedstryde",
+    "post": "Sien wedstryde",
+    "avatar": "Jy"
+  },
+  "tabs": {
+    "new": "Nuut",
+    "top": "Top-tipgewers hierdie week",
+    "mine": "My keuses"
+  },
+  "gate": "Skep 'n gratis rekening om aan die gesprek deel te neem.",
+  "post": {
+    "pinned": "Vasgespeld deur Puntr",
+    "admin": "Admin",
+    "fullTime": "VT",
+    "share": "Deel plasing",
+    "fold_one": "{{count}}-been-akkumuleerder",
+    "fold_other": "{{count}}-been-akkumuleerder",
+    "combined": "Gekombineerde pryse",
+    "total": "Totale pryse"
+  },
+  "feed": {
+    "empty": {
+      "new": "Nog geen keuses nie. Plasings open wanneer Puntr op 1 Desember 2026 bekendgestel word.",
+      "top": "Top-tipgewers verskyn sodra hierdie week se eerste keuses afgehandel is.",
+      "mine": "Jy het nog nie 'n keuse geplaas nie."
+    },
+    "loadMore": "Laai meer",
+    "loading": "Laai tans…",
+    "error": "Ons kon nie die voer laai nie. Herlaai asseblief die bladsy.",
+    "title": "Jongste keuses",
+    "emptyTitle": "Nog niks hier nie"
+  },
+  "discussions": {
+    "preview": "Illustratiewe gemeenskapsvoorskou",
+    "title": "Sportgesprekke",
+    "description": "Gesprekke wat die span begin het, met voorbeeldantwoorde en stemtellings van stigterslede. Dit is illustratiewe voorbeelde, nie regstreekse ledebedrywigheid nie.",
+    "upvotes": "stemme",
+    "comments": "kommentare",
+    "sampleVotes": "Voorbeeldstemme"
+  },
+  "tipSupport": {
+    "title": "Erken uitstaande tipgewers",
+    "body": "Puntr Pro sal tipgewer-ondersteuning bekendstel: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie; ondersteuning verander nooit ranglyste of die gradering van keuses nie. Nog nie beskikbaar nie."
+  }
+}

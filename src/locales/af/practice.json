@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Oefenmodus | Puntr",
+    "description": "Stigterslede: probeer Puntr met 'n fiktiewe liga, oefenpunte en demo-belonings voor die bekendstelling op 1 Desember 2026."
+  },
+  "badge": "Oefening",
+  "eyebrow": "Oefenmodus",
+  "title": "Probeer Puntr voor die bekendstelling.",
+  "lead": "'n Fiktiewe liga speel in minute af, nie weke nie. Plaas keuses, kyk hoe uitslae inkom en sien hoe punte en belonings sal werk. Niks hier is eg nie: die spanne, uitslae en pryse is versin, en oefenpunte het geen waarde nie.",
+  "simulated": "Gesimuleer",
+  "closed": {
+    "title": "Oefenmodus open binnekort",
+    "body": "Ons e-pos stigterslede sodra dit oopmaak."
+  },
+  "foundingOnly": {
+    "title": "Oefenmodus is vir stigterslede",
+    "body": "Eis jou stigtersplek op om Puntr voor die bekendstelling te probeer.",
+    "cta": "Eis jou stigtersplek op"
+  },
+  "draw": {
+    "title": "Wen 'n OTT-koopbewys van R500",
+    "body": "Probeer Oefenmodus ten minste een keer, los dan jou terugvoer en merk die blokkie vir die trekking. Albei stappe is nodig. Slegs oop vir stigterslede.",
+    "cta": "Gee terugvoer",
+    "rules": "Reëls vir die trekking"
+  },
+  "kpi": {
+    "points": "Oefenpunte",
+    "picks": "Keuses geplaas",
+    "settled": "Keuses afgehandel",
+    "graduate": "Oefengegradueerde"
+  },
+  "graduate": {
+    "earned": "Oefengegradueerde",
+    "progress": "{{count}} van {{total}} afgehandelde keuses om 'n oefengegradueerde te word"
+  },
+  "season": "Seisoen {{number}}, rondte {{round}}",
+  "fixtures": {
+    "title": "Wedstryde",
+    "empty": "Die volgende rondte word getrek. Kom kyk oor 'n minuut weer.",
+    "kickoff": "Afskop {{time}}",
+    "lockAt": "Keuses sluit om {{time}}",
+    "phase": {
+      "upcoming": "Open binnekort",
+      "open": "Oop vir keuses",
+      "locked": "Keuses gesluit",
+      "live": "Aan die gang",
+      "finished": "Volle tyd"
+    }
+  },
+  "market": {
+    "1X2": "Wedstrydsuitslag",
+    "DC": "Dubbele kans",
+    "OU25": "Totale doele 2.5",
+    "BTTS": "Albei spanne score"
+  },
+  "selection": {
+    "home": "Tuis",
+    "draw": "Gelykop",
+    "away": "Weg",
+    "1X": "Tuis of gelykop",
+    "X2": "Gelykop of weg",
+    "12": "Tuis of weg",
+    "over": "Meer as 2.5",
+    "under": "Minder as 2.5",
+    "yes": "Ja",
+    "no": "Nee"
+  },
+  "pick": {
+    "confidence": "Vertroue",
+    "price": "Oefenprys {{price}}",
+    "submit": "Sluit keuse",
+    "locked": "Gesluit",
+    "done": "Keuse geplaas. Punte bygevoeg.",
+    "error": {
+      "kickoff_passed": "Keuses vir hierdie wedstryd is gesluit.",
+      "fixture_not_open": "Hierdie wedstryd is nie meer oop nie.",
+      "practice_closed": "Oefenmodus is nie nou oop nie.",
+      "age_not_attested": "Bevestig eers in jou rekening dat jy 18 of ouer is.",
+      "invalid_selection": "Daardie keuse is nie vir hierdie mark beskikbaar nie.",
+      "generic": "Ons kon nie daardie keuse plaas nie. Probeer asseblief weer."
+    }
+  },
+  "crowd": {
+    "title": "Hoe stigterslede gekies het",
+    "sample": "{{percent}}% het {{team}} gekies",
+    "count": "{{count}} keuses"
+  },
+  "mine": {
+    "title": "My oefenkeuses",
+    "empty": "Nog geen keuses nie. Kies 'n wedstryd hierbo.",
+    "result": {
+      "won": "Gewen",
+      "lost": "Verloor",
+      "void": "Nietig",
+      "pending": "Hangend"
+    }
+  },
+  "board": {
+    "title": "Oefenranglys",
+    "empty": "Nog niemand is op die ranglys nie.",
+    "you": "Jy",
+    "rank": "Posisie",
+    "member": "Lid",
+    "points": "Punte",
+    "settled": "Afgehandel"
+  },
+  "rewards": {
+    "title": "Demo-belonings",
+    "body": "Ruil oefenpunte in om te sien hoe belonings sal voel. Dit het geen werklike waarde nie en word nie op jou regte profiel gewys nie.",
+    "cost": "{{points}} oefenpunte",
+    "redeem": "Ruil in",
+    "done": "Ingeruil. Jou demokode is verberg: {{code}}",
+    "error": {
+      "not_enough_points": "Jy het meer oefenpunte daarvoor nodig.",
+      "generic": "Ons kon dit nie inruil nie. Probeer asseblief weer."
+    }
+  },
+  "rules": {
+    "title": "Hoe Oefenmodus werk",
+    "items": [
+      "Fiktiewe spanne, gesimuleerde uitslae en versinde pryse. Niks hier is eg of 'n voorspelling van werklike wedstryde nie.",
+      "Oefenpunte en demo-belonings is apart van jou regte PuntPoints en kan nie omgeskakel word nie.",
+      "Oefenpunte het geen kontantwaarde nie en sal nooit hê nie."
+    ]
+  },
+  "unit": "pte",
+  "wallet": {
+    "title": "Demobeursie",
+    "demo": "Demo",
+    "credits": "Demo-krediete (betaal soos jy gebruik)",
+    "points": "Oefenpunte",
+    "error": "Ons kon nie jou demobeursie laai nie.",
+    "note": "Demo-krediete en oefenpunte is slegs vir oefening. Dit het geen waarde nie en word nooit by jou regte beursie gevoeg nie. Wanneer jy min het, kry jy een keer per dag 'n gratis aanvulling.",
+    "history": "Geskiedenis van demobeursie",
+    "kind": {
+      "starter": "Begin-demokrediete",
+      "topup": "Gratis aanvulling",
+      "spend": "Wedstrydinsig ontsluit"
+    }
+  },
+  "insight": {
+    "unlock": "Ontsluit wedstrydinsig (2 demo-krediete)",
+    "title": "Oefenmodel se insig",
+    "result": "Tuis {{home}} · Gelykop {{draw}} · Weg {{away}}",
+    "goals": "Meer as 2.5 doele {{over}} · Albei spanne score {{btts}}",
+    "note": "Gesimuleer: bereken uit die versinde spanbeoordelings in Oefenmodus. So sal premium-wedstrydinsigte ná die bekendstelling met regte krediete werk; dit is nie 'n Puntr-voorspelling nie.",
+    "noCredits": "Nie genoeg demo-krediete nie. 'n Gratis aanvulling kom een keer per dag wanneer jy min het.",
+    "error": "Dit het nie gewerk nie. Geen demo-krediete is spandeer nie."
+  }
+}

@@ -13,7 +13,7 @@ import { pseudolocalise } from "./pseudo";
 type Bundle = Record<string, unknown>;
 
 // Every locale bundle is imported eagerly so server and client render the same text on first paint.
-// Missing keys in af/zu/xh fall back to en-ZA key by key.
+// Missing keys in af/zu fall back to en-ZA key by key.
 const files = import.meta.glob("../../locales/*/*.json", {
   eager: true,
   import: "default",
