@@ -555,7 +555,6 @@ function SignOff({
         decision,
         reviewerName: name,
         note,
-        counts: { approved: totals.approved, total: totals.total },
       },
     });
     setMsg(

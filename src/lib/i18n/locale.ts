@@ -48,7 +48,9 @@ export function writeLanguageCookie(code: LocaleCode, preview = false) {
   if (typeof document === "undefined") return;
   document.cookie = `${LANGUAGE_COOKIE}=${encodeURIComponent(code)}; Path=/; Max-Age=31536000; SameSite=Lax`;
   // The preview flag lives only as long as the choice of a language in review; picking anything else clears it.
+  const secure =
+    typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
   document.cookie = preview
-    ? `${LANGUAGE_PREVIEW_COOKIE}=1; Path=/; Max-Age=2592000; SameSite=Lax`
-    : `${LANGUAGE_PREVIEW_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+    ? `${LANGUAGE_PREVIEW_COOKIE}=1; Path=/; Max-Age=2592000; SameSite=Lax${secure}`
+    : `${LANGUAGE_PREVIEW_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax${secure}`;
 }

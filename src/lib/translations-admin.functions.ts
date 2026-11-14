@@ -128,6 +128,66 @@ export interface TranslationOverview {
   signoffs: SignoffRow[];
 }
 
+/** Per-section and total review state for a locale, computed from the stored decisions and the current files. */
+async function summariseLocale(
+  db: SupabaseClient,
+  locale: ReviewLocale,
+): Promise<
+  { ok: true; namespaces: NamespaceSummary[]; totals: TranslationOverview["totals"] } | Fail
+> {
+  const { data: rows, error } = await db
+    .from("translation_reviews")
+    .select("namespace, key, source_text, reviewed_text, status")
+    .eq("locale", locale);
+  if (error) return { ok: false, code: "error", message: error.message };
+  const byKey = new Map<string, Pick<ReviewRow, "source_text" | "reviewed_text" | "status">>();
+  for (const r of (rows ?? []) as ReviewRow[]) byKey.set(`${r.namespace}::${r.key}`, r);
+
+  const summarise = (ns: string, keys: string[]): NamespaceSummary => {
+    const s: NamespaceSummary = {
+      namespace: ns,
+      total: 0,
+      translated: 0,
+      approved: 0,
+      changes: 0,
+      stale: 0,
+    };
+    for (const key of keys) {
+      const cur = currentText(locale, ns, key);
+      if (!cur) continue;
+      s.total += 1;
+      if (cur.tr) s.translated += 1;
+      const r = byKey.get(`${ns}::${key}`);
+      if (!r) continue;
+      if (r.source_text !== cur.en || r.reviewed_text !== cur.tr) s.stale += 1;
+      else if (r.status === "approved") s.approved += 1;
+      else s.changes += 1;
+    }
+    return s;
+  };
+
+  const namespaces = [
+    ...REVIEW_NAMESPACES.map((ns) => summarise(ns, Object.keys(bundle(DEFAULT_LOCALE, ns)))),
+    summarise(
+      "legal",
+      LEGAL_PAGES.map((p) => p.slug),
+    ),
+  ].filter((n) => n.total > 0);
+
+  const totals = namespaces.reduce(
+    (a, n) => ({
+      total: a.total + n.total,
+      translated: a.translated + n.translated,
+      approved: a.approved + n.approved,
+      changes: a.changes + n.changes,
+      stale: a.stale + n.stale,
+    }),
+    { total: 0, translated: 0, approved: 0, changes: 0, stale: 0 },
+  );
+
+  return { ok: true, namespaces, totals };
+}
+
 export const getTranslationOverview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => obj(input))
@@ -137,55 +197,9 @@ export const getTranslationOverview = createServerFn({ method: "POST" })
     if (!isLocale(data["locale"])) return { ok: false, code: "invalid" };
     const locale = data["locale"];
 
-    const { data: rows, error } = await db
-      .from("translation_reviews")
-      .select("namespace, key, source_text, reviewed_text, status")
-      .eq("locale", locale);
-    if (error) return { ok: false, code: "error", message: error.message };
-    const byKey = new Map<string, Pick<ReviewRow, "source_text" | "reviewed_text" | "status">>();
-    for (const r of (rows ?? []) as ReviewRow[]) byKey.set(`${r.namespace}::${r.key}`, r);
-
-    const summarise = (ns: string, keys: string[]): NamespaceSummary => {
-      const s: NamespaceSummary = {
-        namespace: ns,
-        total: 0,
-        translated: 0,
-        approved: 0,
-        changes: 0,
-        stale: 0,
-      };
-      for (const key of keys) {
-        const cur = currentText(locale, ns, key);
-        if (!cur) continue;
-        s.total += 1;
-        if (cur.tr) s.translated += 1;
-        const r = byKey.get(`${ns}::${key}`);
-        if (!r) continue;
-        if (r.source_text !== cur.en || r.reviewed_text !== cur.tr) s.stale += 1;
-        else if (r.status === "approved") s.approved += 1;
-        else s.changes += 1;
-      }
-      return s;
-    };
-
-    const namespaces = [
-      ...REVIEW_NAMESPACES.map((ns) => summarise(ns, Object.keys(bundle(DEFAULT_LOCALE, ns)))),
-      summarise(
-        "legal",
-        LEGAL_PAGES.map((p) => p.slug),
-      ),
-    ].filter((n) => n.total > 0);
-
-    const totals = namespaces.reduce(
-      (a, n) => ({
-        total: a.total + n.total,
-        translated: a.translated + n.translated,
-        approved: a.approved + n.approved,
-        changes: a.changes + n.changes,
-        stale: a.stale + n.stale,
-      }),
-      { total: 0, translated: 0, approved: 0, changes: 0, stale: 0 },
-    );
+    const summary = await summariseLocale(db, locale);
+    if (!summary.ok) return summary;
+    const { namespaces, totals } = summary;
 
     const { data: so } = await db
       .from("translation_signoffs")
@@ -323,7 +337,10 @@ export const saveTranslationReview = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-/** Approve every untouched string in a section at once (a reviewer who has read the whole section). */
+/**
+ * Approve a whole section at once (a reviewer who has read it). Strings with a current decision are left alone,
+ * so a suggestion still matching today's text is never overwritten; pending and stale strings are approved.
+ */
 export const approveTranslationSection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => obj(input))
@@ -342,15 +359,23 @@ export const approveTranslationSection = createServerFn({ method: "POST" })
 
     const { data: existing } = await db
       .from("translation_reviews")
-      .select("key")
+      .select("key, source_text, reviewed_text")
       .eq("locale", locale)
       .eq("namespace", ns);
-    const done = new Set(((existing ?? []) as { key: string }[]).map((r) => r.key));
+    const decided = new Map(
+      ((existing ?? []) as Pick<ReviewRow, "key" | "source_text" | "reviewed_text">[]).map((r) => [
+        r.key,
+        r,
+      ]),
+    );
     const now = new Date().toISOString();
     const rows = Object.keys(bundle(DEFAULT_LOCALE, ns))
-      .filter((key) => !done.has(key))
       .map((key) => ({ key, cur: currentText(locale, ns, key) }))
       .filter((r): r is { key: string; cur: { en: string; tr: string } } => !!r.cur && !!r.cur.tr)
+      .filter(({ key, cur }) => {
+        const r = decided.get(key);
+        return !r || r.source_text !== cur.en || r.reviewed_text !== cur.tr;
+      })
       .map(({ key, cur }) => ({
         locale,
         namespace: ns,
@@ -362,7 +387,9 @@ export const approveTranslationSection = createServerFn({ method: "POST" })
         reviewed_at: now,
       }));
     if (rows.length > 0) {
-      const { error } = await db.from("translation_reviews").insert(rows);
+      const { error } = await db
+        .from("translation_reviews")
+        .upsert(rows, { onConflict: "locale,namespace,key" });
       if (error) return { ok: false, code: "error", message: error.message };
     }
     await log(db, ctx.userId, "translation.approve_section", `${locale}:${ns}`, {
@@ -387,9 +414,11 @@ export const signOffTranslation = createServerFn({ method: "POST" })
       reviewerName.length < 2
     )
       return { ok: false, code: "invalid" };
-    const counts = obj(data["counts"]);
-    const approvedCount = Number(counts["approved"]) || 0;
-    const totalCount = Number(counts["total"]) || 0;
+    // Counts come from the stored decisions, never from the browser.
+    const summary = await summariseLocale(db, data["locale"]);
+    if (!summary.ok) return summary;
+    const approvedCount = summary.totals.approved;
+    const totalCount = summary.totals.total;
     const { error } = await db.from("translation_signoffs").insert({
       locale: data["locale"],
       decision,
