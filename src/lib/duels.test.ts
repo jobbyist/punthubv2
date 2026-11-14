@@ -66,6 +66,20 @@ describe("gradeDuels", () => {
   });
 });
 
+describe("runDuelSettlement isolation", () => {
+  it("keeps settling after one duel fails", async () => {
+    const report = await runDuelSettlement({
+      expire: async () => 0,
+      toSettle: async () => [row({ duel_id: "bad" }), row({ duel_id: "good" })],
+      settle: async (v) => {
+        if (v.duelId === "bad") throw new Error("boom");
+        return "settled";
+      },
+    });
+    expect(report.outcomes).toEqual({ error: 1, settled: 1 });
+  });
+});
+
 describe("duelErrorKey", () => {
   it("maps database errors to keys", () => {
     expect(duelErrorKey("insufficient_transferable")).toBe("errors.insufficient_transferable");
