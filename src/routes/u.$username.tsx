@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -184,5 +185,13 @@ function PublicProfile() {
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">{children}</div>;
+  return (
+    <div className="relative mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+      <PageArt
+        kind="scoreboard"
+        className="absolute right-4 top-6 hidden h-20 w-32 opacity-80 sm:right-6 sm:block"
+      />
+      <div className="puntr-rise relative">{children}</div>
+    </div>
+  );
 }

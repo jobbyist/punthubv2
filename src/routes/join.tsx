@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -91,9 +92,13 @@ function Join() {
   }, [loading, profile, user, mfaTick]);
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
-      <h1 className="text-3xl">{t("join.title")}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{t("join.subtitle")}</p>
+    <div className="relative mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
+      <PageArt
+        kind="podium"
+        className="absolute right-4 top-6 hidden h-20 w-32 opacity-80 sm:right-6 sm:block"
+      />
+      <h1 className="puntr-rise text-3xl">{t("join.title")}</h1>
+      <p className="puntr-rise mt-1 text-sm text-muted-foreground">{t("join.subtitle")}</p>
       <FoundingCounter className="mt-3" />
 
       <div className="card-surface mt-6 p-6">

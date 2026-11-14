@@ -56,8 +56,14 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
 }
 
 describe("config", () => {
-  it("defaults to the two free models, primary first", () => {
-    expect(parseModelList(undefined).models).toEqual(["gemini-3.8-flash", "gemini-3.1-flash-lite"]);
+  it("defaults to the five free models, primary first, lightest last", () => {
+    expect(parseModelList(undefined).models).toEqual([
+      "gemini-3.8-flash",
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+    ]);
   });
   it("refuses a model that is not on the free list", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
@@ -155,14 +161,26 @@ describe("model router", () => {
     expect(out.model).toBe("gemini-3.1-flash-lite");
     expect(out.attempts.map((a) => a.outcome)).toEqual(["quota", "ok"]);
   });
-  it("retries a timeout once on the same model before falling back", async () => {
+  it("moves straight to the fallback on a timeout while another model is left", async () => {
     const llm = fakeLlm((model) =>
       model === "gemini-3.8-flash" ? new ProviderError("gemini", "timeout", null, "slow") : "{}",
     );
     const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
+    expect(llm.calls.map((c) => c.model)).toEqual(["gemini-3.8-flash", "gemini-3.1-flash-lite"]);
+    expect(out.model).toBe("gemini-3.1-flash-lite");
+  });
+  it("retries a timeout once on the last model in the chain", async () => {
+    let lite = 0;
+    const llm = fakeLlm((model) => {
+      if (model === "gemini-3.8-flash")
+        return new ProviderError("gemini", "unavailable", 503, "busy");
+      lite += 1;
+      return lite === 1 ? new ProviderError("gemini", "timeout", null, "slow") : "{}";
+    });
+    const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
     expect(llm.calls.map((c) => c.model)).toEqual([
       "gemini-3.8-flash",
-      "gemini-3.8-flash",
+      "gemini-3.1-flash-lite",
       "gemini-3.1-flash-lite",
     ]);
     expect(out.model).toBe("gemini-3.1-flash-lite");
@@ -345,7 +363,7 @@ describe("pipeline", () => {
     expect(out.status).toBe("published");
     expect(llm.calls).toEqual([
       { model: "gemini-3.8-flash", review: false },
-      { model: "gemini-3.1-flash-lite", review: true },
+      { model: "gemini-3.6-flash", review: true },
     ]);
     expect(store.articles).toHaveLength(1);
     expect(store.articles[0]).toMatchObject({ status: "PUBLISHED", citedSources: 2 });
@@ -447,7 +465,7 @@ describe("pipeline", () => {
       ),
     });
     const out = await runContentJob(d, { trigger: "cron" });
-    expect(out.ok && "model" in out && out.model).toBe("gemini-3.1-flash-lite");
+    expect(out.ok && "model" in out && out.model).toBe("gemini-3.6-flash");
   });
   it("records a failure and saves nothing when every model fails", async () => {
     const d = deps({ llm: fakeLlm(() => quota()) });

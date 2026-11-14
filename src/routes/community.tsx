@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import { Target } from "lucide-react";
+import { PencilLine, Target } from "lucide-react";
 import { CommunityDiscussions } from "@/components/community-discussions";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { PickCard } from "@/components/pick-card";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
@@ -76,14 +77,35 @@ function Feed({ sort }: { sort: FeedSort }) {
     void load();
   }, [load]);
 
+  // A failed load used to show the "no picks yet" line, which hid real errors from members and from us.
   if (failed)
     return (
-      <p className="card-surface p-5 text-sm text-muted-foreground">{t(`feed.empty.${sort}`)}</p>
+      <p role="alert" className="card-surface p-5 text-sm text-destructive">
+        {t("feed.error")}
+      </p>
     );
-  if (items === null) return <p className="text-sm text-muted-foreground">{t("feed.loading")}</p>;
+  if (items === null)
+    return (
+      <div className="space-y-4" role="status" aria-label={t("feed.loading")}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="puntr-shimmer h-40 rounded-2xl" />
+        ))}
+      </div>
+    );
   if (items.length === 0) {
     return (
-      <p className="card-surface p-5 text-sm text-muted-foreground">{t(`feed.empty.${sort}`)}</p>
+      <EmptyState
+        art="chat"
+        title={t("feed.emptyTitle")}
+        body={t(`feed.empty.${sort}`)}
+        action={
+          sort !== "mine" ? (
+            <Button asChild variant="outline">
+              <Link to="/predictions">{t("composer.post")}</Link>
+            </Button>
+          ) : undefined
+        }
+      />
     );
   }
 
@@ -124,13 +146,18 @@ function Community() {
 
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="chat" title={t("title")} subtitle={t("subtitle")} />
 
-      <CommunityDiscussions />
+      <div className="mb-10">
+        <CommunityDiscussions />
+      </div>
 
-      <div className="card-surface mb-5 p-4">
+      <h2 className="mb-4 text-xl">{t("feed.title")}</h2>
+      <div className="card-surface mb-5 p-4 sm:p-5">
         <div className="flex items-center gap-3">
-          <span className="size-10 shrink-0 rounded-full bg-muted" />
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+            <PencilLine className="size-4" aria-hidden="true" />
+          </span>
           <Link
             to="/predictions"
             className="min-w-0 flex-1 truncate rounded-lg bg-muted px-4 py-2.5 text-left text-sm text-muted-foreground"
@@ -158,7 +185,7 @@ function Community() {
             key={s}
             onClick={() => setSort(s)}
             aria-pressed={sort === s}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+            className={`min-h-10 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               sort === s ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
             }`}
           >
@@ -169,7 +196,10 @@ function Community() {
 
       <Feed sort={sort} />
 
-      <section className="card-surface mt-6 p-5" aria-labelledby="community-tipster-support">
+      <section
+        className="card-surface mt-10 p-5 sm:p-6"
+        aria-labelledby="community-tipster-support"
+      >
         <h2 id="community-tipster-support" className="text-lg">
           {t("tipSupport.title")}
         </h2>

@@ -43,7 +43,9 @@
     },
     "loadMore": "Load more",
     "loading": "Loading…",
-    "error": "We couldn't load the feed. Please refresh the page."
+    "error": "We couldn't load the feed. Please refresh the page.",
+    "title": "Latest picks",
+    "emptyTitle": "Nothing here yet"
   },
   "discussions": {
     "preview": "Illustrative community preview",

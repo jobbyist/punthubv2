@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -655,6 +655,12 @@ function FundingRow({
   const [f, setF] = useState(fundedBy);
   const [name, setName] = useState(sponsor ?? "");
   const [url, setUrl] = useState(sponsorUrl ?? "");
+  // Keep the row in step with the saved values after a save or a refresh (it used to keep showing stale input).
+  useEffect(() => {
+    setF(fundedBy);
+    setName(sponsor ?? "");
+    setUrl(sponsorUrl ?? "");
+  }, [fundedBy, sponsor, sponsorUrl]);
   const dirty = f !== fundedBy || name !== (sponsor ?? "") || url !== (sponsorUrl ?? "");
   return (
     <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">

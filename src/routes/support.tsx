@@ -59,7 +59,7 @@ function Support() {
   const { t } = useTranslation("support");
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="chat" title={t("title")} subtitle={t("subtitle")} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="card-surface p-5 text-center">

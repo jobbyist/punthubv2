@@ -29,6 +29,7 @@ function BookmakersPage() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Bookmakers"
         subtitle="A directory of betting brands South African sports fans may come across."
       />

@@ -2,7 +2,9 @@
  * Gemini model router: primary first, then the fallbacks, free models only.
  *
  * - A model outside FREE_MODEL_ALLOWLIST is never called, whatever the configuration says.
- * - A quota or auth error moves straight to the next model; a timeout or 5xx gets one retry after a pause.
+ * - A quota or auth error moves straight to the next model. A timeout or 5xx also moves on while another model is
+ *   left to try (a busy model stays busy, and with five models retrying each one would outlast the run budget);
+ *   only the last model in the chain gets one retry after a pause.
  * - A model that has reached the engine's own requests-per-day ceiling is skipped without a call.
  * - When every model fails the router throws AllModelsFailed; the pipeline then records the failure and publishes
  *   nothing.
@@ -56,6 +58,8 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
           : [...options.models];
       const attempts: ModelAttempt[] = [];
 
+      const lastUsable = [...order].reverse().find((m) => FREE_MODEL_ALLOWLIST.includes(m));
+
       for (const model of order) {
         if (!FREE_MODEL_ALLOWLIST.includes(model)) {
           await note(attempts, { model, outcome: "refused_not_free" });
@@ -83,7 +87,7 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
                 outcome: error.kind,
                 detail: error.message.slice(0, 200),
               });
-              if (error.retryable && tryNo === 1) {
+              if (error.retryable && tryNo === 1 && model === lastUsable) {
                 await sleep(backoffDelay(1, options.retryDelayMs ?? 1_500));
                 continue;
               }

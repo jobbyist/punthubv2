@@ -6,7 +6,7 @@
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
-import { parseModelList } from "@/lib/content/config";
+import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { ProviderError } from "@/lib/content/http";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
@@ -102,6 +102,8 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
     official: ["bundesliga.com"],
     pages: {
       fixtures: ["https://www.bundesliga.com/en/bundesliga/matchday"],
+      // Same page on purpose: bundesliga.com shows the current matchday's kick-off times and, once played, its
+      // scores at one address. Earlier matchdays come from the results queries below.
       results: ["https://www.bundesliga.com/en/bundesliga/matchday"],
     },
     queries: {
@@ -159,7 +161,7 @@ export const PFIE_PROVIDER = "pfie";
 
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
   const now = deps.now ?? (() => new Date());
-  const models = deps.models ?? parseModelList("gemini-3.1-flash-lite,gemini-3.8-flash").models;
+  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
 
   async function run(
     competition: Competition,

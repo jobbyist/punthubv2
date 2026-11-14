@@ -50,6 +50,7 @@ function Cookies() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Privacy choices"
         subtitle="Cookies and tracking on Puntr. Everything optional is off unless you turn it on."
       />

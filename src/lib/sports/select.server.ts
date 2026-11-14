@@ -13,7 +13,8 @@ export async function createSportsProvider(
   const pfieReady = Boolean(env["GEMINI_API_KEY"]?.trim() && env["PARALLEL_API_KEY"]?.trim());
 
   if (wanted === "pfie" && pfieReady) {
-    const { parseDailyCaps, parseModelList, readContentEnv } = await import("@/lib/content/config");
+    const { DEFAULT_PFIE_MODELS, parseDailyCaps, parseModelList, readContentEnv } =
+      await import("@/lib/content/config");
     const { createGemini, createPageReader, createParallelSearch } =
       await import("@/lib/content/providers.server");
     const { createPfieProvider } = await import("@/lib/pfie/provider");
@@ -29,8 +30,7 @@ export async function createSportsProvider(
       ),
       llm: guardLlm(createGemini(keys.geminiKey!), claim),
       store: createPfieStore(),
-      models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? "gemini-3.1-flash-lite,gemini-3.8-flash")
-        .models,
+      models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(",")).models,
       dailyCap: parseDailyCaps(env["CONTENT_GEMINI_RPD"]),
     });
   }

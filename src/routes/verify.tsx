@@ -103,7 +103,7 @@ function Verify() {
 
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="shield" title={t("title")} subtitle={t("subtitle")} />
 
       <section className="card-surface p-5" aria-labelledby="check-title">
         <h2 id="check-title" className="text-lg">

@@ -60,7 +60,11 @@ function PrivacyRequest() {
 
   return (
     <AppShell>
-      <PageHeading title="Privacy request" subtitle="We aim to reply within 30 days." />
+      <PageHeading
+        art="shield"
+        title="Privacy request"
+        subtitle="We aim to reply within 30 days."
+      />
       <div className="card-surface max-w-xl p-6">
         {done ? (
           <p className="text-sm">

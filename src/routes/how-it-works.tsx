@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { AppShell } from "@/components/layout/app-shell";
+import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { Em } from "@/components/em";
 import { RgNotice } from "@/components/rg-notice";
@@ -36,8 +36,7 @@ function HowItWorks() {
 
   return (
     <AppShell>
-      <h1 className="text-[clamp(2rem,4vw,2.4rem)]">{t("title")}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{tc("brand.tagline")}</p>
+      <PageHeading art="route" title={t("title")} subtitle={tc("brand.tagline")} />
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
         <Trans t={t} i18nKey="intro" components={{ 1: <Em /> }} />
       </p>

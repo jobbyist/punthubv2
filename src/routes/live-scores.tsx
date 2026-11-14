@@ -22,6 +22,7 @@ function LiveScoresPage() {
   return (
     <AppShell>
       <PageHeading
+        art="radar"
         title="Live Scores"
         subtitle="A dedicated matchday destination is being built for Puntr."
       />

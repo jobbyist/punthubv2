@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Bot, FileText, Sparkles, Wrench } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
@@ -51,22 +52,29 @@ const TOOLS = [
 function ToolsPage() {
   return (
     <AppShell>
-      <div className="mx-auto max-w-[1100px] px-4 py-10 sm:px-6 sm:py-14">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center gap-2 border border-primary/30 bg-primary-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
-            <Wrench className="size-3.5" /> Puntr toolkit
-          </span>
-          <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Practical tools. <span className="text-primary">Sharper insight.</span>
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            A growing toolkit for South African sports fans who want clearer context and better ways
-            to understand the game. The features below are in development and are not yet available.
-          </p>
+      <div className="mx-auto max-w-[1100px] py-4 sm:py-8">
+        <div className="flex items-center gap-8">
+          <div className="puntr-rise min-w-0 max-w-2xl flex-1">
+            <span className="inline-flex items-center gap-2 border border-primary/30 bg-primary-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+              <Wrench className="size-3.5" /> Puntr toolkit
+            </span>
+            <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Practical tools. <span className="text-primary">Sharper insight.</span>
+            </h1>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              A growing toolkit for South African sports fans who want clearer context and better
+              ways to understand the game. The features below are in development and are not yet
+              available.
+            </p>
+          </div>
+          <PageArt kind="radar" className="hidden h-44 w-72 shrink-0 md:block" />
         </div>
         <div className="mt-9 grid gap-4 md:grid-cols-3">
           {TOOLS.map((tool) => (
-            <article key={tool.name} className="card-surface flex h-full flex-col p-5 sm:p-6">
+            <article
+              key={tool.name}
+              className="card-surface card-interactive flex h-full flex-col p-5 sm:p-6"
+            >
               <div className="flex items-start justify-between gap-3">
                 <span className="grid size-11 place-items-center rounded-xl bg-primary-soft text-primary">
                   <tool.icon className="size-5" />

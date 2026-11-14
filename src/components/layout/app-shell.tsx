@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Activity, CalendarDays, Flame, Star, Target, Trophy, Users } from "lucide-react";
+import { Activity, ClipboardCheck, Newspaper, Target, Trophy, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
+import { PageArt, type PageArtKind } from "@/components/motion/page-art";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { LiveBadge } from "@/components/live-badge";
 import { Button } from "@/components/ui/button";
@@ -14,12 +15,13 @@ import { fetchLiveFixtures } from "@/lib/fixtures";
 import { fetchThisWeeksLeaders } from "@/lib/records";
 
 const sideNav = [
+  // One entry per destination: the old list sent four different labels to the same two pages.
   { key: "predictions", to: "/predictions", icon: Target },
-  { key: "topPicks", to: "/predictions", icon: Star },
-  { key: "liveNow", to: "/results", icon: Activity },
-  { key: "popular", to: "/predictions", icon: Flame },
+  { key: "results", to: "/results", icon: ClipboardCheck },
+  { key: "liveNow", to: "/live-scores", icon: Activity },
+  { key: "leaderboards", to: "/leaderboards", icon: Trophy },
   { key: "community", to: "/community", icon: Users },
-  { key: "calendar", to: "/results", icon: CalendarDays },
+  { key: "newsroom", to: "/newsroom", icon: Newspaper },
 ] as const;
 
 const SPORT_KEYS: Record<string, string> = {
@@ -44,9 +46,10 @@ function LeftRail() {
           <Link
             key={key}
             to={to}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            activeProps={{ className: "bg-primary-soft text-primary" }}
+            className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
           >
-            <Icon className="size-[18px] text-muted-foreground" />
+            <Icon className="size-[18px] text-muted-foreground transition-transform group-hover:scale-110 group-hover:text-primary" />
             <span className="flex-1">{t(`side.${key}`)}</span>
           </Link>
         ))}
@@ -62,7 +65,7 @@ function LeftRail() {
               <Link
                 to="/sports/$sport"
                 params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
-                className="flex flex-col items-start gap-0.5 px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
               >
                 <span>{sportName(s.name)}</span>
                 {s.name === "Soccer" && <LiveBadge />}
@@ -71,10 +74,10 @@ function LeftRail() {
               <Link
                 to="/sports/$sport"
                 params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
-                className="flex items-center justify-between px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
-                <span>{sportName(s.name)}</span>
-                <span className="text-[10px] font-semibold uppercase tracking-wide">
+                <span className="min-w-0 truncate">{sportName(s.name)}</span>
+                <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide">
                   {tc("badge.comingSoon")}
                 </span>
               </Link>
@@ -172,11 +175,63 @@ export function RightRail() {
   );
 }
 
-export function PageHeading({ title, subtitle }: { title: string; subtitle: string }) {
+/**
+ * Page banner. With `art` it becomes a branded panel: dotted backdrop, a green rule that draws in, and one of the
+ * custom motion graphics from components/motion/page-art. Text is in the server HTML and never waits for script.
+ */
+export function PageHeading({
+  title,
+  subtitle,
+  art,
+  eyebrow,
+}: {
+  title: string;
+  subtitle: string;
+  art?: PageArtKind;
+  eyebrow?: string;
+}) {
+  if (!art) {
+    return (
+      <div className="mb-8 puntr-rise">
+        {eyebrow && (
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+            {eyebrow}
+          </p>
+        )}
+        <h1 className="text-3xl sm:text-[34px]">{title}</h1>
+        <span className="puntr-grow-x mt-3 block h-1 w-14 rounded-full bg-primary" />
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
+      </div>
+    );
+  }
   return (
-    <div className="mb-6">
-      <h1 className="text-3xl sm:text-[34px]">{title}</h1>
-      <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p>
+    <div className="relative isolate mb-8 overflow-hidden rounded-2xl border border-border bg-surface">
+      <div
+        className="dot-grid absolute inset-0 -z-10 opacity-70"
+        style={{
+          maskImage: "linear-gradient(100deg, transparent 20%, black 85%)",
+          WebkitMaskImage: "linear-gradient(100deg, transparent 20%, black 85%)",
+        }}
+        aria-hidden="true"
+      />
+      <div className="flex items-center gap-4 p-5 sm:gap-8 sm:p-7">
+        <div className="min-w-0 flex-1 puntr-rise">
+          {eyebrow && (
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+              {eyebrow}
+            </p>
+          )}
+          <h1 className="pr-24 text-[28px] leading-tight min-[480px]:pr-0 sm:text-[34px]">
+            {title}
+          </h1>
+          <span className="puntr-grow-x mt-3 block h-1 w-14 rounded-full bg-primary" />
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
+        </div>
+        <PageArt
+          kind={art}
+          className="absolute right-3 top-3 h-14 w-[5.5rem] opacity-80 min-[480px]:static min-[480px]:h-28 min-[480px]:w-44 min-[480px]:shrink-0 min-[480px]:opacity-100 sm:h-36 sm:w-56"
+        />
+      </div>
     </div>
   );
 }
@@ -185,9 +240,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto flex max-w-[1400px] gap-7 px-4 sm:px-6">
       <LeftRail />
-      <main className="min-w-0 flex-1 py-6">
+      <main className="min-w-0 flex-1 py-6 sm:py-8">
         {children}
-        <div className="mt-6">
+        <div className="mt-10">
           <BookmakerIndependenceNotice compact />
         </div>
         <div className="mt-6">

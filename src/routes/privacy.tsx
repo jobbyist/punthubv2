@@ -149,6 +149,7 @@ function Privacy() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Privacy Policy"
         subtitle="A clear explanation of the personal information we handle, why we need it and the choices and rights available to you."
       />

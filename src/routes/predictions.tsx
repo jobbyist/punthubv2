@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
 import { IntelPanel } from "@/components/intel/intel-panel";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureMatchup } from "@/components/fixture-matchup";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { fetchUpcomingFixtures, groupFixturesByDay } from "@/lib/fixtures";
@@ -79,8 +81,10 @@ function Predictions() {
 
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
-      <IllustrativeFixtures />
+      <PageHeading art="pitch" title={t("title")} subtitle={t("subtitle")} />
+      <div className="mb-10">
+        <IllustrativeFixtures />
+      </div>
 
       {leagues.length > 1 && (
         <div
@@ -114,17 +118,19 @@ function Predictions() {
       )}
 
       {days.length === 0 && (
-        <div className="card-surface p-6">
-          <h2 className="text-lg">{t("empty.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("empty.body")}</p>
-        </div>
+        <EmptyState art="pitch" title={t("empty.title")} body={t("empty.body")} />
       )}
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {days.map((day) => (
           <section key={day.label} aria-label={day.label}>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-3 flex items-center gap-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
               {day.label}
+              <span className="h-px flex-1 bg-border" aria-hidden="true" />
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] tnum">
+                {day.fixtures.length}
+              </span>
             </h2>
             <ul className="card-surface divide-y divide-border">
               {day.fixtures.map((f) => {
@@ -136,26 +142,39 @@ function Predictions() {
                       <Link
                         to="/match/$fixtureId"
                         params={{ fixtureId: f.id }}
-                        className="block p-4 transition-colors hover:bg-muted/40"
+                        className="group block p-4 transition-colors hover:bg-muted/40 sm:p-5"
                       >
                         <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                          <span className="truncate">
-                            {f.competition} ·{" "}
-                            {f.sport === "soccer" ? tc("sport.soccer") : tc("sport.rugby")}
+                          <span className="flex min-w-0 items-center gap-2">
+                            <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                              {tc(`sport.${f.sport}`)}
+                            </span>
+                            <span className="truncate">{f.competition}</span>
                           </span>
-                          <span className="shrink-0 font-medium text-primary">{t("pick")}</span>
+                          <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-primary">
+                            {t("pick")}
+                            <ArrowRight
+                              className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                              aria-hidden="true"
+                            />
+                          </span>
                         </div>
-                        <div className="mt-3">
+                        <div className="mt-4">
                           <FixtureMatchup
                             home={f.home}
                             away={f.away}
                             sport={f.sport}
                             center={
-                              <span
-                                className={`text-sm font-bold tnum ${f.status === "live" ? "text-primary" : ""}`}
-                              >
-                                {f.status === "live" ? t("live") : formatTime(f.kickoff_at)}
-                              </span>
+                              f.status === "live" ? (
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-primary-foreground">
+                                  <span className="puntr-blink size-1.5 rounded-full bg-primary-foreground" />
+                                  {t("live")}
+                                </span>
+                              ) : (
+                                <span className="inline-flex rounded-lg bg-ink px-2.5 py-1 font-display text-sm font-extrabold text-ink-foreground tnum">
+                                  {formatTime(f.kickoff_at)}
+                                </span>
+                              )
                             }
                           />
                         </div>

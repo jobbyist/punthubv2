@@ -28,7 +28,8 @@
     "viewAll": "View all",
     "viewLeaderboard": "View leaderboard",
     "viewResults": "View results",
-    "send": "Send message"
+    "send": "Send message",
+    "seeFixtures": "See fixtures"
   },
   "meta": {
     "title": "Puntr | Predict smarter. Prove it.",
@@ -42,7 +43,11 @@
     "soccer": "Soccer",
     "rugby": "Rugby",
     "basketball": "Basketball",
-    "cricket": "Cricket"
+    "cricket": "Cricket",
+    "tennis": "Tennis",
+    "combat": "Combat sports",
+    "athletics": "Athletics",
+    "racing": "Horse racing"
   },
   "founding": {
     "left": "{{left}} of {{cap}} Founding spots left",
@@ -114,6 +119,22 @@
         "bbcsport": "Example: competition form and fixture context",
         "espn": "Example: analysis and wider sports headlines"
       }
+    },
+    "experience": {
+      "title": "A look at the fixture experience",
+      "body": "Explore how fixtures, settled results and the community leaderboard come together.",
+      "tabsLabel": "Preview the fixture experience",
+      "tab": {
+        "fixtures": "Fixtures",
+        "results": "Results",
+        "leaderboard": "Leaderboard"
+      },
+      "fullTime": "Full time",
+      "sampleResult": "Sample result",
+      "boardTitle": "Weekly leaderboard",
+      "boardBody": "Sample member performance. Illustrative data only.",
+      "unitsShort": "units",
+      "note": "Preview content is illustrative and does not represent live fixtures, results or member rankings."
     }
   },
   "gate": {

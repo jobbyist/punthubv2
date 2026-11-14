@@ -23,6 +23,7 @@ function Terms() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Terms & Conditions"
         subtitle="These terms explain how Puntr works, what you can expect from the platform and what we expect from members."
       />

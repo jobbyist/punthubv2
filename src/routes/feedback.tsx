@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
@@ -148,7 +149,11 @@ function Feedback() {
   const showUpsell = state === "done" && passInterest !== "already";
 
   return (
-    <div className="mx-auto max-w-[720px] px-4 py-10 sm:px-6 sm:py-14">
+    <div className="relative mx-auto max-w-[720px] px-4 py-10 sm:px-6 sm:py-14">
+      <PageArt
+        kind="chat"
+        className="absolute right-4 top-8 hidden h-24 w-40 opacity-90 sm:right-6 md:block"
+      />
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
         {t("eyebrow")}
       </p>

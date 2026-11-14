@@ -76,7 +76,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[72px]">
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:h-[72px]">
         <div className="flex min-w-0 shrink-0 items-center">
           <Logo />
         </div>
@@ -139,7 +139,7 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center justify-end gap-2">
+        <div className="flex min-w-0 items-center justify-end gap-2">
           <ThemeToggle />
           {isSignedIn && profile && <NotificationBell />}
           {isSignedIn && profile ? (
@@ -230,7 +230,9 @@ export function SiteHeader() {
             </DropdownMenu>
           ) : (
             <>
-              <FoundingCounter compact className="hidden xl:inline-flex" />
+              <div className="hidden xl:block">
+                <FoundingCounter compact />
+              </div>
               <Link
                 to="/join"
                 className="hidden whitespace-nowrap rounded-md px-2 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"

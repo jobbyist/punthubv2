@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { ClubBadge } from "@/components/practice-badge";
 import { DemoWalletCard, MatchInsight } from "@/components/practice-wallet";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -43,7 +44,15 @@ export const Route = createFileRoute("/practice")({
 });
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">{children}</div>;
+  return (
+    <div className="relative mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+      <PageArt
+        kind="pitch"
+        className="absolute right-4 top-6 hidden h-24 w-40 opacity-80 sm:right-6 md:block"
+      />
+      <div className="relative">{children}</div>
+    </div>
+  );
 }
 
 function PracticeBadge() {

@@ -49,7 +49,7 @@ function Pricing() {
   const { t } = useTranslation("pricing");
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="coins" title={t("title")} subtitle={t("subtitle")} />
 
       <section
         className="puntr-reveal card-surface mb-6 grid gap-5 border-primary/50 p-6 md:grid-cols-[1fr_auto] md:items-center"

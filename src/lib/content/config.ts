@@ -1,12 +1,32 @@
 /**
  * Content engine configuration, read from server environment variables only. Nothing here is ever sent to the client.
  *
- * Model IDs are configuration, not assumptions. Both defaults were checked against Google's published model list on
- * 13 Nov 2026 and are listed as free of charge, but the limits that apply are the ones shown for the project in
- * Google AI Studio: put those in CONTENT_GEMINI_RPD.
+ * Model IDs are configuration, not assumptions. The defaults were checked against Google's pricing page and current
+ * free-tier write-ups on 13 and 14 Nov 2026 and are listed as free of charge, but the limits that apply are the ones
+ * shown for the project in Google AI Studio: put those in CONTENT_GEMINI_RPD.
  */
 
-export const DEFAULT_GEMINI_MODELS = ["gemini-3.8-flash", "gemini-3.1-flash-lite"] as const;
+/**
+ * Primary first, then the fallbacks, strongest to lightest (14 Nov 2026): two more Flash models and one more
+ * Flash-Lite, so a busy or capped model no longer drops straight to the lightest one. Every entry is on the free
+ * tier; a model the project cannot reach answers 404 and the router simply moves on.
+ */
+export const DEFAULT_GEMINI_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+] as const;
+
+/** PFIE extraction is high volume and simple: the Flash-Lite models go first, the Flash models back them up. */
+export const DEFAULT_PFIE_MODELS = [
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash-lite",
+  "gemini-3.8-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+] as const;
 
 /**
  * Models the router may ever call. A model outside this list is refused even if an environment variable names it,
