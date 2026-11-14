@@ -20,6 +20,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
 import { ExplainerVideo } from "@/components/explainer-video";
+import { PartnerLogo } from "@/components/partner-logo";
 import { Button } from "@/components/ui/button";
 import { useBrandLogos } from "@/hooks/use-brand-logos";
 import { analytics } from "@/lib/analytics";
@@ -395,14 +396,9 @@ function About() {
               ? aboutLogos.map((l) => (
                   <li
                     key={l.id}
-                    className="grid h-20 place-items-center rounded-xl border border-border bg-card p-3"
+                    className="card-surface group grid h-20 place-items-center p-3"
                   >
-                    <img
-                      src={l.imageUrl ?? ""}
-                      alt={l.name}
-                      loading="lazy"
-                      className="max-h-12 max-w-full object-contain"
-                    />
+                    <PartnerLogo src={l.imageUrl ?? ""} alt={l.name} loading="lazy" />
                   </li>
                 ))
               : PARTNER_SLOTS.map((n) => (
