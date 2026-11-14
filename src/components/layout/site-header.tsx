@@ -18,6 +18,7 @@ import {
   Users,
   Wrench,
   Building2,
+  type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -50,7 +51,7 @@ import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
 import { inviteText, whatsappUrl } from "@/lib/referral";
 
-const featuredSports: { key: RoadmapSport; labelKey: string; icon: typeof Goal }[] = [
+const featuredSports: { key: RoadmapSport; labelKey: string; icon: LucideIcon }[] = [
   { key: "soccer", labelKey: "soccer", icon: Goal },
   { key: "basketball", labelKey: "basketball", icon: Activity },
   { key: "rugby", labelKey: "rugby", icon: Flag },
