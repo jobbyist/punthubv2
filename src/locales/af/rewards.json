@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "title": "PuntPoints en belonings | Puntr",
+    "description": "PuntPoints beloon kwalifiserende bedrywigheid en uitnodigings, en kan ingeruil word vir koopbewyse, geborgde belonings en voordele sodra belonings oopmaak. Geen kontant nie.",
+    "ogDescription": "PuntPoints beloon bedrywigheid, nooit uitslae nie. Geen kontantwaarde nie."
+  },
+  "title": "PuntPoints en belonings",
+  "subtitle": "'n Lojaliteitskema vir aktiewe lede. Punte beloon bedrywigheid, nooit uitslae nie.",
+  "unit": "PuntPoints",
+  "ad": "Advertensie",
+  "balance": "Jou saldo",
+  "soon": {
+    "title": "PuntPoints is op pad",
+    "body": "Verdien PuntPoints vir kwalifiserende bedrywigheid en uitnodigings, en ruil dit dan in vir koopbewyse, geborgde belonings en voordele. 'n Beplande tipgewer-ondersteuningsfunksie sal spelers ook toelaat om geverifieerde tipgewers met 'n konsekwente rekord te erken deur vir hulle PuntPoints te stuur. Punte het geen kontantwaarde nie."
+  },
+  "signIn": {
+    "body": "Teken aan om jou saldo te sien, vriende uit te nooi en belonings in te ruil.",
+    "cta": "Teken aan of sluit aan"
+  },
+  "confirm": {
+    "title": "Bevestig jou e-pos om punte te verdien en in te ruil.",
+    "body": "Punte en belonings is vir lede met 'n bevestigde e-posadres.",
+    "cta": "Bevestig my e-pos"
+  },
+  "earn": {
+    "title": "Hoe om te verdien",
+    "body": "Punte kom uit bedrywigheid, nooit uit wen nie en nooit uit spandeer nie.",
+    "limit": {
+      "day_one": "tot {{count}} per dag",
+      "day_other": "tot {{count}} per dag",
+      "month_one": "tot {{count}} per maand",
+      "month_other": "tot {{count}} per maand"
+    }
+  },
+  "rule": {
+    "confirm_email": "Bevestig jou e-pos",
+    "first_pick": "Plaas jou eerste keuse",
+    "pick_locked": "Sluit 'n keuse",
+    "pick_settled": "'n Keuse wat jy geplaas het, word afgehandel",
+    "referral_referred": "Sluit aan deur 'n vriend se uitnodiging",
+    "referral_referrer": "'n Vriend wat jy uitgenooi het, plaas 'n eerste keuse",
+    "referral_milestone": "Bonus vir 'n uitnodigingsmylpaal",
+    "quest": "Begin-taak"
+  },
+  "kind": {
+    "perk": "Voordeel",
+    "sponsored": "Geborgde beloning",
+    "retail_voucher": "Koopbewys",
+    "betting_voucher": "Wedkoopbewys"
+  },
+  "catalogue": {
+    "title": "Belonings",
+    "empty": "Geen belonings is nou beskikbaar nie. Kom kyk binnekort weer.",
+    "soon": "Belonings open sodra ons borge dit bevestig. Jou punte bly intussen groei.",
+    "sponsor": "Geborg deur {{name}}",
+    "error": "Kon nie belonings laai nie. Probeer asseblief weer.",
+    "preview": "Voorskou: belonings kan vanaf {{date}} ingeruil word. Bou tot dan jou PuntPoints op.",
+    "opens": "Open {{date}}",
+    "partner": "In vennootskap met {{name}}",
+    "byPuntr": "Beloning van Puntr"
+  },
+  "redeem": {
+    "button": "Ruil in",
+    "confirm": "Spandeer {{cost}} om in te ruil",
+    "cancel": "Kanselleer",
+    "working": "Ruil tans in…",
+    "done": "Ingeruil. Ons stuur jou beloning binnekort as dit nog nie gereed is nie.",
+    "outOfStock": "Uitverkoop",
+    "short": "Nog {{short}} punte nodig",
+    "error": {
+      "not_authenticated": "Teken asseblief weer aan.",
+      "rewards_disabled": "Belonings is nog nie oop nie.",
+      "reward_not_found": "Daardie beloning is nie beskikbaar nie.",
+      "not_eligible": "Jy het 'n bevestigde e-pos nodig, moet 18 of ouer wees en mag nie op 'n blaaskans wees nie om dit in te ruil.",
+      "daily_limit": "Jy het vandag se inruillimiet bereik. Probeer môre weer.",
+      "insufficient_points": "Jy het nie genoeg punte daarvoor nie.",
+      "out_of_stock": "Daardie beloning het pas opgeraak.",
+      "generic": "Ons kon dit nie inruil nie. Probeer asseblief weer.",
+      "identity_not_verified": "Verifieer asseblief jou identiteit op jou rekeningbladsy voordat jy belonings inruil.",
+      "not_yet_available": "Belonings open met die bekendstelling op 1 Desember 2026.",
+      "mfa_required": "Vul eers jou tweestap-verifikasiekode in (teken uit en weer aan as jy nie gevra is nie)."
+    },
+    "verifyCta": "Verifieer my identiteit"
+  },
+  "redemptions": {
+    "title": "Jou inruilings",
+    "unknown": "Beloning",
+    "copy": "Kopieer kode",
+    "copied": "Kode gekopieer",
+    "copyFailed": "Kon nie kopieer nie. Kies die kode en kopieer dit.",
+    "status": {
+      "requested": "Wag vir ons om dit te stuur",
+      "fulfilled": "Gestuur",
+      "cancelled": "Gekanselleer en terugbetaal"
+    }
+  },
+  "history": {
+    "title": "Puntegeskiedenis",
+    "kind": {
+      "award": "Punte verdien",
+      "spend": "Ingeruil",
+      "refund": "Terugbetaling",
+      "adjust": "Aanpassing",
+      "reversal": "Teruggekeer"
+    }
+  },
+  "rules": {
+    "note": "PuntPoints het geen kontantwaarde nie, kan nie gekoop of vir geld omgeruil word nie, en verander nooit posisies of ranglysuitslae nie. Totdat tipgewer-ondersteuning onder sy gepubliseerde reëls bekendgestel word, kan PuntPoints nie tussen lede oorgedra word nie. Ons kan punte wat deur bedrog of misbruik verdien is, terugtrek. Belonings word deur ons vennote verskaf en is onderhewig aan hul voorwaardes."
+  },
+  "tipSupport": {
+    "title": "Ondersteun uitstaande tipgewers",
+    "body": "Puntr Pro sal tipgewer-ondersteuning bekendstel: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte het geen kontantwaarde nie en kan nie onttrek word nie, en ondersteuning beïnvloed nooit posisies nie. Hierdie funksie is beplan en is nog nie beskikbaar nie."
+  },
+  "category": {
+    "ott_voucher": "OTT-koopbewyse",
+    "credit_pack": "Kredietpakke (betaal soos jy gebruik)",
+    "pro_pass": "Puntr Pro-passe",
+    "puntr_merch": "Puntr-handelsware",
+    "sports_merch": "Sporthandelsware en -bykomstighede",
+    "match_tickets": "Wedstrydkaartjies"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Verifieer die rekord | Puntr",
+    "description": "Kontroleer dat 'n Puntr-keuse nie verander is nie. Plak 'n keuse-ID en jou blaaier bereken die vingerafdruk weer. Elke keuse is gesluit, aan die vorige een gekoppel en word daagliks van 'n vingerafdruk voorsien.",
+    "ogTitle": "Verifieer die rekord | Puntr"
+  },
+  "title": "Verifieer die rekord",
+  "subtitle": "Elke keuse het 'n vingerafdruk ('n hash) wat van die keuse en van die keuse daarvoor afhang. As enigiets verander word, sal die vingerafdrukke nie meer ooreenstem nie. Kontroleer self een: jou blaaier doen die berekening, nie Puntr nie.",
+  "how": {
+    "title": "Hoe die vingerafdruk gemaak word",
+    "p1": "Wanneer 'n keuse gesluit word, voeg Puntr hierdie feite sonder skeiding in een reël teks saam: die vingerafdruk van die vorige keuse, die lid se ID, die wedstryd-ID, die mark, die keuse, die voorgeelyn (leeg tensy dit 'n voorgee is), die prys met twee desimale, en die presiese tyd waarop dit gesluit is, tot op die mikrosekonde, in UTC.",
+    "p2": "Daardie reël word deur SHA-256 gestuur, 'n standaardmetode vir vingerafdrukke. Die resultaat is die keuse se hash. Omdat dit die vorige keuse se hash insluit, vorm die keuses 'n ketting: as enige ou keuse verander word, verander elke hash daarna.",
+    "p3": "Elke aand net voor middernag (Suid-Afrikaanse tyd) teken Puntr ook die dag se laaste hash en die aantal keuses hieronder aan. Vergelyk dit met jou eie afskrif om te sien dat die ketting nie later herskryf is nie."
+  },
+  "check": {
+    "title": "Kontroleer 'n keuse",
+    "label": "Keuse-ID",
+    "placeholder": "Plak 'n keuse-ID",
+    "hint": "Maak enige keuse oop en gebruik die hash-skakel, of plak die ID hier.",
+    "button": "Verifieer",
+    "working": "Kontroleer tans…",
+    "invalid": "Dit lyk nie soos 'n keuse-ID nie. Dit is 'n lang kode soos 9faaef2d-f559-4698-868f-73f1c0f669a9.",
+    "notFound": "Ons kon nie daardie keuse vind nie.",
+    "error": "Ons kon nie daardie keuse laai nie. Probeer asseblief weer."
+  },
+  "result": {
+    "matchTitle": "Die hash stem ooreen",
+    "matchBody": "Jou blaaier het hierdie keuse se hash uit die feite herbereken en dieselfde resultaat as die rekord gekry. Die keuse is nie verander nie.",
+    "noMatchTitle": "Die hash stem nie ooreen nie",
+    "noMatchBody": "Die herberekende hash verskil van die gestoorde een. Laat weet ons asseblief by support@puntr.co.za.",
+    "links": "Gekoppel aan die vorige keuse: ja",
+    "linksNo": "Gekoppel aan die vorige keuse: NEE, die vorige keuse se hash stem nie ooreen nie",
+    "linksUnknown": "Vorige keuse: nie gekontroleer nie",
+    "first": "Dit is die eerste keuse op Puntr.",
+    "stored": "Gestoorde hash",
+    "recomputed": "In jou blaaier herbereken",
+    "pick": "Keuse",
+    "lockedAt": "Gesluit om"
+  },
+  "heads": {
+    "title": "Daaglikse kettingkoppe",
+    "body": "Die laaste hash van elke dag (Suid-Afrikaanse tyd) en hoeveel keuses daardie dag gesluit is.",
+    "day": "Dag",
+    "picks": "Keuses",
+    "hash": "Laaste hash",
+    "today": "Vandag",
+    "empty": "Nog geen keuses is gesluit nie.",
+    "error": "Ons kon nie die kettingkoppe laai nie."
+  }
+}

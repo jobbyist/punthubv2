@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Pryse | Gratis vir stigterslede, betaal soos jy gebruik en Puntr Pro",
+    "description": "Puntr is gratis vir die eerste 100 stigterslede. Puntr Pro voeg vanaf 1 Desember 2026 dieper sportontleding, gevorderde tipgewersgereedskap en beplande PuntPoints-tipgewer-ondersteuning by.",
+    "ogTitle": "Puntr se pryse: gratis vir stigterslede",
+    "ogDescription": "Eis een van 100 stigtersplekke op. Plasings, stemme en die ranglys is altyd gratis."
+  },
+  "title": "Pryse",
+  "subtitle": "Begin gratis as 'n stigterslid. Opsionele betaal-soos-jy-gebruik-krediete en Puntr Pro word vir die amptelike bekendstelling op 1 Desember 2026 beplan.",
+  "founding": {
+    "badge": "Nou oop",
+    "title": "Jou plek in die stigtersgemeenskap",
+    "spots": "100 plekke. Geen kaart nodig nie.",
+    "f1": "'n Permanente stigterskenteken, genommer #1 tot #100",
+    "f2": "Volle toegang tot plasings, jou rekord en die weeklikse ranglys vanaf die bekendstelling op 1 Desember 2026",
+    "f3": "30 gratis betaal-soos-jy-gebruik-krediete per maand vir 3 maande sodra dit bekendgestel word",
+    "cta": "Eis 'n stigtersplek op"
+  },
+  "never": "Betaling koop nooit punte, 'n hoër posisie of kwalifikasie vir pryse nie. Kwalifiserende tipgewers kan vrywillige PuntPoints-fooitjies ontvang deur die afsonderlike tipgewer-ondersteuningsprogram.",
+  "faq": {
+    "title": "Vrae oor pryse",
+    "q1": "Is Puntr gratis?",
+    "a1": "Ja. Stigterslede gebruik Puntr gratis. Plasings, stemme en die ranglys is altyd gratis.",
+    "q2": "Wanneer word betaal-soos-jy-gebruik en Puntr Pro bekendgestel?",
+    "a2": "Albei is beskikbaar vanaf die amptelike bekendstelling op 1 Desember 2026. Ons sal finale pryse en voorwaardes bevestig voordat enigiets te koop is. Die pryse hier is aanduidend.",
+    "q3": "Wat is die verskil tussen betaal-soos-jy-gebruik en Puntr Pro?",
+    "a3": "Met betaal-soos-jy-gebruik koop jy krediete wanneer jy 'n kwalifiserende ekstra nodig het. Puntr Pro voeg dieper ontleding, ekstra gereedskap en die beplande tipgewer-ondersteuning vir kwalifiserende geverifieerde tipgewers by.",
+    "q4": "Kan betaling my posisie verbeter?",
+    "a4": "Nee. Betaling koop nie punte nie, verbeter nie jou posisie op die ranglys nie en verander nie jou kwalifikasie vir pryse nie. Posisies is gebaseer op aangetekende prestasie.",
+    "q5": "Is Puntr 'n boekmaker?",
+    "a5": "Nee. Puntr neem nie weddenskappe nie, stel nie pryse vas nie en hou nie weddenskapsgeld nie."
+  },
+  "payg": {
+    "badge": "Met bekendstelling",
+    "title": "Betaal soos jy gebruik",
+    "tagline": "Koop krediete net wanneer jy dit nodig het. Geen intekening nie.",
+    "note": "Aanduidende pryse. Dit kan voor die bekendstelling verander.",
+    "packs": "Kredietpakke",
+    "uses": "Wat krediete koop",
+    "pack": {
+      "starter": "Begin",
+      "matchday": "Wedstryddag",
+      "season": "Seisoen",
+      "credits": "{{count}} krediete"
+    },
+    "use": {
+      "preview": "KI-wedstrydvoorskou",
+      "slip": "KI-kontrole van strokie",
+      "stats": "Diepgaande tipgewerstatistiek",
+      "cost": "{{count}} krediete"
+    },
+    "alwaysFree": "Plasings, stemme en die ranglys is altyd gratis."
+  },
+  "pro": {
+    "badge": "Met bekendstelling",
+    "title": "Puntr Pro",
+    "tagline": "Vir sportaanhangers en tipgewers wat dieper ontleding, sterker gereedskap en erkenning vir 'n konsekwente rekord wil hê.",
+    "price": "{{price}} per maand",
+    "note": "Tipgewer-ondersteuning word bekendgestel onderhewig aan verifikasie, kwalifikasiedrempels en gepubliseerde programreëls. Fooitjies verdien PuntPoints, nie kontant nie; punte kan nie onttrek word nie en beïnvloed nooit posisies nie.",
+    "f1": "<1>KI-aangedrewe insigte</1>: wedstrydvoorskoue en kontrole van strokies",
+    "f2": "Gevorderde tipgewer-ontledings: eenhede, opbrengs en vorm volgens mark, sport en prysreeks",
+    "f3": "Persoonlike waarskuwings vir wedstryde en afgehandelde keuses wat jy volg",
+    "f4": "Vroeë toegang tot nuwe gereedskap",
+    "f5": "'n Pro-kenteken op jou profiel",
+    "cta": "Beskikbaar met bekendstelling",
+    "fine": "Puntr Pro koop nie 'n hoër posisie of kwalifikasie vir pryse nie. Tipgewer-ondersteuning is gebaseer op geverifieerde prestasie en vrywillige fooitjies van die gemeenskap, nie op betaling nie.",
+    "f6": "Beplande tipgewer-ondersteuning: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie."
+  },
+  "annualPass": {
+    "badge": "Beperkte stigtersaanbod · 20 plekke",
+    "title": "Stigters-jaarpas",
+    "description": "12 maande se Puntr Pro. Een betaling, geen outomatiese hernuwing nie. Jou 12 maande begin op bekendstellingsdag, 1 Desember 2026.",
+    "price": "R299",
+    "was": "R1,188 teen R99/maand",
+    "saving": "Spaar R889 · 75% minder",
+    "fine": "Bespreking is gratis op Puntr. Ons e-pos dan vir jou 'n veilige PayFast-skakel: betaal die R299 binne 48 uur om jou plek te bevestig, anders verval die bespreking en word die plek vrygestel.",
+    "cta": "Skep 'n rekening en bespreek"
+  }
+}

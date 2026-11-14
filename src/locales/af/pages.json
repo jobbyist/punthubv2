@@ -1,0 +1,132 @@
+{
+  "referrals": {
+    "meta": {
+      "title": "Verwys 'n vriend | Puntr",
+      "description": "Nooi vriende om by Puntr aan te sluit en volg jou verwysingsbedrywigheid vanaf jou lederekening."
+    },
+    "title": "Verwys 'n vriend",
+    "subtitle": "Bring jou sportgemeenskap na Puntr.",
+    "heading": "Deel die spel. Laat die gemeenskap groei.",
+    "body": "Nooi vriende om by Puntr aan te sluit, sportgesprekke te deel en 'n openbare rekord van hul keuses te bou. Verwysingsnasporing is gekoppel aan jou lid-uitnodigingskode.",
+    "invite": {
+      "title": "Nooi jou mense",
+      "body": "Deel jou persoonlike uitnodigingskakel deur dit te kopieer of op WhatsApp te stuur."
+    },
+    "track": {
+      "title": "Volg kwalifiserende verwysings",
+      "body": "Sien registrasies en lede wat aangesluit het vanaf jou rekening wanneer verwysingsdata beskikbaar is."
+    },
+    "guest": {
+      "title": "Kry jou persoonlike uitnodigingskakel",
+      "body": "Skep 'n gratis Puntr-rekening of teken aan om jou verwysingskakel en -bedrywigheid te sien.",
+      "cta": "Sluit aan of teken aan"
+    }
+  },
+  "puntpoints": {
+    "meta": {
+      "title": "PuntPoints | Puntr",
+      "description": "Ontdek PuntPoints, Puntr se lojaliteitspunte vir bedrywigheid en ledebeloningsprogram."
+    },
+    "title": "PuntPoints",
+    "subtitle": "'n Bietjie erkenning omdat jy deel van die Puntr-gemeenskap is.",
+    "heading": "Punte vir deelname. Nooit vir uitslae nie.",
+    "body": "PuntPoints is ontwerp om kwalifiserende gemeenskapsbedrywigheid te erken, soos om jou e-pos te bevestig, keuses te deel en vriende uit te nooi. Dit is nie 'n inset, 'n weddenskapsaldo of 'n beloning vir wen nie.",
+    "cards": {
+      "earn": {
+        "title": "Verdien deur bedrywigheid",
+        "body": "Kwalifiserende aksies kan punte verdien volgens gepubliseerde programreëls."
+      },
+      "explore": {
+        "title": "Verken ledebelonings",
+        "body": "Ruil punte in vir beskikbare vennootvoordele wanneer die program aangeskakel is."
+      },
+      "transparent": {
+        "title": "Hou dit deursigtig",
+        "body": "Punte het geen kontantwaarde nie en kan nie gekoop of vir geld omgeruil word nie."
+      }
+    },
+    "fine": "Beskikbaarheid, verdienreëls en belonings hang af van die program se status en kwalifikasie. Punte beïnvloed nie die gradering van keuses of posisies op die ranglys nie.",
+    "cta": "Maak belonings oop"
+  },
+  "liveScores": {
+    "meta": {
+      "title": "Regstreekse tellings | Puntr",
+      "description": "Puntr se tuiste vir regstreekse tellings. Volg geverifieerde wedstryd- en uitslagopdaterings soos regstreekse dekking bygevoeg word."
+    },
+    "title": "Regstreekse tellings",
+    "subtitle": "'n Toegewyde wedstryddag-bestemming word vir Puntr gebou.",
+    "eyebrow": "Wedstrydsentrum",
+    "heading": "Regstreekse telling-dekking kom",
+    "body": "Hierdie bladsy is die tuiste vir toekomstige regstreekse wedstrydopdaterings. Regstreekse tellings is tans nie hier beskikbaar nie, en ons sal nie voorbeeldtellings wys asof dit nou gebeur nie.",
+    "fixtures": {
+      "title": "Wedstryde en uitslae",
+      "body": "Kyk in die Uitslae-afdeling vir beskikbare wedstryd- en eindtellinginligting.",
+      "cta": "Bekyk uitslae"
+    },
+    "data": {
+      "title": "Gebou rondom betroubare data",
+      "body": "Regstreekse status- en tellingopdaterings sal eers verskyn sodra 'n geverifieerde databron gekoppel en in werking is.",
+      "cta": "Stel 'n funksie voor"
+    }
+  },
+  "tools": {
+    "meta": {
+      "title": "Sportgereedskap | Puntr",
+      "description": "Verken Puntr se komende gereedskap: 'n gratis omskakelaar vir wedstrokies, KI-\"Edge Finder\"-opsommingskaarte en Punt AI v1.0."
+    },
+    "eyebrow": "Puntr se gereedskapstel",
+    "title1": "Praktiese gereedskap.",
+    "title2": "Skerper insig.",
+    "lead": "'n Groeiende gereedskapstel vir Suid-Afrikaanse sportaanhangers wat duideliker konteks en beter maniere wil hê om die spel te verstaan. Die funksies hieronder is in ontwikkeling en nog nie beskikbaar nie.",
+    "access": {
+      "free": "Gratis",
+      "pro": "Puntr Pro"
+    },
+    "status": {
+      "soon": "Kom binnekort",
+      "paid": "Betaalde funksie"
+    },
+    "price": "R99 / maand",
+    "items": {
+      "converter": {
+        "name": "Omskakelaar vir wedstrokies",
+        "description": "Skakel ondersteunde boekmakerstrokies om na 'n skoner formaat wat makliker lees. Ontwerp as gerieflike gereedskap, nie as 'n manier om weddenskappe te plaas nie."
+      },
+      "edge": {
+        "name": "KI-\"Edge Finder\"-opsommingskaarte",
+        "description": "Bondige, data-gedrewe wedstrydopsommings wat tersaaklike vorm, konteks en statistiese aanwysers uitlig. Dit is opsommings om besluite te ondersteun, nie waarborge of opdragte om te wed nie."
+      },
+      "chat": {
+        "name": "Punt AI v1.0-kletsbot",
+        "description": "'n KI-sportassistent om wedstrydkonteks te verken, vrae oor beskikbare data te vra en die syfers agter 'n wedstryd te verstaan."
+      }
+    },
+    "pro": {
+      "title": "Gaan dieper met Puntr Pro",
+      "body": "Hierdie opsionele gereedskap word vir Puntr Pro teen R99 per maand beplan. Die kern-gemeenskapsfunksies bly gratis.",
+      "cta": "Verken Pro"
+    },
+    "fine": "Gereedskap verskaf inligting en konteks vir algemene gebruik. KI-gegenereerde inhoud kan onvolledig of onakkuraat wees; kontroleer belangrike besonderhede self. Niks op Puntr waarborg 'n uitkoms of is finansiële advies nie. Slegs 18+. Dobbel verantwoordelik."
+  },
+  "bookmakers": {
+    "meta": {
+      "title": "Boekmakers | Puntr",
+      "description": "Verken boekmakerhandelsmerke wat vir Suid-Afrikaanse sportaanhangers ter sake is. Vergelyk verskaffers self en kontroleer hul voorwaardes voordat jy registreer."
+    },
+    "title": "Boekmakers",
+    "subtitle": "'n Gids tot wedhandelsmerke wat Suid-Afrikaanse sportaanhangers dalk teëkom.",
+    "independent": {
+      "title": "Kies onafhanklik",
+      "body": "Puntr is 'n onafhanklike platform vir sportgesprekke en voorspellingsrekords. Inskrywings is slegs vir inligting; dit is nie onderskrywings, pryse-vergelykings of aanbevelings om 'n weddenskap te plaas nie. Kontroleer altyd lisensiëring, voorwaardes, ouderdomsbeperkings en veiliger-dobbel-gereedskap direk by elke verskaffer."
+    },
+    "directory": "Verskaffersgids",
+    "brandOnly": "Slegs handelsname",
+    "tag": "Gids",
+    "fine": "Puntr kan in die toekoms vergoeding van sommige vennote ontvang. Enige betaalde verhouding sal duidelik bekendgemaak word. Slegs 18+. Dobbel verantwoordelik.",
+    "cta": "Verken voorspellings"
+  },
+  "legal": {
+    "translationNotice": "Dit is 'n vertaling van die Engelse bladsy. As die twee verskil, geld die Engelse weergawe.",
+    "readEnglish": "Lees die Engelse weergawe"
+  }
+}

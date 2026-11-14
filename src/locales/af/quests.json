@@ -1,0 +1,63 @@
+{
+  "eyebrow": "Begin hier",
+  "title": "Verdien gratis PuntPoints",
+  "subtitle": "Voltooi hierdie stappe om tot {{available}} ekstra PuntPoints in te samel. Elke stap word nagegaan voordat punte bygevoeg word.",
+  "progressLabel": "Take voltooi",
+  "progress": "{{done}}/{{total}} klaar",
+  "earned": "Tot dusver verdien: {{earned}} PuntPoints",
+  "seeAll": "Sien alle take op jou rekeningbladsy",
+  "fineprint": "PuntPoints is 'n lojaliteitskema sonder kontantwaarde. Ons span kontroleer aansluitings by gemeenskapsgroepe, gewoonlik binne 'n dag. As jy opdaterings later afskakel, verloor jy nie punte wat jy reeds verdien het nie. Een rekening per persoon.",
+  "soon": "Kom binnekort",
+  "checking": "Ons kontroleer {{handle}}. Punte word bygevoeg sodra ons dit bevestig het.",
+  "rejected": "Ons kon dit nie bevestig nie. Kontroleer die gebruikersnaam en stuur dit weer.",
+  "handle": "Jou gebruikersnaam",
+  "submit": "Stuur vir kontrole",
+  "submitted": "Dankie. Ons sal dit kontroleer en jou punte byvoeg.",
+  "done": "Klaar",
+  "awarded": "+{{points}} PuntPoints bygevoeg",
+  "cta": {
+    "open": "Maak oop",
+    "follow_instagram": "Volg",
+    "like_facebook": "Hou van bladsy",
+    "follow_x": "Volg",
+    "follow_tiktok": "Volg",
+    "join_whatsapp": "Sluit by groep aan",
+    "join_telegram": "Sluit aan",
+    "go": "Gaan",
+    "check": "Kontroleer"
+  },
+  "error": {
+    "open_link_first": "Maak eers die skakel oop en stuur dan jou gebruikersnaam.",
+    "too_soon": "Wag 'n paar sekondes nadat jy gevolg het, en stuur dit dan.",
+    "bad_evidence": "Vul die gebruikersnaam in wat jy gebruik het (2 tot 120 karakters).",
+    "notInstalled": "Maak eers Puntr vanaf jou tuisskerm oop en tik dan op Kontroleer.",
+    "pushOff": "Laat eers kennisgewings vir Puntr in jou blaaier toe.",
+    "generic": "Iets het skeefgeloop. Probeer asseblief weer."
+  },
+  "completion": {
+    "title": "Profielvoltooiing",
+    "body": "Voltooi jou profiel om elke funksie en die taak van 150 punte te ontsluit.",
+    "done": "Jou profiel is volledig.",
+    "item": {
+      "avatar": "Voeg 'n profielfoto by",
+      "name": "Voeg jou vertoonnaam en volle naam by",
+      "phone": "Voeg jou telefoonnommer by",
+      "dob": "Voeg jou geboortedatum by",
+      "province": "Voeg jou provinsie by",
+      "email": "Bevestig jou e-pos",
+      "mfa": "Skakel tweestap-verifikasie aan",
+      "identity": "Verifieer jou identiteit"
+    }
+  },
+  "admin": {
+    "title": "Taakhersienings",
+    "body": "Aansluitings by gemeenskapsgroepe (WhatsApp, Telegram) word met die hand gekontroleer: bevestig dat die naam by die groep aangesluit het, en keur dit dan goed. Punte word slegs met goedkeuring bygevoeg.",
+    "none": "Niks om te hersien nie.",
+    "approve": "Keur goed",
+    "reject": "Weier",
+    "note": "Rede (word aan die lid gewys)",
+    "stats": "Take geverifieer: {{verified}} · wag: {{waiting}} · punte gegee: {{points}}",
+    "open": "Maak Puntr se bladsy oop"
+  },
+  "stayConnected": "Bly in verbinding (geen punte nie, net die jongste van Puntr)"
+}

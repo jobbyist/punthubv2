@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Stigterslid-opname | Wen 'n OTT-koopbewys van R500 | Puntr",
+    "description": "Stigterslede: vertel ons wat jy van Puntr met die bekendstelling wil hê en neem deel aan die trekking vir 'n OTT-koopbewys van R500.",
+    "ogTitle": "Stigterslid-opname: help om Puntr te vorm"
+  },
+  "eyebrow": "Stigterslid-opname",
+  "title1": "Help om Puntr te vorm.",
+  "title2": "Wen 'n OTT-koopbewys van R500.",
+  "lead": "'n Paar vinnige vrae, een op 'n slag. Jou antwoorde bepaal wat ons eerste bou voor die bekendstelling op 1 Desember 2026.",
+  "signIn": "Teken aan of sluit gratis aan om die stigterslid-opname te voltooi.",
+  "signInCta": "Sluit gratis aan",
+  "done": "Dankie. Jou terugvoer is ontvang.",
+  "doneDraw": "Jy neem deel aan die trekking.",
+  "already": "Jy het hierdie opname reeds voltooi. Dankie.",
+  "q1": "Hoe sou jy Puntr tot dusver beoordeel?",
+  "q1hint": "1 is swak, 5 is uitstekend",
+  "q2": "Waarvan hou jy die meeste?",
+  "q3": "Wat moet ons verbeter?",
+  "q4": "Watter van hierdie sou jy die meeste gebruik? (kies enige)",
+  "features": {
+    "picks": "Keuses plaas en sluit",
+    "board": "Ranglyste en openbare rekord",
+    "insights": "Wedstrydinsigte",
+    "ai": "KI-aangedrewe insigte",
+    "points": "PuntPoints en belonings",
+    "sports": "Meer sportsoorte",
+    "app": "'n Mobiele toep"
+  },
+  "q5": "Wat dink jy van die beplande pryse?",
+  "pricing": {
+    "too_high": "Te hoog",
+    "fair": "Billik",
+    "good_value": "Goeie waarde",
+    "unsure": "Nog nie seker nie"
+  },
+  "draw": "Laat my deelneem aan die trekking vir 'n OTT-koopbewys van R500 (stigterslede wat Oefenmodus probeer het)",
+  "contact": "Julle mag my oor my terugvoer kontak (opsioneel)",
+  "rules": "Een inskrywing per lid. Slegs 18+. Deelname aan die trekking is opsioneel en verander nie jou Puntr-rekening nie. Bepalings en voorwaardes geld. Die volledige reëls vir die trekking is hieronder.",
+  "privacy": "Ons gebruik jou antwoorde om Puntr te verbeter. Lees in ons Privaatheidsbeleid hoe ons jou data hanteer.",
+  "submit": "Dien terugvoer in",
+  "sending": "Stuur tans",
+  "error": "Ons kon nie jou terugvoer stoor nie. Probeer asseblief weer.",
+  "pickRating": "Kies asseblief 'n gradering.",
+  "membersOnly": "Hierdie opname is slegs vir stigterslede. Eis jou stigtersplek op om deel te neem.",
+  "membersOnlyCta": "Word 'n stigterslid",
+  "start": "Kom ons begin",
+  "next": "Volgende",
+  "back": "Terug",
+  "skip": "Slaan oor",
+  "stepOf": "Vraag {{n}} van {{total}}",
+  "optional": "Opsioneel",
+  "pickOne": "Kies asseblief 'n opsie om voort te gaan.",
+  "steps": {
+    "who": {
+      "q": "Eerstens, wat klink die meeste soos jy?",
+      "opts": {
+        "tipster": "Ek deel voorspellings en wil 'n openbare rekord hê",
+        "bettor": "Ek wed vir die pret en wil beter inligting hê",
+        "analyst": "Ek hou van statistiek en ontleding",
+        "curious": "Ek is net nuuskierig"
+      }
+    },
+    "freq": {
+      "q": "Hoe gereeld volg of maak jy sokkervoorspellings?",
+      "opts": {
+        "daily": "Byna elke dag",
+        "weekly": "'n Paar keer per week",
+        "weekends": "Meestal oor naweke",
+        "rarely": "Selde"
+      }
+    },
+    "leagues": {
+      "q": "Watter kompetisies is vir jou die belangrikste?",
+      "hint": "Kies enige",
+      "opts": {
+        "psl": "Betway Premiership (PSL)",
+        "epl": "English Premier League",
+        "ucl": "UEFA Champions League",
+        "laliga": "La Liga",
+        "other": "Ander ligas"
+      }
+    },
+    "expect": {
+      "q": "Wat verwag jy van Puntr met die bekendstelling?",
+      "hint": "Kies enige",
+      "opts": {
+        "record": "'n Geverifieerde, openbare voorspellingsrekord",
+        "board": "Ranglyste om op mee te ding",
+        "insights": "Wedstrydinsigte en statistiek",
+        "ai": "KI-aangedrewe insigte",
+        "points": "PuntPoints en belonings",
+        "community": "'n Vriendelike, betroubare gemeenskap"
+      }
+    },
+    "sports": {
+      "q": "Watter sport moet ná sokker eerste kom?",
+      "hint": "Kies enige",
+      "opts": {
+        "basketball": "Basketbal",
+        "rugby": "Rugby",
+        "racing": "Perdewedrenne",
+        "combat": "Boks en MMA",
+        "cricket": "Krieket",
+        "tennis": "Tennis"
+      }
+    },
+    "trust": {
+      "q": "Wat sou jou 'n tipgewer se rekord laat vertrou?",
+      "opts": {
+        "graded": "Elke keuse word outomaties volgens uitslae gegradeer",
+        "locked": "Keuses word voor die afskop gesluit",
+        "history": "'n Lang, openbare geskiedenis",
+        "reasoning": "Om hul redenasie te sien"
+      }
+    },
+    "frustration": {
+      "q": "Wat frustreer jou vandag die meeste oor tipgewerwebwerwe en -groepe?",
+      "ph": "Vertel ons in jou eie woorde"
+    },
+    "price": {
+      "q": "Wat dink jy van Puntr Pro teen R99 per maand?",
+      "opts": {
+        "too_high": "Te hoog",
+        "fair": "Billik",
+        "good_value": "Goeie waarde",
+        "unsure": "Nog nie seker nie"
+      }
+    },
+    "pass": {
+      "q": "Sou die Stigters-jaarpas jou pas? 12 maande se Puntr Pro vir 'n eenmalige R299, vanaf 1 Desember 2026. Geen outomatiese hernuwing nie.",
+      "opts": {
+        "interested": "Ja, ek stel belang",
+        "maybe": "Miskien, vertel my meer",
+        "not_now": "Nie nou nie",
+        "already": "Ek het dit reeds opgeëis"
+      }
+    },
+    "final": {
+      "q": "Laaste een. Hoe sou jy Puntr tot dusver beoordeel?",
+      "hint": "1 is swak, 5 is uitstekend",
+      "improveLabel": "Enigiets anders wat ons moet verbeter?",
+      "improvePh": "Opsioneel"
+    }
+  },
+  "upsell": {
+    "title": "Die Stigters-jaarpas",
+    "body": "12 maande se Puntr Pro vir 'n eenmalige R299, in plaas van R1,188 teen R99 per maand. Jy spaar R889. Jou 12 maande begin op bekendstellingsdag, 1 Desember 2026, en dit hernu nie outomaties nie.",
+    "note": "'n Voorafbetaalde lidmaatskap, nie 'n belegging nie. Om dit op te eis sluit 'n eenmalige betaling van R299 deur PayFast in, vir die eerste 20 stigterslede voor 16 November 2026.",
+    "cta": "Sien die stigtersaanbod"
+  },
+  "drawRules": {
+    "title": "Trekking vir 'n OTT-koopbewys van R500: reëls",
+    "items": [
+      "Slegs oop vir stigterslede wat 18 of ouer is.",
+      "Om deel te neem, moet jy Oefenmodus ten minste een keer probeer het en hierdie opname indien met die blokkie vir die trekking gemerk. Albei stappe is nodig. Een inskrywing per lid.",
+      "Die trekking sluit wanneer Puntr op Dinsdag 1 Desember 2026 regstreeks gaan.",
+      "Een wenner word lukraak uit alle geldige inskrywings gekies. Die keuse word in die teenwoordigheid van 'n getuie aangeteken.",
+      "Die wenner word op puntr.co.za en ons sosiale kanale aangekondig, slegs met gebruikersnaam en stigtersnommer.",
+      "Ons laat die wenner per e-pos weet, of telefonies as hulle vir ons 'n nommer gegee het. As ons die wenner nie kan bereik nie, kan ons iemand anders kies.",
+      "Die prys is 'n OTT-koopbewys van R500. Daar is geen kontantalternatief nie en dit kan nie oorgedra word nie.",
+      "Lede van die Puntr-span en hul onmiddellike familie mag nie deelneem nie. Bepalings en voorwaardes geld. Hulplyn 0800 006 008."
+    ]
+  }
+}

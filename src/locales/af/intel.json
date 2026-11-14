@@ -1,0 +1,22 @@
+{
+  "confidence": "Vertrouetelling",
+  "confidencePending": "Beskikbaar met bekendstelling",
+  "algoPick": "Algoritmiese keuse",
+  "algoPickPending": "Algoritmiese lesing kom met bekendstelling",
+  "consensus": "Konsensuskeuse",
+  "odds": "Pryse-vergelyking",
+  "oddsSoon": "Pryse-vergelyking kom binnekort",
+  "analysis": "Modelontleding",
+  "analysisPending": "Vorm- en kop-aan-kop-ontleding vir hierdie wedstryd verskyn hier wanneer die Puntr-model op 1 Desember regstreeks gaan.",
+  "gate": {
+    "tag": "STIGTERSTOEGANG • 100 PLEKKE",
+    "title": "Ontsluit al die wedstryddag-voorspellings",
+    "body": "Sien elke KI-telling en konsensuskeuse, en bespreek dan jou Stigters-jaarpas vir R0. Jou gratis stigtersrekening maak jou gereed vir wedstryddag.",
+    "cta": "Ontsluit voorspellings",
+    "reassure": "Gratis rekening • Geen kaart nodig om aan te sluit nie",
+    "srHidden": "Teken aan om die volledige ontleding vir hierdie item te sien.",
+    "modalTitle": "Bespreek jou Stigters-jaarpas vir R0",
+    "modalBody": "Skep jou gratis stigtersrekening. Jou plek op hierdie bladsy wag hier wanneer jy die venster toemaak.",
+    "signupFrameTitle": "Puntr se registrasie in stappe"
+  }
+}

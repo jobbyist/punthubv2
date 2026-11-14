@@ -149,16 +149,14 @@ function Landing() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
-              Predict smarter. Prove it.
+              {t("proof.eyebrow")}
             </p>
             <h2 id="proof-demo-title" className="mt-2 text-2xl">
-              The difference is the record.
+              {t("proof.title")}
             </h2>
-            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-              See what changes when every pick has a verifiable outcome.
-            </p>
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("proof.body")}</p>
           </div>
-          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Choose a tipster record">
+          <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("proof.choose")}>
             <button
               type="button"
               aria-pressed={!showVerified}
@@ -170,7 +168,7 @@ function Landing() {
                   : "border-border text-muted-foreground")
               }
             >
-              Traditional tipster
+              {t("proof.traditional")}
             </button>
             <button
               type="button"
@@ -183,62 +181,27 @@ function Landing() {
                   : "border-border text-muted-foreground")
               }
             >
-              Puntr verified
+              {t("proof.verified")}
             </button>
           </div>
         </div>
         <div className="mt-5 rounded-xl border p-5" aria-live="polite">
           <p className="text-sm font-bold">
-            {showVerified ? "Puntr Verified Tipster" : "Traditional social tipster"}
+            {showVerified ? t("proof.verifiedTitle") : t("proof.traditionalTitle")}
           </p>
-          {showVerified ? (
-            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-              <li className="text-sm">
-                <strong className="block">Locked at kick-off</strong>
-                <span className="text-xs text-muted-foreground">
-                  Timestamped; cannot be edited or deleted.
-                </span>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+            {(showVerified
+              ? (["v.locked", "v.graded", "v.public"] as const)
+              : (["t.editable", "t.deleted", "t.roi"] as const)
+            ).map((k) => (
+              <li key={k} className="text-sm">
+                <strong className="block">{t(`proof.${k}.title`)}</strong>
+                <span className="text-xs text-muted-foreground">{t(`proof.${k}.body`)}</span>
               </li>
-              <li className="text-sm">
-                <strong className="block">Auto-graded</strong>
-                <span className="text-xs text-muted-foreground">
-                  Settled outcomes update the public record.
-                </span>
-              </li>
-              <li className="text-sm">
-                <strong className="block">Public performance</strong>
-                <span className="text-xs text-muted-foreground">
-                  ROI and unit history stay visible.
-                </span>
-              </li>
-            </ul>
-          ) : (
-            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-              <li className="text-sm">
-                <strong className="block">Editable picks</strong>
-                <span className="text-xs text-muted-foreground">
-                  Claims can be changed after the match.
-                </span>
-              </li>
-              <li className="text-sm">
-                <strong className="block">Deleted losses</strong>
-                <span className="text-xs text-muted-foreground">
-                  Poor calls can disappear from the feed.
-                </span>
-              </li>
-              <li className="text-sm">
-                <strong className="block">Unverified ROI</strong>
-                <span className="text-xs text-muted-foreground">
-                  No complete, checkable track record.
-                </span>
-              </li>
-            </ul>
-          )}
+            ))}
+          </ul>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Puntr records are database-backed and publicly auditable. Blockchain verification is not
-          claimed.
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">{t("proof.fine")}</p>
       </motion.section>
 
       {/* Why a locked record matters */}

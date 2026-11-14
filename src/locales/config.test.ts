@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_LOCALE, locales, matchLocale, resolveLocale } from "./config";
+import {
+  DEFAULT_LOCALE,
+  comingSoonLocales,
+  locales,
+  matchLocale,
+  previewLocales,
+  resolveLocale,
+} from "./config";
 import { pseudoString } from "@/lib/i18n/pseudo";
 
 describe("resolveLocale", () => {
@@ -9,7 +16,17 @@ describe("resolveLocale", () => {
   });
   it("ignores languages that are not enabled", () => {
     expect(locales.filter((l) => l.enabled).map((l) => l.code)).toEqual(["en-ZA"]);
-    expect(resolveLocale({ cookie: "af", acceptLanguage: "zu,xh;q=0.8" })).toBe("en-ZA");
+    expect(resolveLocale({ cookie: "af", acceptLanguage: "zu,af;q=0.8" })).toBe("en-ZA");
+  });
+  it("honours a language in review only as an explicit preview choice", () => {
+    expect(previewLocales().map((l) => l.code)).toEqual(["af"]);
+    expect(resolveLocale({ cookie: "af", preview: true })).toBe("af");
+    expect(resolveLocale({ acceptLanguage: "af-ZA", preview: true })).toBe("en-ZA");
+    expect(resolveLocale({ cookie: "zu", preview: true })).toBe("en-ZA");
+  });
+  it("lists isiZulu as coming soon and no longer knows isiXhosa", () => {
+    expect(comingSoonLocales().map((l) => l.code)).toEqual(["zu"]);
+    expect(locales.some((l) => (l.code as string) === "xh")).toBe(false);
   });
   it("matches regional tags onto the enabled locale", () => {
     expect(matchLocale("en-GB")).toBe("en-ZA");

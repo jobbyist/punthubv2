@@ -3,6 +3,25 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (later): Afrikaans, Admin > Translations, isiZulu coming soon
+
+Added
+- Afrikaans for every public section (`src/locales/af/`, 37 files) and the six legal pages
+  (`src/content/legal/af/`), with an English-prevails notice. New `pages` namespace moves the hardcoded Tools,
+  Bookmakers, Refer a friend, PuntPoints and Live scores pages (and the home proof demo and bookmaker notice) onto
+  translation keys.
+- Admin > Translations: side-by-side review, approve or suggest per string, approve a section, legal pages page by
+  page, stale detection when either text changes, named sign-off. Migration `20261114050000_translation_reviews.sql`.
+- Language selector (Radix): enabled languages, "In review" languages for admins (preview cookie), "Coming soon"
+  badge for isiZulu. isiXhosa removed.
+- `src/lib/translations.test.ts`: every English key must exist in Afrikaans with the same placeholders.
+
+Fixed
+- `/pricing` Annual Pass box described an old payment flow; now matches the reservation + PayFast link flow.
+
+Known gap before Afrikaans goes public
+- Weekday and month names in dates are English in every language (`src/lib/format.ts`); needs a locale-aware hook.
+
 ## 14 November 2026: QA audit, UI/UX polish, Gemini fallbacks
 
 Fixed

@@ -120,7 +120,7 @@ function SportPage() {
 
   return (
     <AppShell>
-      <nav aria-label="Breadcrumb" className="mb-4 text-xs text-muted-foreground">
+      <nav aria-label={t("breadcrumbLabel")} className="mb-4 text-xs text-muted-foreground">
         <Link to="/" className="hover:underline">
           Puntr
         </Link>{" "}

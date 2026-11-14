@@ -1,7 +1,7 @@
 /**
  * House formatting, identical in every language (decision D12).
  * Money and odds never go through Intl.NumberFormat per locale: Node's rand formatting
- * differs between en-ZA, af-ZA, zu-ZA and xh-ZA. Dates and times may use Intl.
+ * differs between en-ZA, af-ZA and zu-ZA. Dates and times may use Intl.
  */
 
 const TIME_ZONE = "Africa/Johannesburg";

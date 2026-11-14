@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "Hoe Puntr werk | Voorspel slimmer. Bewys dit.",
+    "description": "Hoe Puntr werk: sluit gratis aan, plaas 'n keuse voor die afskop en laat dit outomaties sluit en afhandel. Keuses open met die bekendstelling op 1 Desember 2026. 18+.",
+    "ogTitle": "Hoe Puntr werk",
+    "ogDescription": "Vier stappe van registrasie tot 'n openbare, geslote rekord."
+  },
+  "title": "Hoe Puntr werk",
+  "intro": "Puntr open vir keuses op Dinsdag 1 Desember 2026. Daarna word elke keuse <1>met die afskop gesluit</1>, outomaties gegradeer en vir altyd bewaar. Puntr neem nie weddenskappe nie en hanteer nie geld nie.",
+  "steps": {
+    "s1": {
+      "title": "Sluit aan met jou e-pos. 18+",
+      "body": "Vul jou e-pos in, kies 'n wagwoord en bevestig dat jy 18 of ouer is. Ons e-pos vir jou 'n kode om jou adres te bevestig, en dan kan jy aanteken. Jy kan daarna tweefaktor-aantekening byvoeg.",
+      "b1": "Gratis vir stigterslede",
+      "b2": "Geen kaart nodig nie"
+    },
+    "s2": {
+      "title": "Plaas 'n keuse voor die afskop",
+      "body": "Kies 'n wedstryd, 'n mark en 'n keuse, en vul dan die prys in wat jy gekry het.",
+      "b1": "Sokker met die bekendstelling, meer sportsoorte volg (sien die padkaart)",
+      "b2": "Keuses sluit met die afskop"
+    },
+    "s3": {
+      "title": "Dit sluit en word outomaties afgehandel",
+      "body": "Jou keuse kry 'n tydstempel en word <1>gesluit</1>. Ná die wedstryd word dit volgens die amptelike uitslag gegradeer.",
+      "b1": "Geen wysigings nie, geen skrappings nie",
+      "b2": "Regstellings word aangeteken, nooit oorskryf nie"
+    },
+    "s4": {
+      "title": "Klim die weeklikse ranglys",
+      "body": "Jou eenhede, opbrengs (ROI) en steekproefgrootte is openbaar. Die ranglys begin elke Maandag oor.",
+      "b1": "Gerangskik volgens eenhede, dan opbrengs",
+      "b2": "Jy het 10 afgehandelde keuses nodig om te kwalifiseer"
+    }
+  },
+  "grading": {
+    "title": "Hoe ons keuses gradeer",
+    "markets": "Markte",
+    "rules": "Reëls",
+    "market": {
+      "m1": {
+        "name": "Wedstrydsuitslag (1X2)",
+        "scope": "Sokker (rugby kom binnekort)"
+      },
+      "m2": {
+        "name": "Oor/Onder 2.5",
+        "scope": "Slegs sokker"
+      },
+      "m3": {
+        "name": "Voorgee",
+        "scope": "Slegs rugby, kom binnekort"
+      },
+      "m4": {
+        "name": "Albei spanne score",
+        "scope": "Slegs sokker"
+      },
+      "m5": {
+        "name": "Dubbele kans",
+        "scope": "Slegs sokker"
+      }
+    },
+    "rule": {
+      "r1": "Elke keuse is 1 eenheid werd teen die prys wat jy ingevul het.",
+      "r2": "Gewen: jy kry (prys - 1) eenhede by. Voorbeeld: 2.10 gee +1.10 eenhede.",
+      "r3": "Verloor: jy verloor 1 eenheid.",
+      "r4": "Nietig: 0 eenhede. Dit geld vir 'n wedstryd wat uitgestel, gestaak of gekanselleer word.",
+      "r5": "Keuses word volgens die amptelike volletyd-uitslag gegradeer.",
+      "r6": "As 'n uitslag reggestel word, word die regstelling as 'n nuwe inskrywing aangeteken. Die vorige inskrywing word nooit oorskryf nie."
+    }
+  },
+  "cta": {
+    "title": "Bou 'n rekord wat mense kan vertrou."
+  }
+}

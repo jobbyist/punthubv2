@@ -3,6 +3,16 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Afrikaans translations and Cookies page (PR: multi-language, Afrikaans)
+
+- **Owner decision (14 Nov 2026):** translate every page into Afrikaans, including the legal pages; review in a new Admin > Translations tab; isiZulu shown as "Coming soon"; isiXhosa dropped.
+- **Translated legal pages:** Afrikaans versions of `/terms`, `/privacy` (both version 2026-11-13-r15), `/cookies`, `/refunds`, `/affiliate-disclosure` and `/privacy/request`, each with a notice: "This is a translation of the English page. If the two differ, the English version applies." The English text is unchanged. `[attorney review]`: accuracy of the legal translations; whether the precedence notice is enough under the Consumer Protection Act's plain-language rules (s22) for an Afrikaans-speaking consumer; `[attorney review]` markers are carried over untranslated.
+- **Not public yet:** Afrikaans is visible only to admins (preview) until a native speaker signs it off in Admin > Translations.
+- **`/cookies` (English and Afrikaans):** new essential cookie listed: `puntr_lang_preview` (30 days), set only when an admin previews a language in review. No new `notice_versions` row: it is an essential, admin-only cookie and does not change what visitors consent to. `[attorney review]`: confirm no tracking-notice version bump is needed.
+- **`/pricing`:** the Founding Annual Pass box said "payment opens before launch" and "does not charge you today", which no longer matched the product (reservation is free, then a PayFast link must be paid within 48 hours). It now says exactly that, matching `/terms` section 4 and `/founding`.
+- **Admin data:** `translation_reviews` and `translation_signoffs` hold reviewer decisions, suggested wording, notes and the reviewer's admin id and signed name (admin-only, logged in `admin_actions`). Covered by the existing "Account administration" row in `/privacy`; no member data.
+- Privacy and Terms text: not changed. Affiliate disclosure and Refunds text: not changed.
+
 ## 2026-11-14, no legal page text changed (PR: QA audit, UI polish, Gemini fallbacks)
 
 - **What changed:** visual and layout work across the site (page banners with decorative motion graphics, new fixture, result, leaderboard and community card designs, empty and loading states), one copy fix (the Insights page no longer offers a "beta group" that does not exist; the button now opens the roadmap), and three more free-tier Gemini models as fallbacks for article drafting and fixture extraction.

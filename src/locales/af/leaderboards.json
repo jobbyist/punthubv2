@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Ranglys | Puntr",
+    "description": "Puntr se weeklikse ranglys, gerangskik volgens eenhede, dan opbrengs (ROI). Elke keuse word met die afskop gesluit en outomaties gegradeer. Speel vir die eer.",
+    "ogTitle": "Weeklikse ranglys | Puntr",
+    "ogDescription": "Gerangskik volgens eenhede, dan opbrengs. Speel vir die eer."
+  },
+  "title": "Ranglys",
+  "subtitle": "Gerangskik volgens eenhede, dan opbrengs (ROI), uit keuses wat met die afskop gesluit en outomaties gegradeer word.",
+  "pride": "Speel vir die eer - pryse begin sodra die kompetisiereëls gepubliseer is.",
+  "week": {
+    "this": "Hierdie week",
+    "last": "Verlede week",
+    "range": "{{from}} tot {{to}}"
+  },
+  "you": {
+    "title": "Jou week",
+    "rank": "Jou posisie",
+    "units": "Eenhede",
+    "roi": "Opbrengs",
+    "settled": "Afgehandelde keuses",
+    "unranked": "Nog nie gerangskik nie",
+    "needs": "Benodig nog {{count}} afgehandelde keuses teen pryse van 1.50 of meer",
+    "signIn": "Sluit gratis aan om te sien waar jy staan.",
+    "signInCta": "Sluit gratis aan"
+  },
+  "table": {
+    "rank": "Posisie",
+    "tipster": "Tipgewer",
+    "units": "Eenhede",
+    "roi": "Opbrengs",
+    "settled": "Afgehandel",
+    "wins": "Oorwinnings",
+    "status": "Status",
+    "ranked": "Gerangskik",
+    "needs": "Benodig nog {{count}}",
+    "unranked": "Nog nie gerangskik nie"
+  },
+  "empty": "Nog geen keuses is hierdie week afgehandel nie. Die ranglys vul soos uitslae inkom.",
+  "error": "Ons kon nie die ranglys laai nie. Herlaai asseblief die bladsy.",
+  "unrankedTitle": "Nog nie gerangskik nie",
+  "unrankedNote": "'n Tipgewer word gerangskik sodra hy of sy in die week {{count}} afgehandelde keuses teen pryse van 1.50 of meer het.",
+  "how": {
+    "title": "Hoe die ranglys werk",
+    "subtitle": "Klim op 'n rekord wat nie gewysig kan word nie.",
+    "s1": {
+      "title": "Maak voorspellings",
+      "body": "Plaas jou keuses op komende wedstryde voor die afskop."
+    },
+    "s2": {
+      "title": "Word gegradeer",
+      "body": "Elke keuse word met die afskop gesluit en outomaties afgehandel."
+    },
+    "s3": {
+      "title": "Klim die ranglys",
+      "body": "Eenhede eerste, dan opbrengs. Weke loop van Maandag tot Sondag, Suid-Afrikaanse tyd."
+    },
+    "s4": {
+      "title": "Bou jou rekord",
+      "body": "Eenhede, opbrengs en steekproefgrootte bly openbaar en permanent."
+    }
+  },
+  "rules": "Slegs afgehandelde (gewen of verloor) keuses teen pryse van 1.50 of meer tel vir die weeklikse rangorde. Nietige keuses tel niks.",
+  "tipSupport": {
+    "title": "Erkenning vir konsekwente tipgewers",
+    "body": "Puntr Pro sal tipgewer-ondersteuning bekendstel: spelers sal geverifieerde tipgewers met 'n konsekwente rekord op geselekteerde ranglyste kan erken deur vir hulle PuntPoints te stuur. Punte het geen kontantwaarde nie en kan nie onttrek word nie, en ondersteuning beïnvloed nooit ranglyste of die gradering van keuses nie. Dit open eers sodra die reëls gepubliseer is. Nog nie beskikbaar nie."
+  },
+  "points": {
+    "title": "Kompetisiepunte",
+    "subtitle": "Punte vir korrekte keuses. Slegs afgehandelde keuses tel, en oefenkeuses tel nooit nie.",
+    "period": {
+      "week": "Hierdie week",
+      "month": "Hierdie maand",
+      "all": "Van altyd af"
+    },
+    "competition": "Kompetisie",
+    "allCompetitions": "Alle kompetisies",
+    "col": {
+      "rank": "#",
+      "member": "Lid",
+      "points": "Punte",
+      "accuracy": "Akkuraatheid",
+      "correct": "Korrek",
+      "settled": "Afgehandel"
+    },
+    "empty": "Nog geen afgehandelde keuses vir hierdie ranglys nie. Punte verskyn hier sodra 'n wedstryduitslag geverifieer is.",
+    "error": "Ons kon nie hierdie ranglys laai nie. Probeer asseblief weer.",
+    "noRank": "Jy het nog geen afgehandelde keuses op hierdie ranglys nie.",
+    "market": {
+      "1X2": "Wedstrydsuitslag",
+      "BTTS": "Albei spanne score",
+      "OU25": "Oor/onder 2.5 doele",
+      "DC": "Dubbele kans",
+      "HCP": "Voorgee"
+    },
+    "rules": {
+      "title": "Hoe punte werk",
+      "value_one": "{{count}} punt",
+      "value_other": "{{count}} punte",
+      "note": "'n Verkeerde keuse kry niks. 'n Nietige keuse word nie getel nie. Gelyke tellings word volgens korrekte keuses, dan akkuraatheid, dan afgehandelde keuses beslis. As 'n amptelike uitslag reggestel word, word die keuse herbereken en die verandering aangeteken. Punte rangskik slegs lede: dit is nie PuntPoints nie en het geen kontantwaarde nie."
+    }
+  },
+  "emptyTitle": "Nog geen ranglys nie",
+  "weekly": {
+    "title": "Weeklikse ranglys"
+  }
+}

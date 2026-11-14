@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "title": "Word 'n stigterslid | Puntr",
+    "description": "Sluit aan by Puntr se stigtersgemeenskap. Die eerste 100 lede kry 'n permanente genommerde kenteken en gratis toegang. Bou van dag een af 'n deursigtige sportvoorspellingsrekord. 18+.",
+    "ogTitle": "Puntr: Voorspel wat volgende kom. Bewys jou waarde."
+  },
+  "eyebrow": "Registrasie vir stigterslede is oop",
+  "title1": "Voorspel wat volgende kom.",
+  "title2": "Bewys jou waarde.",
+  "lead": "'n Nuwe standaard vir sportvoorspellings begin by die gemeenskap.",
+  "body": "Wees een van die eerste 100 lede wat Puntr help vorm. Eis jou permanente genommerde stigterskenteken op en kry gratis toegang. Geen kaart nodig nie. Puntr word op {{launch}} bekendgestel.",
+  "cta": "Eis jou stigtersplek op",
+  "how": "Sien hoe dit werk",
+  "dates": {
+    "open": "Stigtersregistrasie",
+    "openValue": "Nou oop",
+    "launch": "Puntr word bekendgestel",
+    "launchValue": "{{date}}"
+  },
+  "perks": {
+    "title": "Jou voordele as stigterslid",
+    "f1": "'n Permanente stigterskenteken, genommer #1 tot #100",
+    "f2": "Volle toegang tot plasings, jou rekord en die weeklikse ranglys vanaf die bekendstelling op 1 Desember 2026",
+    "f3": "30 gratis betaal-soos-jy-gebruik-krediete per maand vir 3 maande sodra dit bekendgestel word"
+  },
+  "steps": {
+    "title": "Hoe dit werk",
+    "s1": {
+      "title": "Sluit gratis aan",
+      "body": "Skep jou rekening met jou e-pos en bevestig dit met die kode wat ons vir jou stuur. Jy moet 18 of ouer wees."
+    },
+    "s2": {
+      "title": "Staan by jou voorspelling",
+      "body": "Vanaf die bekendstelling op 1 Desember 2026 plaas jy keuses op komende sokkerwedstryde voor die afskop. Elke keuse word gesluit en kan nie gewysig of geskrap word nie."
+    },
+    "s3": {
+      "title": "Bou 'n openbare rekord",
+      "body": "Keuses word outomaties gegradeer, sodat jou rekord vir jou praat."
+    }
+  },
+  "fine": "Puntr is 'n sportvoorspellingsgemeenskap, nie 'n boekmaker nie. Stigterslidmaatskap is gratis en beperk tot die eerste 100 lede.",
+  "last": {
+    "title": "Wees deel van wat volgende kom",
+    "body": "Die eerste 100 plekke is die enigste geleentheid om 'n permanente genommerde stigterskenteken te kry."
+  },
+  "pass": {
+    "title": "Stigters-jaarpas",
+    "body": "12 maande se Puntr Pro vir 'n eenmalige R299 (standaard Pro is R99 per maand, R1,188 per jaar). Oop vir die eerste {{spots}} stigterslede wat dit voor {{deadline}} bespreek. Jou 12 maande begin op bekendstellingsdag, 1 Desember 2026, en dit hernu nie outomaties nie.",
+    "note": "Bespreking is gratis op Puntr. Ons e-pos vir jou 'n veilige PayFast-betaalskakel. Voltooi die betaling van R299 binne 48 uur, anders verval jou bespreking en word die plek vrygestel.",
+    "left_one": "{{count}} plek oor",
+    "left_other": "{{count}} plekke oor",
+    "reserve": "Bespreek my jaarpas",
+    "reserving": "Bespreek tans jou pas...",
+    "join": "Sluit gratis aan om op te eis",
+    "emailNotConfigured": "Besprekings is tydelik nie beskikbaar nie. Kontak asseblief support@puntr.co.za.",
+    "emailFailed": "Jou plek word gehou, maar ons kon nie die betalings-e-pos stuur nie. Tik hieronder om weer te probeer of kontak support@puntr.co.za.",
+    "missingEmail": "Ons kon nie 'n e-posadres vir jou rekening vind nie. Werk jou rekeningbesonderhede by en probeer weer.",
+    "emailSent": "Betalingsinstruksies gestuur. Betaal voor {{until}} (Suid-Afrikaanse tyd).",
+    "resendEmail": "Stuur betalingsinstruksies weer",
+    "pending": "Jou plek is bespreek tot {{until}}. Kyk in jou inkassie vir die veilige PayFast-betaalskakel en betaal binne 48 uur.",
+    "paid": "Betaal. Jou Stigters-jaarpas begin op 1 Desember 2026.",
+    "full": "Al {{spots}} plekke is opgeëis.",
+    "closed": "Hierdie aanbod het op {{deadline}} gesluit.",
+    "error": "Ons kon nie nou jou aansoek begin nie. Probeer asseblief weer.",
+    "onboardingTitle": "Nog een ding: die Stigters-jaarpas",
+    "leftOf": "{{count}}/{{total}} jaarpasse oor",
+    "teaser": "Stigterslede kan een van slegs 20 jaarpasse bespreek: 12 maande se Puntr Pro vir 'n eenmalige R299 in plaas van R1,188 teen die standaard maandelikse tarief. Bespreek gratis op Puntr en betaal dan binne 48 uur deur die veilige PayFast-skakel wat aan jou ge-e-pos word."
+  },
+  "trust": {
+    "t1": "Gratis om aan te sluit. Geen kaart nodig nie.",
+    "t2": "Elke keuse gesluit en met 'n tydstempel",
+    "t3": "In Suid-Afrika gebou vir sokkeraanhangers"
+  },
+  "faq": {
+    "title": "Vinnige antwoorde",
+    "q1": "Is dit regtig gratis?",
+    "a1": "Ja. Om aan te sluit is gratis en jy het nie 'n kaart nodig nie. Die eerste 100 lede kry die genommerde stigterskenteken.",
+    "q2": "Is Puntr 'n boekmaker?",
+    "a2": "Nee. Puntr is 'n voorspellingsgemeenskap. Jy plaas keuses en bou 'n openbare rekord. Ons neem nie weddenskappe nie.",
+    "q3": "Wanneer word Puntr bekendgestel?",
+    "a3": "Puntr word amptelik op {{launch}} bekendgestel. Stigterslede registreer nou, kry hul genommerde kenteken sodra hulle hul e-pos bevestig, en is eerste in wanneer ons bekendgestel word.",
+    "q4": "Wie kan aansluit?",
+    "a4": "Enigiemand in Suid-Afrika wat 18 of ouer is. Jy bevestig jou e-pos voordat jy kan aanteken."
+  }
+}

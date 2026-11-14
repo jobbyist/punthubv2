@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Nuuskamer | Die jongste nuus van Puntr",
+    "description": "Amptelike maatskappy- en produkopdaterings van die Puntr-span: ontwikkeling, funksies, gemeenskapsnuus en bekendstellingsaankondigings.",
+    "ogTitle": "Puntr se Nuuskamer"
+  },
+  "eyebrow": "Nuuskamer",
+  "title": "Die jongste van Puntr",
+  "lead": "Amptelike opdaterings, ontwikkelings en aankondigings van die Puntr-span.",
+  "all": "Alles",
+  "cat": {
+    "company": "Maatskappynuus",
+    "product": "Produkontwikkeling",
+    "pfie": "PFIE en tegnologie",
+    "features": "Funksies en verbeterings",
+    "community": "Gemeenskap",
+    "launch": "Bekendstellingsaankondigings",
+    "sports": "Sportintelligensie"
+  },
+  "featured": "Jongste opdatering",
+  "empty": "Nog geen opdaterings gepubliseer nie. Kom kyk binnekort weer.",
+  "emptyCat": "Nog geen opdaterings in hierdie kategorie nie.",
+  "loading": "Laai opdaterings",
+  "error": "Kon nie die opdaterings laai nie. Probeer asseblief binnekort weer.",
+  "readMore": "Lees meer",
+  "back": "Terug na die Nuuskamer",
+  "by": "Deur {{author}}",
+  "share": "Deel",
+  "shareWhatsapp": "Deel op WhatsApp",
+  "shareX": "Deel op X",
+  "shareFacebook": "Deel op Facebook",
+  "shareLinkedin": "Deel op LinkedIn",
+  "shareEmail": "E-pos",
+  "shareNative": "Deel",
+  "copyLink": "Kopieer skakel",
+  "copied": "Skakel gekopieer",
+  "related": "Verwante opdaterings",
+  "notFound": "Ons kon nie daardie opdatering vind nie.",
+  "home": {
+    "eyebrow": "Die jongste van Puntr",
+    "title": "DIE JONGSTE VAN PUNTR",
+    "lead": "Die jongste opdaterings, ontwikkelings en aankondigings van die Puntr-span.",
+    "cta": "Besoek die Nuuskamer"
+  },
+  "ai": {
+    "label": "Met KI-hulp geskryf en teen die bronne hieronder nagegaan.",
+    "sources": "Bronne",
+    "note": "Feite in hierdie artikel kom uit die bronne hierbo en is voor publikasie outomaties nagegaan. Sien jy 'n fout? E-pos support@puntr.co.za en ons sal dit regstel."
+  }
+}

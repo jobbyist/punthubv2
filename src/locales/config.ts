@@ -1,15 +1,21 @@
 /**
- * Language registry. A language appears in the switcher only when `enabled` is true.
- * Switch one on once a native-speaker reviewer has approved it: fill reviewed, reviewedBy
- * and reviewedAt in the same commit.
+ * Language registry.
+ * - `enabled`: offered to everyone. Switch one on only after a native-speaker reviewer has approved it in
+ *   Admin > Translations: fill reviewed, reviewedBy and reviewedAt in the same commit.
+ * - `preview`: translated and waiting for review. Admins (and anyone holding the preview cookie an admin's
+ *   switcher sets) can view the site in it; everyone else keeps English.
+ * - `comingSoon`: listed in the switcher with a "Coming soon" badge, not selectable.
+ * isiXhosa was removed from the plan (owner, 14 Nov 2026).
  */
-export type LocaleCode = "en-ZA" | "af" | "zu" | "xh";
+export type LocaleCode = "en-ZA" | "af" | "zu";
 
 export type LocaleConfig = {
   code: LocaleCode;
   name: string;
   nativeName: string;
   enabled: boolean;
+  preview?: boolean;
+  comingSoon?: boolean;
   reviewed: boolean;
   reviewedBy: string | null;
   reviewedAt: string | null;
@@ -35,6 +41,7 @@ export const locales: readonly LocaleConfig[] = [
     name: "Afrikaans",
     nativeName: "Afrikaans",
     enabled: false,
+    preview: true,
     reviewed: false,
     reviewedBy: null,
     reviewedAt: null,
@@ -44,15 +51,7 @@ export const locales: readonly LocaleConfig[] = [
     name: "isiZulu",
     nativeName: "isiZulu",
     enabled: false,
-    reviewed: false,
-    reviewedBy: null,
-    reviewedAt: null,
-  },
-  {
-    code: "xh",
-    name: "isiXhosa",
-    nativeName: "isiXhosa",
-    enabled: false,
+    comingSoon: true,
     reviewed: false,
     reviewedBy: null,
     reviewedAt: null,
@@ -97,11 +96,25 @@ export const NAMESPACES = [
   "newsroom",
   "practice",
   "wallet",
+  "quests",
+  "pages",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
 
 export const LANGUAGE_COOKIE = "puntr_lang";
+/** Set by an admin's switcher when they pick a language that is still in review. */
+export const LANGUAGE_PREVIEW_COOKIE = "puntr_lang_preview";
+
+/** Languages still in review, selectable by admins only. */
+export function previewLocales(): LocaleConfig[] {
+  return locales.filter((l) => !l.enabled && l.preview);
+}
+
+/** Languages shown greyed out with a "Coming soon" badge. */
+export function comingSoonLocales(): LocaleConfig[] {
+  return locales.filter((l) => !l.enabled && !l.preview && l.comingSoon);
+}
 
 export function enabledLocales(dev = import.meta.env?.DEV ?? false): LocaleConfig[] {
   const list = locales.filter((l) => l.enabled);
@@ -121,12 +134,17 @@ export function enabledLocales(dev = import.meta.env?.DEV ?? false): LocaleConfi
     : list;
 }
 
-export function isEnabledLocale(code: string | null | undefined): code is LocaleCode {
-  return !!code && enabledLocales().some((l) => l.code === code);
+export function isEnabledLocale(
+  code: string | null | undefined,
+  allowPreview = false,
+): code is LocaleCode {
+  if (!code) return false;
+  if (enabledLocales().some((l) => l.code === code)) return true;
+  return allowPreview && previewLocales().some((l) => l.code === code);
 }
 
 /** Map "af-ZA", "zu", "en-GB" etc. onto an enabled locale code, or null. */
-export function matchLocale(tag: string): LocaleCode | null {
+export function matchLocale(tag: string, allowPreview = false): LocaleCode | null {
   const lower = tag.toLowerCase();
   if (lower === PSEUDO_LOCALE.toLowerCase())
     return isEnabledLocale(PSEUDO_LOCALE) ? (PSEUDO_LOCALE as LocaleCode) : null;
@@ -135,7 +153,7 @@ export function matchLocale(tag: string): LocaleCode | null {
   const found =
     locales.find((l) => l.code.toLowerCase() === lower) ??
     locales.find((l) => baseOf(l.code) === baseOf(lower));
-  return found && isEnabledLocale(found.code) ? found.code : null;
+  return found && isEnabledLocale(found.code, allowPreview) ? found.code : null;
 }
 
 /** Profile language, then cookie, then Accept-Language, then the default. */
@@ -143,11 +161,14 @@ export function resolveLocale(opts: {
   profile?: string | null;
   cookie?: string | null;
   acceptLanguage?: string | null;
+  /** True when the preview cookie is present: an explicit choice of a language still in review. */
+  preview?: boolean;
 }): LocaleCode {
-  for (const candidate of [opts.profile, opts.cookie]) {
-    const hit = candidate ? matchLocale(candidate) : null;
-    if (hit) return hit;
-  }
+  // A language in review is honoured only as an explicit choice (cookie), never from Accept-Language.
+  const explicit = opts.cookie ? matchLocale(opts.cookie, !!opts.preview) : null;
+  const profileHit = opts.profile ? matchLocale(opts.profile) : null;
+  if (profileHit) return profileHit;
+  if (explicit) return explicit;
   if (opts.acceptLanguage) {
     const tags = opts.acceptLanguage
       .split(",")

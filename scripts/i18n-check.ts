@@ -10,7 +10,7 @@ import { join, relative } from "node:path";
 const ROOT = join(import.meta.dirname, "..");
 const LOCALES = join(ROOT, "src/locales");
 const BASE = "en-ZA";
-const OTHERS = ["af", "zu", "xh"];
+const OTHERS = ["af", "zu"];
 
 // Full legal pages stay in English by design; generated and UI-kit files are not product copy.
 const SKIP_FILES = [

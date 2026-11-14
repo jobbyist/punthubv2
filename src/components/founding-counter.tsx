@@ -76,7 +76,7 @@ export function FoundingCounter({
   return (
     <section
       className={`w-full max-w-xl overflow-hidden border border-primary/40 bg-primary-soft/70 p-4 shadow-sm sm:p-5 ${className}`}
-      aria-label="Founding Member availability"
+      aria-label={t("foundingCounter.availability")}
       aria-live="polite"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -103,7 +103,7 @@ export function FoundingCounter({
       <div
         className="mt-4 h-2.5 overflow-hidden rounded-full bg-background/80"
         role="progressbar"
-        aria-label="Founding places claimed"
+        aria-label={t("foundingCounter.claimedLabel")}
         aria-valuemin={0}
         aria-valuemax={data.cap}
         aria-valuenow={claimed}

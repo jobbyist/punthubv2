@@ -69,9 +69,11 @@
   "annualPass": {
     "badge": "Limited founding offer · 20 places",
     "title": "Founding Annual Pass",
-    "description": "12 months of Puntr Pro for R299 instead of R1,188 at the standard monthly rate. No automatic renewal.",
+    "description": "12 months of Puntr Pro. One payment, no automatic renewal. Your 12 months start on launch day, 1 December 2026.",
+    "price": "R299",
+    "was": "R1,188 at R99/month",
     "saving": "Save R889 · 75% less",
-    "fine": "Claiming includes payment: R299 once-off through PayFast. Your place is confirmed when payment is received.",
-    "cta": "Create an account & claim"
+    "fine": "Reserving is free on Puntr. We then email you a secure PayFast link: pay the R299 within 48 hours to confirm your place, or the reservation lapses and the place is released.",
+    "cta": "Create an account & reserve"
   }
 }

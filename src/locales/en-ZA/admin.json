@@ -52,7 +52,8 @@
     "annualPass": "Annual Pass",
     "quests": "Quests",
     "logos": "Logos/Branding",
-    "endorsements": "Endorsements"
+    "endorsements": "Endorsements",
+    "translations": "Translations"
   },
   "settle": {
     "title": "Settlement",
@@ -875,5 +876,84 @@
     "sentOk": "Email sent",
     "discard": "Discard",
     "history": "History"
+  },
+  "translations": {
+    "title": "Translations",
+    "intro": "A native speaker reviews every translated string and legal page here. Approve what reads well, suggest better wording where it doesn't, then sign off the language.",
+    "comingSoon": "Coming soon",
+    "progress": "{{approved}} of {{total}} {{name}} items approved",
+    "count": {
+      "translated": "Translated",
+      "approved": "Approved",
+      "changes": "Changes suggested",
+      "stale": "Changed since review"
+    },
+    "preview": "View the site in {{name}}",
+    "backToEnglish": "Back to English",
+    "howLive": "Only you (and other admins) can see a language while it is in review. Suggested wording is copied into the site by Puntr, then the language is switched on for everyone after the sign-off below.",
+    "sections": "Sections",
+    "legal": "Legal pages",
+    "legalHelp": "Read each page in English and in the translation, then approve it or add a note. If either version changes later, the page shows as changed since review.",
+    "legalMissing": "The translated page is missing.",
+    "untranslated_one": "{{count}} not translated",
+    "untranslated_other": "{{count}} not translated",
+    "changesShort_one": "{{count}} change",
+    "changesShort_other": "{{count}} changes",
+    "staleShort_one": "{{count}} changed since review",
+    "staleShort_other": "{{count}} changed since review",
+    "allSections": "All sections",
+    "approveAll": "Approve the {{count}} remaining",
+    "approveAllConfirm": "Approve all {{count}} strings in this section that you have not reviewed yet? Only do this if you have read them.",
+    "approvedAll_one": "{{count}} string approved.",
+    "approvedAll_other": "{{count}} strings approved.",
+    "filter": {
+      "all": "All",
+      "pending": "To review",
+      "changes": "Changes suggested",
+      "stale": "Changed since review",
+      "approved": "Approved"
+    },
+    "search": "Search key or text",
+    "none": "Nothing to show for this filter.",
+    "status": {
+      "pending": "To review",
+      "approved": "Approved",
+      "changes": "Change suggested",
+      "stale": "Changed since review"
+    },
+    "tokens": "Placeholders or tags differ from the English",
+    "openEnglish": "Open English page",
+    "openTranslated": "Open translated page",
+    "missing": "Not translated yet (English is shown).",
+    "suggestion": "Suggested wording",
+    "note": "Note",
+    "saveChanges": "Save suggestion",
+    "cancel": "Cancel",
+    "approve": "Approve",
+    "suggest": "Suggest a change",
+    "addNote": "Add a note",
+    "reset": "Reset",
+    "signTitle": "Sign off {{name}}",
+    "signHelp": "When every item is approved, the reviewer signs off here. Puntr then copies in any suggested wording and switches the language on.",
+    "live": "{{name}} is live for everyone.",
+    "awaitingRelease": "{{reviewer}} signed off {{name}}. Puntr will switch it on in the next release.",
+    "notReady": "Every item must be approved (none waiting, none changed since review) before the sign-off.",
+    "reviewerName": "Reviewer's full name",
+    "signApprove": "Sign off {{name}}",
+    "signWithdraw": "Withdraw sign-off",
+    "signConfirm": "Sign off {{name}}? This records your name as the native-speaker reviewer.",
+    "signed": {
+      "approved": "Signed off. Puntr has been asked to switch the language on.",
+      "withdrawn": "Sign-off withdrawn."
+    },
+    "decision": {
+      "approved": "Signed off",
+      "withdrawn": "Withdrawn"
+    },
+    "error": {
+      "forbidden": "Admins only.",
+      "invalid": "That request was not valid.",
+      "error": "Something went wrong. Try again."
+    }
   }
 }

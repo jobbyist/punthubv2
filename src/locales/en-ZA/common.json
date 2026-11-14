@@ -3,7 +3,9 @@
     "tagline": "Predict smarter. Prove it."
   },
   "language": {
-    "label": "Language"
+    "label": "Language",
+    "comingSoon": "Coming soon",
+    "inReview": "In review"
   },
   "cta": {
     "getStarted": "Join free",
@@ -156,6 +158,13 @@
     "full": "Allocation full",
     "claimed": "{{claimed}} of {{cap}} spots taken",
     "remaining": "left",
-    "progressLabel": "Founding Member spots claimed"
+    "progressLabel": "Founding Member spots claimed",
+    "availability": "Founding Member availability",
+    "claimedLabel": "Founding places claimed"
+  },
+  "independence": {
+    "title": "Bookmaker relationships & editorial independence",
+    "p1": "Tipsters on Puntr record picks against the fixtures and odds licensed and locally regulated platforms offer. Puntr does not take bets, and is not necessarily affiliated with or endorsed by them.",
+    "p2": "Puntr will never allow an affiliate, partner or sponsor with special interests to influence its prediction scores, AI recommendations, editorial content or independent probability assessments."
   }
 }

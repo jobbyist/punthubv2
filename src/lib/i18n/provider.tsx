@@ -13,7 +13,10 @@ import { writeLanguageCookie } from "@/lib/i18n/locale";
 import { createI18n } from "@/lib/i18n";
 import type { LocaleCode } from "@/locales/config";
 
-type LocaleValue = { locale: LocaleCode; setLocale: (code: LocaleCode) => void };
+type LocaleValue = {
+  locale: LocaleCode;
+  setLocale: (code: LocaleCode, opts?: { preview?: boolean }) => void;
+};
 
 const LocaleContext = createContext<LocaleValue | null>(null);
 
@@ -31,8 +34,8 @@ export function LocaleProvider({
   const i18n = i18nRef.current;
 
   const setLocale = useCallback(
-    (code: LocaleCode) => {
-      writeLanguageCookie(code);
+    (code: LocaleCode, opts?: { preview?: boolean }) => {
+      writeLanguageCookie(code, !!opts?.preview);
       void i18n.changeLanguage(code);
       if (typeof document !== "undefined") document.documentElement.lang = code;
       setLocaleState(code);

@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "title": "Hulpsentrum | Puntr",
+    "description": "Kry hulp met Puntr. E-pos support@puntr.co.za en ons hulpspan antwoord gewoonlik binne 24 uur.",
+    "ogTitle": "Puntr se hulpsentrum",
+    "ogDescription": "Vind antwoorde, kontak ons en ons sal dit uitsorteer."
+  },
+  "title": "Hulpsentrum",
+  "subtitle": "Hulp nodig? Blaai deur die antwoorde hieronder of e-pos ons hulpspan. Ons sal jou in die regte rigting wys.",
+  "email": {
+    "title": "E-pos ons",
+    "note": "Ons vriendelike hulpspan antwoord gewoonlik binne 24 uur."
+  },
+  "chat": {
+    "title": "Regstreekse klets",
+    "body": "Regstreekse klets is nog nie beskikbaar nie. E-pos ons en ons vriendelike hulpspan sal na jou terugkom, gewoonlik binne 24 uur.",
+    "badge": "Nog nie beskikbaar nie"
+  },
+  "faq": {
+    "title": "Algemene vrae",
+    "q1": "Wat is Puntr?",
+    "a1": "Puntr is 'n gemeenskapsplatform waar sportaanhangers voorspellings voor die afskop publiseer, en dan sien hoe elke keuse gesluit, outomaties gegradeer en in 'n openbare rekord bewaar word. Dit gee jou sportkennis 'n deursigtige rekord.",
+    "q2": "Hoe werk PuntPoints?",
+    "a2": "PuntPoints is 'n lojaliteitskema. Jy verdien dit vir bedrywigheid soos om jou e-pos te bevestig, keuses te plaas, afgehandelde keuses en om vriende uit te nooi, nooit vir wen nie. Jy kan dit op die Belonings-bladsy vir koopbewyse, geborgde belonings en voordele inruil. Dit het geen kontantwaarde nie en kan nie gekoop word nie.",
+    "q3": "Kan ek vriende uitnooi?",
+    "a3": "Ja. Lede kry 'n persoonlike uitnodigingskakel. Wanneer 'n vriend aansluit en 'n eerste keuse plaas, verdien julle albei PuntPoints ná 'n kort wagtydperk. Daar is geen kontantbetalings vir verwysings nie.",
+    "q4": "Is Puntr gratis?",
+    "a4": "Ja. Puntr is gratis tydens die Stigters-100-bekendstelling. Enige betaalde funksies later sal eers aangekondig word en nooit sonder kennisgewing aangeskakel word nie.",
+    "q5": "Hoe akkuraat is voorspellings?",
+    "a5": "Elke lid se rekord wys afgehandelde keuses en prestasiekonteks, insluitend eenhede, opbrengs (ROI) en steekproefgrootte. Vorige uitslae is nie 'n aanduiding van toekomstige uitkomste nie. Dobbel verantwoordelik: 0800 006 008.",
+    "q6": "Kan ek my PuntPoints onttrek?",
+    "a6": "Nee. PuntPoints het geen geldwaarde nie en kan nie onttrek of vir kontant omgeruil word nie. Jy kan dit slegs vir die belonings op die Belonings-bladsy inruil.",
+    "q7": "Neem Puntr weddenskappe?",
+    "a7": "Nee. Puntr aanvaar nie weddenskappe nie, stel nie pryse vas nie en hou nie weddenskapsgeld nie. Dit help lede om sportvoorspellings aan te teken, te hersien en te vergelyk."
+  },
+  "contact": {
+    "title": "Kontak ons",
+    "body": "Het jy 'n vraag of hulp nodig? Stuur vir ons 'n boodskap en ons span sal na jou terugkom, gewoonlik binne 24 uur.",
+    "name": "Volle naam",
+    "namePh": "Vul jou volle naam in",
+    "email": "E-posadres",
+    "emailPh": "Vul jou e-posadres in",
+    "subject": "Onderwerp",
+    "subjectPh": "Waaroor gaan jou boodskap?",
+    "message": "Boodskap",
+    "messagePh": "Tik jou boodskap hier…",
+    "submit": "Stuur boodskap",
+    "toastTitle": "Boodskap gestuur",
+    "errorTitle": "Kon nie jou boodskap stuur nie. Probeer asseblief weer of e-pos support@puntr.co.za.",
+    "toastBody": "Ons span sal binne 24 uur antwoord."
+  }
+}
