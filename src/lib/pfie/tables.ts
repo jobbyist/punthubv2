@@ -361,12 +361,13 @@ async function syncSeasonWindow(
       sources: sources.map((s) => s.domain),
       model: answer.model,
     };
-    // Nothing usable on the pages is a miss, not a finished window: it is retried (20 min, 40 min, then daily).
-    if (rows.length === 0 && accepted.length === 0) {
-      await deps.store.record("season", scope, false, "no results found on the sources", meta);
+    // No verified result is a miss, not a finished window: it is retried (20 min, 40 min, then daily), because a
+    // later search can find the second source a single-source score needs.
+    if (rows.length === 0) {
+      await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
-        detail: `no results found (${raw.length} extracted, ${sources.length} sources)`,
+        detail: `no verified results (${raw.length} extracted, ${accepted.length} accepted, ${unverified} single-source)`,
       };
     }
     await deps.store.record("season", scope, true, null, meta);
