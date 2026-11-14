@@ -329,6 +329,49 @@ describe("corroboration", () => {
     const d = by(decide(fanOnly).decisions, "Durban City");
     expect(d).toMatchObject({ publish: false, kickoffVerdict: "single_source" });
   });
+  it("a trusted site's zoned time is accepted when another site lists the match on the same date", () => {
+    const base = {
+      home: "Orlando Pirates",
+      away: "Kaizer Chiefs",
+      date: "2026-11-28",
+      time: "15:30",
+      tz: null,
+      status: "scheduled" as const,
+      homeScore: null,
+      awayScore: null,
+      quote: "Orlando Pirates v Kaizer Chiefs",
+      source: 1,
+    };
+    const zoned: Observation = {
+      ...base,
+      tz: "SAST",
+      domain: "supersport.com",
+      tier: "trusted",
+      kickoffUtc: "2026-11-28T13:30:00.000Z",
+    };
+    const plain: Observation = {
+      ...base,
+      time: null,
+      domain: "example-news.com",
+      tier: "other",
+      kickoffUtc: null,
+    };
+    expect(by(decide([zoned, plain]).decisions, "Orlando Pirates")).toMatchObject({
+      publish: true,
+      kickoffVerdict: "verified",
+      kickoffAt: "2026-11-28T13:30:00.000Z",
+    });
+    // An untrusted site cannot set the time this way, and a different date does not corroborate.
+    expect(
+      by(
+        decide([{ ...zoned, tier: "other", domain: "random.com" }, plain]).decisions,
+        "Orlando Pirates",
+      ),
+    ).toMatchObject({ publish: false });
+    expect(
+      by(decide([zoned, { ...plain, date: "2026-11-29" }]).decisions, "Orlando Pirates"),
+    ).toMatchObject({ publish: false });
+  });
   it("without the official site, two sites that agree verify a result", () => {
     const known: KnownFixture[] = [
       {

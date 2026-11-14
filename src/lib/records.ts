@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/format";
 import { currentWeekStart, type FixtureRow } from "@/lib/pick-data";
@@ -248,4 +249,59 @@ export async function fetchResults(days = 14): Promise<ResultDay[]> {
     ),
   );
   return groupResultsByDay(items);
+}
+
+export interface SeasonResult {
+  id: string;
+  competition: string;
+  matchDate: string;
+  home: string;
+  away: string;
+  homeScore: number;
+  awayScore: number;
+  sources: string[];
+}
+
+/**
+ * Past results from the PFIE season backfill (team_results). Each was confirmed by the competition's own site or
+ * by two different sites; `sources` names them so the page can credit them.
+ */
+export async function fetchSeasonResults(
+  competition: string | null,
+  limit = 80,
+): Promise<SeasonResult[]> {
+  const db = supabase as unknown as SupabaseClient;
+  let q = db
+    .from("team_results")
+    .select("id, competition, match_date, home, away, home_score, away_score, source_domains")
+    .order("match_date", { ascending: false })
+    .limit(limit);
+  if (competition) q = q.eq("competition", competition);
+  const { data, error } = await q;
+  if (error) throw error;
+  return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+    id: String(r["id"]),
+    competition: String(r["competition"]),
+    matchDate: String(r["match_date"]),
+    home: String(r["home"]),
+    away: String(r["away"]),
+    homeScore: Number(r["home_score"]),
+    awayScore: Number(r["away_score"]),
+    sources: Array.isArray(r["source_domains"]) ? (r["source_domains"] as string[]) : [],
+  }));
+}
+
+/** Competitions that have backfilled results, with counts, for the filter chips. */
+export async function fetchSeasonResultCompetitions(): Promise<
+  { competition: string; count: number }[]
+> {
+  const db = supabase as unknown as SupabaseClient;
+  const { data, error } = await db.from("team_results").select("competition").limit(10000);
+  if (error) throw error;
+  const counts = new Map<string, number>();
+  for (const r of (data ?? []) as { competition: string }[])
+    counts.set(r.competition, (counts.get(r.competition) ?? 0) + 1);
+  return [...counts.entries()]
+    .map(([competition, count]) => ({ competition, count }))
+    .sort((a, b) => b.count - a.count);
 }

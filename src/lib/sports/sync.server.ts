@@ -44,6 +44,52 @@ export async function syncFixtures(
 }
 
 /**
+ * The same window, one competition at a time, writing each competition's fixtures as soon as they are verified.
+ * Stops starting new competitions once `budgetMs` has passed, so a serverless time limit can never throw away work
+ * that was already done (before 15 Nov a 21-competition run timed out before its single write and published
+ * nothing). The caller passes `keys` least-recently-synced first and calls again for the rest.
+ */
+export async function syncFixturesByCompetition(
+  provider: SportsProvider,
+  store: FixtureStore,
+  keys: CompetitionKey[],
+  opts: { now?: Date; budgetMs?: number; clock?: () => number } = {},
+): Promise<SyncReport & { done: CompetitionKey[]; remaining: CompetitionKey[] }> {
+  const now = opts.now ?? new Date();
+  const clock = opts.clock ?? (() => Date.now());
+  const started = clock();
+  const budget = opts.budgetMs ?? 150_000;
+  const from = new Date(now.getTime() - DAY);
+  const to = new Date(now.getTime() + 14 * DAY);
+  const report = {
+    ok: true as const,
+    calls: 0,
+    upserted: 0,
+    skipped: [] as { key: string; reason: string }[],
+    done: [] as CompetitionKey[],
+    remaining: [] as CompetitionKey[],
+  };
+  for (const key of keys) {
+    if (clock() - started > budget) {
+      report.remaining.push(key);
+      continue;
+    }
+    const r = await provider.listFixtures(from, to, { only: [key] });
+    report.calls += r.calls;
+    report.skipped.push(...r.skipped);
+    const finished = await store.finishedRefs(
+      provider.name,
+      r.fixtures.map((f) => f.providerRef),
+    );
+    const rows = r.fixtures.filter((f) => !finished.has(f.providerRef));
+    if (rows.length) await store.upsert(rows);
+    report.upserted += rows.length;
+    report.done.push(key);
+  }
+  return report;
+}
+
+/**
  * Fixtures that kicked off in the last 36 hours and are not final. Calls the provider only for the competitions
  * that have such fixtures, and not at all when there are none, so the 30-minute schedule spends no quota idle.
  */

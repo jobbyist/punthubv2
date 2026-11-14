@@ -21,7 +21,10 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
         const url = new URL(request.url);
         const only = url.searchParams.get("only")?.split(",").filter(Boolean);
         const jobParam = url.searchParams.get("job");
-        const job = jobParam === "standings" || jobParam === "history" ? jobParam : undefined;
+        const job =
+          jobParam === "standings" || jobParam === "history" || jobParam === "season"
+            ? jobParam
+            : undefined;
         const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
 
         const { DEFAULT_PFIE_MODELS, parseModelList, readContentEnv } =

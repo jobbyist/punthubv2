@@ -11,7 +11,13 @@ import {
 } from "./competitions";
 import { csvProviderRef, parseFixtureCsv } from "./csv";
 import { mapFootballStatus, mapRugbyStatus } from "./status";
-import { syncFixtures, syncResults, type FixtureStore } from "./sync.server";
+import { orderKeys } from "./fixture-order";
+import {
+  syncFixtures,
+  syncFixturesByCompetition,
+  syncResults,
+  type FixtureStore,
+} from "./sync.server";
 import type { NormalisedFixture } from "./types";
 
 const psl = competitions.find((c) => c.key === "psl")!;
@@ -189,6 +195,29 @@ describe("sync", () => {
     expect(store.upsert.mock.calls[0]![0].map((r: NormalisedFixture) => r.providerRef)).toEqual([
       "football:1",
     ]);
+  });
+
+  it("writes each competition as it finishes and stops starting new ones after the budget", async () => {
+    const store = fakeStore();
+    const p = provider([fx("football:1")]);
+    let t = 0;
+    const report = await syncFixturesByCompetition(p, store, ["psl", "epl", "ucl"], {
+      budgetMs: 100,
+      clock: () => (t += 60),
+    });
+    expect(report.done).toEqual(["psl"]);
+    expect(report.remaining).toEqual(["epl", "ucl"]);
+    expect(store.upsert).toHaveBeenCalledTimes(1);
+  });
+
+  it("orders competitions least recently synced first and skips fresh ones", () => {
+    const now = Date.parse("2026-11-15T02:00:00Z");
+    const runs = [
+      { competition: "psl", started_at: "2026-11-15T01:00:00Z" },
+      { competition: "epl", started_at: "2026-11-14T02:00:00Z" },
+    ];
+    expect(orderKeys(["psl", "epl", "ucl"], runs, 12, now)).toEqual(["ucl", "epl"]);
+    expect(orderKeys(["psl", "epl", "ucl"], runs, 0, now)).toEqual(["ucl", "epl", "psl"]);
   });
 
   it("makes no provider call for results when nothing is open", async () => {

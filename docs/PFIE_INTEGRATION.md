@@ -90,3 +90,15 @@ match and compare with the official score before any settlement is trusted.
 - Cost: per standings refresh 1 Parallel search + up to 2 page reads + 1 Gemini Flash-Lite call; refreshes only
   when needed, so typically 5-10 a day across 12 leagues. Quotas go through `api_quota_claim` as before.
 - No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.
+
+
+## 14 Nov 2026: chunked fixture sync, trusted-time rule, season backfill
+- `/api/cron/sync-fixtures` (PFIE) runs the competitions not synced in the last 12 h, oldest first, writing each as
+  it finishes and stopping new ones after 150 s (`syncFixturesByCompetition`). Cron every 6 min 03:00-03:42 SAST.
+  `?force=1` ignores the 12-hour rule.
+- Corroboration: a zoned time from one TRUSTED outlet is verified when another site lists the same match on the same
+  printed date and nobody states another time (`corroborate.ts`).
+- Season backfill: job `season` in `runTablesSync`, 21-day windows from 1 Aug of last season to today - 42 days,
+  newest first; scope `<key>:<start>` in `sync_status`. Cron `sync-season` every 10 min 06:00-06:50 SAST, two
+  windows per call (`/api/cron/sync-tables?job=season&max=2`). Same verification as form history (official site or
+  two domains with the same score). Results show on `/results` > Season results with their source domains.
