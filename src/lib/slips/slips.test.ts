@@ -28,6 +28,12 @@ describe("scrubSlipText", () => {
     expect(r.text).toContain("1.85");
     expect(r.removed).toBeGreaterThanOrEqual(5);
   });
+  it("keeps fixture lines whose team names contain a label word", () => {
+    const r = scrubSlipText("Cardiff City v Swansea City\nCard number: 4111\nNamely FC v Telstar");
+    expect(r.text).toContain("Cardiff City v Swansea City");
+    expect(r.text).toContain("Namely FC v Telstar");
+    expect(r.text).not.toContain("Card number");
+  });
   it("handles +27 numbers and caps length", () => {
     expect(scrubSlipText("call +27 82 555 1234").text).toBe("call [removed]");
     expect(scrubSlipText("x".repeat(5000)).text.length).toBe(4000);
