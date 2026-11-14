@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { IllustrativeLeaderboard } from "@/components/illustrative-panels";
 import { Podium, RankRow } from "@/components/leader-board";
 import { LaunchGate } from "@/components/launch-gate";
+import { DuelBoard } from "@/components/duels/duel-board";
 import { PointsBoard } from "@/components/points-board";
 import { useSession } from "@/components/session";
 import { Blurred, FoundingGateCard, useGated } from "@/components/intel/guest-gate";
@@ -91,6 +92,8 @@ function Leaderboards() {
           <PointsBoard />
         </LaunchGate>
       </div>
+
+      <DuelBoard className="mb-10" />
 
       <h2 className="mb-4 text-xl">{t("weekly.title")}</h2>
       <FilterChips

@@ -685,6 +685,13 @@ const SETTING_KEYS = new Set([
   "transfer_monthly_cap",
   "transfer_min_account_days",
   "transfer_hold_days",
+  "duels_enabled",
+  "duels_stakes_enabled",
+  "duel_stake_min",
+  "duel_stake_max",
+  "duel_daily_stake_cap",
+  "duel_open_limit",
+  "duel_pair_weekly_limit",
 ]);
 
 export const adminUpdateSetting = createServerFn({ method: "POST" })
@@ -695,8 +702,12 @@ export const adminUpdateSetting = createServerFn({ method: "POST" })
     const value = text(o["value"], 1, 40);
     if (!SETTING_KEYS.has(key)) throw new Error("unknown setting");
     if (key === "launch_at" && Number.isNaN(Date.parse(value))) throw new Error("invalid date");
-    if (key === "transfer_enabled" && !["true", "false"].includes(value))
+    if (
+      (key === "transfer_enabled" || key === "duels_enabled" || key === "duels_stakes_enabled") &&
+      !["true", "false"].includes(value)
+    )
       throw new Error("invalid");
+    if (key.startsWith("duel_") && !/^\d{1,4}$/.test(value)) throw new Error("invalid");
     if (key.startsWith("transfer_") && key !== "transfer_enabled" && !/^\d{1,5}$/.test(value))
       throw new Error("invalid");
     return { key, value };

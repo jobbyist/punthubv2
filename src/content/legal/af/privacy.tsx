@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-13-r15.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r16.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -43,6 +43,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Jou oefenkeuses, oefenpunte, inruilings van demo-belonings en die gebruikersnaam op die ranglys. Dit gebruik 'n fiktiewe liga, word apart van jou regte keuses en PuntPoints gehou, en is nooit openbaar nie, behalwe jou gebruikersnaam op die oefenranglys",
     "Jou toestemming (jy kies om dit te probeer); slegs stigterslede",
     "Terwyl jou rekening oop is; geskrap wanneer jy jou rekening skrap [attorney review]",
+  ],
+  [
+    "Gemeenskapsduelle (vanaf bekendstelling)",
+    "Jou duel-uitdagings, voorspellings, insette, uitslae en stemme. Jou voorspellings word vanaf afskop openbaar saam met jou gebruikersnaam gewys; stemme word slegs getel en nooit by naam gewys nie",
+    "Kontrak (om die duelfunksie te verskaf wat jy kies om te gebruik)",
+    "Terwyl jou rekening oop is. Wanneer jy jou rekening skrap, word oop uitdagings gekanselleer, aktiewe duelle nietig verklaar met insette terugbetaal en jou stemme geskrap; afgehandelde duelle bly by die anonieme rekening sodat die ander lid se rekord korrek bly [attorney review]",
   ],
   [
     "Beursie (vanaf bekendstelling)",
@@ -147,7 +153,7 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 13 November 2026 (weergawe 2026-11-13-r15). Konsep wat op
+          <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r16). Konsep wat op
           hersiening deur 'n prokureur wag.
         </p>
 

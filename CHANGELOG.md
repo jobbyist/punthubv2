@@ -3,6 +3,23 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (batch 1, PR D): Community Head-to-Head Duels
+
+Added
+- `/duels` hub (how it works, open/live/settled/my duels, H2H Duel Leaderboard) and `/duels/$duelId` duel room
+  (both members' calls side by side, hidden until kick-off, accept/decline/cancel, share, "Who called it better?"
+  poll with an animated split bar).
+- Challenge dialog (named opponent or open challenge, 2-3 calls from 1X2/BTTS/OU25, optional stake, message) on the
+  hub and in every match room ("Duels on this match"); Duels in the side nav; Duel board on /leaderboards.
+- Settlement in `/api/cron/settle` with the shared `grade()`; unaccepted challenges expire at kick-off.
+- Migrations `20261114080000_h2h_duels.sql`, `20261114081000_duel_config.sql` (applied). Admin > System: duel
+  switches and limits. Stakes default OFF pending counsel.
+- Legal: Terms and Privacy r16 (English and Afrikaans).
+
+Fixed
+- Analytics sheet could show the previous match's community split (review finding on #113).
+- Duplicate `uefa.com` in the PFIE trusted list (review finding on #114).
+
 ## 14 November 2026 (batch 1, PR B): /fixtures hub and wider coverage
 
 Added

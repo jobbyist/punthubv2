@@ -61,6 +61,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you delete your account [attorney review]",
   ],
   [
+    "Community Duels (from launch)",
+    "Your duel challenges, calls, stakes, results and votes. Your calls are shown publicly with your username from kick-off; votes are only counted, never shown by name",
+    "Contract (providing the duel feature you choose to use)",
+    "While your account is open. On deletion, open challenges are cancelled, active duels are voided with stakes returned and your votes are deleted; settled duels stay with the anonymous account so the other member's record stays correct [attorney review]",
+  ],
+  [
     "Wallet (from launch)",
     "Your PuntPoints and Pay-As-You-Go credit balances and history; PuntPoints you send or receive (the other member's username, the amount, an optional note and the time)",
     "Contract (providing the loyalty scheme and the paid features to you)",
@@ -159,7 +165,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 13 November 2026 (version 2026-11-13-r15). Draft pending
+          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r16). Draft pending
           attorney review.
         </p>
 

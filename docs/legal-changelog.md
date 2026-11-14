@@ -3,6 +3,29 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Community Duels (PR: feat/h2h-duels), Terms and Privacy r16
+
+- **What changed in the product:** members can challenge another member (or post an open challenge) on an upcoming
+  football match with 2-3 calls. Calls are hidden until kick-off, then public with usernames. Other members can vote
+  "who called it better" (only totals are shown). Optional PuntPoints stakes are held in escrow in the PuntPoints
+  ledger and paid to the member with more correct calls; ties, void matches and unaccepted challenges are refunded.
+  Duel XP (win 3, draw 1) ranks a separate Duel leaderboard; PuntPoints never affect its order.
+- **Stakes are OFF** (`duels_stakes_enabled = false` in Admin > System) until the owner decides with counsel.
+  Friendly duels work without stakes.
+- **Pages:** `/terms` section 6 (new Duels paragraph), `/privacy` data table ("Community Duels (from launch)" row),
+  both versions 2026-11-14-r16, the Afrikaans copies in `src/content/legal/af/`, `notice_versions` r16 (migration
+  `20261114080000_h2h_duels.sql`). `/cookies`, `/refunds`, `/affiliate-disclosure` unchanged (no new cookies,
+  payments or partner content).
+- **Review [attorney review]:**
+  1. Whether staking PuntPoints (redeemable for vouchers and perks) on a match outcome between members is
+     "gambling" or a "wager" under the National Gambling Act 7 of 2004 and provincial law, even with no cash value
+     and no cash-out. This is why stakes ship switched off.
+  2. Anti-abuse wording (collusion, multiple accounts) and the reuse of the transfer safeguards (14-day account,
+     invite and recent points excluded, daily cap, per-pair weekly cap).
+  3. Public display of calls with usernames from kick-off; vote counts only.
+  4. Retention on deletion: open challenges cancelled, active duels voided and refunded, votes deleted, settled
+     duels kept with the anonymised account.
+
 ## 2026-11-14, Afrikaans translations and Cookies page (PR: multi-language, Afrikaans)
 
 - **Owner decision (14 Nov 2026):** translate every page into Afrikaans, including the legal pages; review in a new Admin > Translations tab; isiZulu shown as "Coming soon"; isiXhosa dropped.

@@ -50,6 +50,8 @@ import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as DuelsIndexRouteImport } from './routes/duels.index'
+import { Route as DuelsDuelIdRouteImport } from './routes/duels.$duelId'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
 import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
@@ -280,6 +282,16 @@ const AuthConfirmRoute = AuthConfirmRouteImport.update({
   path: '/auth/confirm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DuelsIndexRoute = DuelsIndexRouteImport.update({
+  id: '/duels/',
+  path: '/duels/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuelsDuelIdRoute = DuelsDuelIdRouteImport.update({
+  id: '/duels/$duelId',
+  path: '/duels/$duelId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
   id: '/match/$fixtureId',
   path: '/match/$fixtureId',
@@ -444,6 +456,7 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -451,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/duels/': typeof DuelsIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
@@ -511,6 +525,7 @@ export interface FileRoutesByTo {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
@@ -518,6 +533,7 @@ export interface FileRoutesByTo {
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/duels': typeof DuelsIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
@@ -579,6 +595,7 @@ export interface FileRoutesById {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
@@ -586,6 +603,7 @@ export interface FileRoutesById {
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/duels/': typeof DuelsIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
@@ -648,6 +666,7 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/auth/confirm'
+    | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
@@ -655,6 +674,7 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/account/'
     | '/admin/'
+    | '/duels/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
@@ -715,6 +735,7 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/auth/confirm'
+    | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
@@ -722,6 +743,7 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/account'
     | '/admin'
+    | '/duels'
     | '/newsroom'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
@@ -782,6 +804,7 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/admin/fixtures'
     | '/auth/confirm'
+    | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy_/request'
@@ -789,6 +812,7 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/account/'
     | '/admin/'
+    | '/duels/'
     | '/newsroom/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
@@ -850,6 +874,7 @@ export interface RootRouteChildren {
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
+  DuelsDuelIdRoute: typeof DuelsDuelIdRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
@@ -857,6 +882,7 @@ export interface RootRouteChildren {
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  DuelsIndexRoute: typeof DuelsIndexRoute
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiAuthSendEmailRoute: typeof ApiAuthSendEmailRoute
@@ -1167,6 +1193,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/duels/': {
+      id: '/duels/'
+      path: '/duels'
+      fullPath: '/duels/'
+      preLoaderRoute: typeof DuelsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duels/$duelId': {
+      id: '/duels/$duelId'
+      path: '/duels/$duelId'
+      fullPath: '/duels/$duelId'
+      preLoaderRoute: typeof DuelsDuelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/match/$fixtureId': {
       id: '/match/$fixtureId'
       path: '/match/$fixtureId'
@@ -1378,6 +1418,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   AuthConfirmRoute: AuthConfirmRoute,
+  DuelsDuelIdRoute: DuelsDuelIdRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
@@ -1385,6 +1426,7 @@ const rootRouteChildren: RootRouteChildren = {
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  DuelsIndexRoute: DuelsIndexRoute,
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiAuthSendEmailRoute: ApiAuthSendEmailRoute,

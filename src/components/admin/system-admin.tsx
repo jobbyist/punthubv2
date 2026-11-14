@@ -226,6 +226,13 @@ const SETTINGS = [
   "transfer_monthly_cap",
   "transfer_min_account_days",
   "transfer_hold_days",
+  "duels_enabled",
+  "duels_stakes_enabled",
+  "duel_stake_min",
+  "duel_stake_max",
+  "duel_daily_stake_cap",
+  "duel_open_limit",
+  "duel_pair_weekly_limit",
 ] as const;
 
 function Settings({

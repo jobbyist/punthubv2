@@ -1,6 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Activity, CalendarDays, ChevronLeft, LifeBuoy, PanelLeft, Trophy } from "lucide-react";
+import {
+  Activity,
+  CalendarDays,
+  ChevronLeft,
+  LifeBuoy,
+  PanelLeft,
+  Trophy,
+  Swords,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +26,7 @@ import { fetchThisWeeksLeaders } from "@/lib/records";
 const sideNav = [
   { key: "fixtures", to: "/fixtures", icon: CalendarDays },
   { key: "results", to: "/results", icon: Activity },
+  { key: "duels", to: "/duels", icon: Swords },
   { key: "leaderboards", to: "/leaderboard", icon: Trophy },
   { key: "support", to: "/support", icon: LifeBuoy },
 ] as const;

@@ -121,7 +121,8 @@
     "expandNavigation": "Expand navigation",
     "collapseNavigation": "Collapse navigation",
     "navigation": "Desktop side navigation",
-    "liveNow": "Live now"
+    "liveNow": "Live now",
+    "duels": "Duels"
   },
   "footer": {
     "platform": "Platform",

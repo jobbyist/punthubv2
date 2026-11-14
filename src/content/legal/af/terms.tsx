@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-13-r15.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r16.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 13 November 2026 (weergawe 2026-11-13-r15). Konsep wat
+            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r16). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -175,6 +175,22 @@ export function TermsAf() {
               waarde nie, is apart van jou PuntPoints en kan nie omgeskakel, vir iets werkliks
               ingeruil of vir geld omgeruil word nie. Oefenkeuses tel nooit vir jou openbare rekord
               nie. [attorney review]
+            </p>
+            <p className={P}>
+              Gemeenskapsduelle (vanaf bekendstelling): jy kan 'n ander lid uitdaag, of 'n oop
+              uitdaging plaas, op 'n komende sokkerwedstryd met twee of drie voorspellings
+              (Wedstrydresultaat, Albei spanne druk, Meer/Minder as 2.5). Voorspellings bly versteek
+              tot afskop en word dan saam met jou gebruikersnaam aan almal gewys. 'n Duel is
+              vriendskaplik of, wanneer insette aangeskakel is, dra 'n PuntPoints-inset binne die
+              perke wat gewys word wanneer jy dit skep (tans 10 tot 100 punte per duel en 200 per
+              dag, vanaf 'n rekening van minstens 14 dae oud; punte van uitnodigings en punte wat in
+              die afgelope 7 dae verdien is, kan nie ingesit word nie). Insette word gehou totdat
+              die wedstryd afgehandel is: die lid met die meeste korrekte voorspellings ontvang
+              albei insette; 'n gelykopuitslag, 'n wedstryd wat nie gespeel word nie of 'n uitdaging
+              wat niemand voor afskop aanvaar nie, gee dit terug. Duel-XP (3 vir 'n oorwinning, 1
+              vir gelykop) bepaal slegs die Duel-ranglys. Duelle betaal nooit geld uit nie en
+              PuntPoints het geen kontantwaarde nie. Ons kan duelle nietig verklaar en punte
+              terugtrek waar lede saamspan of meer as een rekening gebruik. [attorney review]
             </p>
             <p className={P}>
               PuntPoints het geen kontantwaarde nie. Dit kan nie gekoop, verkoop of vir geld
