@@ -26,6 +26,7 @@ type Untyped = {
         lt: (c: string, v: string) => PromiseLike<{ count: number | null; error: unknown }>;
       };
       limit: (n: number) => PromiseLike<{ data: unknown; error: unknown }>;
+      eq: (c: string, v: string | number) => PromiseLike<{ data: unknown; error: unknown }>;
     };
     upsert: (row: Record<string, unknown>) => PromiseLike<{ error: unknown }>;
   };
@@ -62,11 +63,13 @@ export async function readMetrics(now = new Date()): Promise<Metrics> {
       safe(async () => {
         const { data, error } = await supabaseAdmin.rpc("founding_spots_taken");
         if (error) throw error;
+        if (data == null) return null;
         return Number(data);
       }),
       safe(async () => {
         const { data, error } = await supabaseAdmin.rpc("annual_pass_taken");
         if (error) throw error;
+        if (data == null) return null;
         return Number(data);
       }),
       safe(async () => {
@@ -86,10 +89,11 @@ export async function readMetrics(now = new Date()): Promise<Metrics> {
         return count ?? 0;
       }),
       safe(async () => {
+        // One row per (league, team), so position 1 gives one row per league with a table.
         const { data, error } = await db()
           .from("league_standings")
           .select("competition_key")
-          .limit(5000);
+          .eq("position", 1);
         if (error) throw error;
         const rows = (data ?? []) as Array<{ competition_key: string }>;
         return new Set(rows.map((r) => r.competition_key)).size;
