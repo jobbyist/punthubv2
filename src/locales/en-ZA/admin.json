@@ -569,6 +569,8 @@
       "transfer_monthly_cap": "Monthly limit per sender",
       "transfer_min_account_days": "Account age before sending (days)",
       "transfer_hold_days": "Hold on newly earned points (days)",
+      "usd_zar": "Rand per US dollar (AI cost model, 5 to 60)",
+      "payments_enabled": "Credit pack payments (true/false) [needs PayFast variables and owner go-ahead]",
       "duels_enabled": "Community Duels (true/false)",
       "duels_stakes_enabled": "Duel PuntPoints stakes (true/false) [counsel first]",
       "duel_stake_min": "Smallest duel stake",

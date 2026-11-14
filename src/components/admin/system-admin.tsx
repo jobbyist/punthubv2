@@ -235,6 +235,8 @@ const SETTINGS = [
   "duel_daily_stake_cap",
   "duel_open_limit",
   "duel_pair_weekly_limit",
+  "usd_zar",
+  "payments_enabled",
 ] as const;
 
 function Settings({

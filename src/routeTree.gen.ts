@@ -80,6 +80,7 @@ import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-r
 import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
 import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
 import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
+import { Route as ApiPayfastItnRouteImport } from './routes/api.payfast.itn'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -439,6 +440,11 @@ const ApiNewsroomCoverSlugRoute = ApiNewsroomCoverSlugRouteImport.update({
   path: '/api/newsroom-cover/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPayfastItnRoute = ApiPayfastItnRouteImport.update({
+  id: '/api/payfast/itn',
+  path: '/api/payfast/itn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -512,6 +518,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -585,6 +592,7 @@ export interface FileRoutesByTo {
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -659,6 +667,7 @@ export interface FileRoutesById {
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -734,6 +743,7 @@ export interface FileRouteTypes {
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -807,6 +817,7 @@ export interface FileRouteTypes {
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
   id:
     | '__root__'
     | '/'
@@ -880,6 +891,7 @@ export interface FileRouteTypes {
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -954,6 +966,7 @@ export interface RootRouteChildren {
   ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
   ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
   ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
+  ApiPayfastItnRoute: typeof ApiPayfastItnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1455,6 +1468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiNewsroomCoverSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payfast/itn': {
+      id: '/api/payfast/itn'
+      path: '/api/payfast/itn'
+      fullPath: '/api/payfast/itn'
+      preLoaderRoute: typeof ApiPayfastItnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1530,6 +1550,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,
   ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,
   ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
+  ApiPayfastItnRoute: ApiPayfastItnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

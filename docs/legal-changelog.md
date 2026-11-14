@@ -430,3 +430,8 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - Pages: `/terms` (version 2026-11-14-r19, English and Afrikaans), `/refunds` (English and Afrikaans), Founding claim copy. New `notice_versions` row: terms 2026-11-14-r19.
 - Counsel should look at `[attorney review]`: extending a stated offer period after it was published (members who saw "16 November"); the owner has decided this and the change only extends the period.
 - Note: the scheduled Annual Pass promotion emails still stop at 15 November. They were not extended.
+
+## 2026-11-14: PAYG credit packs through PayFast built (migration 20261114200000), switched off
+- What changed: code and database for buying credit packs (R25, R60, R120) through PayFast. `payment_orders` stores the member, pack, amount and status; credits are granted on a verified PayFast notification. No personal information is sent to PayFast. Nothing is live: `payments_enabled` is false. One credit price list (AI preview 5, deep stats 2, match insight 2) now matches `/pricing` in the database.
+- Pages: none changed yet, because the product does not take payments yet. `[attorney review]` before the switch is turned on: `/terms` (purchase and credit terms), `/privacy` (PayFast as operator, payment records kept), `/refunds` (credits are not refundable as cash; unused credits and failed payments), `/pricing` ("planned" wording) and the Privacy choices page. Prices are shown in rand; Puntr is not VAT-registered.
+- New processor: PayFast (payments). The owner decides under their compliance policy; it is not enabled by this change.

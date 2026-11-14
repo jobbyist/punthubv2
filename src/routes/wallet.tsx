@@ -10,7 +10,9 @@ import { RgNotice } from "@/components/rg-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsync } from "@/hooks/use-async";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, money } from "@/lib/format";
+import { PACKS } from "@/lib/economics";
+import { getPaymentsStatus, startCreditPurchase } from "@/lib/payments.functions";
 import { headT } from "@/lib/i18n/head";
 import {
   fetchWallet,
@@ -85,9 +87,7 @@ function WalletBody() {
             {t(`credits.plan.${w.accountType}`, { defaultValue: w.accountType })}
           </p>
           <p className="mt-3 text-xs text-muted-foreground">{t("credits.note")}</p>
-          <Button className="mt-3" size="sm" variant="outline" disabled>
-            {t("credits.buy")}
-          </Button>
+          <BuyCredits />
         </section>
       </div>
 
@@ -234,5 +234,68 @@ function SendForm({ wallet: w, onSent }: { wallet: Wallet; onSent: () => void })
         </div>
       )}
     </section>
+  );
+}
+
+/** Credit packs. Shown as "from launch" until payments are switched on server-side. */
+function BuyCredits() {
+  const { t } = useTranslation("wallet");
+  const status = useAsync(() => getPaymentsStatus(), []);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  if (!status.data?.enabled)
+    return (
+      <Button className="mt-3" size="sm" variant="outline" disabled>
+        {t("credits.buy")}
+      </Button>
+    );
+
+  async function buy(pack: string) {
+    setBusy(pack);
+    try {
+      const r = await startCreditPurchase({ data: { pack } });
+      if (!r.ok) {
+        toast.error(t("credits.buyError"));
+        setBusy(null);
+        return;
+      }
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = r.action;
+      for (const [k, v] of r.fields) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = k;
+        input.value = v;
+        form.appendChild(input);
+      }
+      document.body.appendChild(form);
+      form.submit();
+    } catch (err) {
+      console.error("start purchase failed", err);
+      toast.error(t("credits.buyError"));
+      setBusy(null);
+    }
+  }
+
+  return (
+    <div className="mt-3 space-y-2">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {t("credits.packs")}
+      </p>
+      <ul className="space-y-2">
+        {PACKS.map((p) => (
+          <li key={p.name} className="flex items-center justify-between gap-3 text-sm">
+            <span className="tnum">
+              {t("prices.credits", { count: p.credits })} · {money(p.price)}
+            </span>
+            <Button size="sm" disabled={busy !== null} onClick={() => void buy(p.name)}>
+              {t("credits.buyPack")}
+            </Button>
+          </li>
+        ))}
+      </ul>
+      <p className="text-xs text-muted-foreground">{t("credits.payfastNote")}</p>
+    </div>
   );
 }
