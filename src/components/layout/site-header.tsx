@@ -4,16 +4,13 @@ import {
   CalendarDays,
   ChevronDown,
   ClipboardCheck,
-  Compass as CompassIcon,
   Coins,
-  Dumbbell,
   Flag,
   Goal,
   House,
   Info,
   LifeBuoy,
   Map,
-  Newspaper,
   Radio,
   Swords,
   Target,
@@ -81,21 +78,6 @@ export function SiteHeader() {
     { key: "community", to: "/community", icon: Users },
   ] as const;
 
-  const groups = [
-    {
-      key: "browse",
-      icon: ClipboardCheck,
-    },
-    {
-      key: "discover",
-      icon: CompassIcon,
-    },
-    {
-      key: "platform",
-      icon: Building2,
-    },
-  ] as const;
-
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[72px]">
@@ -119,10 +101,13 @@ export function SiteHeader() {
                 <Icon className="size-4" />
                 {t(`desktop.direct.${key}`)}
                 {key === "fixtures" && (liveFixtures?.length ?? 0) > 0 && (
-                  <span
-                    aria-label={t("desktop.liveMatches")}
-                    className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_2px_rgb(16_185_129/45%)] motion-safe:animate-pulse"
-                  />
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_2px_rgb(16_185_129/45%)] motion-safe:animate-pulse"
+                    />
+                    <span className="sr-only">{t("desktop.liveMatches")}</span>
+                  </>
                 )}
               </Link>
             );
