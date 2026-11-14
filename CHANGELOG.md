@@ -3,6 +3,27 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026: QA audit, UI/UX polish, Gemini fallbacks
+
+Fixed
+- Signed-out visitors got "permission denied" on the community feed, weekly leaderboard, tipster stats, public
+  profiles, team badges (so no fixtures showed) and quests. Cause: `public_profiles` and `visible_predictions` were
+  switched back to caller's rights outside the repo, and two anon policies called `is_admin()`. Migration
+  `20261114030000_qa_public_reads_gemini_fallbacks.sql` (apply with owner approval).
+- `main`'s committed `.env` pointed at another Supabase project and `types.ts` was a one-table stub (Lovable commit
+  7592ef4); restored.
+- Header overflowed on phones (compact Founding counter ignored `hidden`); community feed showed "no picks yet" when
+  loading failed; match page had two `h1`s and sport-blind badges; publish-on-schedule control looked active while
+  auto-publish was off; `FundingRow` kept stale input after saving; Insights offered a non-existent beta group.
+
+Added
+- `PageArt`: ten original animated SVG scenes (CSS only, reduced-motion safe) on page banners, account screens and
+  empty states. `FixtureCard`, `EmptyState`, `Podium`/`RankRow` shared components; shimmer skeletons.
+- Results as cards (no sideways table), leaderboards as podium plus ranked rows with share bars, community threads
+  with a vote rail and comment bubbles, consistent section spacing utilities.
+- Gemini fallbacks: 3.6 Flash, 3.5 Flash, 3.5 Flash-Lite (plus 3.8 Flash and 3.1 Flash-Lite). The router moves on
+  from a busy model and retries only the last one. Quota rows added in the migration.
+
 ## 13 November 2026 (evening): launch gate, admin portal, wallet, newsroom desk, API limits
 
 Owner decisions (13 Nov, 16:12 and 16:51 SAST): all recommendations approved; wallet holds PuntPoints and

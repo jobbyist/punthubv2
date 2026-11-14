@@ -133,7 +133,7 @@ function Article() {
 
   return (
     <AppShell>
-      <article className="mx-auto max-w-[720px] px-4 py-10 sm:px-6 sm:py-14">
+      <article className="puntr-rise mx-auto max-w-[720px] py-4 sm:py-8">
         <Link to="/newsroom" className="text-sm font-semibold text-primary hover:underline">
           {t("back")}
         </Link>

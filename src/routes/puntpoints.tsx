@@ -22,6 +22,7 @@ function PuntPointsPage() {
   return (
     <AppShell>
       <PageHeading
+        art="coins"
         title="PuntPoints"
         subtitle="A little recognition for being part of the Puntr community."
       />

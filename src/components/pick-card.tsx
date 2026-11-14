@@ -1,3 +1,4 @@
+import { Monogram } from "@/components/leader-board";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -31,11 +32,9 @@ export function PickCard({
   const label = selectionLabel(t, pick, teams);
 
   return (
-    <article className="card-surface p-5">
+    <article className="card-surface card-interactive p-5">
       <div className="flex items-center gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-muted text-sm font-semibold uppercase">
-          {(pick.username ?? "?").slice(0, 1)}
-        </span>
+        <Monogram name={pick.username ?? "?"} className="size-10" />
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-2 font-semibold">
             {pick.username ? (
@@ -60,7 +59,9 @@ export function PickCard({
           </p>
         </div>
         {pick.result ? (
-          <span className={`px-2 py-1 text-xs font-semibold ${RESULT_STYLE[pick.result]}`}>
+          <span
+            className={`puntr-pop rounded-full px-2.5 py-1 text-xs font-semibold ${RESULT_STYLE[pick.result]}`}
+          >
             {t(`picks.${pick.result}`)}
             {pick.units !== null && pick.result !== "void" && (
               <span className="ml-1 tnum">
@@ -71,7 +72,11 @@ export function PickCard({
             )}
           </span>
         ) : (
-          <span className="bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+            <span
+              className="puntr-blink size-1.5 rounded-full bg-muted-foreground"
+              aria-hidden="true"
+            />
             {t("picks.pending")}
           </span>
         )}
@@ -109,9 +114,15 @@ export function PickCard({
             {t("picks.odds")} {formatOdds(pick.odds)}
           </span>
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-2 text-xs text-muted-foreground">
           {t("picks.confidence", { value: pick.confidence })}
         </p>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-background" aria-hidden="true">
+          <div
+            className="puntr-grow-x h-full rounded-full bg-primary"
+            style={{ width: `${Math.max(0, Math.min(100, Number(pick.confidence) || 0))}%` }}
+          />
+        </div>
       </div>
 
       {pick.reasoning && <p className="mt-3 text-[15px] leading-relaxed">{pick.reasoning}</p>}

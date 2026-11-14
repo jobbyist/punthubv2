@@ -49,6 +49,8 @@
   "example": {
     "badge": "Illustrative example",
     "title": "A preview of the Results experience",
-    "description": "Sample scores and fixtures demonstrate the layout only. They are not actual match results."
+    "description": "Sample scores and fixtures demonstrate the layout only. They are not actual match results.",
+    "fullTime": "Full time",
+    "detail": "Illustrative final score"
   }
 }

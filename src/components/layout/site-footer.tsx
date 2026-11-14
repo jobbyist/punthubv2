@@ -85,10 +85,7 @@ export function SiteFooter() {
   }, []);
 
   const guestBarVisible =
-    !isSignedIn &&
-    !path.startsWith("/admin") &&
-    path !== "/join" &&
-    path !== "/founding";
+    !isSignedIn && !path.startsWith("/admin") && path !== "/join" && path !== "/founding";
 
   return (
     <footer

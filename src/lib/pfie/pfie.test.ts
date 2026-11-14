@@ -471,7 +471,7 @@ describe("provider", () => {
       WINDOW.to,
       { only: ["psl"] },
     );
-    expect(models).toEqual(["gemini-3.1-flash-lite", "gemini-3.8-flash"]);
+    expect(models).toEqual(["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]);
     expect(out.fixtures).toHaveLength(2);
   });
 });

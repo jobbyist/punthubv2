@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { Flame, Target, Trophy, Zap } from "lucide-react";
+import { ClipboardCheck, Flame, PencilLine, Target, TrendingUp, Trophy, Zap } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { IllustrativeLeaderboard } from "@/components/illustrative-panels";
+import { Podium, RankRow } from "@/components/leader-board";
 import { LaunchGate } from "@/components/launch-gate";
 import { PointsBoard } from "@/components/points-board";
 import { useSession } from "@/components/session";
@@ -40,15 +41,12 @@ export const Route = createFileRoute("/leaderboards")({
   component: Leaderboards,
 });
 
-const HOW = ["s1", "s2", "s3", "s4"] as const;
-
-function rankClass(rank: number | null) {
-  return rank === 1
-    ? "bg-[oklch(0.85_0.16_90)] text-ink"
-    : rank === 3
-      ? "bg-[oklch(0.85_0.08_50)] text-ink"
-      : "bg-muted";
-}
+const HOW = [
+  ["s1", PencilLine],
+  ["s2", ClipboardCheck],
+  ["s3", TrendingUp],
+  ["s4", Trophy],
+] as const;
 
 function Leaderboards() {
   const { t } = useTranslation("leaderboards");
@@ -62,6 +60,7 @@ function Leaderboards() {
   const unranked = (data ?? []).filter((r) => !r.eligible);
   const gated = useGated();
   const mine: BoardRow | undefined = (data ?? []).find((r) => r.user_id === profile?.id);
+  const topUnits = Math.max(0, ...ranked.map((r) => Number(r.units)));
 
   const stats = [
     {
@@ -82,25 +81,24 @@ function Leaderboards() {
 
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="podium" title={t("title")} subtitle={t("subtitle")} />
       <IllustrativeLeaderboard />
-      {!PRIZES_ENABLED && (
-        <p className="-mt-3 mb-5 text-sm font-semibold text-primary">{t("pride")}</p>
-      )}
+      {!PRIZES_ENABLED && <p className="mt-3 text-sm font-semibold text-primary">{t("pride")}</p>}
 
-      <div className="mb-8">
+      <div className="my-10">
         <LaunchGate feature={t("points.title")}>
           <PointsBoard />
         </LaunchGate>
       </div>
 
+      <h2 className="mb-4 text-xl">{t("weekly.title")}</h2>
       <div className="mb-2 flex flex-wrap gap-2">
         {(["this", "last"] as const).map((w) => (
           <button
             key={w}
             onClick={() => setWhich(w)}
             aria-pressed={which === w}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+            className={`min-h-10 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               which === w ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
             }`}
           >
@@ -111,7 +109,7 @@ function Leaderboards() {
       <p className="mb-6 text-xs text-muted-foreground tnum">{t("week.range", range)}</p>
 
       {profile ? (
-        <div className="card-surface mb-6 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="card-surface mb-6 grid grid-cols-2 gap-4 p-5 lg:grid-cols-4">
           {stats.map(({ icon: Icon, label, value, sub }) => (
             <div key={label} className="flex items-center gap-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
@@ -137,66 +135,65 @@ function Leaderboards() {
       <section className="card-surface relative overflow-hidden">
         {gated(ranked.length + unranked.length - 1) && <FoundingGateCard top="9rem" />}
         {failed && <p className="p-5 text-sm text-destructive">{t("error")}</p>}
-        {!loading && (data ?? []).length === 0 && (
-          <p className="p-5 text-sm text-muted-foreground">{t("empty")}</p>
+        {loading && (
+          <div className="space-y-3 p-5" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="puntr-shimmer h-12 rounded-lg" />
+            ))}
+          </div>
+        )}
+        {!loading && !failed && (data ?? []).length === 0 && (
+          <EmptyState
+            art="podium"
+            className="rounded-none border-0 shadow-none"
+            title={t("emptyTitle")}
+            body={t("empty")}
+          />
+        )}
+        {ranked.length >= 3 && !gated(2) && (
+          <Podium
+            unit={t("table.units").toLowerCase()}
+            entries={ranked.slice(0, 3).map((r) => ({
+              name: r.username,
+              value: formatUnits(r.units),
+              sub: pct(r.roi, 1),
+            }))}
+          />
         )}
         {ranked.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3 font-medium">{t("table.rank")}</th>
-                  <th className="px-4 py-3 font-medium">{t("table.tipster")}</th>
-                  <th className="px-4 py-3 font-medium">{t("table.units")}</th>
-                  <th className="px-4 py-3 font-medium">{t("table.roi")}</th>
-                  <th className="px-4 py-3 font-medium">{t("table.settled")}</th>
-                  <th className="px-4 py-3 font-medium">{t("table.wins")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranked.map((r, i) => (
-                  <motion.tr
-                    key={r.user_id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: i * 0.03 }}
-                    className={`border-b border-border last:border-0 hover:bg-muted/50 ${
-                      r.user_id === profile?.id ? "bg-primary-soft/60" : ""
-                    }`}
+          <ol className="divide-y divide-border border-t border-border">
+            {ranked.map((r, i) => (
+              <RankRow
+                key={r.user_id}
+                rank={r.rank}
+                index={i}
+                name={r.username}
+                highlight={r.user_id === profile?.id}
+                nameSlot={
+                  <Link
+                    to="/u/$username"
+                    params={{ username: r.username }}
+                    className="hover:underline"
                   >
-                    <td className="px-4 py-3">
-                      <span
-                        className={`grid size-7 place-items-center rounded-full text-xs font-bold tnum ${rankClass(r.rank)}`}
-                      >
-                        {r.rank}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link
-                        to="/u/$username"
-                        params={{ username: r.username }}
-                        className="font-semibold hover:underline"
-                      >
-                        {r.username}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-primary tnum">
-                      <Blurred gated={gated(i)}>{formatUnits(r.units)}</Blurred>
-                    </td>
-                    <td className="px-4 py-3 tnum">
-                      <Blurred gated={gated(i)}>{pct(r.roi, 1)}</Blurred>
-                    </td>
-                    <td className="px-4 py-3 tnum">
-                      <Blurred gated={gated(i)}>{r.picks_settled}</Blurred>
-                    </td>
-                    <td className="px-4 py-3 tnum">
-                      <Blurred gated={gated(i)}>{r.wins}</Blurred>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    {r.username}
+                  </Link>
+                }
+                primary={<Blurred gated={gated(i)}>{formatUnits(r.units)}</Blurred>}
+                {...(gated(i) || topUnits <= 0 ? {} : { share: Math.max(0, r.units) / topUnits })}
+                stats={[
+                  {
+                    label: t("table.roi"),
+                    value: <Blurred gated={gated(i)}>{pct(r.roi, 1)}</Blurred>,
+                  },
+                  {
+                    label: t("table.settled"),
+                    value: <Blurred gated={gated(i)}>{r.picks_settled}</Blurred>,
+                  },
+                  { label: t("table.wins"), value: <Blurred gated={gated(i)}>{r.wins}</Blurred> },
+                ]}
+              />
+            ))}
+          </ol>
         )}
 
         {unranked.length > 0 && (
@@ -235,7 +232,7 @@ function Leaderboards() {
         </p>
       </section>
 
-      <section className="card-surface mt-6 p-5" aria-labelledby="tipster-support-title">
+      <section className="card-surface mt-10 p-5 sm:p-6" aria-labelledby="tipster-support-title">
         <h2 id="tipster-support-title" className="text-lg">
           {t("tipSupport.title")}
         </h2>
@@ -244,21 +241,30 @@ function Leaderboards() {
         </p>
       </section>
 
-      <section className="card-surface mt-6 p-6 text-center">
+      <section className="card-surface mt-10 p-6 text-center sm:p-8">
         <h2 className="text-2xl">{t("how.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("how.subtitle")}</p>
-        <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW.map((k) => (
-            <div key={k}>
-              <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary">
-                <Trophy className="size-5" />
-              </span>
-              <p className="mt-3 font-semibold">{t(`how.${k}.title`)}</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                {t(`how.${k}.body`)}
-              </p>
-            </div>
-          ))}
+        <div className="relative mt-8">
+          <span
+            className="puntr-grow-x absolute left-[12.5%] right-[12.5%] top-6 hidden h-px bg-primary/30 lg:block"
+            aria-hidden="true"
+          />
+          <ol className="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {HOW.map(([k, Icon], i) => (
+              <li key={k} className="puntr-rise relative" style={{ ["--i" as string]: i }}>
+                <span className="relative mx-auto grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary ring-4 ring-card">
+                  <Icon className="size-5" />
+                  <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-ink text-[10px] font-bold text-ink-foreground">
+                    {i + 1}
+                  </span>
+                </span>
+                <p className="mt-3 font-semibold">{t(`how.${k}.title`)}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {t(`how.${k}.body`)}
+                </p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
     </AppShell>

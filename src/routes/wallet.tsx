@@ -32,7 +32,7 @@ function WalletPage() {
   const { t } = useTranslation("wallet");
   return (
     <AppShell>
-      <PageHeading title={t("title")} subtitle={t("subtitle")} />
+      <PageHeading art="coins" title={t("title")} subtitle={t("subtitle")} />
       <RequireMember>
         {() => (
           <LaunchGate feature={t("title")}>

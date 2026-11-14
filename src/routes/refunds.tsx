@@ -28,6 +28,7 @@ function Refunds() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Refunds"
         subtitle="Our current position on refunds and cancellations, including what applies before paid features go on sale."
       />

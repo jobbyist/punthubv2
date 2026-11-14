@@ -332,7 +332,10 @@ export function MobileNav() {
         >
           <ul className="grid grid-cols-4">
             {bottomNavItems.map(({ key, to, icon: Icon }) => {
-              const active = path === to || (to === "/predictions" && (path.startsWith("/match/") || path.startsWith("/predictions/")));
+              const active =
+                path === to ||
+                (to === "/predictions" &&
+                  (path.startsWith("/match/") || path.startsWith("/predictions/")));
               return (
                 <li key={key}>
                   <Link

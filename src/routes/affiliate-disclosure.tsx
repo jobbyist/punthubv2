@@ -19,6 +19,7 @@ function AffiliateDisclosure() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Affiliate disclosure"
         subtitle="How advertising and affiliate links work, and how commercial relationships are kept separate from predictions and rankings."
       />

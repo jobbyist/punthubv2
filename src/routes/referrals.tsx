@@ -24,7 +24,11 @@ function ReferralsPage() {
   const { isSignedIn, profile } = useSession();
   return (
     <AppShell>
-      <PageHeading title="Refer a friend" subtitle="Bring your sports community to Puntr." />
+      <PageHeading
+        art="gift"
+        title="Refer a friend"
+        subtitle="Bring your sports community to Puntr."
+      />
       <section className="card-surface p-5 sm:p-7">
         <div className="grid size-12 place-items-center rounded-xl bg-primary-soft text-primary">
           <Share2 className="size-6" />

@@ -385,11 +385,11 @@ function Rewards() {
     </>
   );
 
-  if (loading || !status.data) return <AccountPage>{header}</AccountPage>;
+  if (loading || !status.data) return <AccountPage art="gift">{header}</AccountPage>;
   const on = status.data.points;
 
   return (
-    <AccountPage>
+    <AccountPage art="gift">
       {header}
       {!on && (
         <section className="card-surface mt-6 p-5">

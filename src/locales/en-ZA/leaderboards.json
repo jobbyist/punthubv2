@@ -99,5 +99,9 @@
       "value_other": "{{count}} points",
       "note": "A wrong pick scores nothing. A void pick is not counted. Ties are split by correct picks, then accuracy, then settled picks. If an official result is corrected, the pick is re-scored and the change is recorded. Points rank members only: they are not PuntPoints and have no cash value."
     }
+  },
+  "emptyTitle": "No rankings yet",
+  "weekly": {
+    "title": "Weekly leaderboard"
   }
 }

@@ -1,3 +1,4 @@
+import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -74,12 +75,17 @@ function Newsroom() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-[1100px] px-4 py-10 sm:px-6 sm:py-14">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-          {t("eyebrow")}
-        </p>
-        <h1 className="mt-3 text-[clamp(2.2rem,6vw,3.6rem)] leading-[1.05]">{t("title")}</h1>
-        <p className="mt-4 max-w-[640px] text-muted-foreground">{t("lead")}</p>
+      <div className="mx-auto max-w-[1100px] py-4 sm:py-8">
+        <div className="flex items-center gap-8">
+          <div className="puntr-rise min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+              {t("eyebrow")}
+            </p>
+            <h1 className="mt-3 text-[clamp(2.2rem,6vw,3.6rem)] leading-[1.05]">{t("title")}</h1>
+            <p className="mt-4 max-w-[640px] text-muted-foreground">{t("lead")}</p>
+          </div>
+          <PageArt kind="news" className="hidden h-40 w-64 shrink-0 md:block" />
+        </div>
 
         <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label={t("eyebrow")}>
           {[undefined, ...NEWSROOM_CATEGORIES].map((c) => {

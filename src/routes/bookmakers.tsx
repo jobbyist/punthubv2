@@ -30,6 +30,7 @@ function BookmakersPage() {
   return (
     <AppShell>
       <PageHeading
+        art="shield"
         title="Bookmakers"
         subtitle="A directory of betting brands South African sports fans may come across."
       />
@@ -56,7 +57,10 @@ function BookmakersPage() {
         </div>
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {platforms.map((platform) => (
-            <li key={platform.name} className="card-surface group flex min-h-20 items-center gap-4 p-4">
+            <li
+              key={platform.name}
+              className="card-surface group flex min-h-20 items-center gap-4 p-4"
+            >
               <PartnerLogo
                 src={uploaded.get(platform.name.toLowerCase()) ?? platform.logo}
                 alt={platform.name}

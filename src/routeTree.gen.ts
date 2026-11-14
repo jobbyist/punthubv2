@@ -18,10 +18,12 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
 import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as FixturesRouteImport } from './routes/fixtures'
 import { Route as FoundingRouteImport } from './routes/founding'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
 import { Route as LiveScoresRouteImport } from './routes/live-scores'
 import { Route as PracticeRouteImport } from './routes/practice'
@@ -118,6 +120,11 @@ const FeedbackRoute = FeedbackRouteImport.update({
   path: '/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FixturesRoute = FixturesRouteImport.update({
+  id: '/fixtures',
+  path: '/fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FoundingRoute = FoundingRouteImport.update({
   id: '/founding',
   path: '/founding',
@@ -136,6 +143,11 @@ const InsightsRoute = InsightsRouteImport.update({
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardsRoute = LeaderboardsRouteImport.update({
@@ -402,10 +414,12 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
   '/practice': typeof PracticeRoute
@@ -467,10 +481,12 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
   '/practice': typeof PracticeRoute
@@ -533,10 +549,12 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
   '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/leaderboards': typeof LeaderboardsRoute
   '/live-scores': typeof LiveScoresRoute
   '/practice': typeof PracticeRoute
@@ -600,10 +618,12 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dev'
     | '/feedback'
+    | '/fixtures'
     | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
+    | '/leaderboard'
     | '/leaderboards'
     | '/live-scores'
     | '/practice'
@@ -665,10 +685,12 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dev'
     | '/feedback'
+    | '/fixtures'
     | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
+    | '/leaderboard'
     | '/leaderboards'
     | '/live-scores'
     | '/practice'
@@ -730,10 +752,12 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dev'
     | '/feedback'
+    | '/fixtures'
     | '/founding'
     | '/how-it-works'
     | '/insights'
     | '/join'
+    | '/leaderboard'
     | '/leaderboards'
     | '/live-scores'
     | '/practice'
@@ -796,10 +820,12 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
   FeedbackRoute: typeof FeedbackRoute
+  FixturesRoute: typeof FixturesRoute
   FoundingRoute: typeof FoundingRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
   JoinRoute: typeof JoinRoute
+  LeaderboardRoute: typeof LeaderboardRoute
   LeaderboardsRoute: typeof LeaderboardsRoute
   LiveScoresRoute: typeof LiveScoresRoute
   PracticeRoute: typeof PracticeRoute
@@ -917,6 +943,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fixtures': {
+      id: '/fixtures'
+      path: '/fixtures'
+      fullPath: '/fixtures'
+      preLoaderRoute: typeof FixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/founding': {
       id: '/founding'
       path: '/founding'
@@ -943,6 +976,13 @@ declare module '@tanstack/react-router' {
       path: '/join'
       fullPath: '/join'
       preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboards': {
@@ -1308,10 +1348,12 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
   FeedbackRoute: FeedbackRoute,
+  FixturesRoute: FixturesRoute,
   FoundingRoute: FoundingRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
   JoinRoute: JoinRoute,
+  LeaderboardRoute: LeaderboardRoute,
   LeaderboardsRoute: LeaderboardsRoute,
   LiveScoresRoute: LiveScoresRoute,
   PracticeRoute: PracticeRoute,

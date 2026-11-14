@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 /** How many items guests can read in full before proprietary fields are blurred. */
 export const FREE_ITEMS = 2;

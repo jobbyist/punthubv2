@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
-import { UserAvatar } from "@/components/user-avatar";
+import { RankRow } from "@/components/leader-board";
 import { useAsync } from "@/hooks/use-async";
 import {
   BOARD_PERIODS,
@@ -18,21 +18,34 @@ const MARKETS = ["1X2", "BTTS", "OU25", "DC", "HCP"] as const;
 /** Launch competitions (football only). The list grows with the fixtures coverage. */
 const LAUNCH_COMPETITIONS = competitions.filter((c) => ["psl", "epl", "ucl"].includes(c.key));
 
-function Row({ row, mine }: { row: ScoreRow; mine: boolean }) {
+function Row({
+  row,
+  mine,
+  top,
+  index,
+  labels,
+}: {
+  row: ScoreRow;
+  mine: boolean;
+  top: number;
+  index: number;
+  labels: { accuracy: string; correct: string; settled: string };
+}) {
   return (
-    <tr className={mine ? "bg-primary-soft font-semibold" : undefined}>
-      <td className="py-2 pr-3 tnum">{row.rank}</td>
-      <td className="py-2 pr-3">
-        <span className="flex items-center gap-2">
-          <UserAvatar username={row.username} url={row.avatar_url} />
-          <span className="truncate">@{row.username}</span>
-        </span>
-      </td>
-      <td className="py-2 pr-3 text-right tnum">{row.points}</td>
-      <td className="py-2 pr-3 text-right tnum">{row.accuracy.toFixed(1)}%</td>
-      <td className="py-2 pr-3 text-right tnum">{row.correct}</td>
-      <td className="py-2 text-right tnum">{row.settled}</td>
-    </tr>
+    <RankRow
+      rank={row.rank}
+      index={index}
+      name={row.username}
+      nameSlot={<>@{row.username}</>}
+      highlight={mine}
+      primary={row.points}
+      {...(top > 0 ? { share: row.points / top } : {})}
+      stats={[
+        { label: labels.accuracy, value: `${row.accuracy.toFixed(1)}%` },
+        { label: labels.correct, value: row.correct },
+        { label: labels.settled, value: row.settled },
+      ]}
+    />
   );
 }
 
@@ -53,9 +66,15 @@ export function PointsBoard() {
   const rows = board.data ?? [];
   const mine = me.data ?? null;
   const mineShown = mine !== null && rows.some((r) => r.username === mine.username);
+  const top = Math.max(0, ...rows.map((r) => r.points));
+  const labels = {
+    accuracy: t("points.col.accuracy"),
+    correct: t("points.col.correct"),
+    settled: t("points.col.settled"),
+  };
 
   return (
-    <section className="card-surface p-5" aria-labelledby="points-board-title">
+    <section className="card-surface overflow-hidden p-5" aria-labelledby="points-board-title">
       <h2 id="points-board-title" className="font-display text-lg font-bold">
         {t("points.title")}
       </h2>
@@ -92,32 +111,27 @@ export function PointsBoard() {
       </div>
 
       {board.loading ? (
-        <div className="mt-4 h-32 animate-pulse rounded-lg bg-muted" aria-hidden />
+        <div className="puntr-shimmer mt-4 h-32 rounded-lg" aria-hidden />
       ) : board.failed ? (
         <p className="mt-4 text-sm text-destructive">{t("points.error")}</p>
       ) : rows.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">{t("points.empty")}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[30rem] text-sm">
-            <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
-              <tr>
-                <th className="py-2 pr-3 font-semibold">{t("points.col.rank")}</th>
-                <th className="py-2 pr-3 font-semibold">{t("points.col.member")}</th>
-                <th className="py-2 pr-3 text-right font-semibold">{t("points.col.points")}</th>
-                <th className="py-2 pr-3 text-right font-semibold">{t("points.col.accuracy")}</th>
-                <th className="py-2 pr-3 text-right font-semibold">{t("points.col.correct")}</th>
-                <th className="py-2 text-right font-semibold">{t("points.col.settled")}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {rows.map((r) => (
-                <Row key={r.username} row={r} mine={r.username === mine?.username} />
-              ))}
-              {mine && !mineShown && <Row row={mine} mine />}
-            </tbody>
-          </table>
-        </div>
+        <ol className="-mx-5 mt-4 divide-y divide-border border-y border-border">
+          {rows.map((r, i) => (
+            <Row
+              key={r.username}
+              row={r}
+              mine={r.username === mine?.username}
+              top={top}
+              index={i}
+              labels={labels}
+            />
+          ))}
+          {mine && !mineShown && (
+            <Row row={mine} mine top={top} index={rows.length} labels={labels} />
+          )}
+        </ol>
       )}
       {profile && !me.loading && !mine && rows.length > 0 && (
         <p className="mt-3 text-xs text-muted-foreground">{t("points.noRank")}</p>

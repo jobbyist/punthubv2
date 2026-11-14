@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/empty-state";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -99,37 +100,71 @@ function Match() {
         ← {t("back")}
       </Link>
 
-      <header className="card-surface mt-3 p-5">
-        <p className="text-xs text-muted-foreground">
-          {fixture.competition} · {tc(`sport.${fixture.sport}`)}
+      <header className="card-surface relative isolate mt-4 overflow-hidden p-5 sm:p-7">
+        <div
+          className="dot-grid absolute inset-0 -z-10 opacity-50"
+          style={{
+            maskImage: "radial-gradient(ellipse at top, black 10%, transparent 70%)",
+            WebkitMaskImage: "radial-gradient(ellipse at top, black 10%, transparent 70%)",
+          }}
+          aria-hidden="true"
+        />
+        <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+            {tc(`sport.${fixture.sport}`)}
+          </span>
+          {fixture.competition}
         </p>
-        <div className="mt-4 flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <TeamLogo team={fixture.home} size="lg" />
-            <h1 className="break-words text-lg leading-tight sm:text-2xl">{fixture.home}</h1>
-          </div>
-          <span className="text-xs font-semibold uppercase text-muted-foreground">{tc("vs")}</span>
-          <div className="flex min-w-0 items-center justify-end gap-3">
-            <h1 className="break-words text-right text-lg leading-tight sm:text-2xl">
-              {fixture.away}
-            </h1>
-            <TeamLogo team={fixture.away} size="lg" />
-          </div>
-        </div>
-        {fixture.status === "finished" &&
-          fixture.home_score !== null &&
-          fixture.away_score !== null && (
-            <p className="mt-3 text-center font-display text-2xl font-extrabold tnum">
-              {fixture.home_score} – {fixture.away_score}
-            </p>
-          )}
-        <p className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
+        {/* One heading for the page; the two team names are parts of it. */}
+        <h1 className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 text-base leading-tight sm:text-2xl">
+          <span className="puntr-rise flex min-w-0 flex-col items-center gap-2 text-center">
+            <span className="grid size-16 place-items-center rounded-full bg-gradient-to-b from-muted to-transparent ring-1 ring-border sm:size-20">
+              <TeamLogo
+                team={fixture.home}
+                sport={fixture.sport}
+                size="lg"
+                className="size-11 sm:size-14"
+              />
+            </span>
+            <span className="break-words">{fixture.home}</span>
+          </span>
+          <span className="text-center">
+            {fixture.status === "finished" &&
+            fixture.home_score !== null &&
+            fixture.away_score !== null ? (
+              <span className="puntr-pop block font-display text-3xl font-extrabold tnum sm:text-4xl">
+                {fixture.home_score} – {fixture.away_score}
+              </span>
+            ) : (
+              <span className="block text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                {tc("vs")}
+              </span>
+            )}
+          </span>
+          <span
+            className="puntr-rise flex min-w-0 flex-col items-center gap-2 text-center"
+            style={{ ["--i" as string]: 1 }}
+          >
+            <span className="grid size-16 place-items-center rounded-full bg-gradient-to-b from-muted to-transparent ring-1 ring-border sm:size-20">
+              <TeamLogo
+                team={fixture.away}
+                sport={fixture.sport}
+                size="lg"
+                className="size-11 sm:size-14"
+              />
+            </span>
+            <span className="break-words">{fixture.away}</span>
+          </span>
+        </h1>
+        <p className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-sm">
           <span className="tnum">
             {t("header.kickoff")}: {formatDate(fixture.kickoff_at)} ·{" "}
             {formatTime(fixture.kickoff_at)}
           </span>
           {statusLabel ? (
-            <span className="bg-muted px-2 py-1 text-xs font-semibold">{statusLabel}</span>
+            <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
+              {statusLabel}
+            </span>
           ) : (
             countdown?.state === "open" && (
               <span className="font-semibold text-primary tnum">
@@ -140,7 +175,7 @@ function Match() {
         </p>
       </header>
 
-      <div className="mt-6 space-y-6">
+      <div className="mt-8 space-y-8">
         <PickForm fixture={fixture} onPosted={() => void load()} />
 
         {picks && <CrowdSplit picks={picks} teams={teams} />}
@@ -151,7 +186,7 @@ function Match() {
           </h2>
 
           {picks && picks.length === 0 && (
-            <p className="card-surface p-5 text-sm text-muted-foreground">{t("picks.empty")}</p>
+            <EmptyState art="pitch" title={t("picks.title")} body={t("picks.empty")} />
           )}
           <div className="space-y-4">
             {[...(picks ?? [])].reverse().map((p) => (

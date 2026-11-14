@@ -28,8 +28,14 @@ export function FoundingCounter({
         aria-live="polite"
       >
         <div className="mb-1.5 flex items-center justify-between gap-2 text-[10px] font-semibold text-muted-foreground">
-          <span>{full ? t("foundingCounter.full") : t("foundingCounter.claimed", { claimed, cap: data.cap })}</span>
-          <span className="shrink-0 tabular-nums">{Math.max(0, data.left)} {t("foundingCounter.remaining")}</span>
+          <span>
+            {full
+              ? t("foundingCounter.full")
+              : t("foundingCounter.claimed", { claimed, cap: data.cap })}
+          </span>
+          <span className="shrink-0 tabular-nums">
+            {Math.max(0, data.left)} {t("foundingCounter.remaining")}
+          </span>
         </div>
         <div
           className="h-1.5 overflow-hidden rounded-full bg-muted"

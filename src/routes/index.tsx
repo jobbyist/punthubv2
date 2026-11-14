@@ -1,7 +1,7 @@
 import { LatestFromPuntr } from "@/components/latest-from-puntr";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
+import { Check, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
 import { Em } from "@/components/em";
@@ -21,7 +21,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
 import { formatDate, formatTime } from "@/lib/format";
-import { FixtureMatchup } from "@/components/fixture-matchup";
+import { FixtureCard, KickoffMeta } from "@/components/fixture-card";
+import { PageArt } from "@/components/motion/page-art";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -73,12 +74,7 @@ function Landing() {
       {/* Hero */}
       <section className="relative isolate grid gap-10 py-10 grid-cols-[minmax(0,1fr)] lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         <HeroBackdrop />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="min-w-0"
-        >
+        <div className="puntr-rise min-w-0">
           <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
             {t("hero.badge")}
           </span>
@@ -94,7 +90,7 @@ function Landing() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
               size="lg"
-              className="h-12 px-6 text-[15px]"
+              className="puntr-sheen h-12 px-6 text-[15px]"
               onClick={() => navigate({ to: "/join" })}
             >
               {tc("cta.becomeFounding")}
@@ -119,7 +115,7 @@ function Landing() {
             ).map(([I, k]) => {
               return (
                 <li key={k} className="flex items-center gap-3">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+                  <span className="puntr-pop grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
                     <I className="size-4" />
                   </span>
                   <span className="min-w-0">
@@ -132,24 +128,22 @@ function Landing() {
               );
             })}
           </ul>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.12 }}
-        >
+        <div className="puntr-rise" style={{ ["--i" as string]: 2 }}>
           <MatchPreview />
-        </motion.div>
+        </div>
       </section>
 
-      <IllustrativeFixtures />
+      <div className="section-y pt-4 sm:pt-6 lg:pt-8">
+        <IllustrativeFixtures />
+      </div>
       <BadgeMarquee label={t("marquee")} />
 
       {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
       <motion.section
         {...fade}
-        className="card-surface mt-8 p-5 sm:p-7"
+        className="card-surface mt-4 p-5 sm:p-8"
         aria-labelledby="proof-demo-title"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -248,11 +242,11 @@ function Landing() {
       </motion.section>
 
       {/* Why a locked record matters */}
-      <motion.section {...fade} className="grid gap-4 md:grid-cols-3">
+      <motion.section {...fade} className="mt-6 grid gap-4 md:grid-cols-3">
         {(["stamped", "noEdits", "public"] as const).map((k) => (
-          <div key={k} className="card-surface flex gap-3 p-5">
-            <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-xs font-bold text-primary">
-              ✓
+          <div key={k} className="card-surface card-interactive flex gap-3 p-5">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+              <Check className="size-4" aria-hidden="true" />
             </span>
             <span>
               <span className="block text-sm font-semibold">{t(`why.${k}.title`)}</span>
@@ -266,45 +260,32 @@ function Landing() {
 
       {/* Next fixtures: real data from the daily sync. Hidden when there are none. */}
       {next.length > 0 && (
-        <motion.section {...fade} className="card-surface mb-8 p-5 sm:p-6">
+        <motion.section {...fade} className="mt-12 sm:mt-16">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg">{t("next.title")}</h2>
+            <h2 className="text-xl sm:text-2xl">{t("next.title")}</h2>
             <Link to="/predictions" className="text-xs font-medium text-primary">
               {t("next.all")}
             </Link>
           </div>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {next.map((f) => (
               <li key={f.id}>
                 <Link
                   to="/match/$fixtureId"
                   params={{ fixtureId: f.id }}
-                  className="card-surface block p-4 transition hover:-translate-y-0.5 hover:shadow-lift"
+                  className="block h-full rounded-2xl focus-visible:outline-offset-4"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
-                      {f.sport === "rugby" ? tc("sport.rugby") : tc("sport.soccer")}
-                    </span>
-                    <span className="truncate text-[10px] text-muted-foreground">
-                      {f.competition}
-                    </span>
-                  </div>
-                  <div className="mt-4">
-                    <FixtureMatchup
-                      home={f.home}
-                      away={f.away}
-                      sport={f.sport}
-                      center={
-                        <span className="text-[10px] font-semibold uppercase text-muted-foreground">
-                          {tc("vs")}
-                        </span>
-                      }
-                    />
-                  </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-[11px]">
-                    <span className="text-muted-foreground">{formatDate(f.kickoff_at)}</span>
-                    <span className="font-semibold tnum">{formatTime(f.kickoff_at)}</span>
-                  </div>
+                  <FixtureCard
+                    className="h-full"
+                    home={f.home}
+                    away={f.away}
+                    sport={f.sport}
+                    sportLabel={tc(`sport.${f.sport}`)}
+                    competition={f.competition}
+                    time={formatTime(f.kickoff_at)}
+                    vsLabel={tc("vs")}
+                    footer={<KickoffMeta label={formatDate(f.kickoff_at)} />}
+                  />
                 </Link>
               </li>
             ))}
@@ -314,7 +295,7 @@ function Landing() {
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && (
-        <motion.section {...fade} className="py-14 text-center">
+        <motion.section {...fade} className="section-y text-center">
           <h2 className="text-3xl">{t("platforms.title")}</h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
             {t("platforms.body")}
@@ -333,19 +314,30 @@ function Landing() {
       <LatestFromPuntr />
 
       {/* Join CTA */}
-      <motion.section {...fade} className="card-surface mt-8 p-5 sm:p-6">
-        <h3 className="text-lg">{t("join.title")}</h3>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+      <motion.section
+        {...fade}
+        className="card-surface relative isolate mb-4 mt-12 overflow-hidden p-6 sm:mt-16 sm:p-10"
+      >
+        <PageArt
+          kind="podium"
+          className="absolute bottom-6 right-6 -z-10 hidden h-40 w-64 opacity-80 lg:block"
+        />
+        <h2 className="text-2xl sm:text-3xl">{t("join.title")}</h2>
+        <ul className="mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">
           {(["f1", "f2", "f3", "f4", "f5", "f6", "f7"] as const).map((f) => (
             <li key={f} className="flex items-center gap-3 text-sm">
-              <span className="grid size-7 shrink-0 place-items-center bg-primary-soft text-primary">
-                ✓
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+                <Check className="size-4" aria-hidden="true" />
               </span>
               <Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} />
             </li>
           ))}
         </ul>
-        <Button className="mt-6" onClick={() => navigate({ to: "/join" })}>
+        <Button
+          size="lg"
+          className="puntr-sheen mt-7 h-12 px-6"
+          onClick={() => navigate({ to: "/join" })}
+        >
           {tc("cta.createAccount")}
         </Button>
         <RgNotice variant="compact" className="mt-4" />

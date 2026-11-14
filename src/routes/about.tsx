@@ -394,10 +394,7 @@ function About() {
           >
             {aboutLogos.length > 0
               ? aboutLogos.map((l) => (
-                  <li
-                    key={l.id}
-                    className="card-surface group grid h-20 place-items-center p-3"
-                  >
+                  <li key={l.id} className="card-surface group grid h-20 place-items-center p-3">
                     <PartnerLogo src={l.imageUrl ?? ""} alt={l.name} loading="lazy" />
                   </li>
                 ))
