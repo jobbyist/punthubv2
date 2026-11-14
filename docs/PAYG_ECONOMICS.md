@@ -41,7 +41,7 @@ Floor enforced: 60% worst case, at R18.50 and R22 per dollar, card and EFT. **Re
 ## Puntr Pro (R99 a month)
 Card fee R5.94 incl. VAT leaves R93.06. Pro stays "unlimited" in the interface but needs a server-side fair-use stop:
 
-- **90 AI actions a month, 15 a day** (`PRO_FAIR_USE`). Worst case (every action a preview on the dearest model) costs R42.46, a 51% margin. Expected cost is R9.68, an 84% margin.
+- **90 AI actions a month, 15 a day** (`PRO_FAIR_USE`). The monthly count is the cost cap and must be enforced on its own; the daily figure is only a burst limit. Worst case (every action a preview on the dearest model) costs R42.46, a 51% margin. Expected cost is R9.68, an 84% margin.
 - The cap formula: net after fees × allowed share ÷ worst cost per action. A 30% share gives 59 actions, 50% gives 98.
 - Wording: "fair use applies" on the pricing page. Pro does not buy a higher rank or prize eligibility (already stated).
 - The Annual Pass (R299 for 12 months, 20 places) is R24.92 a month. Same 90-action cap: worst-case AI R42 a month exceeds the R24.92 it brings in per month, so apply a **tighter 40-action cap** to Annual Pass members. Expected cost at 40 actions is R4.30. The 20-place cap limits the exposure to about R850 a month in the worst case.

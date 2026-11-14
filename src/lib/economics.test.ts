@@ -62,7 +62,7 @@ describe("Puntr Pro", () => {
     expect(PRO_FAIR_USE.monthlyAiActions).toBeLessThanOrEqual(maxProCap(0.5));
   });
 
-  it("a daily limit cannot exceed the monthly cap", () => {
-    expect(PRO_FAIR_USE.dailyAiActions * 31).toBeGreaterThanOrEqual(PRO_FAIR_USE.monthlyAiActions);
+  it("the daily burst limit is below the monthly cap; the monthly cap is what bounds cost", () => {
+    expect(PRO_FAIR_USE.dailyAiActions).toBeLessThan(PRO_FAIR_USE.monthlyAiActions);
   });
 });

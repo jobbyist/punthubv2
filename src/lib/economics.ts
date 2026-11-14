@@ -125,9 +125,10 @@ export function minPackPrice(
   minMargin: number,
   model: PricedModel = "gemini-3.5-flash",
   fx = USD_ZAR,
+  paymentsPerPayout = 20,
 ) {
   const ai = worstAiCostPerCredit(model, fx) * credits;
-  const payout = (PAYFAST.payoutFee * (1 + PAYFAST.vat)) / 20;
+  const payout = (PAYFAST.payoutFee * (1 + PAYFAST.vat)) / paymentsPerPayout;
   const fixed = PAYFAST.card.fixed * (1 + PAYFAST.vat) + payout + ai;
   const pct = PAYFAST.card.pct * (1 + PAYFAST.vat);
   return fixed / (1 - pct - minMargin);
@@ -169,5 +170,9 @@ export function maxProCap(share: number, fx = USD_ZAR): number {
   return Math.floor((net * share) / aiCostRand("preview", "gemini-3.5-flash", fx));
 }
 
-/** Recommended server-side limits (to be enforced in spend_credits / the AI routes when payments go live). */
+/**
+ * Recommended server-side limits (to be enforced in spend_credits / the AI routes when payments go live).
+ * The monthly count is the cost cap and must be enforced on its own: the daily figure is only a burst limit and
+ * does not bound the month (15 a day for 31 days would be 465).
+ */
 export const PRO_FAIR_USE = { monthlyAiActions: 90, dailyAiActions: 15 } as const;
