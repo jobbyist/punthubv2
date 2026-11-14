@@ -81,6 +81,35 @@ const SEASON_WINDOW_DAYS = 21;
  * season up to where the form backfill begins (today - 42 days). Newest first, so the current season fills before
  * last season. Each window is one idempotent job, recorded in sync_status as `season` / `<key>:<start>`.
  */
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/** Search phrasings for a past window: month names and "matchday results" find archive and round-up pages. */
+export function seasonQueries(name: string, start: string, end: string): string[] {
+  const m1 = Number(start.slice(5, 7)) - 1;
+  const m2 = Number(end.slice(5, 7)) - 1;
+  const y1 = start.slice(0, 4);
+  const y2 = end.slice(0, 4);
+  const months = m1 === m2 ? `${MONTHS[m1]} ${y1}` : `${MONTHS[m1]} ${y1} ${MONTHS[m2]} ${y2}`;
+  return [
+    `${name} results ${months}`,
+    `${name} matchday results final scores ${MONTHS[m1]} ${y1}`,
+    `${name} round-up scores ${start} ${end}`,
+  ];
+}
+
 export function seasonWindows(now: Date): { start: string; end: string }[] {
   const year = now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
   const first = Date.UTC(year - 1, 7, 1); // 1 August of the previous season
@@ -300,7 +329,7 @@ async function syncSeasonWindow(
       key,
       `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
         `Prefer the official competition site and established sports news sites.`,
-      [`${c.name} results ${start} to ${end}`, `${c.name} scores ${start.slice(0, 7)}`],
+      seasonQueries(c.name, start, end),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
@@ -315,17 +344,33 @@ async function syncSeasonWindow(
     );
     const raw = parseObservations(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted } = validateObservations(raw, sources, { from, to, now: now() });
+    const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now() });
     const { rows, unverified } = verifyHistory(accepted, key, known);
     const inserted = rows.length
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
       : 0;
-    await deps.store.record("season", scope, true, null, {
+    const reasons: Record<string, number> = {};
+    for (const r of rejected) reasons[r.reason] = (reasons[r.reason] ?? 0) + 1;
+    const meta = {
       verified: rows.length,
       inserted,
       unverified,
+      extracted: raw.length,
+      accepted: accepted.length,
+      rejected: reasons,
+      sources: sources.map((s) => s.domain),
       model: answer.model,
-    });
+    };
+    // No verified result is a miss, not a finished window: it is retried (20 min, 40 min, then daily), because a
+    // later search can find the second source a single-source score needs.
+    if (rows.length === 0) {
+      await deps.store.record("season", scope, false, "no verified results on the sources", meta);
+      return {
+        ok: false,
+        detail: `no verified results (${raw.length} extracted, ${accepted.length} accepted, ${unverified} single-source)`,
+      };
+    }
+    await deps.store.record("season", scope, true, null, meta);
     return {
       ok: true,
       detail: `${inserted} new results (${rows.length} verified, ${unverified} unconfirmed)`,

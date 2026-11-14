@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { chooseTable, parseStandings, validateTables, type RawStandingRow } from "./standings";
-import { retryDue, seasonWindows, standingsDue, type SyncStatusRow } from "./tables";
+import { retryDue, seasonQueries, seasonWindows, standingsDue, type SyncStatusRow } from "./tables";
 import type { Observation, PfieSource } from "./types";
 
 const teams = ["Alpha FC", "Bravo United", "Charlie City", "Delta Rovers"];
@@ -197,5 +197,13 @@ describe("seasonWindows", () => {
     expect(w.every((x) => x.start <= x.end)).toBe(true);
     expect(w.some((x) => x.start.startsWith("2026-07") && x.end.slice(5, 7) === "07")).toBe(false);
     expect(new Set(w.map((x) => x.start)).size).toBe(w.length);
+  });
+});
+
+describe("seasonQueries", () => {
+  it("names the months of the window", () => {
+    const q = seasonQueries("Premier League", "2026-09-25", "2026-10-15");
+    expect(q[0]).toBe("Premier League results September 2026 October 2026");
+    expect(q.every((x) => x.startsWith("Premier League"))).toBe(true);
   });
 });
