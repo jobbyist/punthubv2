@@ -99,6 +99,7 @@ export const NAMESPACES = [
   "quests",
   "pages",
   "matchcard",
+  "fixtures",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];

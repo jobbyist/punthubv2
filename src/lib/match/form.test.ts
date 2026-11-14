@@ -73,3 +73,11 @@ describe("competitionMeta", () => {
     expect(competitionMeta("Saudi Pro League").short).toBe("SPL");
   });
 });
+
+describe("tracked competitions", () => {
+  it("lists exactly the competitions PFIE fetches", async () => {
+    const { PFIE_SOURCES } = await import("@/lib/pfie/provider");
+    const { TRACKED_COMPETITIONS } = await import("./competition-meta");
+    expect([...TRACKED_COMPETITIONS].sort()).toEqual(Object.keys(PFIE_SOURCES).sort());
+  });
+});

@@ -54,6 +54,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
     },
     queries: {
       fixtures: [
+        "Premier League fixtures SAST kick-off times South Africa",
         "Premier League fixtures this week kick-off times",
         "Premier League fixtures schedule",
       ],
@@ -68,6 +69,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
     },
     queries: {
       fixtures: [
+        "Champions League fixtures SAST kick-off times South Africa",
         "Champions League fixtures this week kick-off times",
         "UEFA Champions League matchday schedule",
       ],
@@ -83,7 +85,11 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["https://www.laliga.com/en-GB/laliga-easports/results"],
     },
     queries: {
-      fixtures: ["La Liga fixtures this week kick-off times", "LaLiga EA Sports matchday schedule"],
+      fixtures: [
+        "La Liga fixtures SAST kick-off times South Africa",
+        "La Liga fixtures this week kick-off times",
+        "LaLiga EA Sports matchday schedule",
+      ],
       results: ["La Liga results", "LaLiga full time scores"],
     },
   },
@@ -94,7 +100,11 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["https://www.legaseriea.it/en/serie-a/results"],
     },
     queries: {
-      fixtures: ["Serie A fixtures this week kick-off times", "Serie A matchday schedule"],
+      fixtures: [
+        "Serie A fixtures SAST kick-off times South Africa",
+        "Serie A fixtures this week kick-off times",
+        "Serie A matchday schedule",
+      ],
       results: ["Serie A results", "Serie A full time scores"],
     },
   },
@@ -107,8 +117,185 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["https://www.bundesliga.com/en/bundesliga/matchday"],
     },
     queries: {
-      fixtures: ["Bundesliga fixtures this week kick-off times", "Bundesliga matchday schedule"],
+      fixtures: [
+        "Bundesliga fixtures SAST kick-off times South Africa",
+        "Bundesliga fixtures this week kick-off times",
+        "Bundesliga matchday schedule",
+      ],
       results: ["Bundesliga results", "Bundesliga full time scores"],
+    },
+  },
+  // Wider coverage (owner, 14 Nov): popular leagues, cups and African competitions. SAST queries pull in South
+  // African sites that print the zone, so kick-off times can be verified (see corroborate.ts).
+  uel: {
+    official: ["uefa.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Europa League fixtures SAST kick-off times",
+        "UEFA Europa League fixtures this week kick-off times",
+      ],
+      results: ["Europa League results", "UEFA Europa League full time scores"],
+    },
+  },
+  uecl: {
+    official: ["uefa.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Conference League fixtures SAST kick-off times",
+        "UEFA Conference League fixtures this week kick-off times",
+      ],
+      results: ["Conference League results", "UEFA Conference League full time scores"],
+    },
+  },
+  ligue1: {
+    official: ["ligue1.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Ligue 1 fixtures SAST kick-off times",
+        "Ligue 1 fixtures this week kick-off times",
+      ],
+      results: ["Ligue 1 results", "Ligue 1 full time scores"],
+    },
+  },
+  championship: {
+    official: ["efl.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "EFL Championship fixtures SAST kick-off times",
+        "Championship fixtures this week kick-off times",
+      ],
+      results: ["EFL Championship results", "Championship full time scores"],
+    },
+  },
+  facup: {
+    official: ["thefa.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: ["FA Cup fixtures SAST kick-off times", "FA Cup fixtures kick-off times"],
+      results: ["FA Cup results", "FA Cup full time scores"],
+    },
+  },
+  eflcup: {
+    official: ["efl.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: ["Carabao Cup fixtures SAST kick-off times", "EFL Cup fixtures kick-off times"],
+      results: ["Carabao Cup results", "EFL Cup full time scores"],
+    },
+  },
+  eredivisie: {
+    official: ["eredivisie.nl"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Eredivisie fixtures SAST kick-off times",
+        "Eredivisie fixtures this week kick-off times",
+      ],
+      results: ["Eredivisie results", "Eredivisie full time scores"],
+    },
+  },
+  primeira: {
+    official: ["ligaportugal.pt"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Liga Portugal fixtures SAST kick-off times",
+        "Primeira Liga fixtures this week kick-off times",
+      ],
+      results: ["Liga Portugal results", "Primeira Liga full time scores"],
+    },
+  },
+  "saudi-pro": {
+    official: ["spl.com.sa"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Saudi Pro League fixtures SAST kick-off times",
+        "Saudi Pro League fixtures this week kick-off times",
+      ],
+      results: ["Saudi Pro League results", "Saudi Pro League full time scores"],
+    },
+  },
+  nedbank: {
+    official: ["psl.co.za"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: ["Nedbank Cup fixtures kick-off times", "Nedbank Cup fixtures SAST"],
+      results: ["Nedbank Cup results", "Nedbank Cup full time scores"],
+    },
+  },
+  "sa-championship": {
+    official: ["psl.co.za"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "Motsepe Foundation Championship fixtures kick-off times",
+        "Motsepe Foundation Championship fixtures this week",
+      ],
+      results: [
+        "Motsepe Foundation Championship results",
+        "Motsepe Foundation Championship scores",
+      ],
+    },
+  },
+  "caf-cl": {
+    official: ["cafonline.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "CAF Champions League fixtures SAST kick-off times",
+        "CAF Champions League fixtures this week",
+      ],
+      results: ["CAF Champions League results", "CAF Champions League full time scores"],
+    },
+  },
+  "caf-cc": {
+    official: ["cafonline.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "CAF Confederation Cup fixtures SAST kick-off times",
+        "CAF Confederation Cup fixtures this week",
+      ],
+      results: ["CAF Confederation Cup results", "CAF Confederation Cup full time scores"],
+    },
+  },
+  afcon: {
+    official: ["cafonline.com"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: [
+        "AFCON qualifiers fixtures SAST kick-off times",
+        "Africa Cup of Nations fixtures kick-off times",
+      ],
+      results: ["AFCON qualifiers results", "Africa Cup of Nations full time scores"],
+    },
+  },
+  "bafana-friendlies": {
+    official: ["safa.net"],
+    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    pages: { fixtures: [], results: [] },
+    queries: {
+      fixtures: ["Bafana Bafana next match kick-off time SAST", "Bafana Bafana friendly fixture"],
+      results: ["Bafana Bafana result", "Bafana Bafana full time score"],
     },
   },
 };
@@ -131,6 +318,15 @@ const TRUSTED = [
   "laliga.com",
   "legaseriea.it",
   "bundesliga.com",
+  "uefa.com",
+  "ligue1.com",
+  "efl.com",
+  "thefa.com",
+  "eredivisie.nl",
+  "ligaportugal.pt",
+  "spl.com.sa",
+  "cafonline.com",
+  "safa.net",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {
@@ -144,6 +340,15 @@ const MAX_CHARS = 9_000;
 const RESULTS_MIN_GAP_MS = 50 * 60_000;
 /** A match that kicked off less than this long ago cannot have a final score yet. */
 const RESULTS_EARLIEST_MS = 105 * 60_000;
+
+/**
+ * Back-off between results checks for one competition: 50 minutes soon after kick-off, then a third of the time
+ * since the earliest open kick-off (6 h -> 2 h, 24 h -> 8 h). A result no site confirms no longer costs a search
+ * every 50 minutes for 36 hours.
+ */
+export function resultsGapMs(sinceKickoffMs: number): number {
+  return Math.max(RESULTS_MIN_GAP_MS, Math.floor(sinceKickoffMs / 3));
+}
 
 export interface PfieDeps {
   search: SearchProvider;
@@ -334,8 +539,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       }
       for (const c of selected(opts)) {
         const last = await deps.store.lastRunAt(c.key, "results").catch(() => null);
-        if (last && now().getTime() - last.getTime() < RESULTS_MIN_GAP_MS) {
-          out.skipped.push({ key: c.key, reason: "checked less than 50 minutes ago" });
+        const gap = resultsGapMs(now().getTime() - from.getTime());
+        if (last && now().getTime() - last.getTime() < gap) {
+          out.skipped.push({
+            key: c.key,
+            reason: `checked less than ${Math.round(gap / 60_000)} minutes ago`,
+          });
           continue;
         }
         const r = await run(c, "results", from, to);

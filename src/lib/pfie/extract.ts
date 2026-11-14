@@ -8,7 +8,7 @@ import type { LlmRequest } from "@/lib/content/types";
 import { normalise } from "@/lib/content/validate";
 
 import { normaliseTeam } from "./teams";
-import { zonedToUtc, zoneFor } from "./time";
+import { candidateInstants, zonedToUtc, zoneFor } from "./time";
 import type { Observation, PfieSource, RawObservation, Rejected } from "./types";
 
 const STATUSES = ["scheduled", "live", "finished", "postponed", "abandoned", "cancelled"] as const;
@@ -161,6 +161,7 @@ export function validateObservations(
     }
 
     let kickoffUtc: string | null = null;
+    let kickoffCandidates: string[] | undefined;
     if (o.time) {
       const zone = zoneFor(o.tz, source.domain);
       kickoffUtc = zone ? zonedToUtc(o.date, o.time, zone) : null;
@@ -168,6 +169,9 @@ export function validateObservations(
         reject("bad_time");
         continue;
       }
+      // No printed zone and no known site zone: keep the plausible instants, never pick one (an unknown printed
+      // label is not guessed either).
+      if (!zone && !o.tz) kickoffCandidates = candidateInstants(o.date, o.time);
     }
 
     if (o.status === "finished") {
@@ -194,7 +198,13 @@ export function validateObservations(
     const key = `${o.source}|${normaliseTeam(o.home)}|${normaliseTeam(o.away)}|${o.date}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    accepted.push({ ...o, domain: source.domain, tier: source.tier, kickoffUtc });
+    accepted.push({
+      ...o,
+      domain: source.domain,
+      tier: source.tier,
+      kickoffUtc,
+      ...(kickoffCandidates?.length ? { kickoffCandidates } : {}),
+    });
   }
   return { accepted, rejected };
 }

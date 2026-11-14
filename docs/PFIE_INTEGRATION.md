@@ -54,3 +54,19 @@ well past launch. Gemini: about 10 to 40 lite-model calls a day, inside the free
 Run `/api/cron/sync-fixtures` by hand, then compare every published row with the official sites; read
 `pfie_observations` rejections; confirm the three official page addresses; run a results check after the next PSL
 match and compare with the official score before any settlement is trusted.
+
+## Wider coverage and zone-less pages (14 Nov 2026)
+
+- 21 competitions (see `PFIE_SOURCES`). The 15 added on 14 Nov are search-only (no full-page reads) to stay
+  inside the Firecrawl free tier. `TRACKED_COMPETITIONS` in `src/lib/match/competition-meta.ts` must list the same
+  keys (a test checks).
+- FOUND 14 Nov: La Liga, Serie A, Bundesliga and UCL extracted 14-23 fixtures each but published none ("no
+  kick-off time with a known time zone"): their pages print times without a zone. Two fixes, both deterministic:
+  1. Every competition's queries now include a "SAST" query, which pulls in South African sites (SuperSport,
+     KickOff, Soccer Laduma, all `.co.za`) whose zone is known.
+  2. A page with a time but no zone keeps `kickoffCandidates` (that time in UTC, UK, CET and SAST). It can
+     CONFIRM a time a different site states with a zone when one candidate equals it exactly; it never sets a
+     time by itself. Two independent sites are still required.
+- Results checks back off per competition: 50 min soon after kick-off, then a third of the time since the
+  earliest open kick-off (`resultsGapMs`). Each competition is checked from its own earliest open kick-off.
+- Parallel daily cap 80 (monthly 1,500 unchanged).
