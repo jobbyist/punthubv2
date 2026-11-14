@@ -296,12 +296,10 @@ export async function fetchSeasonResultCompetitions(): Promise<
   { competition: string; count: number }[]
 > {
   const db = supabase as unknown as SupabaseClient;
-  const { data, error } = await db.from("team_results").select("competition").limit(10000);
+  const { data, error } = await db.rpc("season_result_counts");
   if (error) throw error;
-  const counts = new Map<string, number>();
-  for (const r of (data ?? []) as { competition: string }[])
-    counts.set(r.competition, (counts.get(r.competition) ?? 0) + 1);
-  return [...counts.entries()]
-    .map(([competition, count]) => ({ competition, count }))
-    .sort((a, b) => b.count - a.count);
+  return ((data ?? []) as { competition: string; results: number | string }[]).map((r) => ({
+    competition: r.competition,
+    count: Number(r.results),
+  }));
 }
