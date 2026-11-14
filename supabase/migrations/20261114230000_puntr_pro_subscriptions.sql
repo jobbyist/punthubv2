@@ -7,12 +7,12 @@
 -- automatically; refunds follow /refunds.
 --
 -- Fair use: Pro includes AI actions up to a monthly and a daily cap (app_settings, defaults 90 and 15). Past a cap,
--- the action costs credits like Pay-As-You-Go. Admins are never capped.
+-- the action costs credits like Pay-As-You-Go. Admins are never capped. Annual Pass: 40 a month (Terms r20).
 
 insert into public.app_settings (key, value) values
   ('pro_cap_monthly', '90'),
   ('pro_cap_daily', '15'),
-  ('pro_cap_annual_pass', '90')
+  ('pro_cap_annual_pass', '40')
 on conflict (key) do nothing;
 
 -- 1. Subscriptions and their payments. -------------------------------------------------------------------------
@@ -185,7 +185,7 @@ returns integer language sql stable security definer set search_path = public, p
                  and e.note is distinct from 'annual_pass' and e.revoked_at is null and e.starts_at <= now()
                  and (e.expires_at is null or e.expires_at > now()))
       then coalesce((select value::integer from public.app_settings where key = 'pro_cap_monthly'), 90)
-    else coalesce((select value::integer from public.app_settings where key = 'pro_cap_annual_pass'), 90)
+    else coalesce((select value::integer from public.app_settings where key = 'pro_cap_annual_pass'), 40)
   end;
 $$;
 

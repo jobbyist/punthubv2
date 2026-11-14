@@ -21,9 +21,12 @@ at. Everything is a draft until approved; approvals are recorded here once given
   cancel; access to the end of the paid period; fair-use limit and what happens past it; price changes with notice),
   `/refunds` (ECTA s44 seven-day cooling-off for the first payment; no pro-rata refund after that unless the law
   requires; failed renewals), `/privacy` (PayFast as payment processor for subscriptions; token kept; retention of
-  payment records), `/pricing` (no longer "planned"; fair-use line). Decide whether the fair-use limit applies to
-  Annual Pass holders: it is set to the same 90 a month by default because their pass was sold without a stated
-  limit.
+  payment records), `/pricing` (no longer "planned"; fair-use line).
+- **Annual Pass fair use (owner decision 14 Nov, 20:16 SAST):** Terms r20 (English and Afrikaans) now say the
+  Annual Pass includes AI actions up to 40 a month and 15 a day, past which an action uses credits; every other Pro
+  feature is unlimited. `pro_cap_annual_pass = 40`. `notice_versions` terms r20 (migration `20261114231000`).
+  `[attorney review]`: adding a limit after the pass was sold (4 holders; the limit starts with Pro on 1 Dec, and
+  no AI feature had been promised in numbers); consider telling holders by email before 1 Dec.
 ## 2026-11-14, Fixtures surfacing and season results backfill (PR: feat/fixtures-and-history), no page changed
 
 - **Product:** the daily PFIE fixture sync now writes each competition as soon as it is verified, in several short

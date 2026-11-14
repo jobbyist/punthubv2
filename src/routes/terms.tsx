@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r19). Draft pending
+            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r20). Draft pending
             attorney review.
           </p>
 
@@ -115,10 +115,12 @@ function Terms() {
                 1 December 2026, with no automatic renewal. Reserving is free on Puntr. We email a
                 secure PayFast payment link; payment must be completed within 48 hours or the
                 reservation expires and the place is released. The Annual Pass is confirmed only
-                after payment is received. Refunds are covered on the Refunds page. Referral
-                rewards, planned as up to 30% in bonus PuntPoints on qualifying purchases made by
-                people you invite (never cash), are not available until we publish their terms
-                [attorney review]
+                after payment is received. Like monthly Puntr Pro, the Annual Pass includes AI
+                actions up to a fair-use limit of 40 a month and 15 a day; past the limit an AI
+                action uses Pay-As-You-Go credits. All other Pro features are not limited [attorney
+                review]. Refunds are covered on the Refunds page. Referral rewards, planned as up to
+                30% in bonus PuntPoints on qualifying purchases made by people you invite (never
+                cash), are not available until we publish their terms [attorney review]
               </li>
               <li>Educational content and betting resources</li>
               <li>Links to licensed partners, marked &quot;Ad&quot;</li>
