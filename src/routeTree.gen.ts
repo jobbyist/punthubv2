@@ -38,6 +38,7 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StandingsRouteImport } from './routes/standings'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToolsRouteImport } from './routes/tools'
@@ -74,6 +75,7 @@ import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.pract
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
+import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
 import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
 import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
 
@@ -220,6 +222,11 @@ const RoadmapRoute = RoadmapRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StandingsRoute = StandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SupportRoute = SupportRouteImport.update({
@@ -405,6 +412,11 @@ const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
   path: '/api/cron/sync-results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronSyncTablesRoute = ApiCronSyncTablesRouteImport.update({
+  id: '/api/cron/sync-tables',
+  path: '/api/cron/sync-tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronTeamBadgesRoute = ApiCronTeamBadgesRouteImport.update({
   id: '/api/cron/team-badges',
   path: '/api/cron/team-badges',
@@ -446,6 +458,7 @@ export interface FileRoutesByFullPath {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
@@ -482,6 +495,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
@@ -515,6 +529,7 @@ export interface FileRoutesByTo {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
@@ -551,6 +566,7 @@ export interface FileRoutesByTo {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
@@ -585,6 +601,7 @@ export interface FileRoutesById {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
@@ -621,6 +638,7 @@ export interface FileRoutesById {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
 }
@@ -656,6 +674,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/standings'
     | '/support'
     | '/terms'
     | '/tools'
@@ -692,6 +711,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -725,6 +745,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/standings'
     | '/support'
     | '/terms'
     | '/tools'
@@ -761,6 +782,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   id:
@@ -794,6 +816,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/standings'
     | '/support'
     | '/terms'
     | '/tools'
@@ -830,6 +853,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
   fileRoutesById: FileRoutesById
@@ -864,6 +888,7 @@ export interface RootRouteChildren {
   RewardsRoute: typeof RewardsRoute
   RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StandingsRoute: typeof StandingsRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   ToolsRoute: typeof ToolsRoute
@@ -900,6 +925,7 @@ export interface RootRouteChildren {
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
+  ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
   ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
   ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
 }
@@ -1107,6 +1133,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/standings': {
+      id: '/standings'
+      path: '/standings'
+      fullPath: '/standings'
+      preLoaderRoute: typeof StandingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/support': {
@@ -1361,6 +1394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSyncResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/sync-tables': {
+      id: '/api/cron/sync-tables'
+      path: '/api/cron/sync-tables'
+      fullPath: '/api/cron/sync-tables'
+      preLoaderRoute: typeof ApiCronSyncTablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/team-badges': {
       id: '/api/cron/team-badges'
       path: '/api/cron/team-badges'
@@ -1408,6 +1448,7 @@ const rootRouteChildren: RootRouteChildren = {
   RewardsRoute: RewardsRoute,
   RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StandingsRoute: StandingsRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   ToolsRoute: ToolsRoute,
@@ -1444,6 +1485,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
+  ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,
   ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,
   ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
 }

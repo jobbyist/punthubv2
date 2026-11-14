@@ -3,6 +3,18 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (later): league standings and form sync
+
+Added
+- `/standings` (12 leagues: PSL, EPL, La Liga, Serie A, Bundesliga, Ligue 1, Eredivisie, Liga Portugal, EFL
+  Championship, Saudi Pro League, Motsepe Foundation Championship, UCL league phase) with last-five form from
+  completed matches and a stale-data notice; "Tables" in the side nav; sitemap.
+- Daily standings sync and one-time form history backfill (`/api/cron/sync-tables`, 04:10-05:50 SAST), matchday
+  updates by trigger without API calls, `sync_status` monitoring (Admin > System > Data sync).
+- Form everywhere (cards, analytics sheet, match page, tables) now reads `completed_matches` (fixtures + verified
+  history), so guides are filled from launch.
+- Migration `20261114140000_standings_form_sync.sql`.
+
 ## 14 November 2026 (batch 1, PR E): /tools copy and plan
 
 Changed

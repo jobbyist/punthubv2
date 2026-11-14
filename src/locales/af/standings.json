@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Ligatabelle: PSL, Premier League, La Liga en meer | Puntr",
+    "description": "Ligatabelle met punte, doelverskil en die laaste vyf wedstryde se vorm vir die ligas wat Suid-Afrikaners volg."
+  },
+  "title": "Ligatabelle",
+  "subtitle": "Puntelyste en vorm oor die laaste vyf wedstryde vir die ligas wat Suid-Afrikaners volg. Vorm kom uit voltooide wedstryde.",
+  "filter": "Kies 'n liga",
+  "cols": {
+    "pos": "Plek",
+    "team": "Span",
+    "p": "G",
+    "w": "W",
+    "d": "GL",
+    "l": "V",
+    "gf": "DV",
+    "ga": "DT",
+    "gd": "DS",
+    "pts": "Pt",
+    "form": "Vorm"
+  },
+  "updated": "Bygewerk {{when}}",
+  "source": "Bron: {{domain}}",
+  "stale": "Hierdie tabel is dalk verouderd: die laaste bywerking het nie voltooi nie. Dit werk weer outomaties by.",
+  "pending": "Hierdie tabel verskyn ná die eerste bevestigde bywerking.",
+  "empty": "Nog geen tabel vir hierdie liga nie.",
+  "error": "Kon nie die tabel nou laai nie.",
+  "note": "Tabelle word daagliks bygewerk vanaf die liga se eie webwerf of twee onafhanklike bronne wat ooreenstem, en ná elke bevestigde uitslag bygewerk."
+}

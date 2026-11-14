@@ -1,3 +1,5 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -105,15 +107,17 @@ export function quotedList(names: string[]): string {
   return names.map((n) => `"${n.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`).join(",");
 }
 
-/** Finished fixtures involving any of `teams`, newest first (public read through RLS). */
+/**
+ * Completed matches involving any of `teams`, newest first: finished fixtures plus the verified results history
+ * (`completed_matches` view, public read). Form is always derived from these real results.
+ */
 export async function fetchFinishedFor(teams: string[], limit = 300): Promise<FinishedRow[]> {
   const unique = Array.from(new Set(teams)).filter(Boolean).slice(0, 80);
   if (unique.length === 0) return [];
   const list = quotedList(unique);
-  const { data, error } = await supabase
-    .from("fixtures")
+  const { data, error } = await (supabase as unknown as SupabaseClient)
+    .from("completed_matches")
     .select("id, competition, home, away, kickoff_at, home_score, away_score")
-    .eq("status", "finished")
     .or(`home.in.(${list}),away.in.(${list})`)
     .order("kickoff_at", { ascending: false })
     .limit(limit);

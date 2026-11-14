@@ -70,3 +70,23 @@ match and compare with the official score before any settlement is trusted.
 - Results checks back off per competition: 50 min soon after kick-off, then a third of the time since the
   earliest open kick-off (`resultsGapMs`). Each competition is checked from its own earliest open kick-off.
 - Parallel daily cap 80 (monthly 1,500 unchanged).
+
+## League standings and form history (14 Nov 2026)
+
+- Separate processes. **Standings**: `league_standings`, replaced atomically by `replace_standings()` from a table
+  that passes `validateTables` (N teams, positions 1..N, W+D+L=P, Pts=3W+D, quote and team on the page, points
+  never rising down the table) and `chooseTable` (official site, or two domains agreeing on every team's played
+  and points). **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
+  plus `team_results`, a one-time backfill of the last 42 days verified by the official site or two domains).
+- Daily: `/api/cron/sync-tables`, every 10 minutes 04:10-05:50 SAST, two due jobs per call. Standings refresh when
+  there is no table, when a match finished since the last refresh, or weekly. History runs once per league (and
+  again only if a quarter of teams have fewer than 5 recorded results).
+- Matchday: trigger `fixtures_after_result` calls `apply_result_to_standings()` when a result is confirmed: the
+  result is applied once (`standings_applied`), only if it kicked off after the table was taken; positions are
+  re-ranked (points, GD, GF, name) until the next refresh restores each league's tie-break rules. No API call.
+- Reliability: every attempt goes through `record_sync()` (`sync_status`: last attempt, success, failures, error,
+  meta). Failures retry after 20 and 40 minutes, then wait a day. `/standings` shows a stale notice when the last
+  success is older than 36 h or the last attempt failed; Admin > System shows the Data sync panel.
+- Cost: per standings refresh 1 Parallel search + up to 2 page reads + 1 Gemini Flash-Lite call; refreshes only
+  when needed, so typically 5-10 a day across 12 leagues. Quotas go through `api_quota_claim` as before.
+- No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.

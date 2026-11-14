@@ -5,6 +5,7 @@ import {
   CalendarDays,
   ChevronLeft,
   LifeBuoy,
+  ListOrdered,
   PanelLeft,
   Trophy,
   Swords,
@@ -26,6 +27,7 @@ import { fetchThisWeeksLeaders } from "@/lib/records";
 const sideNav = [
   { key: "fixtures", to: "/fixtures", icon: CalendarDays },
   { key: "results", to: "/results", icon: Activity },
+  { key: "standings", to: "/standings", icon: ListOrdered },
   { key: "duels", to: "/duels", icon: Swords },
   { key: "leaderboards", to: "/leaderboard", icon: Trophy },
   { key: "support", to: "/support", icon: LifeBuoy },
