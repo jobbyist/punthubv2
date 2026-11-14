@@ -48,7 +48,7 @@ export function FilterChips({
                 aria-pressed={on}
                 onClick={() => onSelect(c.key)}
                 className={cn(
-                  "relative shrink-0 snap-start rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                  "relative isolate shrink-0 snap-start rounded-full px-4 py-2 text-sm font-medium transition-colors",
                   on ? "text-ink-foreground" : "border border-border hover:bg-muted",
                 )}
               >

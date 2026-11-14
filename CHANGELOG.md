@@ -3,6 +3,22 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (batch 1, PR B): /fixtures hub and wider coverage
+
+Added
+- `/fixtures` is a real page (it redirected to /predictions): search, date strip, region and competition filters
+  (counts follow the other filters), group by day or competition, cards or compact list, analytics sheet on every
+  match, coverage panel, SportsEvent JSON-LD, sitemap entry.
+- PFIE coverage from 6 to 21 competitions: + Europa League, Conference League, Ligue 1, EFL Championship, FA Cup,
+  EFL Cup, Eredivisie, Liga Portugal, Saudi Pro League, Nedbank Cup, Motsepe Foundation Championship, CAF Champions
+  League, CAF Confederation Cup, AFCON (incl. qualifiers), Bafana Bafana friendlies.
+
+Fixed
+- European leagues published no fixtures because their pages print no time zone (see docs/PFIE_INTEGRATION.md):
+  SAST queries plus zone-less confirmation (still two independent sites).
+- Results checks back off instead of searching every 50 minutes for 36 hours when a result stays unconfirmed.
+- Filter chip highlight hidden inside cards (stacking context).
+
 ## 14 November 2026 (batch 1, PR A): modern match cards
 
 Added

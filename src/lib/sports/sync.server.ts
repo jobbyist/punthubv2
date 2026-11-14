@@ -68,8 +68,20 @@ export async function syncResults(
       skipped: [{ key: "csv", reason: "open fixtures are not from a provider competition" }],
     };
 
-  const earliest = new Date(Math.min(...open.map((o) => Date.parse(o.kickoffAt))));
-  const { fixtures, calls, skipped } = await provider.listResults(earliest, now, { only });
+  // One provider call per competition, each from its own earliest open kick-off, so one stuck match in one
+  // competition never slows the checks for another (the PFIE back-off is measured from this time).
+  const fixtures: NormalisedFixture[] = [];
+  const skipped: { key: string; reason: string }[] = [];
+  let calls = 0;
+  for (const key of only) {
+    const name = activeCompetitions().find((c) => c.key === key)?.name;
+    const mine = open.filter((o) => o.competition === name);
+    const earliest = new Date(Math.min(...mine.map((o) => Date.parse(o.kickoffAt))));
+    const r = await provider.listResults(earliest, now, { only: [key] });
+    fixtures.push(...r.fixtures);
+    skipped.push(...r.skipped);
+    calls += r.calls;
+  }
   const openRefs = new Set(
     open.filter((o) => o.provider === provider.name).map((o) => o.providerRef),
   );

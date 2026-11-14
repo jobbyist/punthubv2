@@ -30,6 +30,11 @@ export interface Observation extends RawObservation {
   tier: SourceTier;
   /** UTC kick-off, when the page gave a time and its zone is known. */
   kickoffUtc: string | null;
+  /**
+   * When the page gave a time but no zone (and the site's zone is not known): the instants that time would be in
+   * each plausible zone. Never used on its own; it can only confirm a time another site states with a zone.
+   */
+  kickoffCandidates?: string[];
 }
 
 export interface Rejected {

@@ -6,9 +6,9 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 import { corroborate } from "./corroborate";
 import { parseObservations, validateObservations } from "./extract";
-import { createPfieProvider, tierOf } from "./provider";
+import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
-import { zonedToUtc, zoneFor } from "./time";
+import { candidateInstants, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
 
 const NOW = new Date("2026-11-13T12:00:00Z");
@@ -157,6 +157,64 @@ describe("kick-off times", () => {
     expect(tierOf("psl.co.za", ["psl.co.za"])).toBe("official");
     expect(tierOf("www.supersport.com".replace("www.", ""), ["psl.co.za"])).toBe("trusted");
     expect(tierOf("durbancityfcnews.co.za", ["psl.co.za"])).toBe("other");
+  });
+});
+
+describe("zone-less pages", () => {
+  const base = (
+    domain: string,
+    tier: Observation["tier"],
+    extra: Partial<Observation>,
+  ): Observation => ({
+    source: 1,
+    home: "Getafe",
+    away: "Atletico Madrid",
+    date: "2026-11-22",
+    time: "20:00",
+    tz: null,
+    status: "scheduled",
+    homeScore: null,
+    awayScore: null,
+    quote: "SUN 22.11.2026 20:00 GET VS ATM",
+    domain,
+    tier,
+    kickoffUtc: null,
+    ...extra,
+  });
+  const laliga = base("laliga.com", "official", {
+    kickoffCandidates: candidateInstants("2026-11-22", "20:00"),
+  });
+  it("keeps plausible instants but never a kick-off when no zone is printed", () => {
+    expect(candidateInstants("2026-11-22", "20:00")).toEqual([
+      "2026-11-22T20:00:00.000Z",
+      "2026-11-22T19:00:00.000Z",
+      "2026-11-22T18:00:00.000Z",
+    ]);
+    const only = decide([laliga]).decisions[0]!;
+    expect(only.publish).toBe(false);
+    expect(only.kickoffAt).toBeNull();
+  });
+  it("lets a zone-less page confirm a time another site states with a zone", () => {
+    const labelled = base("soccerladuma.co.za", "trusted", {
+      kickoffUtc: "2026-11-22T20:00:00.000Z",
+    });
+    const d = decide([laliga, labelled]).decisions[0]!;
+    expect(d.publish).toBe(true);
+    expect(d.kickoffAt).toBe("2026-11-22T20:00:00.000Z");
+    expect(d.kickoffVerdict).toBe("verified");
+  });
+  it("does not confirm a time that none of its zones gives", () => {
+    const labelled = base("soccernews.com", "other", { kickoffUtc: "2026-11-22T17:30:00.000Z" });
+    expect(decide([laliga, labelled]).decisions[0]!.publish).toBe(false);
+  });
+  it("does not let a site confirm itself", () => {
+    const self = base("laliga.com", "official", { kickoffUtc: null, kickoffCandidates: ["x"] });
+    const labelled = base("laliga.com", "official", { kickoffUtc: "2026-11-22T20:00:00.000Z" });
+    // Official and labelled: verified on its own (existing rule), unaffected.
+    expect(decide([self, labelled]).decisions[0]!.kickoffVerdict).toBe("verified");
+    const a = base("example.com", "other", { kickoffUtc: "2026-11-22T20:00:00.000Z" });
+    const b = base("example.com", "other", { kickoffCandidates: ["2026-11-22T20:00:00.000Z"] });
+    expect(decide([a, b]).decisions[0]!.publish).toBe(false);
   });
 });
 
@@ -442,8 +500,15 @@ describe("provider", () => {
     const soon = await provider.listResults(new Date("2026-11-12T17:30:00Z"), NOW, {
       only: ["psl"],
     });
-    expect(soon.skipped[0]?.reason).toContain("50 minutes");
+    // Kick-off ~18.5 h before NOW: the back-off is a third of that.
+    expect(soon.skipped[0]?.reason).toContain("370 minutes");
     expect(model.models).toHaveLength(0);
+  });
+  it("backs off results checks as a match gets older", () => {
+    const h = 3600_000;
+    expect(resultsGapMs(2 * h)).toBe(50 * 60_000);
+    expect(resultsGapMs(6 * h)).toBe(2 * h);
+    expect(resultsGapMs(24 * h)).toBe(8 * h);
   });
   it("records a failed run and returns nothing when the model output is unusable or every model fails", async () => {
     for (const bad of ["not json", new ProviderError("gemini", "quota", 429, "limit")]) {

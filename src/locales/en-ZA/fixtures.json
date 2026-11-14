@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Football fixtures this week: PSL, Premier League, UCL and more | Puntr",
+    "description": "Every upcoming football fixture South Africans follow, in SAST: Betway Premiership, Premier League, Champions League, La Liga, CAF and more, with form and community picks.",
+    "ogTitle": "Football fixtures in SAST | Puntr",
+    "ogDescription": "Upcoming fixtures across the leagues and cups South Africans follow, in South African time."
+  },
+  "title": "Fixtures",
+  "subtitle": "Every upcoming match across the leagues, cups and tournaments South Africans follow, in South African time.",
+  "stats": {
+    "fixtures": "{{count}} fixtures",
+    "competitions": "{{count}} competitions",
+    "window": "Next 14 days",
+    "live": "{{count}} live now"
+  },
+  "search": {
+    "label": "Search fixtures",
+    "placeholder": "Search a team or competition",
+    "clear": "Clear search"
+  },
+  "dates": {
+    "label": "Choose a date",
+    "all": "All dates"
+  },
+  "regions": {
+    "label": "Region",
+    "all": "All regions",
+    "sa": "South Africa",
+    "england": "England",
+    "europe": "Europe",
+    "africa": "Africa",
+    "world": "Rest of the world"
+  },
+  "competitions": {
+    "label": "Competition",
+    "all": "All competitions"
+  },
+  "view": {
+    "label": "View",
+    "cards": "Cards",
+    "list": "List"
+  },
+  "group": {
+    "day": "By day",
+    "competition": "By competition",
+    "label": "Group"
+  },
+  "results": {
+    "showing": "Showing {{count}} of {{total}}",
+    "reset": "Reset filters"
+  },
+  "empty": {
+    "title": "No fixtures match",
+    "body": "Try another date, region or competition, or clear the search.",
+    "none": "Fixtures for the next 14 days appear here as soon as they are verified."
+  },
+  "coverage": {
+    "title": "Competitions we track",
+    "body": "A fixture appears once its kick-off time is confirmed by the competition's own site or by two independent sources. Teams show once their real badge is verified.",
+    "quiet": "No fixtures in the next 14 days"
+  },
+  "list": {
+    "analytics": "Analytics",
+    "open": "Open match room"
+  },
+  "cta": {
+    "title": "Make your calls at launch",
+    "body": "Picks open on 1 December 2026 and lock at kick-off. Every pick is time-stamped on your public record.",
+    "button": "See predictions"
+  }
+}

@@ -12,6 +12,10 @@ export type CompetitionKey =
   | "ligue1"
   | "facup"
   | "eflcup"
+  | "championship"
+  | "eredivisie"
+  | "primeira"
+  | "saudi-pro"
   | "nedbank"
   | "mtn8"
   | "sa-championship"
@@ -121,6 +125,35 @@ export const competitions: readonly Competition[] = [
     name: "EFL Cup",
     seasonRule: "july",
     searches: ["EFL Cup", "League Cup"],
+  },
+  // Owner (14 Nov): every league, cup and tournament South Africans commonly bet on, not only the first six.
+  {
+    key: "championship",
+    sport: "soccer",
+    name: "EFL Championship",
+    seasonRule: "july",
+    searches: ["Championship"],
+  },
+  {
+    key: "eredivisie",
+    sport: "soccer",
+    name: "Eredivisie",
+    seasonRule: "july",
+    searches: ["Eredivisie"],
+  },
+  {
+    key: "primeira",
+    sport: "soccer",
+    name: "Liga Portugal",
+    seasonRule: "july",
+    searches: ["Primeira Liga", "Liga Portugal"],
+  },
+  {
+    key: "saudi-pro",
+    sport: "soccer",
+    name: "Saudi Pro League",
+    seasonRule: "july",
+    searches: ["Pro League", "Saudi Pro League"],
   },
   {
     key: "nedbank",

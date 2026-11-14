@@ -3,6 +3,8 @@
  *
  * - The competition's official site is authoritative for kick-off, status and score.
  * - Without it, a fact is verified only when two different sites state exactly the same thing.
+ * - A page that prints a time without a zone can CONFIRM a time another site states with a zone, when one of its
+ *   plausible zones (UTC, UK, CET, SAST) gives exactly that instant. It never sets a time on its own.
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
@@ -85,7 +87,18 @@ export function corroborate(input: {
   const decisions: Decision[] = [];
   for (const c of clusters.values()) {
     const existing = input.known.find((k) => k.home === c.home && k.away === c.away) ?? null;
-    const kickoff = decide(c.observations, (o) => o.kickoffUtc);
+    let kickoff = decide(c.observations, (o) => o.kickoffUtc);
+    if (kickoff?.verdict === "single_source") {
+      const stated = kickoff.value;
+      const statedBy = new Set(
+        c.observations.filter((o) => o.kickoffUtc === stated).map((o) => o.domain),
+      );
+      const confirmed = c.observations.some(
+        (o) =>
+          !statedBy.has(o.domain) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(stated),
+      );
+      if (confirmed) kickoff = { value: stated, verdict: "verified" };
+    }
     const final = decide(
       c.observations.filter((o) => o.status === "finished"),
       (o) => (o.homeScore !== null && o.awayScore !== null ? [o.homeScore, o.awayScore] : null),
@@ -114,7 +127,7 @@ export function corroborate(input: {
     }
 
     const kickoffVerified = kickoff?.verdict === "verified";
-    const kickoffAt = kickoffVerified ? kickoff.value : (existing?.kickoffAt ?? null);
+    const kickoffAt = kickoffVerified && kickoff ? kickoff.value : (existing?.kickoffAt ?? null);
     const kickoffVerdict: Verdict = kickoff?.verdict ?? "single_source";
 
     let publish = true;

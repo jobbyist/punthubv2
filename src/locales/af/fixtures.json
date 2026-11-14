@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Sokkerwedstryde hierdie week: PSL, Premier League, UCL en meer | Puntr",
+    "description": "Elke komende sokkerwedstryd wat Suid-Afrikaners volg, in SAST: Betway Premiership, Premier League, Champions League, La Liga, CAF en meer, met vorm en gemeenskapskeuses.",
+    "ogTitle": "Sokkerwedstryde in SAST | Puntr",
+    "ogDescription": "Komende wedstryde in die ligas en bekers wat Suid-Afrikaners volg, in Suid-Afrikaanse tyd."
+  },
+  "title": "Wedstryde",
+  "subtitle": "Elke komende wedstryd in die ligas, bekers en toernooie wat Suid-Afrikaners volg, in Suid-Afrikaanse tyd.",
+  "stats": {
+    "fixtures": "{{count}} wedstryde",
+    "competitions": "{{count}} kompetisies",
+    "window": "Volgende 14 dae",
+    "live": "{{count}} nou lewendig"
+  },
+  "search": {
+    "label": "Soek wedstryde",
+    "placeholder": "Soek ’n span of kompetisie",
+    "clear": "Vee soektog uit"
+  },
+  "dates": {
+    "label": "Kies ’n datum",
+    "all": "Alle datums"
+  },
+  "regions": {
+    "label": "Streek",
+    "all": "Alle streke",
+    "sa": "Suid-Afrika",
+    "england": "Engeland",
+    "europe": "Europa",
+    "africa": "Afrika",
+    "world": "Res van die wêreld"
+  },
+  "competitions": {
+    "label": "Kompetisie",
+    "all": "Alle kompetisies"
+  },
+  "view": {
+    "label": "Aansig",
+    "cards": "Kaarte",
+    "list": "Lys"
+  },
+  "group": {
+    "day": "Per dag",
+    "competition": "Per kompetisie",
+    "label": "Groepeer"
+  },
+  "results": {
+    "showing": "Wys {{count}} van {{total}}",
+    "reset": "Herstel filters"
+  },
+  "empty": {
+    "title": "Geen wedstryde pas nie",
+    "body": "Probeer ’n ander datum, streek of kompetisie, of vee die soektog uit.",
+    "none": "Wedstryde vir die volgende 14 dae verskyn hier sodra hulle bevestig is."
+  },
+  "coverage": {
+    "title": "Kompetisies wat ons volg",
+    "body": "’n Wedstryd verskyn sodra sy afskoptyd deur die kompetisie se eie webwerf of deur twee onafhanklike bronne bevestig is. Spanne wys sodra hul regte wapen bevestig is.",
+    "quiet": "Geen wedstryde in die volgende 14 dae nie"
+  },
+  "list": {
+    "analytics": "Ontleding",
+    "open": "Maak wedstrydkamer oop"
+  },
+  "cta": {
+    "title": "Maak jou voorspellings by bekendstelling",
+    "body": "Keuses open op 1 Desember 2026 en sluit by afskop. Elke keuse kry ’n tydstempel op jou openbare rekord.",
+    "button": "Sien voorspellings"
+  }
+}

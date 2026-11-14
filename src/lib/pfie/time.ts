@@ -69,3 +69,23 @@ export function zonedToUtc(date: string, time: string, zone: string): string | n
   utc = naive - offsetMinutes(zone, utc) * 60_000;
   return new Date(utc).toISOString();
 }
+
+/**
+ * Zones a page without a printed zone could plausibly be showing (the venue's zone, UK time, server/UTC time, or
+ * South African time). Only used to let such a page CONFIRM a time another site states with a zone.
+ */
+export const CANDIDATE_ZONES = [
+  "UTC",
+  "Europe/London",
+  "Europe/Paris",
+  "Africa/Johannesburg",
+] as const;
+
+export function candidateInstants(date: string, time: string): string[] {
+  const out = new Set<string>();
+  for (const zone of CANDIDATE_ZONES) {
+    const utc = zonedToUtc(date, time, zone);
+    if (utc) out.add(utc);
+  }
+  return [...out];
+}
