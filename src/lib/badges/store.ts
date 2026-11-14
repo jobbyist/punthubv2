@@ -55,13 +55,14 @@ export function hasBadge(map: BadgeMap, name: string, sport = "soccer"): boolean
 }
 
 /**
- * Strict rule: drop anything whose teams have no real badge. `TEAM_BADGES_REQUIRED=false` (Vite env
- * `VITE_TEAM_BADGES_REQUIRED=false`) switches the filter off in an emergency.
+ * Badge filter. Owner decision 14 Nov 2026: every PFIE-verified fixture is listed, so the filter is OFF by default
+ * and a team without a verified badge shows its initials until the badge resolver (/api/cron/team-badges, every
+ * 30 min) finds the real crest. `VITE_TEAM_BADGES_REQUIRED=true` brings back the old strict rule (badged teams only).
  */
 export async function onlyBadged<T extends { sport: string; home: string; away: string }>(
   rows: T[],
 ): Promise<T[]> {
-  if (import.meta.env["VITE_TEAM_BADGES_REQUIRED"] === "false") return rows;
+  if (import.meta.env["VITE_TEAM_BADGES_REQUIRED"] !== "true") return rows;
   const map = await loadBadges();
   return rows.filter((r) => hasBadge(map, r.home, r.sport) && hasBadge(map, r.away, r.sport));
 }

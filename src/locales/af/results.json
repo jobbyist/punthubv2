@@ -52,5 +52,16 @@
     "description": "Voorbeeldtellings en -wedstryde wys slegs die uitleg. Dit is nie werklike wedstryduitslae nie.",
     "fullTime": "Volle tyd",
     "detail": "Illustratiewe eindtelling"
+  },
+  "season": {
+    "title": "Seisoenuitslae",
+    "description": "Eindtellings van hierdie seisoen en verlede seisoen, ingesamel deur ons wedstryd-enjin. Elke telling word bevestig deur die kompetisie se eie webwerf of deur twee verskillende sportwebwerwe, en ons noem hulle.",
+    "all": "Alle kompetisies",
+    "sources": "Bevestig deur {{sources}}",
+    "empty": "Seisoenuitslae word ingesamel. Hulle verskyn hier soos elke kompetisie nagegaan word.",
+    "error": "Seisoenuitslae kon nie laai nie.",
+    "count_one": "{{count}} uitslag",
+    "count_other": "{{count}} uitslae",
+    "more": "Wys meer"
   }
 }

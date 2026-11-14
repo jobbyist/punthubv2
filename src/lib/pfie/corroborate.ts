@@ -5,6 +5,10 @@
  * - Without it, a fact is verified only when two different sites state exactly the same thing.
  * - A page that prints a time without a zone can CONFIRM a time another site states with a zone, when one of its
  *   plausible zones (UTC, UK, CET, SAST) gives exactly that instant. It never sets a time on its own.
+ * - A time stated with a zone by one TRUSTED site (established sports media, see provider.ts) is accepted when a
+ *   different site lists the same match on the same printed date and nobody states a different time. The match and
+ *   its date are then corroborated by two sites; the exact time rests on one reputable outlet. Sites outside the
+ *   trusted list never set a time this way.
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
@@ -98,6 +102,15 @@ export function corroborate(input: {
           !statedBy.has(o.domain) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(stated),
       );
       if (confirmed) kickoff = { value: stated, verdict: "verified" };
+      else {
+        const statedObs = c.observations.filter((o) => o.kickoffUtc === stated);
+        const trustedStated = statedObs.some((o) => o.tier === "trusted");
+        const dates = new Set(statedObs.map((o) => o.date));
+        const sameDateElsewhere = c.observations.some(
+          (o) => !statedBy.has(o.domain) && !o.kickoffUtc && dates.has(o.date),
+        );
+        if (trustedStated && sameDateElsewhere) kickoff = { value: stated, verdict: "verified" };
+      }
     }
     const final = decide(
       c.observations.filter((o) => o.status === "finished"),

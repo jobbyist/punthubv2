@@ -17,8 +17,8 @@ const sizeMap = {
 
 /**
  * Consistent rounded team logo: the verified badge from the team_badges registry (found with Parallel Search and
- * mirrored to our storage), else a bundled logo. The initials fallback is only for illustrative or practice content;
- * real fixtures without a verified badge are filtered out before they reach the page (lib/badges/store.ts).
+ * mirrored to our storage), else a bundled logo, else initials. Real fixtures whose badge is not resolved yet show
+ * initials until the resolver finds it (lib/badges/store.ts).
  */
 export function TeamLogo({ team, sport, size = "md", className }: TeamLogoProps) {
   const badges = useBadges();

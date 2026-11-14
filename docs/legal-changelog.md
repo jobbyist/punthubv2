@@ -3,6 +3,21 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Fixtures surfacing and season results backfill (PR: feat/fixtures-and-history), no page changed
+
+- **Product:** the daily PFIE fixture sync now writes each competition as soon as it is verified, in several short
+  calls from 03:00 SAST (one long call had been timing out before it wrote anything). A time stated with a zone by
+  one established sports outlet is accepted when another site lists the same match on the same date. Fixtures are no
+  longer hidden when a team's badge has not been found yet (initials show until it is); `VITE_TEAM_BADGES_REQUIRED=true`
+  restores the strict rule. New season backfill reads past final scores (this season, then last season) and keeps
+  a score only when the competition's own site or two different sites agree; `/results` gains a "Season results"
+  list that names the confirming sites for each score.
+- **Data:** public sports facts only (teams, dates, scores, source domains). No personal information is collected,
+  sent to Parallel or Gemini, or shown. No new processor: Parallel, Firecrawl and Gemini were already listed.
+- **Legal pages:** none changed; `/terms`, `/privacy`, `/cookies`, `/affiliate-disclosure`, `/refunds` still match.
+- **Review:** `[attorney review]` showing third-party match scores with the source domain named (factual data, no
+  text or logos copied); team initials in place of crests are original rendering, not a club mark.
+
 ## 2026-11-14, Betting slips (PR: feat/bet-slips), Terms and Privacy r18
 
 - **Product:** members can add a bookmaker slip by typing it, pasting its text or uploading a photo, review and edit
