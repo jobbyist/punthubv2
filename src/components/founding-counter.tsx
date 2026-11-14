@@ -6,9 +6,11 @@ import { getFoundingSpots } from "@/lib/founding.functions";
 export function FoundingCounter({
   className = "",
   compact = false,
+  tracker = false,
 }: {
   className?: string;
   compact?: boolean;
+  tracker?: boolean;
 }) {
   const { t } = useTranslation("common");
   const { data } = useAsync(() => getFoundingSpots(), []);
@@ -17,6 +19,34 @@ export function FoundingCounter({
   const claimed = Math.max(0, Math.min(data.cap, data.cap - data.left));
   const progress = data.cap > 0 ? (claimed / data.cap) * 100 : 0;
   const full = data.left <= 0;
+
+  if (tracker) {
+    return (
+      <div
+        className={`w-full ${className}`}
+        aria-label={t("foundingCounter.claimed", { claimed, cap: data.cap })}
+        aria-live="polite"
+      >
+        <div className="mb-1.5 flex items-center justify-between gap-2 text-[10px] font-semibold text-muted-foreground">
+          <span>{full ? t("foundingCounter.full") : t("foundingCounter.claimed", { claimed, cap: data.cap })}</span>
+          <span className="shrink-0 tabular-nums">{Math.max(0, data.left)} {t("foundingCounter.remaining")}</span>
+        </div>
+        <div
+          className="h-1.5 overflow-hidden rounded-full bg-muted"
+          role="progressbar"
+          aria-label={t("foundingCounter.progressLabel")}
+          aria-valuemin={0}
+          aria-valuemax={data.cap}
+          aria-valuenow={claimed}
+        >
+          <div
+            className="h-full rounded-full bg-primary transition-[width] duration-700"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (compact) {
     return (

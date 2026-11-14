@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -73,6 +73,7 @@ export function SiteFooter() {
   const { t } = useTranslation("nav");
   const { t: tRg } = useTranslation("rg");
   const { isSignedIn } = useSession();
+  const path = useRouterState({ select: (s) => s.location.pathname });
   const { t: tc } = useTranslation("common");
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
 
@@ -83,8 +84,18 @@ export function SiteFooter() {
     return () => clearInterval(interval);
   }, []);
 
+  const guestBarVisible =
+    !isSignedIn &&
+    !path.startsWith("/admin") &&
+    path !== "/join" &&
+    path !== "/founding";
+
   return (
-    <footer className={`mt-10 bg-surface lg:pb-0 ${isSignedIn ? "pb-28" : "pb-6"}`}>
+    <footer
+      className={`mt-10 bg-surface ${
+        isSignedIn ? "pb-28 lg:pb-0" : guestBarVisible ? "pb-32 md:pb-6" : "pb-6"
+      }`}
+    >
       <div className="px-4 pb-8 sm:px-6">
         <RgNotice />
       </div>

@@ -132,6 +132,9 @@
   "foundingCounter": {
     "compact": "{{left}} of {{cap}} founding places left",
     "left": "{{left}} / {{cap}} left",
-    "full": "Allocation full"
+    "full": "Allocation full",
+    "claimed": "{{claimed}} of {{cap}} spots taken",
+    "remaining": "left",
+    "progressLabel": "Founding Member spots claimed"
   }
 }
