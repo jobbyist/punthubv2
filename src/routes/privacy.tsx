@@ -61,6 +61,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you delete your account [attorney review]",
   ],
   [
+    "Favourites (optional)",
+    "The sports, competitions and teams you choose to follow",
+    "Your consent (you choose to set them; clear them at any time in your account)",
+    "While your account is open; deleted when you clear them or delete your account. Used only to order your own Matchday card and shortcuts; never shown to others or shared [attorney review]",
+  ],
+  [
     "Community Duels (from launch)",
     "Your duel challenges, calls, stakes, results and votes. Your calls are shown publicly with your username from kick-off; votes are only counted, never shown by name",
     "Contract (providing the duel feature you choose to use)",
@@ -165,7 +171,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r16). Draft pending
+          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r17). Draft pending
           attorney review.
         </p>
 

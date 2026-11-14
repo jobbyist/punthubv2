@@ -3,6 +3,17 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, Favourites and member Matchday card (PR: feat/matchday-favourites), Privacy r17
+
+- **Product:** members can save favourite sports, competitions and teams in their account (`member_preferences`,
+  RLS own-row only). The signed-in home shows a Matchday card ordered by those favourites instead of the illustrative
+  preview. Nothing is shown to other members or shared.
+- **Pages:** `/privacy` data table "Favourites (optional)" row, version 2026-11-14-r17 (English and Afrikaans),
+  `notice_versions` privacy r17 (migration `20261114090000_member_preferences.sql`). Terms unchanged (no new promise).
+- **Deletion:** preferences are deleted when the account is deleted (trigger on anonymisation).
+- **Review [attorney review]:** consent as the basis for an optional personalisation setting; no profiling beyond
+  ordering the member's own fixtures.
+
 ## 2026-11-14, Community Duels (PR: feat/h2h-duels), Terms and Privacy r16
 
 - **What changed in the product:** members can challenge another member (or post an open challenge) on an upcoming

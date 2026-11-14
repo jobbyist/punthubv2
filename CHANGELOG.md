@@ -3,6 +3,16 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (batch 1, PR C): member Matchday card and favourites
+
+Added
+- Account > Your favourites: sports (roadmap sports marked "soon"), up to 10 competitions and up to 10 teams (search
+  over teams with upcoming fixtures). Private, RLS own-row only; deleted with the account.
+- Signed-in home: the illustrative preview is replaced by "Your matchday" (favourite teams first, then favourite
+  competitions, with reason tags), "View full intelligence" (filtered /fixtures when one competition is chosen),
+  "Challenge a tipster", and the member's active duels. Guests keep the illustrative preview (also in server HTML).
+- Migration `20261114090000_member_preferences.sql` (applied); Privacy r17 (English and Afrikaans).
+
 ## 14 November 2026 (batch 1, PR D): Community Head-to-Head Duels
 
 Added

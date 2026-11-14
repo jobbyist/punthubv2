@@ -1,0 +1,35 @@
+{
+  "editor": {
+    "title": "Your favourites",
+    "body": "Pick the sports, competitions and teams you follow. Your home Matchday card puts them first. Only you see these.",
+    "sports": "Sports",
+    "competitions": "Competitions",
+    "teams": "Teams",
+    "teamsHint": "Search teams with upcoming fixtures. Up to 10.",
+    "teamsPlaceholder": "Search a team",
+    "noMatch": "No upcoming team matches that search.",
+    "soon": "soon",
+    "save": "Save favourites",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "error": "Could not save. Try again.",
+    "limit": "Up to 10.",
+    "remove": "Remove {{name}}"
+  },
+  "matchday": {
+    "title": "Your matchday",
+    "titleNone": "Upcoming matches",
+    "body": "Next fixtures from your teams and competitions.",
+    "bodyNone": "Pick your favourite teams and competitions to make this yours.",
+    "pick": "Choose favourites",
+    "edit": "Edit favourites",
+    "team": "Your team",
+    "competition": "Your competition",
+    "empty": "No upcoming fixtures for your favourites in the next 7 days.",
+    "intel": "View full intelligence",
+    "challenge": "Challenge a tipster",
+    "duels": "Your active duels",
+    "duelsNone": "No active duels.",
+    "seeDuels": "All duels"
+  }
+}
