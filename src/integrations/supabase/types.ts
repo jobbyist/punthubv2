@@ -1634,6 +1634,30 @@ export type Database = {
         }
         Relationships: []
       }
+      member_preferences: {
+        Row: {
+          competitions: string[]
+          sports: string[]
+          teams: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          competitions?: string[]
+          sports?: string[]
+          teams?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          competitions?: string[]
+          sports?: string[]
+          teams?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       member_details: {
         Row: {
           date_of_birth: string | null

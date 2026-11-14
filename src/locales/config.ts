@@ -101,6 +101,7 @@ export const NAMESPACES = [
   "matchcard",
   "fixtures",
   "duels",
+  "favourites",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];

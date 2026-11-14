@@ -9,7 +9,9 @@ import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
+import { MatchdayWidget } from "@/components/favourites/matchday-widget";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
+import { useSession } from "@/components/session";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
@@ -136,7 +138,7 @@ function Landing() {
       </section>
 
       <div className="section-y pt-4 sm:pt-6 lg:pt-8">
-        <IllustrativeFixtures />
+        <HomePreview />
       </div>
       <BadgeMarquee label={t("marquee")} />
 
@@ -327,4 +329,14 @@ function Landing() {
       )}
     </div>
   );
+}
+
+/**
+ * Guests get the illustrative preview (zero-risk look at fixtures, results and the leaderboard). Signed-in members
+ * get their own Matchday card instead: they no longer need an introduction to what a fixture looks like.
+ */
+function HomePreview() {
+  // Server HTML and first paint show the guest preview (crawlable); members switch once the session loads.
+  const { user } = useSession();
+  return user ? <MatchdayWidget userId={user.id} /> : <IllustrativeFixtures />;
 }

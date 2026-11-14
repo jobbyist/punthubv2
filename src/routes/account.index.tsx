@@ -1,3 +1,4 @@
+import { FavouritesEditor } from "@/components/favourites/favourites-editor";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -55,6 +56,8 @@ function Account() {
           ) : null}
 
           {user ? <MemberDetailsForm userId={user.id} /> : null}
+
+          {user ? <FavouritesEditor userId={user.id} /> : null}
 
           <IdentityCard />
 

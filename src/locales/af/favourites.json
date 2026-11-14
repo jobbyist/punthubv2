@@ -1,0 +1,35 @@
+{
+  "editor": {
+    "title": "Jou gunstelinge",
+    "body": "Kies die sportsoorte, kompetisies en spanne wat jy volg. Jou tuisblad se Wedstryddag-kaart wys hulle eerste. Net jy sien dit.",
+    "sports": "Sportsoorte",
+    "competitions": "Kompetisies",
+    "teams": "Spanne",
+    "teamsHint": "Soek spanne met komende wedstryde. Tot 10.",
+    "teamsPlaceholder": "Soek 'n span",
+    "noMatch": "Geen komende span pas by daardie soektog nie.",
+    "soon": "binnekort",
+    "save": "Stoor gunstelinge",
+    "saving": "Stoor…",
+    "saved": "Gestoor.",
+    "error": "Kon nie stoor nie. Probeer weer.",
+    "limit": "Tot 10.",
+    "remove": "Verwyder {{name}}"
+  },
+  "matchday": {
+    "title": "Jou wedstryddag",
+    "titleNone": "Komende wedstryde",
+    "body": "Volgende wedstryde van jou spanne en kompetisies.",
+    "bodyNone": "Kies jou gunstelingspanne en -kompetisies om dit joune te maak.",
+    "pick": "Kies gunstelinge",
+    "edit": "Wysig gunstelinge",
+    "team": "Jou span",
+    "competition": "Jou kompetisie",
+    "empty": "Geen komende wedstryde vir jou gunstelinge in die volgende 7 dae nie.",
+    "intel": "Sien volledige intelligensie",
+    "challenge": "Daag 'n voorspeller uit",
+    "duels": "Jou aktiewe duelle",
+    "duelsNone": "Geen aktiewe duelle nie.",
+    "seeDuels": "Alle duelle"
+  }
+}
