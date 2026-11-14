@@ -92,9 +92,15 @@ export async function runDuelSettlement(store: DuelSettleStore) {
   const expired = await store.expire();
   const verdicts = gradeDuels(await store.toSettle());
   const outcomes: Record<string, number> = {};
+  // One duel failing to settle must not hold up the others; it is retried on the next run.
   for (const v of verdicts) {
-    const r = await store.settle(v);
-    outcomes[r] = (outcomes[r] ?? 0) + 1;
+    try {
+      const r = await store.settle(v);
+      outcomes[r] = (outcomes[r] ?? 0) + 1;
+    } catch (error) {
+      outcomes["error"] = (outcomes["error"] ?? 0) + 1;
+      console.error("settle_duel failed", v.duelId, error);
+    }
   }
   return { expired, graded: verdicts.length, outcomes };
 }

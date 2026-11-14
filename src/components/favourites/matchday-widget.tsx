@@ -31,12 +31,17 @@ export function MatchdayWidget({ userId }: { userId: string }) {
       fetchFavourites(userId).catch(() => null),
       fetchUpcomingFixtures({ days: 7, limit: 200 }).catch(() => [] as UpcomingFixture[]),
       fetchDuels("mine", undefined, 10).catch(() => [] as DuelSummary[]),
-    ]).then(([f, fx, d]) => {
-      if (!live) return;
-      setFav(f);
-      setFixtures(fx);
-      setDuels(d.filter((x) => x.status === "pending" || x.status === "active"));
-    });
+    ])
+      .then(([f, fx, d]) => {
+        if (!live) return;
+        setFav(f);
+        setFixtures(fx);
+        setDuels(d.filter((x) => x.status === "pending" || x.status === "active"));
+      })
+      .catch((e: unknown) => {
+        console.error("matchday load failed", e);
+        if (live) setFixtures([]);
+      });
     return () => {
       live = false;
     };
