@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PartnerLogo } from "@/components/partner-logo";
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
@@ -55,12 +56,12 @@ function BookmakersPage() {
         </div>
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {platforms.map((platform) => (
-            <li key={platform.name} className="card-surface flex min-h-20 items-center gap-4 p-4">
-              <img
+            <li key={platform.name} className="card-surface group flex min-h-20 items-center gap-4 p-4">
+              <PartnerLogo
                 src={uploaded.get(platform.name.toLowerCase()) ?? platform.logo}
-                alt=""
+                alt={platform.name}
                 loading="lazy"
-                className="size-12 rounded-lg bg-white object-contain p-1"
+                className="max-w-20"
               />
               <span className="flex-1 text-sm font-semibold">{platform.name}</span>
               <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
