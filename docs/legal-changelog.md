@@ -3,6 +3,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14, no legal page text changed (PR: QA audit, UI polish, Gemini fallbacks)
+
+- **What changed:** visual and layout work across the site (page banners with decorative motion graphics, new fixture, result, leaderboard and community card designs, empty and loading states), one copy fix (the Insights page no longer offers a "beta group" that does not exist; the button now opens the roadmap), and three more free-tier Gemini models as fallbacks for article drafting and fixture extraction.
+- **Data:** nothing new is collected, stored, shown or sent. The Gemini fallbacks receive the same non-personal inputs as the existing models (organisation facts, public match pages); `CLAUDE.md`'s rule that no personal data goes to AI services still holds.
+- **Database (migration `20261114030000_qa_public_reads_gemini_fallbacks.sql`):** restores the public read path the product already promises: signed-out visitors can see public usernames, display names, Founding numbers and avatars of non-banned members (through `public_profiles`) and non-moderated picks (through `visible_predictions`), as `/privacy` already describes for public profiles and the public record. Team badge and quest lists become readable to signed-out visitors again (they were failing on a permission check). No new columns are exposed.
+- Privacy, Terms, Cookies, Affiliate disclosure, Refunds: not changed. Nothing for counsel to review.
+
 ## 2026-11-13, Privacy and Terms r15 (PR: no rewarded social follows; reward funding)
 
 - **Owner decision:** remove any incentive that could put Puntr's social media pages at risk. Instagram, Facebook, X and TikTok quests no longer pay points; they are plain "visit" links. Open submissions for them were closed without points. WhatsApp and Telegram community groups keep their quests.

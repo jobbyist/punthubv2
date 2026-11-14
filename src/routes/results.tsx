@@ -172,7 +172,7 @@ function Results() {
       )}
       {!loading && !failed && (days ?? []).length === 0 && (
         <EmptyState
-          art="scoreboard"
+          art="pitch"
           title={t("empty.title")}
           body={t("empty.body")}
           action={

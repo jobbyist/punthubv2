@@ -48,19 +48,22 @@ export function MatchPreview() {
           </span>
         </div>
         <div className="border-t border-border px-4 py-5 sm:px-6">
-          <div className="flex items-center justify-between gap-2 sm:gap-3">
-            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          {/* Badge above the name on phones so neither club name is cut off; side by side from sm up. */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
+            <div className="flex min-w-0 flex-col items-center gap-2 text-center sm:flex-row sm:text-left">
               <TeamLogo team="Orlando Pirates" size="lg" />
-              <span className="truncate text-sm font-semibold sm:text-base">Orlando Pirates</span>
+              <span className="text-sm font-semibold leading-tight sm:text-base">
+                Orlando Pirates
+              </span>
             </div>
             <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">
               {tc("vs").toUpperCase()}
             </span>
-            <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-3">
-              <span className="truncate text-right text-sm font-semibold sm:text-base">
+            <div className="flex min-w-0 flex-col items-center gap-2 text-center sm:flex-row-reverse sm:text-right">
+              <TeamLogo team="Kaizer Chiefs" size="lg" />
+              <span className="text-sm font-semibold leading-tight sm:text-base">
                 Kaizer Chiefs
               </span>
-              <TeamLogo team="Kaizer Chiefs" size="lg" />
             </div>
           </div>
           <p className="mt-3 text-center text-xs text-muted-foreground">{t("preview.fixture")}</p>

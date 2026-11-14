@@ -77,7 +77,7 @@ function Insights() {
             size="lg"
             variant="outline"
             className="h-12"
-            onClick={() => navigate({ to: "/join" })}
+            onClick={() => navigate({ to: "/roadmap" })}
           >
             {t("beta")}
           </Button>
