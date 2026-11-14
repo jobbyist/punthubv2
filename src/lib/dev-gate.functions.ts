@@ -37,7 +37,14 @@ export const getDevPage = createServerFn({ method: "GET" }).handler(
     const doc = openSession(getCookie(DEV_COOKIE));
     if (!doc) return { status: "locked" };
     const { readSnapshot } = await import("@/lib/mvp-readiness.server");
-    return { status: "open", ...doc, readiness: await readSnapshot() };
+    const { sanitizeBlueprintHtml } = await import("@/lib/dev-sanitize");
+    // Defence in depth: the archived blueprint never reaches the browser with active content.
+    return {
+      status: "open",
+      ...doc,
+      html: sanitizeBlueprintHtml(doc.html),
+      readiness: await readSnapshot(),
+    };
   },
 );
 
