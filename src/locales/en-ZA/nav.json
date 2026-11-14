@@ -82,11 +82,11 @@
     "roadmap": "Roadmap",
     "dock": {
       "fixtures": "Fixtures",
-      "duels": "Duels",
       "puntPoints": "PuntPoints",
       "foundingTitle": "Become a Founding Member 👀🇿🇦",
       "foundingMessage": "First 100 spots · Free to reserve",
-      "claimSpot": "Claim Spot"
+      "claimSpot": "Claim Spot",
+      "community": "Community"
     }
   },
   "sport": {
