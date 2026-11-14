@@ -3,6 +3,14 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-14 (15:00 SAST), Duel stakes switched on
+
+- **Owner decision:** counsel has reviewed and approved PuntPoints stakes on Community Duels. `duels_stakes_enabled`
+  set to `true` in production (migration `20261114130000_duel_stakes_on.sql` records it).
+- **Pages:** no change. Terms r16 already describe stakes "when staking is switched on", with the limits.
+- **Approval recorded:** item 1 of the 2026-11-14 Community Duels entry (gambling/wager question) approved by
+  counsel per the owner.
+
 ## 2026-11-14, Favourites and member Matchday card (PR: feat/matchday-favourites), Privacy r17
 
 - **Product:** members can save favourite sports, competitions and teams in their account (`member_preferences`,
