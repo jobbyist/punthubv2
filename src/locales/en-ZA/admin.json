@@ -740,7 +740,7 @@
     "title": "Founding Annual Pass",
     "body": "20 passes in total. PayFast holds, paid passes and bank transfers all count toward the cap. The public counter updates within a minute.",
     "remaining": "{{remaining}}/{{cap}} passes available",
-    "open": "Offer open until 16 November 2026, 23:59 SAST.",
+    "open": "Offer open until 30 November 2026, 23:59 SAST.",
     "closed": "Offer closed or full.",
     "recordTitle": "Record a bank transfer",
     "recordBody": "For members who paid by EFT. It counts toward the 20 straight away. Match it to the member's username once you know who paid; their pass then shows as paid.",

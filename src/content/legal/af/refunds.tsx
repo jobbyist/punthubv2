@@ -24,7 +24,7 @@ export function RefundsAf() {
             Stigterslidmaatskap is gratis. Die enigste ding wat ons voor die bekendstelling verkoop,
             is die Stigters-jaarpas: 12 maande se Puntr Pro vir 'n eenmalige R299, betaal deur
             PayFast, wat op 1 Desember 2026 begin en nie outomaties hernu nie. Dit word aangebied
-            aan die eerste 20 stigterslede wat dit voor 16 November 2026 opeis. Om 'n terugbetaling
+            aan die eerste 20 stigterslede wat dit voor 30 November 2026 opeis. Om 'n terugbetaling
             te vra, e-pos support@puntr.co.za vanaf die adres op jou rekening. Jou regte ingevolge
             die Wet op Verbruikersbeskerming en die Wet op Elektroniese Kommunikasie en Transaksies,
             insluitend enige afkoelperiode, word nie geraak nie. [attorney review]
