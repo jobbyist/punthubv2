@@ -8,7 +8,7 @@
  */
 
 const LABEL_LINE =
-  /\b(account|acc(?:t)?\s*no|balance|bal\b|wallet|name|surname|username|user\s*id|customer|client|member\s*(?:no|id)|id\s*(?:no|number)|identity|passport|mobile|cell(?:phone)?|phone|tel\b|e-?mail|address|voucher\s*code|pin\b|otp\b|password|card)/i;
+  /\b(account|acc(?:t)?\s*no|balance|bal\b|wallet|name|surname|username|user\s*id|customer|client|member\s*(?:no|id)|id\s*(?:no|number)|identity|passport|mobile|cell(?:phone)?|phone|tel\b|e-?mail|address|voucher\s*code|pin|otp|password|card)\b/i;
 
 const EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 // +27 or 0, then 9 digits, with optional spaces or dashes.
