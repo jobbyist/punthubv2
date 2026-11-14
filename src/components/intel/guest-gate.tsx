@@ -1,9 +1,9 @@
-import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 /** How many items guests can read in full before proprietary fields are blurred. */
 export const FREE_ITEMS = 2;
@@ -59,24 +59,44 @@ export function FoundingGateCard({ as: Tag = "div", top }: { as?: "div" | "li"; 
 
 function GateCardInner({ overlap }: { overlap: boolean }) {
   const { t } = useTranslation("intel");
+  const [signupOpen, setSignupOpen] = useState(false);
+
   return (
-    <div className={`flex justify-center px-4 py-4 ${overlap ? "-mb-64" : ""}`}>
-      <aside
-        aria-labelledby="founding-gate-title"
-        className="pointer-events-auto w-full max-w-md border border-ink bg-background p-6 text-center shadow-xl"
-      >
-        <span className="inline-block bg-primary px-3 py-1 text-[11px] font-bold tracking-wide text-primary-foreground">
-          {t("gate.tag")}
-        </span>
-        <h2 id="founding-gate-title" className="mt-3 text-xl">
-          {t("gate.title")}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">{t("gate.body")}</p>
-        <Button asChild size="lg" className="mt-4 h-11 w-full">
-          <Link to="/join">{t("gate.cta")}</Link>
-        </Button>
-        <p className="mt-3 text-xs text-muted-foreground">{t("gate.reassure")}</p>
-      </aside>
-    </div>
+    <>
+      <div className={`flex justify-center px-4 py-4 ${overlap ? "-mb-64" : ""}`}>
+        <aside
+          aria-labelledby="founding-gate-title"
+          className="pointer-events-auto w-full max-w-md rounded-xl border border-primary/50 bg-background/95 p-6 text-center shadow-2xl shadow-black/15 backdrop-blur-xl"
+        >
+          <span className="inline-block bg-primary px-3 py-1 text-[11px] font-bold tracking-wide text-primary-foreground">
+            {t("gate.tag")}
+          </span>
+          <h2 id="founding-gate-title" className="mt-3 text-xl font-extrabold">
+            {t("gate.title")}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t("gate.body")}</p>
+          <Button size="lg" className="mt-4 h-11 w-full" onClick={() => setSignupOpen(true)}>
+            {t("gate.cta")}
+          </Button>
+          <p className="mt-3 text-xs text-muted-foreground">{t("gate.reassure")}</p>
+        </aside>
+      </div>
+      <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
+        <DialogContent className="flex h-[min(90dvh,900px)] w-[calc(100%-1rem)] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:w-[calc(100%-2rem)]">
+          <DialogHeader className="shrink-0 border-b border-border px-5 py-3 text-left">
+            <DialogTitle className="text-base font-extrabold">{t("gate.modalTitle")}</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {t("gate.modalBody")}
+            </DialogDescription>
+          </DialogHeader>
+          <iframe
+            title={t("gate.signupFrameTitle")}
+            src="/join"
+            className="min-h-0 w-full flex-1 border-0 bg-background"
+            allow="clipboard-read; clipboard-write"
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
