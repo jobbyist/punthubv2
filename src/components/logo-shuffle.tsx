@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
+import { PartnerLogo } from "@/components/partner-logo";
 import { useBrandLogos } from "@/hooks/use-brand-logos";
 import type { BrandLogo } from "@/lib/logos";
 
@@ -10,11 +11,11 @@ const SLOTS = 6;
 
 function Tile({ logo }: { logo: BrandLogo }) {
   const img = (
-    <img
+    <PartnerLogo
       src={logo.imageUrl ?? ""}
       alt={logo.name}
       loading="lazy"
-      className="max-h-10 max-w-[7.5rem] object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+      className="max-w-[7.5rem]"
     />
   );
   return logo.linkUrl ? (
@@ -76,7 +77,7 @@ export function LogoShuffle() {
         <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
           {reduce || count <= SLOTS
             ? live.map((l) => (
-                <li key={l.id} className="grid h-12 place-items-center">
+                <li key={l.id} className="group grid h-12 place-items-center">
                   <Tile logo={l} />
                 </li>
               ))
@@ -95,7 +96,7 @@ export function LogoShuffle() {
                           animate={{ y: 0, opacity: 1, rotateX: 0 }}
                           exit={{ y: -28, opacity: 0, rotateX: 60 }}
                           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                          className="grid place-items-center"
+                          className="group grid place-items-center"
                         >
                           <Tile logo={l} />
                         </motion.div>
