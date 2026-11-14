@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 
+import { PartnerLogo } from "@/components/partner-logo";
+
 import { platforms } from "@/lib/mock-data";
 import { AFFILIATES_ENABLED } from "@/lib/flags";
 
@@ -22,13 +24,13 @@ export function PlatformRail() {
       {platforms.slice(0, 9).map((p) => (
         <div
           key={p.name}
-          className="grid h-16 min-w-[100px] sm:min-w-[130px] flex-1 place-items-center rounded-xl border border-border bg-card px-3 sm:px-5 shadow-soft transition-transform hover:-translate-y-0.5"
+          className="card-surface group grid h-16 min-w-[100px] flex-1 place-items-center px-3 shadow-soft transition-transform hover:-translate-y-0.5 sm:min-w-[130px] sm:px-5"
         >
-          <img
+          <PartnerLogo
             src={p.logo}
             alt={t("logoAlt", { name: p.name })}
             loading="lazy"
-            className="h-6 w-auto max-w-full object-contain sm:h-8"
+            className="w-auto"
           />
         </div>
       ))}

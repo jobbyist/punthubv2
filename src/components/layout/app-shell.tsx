@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Activity, ClipboardCheck, Newspaper, Target, Trophy, Users } from "lucide-react";
+import { useState } from "react";
+import { Activity, CalendarDays, ChevronLeft, LifeBuoy, PanelLeft, Trophy } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,13 +16,10 @@ import { fetchLiveFixtures } from "@/lib/fixtures";
 import { fetchThisWeeksLeaders } from "@/lib/records";
 
 const sideNav = [
-  // One entry per destination: the old list sent four different labels to the same two pages.
-  { key: "predictions", to: "/predictions", icon: Target },
-  { key: "results", to: "/results", icon: ClipboardCheck },
-  { key: "liveNow", to: "/live-scores", icon: Activity },
-  { key: "leaderboards", to: "/leaderboards", icon: Trophy },
-  { key: "community", to: "/community", icon: Users },
-  { key: "newsroom", to: "/newsroom", icon: Newspaper },
+  { key: "fixtures", to: "/fixtures", icon: CalendarDays },
+  { key: "results", to: "/results", icon: Activity },
+  { key: "leaderboards", to: "/leaderboard", icon: Trophy },
+  { key: "support", to: "/support", icon: LifeBuoy },
 ] as const;
 
 const SPORT_KEYS: Record<string, string> = {
@@ -38,53 +36,72 @@ const SPORT_KEYS: Record<string, string> = {
 function LeftRail() {
   const { t } = useTranslation("nav");
   const { t: tc } = useTranslation("common");
+  const [collapsed, setCollapsed] = useState(false);
   const sportName = (name: string) => t(`sport.${SPORT_KEYS[name] ?? "soccer"}`);
   return (
-    <aside className="hidden w-[220px] shrink-0 border-r border-border py-6 pr-5 lg:block">
-      <nav className="space-y-1">
+    <aside
+      className={`hidden shrink-0 border-r border-border py-6 pr-3 transition-[width] duration-200 lg:block ${collapsed ? "w-16" : "w-[220px] pr-5"}`}
+    >
+      <div className={`mb-3 flex items-center ${collapsed ? "justify-center" : "justify-end"}`}>
+        <button
+          type="button"
+          onClick={() => setCollapsed((value) => !value)}
+          aria-label={collapsed ? t("side.expandNavigation") : t("side.collapseNavigation")}
+          aria-expanded={!collapsed}
+          className="grid size-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          {collapsed ? <PanelLeft className="size-4" /> : <ChevronLeft className="size-4" />}
+        </button>
+      </div>
+      <nav className="space-y-1" aria-label={t("side.navigation")}>
         {sideNav.map(({ key, to, icon: Icon }) => (
           <Link
             key={key}
             to={to}
+            title={collapsed ? t(`side.${key}`) : undefined}
+            aria-label={collapsed ? t(`side.${key}`) : undefined}
             activeProps={{ className: "bg-primary-soft text-primary" }}
-            className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted ${collapsed ? "justify-center px-2" : ""}`}
           >
-            <Icon className="size-[18px] text-muted-foreground transition-transform group-hover:scale-110 group-hover:text-primary" />
-            <span className="flex-1">{t(`side.${key}`)}</span>
+            <Icon className="size-[18px] shrink-0 text-muted-foreground transition-transform group-hover:scale-110 group-hover:text-primary" />
+            {!collapsed && <span className="flex-1">{t(`side.${key}`)}</span>}
           </Link>
         ))}
       </nav>
-
-      <p className="mt-7 px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {t("side.sports")}
-      </p>
-      <ul className="mt-2 space-y-0.5">
-        {sports.map((s) => (
-          <li key={s.name}>
-            {s.active ? (
-              <Link
-                to="/sports/$sport"
-                params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
-                className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
-              >
-                <span>{sportName(s.name)}</span>
-                {s.name === "Soccer" && <LiveBadge />}
-              </Link>
-            ) : (
-              <Link
-                to="/sports/$sport"
-                params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
-                className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <span className="min-w-0 truncate">{sportName(s.name)}</span>
-                <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide">
-                  {tc("badge.comingSoon")}
-                </span>
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
+      {!collapsed && (
+        <>
+          <p className="mt-7 px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("side.sports")}
+          </p>
+          <ul className="mt-2 space-y-0.5">
+            {sports.map((s) => (
+              <li key={s.name}>
+                {s.active ? (
+                  <Link
+                    to="/sports/$sport"
+                    params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
+                    className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                  >
+                    <span>{sportName(s.name)}</span>
+                    {s.name === "Soccer" && <LiveBadge />}
+                  </Link>
+                ) : (
+                  <Link
+                    to="/sports/$sport"
+                    params={{ sport: SPORT_KEYS[s.name] ?? "soccer" }}
+                    className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <span>{sportName(s.name)}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wide">
+                      {tc("badge.comingSoon")}
+                    </span>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </aside>
   );
 }

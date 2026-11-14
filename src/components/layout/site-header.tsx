@@ -1,15 +1,24 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  ChevronDown,
-  Compass,
-  Newspaper,
-  Route,
-  Swords,
-  Trophy,
-  Wrench,
-  ClipboardCheck,
+  Activity,
   CalendarDays,
-  Sparkles,
+  ChevronDown,
+  ClipboardCheck,
+  Coins,
+  Flag,
+  Goal,
+  House,
+  Info,
+  LifeBuoy,
+  Map,
+  Radio,
+  Swords,
+  Target,
+  Trophy,
+  Users,
+  Wrench,
+  Building2,
+  type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +27,11 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
 import { UserAvatar } from "@/components/user-avatar";
 import { usePoints } from "@/hooks/use-points";
+import { useAsync } from "@/hooks/use-async";
 import { points as formatPoints } from "@/lib/format";
+import { fetchLiveFixtures } from "@/lib/fixtures";
+import { competitions } from "@/lib/sports/competitions";
+import type { RoadmapSport } from "@/lib/roadmap";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +39,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -35,37 +51,19 @@ import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
 import { inviteText, whatsappUrl } from "@/lib/referral";
 
-const navigationGroups = [
-  {
-    key: "intelligence",
-    icon: Sparkles,
-    items: [
-      { key: "fixtures", to: "/predictions", icon: CalendarDays },
-      { key: "matchupTools", to: "/tools", icon: Wrench },
-      { key: "gradedPicks", to: "/results", icon: ClipboardCheck },
-    ],
-  },
-  {
-    key: "community",
-    icon: Trophy,
-    items: [
-      { key: "leaderboards", to: "/leaderboards", icon: Trophy },
-      // H2H currently lives in the existing competitive leaderboard experience.
-      { key: "headToHead", to: "/leaderboards", icon: Swords },
-      { key: "tipsterRankings", to: "/leaderboards", icon: Compass },
-    ],
-  },
-  {
-    key: "platform",
-    icon: Newspaper,
-    items: [
-      { key: "howItWorks", to: "/how-it-works", guestOnly: true, icon: Route },
-      { key: "pricing", to: "/pricing", icon: ClipboardCheck },
-      { key: "newsroom", to: "/newsroom", icon: Newspaper },
-      { key: "roadmap", to: "/roadmap", icon: Route },
-    ],
-  },
-] as const;
+const featuredSports: { key: RoadmapSport; labelKey: string; icon: LucideIcon }[] = [
+  { key: "soccer", labelKey: "soccer", icon: Goal },
+  { key: "basketball", labelKey: "basketball", icon: Activity },
+  { key: "rugby", labelKey: "rugby", icon: Flag },
+  { key: "racing", labelKey: "racing", icon: Trophy },
+  { key: "tennis", labelKey: "tennis", icon: Target },
+  { key: "cricket", labelKey: "cricket", icon: Activity },
+  { key: "combat", labelKey: "combat", icon: Swords },
+];
+
+function isActive(path: string, to: string) {
+  return path === to || (to !== "/" && path.startsWith(to + "/"));
+}
 
 export function SiteHeader() {
   const { t } = useTranslation("nav");
@@ -73,6 +71,13 @@ export function SiteHeader() {
   const pp = usePoints();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { data: liveFixtures } = useAsync(() => fetchLiveFixtures(1), []);
+
+  const directLinks = [
+    { key: "home", to: "/", icon: House },
+    { key: "fixtures", to: "/predictions", icon: CalendarDays },
+    { key: "community", to: "/community", icon: Users },
+  ] as const;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
@@ -85,58 +90,157 @@ export function SiteHeader() {
           aria-label={t("header.desktopNavigation")}
           className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex"
         >
-          {navigationGroups.map((group) => {
-            const visibleItems = group.items.filter(
-              (item) => !("guestOnly" in item && item.guestOnly && isSignedIn),
-            );
-            if (visibleItems.length === 0) return null;
-            const GroupIcon = group.icon;
-            const active = visibleItems.some(
-              (item) => path === item.to || path.startsWith(item.to + "/"),
-            );
+          {directLinks.map(({ key, to, icon: Icon }) => {
+            const active = isActive(path, to);
             return (
-              <DropdownMenu key={group.key}>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
-                    aria-label={t(`desktop.groups.${group.key}`)}
-                  >
-                    <GroupIcon className="size-4" />
-                    {t(`desktop.groups.${group.key}`)}
-                    <ChevronDown className="size-3.5 opacity-60" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="start"
-                  sideOffset={10}
-                  className="w-64 rounded-xl p-2 shadow-xl"
-                >
-                  <DropdownMenuLabel className="px-3 pb-2 pt-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                    {t(`desktop.groups.${group.key}`)}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {visibleItems.map((item) => {
-                    const ItemIcon = item.icon;
-                    const itemActive = path === item.to || path.startsWith(item.to + "/");
-                    return (
-                      <DropdownMenuItem
-                        key={item.key}
-                        asChild
-                        className="cursor-pointer rounded-lg px-3 py-2.5"
-                      >
-                        <Link to={item.to} className={itemActive ? "text-primary" : ""}>
-                          <ItemIcon className="size-4 text-muted-foreground" />
-                          <span className="flex-1">{t(`desktop.items.${item.key}`)}</span>
-                          {itemActive && <span className="size-1.5 rounded-full bg-primary" />}
-                        </Link>
-                      </DropdownMenuItem>
-                    );
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link
+                key={key}
+                to={to}
+                aria-current={active ? "page" : undefined}
+                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors hover:bg-muted hover:text-foreground ${active ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <Icon className="size-4" />
+                {t(`desktop.direct.${key}`)}
+                {key === "fixtures" && (liveFixtures?.length ?? 0) > 0 && (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_2px_rgb(16_185_129/45%)] motion-safe:animate-pulse"
+                    />
+                    <span className="sr-only">{t("desktop.liveMatches")}</span>
+                  </>
+                )}
+              </Link>
             );
           })}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/results", "/leaderboards", "/tools", "/live-scores", "/sports", "/predictions", "/roadmap"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+              >
+                <Wrench className="size-4" />
+                {t("desktop.groups.platform")}
+                <ChevronDown className="size-3.5 opacity-60" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              sideOffset={10}
+              className="w-72 rounded-xl p-2 shadow-xl"
+            >
+              <DropdownMenuLabel>{t("desktop.groups.platform")}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {(
+                [
+                  { key: "gradedResults", to: "/results", icon: ClipboardCheck },
+                  { key: "leaderboards", to: "/leaderboards", icon: Trophy },
+                  { key: "bettingTools", to: "/tools", icon: Wrench },
+                  { key: "liveScores", to: "/live-scores", icon: Radio },
+                  { key: "roadmap", to: "/roadmap", icon: Map },
+                ] as const
+              ).map(({ key, to, icon: Icon }) => (
+                <DropdownMenuItem
+                  key={key}
+                  asChild
+                  className="cursor-pointer rounded-lg px-3 py-2.5"
+                >
+                  <Link to={to} className={isActive(path, to) ? "text-primary" : ""}>
+                    <Icon className="size-4 text-muted-foreground" />
+                    <span className="flex-1">{t(`desktop.items.${key}`)}</span>
+                    {isActive(path, to) && <span className="size-1.5 rounded-full bg-primary" />}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="rounded-lg px-3 py-2.5">
+                  <Trophy className="size-4 text-muted-foreground" />
+                  {t("desktop.items.featuredSports")}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56 rounded-xl p-2">
+                  {featuredSports.map(({ key, labelKey, icon: Icon }) => (
+                    <DropdownMenuItem
+                      key={key}
+                      asChild
+                      className="cursor-pointer rounded-lg px-3 py-2"
+                    >
+                      <Link to="/sports/$sport" params={{ sport: key }}>
+                        <Icon className="size-4 text-muted-foreground" />
+                        {t(`sport.${labelKey}`)}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="rounded-lg px-3 py-2.5">
+                  <CalendarDays className="size-4 text-muted-foreground" />
+                  {t("desktop.items.competitions")}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-[70vh] w-64 overflow-y-auto rounded-xl p-2">
+                  {competitions.map((competition) => (
+                    <DropdownMenuItem
+                      key={competition.key}
+                      asChild
+                      className="cursor-pointer rounded-lg px-3 py-2"
+                    >
+                      <Link to="/predictions" search={{ competition: competition.name }}>
+                        <span className="flex-1">{competition.name}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuItem disabled className="rounded-lg px-3 py-2.5">
+                <Target className="size-4 text-muted-foreground" />
+                <span className="flex-1">{t("desktop.items.fantasyLeague")}</span>
+                <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                  {t("desktop.comingSoon")}
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/bookmakers", "/puntpoints", "/about", "/support"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+              >
+                {t("desktop.groups.more")}
+                <ChevronDown className="size-3.5 opacity-60" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              sideOffset={10}
+              className="w-64 rounded-xl p-2 shadow-xl"
+            >
+              <DropdownMenuLabel>{t("desktop.groups.more")}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {(
+                [
+                  { key: "bookmakers", to: "/bookmakers", icon: Building2 },
+                  { key: "puntPoints", to: "/puntpoints", icon: Coins },
+                  { key: "about", to: "/about", icon: Info },
+                  { key: "support", to: "/support", icon: LifeBuoy },
+                ] as const
+              ).map(({ key, to, icon: Icon }) => (
+                <DropdownMenuItem
+                  key={key}
+                  asChild
+                  className="cursor-pointer rounded-lg px-3 py-2.5"
+                >
+                  <Link to={to} className={isActive(path, to) ? "text-primary" : ""}>
+                    <Icon className="size-4 text-muted-foreground" />
+                    <span className="flex-1">{t(`desktop.items.${key}`)}</span>
+                    {isActive(path, to) && <span className="size-1.5 rounded-full bg-primary" />}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex min-w-0 items-center justify-end gap-2">
@@ -243,7 +347,7 @@ export function SiteHeader() {
                 asChild
                 className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
               >
-                <Link to="/join">{t("header.claimFoundingAccess")}</Link>
+                <Link to="/join">{t("header.getEarlyAccess")}</Link>
               </Button>
             </>
           )}

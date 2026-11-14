@@ -3,7 +3,6 @@ import {
   BarChart3,
   CalendarDays,
   Menu,
-  Swords,
   Star,
   Trophy,
   Users,
@@ -35,13 +34,14 @@ import { useSession } from "@/components/session";
 import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SocialLinks } from "@/components/social-links";
+import { FoundingCounter } from "@/components/founding-counter";
 
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
-  { key: "fixtures", to: "/results", icon: CalendarDays },
-  { key: "duels", to: "/leaderboards", icon: Swords },
-  { key: "puntPoints", to: "/puntpoints", icon: Star },
+  { key: "predictions", to: "/predictions", icon: CalendarDays },
+  { key: "community", to: "/community", icon: Users },
+  { key: "puntPoints", to: "/rewards", icon: Star },
 ] as const;
 
 const sports = [
@@ -332,7 +332,10 @@ export function MobileNav() {
         >
           <ul className="grid grid-cols-4">
             {bottomNavItems.map(({ key, to, icon: Icon }) => {
-              const active = path === to || (to === "/results" && path.startsWith("/match/"));
+              const active =
+                path === to ||
+                (to === "/predictions" &&
+                  (path.startsWith("/match/") || path.startsWith("/predictions/")));
               return (
                 <li key={key}>
                   <Link
@@ -384,21 +387,22 @@ export function MobileNav() {
         path !== "/join" &&
         path !== "/founding" && (
           <div
-            className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-[0_-8px_28px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-2.5 shadow-lg backdrop-blur-xl md:hidden"
             style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
           >
-            <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-xs font-bold leading-tight text-foreground">
+            <div className="mx-auto flex max-w-lg items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-extrabold leading-tight text-foreground">
                   {t("mobile.dock.foundingTitle")}
                 </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
                   {t("mobile.dock.foundingMessage")}
                 </p>
+                <FoundingCounter tracker className="mt-2" />
               </div>
               <Link
                 to="/join"
-                className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
+                className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-md bg-primary px-3.5 text-xs font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98]"
                 onClick={() => close()}
               >
                 {t("mobile.dock.claimSpot")}

@@ -39,22 +39,30 @@
   },
   "desktop": {
     "groups": {
-      "intelligence": "Intelligence",
-      "community": "Community",
-      "platform": "About / Platform"
+      "platform": "Platform",
+      "more": "More"
     },
     "items": {
-      "fixtures": "Fixtures & Predictions",
-      "matchupTools": "AI Matchup Tools",
-      "gradedPicks": "Results & Graded Picks",
+      "gradedResults": "Graded Results",
       "leaderboards": "Leaderboards",
-      "headToHead": "Head-to-Head (H2H)",
-      "tipsterRankings": "Tipster Rankings",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "newsroom": "Newsroom",
-      "roadmap": "Roadmap"
-    }
+      "bettingTools": "Betting Tools",
+      "liveScores": "Live Scores",
+      "featuredSports": "Featured Sports",
+      "competitions": "Competitions & Leagues",
+      "fantasyLeague": "Fantasy League",
+      "roadmap": "Upcoming Roadmap",
+      "bookmakers": "Bookmaker Directory",
+      "puntPoints": "PuntPoints & Rewards",
+      "about": "About Puntr",
+      "support": "Contact Support"
+    },
+    "direct": {
+      "home": "Home",
+      "fixtures": "Predictions",
+      "community": "Community"
+    },
+    "comingSoon": "Coming Soon",
+    "liveMatches": "Live matches available"
   },
   "mobile": {
     "primary": "Primary",
@@ -81,12 +89,12 @@
     "signIn": "Sign in",
     "roadmap": "Roadmap",
     "dock": {
-      "fixtures": "Fixtures",
-      "duels": "Duels",
+      "predictions": "Predictions",
       "puntPoints": "PuntPoints",
-      "foundingTitle": "Founding Access",
+      "foundingTitle": "Become a Founding Member 👀🇿🇦",
       "foundingMessage": "First 100 spots · Free to reserve",
-      "claimSpot": "Claim Spot"
+      "claimSpot": "Claim Spot",
+      "community": "Community"
     }
   },
   "sport": {
@@ -100,18 +108,19 @@
     "racing": "Horse racing"
   },
   "side": {
-    "predictions": "Predictions",
-    "results": "Results",
-    "liveNow": "Live now",
-    "leaderboards": "Leaderboards",
-    "community": "Community",
-    "newsroom": "Newsroom",
     "sports": "Sports",
     "topTipsters": "Top tipsters",
     "noLeaders": "No settled picks this week yet",
     "noLive": "No matches in play",
     "inPlay": "In play",
-    "units": "{{units}} units"
+    "units": "{{units}} units",
+    "fixtures": "Fixtures",
+    "results": "Results",
+    "leaderboards": "Leaderboards",
+    "support": "Support centre",
+    "expandNavigation": "Expand navigation",
+    "collapseNavigation": "Collapse navigation",
+    "navigation": "Desktop side navigation"
   },
   "footer": {
     "platform": "Platform",
