@@ -1,3 +1,4 @@
+import { DataSyncPanel } from "@/components/admin/data-sync-panel";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -110,6 +111,7 @@ export function SystemTab() {
       </section>
 
       <Settings settings={h.settings} onSaved={refresh} />
+      <DataSyncPanel />
 
       <section className={panel}>
         <h2 className="font-display text-lg font-bold">{t("system.scoring")}</h2>

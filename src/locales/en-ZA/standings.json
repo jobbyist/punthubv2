@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "League tables: PSL, Premier League, La Liga and more | Puntr",
+    "description": "Live league tables with points, goal difference and last-five form for the leagues South Africans follow."
+  },
+  "title": "League tables",
+  "subtitle": "Standings and last-five form for the leagues South Africans follow. Form comes from completed matches.",
+  "filter": "Choose a league",
+  "cols": {
+    "pos": "Pos",
+    "team": "Team",
+    "p": "P",
+    "w": "W",
+    "d": "D",
+    "l": "L",
+    "gf": "GF",
+    "ga": "GA",
+    "gd": "GD",
+    "pts": "Pts",
+    "form": "Form"
+  },
+  "updated": "Updated {{when}}",
+  "source": "Source: {{domain}}",
+  "stale": "This table may be out of date: the last refresh did not complete. It updates again automatically.",
+  "pending": "This table appears after the first verified refresh.",
+  "empty": "No table yet for this league.",
+  "error": "Could not load the table right now.",
+  "note": "Tables are refreshed daily from the league's own site or two independent sources that agree, and updated after each confirmed result."
+}

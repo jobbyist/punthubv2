@@ -122,7 +122,8 @@
     "collapseNavigation": "Collapse navigation",
     "navigation": "Desktop side navigation",
     "liveNow": "Live now",
-    "duels": "Duels"
+    "duels": "Duels",
+    "standings": "Tables"
   },
   "footer": {
     "platform": "Platform",
