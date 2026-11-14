@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r16). Draft pending
+            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r18). Draft pending
             attorney review.
           </p>
 
@@ -191,6 +191,18 @@ function Terms() {
               Duel XP (3 for a win, 1 for a draw) only ranks the Duel leaderboard. Duels never pay
               money and PuntPoints keep no cash value. We may void duels and reverse points where
               members collude or use more than one account. [attorney review]
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              Betting slips: you can add a slip you placed with a bookmaker by typing it, pasting
+              its text or uploading a photo. You must review every detail before saving; text read
+              from a photo or by our assistant can be wrong and you are responsible for what you
+              publish. Only add your own slips, and do not upload anyone else&apos;s personal
+              information. When you publish a slip, each leg on a Puntr fixture with a supported
+              market becomes a normal time-stamped pick under these Terms (the same launch, age and
+              limit rules apply) and cannot be edited afterwards; other legs are shown on the slip
+              but do not count on your record. Puntr does not check that a bet was placed, does not
+              take bets and does not link slips to bookmakers. You can publish up to 20 slips a day.
+              We may remove slips that break these Terms. [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               PuntPoints have no cash value. They cannot be bought, sold or exchanged for money, and

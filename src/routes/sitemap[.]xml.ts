@@ -20,6 +20,7 @@ function staticEntries(today: string): SitemapEntry[] {
     { path: "/fixtures", changefreq: "hourly", priority: "0.9", lastmod: today },
     { path: "/duels", changefreq: "hourly", priority: "0.7", lastmod: today },
     { path: "/standings", changefreq: "daily", priority: "0.8", lastmod: today },
+    { path: "/slips", changefreq: "daily", priority: "0.6", lastmod: today },
     { path: "/results", changefreq: "hourly", priority: "0.8", lastmod: today },
     { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
     { path: "/community", changefreq: "daily", priority: "0.85", lastmod: today },

@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Wedstrokies: teken aan, deel en volg jou voorspellings | Puntr",
+    "description": "Voeg 'n wedstrokie by deur dit in te tik, te plak of 'n foto op te laai. Gaan dit na en publiseer dan die bene as Puntr-voorspellings met 'n tydstempel."
+  },
+  "title": "Wedstrokies",
+  "subtitle": "Teken 'n strokie aan wat jy by 'n boekmaker geplaas het. Gaan elke besonderheid na en publiseer dan die bene as voorspellings met 'n tydstempel wat op jou rekord tel.",
+  "tabs": {
+    "label": "Strokies",
+    "community": "Gemeenskap",
+    "mine": "My strokies",
+    "new": "Voeg 'n strokie by"
+  },
+  "signIn": "Meld aan om jou strokies by te voeg en te volg.",
+  "empty": {
+    "community": "Nog geen gepubliseerde strokies nie.",
+    "mine": "Jy het nog nie 'n strokie bygevoeg nie."
+  },
+  "source": {
+    "title": "Hoe wil jy dit byvoeg?",
+    "manual": "Tik dit in",
+    "manualHint": "Voer self die wedstryde en keuses in.",
+    "text": "Plak teks",
+    "textHint": "Kopieer die strokie uit jou boekmaker se toep of webwerf.",
+    "image": "Laai 'n foto op",
+    "imageHint": "'n Skermskoot of foto. Dit word op jou toestel gelees."
+  },
+  "paste": {
+    "label": "Strokieteks",
+    "placeholder": "Plak die strokie hier, bv.\nKaizer Chiefs v Orlando Pirates\nMatch Result: Kaizer Chiefs @ 2.40",
+    "read": "Lees strokie"
+  },
+  "photo": {
+    "choose": "Kies 'n foto",
+    "preparing": "Berei foto voor…",
+    "reading": "Lees teks op jou toestel… {{pct}}%",
+    "privacy": "Jou foto word op hierdie toestel gelees. Net die teks, sonder persoonlike besonderhede, word gebruik om die vorm in te vul. Bedek jou rekeningnaam, saldo en ID voor jy oplaai. Foto's is privaat en word ná 30 dae geskrap."
+  },
+  "removed_one": "Ons het {{count}} persoonlike besonderheid verwyder voordat ons die strokie gelees het.",
+  "removed_other": "Ons het {{count}} persoonlike besonderhede verwyder voordat ons die strokie gelees het.",
+  "aiLeft": "KI-gesteunde lesings oor vandag: {{count}}",
+  "review": {
+    "title": "Gaan jou strokie na",
+    "hint": "Maak enigiets reg wat verkeerd gelees is. Bene wat aan 'n Puntr-wedstryd met 'n ondersteunde mark gekoppel is, word voorspellings wanneer jy publiseer; ander bene word net op die strokie gevolg.",
+    "bookmaker": "Boekmaker",
+    "bookmakerNone": "Nie gewys nie",
+    "bookmakerPrivate": "Net jy kan die boekmaker sien.",
+    "stake": "Inset",
+    "return": "Moontlike opbrengs",
+    "totalOdds": "Totale pryse",
+    "showStake": "Wys my inset en opbrengs op die gepubliseerde strokie",
+    "note": "Nota (opsioneel)",
+    "notePlaceholder": "Waarom jy van hierdie keuses hou (280 karakters)",
+    "confidence": "Selfvertroue vir hierdie voorspellings",
+    "legs": "Bene",
+    "leg": "Been {{n}}",
+    "fixture": "Puntr-wedstryd",
+    "fixtureNone": "Nie op Puntr nie (net gevolg)",
+    "home": "Tuisspan",
+    "away": "Wegspan",
+    "market": "Mark",
+    "marketNone": "Ander mark (net gevolg)",
+    "selection": "Keuse",
+    "odds": "Pryse",
+    "bookmakerWording": "Op die strokie: {{text}}",
+    "addLeg": "Voeg 'n been by",
+    "removeLeg": "Verwyder been",
+    "trackedOnly": "Net gevolg",
+    "becomesPick": "Word 'n voorspelling",
+    "saveDraft": "Stoor as konsep",
+    "publish": "Stoor en publiseer",
+    "cancel": "Begin weer"
+  },
+  "markets": {
+    "1X2": "Wedstryduitslag",
+    "OU25": "Meer/minder as 2.5 doele",
+    "BTTS": "Albei spanne doel",
+    "DC": "Dubbele kans"
+  },
+  "selections": {
+    "home": "Tuis",
+    "draw": "Gelykop",
+    "away": "Weg",
+    "over": "Meer as 2.5",
+    "under": "Minder as 2.5",
+    "yes": "Ja",
+    "no": "Nee",
+    "1X": "Tuis of gelykop",
+    "X2": "Gelykop of weg",
+    "12": "Tuis of weg"
+  },
+  "issues": {
+    "no_legs": "Voeg ten minste een been by.",
+    "too_many_legs": "'n Strokie kan tot 30 bene hê.",
+    "leg_teams": "Elke been het 'n tuis- en 'n wegspan nodig.",
+    "leg_odds": "Pryse moet tussen 1.01 en 1000 wees.",
+    "leg_selection": "Kies 'n keuse vir elke been met 'n mark.",
+    "stake": "Voer 'n inset tussen R0.01 en R1 000 000 in, of los dit leeg.",
+    "return": "Gaan die moontlike opbrengs na."
+  },
+  "card": {
+    "by": "deur {{name}}",
+    "draft": "Konsep",
+    "legs_one": "{{count}} been",
+    "legs_other": "{{count}} bene",
+    "stake": "Inset {{amount}}",
+    "return": "Opbrengs {{amount}}",
+    "odds": "Pryse {{odds}}",
+    "publish": "Publiseer",
+    "delete": "Skrap",
+    "confirmDelete": "Skrap hierdie strokie? Gepubliseerde voorspellings bly op jou rekord.",
+    "showStake": "Wys inset",
+    "hideStake": "Versteek inset",
+    "picksNote": "Voorspellings van hierdie strokie word saam met elke ander Puntr-voorspelling verreken."
+  },
+  "result": {
+    "won": "Gewen",
+    "lost": "Verloor",
+    "pending": "Hangende",
+    "partial": "Deels gevolg",
+    "void": "Nietig"
+  },
+  "done": {
+    "draft": "As konsep gestoor. Net jy kan dit sien.",
+    "published_one": "Gepubliseer. {{count}} voorspelling is by jou rekord gevoeg.",
+    "published_other": "Gepubliseer. {{count}} voorspellings is by jou rekord gevoeg.",
+    "deleted": "Strokie geskrap."
+  },
+  "errors": {
+    "generic": "Iets het verkeerd geloop. Probeer asseblief weer.",
+    "empty": "Ons kon geen strokieteks vind nie. Probeer 'n ander foto of plak die teks.",
+    "unreadable": "Ons kon nie 'n weddenskap daaruit lees nie. Gaan die teks na of tik die strokie in.",
+    "image_type": "Gebruik 'n PNG-, JPEG- of WebP-beeld.",
+    "image_size": "Daardie beeld is te groot. Probeer eerder 'n skermskoot.",
+    "image_decode": "Ons kon nie daardie beeld oopmaak nie.",
+    "ocr": "Ons kon nie die foto op hierdie toestel lees nie. Plak die teks of tik die strokie in.",
+    "daily_limit": "Jy het vandag se limiet bereik. Probeer môre weer.",
+    "slip_empty": "Voeg ten minste een been by voordat jy publiseer.",
+    "slip_unavailable": "Hierdie strokie kan nie gepubliseer word nie.",
+    "slip_published": "'n Gepubliseerde strokie kan nie verander word nie.",
+    "bad_image_path": "Die foto kon nie aangeheg word nie. Probeer asseblief weer.",
+    "kickoff_passed": "'n Wedstryd op hierdie strokie het reeds afgeskop en kan nie 'n voorspelling word nie. Merk daardie been as nie op Puntr nie of stoor as konsep.",
+    "fixture_not_open": "'n Wedstryd op hierdie strokie is nie oop vir voorspellings nie.",
+    "not_launched": "Voorspellings open wanneer Puntr bekendgestel word. Jy kan die strokie nou as konsep stoor.",
+    "age_not_attested": "Bevestig in jou rekening dat jy 18 of ouer is om voorspellings te publiseer.",
+    "posting_paused": "Jou voorspellings is gestaak terwyl jy 'n blaaskans neem.",
+    "banned": "Jou rekening kan nie voorspellings publiseer nie.",
+    "duplicate": "Jy het reeds 'n voorspelling op een van hierdie wedstryde en markte."
+  }
+}

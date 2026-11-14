@@ -38,6 +38,7 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SlipsRouteImport } from './routes/slips'
 import { Route as StandingsRouteImport } from './routes/standings'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -73,6 +74,7 @@ import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
 import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.practice-tick'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
+import { Route as ApiCronSlipImagesRouteImport } from './routes/api.cron.slip-images'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
 import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
@@ -222,6 +224,11 @@ const RoadmapRoute = RoadmapRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlipsRoute = SlipsRouteImport.update({
+  id: '/slips',
+  path: '/slips',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StandingsRoute = StandingsRouteImport.update({
@@ -402,6 +409,11 @@ const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
   path: '/api/cron/settle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronSlipImagesRoute = ApiCronSlipImagesRouteImport.update({
+  id: '/api/cron/slip-images',
+  path: '/api/cron/slip-images',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronSyncFixturesRoute = ApiCronSyncFixturesRouteImport.update({
   id: '/api/cron/sync-fixtures',
   path: '/api/cron/sync-fixtures',
@@ -458,6 +470,7 @@ export interface FileRoutesByFullPath {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -493,6 +506,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
@@ -529,6 +543,7 @@ export interface FileRoutesByTo {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -564,6 +579,7 @@ export interface FileRoutesByTo {
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
@@ -601,6 +617,7 @@ export interface FileRoutesById {
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -636,6 +653,7 @@ export interface FileRoutesById {
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
@@ -674,6 +692,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/slips'
     | '/standings'
     | '/support'
     | '/terms'
@@ -709,6 +728,7 @@ export interface FileRouteTypes {
     | '/api/cron/launch-notify'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
+    | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
@@ -745,6 +765,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/slips'
     | '/standings'
     | '/support'
     | '/terms'
@@ -780,6 +801,7 @@ export interface FileRouteTypes {
     | '/api/cron/launch-notify'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
+    | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
@@ -816,6 +838,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/slips'
     | '/standings'
     | '/support'
     | '/terms'
@@ -851,6 +874,7 @@ export interface FileRouteTypes {
     | '/api/cron/launch-notify'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
+    | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
@@ -888,6 +912,7 @@ export interface RootRouteChildren {
   RewardsRoute: typeof RewardsRoute
   RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SlipsRoute: typeof SlipsRoute
   StandingsRoute: typeof StandingsRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
@@ -923,6 +948,7 @@ export interface RootRouteChildren {
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
   ApiCronPracticeTickRoute: typeof ApiCronPracticeTickRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
+  ApiCronSlipImagesRoute: typeof ApiCronSlipImagesRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
   ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
@@ -1133,6 +1159,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/slips': {
+      id: '/slips'
+      path: '/slips'
+      fullPath: '/slips'
+      preLoaderRoute: typeof SlipsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/standings': {
@@ -1380,6 +1413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSettleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/slip-images': {
+      id: '/api/cron/slip-images'
+      path: '/api/cron/slip-images'
+      fullPath: '/api/cron/slip-images'
+      preLoaderRoute: typeof ApiCronSlipImagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/sync-fixtures': {
       id: '/api/cron/sync-fixtures'
       path: '/api/cron/sync-fixtures'
@@ -1448,6 +1488,7 @@ const rootRouteChildren: RootRouteChildren = {
   RewardsRoute: RewardsRoute,
   RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SlipsRoute: SlipsRoute,
   StandingsRoute: StandingsRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
@@ -1483,6 +1524,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
   ApiCronPracticeTickRoute: ApiCronPracticeTickRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
+  ApiCronSlipImagesRoute: ApiCronSlipImagesRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
   ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,

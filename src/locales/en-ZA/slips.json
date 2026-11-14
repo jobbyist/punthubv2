@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Betting slips: record, share and track your picks | Puntr",
+    "description": "Add a betting slip by typing it, pasting it or uploading a photo. Review it, then publish its legs as time-stamped Puntr picks."
+  },
+  "title": "Betting slips",
+  "subtitle": "Record a slip you placed with a bookmaker. Review every detail, then publish its legs as time-stamped picks that count on your record.",
+  "tabs": {
+    "label": "Slips",
+    "community": "Community",
+    "mine": "My slips",
+    "new": "Add a slip"
+  },
+  "signIn": "Sign in to add and track your slips.",
+  "empty": {
+    "community": "No published slips yet.",
+    "mine": "You haven't added a slip yet."
+  },
+  "source": {
+    "title": "How do you want to add it?",
+    "manual": "Type it",
+    "manualHint": "Enter the matches and selections yourself.",
+    "text": "Paste text",
+    "textHint": "Copy the slip from your bookmaker's app or site.",
+    "image": "Upload a photo",
+    "imageHint": "A screenshot or photo. It's read on your device."
+  },
+  "paste": {
+    "label": "Slip text",
+    "placeholder": "Paste the slip here, e.g.\nKaizer Chiefs v Orlando Pirates\nMatch Result: Kaizer Chiefs @ 2.40",
+    "read": "Read slip"
+  },
+  "photo": {
+    "choose": "Choose a photo",
+    "preparing": "Preparing photo…",
+    "reading": "Reading text on your device… {{pct}}%",
+    "privacy": "Your photo is read on this device. Only the text, with personal details removed, is used to fill in the form. Cover your account name, balance and ID before uploading. Photos are private to you and deleted after 30 days."
+  },
+  "removed_one": "We removed {{count}} personal detail before reading the slip.",
+  "removed_other": "We removed {{count}} personal details before reading the slip.",
+  "aiLeft": "AI-assisted reads left today: {{count}}",
+  "review": {
+    "title": "Check your slip",
+    "hint": "Fix anything that was read wrongly. Legs linked to a Puntr fixture with a supported market become picks when you publish; other legs are tracked on the slip only.",
+    "bookmaker": "Bookmaker",
+    "bookmakerNone": "Not shown",
+    "bookmakerPrivate": "Only you can see the bookmaker.",
+    "stake": "Stake",
+    "return": "Potential return",
+    "totalOdds": "Total odds",
+    "showStake": "Show my stake and return on the published slip",
+    "note": "Note (optional)",
+    "notePlaceholder": "Why you like these picks (280 characters)",
+    "confidence": "Confidence for these picks",
+    "legs": "Legs",
+    "leg": "Leg {{n}}",
+    "fixture": "Puntr fixture",
+    "fixtureNone": "Not on Puntr (tracked only)",
+    "home": "Home team",
+    "away": "Away team",
+    "market": "Market",
+    "marketNone": "Other market (tracked only)",
+    "selection": "Selection",
+    "odds": "Odds",
+    "bookmakerWording": "On the slip: {{text}}",
+    "addLeg": "Add a leg",
+    "removeLeg": "Remove leg",
+    "trackedOnly": "Tracked only",
+    "becomesPick": "Becomes a pick",
+    "saveDraft": "Save as draft",
+    "publish": "Save and publish",
+    "cancel": "Start again"
+  },
+  "markets": {
+    "1X2": "Match result",
+    "OU25": "Over/under 2.5 goals",
+    "BTTS": "Both teams to score",
+    "DC": "Double chance"
+  },
+  "selections": {
+    "home": "Home",
+    "draw": "Draw",
+    "away": "Away",
+    "over": "Over 2.5",
+    "under": "Under 2.5",
+    "yes": "Yes",
+    "no": "No",
+    "1X": "Home or draw",
+    "X2": "Draw or away",
+    "12": "Home or away"
+  },
+  "issues": {
+    "no_legs": "Add at least one leg.",
+    "too_many_legs": "A slip can have up to 30 legs.",
+    "leg_teams": "Every leg needs a home and an away team.",
+    "leg_odds": "Odds must be between 1.01 and 1000.",
+    "leg_selection": "Choose a selection for every leg with a market.",
+    "stake": "Enter a stake between R0.01 and R1 000 000, or leave it empty.",
+    "return": "Check the potential return."
+  },
+  "card": {
+    "by": "by {{name}}",
+    "draft": "Draft",
+    "legs_one": "{{count}} leg",
+    "legs_other": "{{count}} legs",
+    "stake": "Stake {{amount}}",
+    "return": "Return {{amount}}",
+    "odds": "Odds {{odds}}",
+    "publish": "Publish",
+    "delete": "Delete",
+    "confirmDelete": "Delete this slip? Published picks stay on your record.",
+    "showStake": "Show stake",
+    "hideStake": "Hide stake",
+    "picksNote": "Picks that came from this slip are settled with every other Puntr pick."
+  },
+  "result": {
+    "won": "Won",
+    "lost": "Lost",
+    "pending": "Pending",
+    "partial": "Partly tracked",
+    "void": "Void"
+  },
+  "done": {
+    "draft": "Saved as a draft. Only you can see it.",
+    "published_one": "Published. {{count}} pick was added to your record.",
+    "published_other": "Published. {{count}} picks were added to your record.",
+    "deleted": "Slip deleted."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "empty": "We couldn't find any slip text. Try another photo or paste the text.",
+    "unreadable": "We couldn't read a bet from that. Check the text or type the slip in.",
+    "image_type": "Use a PNG, JPEG or WebP image.",
+    "image_size": "That image is too large. Try a screenshot instead.",
+    "image_decode": "We couldn't open that image.",
+    "ocr": "We couldn't read the photo on this device. Paste the text or type the slip instead.",
+    "daily_limit": "You've reached today's limit. Try again tomorrow.",
+    "slip_empty": "Add at least one leg before publishing.",
+    "slip_unavailable": "This slip can't be published.",
+    "slip_published": "A published slip can't be changed.",
+    "bad_image_path": "The photo couldn't be attached. Please try again.",
+    "kickoff_passed": "A match on this slip has already kicked off, so it can't become a pick. Mark that leg as not on Puntr or save as a draft.",
+    "fixture_not_open": "A match on this slip isn't open for picks.",
+    "not_launched": "Picks open when Puntr launches. You can save the slip as a draft now.",
+    "age_not_attested": "Confirm that you're 18 or older in your account to publish picks.",
+    "posting_paused": "Your picks are paused while you're on a break.",
+    "banned": "Your account can't publish picks.",
+    "duplicate": "You already have a pick on one of these matches and markets."
+  }
+}

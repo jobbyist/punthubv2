@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r17.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r18.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -49,6 +49,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Die sportsoorte, kompetisies en spanne wat jy kies om te volg",
     "Jou toestemming (jy kies om dit te stel; vee dit enige tyd in jou rekening uit)",
     "Terwyl jou rekening oop is; geskrap wanneer jy dit uitvee of jou rekening skrap. Word slegs gebruik om jou eie Wedstryddag-kaart en kortpaaie te orden; nooit aan ander gewys of gedeel nie [attorney review]",
+  ],
+  [
+    "Wedstrokies (opsioneel)",
+    "Strokies wat jy byvoeg: wedstryde, markte, pryse, en as jy dit invoer die boekmaker, inset en moontlike opbrengs; 'n opsionele foto of skermskoot van die strokie. Die boekmaker word net aan jou gewys; jou inset en opbrengs word net op 'n gepubliseerde strokie gewys as jy dit aanskakel. Gepubliseerde bene word gewone voorspellings wat met jou gebruikersnaam gewys word",
+    "Jou toestemming (jy kies om 'n strokie by te voeg) en kontrak (die publisering van voorspellings wat jy vra dat ons publiseer)",
+    "Strokiefoto's: 30 dae ná oplaai geskrap, of wanneer jy die strokie of jou rekening skrap. Strokiebesonderhede: solank jou rekening oop is; met skrapping word konsepte geskrap en die boekmaker, inset, opbrengs en nota uitgevee, terwyl voorspellings wat reeds gepubliseer is by die anonieme rekening bly soos elke ander voorspelling. 'n Telling van KI-gesteunde lesings (sonder strokieteks) word vir 24-uur-limiete gehou en saam met jou rekening geskrap [attorney review]",
   ],
   [
     "Gemeenskapsduelle (vanaf bekendstelling)",
@@ -159,7 +165,7 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r17). Konsep wat op
+          <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r18). Konsep wat op
           hersiening deur 'n prokureur wag.
         </p>
 
@@ -295,11 +301,18 @@ export function PrivacyAf() {
             grootmaatkodes wat die borg verskaf, en 'n borg se eie webwerf samel data in wanneer jy
             'n kode gebruik. Om data buite Suid-Afrika te stuur, word ingevolge artikel 72 van POPIA
             toegelaat waar die ontvangende land of kontrak vergelykbare beskerming bied. Ons stuur
-            nooit persoonlike data na KI-dienste nie. Om nuuskamerartikels te skryf en
-            sokkerwedstryde en -uitslae van openbare webblaaie te lees, gebruik ons Parallel
-            (soektogte op die web), Firecrawl (lees van bladsye) en Google Gemini (opsomming van
-            daardie bladsye): hulle ontvang slegs openbare webblaaie en Puntr se eie goedgekeurde
-            projekopdaterings, nooit inligting oor jou nie. Ons verkoop nie jou data nie.
+            nooit persoonlike data na KI-dienste nie. Wanneer jy 'n strokiefoto oplaai, word die
+            teks op jou eie toestel gelees (die foto word nooit na 'n KI-diens gestuur nie). Voordat
+            strokieteks gebruik word, verwyder ons die persoonlike besonderhede wat ons kan opspoor
+            (e-posadresse, telefoonnommers, lang rekening-, ID- of kaartnommers, en reëls met 'n
+            naam, gebruikersnaam, saldo, rekening of ID); as ons eie leser nie die weddenskap kan
+            vind nie, kan net daardie skoongemaakte teks na Google Gemini gestuur word om die
+            wedstryde, markte en pryse te lees. Bedek asseblief jou rekeningnaam en saldo voordat jy
+            oplaai. [attorney review] Om nuuskamerartikels te skryf en sokkerwedstryde en -uitslae
+            van openbare webblaaie te lees, gebruik ons Parallel (soektogte op die web), Firecrawl
+            (lees van bladsye) en Google Gemini (opsomming van daardie bladsye): hulle ontvang slegs
+            openbare webblaaie en Puntr se eie goedgekeurde projekopdaterings, nooit inligting oor
+            jou nie. Ons verkoop nie jou data nie.
           </p>
         </section>
 

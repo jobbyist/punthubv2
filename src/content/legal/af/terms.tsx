@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r16.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r18.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r16). Konsep wat
+            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r18). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -191,6 +191,20 @@ export function TermsAf() {
               vir gelykop) bepaal slegs die Duel-ranglys. Duelle betaal nooit geld uit nie en
               PuntPoints het geen kontantwaarde nie. Ons kan duelle nietig verklaar en punte
               terugtrek waar lede saamspan of meer as een rekening gebruik. [attorney review]
+            </p>
+            <p className={P}>
+              Wedstrokies: jy kan 'n strokie wat jy by 'n boekmaker geplaas het, byvoeg deur dit in
+              te tik, die teks te plak of 'n foto op te laai. Jy moet elke besonderheid nagaan
+              voordat jy stoor; teks wat van 'n foto of deur ons assistent gelees word, kan verkeerd
+              wees en jy is verantwoordelik vir wat jy publiseer. Voeg net jou eie strokies by en
+              laai nie iemand anders se persoonlike inligting op nie. Wanneer jy 'n strokie
+              publiseer, word elke been op 'n Puntr-wedstryd met 'n ondersteunde mark 'n gewone
+              voorspelling met 'n tydstempel ingevolge hierdie Bepalings (dieselfde
+              bekendstellings-, ouderdoms- en limietreëls geld) en kan dit nie daarna verander word
+              nie; ander bene word op die strokie gewys maar tel nie op jou rekord nie. Puntr
+              kontroleer nie dat 'n weddenskap geplaas is nie, neem nie weddenskappe nie en koppel
+              nie strokies aan boekmakers nie. Jy kan tot 20 strokies per dag publiseer. Ons kan
+              strokies verwyder wat hierdie Bepalings oortree. [attorney review]
             </p>
             <p className={P}>
               PuntPoints het geen kontantwaarde nie. Dit kan nie gekoop, verkoop of vir geld

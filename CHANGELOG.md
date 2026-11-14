@@ -3,6 +3,19 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (later): betting slips
+
+Added
+- `/slips`: add a slip by typing, pasting or uploading a photo; review and edit every leg (Puntr fixture, market,
+  selection, odds), bookmaker, stake and return; save as a draft or publish. Community and My slips feeds with
+  results from settled picks. "Slips" in the side nav; sitemap.
+- On-device OCR (self-hosted tesseract.js copied to `public/ocr` at build time), PII scrubber, deterministic parser
+  with bookmaker-wording to market mapping, Gemini fallback on scrubbed text only (20 a day per member), fixture
+  matching, bookmaker adapter registry for post-MVP share-link and API imports (`src/lib/slips/`).
+- Database: `bet_slips`, `bet_slip_legs`, `slip_parses`, `publish_slip`, `slip_detail`, `slips_feed`, private `slips`
+  bucket, `slip-images` daily job (03:25 SAST) removing photos after 30 days.
+- Terms and Privacy r18 (English and Afrikaans); `docs/BETTING_SLIPS.md`.
+
 ## 14 November 2026 (later): league standings and form sync
 
 Added
