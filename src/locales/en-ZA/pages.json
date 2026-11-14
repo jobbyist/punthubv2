@@ -90,7 +90,7 @@
     "items": {
       "converter": {
         "name": "Betting Slip Converter",
-        "description": "Convert supported bookmaker slip formats into a cleaner, easier-to-read format. Designed as a convenience tool, not a way to place bets."
+        "description": "Import or upload your bookmaker slip to instantly convert your bets into trackable Puntr picks. Get immediate AI match analysis, unlock community sentiment, and lock in your verified picks for upcoming fixtures in minutes."
       },
       "edge": {
         "name": "AI \"Edge Finder\" Summary Cards",

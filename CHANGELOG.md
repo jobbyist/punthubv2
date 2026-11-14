@@ -3,6 +3,15 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 14 November 2026 (batch 1, PR E): /tools copy and plan
+
+Changed
+- Betting Slip Converter card description (owner copy, English and Afrikaans): positioned as a bridge from bookmaker
+  slips to trackable Puntr picks, AI match analysis and community sentiment. The card stays "Coming soon".
+
+Added
+- `docs/TOOLS_PLAN.md`: what "live" means for each tool, order, dependencies and the decisions needed before launch.
+
 ## 14 November 2026 (batch 1, PR C): member Matchday card and favourites
 
 Added
