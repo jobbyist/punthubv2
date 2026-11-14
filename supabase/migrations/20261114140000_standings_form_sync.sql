@@ -122,7 +122,7 @@ begin
     return 'not_final';
   end if;
   select competition_key, min(synced_at) into v_key, v_synced
-  from public.league_standings where competition = v_f.competition group by competition_key limit 1;
+  from public.league_standings where competition = v_f.competition group by competition_key order by competition_key limit 1;
   if v_key is null then return 'no_table'; end if;
   -- A result from before the table was taken is already in it.
   if v_f.kickoff_at <= v_synced then return 'in_snapshot'; end if;
