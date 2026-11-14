@@ -24,13 +24,20 @@ export const Route = createFileRoute("/api/cron/slip-images")({
           .from("slips")
           .remove(rows.map((r) => r.image_path));
         if (rmError) return Response.json({ ok: false, error: rmError.message }, { status: 500 });
-        await db
+        // Removing an already-deleted path is not an error, so a failed update here is retried safely next run.
+        const { error: updError } = await db
           .from("bet_slips")
           .update({ image_path: null, image_expires_at: null })
           .in(
             "id",
             rows.map((r) => r.id),
           );
+        if (updError) {
+          return Response.json(
+            { ok: false, removed: rows.length, error: updError.message },
+            { status: 500 },
+          );
+        }
         return Response.json({ ok: true, removed: rows.length });
       },
     },

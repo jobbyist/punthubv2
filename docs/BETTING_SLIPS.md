@@ -10,7 +10,7 @@ Pre-MVP scope: manual entry, pasted text and photo upload. Post-MVP: bookmaker s
    read on the device by tesseract.js. The assets live in `public/ocr`, copied from `node_modules` by
    `scripts/copy-ocr-assets.mjs` before `dev` and `build`. The text is scrubbed (`scrubSlipText`) and sent to the
    `parseSlip` server function, which scrubs again, runs the deterministic parser (`parseSlipText`) and, only when
-   that finds no legs, sends the scrubbed text to Gemini (Flash-Lite first, quota-guarded, 20 successful AI reads per
+   that finds no legs, sends the scrubbed text to Gemini (Flash-Lite first, quota-guarded, 20 AI read attempts per
    member per 24 h, logged in `slip_parses` without text). Legs are matched to scheduled fixtures in the next 14 days
    with `resolveTeam` (both teams must resolve to exactly one fixture).
 3. **Review.** The member checks bookmaker, stake, return, and every leg: Puntr fixture (or "not on Puntr"), market,

@@ -6,7 +6,7 @@ import { resolveTeam } from "@/lib/pfie/teams";
 import { coerceDraft, parseSlipText, type SlipDraft } from "./parse";
 import { scrubSlipText } from "./scrub";
 
-/** AI-assisted reads per member per day (text pastes and photos together). Deterministic parsing is unlimited. */
+/** AI-assisted read attempts per member per 24 h (text and photos together). Deterministic parsing is unlimited. */
 export const DAILY_PARSE_CAP = 20;
 
 export type ParseSlipResult =
@@ -73,7 +73,7 @@ export const parseSlip = createServerFn({ method: "POST" })
       .from("slip_parses" as never)
       .select("id", { count: "exact", head: true })
       .eq("user_id", context.userId)
-      .eq("ok", true)
+      // Every AI attempt counts, readable or not, so unreadable text cannot buy unlimited Gemini calls.
       .gte("created_at", since);
     const used = count ?? 0;
 
