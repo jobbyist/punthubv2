@@ -3,7 +3,6 @@ import {
   BarChart3,
   CalendarDays,
   Menu,
-  Swords,
   Star,
   Trophy,
   Users,
@@ -41,7 +40,7 @@ let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
 const bottomNavItems = [
   { key: "fixtures", to: "/results", icon: CalendarDays },
-  { key: "duels", to: "/leaderboards", icon: Swords },
+  { key: "community", to: "/community", icon: Users },
   { key: "puntPoints", to: "/puntpoints", icon: Star },
 ] as const;
 
