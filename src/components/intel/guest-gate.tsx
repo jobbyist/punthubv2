@@ -94,6 +94,7 @@ function GateCardInner({ overlap }: { overlap: boolean }) {
             src="/join"
             className="min-h-0 w-full flex-1 border-0 bg-background"
             allow="clipboard-read; clipboard-write"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
           />
         </DialogContent>
       </Dialog>
