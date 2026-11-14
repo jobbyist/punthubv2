@@ -8,6 +8,11 @@ Status: built, **off**. Nothing can be bought until all three are true: PayFast 
 3. PayFast calls `POST /api/payfast/itn`. Credits are granted only if the source address is PayFast's, the signature matches, PayFast's own `/eng/query/validate` answers VALID, and `grant_credit_purchase()` finds the amount equal to the order. It writes one `credit_ledger` purchase row keyed on `pf_payment_id`; a repeat ITN grants nothing.
 4. `/wallet` shows the new balance.
 
+## Security notes
+- Source-address check: relies on `x-real-ip` / `x-forwarded-for`, which Vercel's edge overwrites with the real connecting address. If Puntr ever moves behind another proxy or CDN, that proxy must overwrite both headers, or the check must change. The signature (with passphrase), PayFast's `/eng/query/validate` postback and the exact amount match still protect the grant on their own.
+- `payments_enabled()` is executable by the service role only (migration `20261114210000`).
+- An ITN that cannot be matched to an order or whose amount differs returns 500, so it is logged and PayFast retries. A COMPLETE after an earlier FAILED/CANCELLED for the same order is still credited, because the buyer can retry on PayFast's page and that payment is real.
+
 ## Environment (Vercel, Production)
 `PAYFAST_MERCHANT_ID`, `PAYFAST_MERCHANT_KEY`, `PAYFAST_PASSPHRASE`, optional `PAYFAST_SANDBOX=true`, optional `SITE_URL` (default https://puntr.co.za). In the PayFast dashboard the passphrase must match and ITN must be enabled.
 

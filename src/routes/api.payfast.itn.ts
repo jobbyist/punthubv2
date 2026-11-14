@@ -13,6 +13,9 @@ export const Route = createFileRoute("/api/payfast/itn")({
         const cfg = pf.payfastConfig();
         if (!cfg) return new Response("not configured", { status: 503 });
 
+        // On Vercel the edge overwrites x-real-ip / x-forwarded-for with the connecting address, so a client cannot
+        // spoof them. This check is only the first guard: signature, PayFast's postback and the exact amount follow.
+        // If the app ever runs behind another proxy, it must overwrite these headers too (docs/payments.md).
         const ip =
           request.headers.get("x-real-ip") ??
           request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
