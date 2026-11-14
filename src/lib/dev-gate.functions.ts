@@ -8,13 +8,22 @@ import {
 } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+import type { ReadinessSnapshot } from "@/lib/mvp-readiness";
+
 /**
  * Private /dev page (the MVP blueprint). Internal staff only.
  * Server modules are imported inside the handlers so they stay out of the client bundle.
  */
 
 export type DevPageData =
-  { status: "locked" } | { status: "open"; html: string; source: string; builtAt: string };
+  | { status: "locked" }
+  | {
+      status: "open";
+      html: string;
+      source: string;
+      builtAt: string;
+      readiness: ReadinessSnapshot;
+    };
 
 function privateHeaders() {
   setResponseHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
@@ -27,7 +36,15 @@ export const getDevPage = createServerFn({ method: "GET" }).handler(
     const { DEV_COOKIE, openSession } = await import("@/lib/dev-gate.server");
     const doc = openSession(getCookie(DEV_COOKIE));
     if (!doc) return { status: "locked" };
-    return { status: "open", ...doc };
+    const { readSnapshot } = await import("@/lib/mvp-readiness.server");
+    const { sanitizeBlueprintHtml } = await import("@/lib/dev-sanitize");
+    // Defence in depth: the archived blueprint never reaches the browser with active content.
+    return {
+      status: "open",
+      ...doc,
+      html: sanitizeBlueprintHtml(doc.html),
+      readiness: await readSnapshot(),
+    };
   },
 );
 
@@ -70,3 +87,20 @@ export const devSignOut = createServerFn({ method: "POST" }).handler(async () =>
   deleteCookie(DEV_COOKIE, { path: "/" });
   return { ok: true };
 });
+
+const taskSchema = z.object({
+  taskId: z.string().regex(/^[a-z0-9-]{1,64}$/),
+  done: z.boolean(),
+});
+
+/** Ticks or unticks a manual checklist task. Needs a valid /dev session (same gate as the page). */
+export const setDevReadinessTask = createServerFn({ method: "POST" })
+  .validator((input: unknown) => taskSchema.parse(input))
+  .handler(async ({ data }): Promise<{ ok: boolean; reason?: "locked" | "failed" }> => {
+    privateHeaders();
+    const { DEV_COOKIE, openSession } = await import("@/lib/dev-gate.server");
+    if (!openSession(getCookie(DEV_COOKIE))) return { ok: false, reason: "locked" };
+    const { writeTask } = await import("@/lib/mvp-readiness.server");
+    const res = await writeTask(data.taskId, data.done);
+    return res.ok ? { ok: true } : { ok: false, reason: "failed" };
+  });

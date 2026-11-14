@@ -4,13 +4,15 @@ import { Lock, LogOut } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import blueprintCss from "../styles/dev-blueprint.css?url";
+import { ReadinessPanel } from "@/components/dev/readiness-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { devSignIn, devSignOut, getDevPage } from "@/lib/dev-gate.functions";
 
 /**
- * /dev: the MVP blueprint, for the Puntr team only. Internal and English-only by design
+ * /dev: the live MVP readiness checklist (default tab) and the archived MVP blueprint, for the Puntr team only. Internal and English-only by design
  * (excluded from i18n:check). Not in the sitemap or any nav; robots.txt disallows it;
  * noindex in the head and the X-Robots-Tag header. The document is decrypted on the server
  * only after the gate email + password are entered (see src/lib/dev-gate.server.ts).
@@ -38,7 +40,45 @@ export const Route = createFileRoute("/dev")({
 function DevPage() {
   const page = Route.useLoaderData();
   if (page.status === "locked") return <Gate />;
-  return <Blueprint html={page.html} builtAt={page.builtAt} />;
+  return <DevShell page={page} />;
+}
+
+function DevShell({
+  page,
+}: {
+  page: Extract<ReturnType<typeof Route.useLoaderData>, { status: "open" }>;
+}) {
+  const router = useRouter();
+  const signOut = useServerFn(devSignOut);
+
+  async function onSignOut() {
+    await signOut();
+    await router.invalidate();
+  }
+
+  return (
+    <Tabs defaultValue="readiness">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-2 sm:px-6">
+        <TabsList>
+          <TabsTrigger value="readiness">Readiness</TabsTrigger>
+          <TabsTrigger value="blueprint">Blueprint (archive)</TabsTrigger>
+        </TabsList>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="hidden sm:inline">Team only · do not share</span>
+          <Button variant="ghost" size="sm" onClick={onSignOut}>
+            <LogOut className="size-4" aria-hidden />
+            Sign out
+          </Button>
+        </div>
+      </div>
+      <TabsContent value="readiness" className="mt-0">
+        <ReadinessPanel snapshot={page.readiness} />
+      </TabsContent>
+      <TabsContent value="blueprint" className="mt-0">
+        <Blueprint html={page.html} builtAt={page.builtAt} />
+      </TabsContent>
+    </Tabs>
+  );
 }
 
 function Gate() {
@@ -138,8 +178,6 @@ function selectNode(el: Element) {
 }
 
 function Blueprint({ html, builtAt }: { html: string; builtAt: string }) {
-  const router = useRouter();
-  const signOut = useServerFn(devSignOut);
   const ref = useRef<HTMLDivElement>(null);
 
   // The blueprint's own behaviour, rebuilt in React: copy buttons, "Show full prompt", copy all.
@@ -216,23 +254,13 @@ function Blueprint({ html, builtAt }: { html: string; builtAt: string }) {
     return () => cleanups.forEach((fn) => fn());
   }, [html]);
 
-  async function onSignOut() {
-    await signOut();
-    await router.invalidate();
-  }
-
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-2 text-xs text-muted-foreground sm:px-6">
-        <span>
-          Team only · do not share · built{" "}
-          {new Date(builtAt).toLocaleString("en-ZA", { timeZone: "Africa/Johannesburg" })}
-        </span>
-        <Button variant="ghost" size="sm" onClick={onSignOut}>
-          <LogOut className="size-4" aria-hidden />
-          Sign out
-        </Button>
-      </div>
+      <p className="border-b border-border bg-muted/40 px-4 py-2 text-xs text-muted-foreground sm:px-6">
+        Archived blueprint, built{" "}
+        {new Date(builtAt).toLocaleString("en-ZA", { timeZone: "Africa/Johannesburg" })}. Superseded
+        by the Readiness tab and the 14 Nov blueprint PDF in the project.
+      </p>
       <div ref={ref} className="bp" dangerouslySetInnerHTML={{ __html: html }} />
     </div>
   );
