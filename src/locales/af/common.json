@@ -166,5 +166,10 @@
     "title": "Verhoudings met boekmakers en redaksionele onafhanklikheid",
     "p1": "Tipgewers op Puntr teken keuses aan teen die wedstryde en pryse wat gelisensieerde en plaaslik gereguleerde platforms aanbied. Puntr neem nie weddenskappe nie en is nie noodwendig by hulle geaffilieer of deur hulle onderskryf nie.",
     "p2": "Puntr sal nooit toelaat dat 'n geaffilieerde, vennoot of borg met spesiale belange sy voorspellingstellings, KI-aanbevelings, redaksionele inhoud of onafhanklike waarskynlikheidsberamings beïnvloed nie."
+  },
+  "adminNotch": {
+    "label": "Admin",
+    "open": "Maak die adminportaal oop",
+    "dismiss": "Versteek die admin-kortpad vir 'n week"
   }
 }

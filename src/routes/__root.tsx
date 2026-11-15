@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { SessionProvider } from "@/components/session";
 import { FoundingBar } from "@/components/founding-bar";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AdminNotch } from "@/components/admin-notch";
 import { SecurityPrompt } from "@/components/security-prompt";
 import { MfaGate } from "@/components/mfa-gate";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -279,6 +280,7 @@ function RootComponent() {
           <SiteFooter />
         </div>
         <MobileNav />
+        <AdminNotch />
         {SHOW_PUNT_AI_CHAT && <PuntAI />}
         <ConsentBanner />
         <Toaster />
