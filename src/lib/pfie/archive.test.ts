@@ -81,6 +81,31 @@ describe("archive parsers", () => {
   });
 });
 
+// Full-page shape of a mid-season article: separator row, empty cells, an "a" rivalry link whose title wraps
+// across a blank line, and "Home \\ Away" with an escaped backslash.
+const WIKI_LIVE = `
+# Results
+| Home \\\\ Away | [MSU](https://en.wikipedia.org/wiki/M "M") | [NFO](https://en.wikipedia.org/wiki/N "N") | [WOL](https://en.wikipedia.org/wiki/W "W") |
+| --- | --- | --- | --- |
+| [Mamelodi Sundowns](https://en.wikipedia.org/wiki/M "M") | — |  | [a](https://en.wikipedia.org/wiki/Derby "M–W
+
+rivalry") |
+| [Nottingham Forest](https://en.wikipedia.org/wiki/N "N") | 1–0 | — |  |
+| [Wolverhampton Wanderers](https://en.wikipedia.org/wiki/W "W") | 2–2 |  | — |
+Updated to match(es) played on 31 October 2026.
+`;
+
+describe("live-season matrix", () => {
+  it("parses a partly filled matrix with separator rows and wrapped titles", () => {
+    const mx = parseResultsMatrix(WIKI_LIVE)!;
+    expect(mx).not.toBeNull();
+    expect(mx.teams).toHaveLength(3);
+    expect(mx.scores.get("1:0")).toEqual([1, 0]);
+    expect(mx.scores.get("2:0")).toEqual([2, 2]);
+    expect(mx.scores.size).toBe(2);
+  });
+});
+
 describe("reconcileSeason", () => {
   it("keeps only matches both pages agree on", () => {
     const matrix = parseResultsMatrix(WIKI)!;

@@ -64,7 +64,18 @@ export async function runArchiveJob(
     const matches = parseFbrefSchedule(fb.markdown);
     const matrix = parseResultsMatrix(wiki.markdown);
     if (matches.length === 0) throw new Error("no played matches on the fbref page");
-    if (!matrix) throw new Error("no results matrix on the wikipedia page");
+    if (!matrix) {
+      // Diagnostics: what the reader returned around the results table (public page text only).
+      const md = wiki.markdown;
+      const at = md.search(/home\s*\\*\s*away/i);
+      await deps.store.record("archive", scope, false, "no results matrix on the wikipedia page", {
+        wikiChars: md.length,
+        tableLines: md.split("\n").filter((l) => l.trimStart().startsWith("|")).length,
+        homeAwayAt: at,
+        snippet: at >= 0 ? md.slice(Math.max(0, at - 40), at + 600) : md.slice(0, 300),
+      });
+      return { ok: false, detail: "no results matrix on the wikipedia page" };
+    }
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     const { rows, report } = reconcileSeason(key, matches, matrix, known);
     const inserted = rows.length

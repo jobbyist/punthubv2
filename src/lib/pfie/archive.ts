@@ -64,6 +64,36 @@ export function archiveUrls(src: ArchiveSource, startYear: number) {
 
 const LINK = /\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 
+/**
+ * Markdown split into logical lines with table rows rejoined: a row that starts with "|" and does not yet end
+ * with "|" (a long link title wrapped onto the next line, sometimes across a blank line) continues until it does.
+ * Separator rows (`| --- | :-: |`) are dropped.
+ */
+export function tableLines(markdown: string): string[] {
+  const out: string[] = [];
+  let open: string | null = null;
+  for (const raw of markdown.split("\n")) {
+    const line = raw.trimEnd();
+    if (open !== null) {
+      open = `${open} ${line.trim()}`.trimEnd();
+      if (open.endsWith("|")) {
+        out.push(open);
+        open = null;
+      } else if (open.length > 20_000) {
+        // A row this long is malformed: drop it rather than hand a broken row to the parsers.
+        open = null;
+      }
+      continue;
+    }
+    if (line.trimStart().startsWith("|") && !line.endsWith("|")) {
+      open = line;
+      continue;
+    }
+    out.push(line);
+  }
+  return out.filter((l) => !/^\s*\|(\s*:?-{2,}:?\s*\|)+\s*$/.test(l));
+}
+
 /** Cells of one markdown table row, links kept as written. */
 export function cells(line: string): string[] {
   const trimmed = line.trim();
@@ -108,7 +138,7 @@ export function parseFbrefSchedule(markdown: string): FbrefMatch[] {
   const out: FbrefMatch[] = [];
   const seen = new Set<string>();
   let cols: { date: number; home: number; score: number; away: number } | null = null;
-  for (const line of markdown.split("\n")) {
+  for (const line of tableLines(markdown)) {
     const row = cells(line);
     if (row.length < 5) continue;
     const plain = row.map(linkText);
@@ -149,11 +179,10 @@ export interface ResultsMatrix {
  * have to be guessed. Returns null when no complete, square matrix is found.
  */
 export function parseResultsMatrix(markdown: string): ResultsMatrix | null {
-  // Long link titles wrap onto a new line inside a row: rejoin a line break that does not follow a closing pipe.
-  const lines = markdown.replace(/([^|\s])[ \t]*\n(?=[^|\n])/g, "$1 ").split("\n");
+  const lines = tableLines(markdown);
   for (let i = 0; i < lines.length; i++) {
     const header = cells(lines[i]!);
-    if (header.length < 4 || !/home\s*\\?\s*away/i.test(linkText(header[0] ?? ""))) continue;
+    if (header.length < 4 || !/home\s*\\*\s*away/i.test(linkText(header[0] ?? ""))) continue;
     const colHrefs = header.slice(1).map(firstHref);
     if (colHrefs.some((h) => !h)) continue;
     const teams: string[] = [];
@@ -187,7 +216,7 @@ export function parseResultsMatrix(markdown: string): ResultsMatrix | null {
 
 /** The first "Pos | Team | Pld | W | D | L | GF | GA | GD | Pts" table on a Wikipedia season page. */
 export function parseWikiTable(markdown: string): StandingRow[] | null {
-  const lines = markdown.split("\n");
+  const lines = tableLines(markdown);
   for (let i = 0; i < lines.length; i++) {
     const header = cells(lines[i]!).map(linkText);
     const at = (name: string) => header.indexOf(name);
