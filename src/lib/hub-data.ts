@@ -29,7 +29,11 @@ export async function fetchLatestResults(limit = 6): Promise<HubResult[]> {
 
 /** Competition keys that have a stored league table, for the hub's table snapshot tabs. */
 export async function fetchTableKeys(): Promise<string[]> {
-  const { data, error } = await db.from("league_standings").select("competition_key").limit(1000);
+  const { data, error } = await db
+    .from("league_standings")
+    .select("competition_key")
+    .order("competition_key")
+    .limit(1000);
   if (error) throw error;
   return [
     ...new Set(((data ?? []) as { competition_key: string }[]).map((r) => r.competition_key)),

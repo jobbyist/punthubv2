@@ -136,7 +136,7 @@ function Predictions() {
           to="/fixtures"
           className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
         >
-          {t("hub.next.cta", { count: shown.length })}
+          {t("hub.next.cta", { count: fixtures.length })}
           <ArrowRight className="size-3.5" aria-hidden />
         </Link>
       </div>
