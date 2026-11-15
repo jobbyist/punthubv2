@@ -26,6 +26,7 @@ import {
   type CompetitionRegion,
 } from "@/lib/match/competition-meta";
 import { competitions } from "@/lib/sports/competitions";
+import { filterFixtures, hasFilters } from "@/lib/match/fixture-filters";
 import { FIXTURES_PER_PAGE, pageWindow, paginate } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 
@@ -66,13 +67,19 @@ export const Route = createFileRoute("/fixtures")({
   head: ({ match, loaderData }) => {
     const t = headT(match.context.locale, "fixtures");
     // Each page is its own canonical URL with rel prev/next, so every fixture is reachable by plain links.
-    const page = paginate(loaderData?.fixtures ?? [], match.search.page);
+    // Filtered views (search, day, region, competition) point their canonical at the unfiltered list and carry no
+    // prev/next, so only the plain numbered pages are indexed; the JSON-LD still lists what this page renders.
+    const filtered = hasFilters(match.search);
+    const list = filterFixtures(loaderData?.fixtures ?? [], match.search).shown;
+    const page = paginate(list, match.search.page);
     const url = (n: number) => `https://puntr.co.za/fixtures${n > 1 ? `?page=${n}` : ""}`;
-    const pageLinks = [
-      { rel: "canonical", href: url(page.current) },
-      ...(page.current > 1 ? [{ rel: "prev", href: url(page.current - 1) }] : []),
-      ...(page.current < page.pages ? [{ rel: "next", href: url(page.current + 1) }] : []),
-    ];
+    const pageLinks = filtered
+      ? [{ rel: "canonical", href: url(1) }]
+      : [
+          { rel: "canonical", href: url(page.current) },
+          ...(page.current > 1 ? [{ rel: "prev", href: url(page.current - 1) }] : []),
+          ...(page.current < page.pages ? [{ rel: "next", href: url(page.current + 1) }] : []),
+        ];
     const offset = (page.current - 1) * FIXTURES_PER_PAGE;
     const events = page.items.map((f, i) => ({
       "@type": "ListItem",
@@ -239,19 +246,7 @@ function Fixtures() {
       resetScroll: false,
     });
 
-  const needle = (q ?? "").trim().toLowerCase();
-  const bySearch = fixtures.filter(
-    (f) =>
-      !needle ||
-      f.home.toLowerCase().includes(needle) ||
-      f.away.toLowerCase().includes(needle) ||
-      f.competition.toLowerCase().includes(needle),
-  );
-  const byRegion = bySearch.filter(
-    (f) => !region || competitionMeta(f.competition).region === region,
-  );
-  const byComp = byRegion.filter((f) => !comp || f.competition === comp);
-  const shown = byComp.filter((f) => !day || saDayKey(f.kickoff_at) === day);
+  const { bySearch, byRegion, byComp, shown } = filterFixtures(fixtures, { q, day, region, comp });
   const paged = paginate(shown, search.page);
 
   // Each filter row counts what the other filters leave, so a chip never promises matches that are not there.
