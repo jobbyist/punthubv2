@@ -117,7 +117,7 @@ export function corroborate(input: {
         const trustedStated = statedObs.some((o) => o.tier === "trusted");
         const dates = new Set(statedObs.map((o) => o.date));
         const sameDateElsewhere = c.observations.some(
-          (o) => !statedBy.has(o.domain) && !printed(o) && dates.has(o.date),
+          (o) => !statedBy.has(o.domain) && !o.kickoffUtc && dates.has(o.date),
         );
         // An inferred time that contradicts the stated one blocks this weaker rule.
         const inferredConflict = inferredObs.some(
