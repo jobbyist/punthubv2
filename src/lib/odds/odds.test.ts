@@ -9,6 +9,7 @@ import {
   type UpcomingFixture,
   isOddsSource,
   isOddsUnverified,
+  toDecimalOdds,
   oddsSourceDomains,
   parsePrices,
   priceTokens,
@@ -80,10 +81,42 @@ describe("sources", () => {
 });
 
 describe("parse and validate", () => {
-  it("parses the model answer and rejects junk", () => {
+  it("parses the model answer, keeping good items when one is malformed", () => {
     expect(parsePrices(JSON.stringify({ prices: [p({})] }))?.[0]?.price).toBe(2.1);
     expect(parsePrices("not json")).toBeNull();
-    expect(parsePrices(JSON.stringify({ prices: [p({ price: 0.5 })] }))).toBeNull();
+    expect(parsePrices(JSON.stringify({ rows: [] }))).toBeNull();
+    const mixed = parsePrices(
+      JSON.stringify({ prices: [p({}), { ...p({}), price: "2.10" }, p({ price: 0.6 })] }),
+    );
+    expect(mixed?.map((x) => x.price)).toEqual([2.1, 0.6]);
+  });
+
+  it("converts Hollywoodbets profit odds to decimal and leaves others alone", () => {
+    expect(toDecimalOdds(0.6, "hollywoodbets.net")).toBe(1.6);
+    expect(toDecimalOdds(1.7, "www.hollywoodbets.net")).toBe(2.7);
+    expect(toDecimalOdds(1.7, "betway.co.za")).toBe(1.7);
+  });
+
+  it("validates a Hollywoodbets page in its own format (quote as shown, price stored as decimal)", () => {
+    const hwb =
+      "ORLANDO PIRATES vs KAIZER CHIEFS more 21 Nov - 15:30 ORLANDO PIRATES 1.1 X 2.2 KAIZER CHIEFS 2.6";
+    const raw = [
+      p({ selection: "home", price: 1.1, quote: "ORLANDO PIRATES 1.1" }),
+      p({ selection: "draw", price: 2.2, quote: "X 2.2" }),
+      p({ selection: "away", price: 2.6, quote: "KAIZER CHIEFS 2.6" }),
+    ];
+    const { prices, rejected } = validatePrices(
+      raw,
+      [src(1, "hollywoodbets.net", hwb)],
+      fixtures,
+      allowed,
+    );
+    expect(rejected).toEqual([]);
+    expect(prices.find((x) => x.selection === "home")?.price).toBe(2.1);
+    expect(prices.find((x) => x.selection === "away")?.price).toBe(3.6);
+    // Read as decimal, the same numbers fail the margin check: nothing wrong is ever stored.
+    const wrong = validatePrices(raw, [src(1, "betway.co.za", hwb)], fixtures, allowed);
+    expect(wrong.prices).toEqual([]);
   });
 
   it("writes prices the ways a page shows them", () => {
