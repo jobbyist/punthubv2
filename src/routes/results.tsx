@@ -123,14 +123,17 @@ function Results() {
   );
   const anyGated = gated(order.size - 1);
   // Illustrative cards only while no real result exists anywhere (recent or season).
-  const { data: seasonComps } = useAsync(() => fetchSeasonResultCompetitions(), []);
+  const { data: seasonComps, loading: seasonLoading } = useAsync(
+    () => fetchSeasonResultCompetitions(),
+    [],
+  );
   const hasReal = (days ?? []).length > 0 || (seasonComps ?? []).some((c) => c.count > 0);
 
   return (
     <AppShell>
       <PageHeading art="scoreboard" title={t("title")} subtitle={t("subtitle")} />
 
-      {!loading && !hasReal && (
+      {!loading && !seasonLoading && !hasReal && (
         <section className="mb-10" aria-labelledby="results-example-title">
           <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
@@ -177,7 +180,7 @@ function Results() {
           ))}
         </div>
       )}
-      {!loading && !failed && !hasReal && (
+      {!loading && !seasonLoading && !failed && !hasReal && (
         <EmptyState
           art="pitch"
           title={t("empty.title")}

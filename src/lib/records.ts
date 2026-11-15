@@ -278,9 +278,9 @@ export async function fetchSeasonResults(
     .order("match_date", { ascending: false })
     .limit(limit);
   if (competition) q = q.eq("competition", competition);
-  // Team search: letters, digits, spaces, dots, hyphens and apostrophes only (no PostgREST filter syntax).
+  // Team search: letters, digits, spaces and hyphens only, so nothing can change the PostgREST filter syntax.
   const needle = (team ?? "")
-    .replace(/[^\p{L}\p{N} .'-]/gu, "")
+    .replace(/[^\p{L}\p{N} -]/gu, "")
     .trim()
     .slice(0, 40);
   if (needle) q = q.or(`home.ilike.%${needle}%,away.ilike.%${needle}%`);
