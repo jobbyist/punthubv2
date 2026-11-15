@@ -28,7 +28,7 @@ import { fetchThisWeeksLeaders } from "@/lib/records";
 const sideNav = [
   { key: "fixtures", to: "/fixtures", icon: CalendarDays },
   { key: "results", to: "/results", icon: Activity },
-  { key: "standings", to: "/standings", icon: ListOrdered },
+  { key: "standings", to: "/tables", icon: ListOrdered },
   { key: "duels", to: "/duels", icon: Swords },
   { key: "slips", to: "/slips", icon: ReceiptText },
   { key: "leaderboards", to: "/leaderboard", icon: Trophy },

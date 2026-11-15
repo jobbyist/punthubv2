@@ -19,6 +19,7 @@ import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as FixturesRouteImport } from './routes/fixtures'
+import { Route as ForumRouteImport } from './routes/forum'
 import { Route as FoundingRouteImport } from './routes/founding'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
@@ -41,6 +42,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SlipsRouteImport } from './routes/slips'
 import { Route as StandingsRouteImport } from './routes/standings'
 import { Route as SupportRouteImport } from './routes/support'
+import { Route as TablesRouteImport } from './routes/tables'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
@@ -131,6 +133,11 @@ const FeedbackRoute = FeedbackRouteImport.update({
 const FixturesRoute = FixturesRouteImport.update({
   id: '/fixtures',
   path: '/fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForumRoute = ForumRouteImport.update({
+  id: '/forum',
+  path: '/forum',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FoundingRoute = FoundingRouteImport.update({
@@ -241,6 +248,11 @@ const StandingsRoute = StandingsRouteImport.update({
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TablesRoute = TablesRouteImport.update({
+  id: '/tables',
+  path: '/tables',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -463,6 +475,7 @@ export interface FileRoutesByFullPath {
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -485,6 +498,7 @@ export interface FileRoutesByFullPath {
   '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -538,6 +552,7 @@ export interface FileRoutesByTo {
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -560,6 +575,7 @@ export interface FileRoutesByTo {
   '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -614,6 +630,7 @@ export interface FileRoutesById {
   '/dev': typeof DevRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/insights': typeof InsightsRoute
@@ -636,6 +653,7 @@ export interface FileRoutesById {
   '/slips': typeof SlipsRoute
   '/standings': typeof StandingsRoute
   '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -691,6 +709,7 @@ export interface FileRouteTypes {
     | '/dev'
     | '/feedback'
     | '/fixtures'
+    | '/forum'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -713,6 +732,7 @@ export interface FileRouteTypes {
     | '/slips'
     | '/standings'
     | '/support'
+    | '/tables'
     | '/terms'
     | '/tools'
     | '/unsubscribe'
@@ -766,6 +786,7 @@ export interface FileRouteTypes {
     | '/dev'
     | '/feedback'
     | '/fixtures'
+    | '/forum'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -788,6 +809,7 @@ export interface FileRouteTypes {
     | '/slips'
     | '/standings'
     | '/support'
+    | '/tables'
     | '/terms'
     | '/tools'
     | '/unsubscribe'
@@ -841,6 +863,7 @@ export interface FileRouteTypes {
     | '/dev'
     | '/feedback'
     | '/fixtures'
+    | '/forum'
     | '/founding'
     | '/how-it-works'
     | '/insights'
@@ -863,6 +886,7 @@ export interface FileRouteTypes {
     | '/slips'
     | '/standings'
     | '/support'
+    | '/tables'
     | '/terms'
     | '/tools'
     | '/unsubscribe'
@@ -917,6 +941,7 @@ export interface RootRouteChildren {
   DevRoute: typeof DevRoute
   FeedbackRoute: typeof FeedbackRoute
   FixturesRoute: typeof FixturesRoute
+  ForumRoute: typeof ForumRoute
   FoundingRoute: typeof FoundingRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InsightsRoute: typeof InsightsRoute
@@ -939,6 +964,7 @@ export interface RootRouteChildren {
   SlipsRoute: typeof SlipsRoute
   StandingsRoute: typeof StandingsRoute
   SupportRoute: typeof SupportRoute
+  TablesRoute: typeof TablesRoute
   TermsRoute: typeof TermsRoute
   ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
@@ -1052,6 +1078,13 @@ declare module '@tanstack/react-router' {
       path: '/fixtures'
       fullPath: '/fixtures'
       preLoaderRoute: typeof FixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forum': {
+      id: '/forum'
+      path: '/forum'
+      fullPath: '/forum'
+      preLoaderRoute: typeof ForumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/founding': {
@@ -1206,6 +1239,13 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/support'
       preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tables': {
+      id: '/tables'
+      path: '/tables'
+      fullPath: '/tables'
+      preLoaderRoute: typeof TablesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1509,6 +1549,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevRoute: DevRoute,
   FeedbackRoute: FeedbackRoute,
   FixturesRoute: FixturesRoute,
+  ForumRoute: ForumRoute,
   FoundingRoute: FoundingRoute,
   HowItWorksRoute: HowItWorksRoute,
   InsightsRoute: InsightsRoute,
@@ -1531,6 +1572,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlipsRoute: SlipsRoute,
   StandingsRoute: StandingsRoute,
   SupportRoute: SupportRoute,
+  TablesRoute: TablesRoute,
   TermsRoute: TermsRoute,
   ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Community | Puntr",
+    "title": "Community Forum | Puntr",
     "description": "Share your picks, talk through the games and learn from fellow South African sports fans on a Community-First Platform.",
     "ogDescription": "Share picks, discuss matches and learn from each other."
   },
@@ -8,7 +8,7 @@
     "name": "Puntr community",
     "description": "Community feed where South African sports fans share picks and discussions."
   },
-  "title": "Community",
+  "title": "Community Forum",
   "subtitle": "The latest locked picks from across Puntr. Every pick stays on the record, win or lose.",
   "composer": {
     "prompt": "Picks open on 1 December 2026",

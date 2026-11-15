@@ -14,9 +14,9 @@ const columns = [
   {
     key: "platform",
     links: [
-      ["predictions", "/predictions"],
-      ["leaderboards", "/leaderboards"],
+      ["fixtures", "/fixtures"],
       ["results", "/results"],
+      ["tables", "/tables"],
       ["insights", "/insights"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
@@ -25,9 +25,11 @@ const columns = [
   {
     key: "communityCol",
     links: [
-      ["feed", "/community"],
+      ["discussions", "/forum"],
+      ["duels", "/duels"],
+      ["leaderboards", "/leaderboards"],
       ["howItWorks", "/how-it-works"],
-      ["puntPoints", "/leaderboards"],
+      ["puntPoints", "/puntpoints"],
       ["support", "/support"],
     ],
   },
