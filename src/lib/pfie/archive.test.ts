@@ -212,3 +212,24 @@ describe("archive jobs", () => {
     expect(later.map((j) => j.year)).toEqual([2026, 2024]);
   });
 });
+
+describe("parseWikiTable tolerance", () => {
+  const rowsMd = (n: number, tail: string) =>
+    Array.from(
+      { length: n },
+      (_, i) =>
+        `| ${i + 1} | [Club ${i + 1}](https://en.wikipedia.org/wiki/C${i + 1} "C") | 9 | 5 | 2 | 2 | 15 | 9 | +6 | ${17 - i} |${tail}`,
+    ).join("\n");
+
+  it("reads a header with a vte suffix and rows whose empty trailing cells were dropped", () => {
+    const md = `# League table\n| Pos | Team vte | Pld | W | D | L | GF | GA | GD | Pts | Qualification |\n${rowsMd(6, "")}`;
+    const rows = parseWikiTable(md);
+    expect(rows).toHaveLength(6);
+    expect(rows?.[0]).toMatchObject({ team: "Club 1", played: 9, points: 17 });
+  });
+
+  it("still reads rows with a full set of cells", () => {
+    const md = `# League table\n| Pos | Team | Pld | W | D | L | GF | GA | GD | Pts | Qualification |\n${rowsMd(6, "  |")}`;
+    expect(parseWikiTable(md)).toHaveLength(6);
+  });
+});
