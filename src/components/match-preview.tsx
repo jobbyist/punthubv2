@@ -108,7 +108,8 @@ export function MatchPreview() {
 
   const handlePick = (k: OutcomeKey) => {
     setStopped(true);
-    if (!loading && !isSignedIn) {
+    // Unknown session (still loading) counts as a guest, so the Founding prompt is never skipped.
+    if (loading || !isSignedIn) {
       setDialogPick({ id: m.id, k });
       return;
     }
