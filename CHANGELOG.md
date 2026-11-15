@@ -3,6 +3,20 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026 (night): dark-mode logo wall, staff admin, admin notch
+
+- Bookmaker logos (`public/logos`) are transparent PNGs, trimmed to their artwork and capped at 720 px wide. The
+  opaque white backgrounds turned into solid white blocks under the dark-mode invert filter. Interior whites are real
+  cut-outs now, so marks stay legible as white silhouettes. `wsb.PNG` is now `wsb.png`. In dark mode the logos stay
+  white and brighten on hover (several marks are near-black, so the colour reveal is light mode only).
+- `@puntr.co.za` accounts are admins automatically (migration `20261115043000_staff_auto_admin`): only for a confirmed
+  email, exact domain, applied at profile creation and when the email is confirmed or changed. Banned accounts and
+  MFA rules still apply through `is_admin()`. No automatic demotion. Each grant logs `staff_auto_admin` in
+  `admin_actions` (admin_id null).
+- `AdminNotch`: slim dismissible tab on the middle right edge, admin-only, opens `/admin`, hidden inside the portal.
+  Dismissal is remembered for 7 days in localStorage (UI preference only).
+- Legal copy: nothing needed (no new data collected, no new processor, no new promise to members).
+
 ## 15 November 2026 (later): odds feed hardened after a live probe
 
 Fixed (found by a live Parallel probe of this weekend's Premier League pages before the first scheduled run)

@@ -29,7 +29,7 @@ export const platforms: Platform[] = [
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
   { name: "Easybet", logo: "/logos/easybet.png" },
-  { name: "WorldSportsBetting", logo: "/logos/wsb.PNG" },
+  { name: "WorldSportsBetting", logo: "/logos/wsb.png" },
 ];
 
 export type TeamLogo = {
