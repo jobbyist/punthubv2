@@ -283,7 +283,11 @@ describe("season backfill sync", () => {
 
   it("retries once with fewer sources when the answer is not valid JSON", async () => {
     const { deps, recorded, calls } = make(["{ truncated", answer([])]);
-    const out = await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 1 });
+    const out = await runTablesSync(deps as never, {
+      job: "season",
+      only: ["sa-championship"],
+      maxJobs: 1,
+    });
     expect(calls()).toBe(2);
     expect(out.ran[0]!.detail).toContain("no verified results");
     expect(recorded.at(-1)!.error).toBe("no verified results on the sources");
@@ -291,9 +295,15 @@ describe("season backfill sync", () => {
 
   it("reports invalid JSON when the retry fails too", async () => {
     const { deps, recorded, calls } = make(["{ bad", "{ still bad"]);
-    await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 1 });
+    await runTablesSync(deps as never, { job: "season", only: ["sa-championship"], maxJobs: 1 });
     expect(calls()).toBe(2);
     expect(recorded.at(-1)!.error).toBe("extraction answer was not valid JSON");
+  });
+
+  it("skips leagues the archive import covers", async () => {
+    const { deps } = make([answer([])]);
+    const out = await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 1 });
+    expect(out.seasonDue).toBe(0);
   });
 
   it("leaves a window alone after six failures in a row", async () => {
@@ -301,13 +311,17 @@ describe("season backfill sync", () => {
     const windows = seasonWindows(deps.now());
     const failed = windows.map((w) => ({
       job: "season" as const,
-      scope: `psl:${w.start}`,
+      scope: `sa-championship:${w.start}`,
       lastAttemptAt: "2026-11-01T00:00:00Z",
       lastSuccessAt: null,
       consecutiveFailures: 6,
     }));
     deps.store.statuses = async () => failed;
-    const out = await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 3 });
+    const out = await runTablesSync(deps as never, {
+      job: "season",
+      only: ["sa-championship"],
+      maxJobs: 3,
+    });
     expect(out.seasonDue).toBe(0);
   });
 });

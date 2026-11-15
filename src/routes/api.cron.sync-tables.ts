@@ -22,14 +22,17 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
         const only = url.searchParams.get("only")?.split(",").filter(Boolean);
         const jobParam = url.searchParams.get("job");
         const job =
-          jobParam === "standings" || jobParam === "history" || jobParam === "season"
+          jobParam === "standings" ||
+          jobParam === "history" ||
+          jobParam === "season" ||
+          jobParam === "archive"
             ? jobParam
             : undefined;
         const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
 
         const { DEFAULT_PFIE_MODELS, parseModelList, readContentEnv } =
           await import("@/lib/content/config");
-        const { createGemini, createPageReader, createParallelSearch } =
+        const { createGemini, createPageReader, createParallelExtract, createParallelSearch } =
           await import("@/lib/content/providers.server");
         const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
           await import("@/lib/quota.server");
@@ -43,10 +46,18 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
           const report = await runTablesSync(
             {
               search: guardSearch(createParallelSearch(keys.parallelKey!), claim),
-              extract: createPageReader(
-                { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
-                (r) => guardExtract(r, claim),
-              ),
+              // Archive pages are long and stable: Parallel Extract only (cached copies are fine, Firecrawl's free
+              // tier is kept for live pages), with a longer timeout.
+              extract:
+                job === "archive"
+                  ? guardExtract(
+                      createParallelExtract(keys.parallelKey!, { timeoutMs: 45_000 }),
+                      claim,
+                    )
+                  : createPageReader(
+                      { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
+                      (r) => guardExtract(r, claim),
+                    ),
               llm: guardLlm(createGemini(keys.geminiKey!), claim),
               store: createTablesStore(),
               models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","))
