@@ -3,6 +3,9 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 Nov 2026 – Bundesliga fixtures from a page that prints UTC
+- Bundesliga fixtures now also read `products.bundesliga.com/fixtures`, an official page printing each kick-off in CET and UTC, so more matches carry a verified time zone. No legal copy change (same data, same sources).
+
 ## 15 November 2026 (morning): kick-off time zones
 
 - About 95 fixtures a run were lost to "no kick-off time with a known time zone" (La Liga, Serie A, Eredivisie, UCL,
