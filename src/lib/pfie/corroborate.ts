@@ -108,7 +108,10 @@ export function corroborate(input: {
         (o) =>
           !statedBy.has(o.domain) &&
           !printed(o) &&
-          ((o.kickoffInferred && o.kickoffUtc === stated) ||
+          // An inferred page keeps its plausible instants too, so it can confirm in any of them (as a zone-less
+          // page could before inferred zones existed).
+          ((o.kickoffInferred &&
+            (o.kickoffUtc === stated || (o.kickoffCandidates ?? []).includes(stated))) ||
             (!o.kickoffUtc && (o.kickoffCandidates ?? []).includes(stated))),
       );
       if (confirmed) kickoff = { value: stated, verdict: "verified" };

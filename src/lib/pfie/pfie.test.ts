@@ -318,6 +318,19 @@ describe("inferred zones (national outlets, official site in the home zone)", ()
     expect(decideOne([printed, inferred("as.com")]).kickoffVerdict).toBe("verified");
   });
 
+  it("an inferred page still confirms a printed time in one of its other plausible zones", () => {
+    // laliga.com rendered in UTC: inferred Madrid instant is wrong, but its UTC candidate matches the SAST time.
+    const sast = obs("ebnewsdaily.co.za", "other", { kickoffUtc: "2026-11-22T20:00:00.000Z" });
+    const official = obs("laliga.com", "official", {
+      kickoffUtc: madrid20,
+      kickoffInferred: true,
+      kickoffCandidates: candidateInstants("2026-11-22", "20:00"),
+    });
+    const d = decideOne([sast, official]);
+    expect(d.kickoffVerdict).toBe("verified");
+    expect(d.kickoffAt).toBe("2026-11-22T20:00:00.000Z");
+  });
+
   it("an inferred contradiction blocks the trusted single-outlet rule", () => {
     const trusted = obs("supersport.com", "trusted", { kickoffUtc: madrid20 });
     const conflict = inferred("marca.com", "other", "2026-11-22T18:00:00.000Z");
