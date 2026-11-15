@@ -14,6 +14,10 @@ export interface PickRow {
   selection: string;
   line: number | null;
   odds: number;
+  /** Market reference price when the pick was posted (null when there was none). */
+  reference_odds: number | null;
+  /** Odds more than 25% above the reference: rankings and units use the lower price. */
+  odds_unverified: boolean | null;
   confidence: number;
   reasoning: string | null;
   created_at: string;
@@ -27,7 +31,7 @@ export interface PickRow {
 const FIXTURE_COLUMNS =
   "id, sport, competition, home, away, kickoff_at, status, home_score, away_score";
 const PICK_COLUMNS =
-  "id, user_id, fixture_id, market, selection, line, odds, confidence, reasoning, created_at, hash";
+  "id, user_id, fixture_id, market, selection, line, odds, reference_odds, odds_unverified, confidence, reasoning, created_at, hash";
 
 export async function fetchFixture(id: string): Promise<FixtureRow | null> {
   const { data, error } = await supabase

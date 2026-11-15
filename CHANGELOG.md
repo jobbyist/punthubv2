@@ -3,6 +3,21 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026 (later): pre-match reference odds and the member-odds check
+
+Added
+- `sync-odds` cron (07:00-07:50 and 14:00-14:50 SAST, two competitions a call): competitions with fixtures in the
+  next 72 hours; Parallel Search (cached 6 h) for licensed SA bookmaker pages, Extract of the best two, Gemini copies
+  prices with quotes, plain code keeps only complete markets with plausible margins whose prices appear on the page;
+  median across bookmakers. `src/lib/odds/` with 14 tests.
+- Migration `20261115030000_reference_odds.sql`: `market_odds`, `predictions.reference_odds` / `odds_unverified`
+  set by a trigger at posting (more than 25% above the reference), `prediction_odds_overrides` and
+  `admin_set_odds_check()`, `prediction_odds_state` (settle odds = lower price for unverified picks) used by
+  settlement, admin settlement and the weekly leaderboard, `reference_odds()` for eligible members only.
+- Pick form: "Market reference 2.10, as at 14:00" with "Use this price", and a warning when the typed odds would be
+  marked unverified. Pick cards: "Odds unverified · ranked at 2.10".
+- Terms r21 and Privacy r19 (English and Afrikaans); legal changelog entry with `[attorney review]` items.
+
 ## 15 November 2026 (later): Parallel data layer foundation
 
 Added

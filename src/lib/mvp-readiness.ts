@@ -301,6 +301,7 @@ export const WORKSTREAMS: Workstream[] = [
         title: "Parallel data layer: response cache, USD budgets, Task and Chat clients",
         weight: 1,
         blocker: true,
+        done: true,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
       },
       {

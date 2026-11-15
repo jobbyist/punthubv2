@@ -2572,8 +2572,10 @@ export type Database = {
           line: number | null
           market: string
           odds: number
+          odds_unverified: boolean
           prev_hash: string
           reasoning: string | null
+          reference_odds: number | null
           selection: string
           seq: number
           user_id: string
@@ -2587,8 +2589,10 @@ export type Database = {
           line?: number | null
           market: string
           odds: number
+          odds_unverified?: boolean
           prev_hash: string
           reasoning?: string | null
+          reference_odds?: number | null
           selection: string
           seq?: never
           user_id: string
@@ -2602,8 +2606,10 @@ export type Database = {
           line?: number | null
           market?: string
           odds?: number
+          odds_unverified?: boolean
           prev_hash?: string
           reasoning?: string | null
+          reference_odds?: number | null
           selection?: string
           seq?: never
           user_id?: string
@@ -3980,9 +3986,11 @@ export type Database = {
           id: string | null
           line: number | null
           market: string | null
+          odds_unverified: boolean | null
           odds: number | null
           prev_hash: string | null
           reasoning: string | null
+          reference_odds: number | null
           selection: string | null
           seq: number | null
           user_id: string | null
@@ -4074,6 +4082,16 @@ export type Database = {
     }
     Functions: {
       accept_duel: { Args: { p_duel: string; p_picks: Json }; Returns: Json }
+      admin_set_odds_check: {
+        Args: { p_prediction: string; p_reason: string; p_unverified: boolean }
+        Returns: {
+          admin_id: string | null
+          odds_unverified: boolean
+          prediction_id: string
+          reason: string
+          updated_at: string
+        }
+      }
       create_duel: {
         Args: {
           p_fixture: string
@@ -4117,6 +4135,16 @@ export type Database = {
         }[]
       }
       expire_duels: { Args: never; Returns: number }
+      reference_odds: {
+        Args: { p_fixture_ids: string[] }
+        Returns: {
+          captured_at: string
+          fixture_id: string
+          market: string
+          price: number
+          selection: string
+        }[]
+      }
       settle_duel: {
         Args: { p_duel: string; p_results: Json; p_void: boolean }
         Returns: string

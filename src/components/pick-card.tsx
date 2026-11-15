@@ -114,6 +114,11 @@ export function PickCard({
             {t("picks.odds")} {formatOdds(pick.odds)}
           </span>
         </div>
+        {pick.odds_unverified && pick.reference_odds !== null ? (
+          <p className="mt-2 inline-flex items-center gap-1.5 border border-border bg-background px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+            {t("picks.oddsUnverified", { price: formatOdds(pick.reference_odds) })}
+          </p>
+        ) : null}
         <p className="mt-2 text-xs text-muted-foreground">
           {t("picks.confidence", { value: pick.confidence })}
         </p>

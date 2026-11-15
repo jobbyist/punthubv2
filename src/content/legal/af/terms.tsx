@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r20.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-15-r21.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r20). Konsep wat
+            <strong>Laas bygewerk:</strong> 15 November 2026 (weergawe 2026-11-15-r21). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -126,6 +126,19 @@ export function TermsAf() {
               weddenskappe direk nie. Alle weddenskapstransaksies vind deur gelisensieerde
               derdeparty-wedoperateurs plaas. Wanneer jy 'n weddenskap deur 'n gekoppelde platform
               plaas, is jy onderhewig aan daardie platform se bepalings en voorwaardes.
+            </p>
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              <strong>Pryse op voorspellings:</strong> Die pryse op 'n voorspelling is die pryse wat
+              jy invoer: dit bly presies so op jou openbare rekord. Voor afskop kan Puntr vir
+              sommige markte 'n markverwysingsprys wys, outomaties ingesamel van openbare bladsye
+              van gelisensieerde Suid-Afrikaanse boekmakers. Dit is slegs 'n aanduiding, kan
+              verouderd wees, is nie 'n aanbod van Puntr of enige boekmaker nie, en word nooit
+              ingesamel of gewys sodra 'n wedstryd begin het nie. As die pryse wat jy invoer meer as
+              25% bo die markverwysing is wanneer jy plaas, word die voorspelling met jou pryse
+              gestoor en as &quot;pryse ongeverifieer&quot; gemerk, en die eenhede en kwalifikasie
+              vir die ranglys (die minimum van 1.50) gebruik die laagste van die twee pryse. Punte
+              vir korrekte voorspellings hang nie van pryse af nie. Puntr kan die merk hersien en
+              regstel as die verwysing verkeerd was [attorney review].
             </p>
           </section>
 

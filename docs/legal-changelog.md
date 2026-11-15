@@ -3,6 +3,30 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-15, Pre-match reference odds and "odds unverified" (PR: feat/odds-reference), Terms r21, Privacy r19
+
+- **Product:** before kick-off Puntr collects market reference prices (1X2, over/under 2.5, both teams to score)
+  from public pages of licensed South African bookmakers, at most twice a day, never in-play. The price shown is the
+  median across bookmakers, labelled "Market reference, as at HH:MM"; no bookmaker name or link is shown. It is
+  returned only to signed-in members who are 18+ attested, not on a break and not suspended (enforced in the
+  database). Members still enter their own odds on every pick; those stay on the pick and in its hash.
+- **Check:** if a member's odds are more than 25% above the reference when they post, the pick is saved as entered
+  and marked "odds unverified"; its units and the weekly leaderboard's 1.50 minimum use the lower price. Points for
+  correct picks are unaffected. An admin can clear or set the mark with a reason (logged in `admin_actions`); picks
+  stay append-only.
+- **Data:** `market_odds` (fixture, market, selection, price, source domain and URL, time; no personal data, service
+  role only); `predictions.reference_odds` and `odds_unverified`; `prediction_odds_overrides` (admin corrections).
+- **Pages:** Terms §4 new paragraph "Odds on predictions" (r21, English and Afrikaans). Privacy data table, picks row:
+  the reference price and the unverified mark are stored and shown with the pick (r19, English and Afrikaans).
+  `notice_versions` rows in migration `20261115031000`, applied after the copy is live.
+- **Review `[attorney review]`:**
+  - Reading bookmakers' public pages automatically: check each site's terms of use (list in
+    `src/lib/odds/reference.ts`, `ODDS_SOURCE_DOMAINS` overrides it) and record the provincial licence check.
+  - CLAUDE.md bans odds *comparison* at launch: we show one reference price, never a per-bookmaker table.
+  - Hollywoodbets 2.10 (approved material only): no bookmaker names or logos next to reference prices.
+  - Applying the lower price to "odds unverified" picks after they are posted: is the Terms wording enough notice?
+  - Whether a reference price shown to members counts as gambling advertising (it carries no link or brand).
+
 ## 2026-11-14, Puntr Pro recurring billing (PR: feat/puntr-pro-billing), built OFF, no page changed yet
 
 - **Product:** Puntr Pro at R99 a month through a PayFast subscription (monthly, until cancelled). Each paid month

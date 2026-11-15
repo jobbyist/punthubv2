@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-14-r18.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-15-r19.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -106,7 +106,7 @@ const PURPOSES: [string, string, string, string][] = [
   ],
   [
     "Openbare keuserekord",
-    "Jou keuses, pryse, uitslae, 'n hash van elke keuse, en enige regstelling van 'n uitslag met die rede",
+    "Jou keuses, pryse, uitslae, 'n hash van elke keuse, enige regstelling van 'n uitslag met die rede, en, waar daar een was, die markverwysingsprys toe jy geplaas het en of jou pryse as ongeverifieer gemerk is (saam met die keuse gewys)",
     "Regmatige belang: 'n verifieerbare, permanente rekord",
     "Permanent gehou, ná skrapping slegs aan 'n anonieme ID gekoppel",
   ],
@@ -165,7 +165,7 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 14 November 2026 (weergawe 2026-11-14-r18). Konsep wat op
+          <strong>Laas bygewerk:</strong> 15 November 2026 (weergawe 2026-11-15-r19). Konsep wat op
           hersiening deur 'n prokureur wag.
         </p>
 

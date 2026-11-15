@@ -122,7 +122,7 @@ const PURPOSES: [string, string, string, string][] = [
   ],
   [
     "Public pick record",
-    "Your picks, odds, results, a hash of each pick, and any correction made to a result with the reason",
+    "Your picks, odds, results, a hash of each pick, any correction made to a result with the reason, and, where one existed, the market reference price when you posted and whether your odds were marked unverified (shown with the pick)",
     "Legitimate interest: a verifiable, permanent track record",
     "Kept permanently, linked only to an anonymous id after deletion",
   ],
@@ -177,7 +177,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 14 November 2026 (version 2026-11-14-r18). Draft pending
+          <strong>Last updated:</strong> 15 November 2026 (version 2026-11-15-r19). Draft pending
           attorney review.
         </p>
 
