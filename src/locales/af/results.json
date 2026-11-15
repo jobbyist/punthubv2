@@ -16,7 +16,7 @@
     "form": "Laaste 10",
     "none": "-"
   },
-  "byDate": "Uitslae volgens datum",
+  "byDate": "Puntr-wedstryddae",
   "day": {
     "matches_one": "{{count}} wedstryd",
     "matches_other": "{{count}} wedstryde",
@@ -63,5 +63,30 @@
     "count_one": "{{count}} uitslag",
     "count_other": "{{count}} uitslae",
     "more": "Wys meer"
+  },
+  "byDateBody": "Wedstryde van die afgelope 14 dae en hoe die Puntr-gemeenskap en hierdie week se top-voorspellers gevaar het.",
+  "board": {
+    "stats": {
+      "results": "geverifieerde uitslae",
+      "competitions": "kompetisies"
+    },
+    "search": {
+      "label": "Soek uitslae volgens span",
+      "placeholder": "Soek 'n span, bv. Orlando Pirates",
+      "clear": "Vee soektog uit",
+      "none": "Nog geen geverifieerde uitslae vir “{{team}}” nie."
+    },
+    "verified_one": "Geverifieer deur {{count}} bron: {{sources}}",
+    "verified_other": "Geverifieer deur {{count}} bronne: {{sources}}",
+    "split": {
+      "title": "Hoe hierdie wedstryde geëindig het",
+      "basis_one": "Uit die {{count}} uitslag wat gewys word",
+      "basis_other": "Uit die {{count}} uitslae wat gewys word",
+      "home": "Tuisoorwinning",
+      "draw": "Gelykop",
+      "away": "Wegoorwinning",
+      "gpg": "Doele/wedstryd"
+    },
+    "note": "Vorige uitslae voorspel nie toekomstige uitslae nie. Elke telling hier is deur die kompetisie se eie webwerf of deur twee onafhanklike bronne bevestig. 18+."
   }
 }

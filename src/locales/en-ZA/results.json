@@ -6,7 +6,7 @@
     "ogDescription": "Final scores, and how the crowd and the top tipsters did."
   },
   "title": "Results",
-  "subtitle": "Final scores, and how the Puntr crowd and this week's top tipsters did.",
+  "subtitle": "Verified final scores, and how the Puntr crowd and this week's top tipsters did.",
   "mine": {
     "title": "Your record",
     "picks": "Picks",
@@ -16,7 +16,7 @@
     "form": "Last 10",
     "none": "-"
   },
-  "byDate": "Results by date",
+  "byDate": "Puntr matchdays",
   "day": {
     "matches_one": "{{count}} match",
     "matches_other": "{{count}} matches",
@@ -63,5 +63,30 @@
     "count_one": "{{count}} result",
     "count_other": "{{count}} results",
     "more": "Show more"
+  },
+  "byDateBody": "Fixtures from the last 14 days with how the Puntr crowd and this week's top tipsters did.",
+  "board": {
+    "stats": {
+      "results": "verified results",
+      "competitions": "competitions"
+    },
+    "search": {
+      "label": "Search results by team",
+      "placeholder": "Search a team, e.g. Orlando Pirates",
+      "clear": "Clear search",
+      "none": "No verified results for “{{team}}” yet."
+    },
+    "verified_one": "Verified by {{count}} source: {{sources}}",
+    "verified_other": "Verified by {{count}} sources: {{sources}}",
+    "split": {
+      "title": "How these matches ended",
+      "basis_one": "From the {{count}} result shown",
+      "basis_other": "From the {{count}} results shown",
+      "home": "Home win",
+      "draw": "Draw",
+      "away": "Away win",
+      "gpg": "Goals/game"
+    },
+    "note": "Past results do not predict future results. Every score here was confirmed by the competition's own site or by two independent sources. 18+."
   }
 }
