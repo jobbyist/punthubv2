@@ -35,7 +35,17 @@
     "puntPoints": "PuntPoints and rewards",
     "practice": "Practice Mode",
     "signIn": "Sign in",
-    "wallet": "Wallet"
+    "wallet": "Wallet",
+    "balance": "PuntPoints balance",
+    "mySlips": "My betting slips",
+    "myDuels": "My duels",
+    "security": "Security",
+    "admin": "Admin dashboard",
+    "groups": {
+      "activity": "My activity",
+      "money": "Wallet and rewards",
+      "settings": "Settings"
+    }
   },
   "desktop": {
     "groups": {
