@@ -99,6 +99,83 @@
     "idle": "Keuses sluit met die afskop en kan nie gewysig of geskrap word nie.",
     "fine": "Voorbeeldverdeling ter illustrasie. Nie 'n werklike voorspelling nie. Niks wat jy hier tik, word gestoor nie."
   },
+  "matchups": {
+    "eyebrow": "Groot wedstryde",
+    "selector": "Kies 'n mededinging",
+    "status": {
+      "illustrative": "Illustratiewe voorskou",
+      "roadmap": "Padkaart · week {{week}}"
+    },
+    "items": {
+      "soweto": {
+        "short": "Soweto-derby",
+        "title": "Soweto-derby",
+        "tag": "PSL-hoogtepunt",
+        "competition": "Betway Premiership",
+        "venue": "FNB-stadion, Johannesburg",
+        "insight": "Voorbeeldinsig: in derbies tel onlangse onderlinge vorm en tuisondersteuning meer as die ligaposisie."
+      },
+      "boks-ab": {
+        "short": "Bokke teen All Blacks",
+        "title": "Die grootste mededinging",
+        "tag": "Wêreldkampioene",
+        "competition": "Rugbykampioenskap",
+        "venue": "Voorbeeldlokaal: Ellispark, Johannesburg",
+        "insight": "Voorbeeldinsig: oorheersing in die vaste stukke en dissipline by die afbreekpunt beslis gewoonlik hierdie een."
+      },
+      "clasico": {
+        "short": "El Clásico",
+        "title": "El Clásico",
+        "tag": "Europese elite",
+        "competition": "La Liga",
+        "venue": "Santiago Bernabéu, Madrid",
+        "insight": "Voorbeeldinsig: die naaste gemeenskapsverdeling op die kaart. Die model leun na die besoekers, die skare na die tuisspan."
+      },
+      "north-south": {
+        "short": "Stormers teen Bulls",
+        "title": "Noord-teen-Suid-derby",
+        "tag": "URC-mededinging",
+        "competition": "United Rugby Championship",
+        "venue": "DHL-stadion, Kaapstad",
+        "insight": "Voorbeeldinsig: tuisvoordeel in Kaapstad is die grootste enkele faktor in hierdie voorbeeld."
+      },
+      "celtics-lakers": {
+        "short": "Celtics teen Lakers",
+        "title": "NBA-eindstryd-klassieker",
+        "tag": "NBA-klassieker",
+        "competition": "NBA",
+        "venue": "TD Garden, Boston",
+        "insight": "Voorbeeldinsig: tweerigtingmark. Tempo en die aantal driepunt-skote dryf die neiging."
+      },
+      "proteas-aus": {
+        "short": "Proteas teen Australië",
+        "title": "Wêreldbeker-botsing",
+        "tag": "Wêreldbeker-botsing",
+        "competition": "ICC Krieketwêreldbeker",
+        "venue": "Voorbeeldlokaal: neutrale veld",
+        "insight": "Voorbeeldinsig: tweerigtingmark. Die loot en toestande skuif hierdie model meer as enige ander wedstryd."
+      }
+    },
+    "ai": {
+      "pick": "Punt AI-keuse",
+      "dial": "Voorbeeld-KI-vertroue",
+      "lean": "Neiging: {{outcome}}",
+      "win": "{{team}} wen"
+    },
+    "community": "Gemeenskapsverdeling",
+    "tap": "Tik om 'n kant te kies",
+    "draw": "Gelykop",
+    "picked": "Jou keuse",
+    "pause": "Laat rotasie wag",
+    "play": "Hervat rotasie",
+    "fine": "Voorbeeldsyfers ter illustrasie, nie 'n werklike voorspelling of peiling nie. Niks wat jy hier tik, word gestoor nie.",
+    "dialog": {
+      "title": "Goeie keuse vir die {{matchup}}! 🏆",
+      "body": "Jy het {{team}} gesteun. Sluit aan as stigterslid om van die bekendstellingsdag af sulke keuses op jou geverifieerde openbare rekord te maak.",
+      "bodyDraw": "Jy het gelykop gekies. Sluit aan as stigterslid om van die bekendstellingsdag af sulke keuses op jou geverifieerde openbare rekord te maak.",
+      "cta": "Word 'n stigterslid"
+    }
+  },
   "marquee": "Klubs op Puntr",
   "proof": {
     "eyebrow": "Voorspel slimmer. Bewys dit.",

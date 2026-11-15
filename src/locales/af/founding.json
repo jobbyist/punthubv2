@@ -81,5 +81,7 @@
     "a3": "Puntr word amptelik op {{launch}} bekendgestel. Stigterslede registreer nou, kry hul genommerde kenteken sodra hulle hul e-pos bevestig, en is eerste in wanneer ons bekendgestel word.",
     "q4": "Wie kan aansluit?",
     "a4": "Enigiemand in Suid-Afrika wat 18 of ouer is. Jy bevestig jou e-pos voordat jy kan aanteken."
-  }
+  },
+  "marqueePick": "Jy het {{team}} in die {{matchup}} gesteun. Sluit hieronder aan om vanaf {{launch}} sulke keuses op jou openbare rekord te maak.",
+  "marqueePickDraw": "Jy het gelykop in die {{matchup}} gekies. Sluit hieronder aan om vanaf {{launch}} sulke keuses op jou openbare rekord te maak."
 }

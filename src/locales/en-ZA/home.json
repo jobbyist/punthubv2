@@ -99,6 +99,83 @@
     "idle": "Picks lock at kick-off and cannot be edited or deleted.",
     "fine": "Sample split for illustration. Not a real prediction. Nothing you tap here is saved."
   },
+  "matchups": {
+    "eyebrow": "Marquee matchups",
+    "selector": "Choose a rivalry",
+    "status": {
+      "illustrative": "Illustrative preview",
+      "roadmap": "Roadmap · week {{week}}"
+    },
+    "items": {
+      "soweto": {
+        "short": "Soweto Derby",
+        "title": "Soweto Derby",
+        "tag": "PSL Marquee",
+        "competition": "Betway Premiership",
+        "venue": "FNB Stadium, Johannesburg",
+        "insight": "Sample insight: in derbies, recent head-to-head form and home support carry more weight than league position."
+      },
+      "boks-ab": {
+        "short": "Boks vs All Blacks",
+        "title": "The Greatest Rivalry",
+        "tag": "World Champions",
+        "competition": "Rugby Championship",
+        "venue": "Sample venue: Ellis Park, Johannesburg",
+        "insight": "Sample insight: set-piece dominance and discipline at the breakdown usually decide this one."
+      },
+      "clasico": {
+        "short": "El Clásico",
+        "title": "El Clásico",
+        "tag": "European Elite",
+        "competition": "La Liga",
+        "venue": "Santiago Bernabéu, Madrid",
+        "insight": "Sample insight: the closest community split on the card. The model leans away, the crowd leans home."
+      },
+      "north-south": {
+        "short": "Stormers vs Bulls",
+        "title": "North vs South Derby",
+        "tag": "URC Rivalry",
+        "competition": "United Rugby Championship",
+        "venue": "DHL Stadium, Cape Town",
+        "insight": "Sample insight: home advantage in Cape Town is the biggest single factor in this sample."
+      },
+      "celtics-lakers": {
+        "short": "Celtics vs Lakers",
+        "title": "NBA Finals Classic",
+        "tag": "NBA Classic",
+        "competition": "NBA",
+        "venue": "TD Garden, Boston",
+        "insight": "Sample insight: two-way market. Pace and three-point volume drive the lean."
+      },
+      "proteas-aus": {
+        "short": "Proteas vs Australia",
+        "title": "World Cup Clash",
+        "tag": "World Cup Clash",
+        "competition": "ICC Cricket World Cup",
+        "venue": "Sample venue: neutral ground",
+        "insight": "Sample insight: two-way market. Toss and conditions shift this model more than any other matchup."
+      }
+    },
+    "ai": {
+      "pick": "Punt AI pick",
+      "dial": "Sample AI confidence",
+      "lean": "Lean: {{outcome}}",
+      "win": "{{team}} win"
+    },
+    "community": "Community split",
+    "tap": "Tap to back a side",
+    "draw": "Draw",
+    "picked": "Your call",
+    "pause": "Pause rotation",
+    "play": "Resume rotation",
+    "fine": "Sample numbers for illustration, not a real prediction or poll. Nothing you tap here is saved.",
+    "dialog": {
+      "title": "Great call on the {{matchup}}! 🏆",
+      "body": "You backed {{team}}. Join as a Founding Member to make calls like this on your verified public record from launch day.",
+      "bodyDraw": "You backed a draw. Join as a Founding Member to make calls like this on your verified public record from launch day.",
+      "cta": "Become a Founding Member"
+    }
+  },
   "marquee": "Clubs on Puntr",
   "proof": {
     "eyebrow": "Predict smarter. Prove it.",
