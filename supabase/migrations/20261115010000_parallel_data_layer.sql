@@ -124,9 +124,10 @@ $$;
 create or replace function public.api_spend_status()
 returns table (family text, monthly_usd numeric, spent_usd numeric, remaining_usd numeric)
 language sql stable security definer set search_path = public, pg_temp as $$
-  select b.family, b.monthly_usd, round(public.api_family_spend_usd(b.family), 4),
-         round(b.monthly_usd - public.api_family_spend_usd(b.family), 4)
+  -- Spend is computed once per row (lateral), so spent and remaining always agree.
+  select b.family, b.monthly_usd, round(s.spent, 4), round(b.monthly_usd - s.spent, 4)
   from public.api_budgets b
+  cross join lateral (select public.api_family_spend_usd(b.family) as spent) s
   where public.is_admin() or coalesce(auth.role(), '') = 'service_role'
   order by b.family;
 $$;
@@ -151,4 +152,4 @@ on conflict (provider) do nothing;
 -- 7. Purge expired cache rows daily at 03:15 SAST ------------------------------------------------------------------
 select cron.unschedule('parallel-cache-purge') where exists (select 1 from cron.job where jobname = 'parallel-cache-purge');
 select cron.schedule('parallel-cache-purge', '15 1 * * *',
-  $$delete from public.parallel_cache where expires_at < now() - interval '1 day'$$);
+  $$delete from public.parallel_cache where expires_at < now()$$);
