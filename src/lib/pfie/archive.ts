@@ -80,7 +80,7 @@ export function tableLines(markdown: string): string[] {
         out.push(open);
         open = null;
       } else if (open.length > 20_000) {
-        out.push(open);
+        // A row this long is malformed: drop it rather than hand a broken row to the parsers.
         open = null;
       }
       continue;
@@ -91,7 +91,6 @@ export function tableLines(markdown: string): string[] {
     }
     out.push(line);
   }
-  if (open !== null) out.push(open);
   return out.filter((l) => !/^\s*\|(\s*:?-{2,}:?\s*\|)+\s*$/.test(l));
 }
 
