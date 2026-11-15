@@ -16,19 +16,13 @@ import {
   parseWikiTable,
   reconcileSeason,
 } from "./archive";
-import { retryDue, type TablesDeps } from "./tables";
+import { retryDue, type SyncStatusRow, type TablesDeps } from "./tables";
 
 const HOUR = 3_600_000;
 
 export function archiveJobsDue(
   deps: Pick<TablesDeps, "now">,
-  statuses: {
-    job: string;
-    scope: string;
-    lastAttemptAt: string | null;
-    lastSuccessAt: string | null;
-    consecutiveFailures: number;
-  }[],
+  statuses: SyncStatusRow[],
   only?: CompetitionKey[],
 ): { key: CompetitionKey; year: number }[] {
   const now = (deps.now ?? (() => new Date()))();
@@ -44,7 +38,7 @@ export function archiveJobsDue(
         if (year !== current) continue;
         if (now.getTime() - Date.parse(s.lastSuccessAt) < 20 * HOUR) continue;
       }
-      if (retryDue(s as never, now)) due.push({ key, year });
+      if (retryDue(s, now)) due.push({ key, year });
     }
   }
   return due;
@@ -77,6 +71,12 @@ export async function runArchiveJob(
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
       : 0;
 
+    const meta = { ...report, inserted, table: "not checked" };
+    if (rows.length === 0) {
+      await deps.store.record("archive", scope, false, "no matches confirmed by both pages", meta);
+      return { ok: false, detail: `nothing confirmed (${JSON.stringify(report)})` };
+    }
+
     // Current season: the table is replaced only when it matches the verified results exactly.
     let table = "not checked";
     if (year === seasonFor(c.seasonRule, now)) {
@@ -100,12 +100,7 @@ export async function runArchiveJob(
       } else table = `left alone (${check.reason})`;
     }
 
-    const meta = { ...report, inserted, table };
-    if (rows.length === 0) {
-      await deps.store.record("archive", scope, false, "no matches confirmed by both pages", meta);
-      return { ok: false, detail: `nothing confirmed (${JSON.stringify(report)})` };
-    }
-    await deps.store.record("archive", scope, true, null, meta);
+    await deps.store.record("archive", scope, true, null, { ...meta, table });
     return {
       ok: true,
       detail: `${inserted} new of ${rows.length} confirmed (${report.disagreed} disagreed, ${report.unmatched} unmatched); table ${table}`,

@@ -175,7 +175,7 @@ describe("archive jobs", () => {
     const now = new Date("2026-11-15T03:00:00Z");
     const deps = { now: () => now };
     const done = (scope: string, hoursAgo: number) => ({
-      job: "archive",
+      job: "archive" as const,
       scope,
       lastAttemptAt: new Date(now.getTime() - hoursAgo * 3_600_000).toISOString(),
       lastSuccessAt: new Date(now.getTime() - hoursAgo * 3_600_000).toISOString(),
