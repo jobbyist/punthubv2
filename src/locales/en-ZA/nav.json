@@ -165,7 +165,11 @@
       "verify": "Verify the record",
       "roadmap": "Roadmap",
       "cookies": "Cookies",
-      "disclosures": "Disclosures"
+      "disclosures": "Disclosures",
+      "fixtures": "Fixtures",
+      "tables": "Tables",
+      "discussions": "Sports Discussions",
+      "duels": "Head-to-Head Duels"
     },
     "social": {
       "x": "Puntr on X",

@@ -78,7 +78,7 @@ export function SiteHeader() {
   const directLinks = [
     { key: "home", to: "/", icon: House },
     { key: "fixtures", to: "/predictions", icon: CalendarDays },
-    { key: "community", to: "/community", icon: Users },
+    { key: "community", to: "/forum", icon: Users },
   ] as const;
 
   return (
