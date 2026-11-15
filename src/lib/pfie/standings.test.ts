@@ -267,7 +267,13 @@ describe("season backfill sync", () => {
         completedCounts: async () => new Map(),
         replaceStandings: async () => 0,
         insertHistory: async (rows: unknown[]) => rows.length,
-        record: async (_j: string, _s: string, ok: boolean, error: string | null) => {
+        record: async (
+          _j: string,
+          _s: string,
+          ok: boolean,
+          error: string | null,
+          _meta: Record<string, unknown>,
+        ) => {
           recorded.push({ ok, error });
         },
       },
