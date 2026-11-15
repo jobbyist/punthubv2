@@ -12,6 +12,8 @@ import { sastDate } from "@/lib/sast";
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
 import { extractionRequest, parseObservations, validateObservations } from "./extract";
+import { ARCHIVE_SOURCES } from "./archive";
+import { archiveJobsDue, runArchiveJob } from "./archive-run";
 import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import {
@@ -24,7 +26,7 @@ import {
 } from "./standings";
 import type { PfieSource } from "./types";
 
-export type TableJob = "standings" | "history" | "season";
+export type TableJob = "standings" | "history" | "season" | "archive";
 
 export interface SyncStatusRow {
   job: TableJob;
@@ -181,6 +183,17 @@ export async function runTablesSync(
   const now = deps.now ?? (() => new Date());
   const maxJobs = opts.maxJobs ?? 2;
   const statuses = await deps.store.statuses();
+  if (opts.job === "archive") {
+    const jobs = archiveJobsDue(deps, statuses, opts.only).slice(0, maxJobs);
+    const ran: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
+    for (const j of jobs)
+      ran.push({
+        job: "archive",
+        key: `${j.key}:${j.year}`,
+        ...(await runArchiveJob(deps, j.key, j.year)),
+      });
+    return { due: jobs.length, seasonDue: 0, ran };
+  }
   const status = (job: TableJob, scope: string) =>
     statuses.find((s) => s.job === job && s.scope === scope);
   const keys = (Object.keys(STANDINGS_COMPETITIONS) as CompetitionKey[]).filter(
@@ -209,6 +222,8 @@ export async function runTablesSync(
   if (!opts.job || opts.job === "season") {
     for (const w of seasonWindows(now())) {
       for (const key of keys) {
+        // Leagues covered by the archive import no longer need the search-based backfill.
+        if (ARCHIVE_SOURCES[key]) continue;
         const s = status("season", `${key}:${w.start}`);
         if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
         if (retryDue(s, now())) season.push({ key, ...w });
