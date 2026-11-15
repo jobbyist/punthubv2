@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
@@ -86,10 +86,23 @@ function useLandingView(page: string) {
   }, [page]);
 }
 
+/**
+ * The sample pick a guest made on the home Marquee Matchup card, from router history state. Read only after mount:
+ * the server never sees history state, so rendering it on the first pass would break hydration.
+ */
+function useMarqueePick() {
+  const state = useRouterState({ select: (s) => s.location.state.marqueePick });
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted || !state || typeof state.matchup !== "string") return null;
+  return state;
+}
+
 function Founding() {
   const { t } = useTranslation("founding");
   const launch = formatDate(`${DEFAULT_LAUNCH_DATE}T12:00:00+02:00`);
   useLandingView("founding");
+  const pick = useMarqueePick();
 
   return (
     <div className="relative isolate mx-auto w-full max-w-[920px] px-4 py-7 sm:px-6 sm:py-14">
@@ -97,6 +110,14 @@ function Founding() {
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
         {t("eyebrow")}
       </p>
+      {pick ? (
+        <p className="mt-3 inline-flex max-w-[640px] items-start gap-2 border border-primary/30 bg-primary-soft px-3 py-2 text-sm font-medium">
+          <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+          {pick.team
+            ? t("marqueePick", { team: pick.team, matchup: pick.matchup, launch })
+            : t("marqueePickDraw", { matchup: pick.matchup, launch })}
+        </p>
+      ) : null}
       <h1 className="mt-3 text-[clamp(2.4rem,7vw,4rem)] leading-[1.02]">
         {t("title1")}
         <br />

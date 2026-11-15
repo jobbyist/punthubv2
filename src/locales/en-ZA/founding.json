@@ -81,5 +81,7 @@
     "a3": "Puntr launches officially on {{launch}}. Founding Members sign up now, get their numbered badge as soon as they confirm their email, and are first in when we launch.",
     "q4": "Who can join?",
     "a4": "Anyone in South Africa who is 18 or older. You confirm your email before you can sign in."
-  }
+  },
+  "marqueePick": "You backed {{team}} in the {{matchup}}. Join below to make calls like this on your public record from {{launch}}.",
+  "marqueePickDraw": "You backed a draw in the {{matchup}}. Join below to make calls like this on your public record from {{launch}}."
 }

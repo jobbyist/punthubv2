@@ -3,6 +3,27 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026: Marquee Matchup card (home)
+
+Changed
+- Home preview card (`src/components/match-preview.tsx`): the static Soweto Derby card is now a Marquee Matchup card
+  with six rivalries (Soweto Derby, Boks vs All Blacks, El Clásico, Stormers vs Bulls, Celtics vs Lakers, Proteas vs
+  Australia). Rivalry tabs, an 8-second auto-rotation with a progress bar (pauses on hover, focus, touch or the pause
+  button; off with reduced motion; stops once a visitor picks), an animated confidence dial, floodlight backdrop,
+  glowing VS badge, spring-animated community split bars and a "Punt AI pick" badge. SSR always renders the Soweto
+  Derby, so hydration is unchanged.
+- Guest picks open a Founding Member dialog naming the rivalry and team; the CTA carries the pick to `/founding` in
+  router history state (no cookie or storage), where a confirmation line shows it.
+
+Added
+- `src/lib/marquee-matchups.ts` (sample data, roadmap tags from `SPORT_ROADMAP`) and tests; `home.matchups.*` and
+  `founding.marqueePick*` strings in English and Afrikaans.
+
+Not done, on purpose
+- Odds comparison teaser: CLAUDE.md rules out odds comparison at launch.
+- Form guide / head-to-head drawer: form comes only from recorded results, and these are illustrative matchups.
+- Team-colour glows: CLAUDE.md allows no new colours, so the glow uses brand green.
+
 ## 14 November 2026 (later): betting slips
 
 Added
