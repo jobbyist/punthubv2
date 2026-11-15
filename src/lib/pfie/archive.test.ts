@@ -233,3 +233,32 @@ describe("parseWikiTable tolerance", () => {
     expect(parseWikiTable(md)).toHaveLength(6);
   });
 });
+
+describe("reconcileSeason club-name spellings", () => {
+  it("matches FBref names that Wikipedia spells differently", () => {
+    const names = ["Athletic Bilbao", "PSV Eindhoven", "NEC", "AZ", "Sparta Rotterdam", "Ajax"];
+    const scores = new Map<string, [number, number]>([
+      ["0:1", [2, 1]],
+      ["2:3", [0, 0]],
+      ["4:5", [1, 3]],
+    ]);
+    const fb = (home: string, away: string, h: number, a: number) => ({
+      date: "2026-08-20",
+      home,
+      away,
+      homeScore: h,
+      awayScore: a,
+    });
+    const { rows, report } = reconcileSeason(
+      "eredivisie",
+      [
+        fb("Athletic Club", "PSV", 2, 1),
+        fb("NEC Nijmegen", "AZ Alkmaar", 0, 0),
+        fb("Sparta R.", "Ajax", 1, 3),
+      ],
+      { teams: names, scores },
+    );
+    expect(report.unmatched).toBe(0);
+    expect(rows).toHaveLength(3);
+  });
+});

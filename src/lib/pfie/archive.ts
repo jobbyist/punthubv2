@@ -266,6 +266,18 @@ export function parseWikiTable(markdown: string): StandingRow[] | null {
 // ---------------------------------------------------------------------------------------------------------------
 // Reconciliation
 
+/**
+ * FBref club names that Wikipedia season pages shorten or spell differently, keyed by the normalised FBref name.
+ * Kept out of the shared aliases on purpose: those also build badge file names and fixture keys.
+ */
+const ARCHIVE_NAMES: Record<string, string> = {
+  athletic: "Athletic Bilbao",
+  psv: "PSV Eindhoven",
+  "nec nijmegen": "NEC",
+  "az alkmaar": "AZ",
+  "sparta r": "Sparta Rotterdam",
+};
+
 export interface ArchiveReport {
   fbref: number;
   matrix: number;
@@ -294,7 +306,7 @@ export function reconcileSeason(
     unmatched: 0,
   };
   const index = (name: string) => {
-    const hit = resolveTeam(name, matrix.teams);
+    const hit = resolveTeam(ARCHIVE_NAMES[normaliseTeam(name)] ?? name, matrix.teams);
     return hit && hit !== "ambiguous" ? matrix.teams.indexOf(hit) : -1;
   };
   const display = (fbName: string, wikiName: string) => {
