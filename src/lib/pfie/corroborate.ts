@@ -9,6 +9,10 @@
  *   different site lists the same match on the same printed date and nobody states a different time. The match and
  *   its date are then corroborated by two sites; the exact time rests on one reputable outlet. Sites outside the
  *   trusted list never set a time this way.
+ * - A time from a zone INFERRED from the site (a national outlet such as a .es or .it site, or the official site read
+ *   in the league's home zone) never decides on its own, not even for the official site: it is verified only when a
+ *   second, different site gives the same instant (inferred or as a zone-less candidate), or it confirms a time
+ *   another site printed with a zone.
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
@@ -91,25 +95,56 @@ export function corroborate(input: {
   const decisions: Decision[] = [];
   for (const c of clusters.values()) {
     const existing = input.known.find((k) => k.home === c.home && k.away === c.away) ?? null;
-    let kickoff = decide(c.observations, (o) => o.kickoffUtc);
+    // Printed (or fixed-site) zones decide first; inferred zones only corroborate (see below).
+    const printed = (o: Observation) => (o.kickoffInferred ? null : o.kickoffUtc);
+    const inferredObs = c.observations.filter((o) => o.kickoffInferred && o.kickoffUtc);
+    let kickoff = decide(c.observations, printed);
     if (kickoff?.verdict === "single_source") {
       const stated = kickoff.value;
       const statedBy = new Set(
-        c.observations.filter((o) => o.kickoffUtc === stated).map((o) => o.domain),
+        c.observations.filter((o) => printed(o) === stated).map((o) => o.domain),
       );
       const confirmed = c.observations.some(
         (o) =>
-          !statedBy.has(o.domain) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(stated),
+          !statedBy.has(o.domain) &&
+          !printed(o) &&
+          ((o.kickoffInferred && o.kickoffUtc === stated) ||
+            (!o.kickoffUtc && (o.kickoffCandidates ?? []).includes(stated))),
       );
       if (confirmed) kickoff = { value: stated, verdict: "verified" };
       else {
-        const statedObs = c.observations.filter((o) => o.kickoffUtc === stated);
+        const statedObs = c.observations.filter((o) => printed(o) === stated);
         const trustedStated = statedObs.some((o) => o.tier === "trusted");
         const dates = new Set(statedObs.map((o) => o.date));
         const sameDateElsewhere = c.observations.some(
           (o) => !statedBy.has(o.domain) && !o.kickoffUtc && dates.has(o.date),
         );
-        if (trustedStated && sameDateElsewhere) kickoff = { value: stated, verdict: "verified" };
+        // An inferred time that contradicts the stated one blocks this weaker rule.
+        const inferredConflict = inferredObs.some(
+          (o) => !statedBy.has(o.domain) && o.kickoffUtc !== stated,
+        );
+        if (trustedStated && sameDateElsewhere && !inferredConflict)
+          kickoff = { value: stated, verdict: "verified" };
+      }
+    }
+    if (!kickoff && inferredObs.length > 0) {
+      // No page prints a zone: two different sites whose inferred instants agree (national outlets, the official
+      // site in the league's home zone), or one inferred instant that a zone-less page confirms. Any disagreement
+      // between inferred instants is a dispute.
+      const groups = new Map<string, Set<string>>();
+      for (const o of inferredObs)
+        groups.set(o.kickoffUtc!, (groups.get(o.kickoffUtc!) ?? new Set()).add(o.domain));
+      const [value, domains] = [...groups.entries()][0]!;
+      if (groups.size > 1) kickoff = { value, verdict: "disputed" };
+      else {
+        const confirmedByCandidate = c.observations.some(
+          (o) =>
+            !domains.has(o.domain) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(value),
+        );
+        kickoff = {
+          value,
+          verdict: domains.size >= 2 || confirmedByCandidate ? "verified" : "single_source",
+        };
       }
     }
     const final = decide(

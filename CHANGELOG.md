@@ -3,6 +3,16 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026 (morning): kick-off time zones
+
+- About 95 fixtures a run were lost to "no kick-off time with a known time zone" (La Liga, Serie A, Eredivisie, UCL,
+  Championship, Saudi). New rule (`src/lib/pfie/time.ts`, `corroborate.ts`): national outlets (.es, .it, .de, .fr,
+  .nl, .pt, .sa, .co.uk and named sites such as marca.com) and the official site read in the league's home zone
+  (`HOME_ZONES` in `provider.ts`) give an INFERRED instant. It never decides alone (not even for the official
+  site): two different sites must infer the same instant, or a zone-less page must confirm it, or it confirms a time
+  another site printed. Disagreeing inferred instants are a dispute and block the trusted single-outlet rule.
+- Fixture searches add national-press and South African phrasings per league (same call, max 5 phrasings).
+- Labels WET/WEST and KSA recognised. 8 new tests.
 ## 15 November 2026 (morning): season archive import
 
 - New job `archive` (`src/lib/pfie/archive.ts`, `archive-run.ts`): whole seasons for PSL, EPL, La Liga, Serie A,
