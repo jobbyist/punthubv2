@@ -8,7 +8,7 @@ import type { LlmRequest } from "@/lib/content/types";
 import { normalise } from "@/lib/content/validate";
 
 import { normaliseTeam } from "./teams";
-import { candidateInstants, zonedToUtc, zoneFor } from "./time";
+import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { Observation, PfieSource, RawObservation, Rejected } from "./types";
 
 const STATUSES = ["scheduled", "live", "finished", "postponed", "abandoned", "cancelled"] as const;
@@ -122,7 +122,7 @@ const DAY = 86_400_000;
 export function validateObservations(
   raw: RawObservation[],
   sources: PfieSource[],
-  window: { from: Date; to: Date; now: Date },
+  window: { from: Date; to: Date; now: Date; homeZone?: string | null },
 ): { accepted: Observation[]; rejected: Rejected[] } {
   const byIndex = new Map(sources.map((s) => [s.index, s]));
   const accepted: Observation[] = [];
@@ -162,16 +162,23 @@ export function validateObservations(
 
     let kickoffUtc: string | null = null;
     let kickoffCandidates: string[] | undefined;
+    let kickoffInferred = false;
     if (o.time) {
-      const zone = zoneFor(o.tz, source.domain);
+      let zone = zoneFor(o.tz, source.domain);
+      // No printed zone and no fixed site zone: a national outlet or the official site in the league's home zone
+      // gives an inferred instant (needs a second site to agree).
+      if (!zone && !o.tz) {
+        zone = inferredZoneFor(source.domain, window.homeZone, source.tier === "official");
+        kickoffInferred = zone !== null;
+      }
       kickoffUtc = zone ? zonedToUtc(o.date, o.time, zone) : null;
       if (zone && !kickoffUtc) {
         reject("bad_time");
         continue;
       }
-      // No printed zone and no known site zone: keep the plausible instants, never pick one (an unknown printed
-      // label is not guessed either).
-      if (!zone && !o.tz) kickoffCandidates = candidateInstants(o.date, o.time);
+      // Keep the plausible instants too, never pick one (an unknown printed label is not guessed either).
+      if (!o.tz && (!zone || kickoffInferred))
+        kickoffCandidates = candidateInstants(o.date, o.time, window.homeZone);
     }
 
     if (o.status === "finished") {
@@ -204,6 +211,7 @@ export function validateObservations(
       tier: source.tier,
       kickoffUtc,
       ...(kickoffCandidates?.length ? { kickoffCandidates } : {}),
+      ...(kickoffInferred ? { kickoffInferred: true as const } : {}),
     });
   }
   return { accepted, rejected };

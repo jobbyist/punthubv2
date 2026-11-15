@@ -8,7 +8,7 @@ import { corroborate } from "./corroborate";
 import { parseObservations, validateObservations } from "./extract";
 import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
-import { candidateInstants, zonedToUtc, zoneFor } from "./time";
+import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
 
 const NOW = new Date("2026-11-13T12:00:00Z");
@@ -215,6 +215,113 @@ describe("zone-less pages", () => {
     const a = base("example.com", "other", { kickoffUtc: "2026-11-22T20:00:00.000Z" });
     const b = base("example.com", "other", { kickoffCandidates: ["2026-11-22T20:00:00.000Z"] });
     expect(decide([a, b]).decisions[0]!.publish).toBe(false);
+  });
+});
+
+describe("inferred zones (national outlets, official site in the home zone)", () => {
+  const obs = (
+    domain: string,
+    tier: Observation["tier"],
+    extra: Partial<Observation>,
+  ): Observation => ({
+    source: 1,
+    home: "Getafe",
+    away: "Atletico Madrid",
+    date: "2026-11-22",
+    time: "20:00",
+    tz: null,
+    status: "scheduled",
+    homeScore: null,
+    awayScore: null,
+    quote: "SUN 22.11.2026 20:00 GET VS ATM",
+    domain,
+    tier,
+    kickoffUtc: null,
+    ...extra,
+  });
+  const madrid20 = "2026-11-22T19:00:00.000Z"; // 20:00 CET
+  const inferred = (domain: string, tier: Observation["tier"] = "other", utc = madrid20) =>
+    obs(domain, tier, { kickoffUtc: utc, kickoffInferred: true });
+  const decideOne = (list: Observation[]) =>
+    corroborate({ competitionKey: "laliga", season: 2026, observations: list, known: [] })
+      .decisions[0]!;
+
+  it("infers zones from national domains and the official site, never from unknown sites", () => {
+    expect(inferredZoneFor("marca.com")).toBe("Europe/Madrid");
+    expect(inferredZoneFor("gazzetta.it")).toBe("Europe/Rome");
+    expect(inferredZoneFor("spl.com.sa")).toBe("Asia/Riyadh");
+    expect(inferredZoneFor("laliga.com", "Europe/Madrid", true)).toBe("Europe/Madrid");
+    expect(inferredZoneFor("example.com", "Europe/Madrid", false)).toBeNull();
+  });
+
+  it("validation marks an inferred instant and keeps candidates incl. the home zone", () => {
+    const sources: PfieSource[] = [
+      {
+        index: 1,
+        url: "https://www.marca.com/x",
+        domain: "marca.com",
+        tier: "other",
+        text: "Getafe vs Atletico Madrid domingo 22 noviembre 20:00 SUN 22.11.2026 20:00 GET VS ATM",
+      },
+    ];
+    const r = validateObservations(
+      [
+        raw({
+          source: 1,
+          home: "Getafe",
+          away: "Atletico Madrid",
+          date: "2026-11-22",
+          time: "20:00",
+          tz: null,
+          quote: "SUN 22.11.2026 20:00 GET VS ATM",
+        }),
+      ],
+      sources,
+      { ...WINDOW, homeZone: "Asia/Riyadh" },
+    );
+    const o = r.accepted[0]!;
+    expect(o.kickoffInferred).toBe(true);
+    expect(o.kickoffUtc).toBe(madrid20);
+    expect(o.kickoffCandidates).toContain("2026-11-22T17:00:00.000Z"); // 20:00 in Riyadh
+  });
+
+  it("does not let the official site decide a time from an inferred zone alone", () => {
+    const d = decideOne([inferred("laliga.com", "official")]);
+    expect(d.publish).toBe(false);
+    expect(d.kickoffVerdict).toBe("single_source");
+  });
+
+  it("verifies when two different sites infer the same instant", () => {
+    const d = decideOne([inferred("laliga.com", "official"), inferred("marca.com")]);
+    expect(d.publish).toBe(true);
+    expect(d.kickoffAt).toBe(madrid20);
+  });
+
+  it("verifies one inferred instant that a zone-less page confirms", () => {
+    const zoneless = obs("example.com", "other", {
+      kickoffCandidates: candidateInstants("2026-11-22", "20:00"),
+    });
+    expect(decideOne([inferred("marca.com"), zoneless]).kickoffVerdict).toBe("verified");
+  });
+
+  it("treats disagreeing inferred instants as a dispute", () => {
+    const d = decideOne([
+      inferred("marca.com"),
+      inferred("gazzetta.it", "other", "2026-11-22T18:00:00.000Z"),
+    ]);
+    expect(d.kickoffVerdict).toBe("disputed");
+    expect(d.publish).toBe(false);
+  });
+
+  it("an inferred instant confirms a printed one from another site", () => {
+    const printed = obs("soccernews.com", "other", { kickoffUtc: madrid20 });
+    expect(decideOne([printed, inferred("as.com")]).kickoffVerdict).toBe("verified");
+  });
+
+  it("an inferred contradiction blocks the trusted single-outlet rule", () => {
+    const trusted = obs("supersport.com", "trusted", { kickoffUtc: madrid20 });
+    const conflict = inferred("marca.com", "other", "2026-11-22T18:00:00.000Z");
+    expect(decideOne([trusted, conflict]).publish).toBe(false);
   });
 });
 

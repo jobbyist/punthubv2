@@ -35,6 +35,11 @@ export interface Observation extends RawObservation {
    * each plausible zone. Never used on its own; it can only confirm a time another site states with a zone.
    */
   kickoffCandidates?: string[];
+  /**
+   * Set when `kickoffUtc` comes from a zone inferred from the site (national outlet, official site in the league's
+   * home zone) rather than printed. Needs a second independent site to agree; see corroborate.ts.
+   */
+  kickoffInferred?: true;
 }
 
 export interface Rejected {

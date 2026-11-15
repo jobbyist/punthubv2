@@ -33,6 +33,50 @@ interface CompetitionSources {
   queries: { fixtures: string[]; results: string[] };
 }
 
+/**
+ * Domestic competitions whose venues share one time zone. The official site read without a printed zone is taken
+ * to show this zone, as an inferred time that a second site must confirm (see corroborate.ts). Cross-border
+ * competitions (UEFA, CAF) have none.
+ */
+export const HOME_ZONES: Partial<Record<CompetitionKey, string>> = {
+  psl: "Africa/Johannesburg",
+  nedbank: "Africa/Johannesburg",
+  "sa-championship": "Africa/Johannesburg",
+  epl: "Europe/London",
+  championship: "Europe/London",
+  facup: "Europe/London",
+  eflcup: "Europe/London",
+  laliga: "Europe/Madrid",
+  seriea: "Europe/Rome",
+  bundesliga: "Europe/Berlin",
+  ligue1: "Europe/Paris",
+  eredivisie: "Europe/Amsterdam",
+  primeira: "Europe/Lisbon",
+  "saudi-pro": "Asia/Riyadh",
+};
+
+/**
+ * Extra phrasings that pull in pages printing times in a known zone: South African outlets (SAST) and the
+ * national press of the league's country (inferred zone). Same search call, so no extra cost.
+ */
+const ZONE_QUERIES: Partial<Record<CompetitionKey, string[]>> = {
+  laliga: ["LaLiga horarios jornada", "La Liga fixtures SuperSport kick-off SA time"],
+  seriea: ["Serie A orari giornata", "Serie A fixtures SuperSport kick-off SA time"],
+  bundesliga: ["Bundesliga Spieltag Anstoßzeiten", "Bundesliga fixtures SA time"],
+  ligue1: ["Ligue 1 programme horaires journée", "Ligue 1 fixtures SA time"],
+  eredivisie: ["Eredivisie speelschema aftrap", "Eredivisie fixtures SA time"],
+  primeira: ["Liga Portugal calendário horários jornada", "Liga Portugal fixtures SA time"],
+  "saudi-pro": ["Roshn Saudi League fixtures KSA time", "Saudi Pro League fixtures SA time"],
+  championship: ["Championship fixtures this weekend BBC Sport", "Championship fixtures SA time"],
+  ucl: [
+    "Champions League fixtures SuperSport kick-off times",
+    "Champions League horarios jornada",
+    "Champions League orari giornata",
+  ],
+  uel: ["Europa League fixtures SuperSport kick-off times", "Europa League horarios jornada"],
+  uecl: ["Conference League fixtures SuperSport kick-off times"],
+};
+
 /** Launch coverage. Adding a competition is one entry here plus its entry in `competitions.ts`. */
 export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> = {
   psl: {
@@ -391,7 +435,11 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
                 `kick-off times. Prefer the official competition site and established sports news sites.`
               : `${competition.name} football final scores for matches played from ${sastDate(from)} to ` +
                 `${today}. Prefer the official competition site and established sports news sites.`,
-          queries: config.queries[kind],
+          queries:
+            kind === "fixtures"
+              ? // Parallel Search takes at most 5 phrasings per call.
+                [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
+              : config.queries.results,
           maxResults: 10,
         })
         .then(
@@ -458,7 +506,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       if (!raw) throw new Error("extraction answer was not valid JSON");
 
       // 4. Validation and corroboration: code only.
-      const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now() });
+      const { accepted, rejected } = validateObservations(raw, sources, {
+        from,
+        to,
+        now: now(),
+        homeZone: HOME_ZONES[competition.key] ?? null,
+      });
       const known = await deps.store.knownFixtures(
         competition.name,
         new Date(from.getTime() - 3 * 86_400_000),
