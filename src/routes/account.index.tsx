@@ -85,7 +85,7 @@ function Account() {
             <div className="flex items-center justify-between gap-4 p-4 text-sm">
               <dt className="text-muted-foreground">{t("home.language")}</dt>
               <dd>
-                <LanguageSwitcher />
+                <LanguageSwitcher hideLabel />
               </dd>
             </div>
           </dl>

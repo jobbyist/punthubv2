@@ -58,7 +58,7 @@ type FlyoutItem = {
     | "/results"
     | "/insights"
     | "/leaderboards"
-    | "/community"
+    | "/forum"
     | "/duels"
     | "/newsroom"
     | "/tools"
@@ -88,11 +88,11 @@ const flyoutGroups: Record<
     icon: Users,
     items: [
       { key: "leaderboards", to: "/leaderboards", icon: Trophy },
-      { key: "discussions", to: "/community", icon: MessageSquare },
+      { key: "discussions", to: "/forum", icon: MessageSquare },
       { key: "duels", to: "/duels", icon: Swords },
       { key: "newsroom", to: "/newsroom", icon: Radio },
     ],
-    match: ["/leaderboards", "/leaderboard", "/community", "/duels", "/newsroom", "/u"],
+    match: ["/leaderboards", "/leaderboard", "/forum", "/duels", "/newsroom", "/u"],
   },
   platform: {
     icon: Layers,
@@ -501,7 +501,7 @@ export function MobileNav() {
                 <NavLink
                   path={path}
                   onNavigate={close}
-                  to="/community"
+                  to="/forum"
                   icon={Users}
                   label={t("primary.community")}
                   right={<ChevronRight className="size-4 text-muted-foreground" />}

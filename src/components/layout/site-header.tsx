@@ -19,6 +19,17 @@ import {
   Users,
   Wrench,
   Building2,
+  BarChart3,
+  Gift,
+  LayoutDashboard,
+  Link2,
+  Lock,
+  LogOut,
+  Share2,
+  ShieldCheck,
+  Ticket,
+  UserCog,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -63,13 +74,33 @@ const featuredSports: { key: RoadmapSport; labelKey: string; icon: LucideIcon }[
   { key: "combat", labelKey: "combat", icon: Swords },
 ];
 
+/** One account-menu row: icon, label, consistent spacing. */
+function MenuItem({
+  icon: Icon,
+  label,
+  onSelect,
+  className = "",
+}: {
+  icon: LucideIcon;
+  label: string;
+  onSelect: () => void;
+  className?: string;
+}) {
+  return (
+    <DropdownMenuItem onSelect={onSelect} className={`gap-2.5 px-2 py-2 ${className}`}>
+      <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+      <span className="truncate">{label}</span>
+    </DropdownMenuItem>
+  );
+}
+
 function isActive(path: string, to: string) {
   return path === to || (to !== "/" && path.startsWith(to + "/"));
 }
 
 export function SiteHeader() {
   const { t } = useTranslation("nav");
-  const { isSignedIn, profile, signOut } = useSession();
+  const { isSignedIn, profile, signOut, isAdmin } = useSession();
   const pp = usePoints();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -78,7 +109,7 @@ export function SiteHeader() {
   const directLinks = [
     { key: "home", to: "/", icon: House },
     { key: "fixtures", to: "/predictions", icon: CalendarDays },
-    { key: "community", to: "/community", icon: Users },
+    { key: "community", to: "/forum", icon: Users },
   ] as const;
 
   return (
@@ -273,34 +304,88 @@ export function SiteHeader() {
                   <ChevronDown className="size-4 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>
-                  <span className="block truncate">{profile.username}</span>
-                  {profile.founding_number && (
-                    <span className="block text-xs font-normal text-muted-foreground">
-                      {t("header.founding", { number: profile.founding_number })}
-                    </span>
-                  )}
+              <DropdownMenuContent align="end" className="w-64 p-1.5">
+                <DropdownMenuLabel className="flex items-center gap-3 px-2 py-2">
+                  <UserAvatar username={profile.username} url={profile.avatar_url} />
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-bold">{profile.username}</span>
+                    {profile.founding_number && (
+                      <span className="block text-xs font-normal text-muted-foreground">
+                        {t("header.founding", { number: profile.founding_number })}
+                      </span>
+                    )}
+                  </span>
                 </DropdownMenuLabel>
+                {pp.enabled && (
+                  <DropdownMenuItem
+                    onSelect={() => navigate({ to: "/wallet" })}
+                    className="mx-1 mb-1 justify-between rounded-md bg-primary-soft px-3 py-2 text-primary focus:bg-primary-soft"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide">
+                      {t("header.balance")}
+                    </span>
+                    <span className="text-sm font-bold tnum">
+                      {pp.balance !== null ? formatPoints(pp.balance) : "-"}
+                    </span>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                <DropdownMenuLabel className="px-2 pb-1 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t("header.groups.activity")}
+                </DropdownMenuLabel>
+                <MenuItem
+                  icon={BarChart3}
+                  label={t("header.myRecord")}
                   onSelect={() =>
                     navigate({ to: "/u/$username", params: { username: profile.username } })
                   }
-                >
-                  {t("header.myRecord")}
-                </DropdownMenuItem>
+                />
+                <MenuItem
+                  icon={Ticket}
+                  label={t("header.mySlips")}
+                  onSelect={() => navigate({ to: "/slips" })}
+                />
+                <MenuItem
+                  icon={Swords}
+                  label={t("header.myDuels")}
+                  onSelect={() => navigate({ to: "/duels" })}
+                />
+                {profile.founding_number && (
+                  <MenuItem
+                    icon={Target}
+                    label={t("header.practice")}
+                    onSelect={() => navigate({ to: "/practice" })}
+                  />
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="px-2 pb-1 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t("header.groups.money")}
+                </DropdownMenuLabel>
+                <MenuItem
+                  icon={Wallet}
+                  label={t("header.wallet")}
+                  onSelect={() => navigate({ to: "/wallet" })}
+                />
+                {pp.enabled && (
+                  <MenuItem
+                    icon={Gift}
+                    label={t("header.puntPoints")}
+                    onSelect={() => navigate({ to: "/rewards" })}
+                  />
+                )}
                 {profile.referral_code && (
                   <>
-                    <DropdownMenuItem
+                    <MenuItem
+                      icon={Link2}
+                      label={t("header.copyInvite")}
                       onSelect={async () => {
                         const code = profile.referral_code!;
                         if (await copyInviteLink(code)) toast.success(t("header.invite"));
                       }}
-                    >
-                      {t("header.copyInvite")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
+                    />
+                    <MenuItem
+                      icon={Share2}
+                      label={t("header.shareInvite")}
                       onSelect={() => {
                         analytics.shareClicked("invite");
                         window.open(
@@ -309,39 +394,42 @@ export function SiteHeader() {
                           "noopener,noreferrer",
                         );
                       }}
-                    >
-                      {t("header.shareInvite")}
-                    </DropdownMenuItem>
+                    />
                   </>
                 )}
-                {profile.founding_number && (
-                  <DropdownMenuItem onSelect={() => navigate({ to: "/practice" })}>
-                    {t("header.practice")}
-                  </DropdownMenuItem>
-                )}
-                {pp.enabled && (
-                  <DropdownMenuItem onSelect={() => navigate({ to: "/rewards" })}>
-                    {t("header.puntPoints")}
-                    {pp.balance !== null && (
-                      <span className="ml-auto pl-3 text-xs font-semibold text-primary tnum">
-                        {formatPoints(pp.balance)}
-                      </span>
-                    )}
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onSelect={() => navigate({ to: "/wallet" })}>
-                  {t("header.wallet")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate({ to: "/account" })}>
-                  {t("header.account")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate({ to: "/account/privacy" })}>
-                  {t("header.privacy")}
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => void signOut()}>
-                  {t("header.signOut")}
-                </DropdownMenuItem>
+                <DropdownMenuLabel className="px-2 pb-1 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t("header.groups.settings")}
+                </DropdownMenuLabel>
+                <MenuItem
+                  icon={UserCog}
+                  label={t("header.account")}
+                  onSelect={() => navigate({ to: "/account" })}
+                />
+                <MenuItem
+                  icon={ShieldCheck}
+                  label={t("header.security")}
+                  onSelect={() => navigate({ to: "/account/security" })}
+                />
+                <MenuItem
+                  icon={Lock}
+                  label={t("header.privacy")}
+                  onSelect={() => navigate({ to: "/account/privacy" })}
+                />
+                {isAdmin && (
+                  <MenuItem
+                    icon={LayoutDashboard}
+                    label={t("header.admin")}
+                    onSelect={() => navigate({ to: "/admin" })}
+                  />
+                )}
+                <DropdownMenuSeparator />
+                <MenuItem
+                  icon={LogOut}
+                  label={t("header.signOut")}
+                  onSelect={() => void signOut()}
+                  className="text-destructive focus:text-destructive"
+                />
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

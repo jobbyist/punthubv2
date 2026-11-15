@@ -23,7 +23,14 @@ import {
  * Lists enabled languages, then (for admins) languages still in review, then languages coming soon with a
  * badge. Only enabled languages are saved to a member's profile; a review language is a preview cookie.
  */
-export function LanguageSwitcher({ className = "" }: { className?: string }) {
+export function LanguageSwitcher({
+  className = "",
+  hideLabel = false,
+}: {
+  className?: string;
+  /** The surrounding row already shows "Language": keep the label for screen readers only. */
+  hideLabel?: boolean;
+}) {
   const { t } = useTranslation("common");
   const { locale, setLocale } = useLocale();
   const { profile, refreshProfile, isAdmin } = useSession();
@@ -41,7 +48,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
 
   return (
     <div className={`inline-flex items-center gap-2 text-sm ${className}`}>
-      <label htmlFor={id} className="text-muted-foreground">
+      <label htmlFor={id} className={hideLabel ? "sr-only" : "text-muted-foreground"}>
         {t("language.label")}
       </label>
       <Select

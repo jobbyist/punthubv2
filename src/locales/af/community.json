@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Gemeenskap | Puntr",
+    "title": "Gemeenskapsforum | Puntr",
     "description": "Deel jou keuses, gesels oor die wedstryde en leer by ander Suid-Afrikaanse sportaanhangers op 'n platform waar die gemeenskap eerste kom.",
     "ogDescription": "Deel keuses, bespreek wedstryde en leer by mekaar."
   },
@@ -8,7 +8,7 @@
     "name": "Puntr-gemeenskap",
     "description": "Gemeenskapsvoer waar Suid-Afrikaanse sportaanhangers keuses en gesprekke deel."
   },
-  "title": "Gemeenskap",
+  "title": "Gemeenskapsforum",
   "subtitle": "Die jongste geslote keuses van oral op Puntr. Elke keuse bly op rekord, wen of verloor.",
   "composer": {
     "prompt": "Keuses open op 1 Desember 2026",

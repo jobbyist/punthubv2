@@ -3,6 +3,22 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-15, Season archive import (PR: feat/season-archive-import), no page changed
+
+- **Product:** past and current league results (10 domestic leagues, seasons 2024/25 to 2026/27) are imported from
+  two public full-season pages per league: FBref's "Scores & Fixtures" page and the Wikipedia season article's
+  results matrix. A score is stored only when both pages agree; each stored result lists `fbref.com` and
+  `wikipedia.org` as its sources (shown on `/results` like other season results). For the current season the
+  Wikipedia league table replaces the stored table only when it matches the verified results exactly. No personal
+  data is involved; no AI service sees anything.
+- **Volume:** about 60 page reads once (Parallel Extract), then about 10 a day for the current season.
+- **Pages:** none. The Terms already describe third-party data sources for fixtures and results.
+- **Review `[attorney review]`:**
+  - FBref (Sports Reference) terms of use restrict automated collection and commercial reuse of their data. Scores
+    are facts, but the terms are a contract question. If counsel says no, remove `fbref` from
+    `src/lib/pfie/archive.ts` and use another dated source (one constant per league).
+  - Wikipedia text is CC BY-SA; we store only scores (facts), with attribution in the source list.
+
 ## 2026-11-15, Pre-match reference odds and "odds unverified" (PR: feat/odds-reference), Terms r21, Privacy r19
 
 - **Product:** before kick-off Puntr collects market reference prices (1X2, over/under 2.5, both teams to score)

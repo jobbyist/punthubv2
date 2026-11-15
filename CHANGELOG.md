@@ -13,6 +13,14 @@ Implementation log for the master brief (13 November 2026). Newest first. Earlie
   another site printed. Disagreeing inferred instants are a dispute and block the trusted single-outlet rule.
 - Fixture searches add national-press and South African phrasings per league (same call, max 5 phrasings).
 - Labels WET/WEST and KSA recognised. 8 new tests.
+## 15 November 2026 (morning): season archive import
+
+- New job `archive` (`src/lib/pfie/archive.ts`, `archive-run.ts`): whole seasons for PSL, EPL, La Liga, Serie A,
+  Bundesliga, Ligue 1, Eredivisie, Liga Portugal, Championship and Saudi Pro League (2024/25, 2025/26, current) from
+  FBref's schedule page and Wikipedia's results matrix, parsed in code (no model) and stored only when both agree.
+  Current-season tables are replaced when the Wikipedia table matches the verified results exactly. Cron
+  `sync-archive` 02:10-02:55 SAST (migration `20261115060000`). The search-based season backfill now skips these
+  leagues. Manual run: `/api/cron/sync-tables?job=archive&max=3`.
 
 ## 15 November 2026 (night): dark-mode logo wall, staff admin, admin notch
 

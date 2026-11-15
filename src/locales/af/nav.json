@@ -35,7 +35,17 @@
     "puntPoints": "PuntPoints en belonings",
     "practice": "Oefenmodus",
     "signIn": "Teken aan",
-    "wallet": "Beursie"
+    "wallet": "Beursie",
+    "balance": "PuntPoints-balans",
+    "mySlips": "My wedstrokies",
+    "myDuels": "My tweestryde",
+    "security": "Sekuriteit",
+    "admin": "Admin-paneelbord",
+    "groups": {
+      "activity": "My aktiwiteit",
+      "money": "Beursie en belonings",
+      "settings": "Instellings"
+    }
   },
   "desktop": {
     "groups": {
@@ -165,7 +175,11 @@
       "verify": "Verifieer die rekord",
       "roadmap": "Padkaart",
       "cookies": "Koekies",
-      "disclosures": "Openbaarmakings"
+      "disclosures": "Openbaarmakings",
+      "fixtures": "Wedstryde",
+      "tables": "Puntelyste",
+      "discussions": "Sportbesprekings",
+      "duels": "Kop-aan-kop-tweestryde"
     },
     "social": {
       "x": "Puntr op X",

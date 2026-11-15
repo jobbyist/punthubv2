@@ -19,7 +19,7 @@ import type {
   SearchProvider,
 } from "./types";
 
-type Overrides = Partial<Pick<RetryOptions, "fetchImpl" | "sleep">>;
+type Overrides = Partial<Pick<RetryOptions, "fetchImpl" | "sleep" | "timeoutMs">>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
