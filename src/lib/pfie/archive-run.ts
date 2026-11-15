@@ -108,7 +108,25 @@ export async function runArchiveJob(
           teams: n,
         });
         table = `${n} teams`;
-      } else table = `left alone (${check.reason})`;
+      } else {
+        table = `left alone (${check.reason})`;
+        if (!parsed) {
+          // Diagnostics (public page text only): where the reader put the table header, if anywhere.
+          const md = wiki.markdown;
+          const at = md.search(/\|\s*Pos\s*\|/);
+          await deps.store.record(
+            "archive",
+            scope,
+            false,
+            "no league table on the wikipedia page",
+            {
+              wikiChars: md.length,
+              posAt: at,
+              snippet: at >= 0 ? md.slice(Math.max(0, at - 20), at + 500) : md.slice(0, 200),
+            },
+          );
+        }
+      }
     }
 
     await deps.store.record("archive", scope, true, null, { ...meta, table });

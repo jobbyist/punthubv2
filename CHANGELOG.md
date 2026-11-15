@@ -3,6 +3,9 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 Nov 2026 – Current-season tables: tolerant table reader + diagnostics
+- The Wikipedia league-table reader now accepts `Team vte` headers and rows whose empty trailing cells were dropped, and the archive job records what it saw (and which club names failed to match) when it cannot read a table. No change to what is shown or collected; legal copy unchanged.
+
 ## 15 November 2026 (morning): kick-off time zones
 
 - About 95 fixtures a run were lost to "no kick-off time with a known time zone" (La Liga, Serie A, Eredivisie, UCL,

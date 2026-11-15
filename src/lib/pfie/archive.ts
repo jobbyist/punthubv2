@@ -219,7 +219,9 @@ export function parseWikiTable(markdown: string): StandingRow[] | null {
   const lines = tableLines(markdown);
   for (let i = 0; i < lines.length; i++) {
     const header = cells(lines[i]!).map(linkText);
-    const at = (name: string) => header.indexOf(name);
+    // Wikipedia appends "vte" (view-talk-edit) to some headers and may suffix footnote marks: match by prefix.
+    const at = (name: string) =>
+      header.findIndex((h) => h === name || (name === "Team" && /^Team(\s|\[|$)/.test(h)));
     if (at("Pos") !== 0 || at("Team") < 0 || at("Pld") < 0 || at("Pts") < 0) continue;
     const idx = {
       team: at("Team"),
@@ -235,7 +237,8 @@ export function parseWikiTable(markdown: string): StandingRow[] | null {
     const rows: StandingRow[] = [];
     for (let j = i + 1; j < lines.length; j++) {
       const row = cells(lines[j]!);
-      if (row.length < header.length) break;
+      // Trailing columns (qualification notes) may be empty and dropped by the reader: only the stat columns count.
+      if (row.length <= Math.max(...Object.values(idx))) break;
       const num = (k: number) => Number(linkText(row[k] ?? "").replace(/[^\d]/g, ""));
       const position = num(0);
       if (!position) break;
@@ -269,6 +272,8 @@ export interface ArchiveReport {
   verified: number;
   disagreed: number;
   unmatched: number;
+  /** FBref names that did not resolve to a matrix team (distinct, first 12), to guide alias fixes. */
+  unmatchedNames?: string[];
 }
 
 /**
@@ -300,11 +305,14 @@ export function reconcileSeason(
     return wikiName;
   };
   const rows: HistoryRow[] = [];
+  const missing = new Set<string>();
   for (const m of matches) {
     const h = index(m.home);
     const a = index(m.away);
     if (h < 0 || a < 0 || h === a) {
       report.unmatched++;
+      if (h < 0) missing.add(m.home);
+      if (a < 0) missing.add(m.away);
       continue;
     }
     const cell = matrix.scores.get(`${h}:${a}`);
@@ -327,6 +335,7 @@ export function reconcileSeason(
     });
   }
   report.verified = rows.length;
+  if (missing.size) report.unmatchedNames = [...missing].slice(0, 12);
   return { rows, report };
 }
 
