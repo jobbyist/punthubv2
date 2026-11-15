@@ -11,9 +11,12 @@ Added
   balance expires on 7 Dec.
 - `src/lib/parallel/`: prices and provider keys, cache keys (SHA-256 of normalised requests), a read-through
   response cache (`cachedCall`, `withSearchCache`), Task API and Responses API clients. 12 tests.
-- Migration `20261115010000_parallel_data_layer.sql` (NOT applied yet): `parallel_cache`, `api_unit_prices`,
+- Migration `20261115010000_parallel_data_layer.sql` (APPLIED 15 Nov at the owner's approval): `parallel_cache`, `api_unit_prices`,
   `api_budgets` (Parallel $25 for November, $5 from 7 Dec), `api_budget_claim()`, `api_spend_status()`, call caps
-  for Task, Chat and Monitor, daily cache purge. Tested on production in a transaction that was rolled back.
+  for Task, Chat and Monitor, daily cache purge. Tested first on production in a transaction that was rolled back.
+- Migration `20261115020000_parallel_budget_dec.sql` (APPLIED): one-shot pg_cron job that sets the Parallel budget to
+  US$5 at 00:05 SAST on 7 Dec 2026, then removes itself (owner decision, 15 Nov).
+- `types.ts`: the three new tables and four functions added by hand (matching production).
 - Admin > System shows spend against the monthly budget once the migration is applied.
 - /dev checklist: nine new tasks from the owner's 15 Nov directions (pre-match and manual odds, team news, match
   stats, one-off research jobs, Parallel layer, Confidence Score, Punt AI chatbot, page motion, Afrikaans go-live).

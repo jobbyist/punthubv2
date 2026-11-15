@@ -403,6 +403,27 @@ export type Database = {
         }
         Relationships: []
       }
+      api_budgets: {
+        Row: {
+          family: string
+          monthly_usd: number
+          note: string | null
+          updated_at: string
+        }
+        Insert: {
+          family: string
+          monthly_usd: number
+          note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          family?: string
+          monthly_usd?: number
+          note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       api_quota_limits: {
         Row: {
           daily_cap: number
@@ -424,6 +445,27 @@ export type Database = {
           note?: string | null
           provider?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      api_unit_prices: {
+        Row: {
+          note: string | null
+          provider: string
+          updated_at: string
+          usd_per_unit: number
+        }
+        Insert: {
+          note?: string | null
+          provider: string
+          updated_at?: string
+          usd_per_unit: number
+        }
+        Update: {
+          note?: string | null
+          provider?: string
+          updated_at?: string
+          usd_per_unit?: number
         }
         Relationships: []
       }
@@ -1903,6 +1945,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      parallel_cache: {
+        Row: {
+          created_at: string
+          endpoint: string
+          expires_at: string
+          key: string
+          purpose: string
+          response: Json
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          expires_at: string
+          key: string
+          purpose: string
+          response: Json
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          expires_at?: string
+          key?: string
+          purpose?: string
+          response?: Json
+        }
+        Relationships: []
       }
       pfie_observations: {
         Row: {
@@ -4266,6 +4335,12 @@ export type Database = {
         Args: { p_email: string; p_user: string }
         Returns: undefined
       }
+      api_budget_claim: {
+        Args: { p_provider: string; p_units?: number }
+        Returns: boolean
+      }
+      api_family_spend_usd: { Args: { p_family: string }; Returns: number }
+      api_provider_family: { Args: { p_provider: string }; Returns: string }
       api_quota_claim: {
         Args: { p_provider: string; p_units?: number }
         Returns: boolean
@@ -4281,6 +4356,15 @@ export type Database = {
           provider: string
           refused_today: number
           today: number
+        }[]
+      }
+      api_spend_status: {
+        Args: never
+        Returns: {
+          family: string
+          monthly_usd: number
+          remaining_usd: number
+          spent_usd: number
         }[]
       }
       apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
