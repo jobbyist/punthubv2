@@ -3,7 +3,8 @@
     "title": "Sokkerwedstryde hierdie week: PSL, Premier League, UCL en meer | Puntr",
     "description": "Elke komende sokkerwedstryd wat Suid-Afrikaners volg, in SAST: Betway Premiership, Premier League, Champions League, La Liga, CAF en meer, met vorm en gemeenskapskeuses.",
     "ogTitle": "Sokkerwedstryde in SAST | Puntr",
-    "ogDescription": "Komende wedstryde in die ligas en bekers wat Suid-Afrikaners volg, in Suid-Afrikaanse tyd."
+    "ogDescription": "Komende wedstryde in die ligas en bekers wat Suid-Afrikaners volg, in Suid-Afrikaanse tyd.",
+    "titlePage": "Wedstryde, bladsy {{page}} van {{pages}} | Puntr"
   },
   "title": "Wedstryde",
   "subtitle": "Elke komende wedstryd in die ligas, bekers en toernooie wat Suid-Afrikaners volg, in Suid-Afrikaanse tyd.",
@@ -67,5 +68,12 @@
     "title": "Maak jou voorspellings by bekendstelling",
     "body": "Keuses open op 1 Desember 2026 en sluit by afskop. Elke keuse kry ’n tydstempel op jou openbare rekord.",
     "button": "Sien voorspellings"
+  },
+  "pager": {
+    "label": "Wedstrydbladsye",
+    "showing": "Wys {{from}}-{{to}} van {{total}} wedstryde",
+    "previous": "Vorige bladsy",
+    "next": "Volgende bladsy",
+    "page": "Bladsy {{page}}"
   }
 }

@@ -3,7 +3,8 @@
     "title": "Football fixtures this week: PSL, Premier League, UCL and more | Puntr",
     "description": "Every upcoming football fixture South Africans follow, in SAST: Betway Premiership, Premier League, Champions League, La Liga, CAF and more, with form and community picks.",
     "ogTitle": "Football fixtures in SAST | Puntr",
-    "ogDescription": "Upcoming fixtures across the leagues and cups South Africans follow, in South African time."
+    "ogDescription": "Upcoming fixtures across the leagues and cups South Africans follow, in South African time.",
+    "titlePage": "Fixtures, page {{page}} of {{pages}} | Puntr"
   },
   "title": "Fixtures",
   "subtitle": "Every upcoming match across the leagues, cups and tournaments South Africans follow, in South African time.",
@@ -67,5 +68,12 @@
     "title": "Make your calls at launch",
     "body": "Picks open on 1 December 2026 and lock at kick-off. Every pick is time-stamped on your public record.",
     "button": "See predictions"
+  },
+  "pager": {
+    "label": "Fixture pages",
+    "showing": "Showing {{from}}-{{to}} of {{total}} fixtures",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {{page}}"
   }
 }

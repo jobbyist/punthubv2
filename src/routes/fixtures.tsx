@@ -26,6 +26,7 @@ import {
   type CompetitionRegion,
 } from "@/lib/match/competition-meta";
 import { competitions } from "@/lib/sports/competitions";
+import { FIXTURES_PER_PAGE, pageWindow, paginate } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 
 type View = "cards" | "list";
@@ -37,6 +38,7 @@ type Search = {
   comp?: string;
   view?: View;
   group?: Group;
+  page?: number;
 };
 
 export const Route = createFileRoute("/fixtures")({
@@ -49,6 +51,8 @@ export const Route = createFileRoute("/fixtures")({
     if (typeof s["comp"] === "string" && s["comp"]) out.comp = s["comp"].slice(0, 80);
     if (s["view"] === "list") out.view = "list";
     if (s["group"] === "competition") out.group = "competition";
+    const page = Number(s["page"]);
+    if (Number.isInteger(page) && page > 1 && page < 1000) out.page = page;
     return out;
   },
   loader: async () => {
@@ -61,9 +65,18 @@ export const Route = createFileRoute("/fixtures")({
   },
   head: ({ match, loaderData }) => {
     const t = headT(match.context.locale, "fixtures");
-    const events = (loaderData?.fixtures ?? []).slice(0, 50).map((f, i) => ({
+    // Each page is its own canonical URL with rel prev/next, so every fixture is reachable by plain links.
+    const page = paginate(loaderData?.fixtures ?? [], match.search.page);
+    const url = (n: number) => `https://puntr.co.za/fixtures${n > 1 ? `?page=${n}` : ""}`;
+    const pageLinks = [
+      { rel: "canonical", href: url(page.current) },
+      ...(page.current > 1 ? [{ rel: "prev", href: url(page.current - 1) }] : []),
+      ...(page.current < page.pages ? [{ rel: "next", href: url(page.current + 1) }] : []),
+    ];
+    const offset = (page.current - 1) * FIXTURES_PER_PAGE;
+    const events = page.items.map((f, i) => ({
       "@type": "ListItem",
-      position: i + 1,
+      position: offset + i + 1,
       item: {
         "@type": "SportsEvent",
         name: `${f.home} vs ${f.away}`,
@@ -76,9 +89,14 @@ export const Route = createFileRoute("/fixtures")({
       },
     }));
     return {
-      links: [{ rel: "canonical", href: "https://puntr.co.za/fixtures" }],
+      links: pageLinks,
       meta: [
-        { title: t("meta.title") },
+        {
+          title:
+            page.current > 1
+              ? t("meta.titlePage", { page: page.current, pages: page.pages })
+              : t("meta.title"),
+        },
         { name: "description", content: t("meta.description") },
         { property: "og:title", content: t("meta.ogTitle") },
         { property: "og:description", content: t("meta.ogDescription") },
@@ -91,7 +109,7 @@ export const Route = createFileRoute("/fixtures")({
             "@type": "CollectionPage",
             name: t("title"),
             description: t("meta.description"),
-            url: "https://puntr.co.za/fixtures",
+            url: url(page.current),
             mainEntity: { "@type": "ItemList", itemListElement: events },
           }),
         },
@@ -100,6 +118,99 @@ export const Route = createFileRoute("/fixtures")({
   },
   component: Fixtures,
 });
+
+/**
+ * Crawlable pagination: every control is a real link (`?page=N`, other filters kept), so it works without
+ * JavaScript and search engines can follow it.
+ */
+function Pager(props: { current: number; pages: number; from: number; to: number; total: number }) {
+  const { t } = useTranslation("fixtures");
+  const { current, pages } = props;
+  const linkTo = (n: number) => ({
+    to: "/fixtures" as const,
+    search: (prev: Search): Search => {
+      const { page: _drop, ...rest } = prev;
+      return n > 1 ? { ...rest, page: n } : rest;
+    },
+  });
+  const base =
+    "grid h-10 min-w-10 place-items-center rounded-md border px-3 text-sm font-semibold transition-colors";
+  return (
+    <nav
+      aria-label={t("pager.label")}
+      className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-between"
+    >
+      <p className="text-xs text-muted-foreground tnum" aria-live="polite">
+        {t("pager.showing", { from: props.from, to: props.to, total: props.total })}
+      </p>
+      {pages > 1 && (
+        <ul className="flex items-center gap-1.5">
+          <li>
+            {current > 1 ? (
+              <Link
+                {...linkTo(current - 1)}
+                rel="prev"
+                className={cn(base, "border-border hover:bg-muted")}
+              >
+                <span aria-hidden>‹</span>
+                <span className="sr-only">{t("pager.previous")}</span>
+              </Link>
+            ) : (
+              <span
+                className={cn(base, "border-border text-muted-foreground opacity-50")}
+                aria-hidden
+              >
+                ‹
+              </span>
+            )}
+          </li>
+          {pageWindow(current, pages).map((n, i) =>
+            n === null ? (
+              <li key={`gap-${i}`} className="px-1 text-muted-foreground" aria-hidden>
+                …
+              </li>
+            ) : (
+              <li key={n}>
+                <Link
+                  {...linkTo(n)}
+                  aria-current={n === current ? "page" : undefined}
+                  aria-label={t("pager.page", { page: n })}
+                  className={cn(
+                    base,
+                    n === current
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border hover:bg-muted",
+                  )}
+                >
+                  {n}
+                </Link>
+              </li>
+            ),
+          )}
+          <li>
+            {current < pages ? (
+              <Link
+                {...linkTo(current + 1)}
+                rel="next"
+                className={cn(base, "border-border hover:bg-muted")}
+              >
+                <span aria-hidden>›</span>
+                <span className="sr-only">{t("pager.next")}</span>
+              </Link>
+            ) : (
+              <span
+                className={cn(base, "border-border text-muted-foreground opacity-50")}
+                aria-hidden
+              >
+                ›
+              </span>
+            )}
+          </li>
+        </ul>
+      )}
+    </nav>
+  );
+}
 
 const count = <T,>(items: T[], key: (x: T) => string) =>
   items.reduce((m, x) => m.set(key(x), (m.get(key(x)) ?? 0) + 1), new Map<string, number>());
@@ -118,7 +229,8 @@ function Fixtures() {
   const set = (patch: { [K in keyof Search]?: Search[K] | undefined }) =>
     void navigate({
       search: (prev) => {
-        const next: Record<string, unknown> = { ...prev, ...patch };
+        // Any filter change starts again at page 1.
+        const next: Record<string, unknown> = { ...prev, page: undefined, ...patch };
         for (const k of Object.keys(next))
           if (next[k] === undefined || next[k] === "") delete next[k];
         return next as Search;
@@ -140,6 +252,7 @@ function Fixtures() {
   );
   const byComp = byRegion.filter((f) => !comp || f.competition === comp);
   const shown = byComp.filter((f) => !day || saDayKey(f.kickoff_at) === day);
+  const paged = paginate(shown, search.page);
 
   // Each filter row counts what the other filters leave, so a chip never promises matches that are not there.
   const dayCounts = count(byComp, (f) => saDayKey(f.kickoff_at));
@@ -151,7 +264,7 @@ function Fixtures() {
 
   const groups = useMemo(() => {
     const out = new Map<string, UpcomingFixture[]>();
-    for (const f of shown) {
+    for (const f of paged.items) {
       const key = group === "day" ? saDayKey(f.kickoff_at) : f.competition;
       out.set(key, [...(out.get(key) ?? []), f]);
     }
@@ -167,9 +280,9 @@ function Fixtures() {
       entries.sort((a, b) => order(a[0]) - order(b[0]) || a[0].localeCompare(b[0]));
     }
     return entries;
-  }, [shown, group]);
+  }, [paged.items, group]);
 
-  const { forms, rows } = useTeamForms(shown.slice(0, 120).flatMap((f) => [f.home, f.away]));
+  const { forms, rows } = useTeamForms(paged.items.flatMap((f) => [f.home, f.away]));
   const filtered = Boolean(q || day || region || comp);
 
   const regionChips: FilterChip[] = [
@@ -417,6 +530,16 @@ function Fixtures() {
           </div>
         </LayoutGroup>
       </MotionConfig>
+
+      {shown.length > 0 && (
+        <Pager
+          current={paged.current}
+          pages={paged.pages}
+          from={(paged.current - 1) * FIXTURES_PER_PAGE + 1}
+          to={(paged.current - 1) * FIXTURES_PER_PAGE + paged.items.length}
+          total={shown.length}
+        />
+      )}
 
       <section className="card-surface mt-12 p-5 sm:p-6" aria-labelledby="coverage-title">
         <h2 id="coverage-title" className="text-lg">
