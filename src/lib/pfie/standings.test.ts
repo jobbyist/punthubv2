@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { chooseTable, parseStandings, validateTables, type RawStandingRow } from "./standings";
-import { retryDue, seasonQueries, seasonWindows, standingsDue, type SyncStatusRow } from "./tables";
+import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
+import {
+  retryDue,
+  runTablesSync,
+  seasonQueries,
+  seasonWindows,
+  standingsDue,
+  type SyncStatusRow,
+} from "./tables";
 import type { Observation, PfieSource } from "./types";
 
 const teams = ["Alpha FC", "Bravo United", "Charlie City", "Delta Rovers"];
@@ -195,15 +203,111 @@ describe("seasonWindows", () => {
     expect(w[0]!.end <= "2026-10-04").toBe(true);
     expect(w.at(-1)!.start).toBe("2025-08-01");
     expect(w.every((x) => x.start <= x.end)).toBe(true);
+    expect(w.every((x) => Date.parse(x.end) - Date.parse(x.start) <= 6 * 86_400_000)).toBe(true);
     expect(w.some((x) => x.start.startsWith("2026-07") && x.end.slice(5, 7) === "07")).toBe(false);
     expect(new Set(w.map((x) => x.start)).size).toBe(w.length);
   });
 });
 
 describe("seasonQueries", () => {
-  it("names the months of the window", () => {
-    const q = seasonQueries("Premier League", "2026-09-25", "2026-10-15");
-    expect(q[0]).toBe("Premier League results September 2026 October 2026");
+  it("uses exact dates, the month names and a weekend round-up phrasing", () => {
+    const q = seasonQueries("Premier League", "2026-09-25", "2026-10-01");
+    expect(q[0]).toBe("Premier League results 25 September 2026 to 1 October 2026");
+    expect(q[1]).toContain("weekend round-up");
+    expect(q[1]).toContain("September 2026 October 2026");
     expect(q.every((x) => x.startsWith("Premier League"))).toBe(true);
+  });
+
+  it("adds a club query only when clubs are known, capped at four", () => {
+    expect(seasonQueries("Premier League", "2026-09-25", "2026-10-01")).toHaveLength(3);
+    const q = seasonQueries("Betway Premiership", "2026-09-25", "2026-10-01", [
+      "Kaizer Chiefs",
+      "Orlando Pirates",
+      "Mamelodi Sundowns",
+      "Stellenbosch",
+      "Cape Town City",
+    ]);
+    expect(q).toHaveLength(4);
+    expect(q[3]).toBe(
+      "Kaizer Chiefs Orlando Pirates Mamelodi Sundowns Stellenbosch results September 2026 October 2026",
+    );
+  });
+});
+
+describe("season backfill sync", () => {
+  const long = "x".repeat(400);
+  const answer = (matches: unknown[]) => JSON.stringify({ matches });
+  const make = (replies: string[]) => {
+    const recorded: { ok: boolean; error: string | null }[] = [];
+    let calls = 0;
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [
+          { url: "https://www.psl.co.za/a", title: "a", excerpt: long, publishedAt: null },
+          { url: "https://www.bbc.co.uk/b", title: "b", excerpt: long, publishedAt: null },
+          { url: "https://www.skysports.com/c", title: "c", excerpt: long, publishedAt: null },
+          { url: "https://www.example.org/d", title: "d", excerpt: long, publishedAt: null },
+        ],
+      },
+      extract: null,
+      llm: {
+        name: "fake",
+        generate: async () => ({
+          text: replies[Math.min(calls++, replies.length - 1)]!,
+          model: "m",
+        }),
+      },
+      models: DEFAULT_PFIE_MODELS.slice(0, 1),
+      now: () => new Date("2026-11-15T02:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => [],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async (rows: unknown[]) => rows.length,
+        record: async (
+          _j: string,
+          _s: string,
+          ok: boolean,
+          error: string | null,
+          _meta: Record<string, unknown>,
+        ) => {
+          recorded.push({ ok, error });
+        },
+      },
+    };
+    return { deps, recorded, calls: () => calls };
+  };
+
+  it("retries once with fewer sources when the answer is not valid JSON", async () => {
+    const { deps, recorded, calls } = make(["{ truncated", answer([])]);
+    const out = await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 1 });
+    expect(calls()).toBe(2);
+    expect(out.ran[0]!.detail).toContain("no verified results");
+    expect(recorded.at(-1)!.error).toBe("no verified results on the sources");
+  });
+
+  it("reports invalid JSON when the retry fails too", async () => {
+    const { deps, recorded, calls } = make(["{ bad", "{ still bad"]);
+    await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 1 });
+    expect(calls()).toBe(2);
+    expect(recorded.at(-1)!.error).toBe("extraction answer was not valid JSON");
+  });
+
+  it("leaves a window alone after six failures in a row", async () => {
+    const { deps } = make([answer([])]);
+    const windows = seasonWindows(deps.now());
+    const failed = windows.map((w) => ({
+      job: "season" as const,
+      scope: `psl:${w.start}`,
+      lastAttemptAt: "2026-11-01T00:00:00Z",
+      lastSuccessAt: null,
+      consecutiveFailures: 6,
+    }));
+    deps.store.statuses = async () => failed;
+    const out = await runTablesSync(deps as never, { job: "season", only: ["psl"], maxJobs: 3 });
+    expect(out.seasonDue).toBe(0);
   });
 });

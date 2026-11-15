@@ -99,6 +99,17 @@ match and compare with the official score before any settlement is trusted.
 - Corroboration: a zoned time from one TRUSTED outlet is verified when another site lists the same match on the same
   printed date and nobody states another time (`corroborate.ts`).
 - Season backfill: job `season` in `runTablesSync`, 21-day windows from 1 Aug of last season to today - 42 days,
-  newest first; scope `<key>:<start>` in `sync_status`. Cron `sync-season` every 10 min 06:00-06:50 SAST, two
+  newest first; scope `<key>:<start>` in `sync_status`. Cron `sync-season` every 10 min 06:00-06:50 SAST (see 15 Nov below), two
   windows per call (`/api/cron/sync-tables?job=season&max=2`). Same verification as form history (official site or
   two domains with the same score). Results show on `/results` > Season results with their source domains.
+
+## 15 Nov 2026: season backfill windows
+
+- Windows are now 7 days (about one matchday), not 21. Searches carry the exact dates, the month names, a
+  "weekend round-up" phrasing and up to four known club names, so results land on the right dates instead of this
+  week's fixtures (the first live run rejected 18 PSL matches as `outside_date_range`).
+- An answer that is not valid JSON (usually cut off at the output limit) is retried once with the three best
+  sources, each shortened to 8,000 characters.
+- A window that fails six times in a row is left alone, so empty windows (international breaks) stop using quota.
+- Cron `sync-season` runs every 10 minutes at 04:00-05:50 UTC (06:00-07:50 SAST), three windows per call. About
+  36 windows a night, newest first, so the current season fills in about two weeks.

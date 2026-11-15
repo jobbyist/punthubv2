@@ -73,8 +73,10 @@ const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
 const MAX_CHARS = 14_000;
 const HISTORY_DAYS = 42;
-/** Season backfill reads results in windows this long (about three matchdays). */
-const SEASON_WINDOW_DAYS = 21;
+/** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
+const SEASON_WINDOW_DAYS = 7;
+/** A window that has failed this many times in a row is left alone (nothing to find, or no source has it). */
+const SEASON_GIVE_UP = 6;
 
 /**
  * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league: from the start of the previous
@@ -96,18 +98,32 @@ const MONTHS = [
   "December",
 ];
 
-/** Search phrasings for a past window: month names and "matchday results" find archive and round-up pages. */
-export function seasonQueries(name: string, start: string, end: string): string[] {
+const longDate = (iso: string) =>
+  `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`;
+
+/**
+ * Search phrasings for a past window. Exact dates, a month name, "weekend round-up" and a few club names steer
+ * the search to round-up and archive pages for those days instead of this week's fixtures.
+ */
+export function seasonQueries(
+  name: string,
+  start: string,
+  end: string,
+  teams: string[] = [],
+): string[] {
   const m1 = Number(start.slice(5, 7)) - 1;
   const m2 = Number(end.slice(5, 7)) - 1;
   const y1 = start.slice(0, 4);
   const y2 = end.slice(0, 4);
   const months = m1 === m2 ? `${MONTHS[m1]} ${y1}` : `${MONTHS[m1]} ${y1} ${MONTHS[m2]} ${y2}`;
-  return [
-    `${name} results ${months}`,
-    `${name} matchday results final scores ${MONTHS[m1]} ${y1}`,
-    `${name} round-up scores ${start} ${end}`,
+  const out = [
+    `${name} results ${longDate(start)} to ${longDate(end)}`,
+    `${name} weekend round-up scores ${months}`,
+    `${name} matchday results final scores ${months}`,
   ];
+  const clubs = teams.slice(0, 4).join(" ");
+  if (clubs) out.push(`${clubs} results ${months}`);
+  return out;
 }
 
 export function seasonWindows(now: Date): { start: string; end: string }[] {
@@ -194,7 +210,8 @@ export async function runTablesSync(
     for (const w of seasonWindows(now())) {
       for (const key of keys) {
         const s = status("season", `${key}:${w.start}`);
-        if (!s?.lastSuccessAt && retryDue(s, now())) season.push({ key, ...w });
+        if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
+        if (retryDue(s, now())) season.push({ key, ...w });
       }
     }
   }
@@ -324,25 +341,30 @@ async function syncSeasonWindow(
   const to = new Date(`${end}T23:59:59+02:00`);
   try {
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const sources = await gatherSources(
+    let sources = await gatherSources(
       deps,
       key,
       `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
         `Prefer the official competition site and established sports news sites.`,
-      seasonQueries(c.name, start, end),
+      seasonQueries(c.name, start, end, known),
     );
     if (sources.length === 0) throw new Error("no usable source");
-    const answer = await generate(
-      deps,
+    const request = (list: PfieSource[]) =>
       extractionRequest({
         competition: c.name,
         from: start,
         to: end,
         today: sastDate(now()),
-        sources,
-      }),
-    );
-    const raw = parseObservations(answer.text);
+        sources: list,
+      });
+    let answer = await generate(deps, request(sources));
+    let raw = parseObservations(answer.text);
+    if (!raw) {
+      // Usually a long answer cut off at the output limit: retry once with the three best sources, shorter.
+      sources = sources.slice(0, 3).map((x) => ({ ...x, text: x.text.slice(0, 8_000) }));
+      answer = await generate(deps, request(sources));
+      raw = parseObservations(answer.text);
+    }
     if (!raw) throw new Error("extraction answer was not valid JSON");
     const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now() });
     const { rows, unverified } = verifyHistory(accepted, key, known);
