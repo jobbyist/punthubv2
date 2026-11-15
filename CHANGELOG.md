@@ -5,6 +5,8 @@ Implementation log for the master brief (13 November 2026). Newest first. Earlie
 
 ## 15 Nov 2026 – Current-season tables: tolerant table reader + diagnostics
 - The Wikipedia league-table reader now accepts `Team vte` headers and rows whose empty trailing cells were dropped, and the archive job records what it saw (and which club names failed to match) when it cannot read a table. No change to what is shown or collected; legal copy unchanged.
+## 15 Nov 2026 – Bundesliga fixtures from a page that prints UTC
+- Bundesliga fixtures now also read `products.bundesliga.com/fixtures`, an official page printing each kick-off in CET and UTC, so more matches carry a verified time zone. No legal copy change (same data, same sources).
 
 ## 15 November 2026 (morning): kick-off time zones
 
