@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 14 November 2026 (version 2026-11-14-r20). Draft pending
+            <strong>Last Updated:</strong> 15 November 2026 (version 2026-11-15-r21). Draft pending
             attorney review.
           </p>
 
@@ -130,6 +130,18 @@ function Terms() {
               All betting transactions occur through third-party licensed betting operators. When
               you place a bet through a linked platform, you are subject to that platform's terms
               and conditions.
+            </p>
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              <strong>Odds on predictions:</strong> The odds on a prediction are the odds you enter:
+              they stay on your public record exactly as entered. Before kick-off, Puntr may show a
+              market reference price for some markets, collected automatically from public pages of
+              licensed South African bookmakers. It is indicative only, may be out of date, is not
+              an offer from Puntr or any bookmaker, and is never collected or shown once a match has
+              started. If the odds you enter are more than 25% above the market reference when you
+              post, the prediction is saved with your odds and marked &quot;odds unverified&quot;,
+              and its units and leaderboard eligibility (the 1.50 minimum) use the lower of the two
+              prices. Points for correct predictions do not depend on odds. Puntr may review and
+              correct the mark if the reference was wrong [attorney review].
             </p>
           </section>
 

@@ -76,6 +76,7 @@ import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.pract
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSlipImagesRouteImport } from './routes/api.cron.slip-images'
 import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
+import { Route as ApiCronSyncOddsRouteImport } from './routes/api.cron.sync-odds'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
 import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
 import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
@@ -420,6 +421,11 @@ const ApiCronSyncFixturesRoute = ApiCronSyncFixturesRouteImport.update({
   path: '/api/cron/sync-fixtures',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronSyncOddsRoute = ApiCronSyncOddsRouteImport.update({
+  id: '/api/cron/sync-odds',
+  path: '/api/cron/sync-odds',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
   id: '/api/cron/sync-results',
   path: '/api/cron/sync-results',
@@ -514,6 +520,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
@@ -588,6 +595,7 @@ export interface FileRoutesByTo {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
@@ -663,6 +671,7 @@ export interface FileRoutesById {
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
   '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
@@ -739,6 +748,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
@@ -813,6 +823,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
@@ -887,6 +898,7 @@ export interface FileRouteTypes {
     | '/api/cron/settle'
     | '/api/cron/slip-images'
     | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
     | '/api/cron/team-badges'
@@ -962,6 +974,7 @@ export interface RootRouteChildren {
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSlipImagesRoute: typeof ApiCronSlipImagesRoute
   ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
+  ApiCronSyncOddsRoute: typeof ApiCronSyncOddsRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
   ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
   ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
@@ -1440,6 +1453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSyncFixturesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/sync-odds': {
+      id: '/api/cron/sync-odds'
+      path: '/api/cron/sync-odds'
+      fullPath: '/api/cron/sync-odds'
+      preLoaderRoute: typeof ApiCronSyncOddsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/sync-results': {
       id: '/api/cron/sync-results'
       path: '/api/cron/sync-results'
@@ -1546,6 +1566,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSlipImagesRoute: ApiCronSlipImagesRoute,
   ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
+  ApiCronSyncOddsRoute: ApiCronSyncOddsRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
   ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,
   ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,

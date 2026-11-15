@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { analytics } from "@/lib/analytics";
 import { formatTime, odds as formatOdds } from "@/lib/format";
+import { isOddsUnverified } from "@/lib/odds/reference";
+import { useReferenceOdds } from "@/lib/odds/use-reference-odds";
 import { selectionLabel } from "@/lib/pick-labels";
 import { shareText } from "@/lib/referral";
 import { whatsappUrl } from "@/lib/referral";
@@ -48,6 +50,14 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shared, setShared] = useState<string | null>(null);
+
+  // Market reference price (pre-match, 18+ members not on a break only; the database enforces both). It is a hint:
+  // the member's own odds are what gets saved. Odds more than 25% above it mark the pick "odds unverified".
+  const quotes = useReferenceOdds(fixture.id, Boolean(user));
+  const reference = selection ? (quotes[`${market}:${selection}`] ?? null) : null;
+  const typedOdds = parseOdds(odds);
+  const unverified =
+    reference && typedOdds !== null && isOddsUnverified(typedOdds, reference.price);
 
   const teams = { home: fixture.home, away: fixture.away };
   const countdown = now ? countdownTo(fixture.kickoff_at, now) : null;
@@ -291,6 +301,28 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
               className="tnum"
             />
             <p className="text-xs text-muted-foreground">{t("form.oddsHint")}</p>
+            {reference ? (
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                <span>
+                  {t("form.reference", {
+                    price: formatOdds(reference.price),
+                    time: formatTime(reference.capturedAt),
+                  })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setOdds(formatOdds(reference.price))}
+                  className="font-semibold text-primary underline-offset-2 hover:underline"
+                >
+                  {t("form.useReference")}
+                </button>
+              </p>
+            ) : null}
+            {unverified ? (
+              <p className="text-xs font-medium text-destructive" role="status">
+                {t("form.oddsUnverifiedWarning", { price: formatOdds(reference.price) })}
+              </p>
+            ) : null}
           </div>
           <div className="space-y-1.5">
             <Label id="p-conf-label">{t("form.confidence")}</Label>
