@@ -90,6 +90,22 @@ export function SystemTab() {
       <section className={panel}>
         <h2 className="font-display text-lg font-bold">{t("system.quotas")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("system.quotasBody")}</p>
+        {h.spend.length > 0 ? (
+          <ul className="mt-3 space-y-1 text-sm" aria-label={t("system.spend")}>
+            {h.spend.map((b) => (
+              <li key={b.family} className="flex flex-wrap items-baseline gap-x-2">
+                <span className="font-semibold capitalize">{b.family}</span>
+                <span className={b.remainingUsd < b.monthlyUsd * 0.2 ? "text-destructive" : ""}>
+                  {t("system.spendRow", {
+                    spent: b.spentUsd.toFixed(2),
+                    budget: b.monthlyUsd.toFixed(2),
+                    left: Math.max(0, b.remainingUsd).toFixed(2),
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[34rem] text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
