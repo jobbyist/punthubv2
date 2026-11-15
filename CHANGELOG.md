@@ -3,6 +3,17 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026 (later): odds feed hardened after a live probe
+
+Fixed (found by a live Parallel probe of this weekend's Premier League pages before the first scheduled run)
+- Hollywoodbets shows "profit" odds (winnings per R1, without the stake: a 1.60 favourite appears as 0.6). Prices
+  from `PROFIT_ODDS_DOMAINS` are copied as shown and converted (+1) after the quote check. Without this every
+  Hollywoodbets price would have been rejected (safely) by the margin check.
+- Search excerpts can be days old (a bookmaker excerpt showed "last updated" two days earlier). The odds feed now uses
+  live page reads only: Firecrawl (always live, renders JavaScript) then Parallel Extract with
+  `fetch_policy.max_age_seconds = 900` and no stale fallback.
+- One malformed item in the model's answer no longer discards the whole answer.
+
 ## 15 November 2026 (later): pre-match reference odds and the member-odds check
 
 Added

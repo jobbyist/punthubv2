@@ -106,7 +106,8 @@ async function gatherSources(
     seen.add(key);
     sources.push({ index: 0, url, domain: domainOf(url), text: clean });
   };
-  // Odds tables rarely fit in an excerpt: read the best licensed pages in full (one Extract credit each).
+  // Live page reads only. Search excerpts come from the search index and can be days old (seen 15 Nov: a
+  // bookmaker excerpt "last updated" two days earlier), so they are never used as a price source.
   let reads = 0;
   for (const hit of licensed) {
     if (reads >= MAX_PAGES || !deps.extract) break;
@@ -114,7 +115,6 @@ async function gatherSources(
     const page = await deps.extract.extract(hit.url).catch(() => null);
     if (page) add(hit.url, page.markdown);
   }
-  for (const hit of licensed) add(hit.url, hit.excerpt);
   sources.splice(MAX_SOURCES);
   sources.forEach((s, i) => (s.index = i + 1));
   return sources;

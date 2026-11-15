@@ -51,9 +51,11 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
                 await createCacheStore(),
                 "odds",
               ),
+              // Prices go stale in hours: live page reads only (Parallel copies older than 15 minutes refused).
               extract: createPageReader(
                 { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
                 (r) => guardExtract(r, claim),
+                { maxAgeSeconds: 900 },
               ),
               llm: guardLlm(createGemini(keys.geminiKey!), claim),
               store: await createOddsStore(),

@@ -121,18 +121,34 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
   };
 }
 
-/** Parallel's Extract API: the second page reader, used when Firecrawl is out of credits or down. */
-export function createParallelExtract(apiKey: string, overrides: Overrides = {}): ExtractProvider {
+/**
+ * Parallel's Extract API: the second page reader, used when Firecrawl is out of credits or down. `maxAgeSeconds`
+ * forces a live fetch when Parallel's cached copy is older (minimum 600) and refuses stale fallbacks: needed for
+ * prices, which go stale in hours.
+ */
+export function createParallelExtract(
+  apiKey: string,
+  overrides: Overrides = {},
+  options: { maxAgeSeconds?: number } = {},
+): ExtractProvider {
+  const advanced: Record<string, unknown> = { full_content: true };
+  if (options.maxAgeSeconds) {
+    advanced["fetch_policy"] = {
+      max_age_seconds: Math.max(600, options.maxAgeSeconds),
+      timeout_seconds: 30,
+      disable_cache_fallback: true,
+    };
+  }
   return {
     name: "parallel-extract",
     async extract(url) {
       const json = await postJson(
         "https://api.parallel.ai/v1/extract",
         { "x-api-key": apiKey },
-        { urls: [url], advanced_settings: { full_content: true } },
+        { urls: [url], advanced_settings: advanced },
         {
           provider: "parallel-extract",
-          timeoutMs: 20_000,
+          timeoutMs: options.maxAgeSeconds ? 40_000 : 20_000,
           attempts: 2,
           baseDelayMs: 1_000,
           ...overrides,
@@ -185,9 +201,11 @@ export function withExtractFallback(readers: ExtractProvider[]): ExtractProvider
 export function createPageReader(
   keys: { firecrawl: string | null; parallel: string | null },
   guard: (reader: ExtractProvider) => ExtractProvider = (r) => r,
+  options: { maxAgeSeconds?: number } = {},
 ): ExtractProvider | null {
   const readers: ExtractProvider[] = [];
+  // Firecrawl always scrapes live (and renders JavaScript); Parallel can be told how fresh its copy must be.
   if (keys.firecrawl) readers.push(guard(createFirecrawlExtract(keys.firecrawl)));
-  if (keys.parallel) readers.push(guard(createParallelExtract(keys.parallel)));
+  if (keys.parallel) readers.push(guard(createParallelExtract(keys.parallel, {}, options)));
   return withExtractFallback(readers);
 }
