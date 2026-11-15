@@ -269,6 +269,7 @@ export interface SeasonResult {
 export async function fetchSeasonResults(
   competition: string | null,
   limit = 80,
+  team: string | null = null,
 ): Promise<SeasonResult[]> {
   const db = supabase as unknown as SupabaseClient;
   let q = db
@@ -277,6 +278,12 @@ export async function fetchSeasonResults(
     .order("match_date", { ascending: false })
     .limit(limit);
   if (competition) q = q.eq("competition", competition);
+  // Team search: letters, digits, spaces and hyphens only, so nothing can change the PostgREST filter syntax.
+  const needle = (team ?? "")
+    .replace(/[^\p{L}\p{N} -]/gu, "")
+    .trim()
+    .slice(0, 40);
+  if (needle) q = q.or(`home.ilike.%${needle}%,away.ilike.%${needle}%`);
   const { data, error } = await q;
   if (error) throw error;
   return ((data ?? []) as Record<string, unknown>[]).map((r) => ({

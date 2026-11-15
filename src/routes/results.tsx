@@ -10,16 +10,9 @@ import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { formatUnits, pct } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { useState } from "react";
 
-import { FilterChips } from "@/components/match/filter-chips";
-import { formatDate } from "@/lib/format";
-import {
-  fetchResults,
-  fetchSeasonResultCompetitions,
-  fetchSeasonResults,
-  fetchTipsterStats,
-} from "@/lib/records";
+import { SeasonBoard } from "@/components/results/season-board";
+import { fetchResults, fetchSeasonResultCompetitions, fetchTipsterStats } from "@/lib/records";
 
 export const Route = createFileRoute("/results")({
   head: ({ match }) => {
@@ -119,82 +112,6 @@ function MyRecord({ userId }: { userId: string }) {
   );
 }
 
-function SeasonResults() {
-  const { t } = useTranslation("results");
-  const [competition, setCompetition] = useState<string | null>(null);
-  const [limit, setLimit] = useState(40);
-  const { data: comps } = useAsync(() => fetchSeasonResultCompetitions(), []);
-  const { data, failed, loading } = useAsync(
-    () => fetchSeasonResults(competition, limit),
-    [competition, limit],
-  );
-  const total = (comps ?? []).reduce((n, c) => n + c.count, 0);
-  return (
-    <section className="mt-12" aria-labelledby="season-results-title">
-      <h2 id="season-results-title" className="text-xl">
-        {t("season.title")}
-      </h2>
-      <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        {t("season.description")}
-      </p>
-      {(comps ?? []).length > 0 && (
-        <div className="mt-4">
-          <FilterChips
-            id="season-results"
-            label={t("season.title")}
-            active={competition ?? "all"}
-            onSelect={(v) => {
-              setCompetition(v === "all" ? null : v);
-              setLimit(40);
-            }}
-            chips={[
-              { key: "all", label: t("season.all"), count: total },
-              ...(comps ?? []).map((c) => ({
-                key: c.competition,
-                label: c.competition,
-                count: c.count,
-              })),
-            ]}
-          />
-        </div>
-      )}
-      {failed && <p className="mt-4 text-sm text-destructive">{t("season.error")}</p>}
-      {!loading && !failed && (data ?? []).length === 0 && (
-        <p className="card-surface mt-4 p-5 text-sm text-muted-foreground">{t("season.empty")}</p>
-      )}
-      {(data ?? []).length > 0 && (
-        <ul className="card-surface mt-4 divide-y divide-border">
-          {(data ?? []).map((r) => (
-            <li
-              key={r.id}
-              className="grid gap-1 px-4 py-3 sm:grid-cols-[7rem_1fr_auto] sm:items-center"
-            >
-              <span className="text-xs text-muted-foreground tnum">{formatDate(r.matchDate)}</span>
-              <span className="min-w-0 text-sm">
-                <span className="font-medium">{r.home}</span>{" "}
-                <span className="font-display font-extrabold tnum">
-                  {r.homeScore} - {r.awayScore}
-                </span>{" "}
-                <span className="font-medium">{r.away}</span>
-                <span className="block text-[11px] text-muted-foreground">
-                  {r.competition} · {t("season.sources", { sources: r.sources.join(", ") })}
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {(data ?? []).length >= limit && (
-        <div className="mt-4">
-          <Button variant="outline" onClick={() => setLimit((n) => n + 40)}>
-            {t("season.more")}
-          </Button>
-        </div>
-      )}
-    </section>
-  );
-}
-
 function Results() {
   const { t } = useTranslation("results");
   const { t: tc } = useTranslation("common");
@@ -205,45 +122,53 @@ function Results() {
     (days ?? []).flatMap((d) => d.fixtures).map((r, i) => [r.fixture.id, i] as const),
   );
   const anyGated = gated(order.size - 1);
+  // Illustrative cards only while no real result exists anywhere (recent or season).
+  const { data: seasonComps, loading: seasonLoading } = useAsync(
+    () => fetchSeasonResultCompetitions(),
+    [],
+  );
+  const hasReal = (days ?? []).length > 0 || (seasonComps ?? []).some((c) => c.count > 0);
 
   return (
     <AppShell>
       <PageHeading art="scoreboard" title={t("title")} subtitle={t("subtitle")} />
 
-      <section className="mb-10" aria-labelledby="results-example-title">
-        <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h2 id="results-example-title" className="text-xl">
-              {t("example.title")}
-            </h2>
-            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {t("example.description")}
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
-            <span className="puntr-blink size-1.5 rounded-full bg-primary" aria-hidden="true" />
-            {t("example.badge")}
-          </span>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {EXAMPLES.map((m, i) => (
-            <div key={m.competition} className="puntr-rise" style={{ ["--i" as string]: i }}>
-              <FixtureCard
-                className="h-full"
-                home={m.home}
-                away={m.away}
-                sport={m.sport}
-                sportLabel={tc(`sport.${m.sport}`)}
-                competition={m.competition}
-                status="final"
-                statusLabel={t("example.fullTime")}
-                score={m.score}
-                footer={<span>{t("example.detail")}</span>}
-              />
+      {!loading && !seasonLoading && !hasReal && (
+        <section className="mb-10" aria-labelledby="results-example-title">
+          <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 id="results-example-title" className="text-xl">
+                {t("example.title")}
+              </h2>
+              <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                {t("example.description")}
+              </p>
             </div>
-          ))}
-        </div>
-      </section>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+              <span className="puntr-blink size-1.5 rounded-full bg-primary" aria-hidden="true" />
+              {t("example.badge")}
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {EXAMPLES.map((m, i) => (
+              <div key={m.competition} className="puntr-rise" style={{ ["--i" as string]: i }}>
+                <FixtureCard
+                  className="h-full"
+                  home={m.home}
+                  away={m.away}
+                  sport={m.sport}
+                  sportLabel={tc(`sport.${m.sport}`)}
+                  competition={m.competition}
+                  status="final"
+                  statusLabel={t("example.fullTime")}
+                  score={m.score}
+                  footer={<span>{t("example.detail")}</span>}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {profile && <MyRecord userId={profile.id} />}
 
@@ -255,7 +180,7 @@ function Results() {
           ))}
         </div>
       )}
-      {!loading && !failed && (days ?? []).length === 0 && (
+      {!loading && !seasonLoading && !failed && !hasReal && (
         <EmptyState
           art="pitch"
           title={t("empty.title")}
@@ -271,9 +196,10 @@ function Results() {
       {(days ?? []).length > 0 && (
         <section className="relative" aria-labelledby="results-by-date">
           {anyGated && <FoundingGateCard top="13rem" />}
-          <h2 id="results-by-date" className="mb-4 text-xl">
+          <h2 id="results-by-date" className="mb-1 text-2xl">
             {t("byDate")}
           </h2>
+          <p className="mb-5 text-sm text-muted-foreground">{t("byDateBody")}</p>
           <div className="space-y-8">
             {(days ?? []).map((day) => (
               <div key={day.label}>
@@ -361,7 +287,7 @@ function Results() {
         </section>
       )}
 
-      <SeasonResults />
+      <SeasonBoard />
     </AppShell>
   );
 }
