@@ -155,7 +155,11 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   bundesliga: {
     official: ["bundesliga.com"],
     pages: {
-      fixtures: ["https://www.bundesliga.com/en/bundesliga/matchday"],
+      // products.bundesliga.com prints every kick-off in both CET and UTC, so its times carry a printed zone.
+      fixtures: [
+        "https://www.bundesliga.com/en/bundesliga/matchday",
+        "https://products.bundesliga.com/fixtures",
+      ],
       // Same page on purpose: bundesliga.com shows the current matchday's kick-off times and, once played, its
       // scores at one address. Earlier matchdays come from the results queries below.
       results: ["https://www.bundesliga.com/en/bundesliga/matchday"],
