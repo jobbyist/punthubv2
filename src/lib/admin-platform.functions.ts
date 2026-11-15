@@ -550,6 +550,8 @@ export interface QuotaRow {
 
 export interface SystemHealth {
   quotas: QuotaRow[];
+  /** Monthly USD budgets per provider family (docs/PARALLEL_ARCHITECTURE.md). */
+  spend: { family: string; monthlyUsd: number; spentUsd: number; remainingUsd: number }[];
   settings: Record<string, string>;
   scoring: { market: string; points: number }[];
   keys: Record<string, boolean>;
@@ -595,6 +597,7 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
       fixtures,
       upcoming,
       pfieFixtures,
+      spend,
     ] = await Promise.all([
       db.rpc("api_quota_status"),
       db.from("app_settings").select("key, value"),
@@ -623,6 +626,8 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
       db.from("fixtures").select("id", { count: "exact", head: true }),
       db.from("fixtures").select("id", { count: "exact", head: true }).gte("kickoff_at", nowIso),
       db.from("fixtures").select("id", { count: "exact", head: true }).eq("provider", "pfie"),
+      // Empty until migration 20261115010000 is applied (the function does not exist yet).
+      db.rpc("api_spend_status"),
     ]);
     const has = (k: string) => Boolean(process.env[k]?.trim());
     const cs = (contentSettings.data ?? {}) as Record<string, unknown>;
@@ -636,6 +641,14 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
         errorsToday: Number(q["errors_today"]),
         refusedToday: Number(q["refused_today"]),
       })),
+      spend: ((spend.error ? [] : (spend.data ?? [])) as Record<string, number | string>[]).map(
+        (b) => ({
+          family: String(b["family"]),
+          monthlyUsd: Number(b["monthly_usd"]),
+          spentUsd: Number(b["spent_usd"]),
+          remainingUsd: Number(b["remaining_usd"]),
+        }),
+      ),
       settings: Object.fromEntries(
         ((settings.data ?? []) as { key: string; value: string }[]).map((s) => [s.key, s.value]),
       ),

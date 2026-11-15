@@ -546,6 +546,8 @@
     "refresh": "Refresh",
     "quotas": "API limits",
     "quotasBody": "Each service stops for the day (or month) when its cap is reached; nothing switches to a paid fallback. Rows turn yellow at 80%.",
+    "spend": "Spend this month",
+    "spendRow": "US${{spent}} of US${{budget}} this month (US${{left}} left). Calls stop when the budget is used.",
     "q": {
       "service": "Service",
       "today": "Today",

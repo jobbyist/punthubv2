@@ -3,6 +3,28 @@
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
 `docs/HANDOFF.md`.
 
+## 15 November 2026 (later): Parallel data layer foundation
+
+Added
+- `docs/PARALLEL_ARCHITECTURE.md`: which Parallel API powers each feature, cache lifetimes, the pre-match and manual
+  odds rules, the credit budget (about $0.20 a day after launch) and the one-off jobs to fund before the prepaid
+  balance expires on 7 Dec.
+- `src/lib/parallel/`: prices and provider keys, cache keys (SHA-256 of normalised requests), a read-through
+  response cache (`cachedCall`, `withSearchCache`), Task API and Responses API clients. 12 tests.
+- Migration `20261115010000_parallel_data_layer.sql` (APPLIED 15 Nov at the owner's approval): `parallel_cache`, `api_unit_prices`,
+  `api_budgets` (Parallel $25 for November, $5 from 7 Dec), `api_budget_claim()`, `api_spend_status()`, call caps
+  for Task, Chat and Monitor, daily cache purge. Tested first on production in a transaction that was rolled back.
+- Migration `20261115020000_parallel_budget_dec.sql` (APPLIED): one-shot pg_cron job that sets the Parallel budget to
+  US$5 at 00:05 SAST on 7 Dec 2026, then removes itself (owner decision, 15 Nov).
+- `types.ts`: the three new tables and four functions added by hand (matching production).
+- Admin > System shows spend against the monthly budget once the migration is applied.
+- /dev checklist: nine new tasks from the owner's 15 Nov directions (pre-match reference odds and the member-odds check, team news, match
+  stats, one-off research jobs, Parallel layer, Confidence Score, Punt AI chatbot, page motion, Afrikaans go-live).
+
+Changed
+- `createQuotaClaim()` now checks the USD budget first (`api_budget_claim`) and falls back to the call caps alone
+  while the migration is not applied, so this code is safe to deploy before it.
+
 ## 15 November 2026: Marquee Matchup card (home)
 
 Changed

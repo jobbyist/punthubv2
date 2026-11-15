@@ -12,10 +12,32 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 export type Claim = (provider: string) => Promise<boolean>;
 
+/** PostgREST "function not found": the budget migration (20261115010000) is not applied yet. */
+const isMissingFunction = (error: { code?: string; message: string }) =>
+  error.code === "PGRST202" || /could not find the function/i.test(error.message);
+
+/**
+ * Claims one unit. `api_budget_claim` checks the provider family's monthly USD budget (docs/PARALLEL_ARCHITECTURE.md)
+ * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
+ * code first changes nothing.
+ */
 export async function createQuotaClaim(): Promise<Claim> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
+  let budgetAvailable = true;
   return async (provider) => {
+    if (budgetAvailable) {
+      const { data, error } = await db.rpc("api_budget_claim", {
+        p_provider: provider,
+        p_units: 1,
+      });
+      if (!error) return data === true;
+      if (!isMissingFunction(error)) {
+        console.error("quota: budget claim failed, refusing the call", provider, error.message);
+        return false;
+      }
+      budgetAvailable = false;
+    }
     const { data, error } = await db.rpc("api_quota_claim", { p_provider: provider, p_units: 1 });
     if (error) {
       console.error("quota: claim failed, refusing the call", provider, error.message);
