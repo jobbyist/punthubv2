@@ -18,7 +18,7 @@ Added
   US$5 at 00:05 SAST on 7 Dec 2026, then removes itself (owner decision, 15 Nov).
 - `types.ts`: the three new tables and four functions added by hand (matching production).
 - Admin > System shows spend against the monthly budget once the migration is applied.
-- /dev checklist: nine new tasks from the owner's 15 Nov directions (pre-match and manual odds, team news, match
+- /dev checklist: nine new tasks from the owner's 15 Nov directions (pre-match reference odds and the member-odds check, team news, match
   stats, one-off research jobs, Parallel layer, Confidence Score, Punt AI chatbot, page motion, Afrikaans go-live).
 
 Changed

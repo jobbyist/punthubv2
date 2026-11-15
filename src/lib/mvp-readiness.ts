@@ -181,7 +181,7 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "odds-prematch",
-        title: "Pre-match odds feed and admin manual odds, with Terms copy (no in-play)",
+        title: "Pre-match reference odds feed and member-odds check, with Terms copy (no in-play)",
         weight: 2,
         blocker: true,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
