@@ -59,7 +59,11 @@ const MAX_PAGES = 2;
 const MAX_SOURCES = 4;
 const MAX_CHARS = 14_000;
 
-/** Due when never tried, or last tried more than 4 h ago; after 3 failures in a row, only once a day. */
+/**
+ * Due when never tried, or last tried more than 4 h ago. After 3 failures in a row, 20 h: short of 24 h on purpose,
+ * so a competition last tried late in a window (07:50) is due again in the same window the next day (07:00) instead
+ * of slipping to the afternoon one.
+ */
 export function oddsDue(status: OddsStatus | undefined, now: Date): boolean {
   if (!status?.lastAttemptAt) return true;
   const since = now.getTime() - Date.parse(status.lastAttemptAt);

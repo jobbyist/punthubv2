@@ -318,7 +318,7 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
                 </button>
               </p>
             ) : null}
-            {unverified ? (
+            {reference && unverified ? (
               <p className="text-xs font-medium text-destructive" role="status">
                 {t("form.oddsUnverifiedWarning", { price: formatOdds(reference.price) })}
               </p>
