@@ -6,7 +6,7 @@
     "ogDescription": "Upcoming PSL, EPL, UCL and more football fixtures."
   },
   "title": "Predictions",
-  "subtitle": "Upcoming fixtures in South African time. Picks open at launch on 1 December 2026 and close at kick-off.",
+  "subtitle": "Your matchday hub: upcoming fixtures, latest results, league tables, head-to-head duels and leaderboards, all in South African time. Picks open at launch on 1 December 2026.",
   "filter": {
     "all": "All leagues",
     "soccer": "Soccer",
@@ -30,5 +30,75 @@
     "values": "Create a free account to see odds and confidence at launch.",
     "valuesAria": "Locked. Create a free account to view."
   },
-  "pick": "Make a pick"
+  "pick": "Make a pick",
+  "converter": {
+    "eyebrow": "New: Betting Slip Converter",
+    "title": "Turn your bookmaker slip into tracked picks",
+    "body": "Snap a photo, paste the text or type it in. Puntr reads each leg, you check it, and every eligible leg becomes a pick on your public record, win or lose.",
+    "ways": {
+      "photo": "Photo of a slip",
+      "paste": "Paste slip text",
+      "type": "Type it in"
+    },
+    "cta": "Convert a slip",
+    "more": "About the toolkit",
+    "privacy": "Photos are read on your device and personal details are removed before anything is saved."
+  },
+  "hub": {
+    "navLabel": "Predictions hub",
+    "tiles": {
+      "fixtures": {
+        "title": "Fixtures",
+        "count_one": "{{count}} match in the next 14 days",
+        "count_other": "{{count}} matches in the next 14 days"
+      },
+      "results": {
+        "title": "Results",
+        "body": "Verified final scores"
+      },
+      "tables": {
+        "title": "Tables",
+        "body": "League standings and form"
+      },
+      "duels": {
+        "title": "Duels",
+        "body": "Head-to-head calls"
+      },
+      "leaderboards": {
+        "title": "Leaderboards",
+        "body": "Who called it best this week"
+      }
+    },
+    "next": {
+      "title": "Next fixtures",
+      "cta": "All fixtures ({{count}})",
+      "more_one": "See {{count}} more fixture",
+      "more_other": "See {{count}} more fixtures"
+    },
+    "results": {
+      "title": "Latest results",
+      "cta": "All results",
+      "empty": "No verified results yet. They appear here as soon as two sources confirm a score."
+    },
+    "tables": {
+      "title": "League tables",
+      "cta": "All tables",
+      "empty": "Tables appear after the next daily update.",
+      "team": "Team",
+      "played": "P",
+      "points": "Pts"
+    },
+    "duels": {
+      "title": "Head-to-head duels",
+      "cta": "Duels hub",
+      "body": "Challenge another member on one match. Calls lock at kick-off and settle automatically.",
+      "empty": "No open challenges right now. Start one from any match."
+    },
+    "leaders": {
+      "title": "This week's leaders",
+      "cta": "Leaderboards",
+      "empty": "The weekly board fills as picks settle.",
+      "units": "{{units}} units"
+    }
+  }
 }

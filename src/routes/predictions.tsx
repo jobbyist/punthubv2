@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion } from "motion/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +8,14 @@ import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
 import { IntelPanel } from "@/components/intel/intel-panel";
 import { EmptyState } from "@/components/empty-state";
+import {
+  DuelsTeaser,
+  HubNav,
+  LatestResults,
+  LeadersTeaser,
+  TableSnapshot,
+} from "@/components/predictions/hub";
+import { SlipConverterPromo } from "@/components/predictions/slip-converter-promo";
 import { FilterChips, type FilterChip } from "@/components/match/filter-chips";
 import { LiveMatchCard } from "@/components/match/live-match-card";
 import { useNow } from "@/hooks/use-now";
@@ -64,6 +73,8 @@ export const Route = createFileRoute("/predictions")({
   component: Predictions,
 });
 
+const HUB_FIXTURES = 6;
+
 function Predictions() {
   const { t } = useTranslation("predictions");
   const { t: tc } = useTranslation("common");
@@ -88,7 +99,8 @@ function Predictions() {
       (!competition || f.competition === competition) &&
       (when !== "today" || (todayKey !== null && saDayKey(f.kickoff_at) === todayKey)),
   );
-  const days = groupFixturesByDay(shown);
+  // The hub previews the next few matches; the full list lives on /fixtures.
+  const days = groupFixturesByDay(shown.slice(0, HUB_FIXTURES));
   const gated = useGated();
   // Position of each fixture across all days, so the first FREE_ITEMS stay open for guests.
   const order = new Map(days.flatMap((d) => d.fixtures).map((f, i) => [f.id, i]));
@@ -113,6 +125,21 @@ function Predictions() {
   return (
     <AppShell>
       <PageHeading art="pitch" title={t("title")} subtitle={t("subtitle")} />
+
+      <HubNav fixtureCount={fixtures.length} />
+
+      <SlipConverterPromo />
+
+      <div className="mb-3 flex items-end justify-between gap-3">
+        <h2 className="text-xl sm:text-2xl">{t("hub.next.title")}</h2>
+        <Link
+          to="/fixtures"
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+        >
+          {t("hub.next.cta", { count: shown.length })}
+          <ArrowRight className="size-3.5" aria-hidden />
+        </Link>
+      </div>
 
       {chips.length > 2 && (
         <FilterChips
@@ -186,6 +213,25 @@ function Predictions() {
           </div>
         </LayoutGroup>
       </MotionConfig>
+
+      {shown.length > HUB_FIXTURES && (
+        <div className="mt-6 flex justify-center">
+          <Link
+            to="/fixtures"
+            className="inline-flex h-11 items-center gap-2 rounded-md border border-border px-5 text-sm font-semibold hover:bg-muted"
+          >
+            {t("hub.next.more", { count: shown.length - HUB_FIXTURES })}
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </div>
+      )}
+
+      <div className="mt-12 grid gap-4 lg:grid-cols-2">
+        <LatestResults />
+        <TableSnapshot />
+        <DuelsTeaser />
+        <LeadersTeaser />
+      </div>
 
       <p className="mt-6 text-xs text-muted-foreground">{t("note")}</p>
     </AppShell>

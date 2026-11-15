@@ -6,7 +6,7 @@
     "ogDescription": "Komende PSL-, EPL-, UCL- en ander sokkerwedstryde."
   },
   "title": "Voorspellings",
-  "subtitle": "Komende wedstryde in Suid-Afrikaanse tyd. Keuses open met die bekendstelling op 1 Desember 2026 en sluit met die afskop.",
+  "subtitle": "Jou wedstryddag-spilpunt: komende wedstryde, jongste uitslae, puntelyste, kop-aan-kop-tweestryde en ranglyste, alles in Suid-Afrikaanse tyd. Voorspellings open by die bekendstelling op 1 Desember 2026.",
   "filter": {
     "all": "Alle ligas",
     "soccer": "Sokker",
@@ -30,5 +30,75 @@
     "values": "Skep 'n gratis rekening om pryse en vertroue met die bekendstelling te sien.",
     "valuesAria": "Gesluit. Skep 'n gratis rekening om dit te sien."
   },
-  "pick": "Maak 'n keuse"
+  "pick": "Maak 'n keuse",
+  "converter": {
+    "eyebrow": "Nuut: Wedstrokie-omskakelaar",
+    "title": "Verander jou wedstrokie in voorspellings wat gevolg word",
+    "body": "Neem 'n foto, plak die teks of tik dit in. Puntr lees elke been, jy kontroleer dit, en elke geskikte been word 'n voorspelling op jou openbare rekord, wen of verloor.",
+    "ways": {
+      "photo": "Foto van 'n strokie",
+      "paste": "Plak strokieteks",
+      "type": "Tik dit in"
+    },
+    "cta": "Skakel 'n strokie om",
+    "more": "Oor die gereedskapstel",
+    "privacy": "Foto's word op jou toestel gelees en persoonlike besonderhede word verwyder voordat iets gestoor word."
+  },
+  "hub": {
+    "navLabel": "Voorspellings-spilpunt",
+    "tiles": {
+      "fixtures": {
+        "title": "Wedstryde",
+        "count_one": "{{count}} wedstryd in die volgende 14 dae",
+        "count_other": "{{count}} wedstryde in die volgende 14 dae"
+      },
+      "results": {
+        "title": "Uitslae",
+        "body": "Geverifieerde eindtellings"
+      },
+      "tables": {
+        "title": "Puntelyste",
+        "body": "Liga-posisies en vorm"
+      },
+      "duels": {
+        "title": "Tweestryde",
+        "body": "Kop-aan-kop-voorspellings"
+      },
+      "leaderboards": {
+        "title": "Ranglyste",
+        "body": "Wie het dit die beste voorspel"
+      }
+    },
+    "next": {
+      "title": "Volgende wedstryde",
+      "cta": "Alle wedstryde ({{count}})",
+      "more_one": "Sien nog {{count}} wedstryd",
+      "more_other": "Sien nog {{count}} wedstryde"
+    },
+    "results": {
+      "title": "Jongste uitslae",
+      "cta": "Alle uitslae",
+      "empty": "Nog geen geverifieerde uitslae nie. Hulle verskyn hier sodra twee bronne 'n telling bevestig."
+    },
+    "tables": {
+      "title": "Puntelyste",
+      "cta": "Alle puntelyste",
+      "empty": "Puntelyste verskyn na die volgende daaglikse opdatering.",
+      "team": "Span",
+      "played": "S",
+      "points": "Pte"
+    },
+    "duels": {
+      "title": "Kop-aan-kop-tweestryde",
+      "cta": "Tweestryd-spilpunt",
+      "body": "Daag 'n ander lid uit oor een wedstryd. Voorspellings sluit by die afskop en word outomaties vereffen.",
+      "empty": "Geen oop uitdagings nie. Begin een by enige wedstryd."
+    },
+    "leaders": {
+      "title": "Hierdie week se leiers",
+      "cta": "Ranglyste",
+      "empty": "Die weeklikse lys vul soos voorspellings vereffen word.",
+      "units": "{{units}} eenhede"
+    }
+  }
 }
