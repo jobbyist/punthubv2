@@ -1,21 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState } from "react";
 
 import { ReadinessPanel } from "@/components/dev/readiness-panel";
-import { getDevPage } from "@/lib/dev-gate.functions";
+import { useSession } from "@/components/session";
+import { getDevPage, type DevPageData } from "@/lib/dev-gate.functions";
 
 /**
- * Private MVP readiness workspace. Access is checked on the server against the signed-in Supabase admin role.
- * This route is intentionally noindex and is not included in public navigation or the sitemap.
+ * Private MVP readiness workspace. Access is checked against the signed-in Supabase admin role.
+ * The data request runs client-side after session hydration so the existing auth-attacher can pass the bearer token.
  */
 export const Route = createFileRoute("/dev")({
-  loader: async () => {
-    try {
-      return await getDevPage();
-    } catch {
-      // Unauthenticated requests and invalid sessions get a simple access-denied page, not another login form.
-      return { status: "forbidden" as const };
-    }
-  },
   staleTime: 0,
   head: () => ({
     meta: [
@@ -28,8 +23,39 @@ export const Route = createFileRoute("/dev")({
 });
 
 function DevPage() {
-  const page = Route.useLoaderData();
-  if (page.status === "forbidden") {
+  const { loading, user, isAdmin } = useSession();
+  const loadPage = useServerFn(getDevPage);
+  const [page, setPage] = useState<DevPageData | null>(null);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user || !isAdmin) {
+      setPage({ status: "forbidden" });
+      return;
+    }
+    let active = true;
+    setPage(null);
+    void loadPage()
+      .then((result) => {
+        if (active) setPage(result);
+      })
+      .catch(() => {
+        if (active) setPage({ status: "forbidden" });
+      });
+    return () => {
+      active = false;
+    };
+  }, [loading, user?.id, isAdmin, loadPage]);
+
+  if (loading || (user && isAdmin && !page)) {
+    return (
+      <main className="mx-auto flex min-h-[65vh] items-center justify-center px-4">
+        <p className="text-sm text-muted-foreground">Checking administrator access…</p>
+      </main>
+    );
+  }
+
+  if (!page || page.status === "forbidden") {
     return (
       <main className="mx-auto flex min-h-[65vh] max-w-xl flex-col items-center justify-center px-4 text-center">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Puntr · Internal</p>
