@@ -3,16 +3,11 @@ import {
   Activity,
   ArrowUpRight,
   CalendarClock,
-  Check,
-  ChevronDown,
-  CircleDollarSign,
   ClipboardList,
-  Filter,
   Handshake,
   Plus,
   RefreshCw,
   Search,
-  Send,
   Target,
   Trash2,
   Users,
@@ -164,7 +159,6 @@ export function FoundingHqPage() {
   const [draft, setDraft] = useState<Draft>(emptyDraft());
   const [activityBody, setActivityBody] = useState("");
   const [saving, setSaving] = useState(false);
-  const [activityBusy, setActivityBusy] = useState(false);
 
   async function refresh(showSpinner = false) {
     if (showSpinner) setRefreshing(true);
@@ -286,22 +280,6 @@ export function FoundingHqPage() {
     if (!result.ok) return void toast.error(result.message ?? "Could not delete prospect.");
     toast.success("Prospect deleted.");
     await refresh();
-  }
-
-  async function addActivity() {
-    if (!draft.id || !activityBody.trim()) return;
-    setActivityBusy(true);
-    try {
-      const result = await adminAddFoundingHqActivity({
-        data: { leadId: draft.id, kind: "note", body: activityBody.trim() },
-      });
-      if (!result.ok) return void toast.error(result.message ?? "Could not add note.");
-      setActivityBody("");
-      toast.success("Activity logged.");
-      await refresh();
-    } finally {
-      setActivityBusy(false);
-    }
   }
 
   if (loading) {
