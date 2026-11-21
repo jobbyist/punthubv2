@@ -233,11 +233,16 @@ export function validateTables(
     let bad: string | null = null;
     const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
     if (tableDates.length > 1) bad = "inconsistent_table_dates";
-    const tableDate = tableDates[0] ?? null;
-    if (tableDate) {
+    const proposedTableDate = tableDates[0] ?? null;
+    let tableDate: string | null = null;
+    if (proposedTableDate) {
       const dateQuote = rows.find((r) => r.tableDateQuote)?.tableDateQuote;
-      if (!dateQuote || !page.includes(normalise(dateQuote))) bad = "table_date_quote_not_on_page";
-      else {
+      // A model-extracted date is metadata only when its quote (or ISO date) is verifiably present on the page.
+      // If the page formats dates differently, ignore the unverified date and rely on fresh Parallel retrieval.
+      const dateEvidence =
+        (!!dateQuote && page.includes(normalise(dateQuote))) || page.includes(normalise(proposedTableDate));
+      if (dateEvidence) {
+        tableDate = proposedTableDate;
         const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
         if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
         if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
