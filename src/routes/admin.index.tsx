@@ -75,6 +75,14 @@ function Admin() {
             >
               Founding HQ <span aria-hidden="true">↗</span>
             </a>
+            {isAdmin && (
+              <a
+                href="/dev"
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-muted"
+              >
+                Dev workspace <span aria-hidden="true">↗</span>
+              </a>
+            )}
           </header>
 
           {!isAdmin ? (
