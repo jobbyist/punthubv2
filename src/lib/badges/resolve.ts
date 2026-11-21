@@ -28,10 +28,15 @@ export function searchName(name: string): string {
 
 export function badgeSearchRequest(name: string, competition: string, sport: string) {
   const full = searchName(name);
-  const kind = sport === "soccer" ? "football club" : `${sport} team`;
+  const national = /world cup|international|national/i.test(competition);
+  const kind = sport === "soccer"
+    ? national ? "national football team" : "football club"
+    : sport === "rugby" ? "rugby union team"
+    : sport === "basketball" ? "professional basketball team"
+    : `${sport} team`;
   return {
     objective: `Find the English Wikipedia article for the ${kind} "${name}" (${full}) that plays in ${competition}. The article's infobox shows the official club crest or badge.`,
-    queries: [`${full} ${kind} Wikipedia`, `${full} ${competition} crest`],
+    queries: [`${full} ${kind} official logo crest badge`, `${full} ${competition} official team logo`, `${full} ${kind} Wikipedia`],
   };
 }
 
@@ -96,7 +101,7 @@ export interface WikiSummary {
 }
 
 const CLUB_WORDS =
-  /(football club|association football|soccer club|football team|national (football|soccer|rugby|cricket) team|basketball team|rugby union team|cricket team|professional football)/i;
+  /(football club|association football|soccer club|football team|national.*(football|soccer|rugby|basketball|cricket).*team|basketball team|rugby union team|cricket team|professional football)/i;
 const PERSON_WORDS = /\b(born|footballer|player|manager|coach|politician|singer|actor)\b/i;
 const CREST_FILE = /(logo|crest|badge|emblem|fc|f\.c\.|afc|club|united|city|\.svg)/i;
 const PHOTO_FILE = /(stadium|ground|arena|park|squad|team_photo|players|kit|\.jpe?g$)/i;
