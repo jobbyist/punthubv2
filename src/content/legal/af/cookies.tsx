@@ -31,6 +31,10 @@ export function CookiesAf({
       />
       <LegalTranslationNotice />
       <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Puntr South Africa word deur Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07), 'n
+          maatskappy wat in Suid-Afrika geregistreer is, bedryf.
+        </p>
         <section>
           <h2 className="font-display text-lg font-bold">Noodsaaklik (altyd aan)</h2>
           <p className="mt-1 text-sm text-muted-foreground">
