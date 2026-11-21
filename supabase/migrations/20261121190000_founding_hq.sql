@@ -54,3 +54,23 @@ revoke all on public.founding_hq_leads from anon, public;
 revoke all on public.founding_hq_activities from anon, public;
 grant select, insert, update, delete on public.founding_hq_leads to authenticated, service_role;
 grant select, insert, update, delete on public.founding_hq_activities to authenticated, service_role;
+
+
+-- Keep updated_at correct even for updates performed outside the dashboard server function.
+create or replace function public.founding_hq_touch_updated_at()
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists founding_hq_leads_touch_updated_at on public.founding_hq_leads;
+create trigger founding_hq_leads_touch_updated_at
+  before update on public.founding_hq_leads
+  for each row execute function public.founding_hq_touch_updated_at();
+
+revoke all on function public.founding_hq_touch_updated_at() from public, anon, authenticated;
