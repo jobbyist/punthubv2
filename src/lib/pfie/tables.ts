@@ -259,30 +259,39 @@ async function gatherSources(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
   const seenDomains = new Set<string>();
-  const sources: PfieSource[] = [];
+  const candidates = [] as typeof ranked;
+  const extract = deps.extract;
+  if (!extract) return [];
   // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
   for (const hit of ranked) {
     const domain = domainOf(hit.url);
     const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
-    if (sources.length >= MAX_SOURCES || !deps.extract || tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
+    if (tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
     seenDomains.add(sourceKey);
-    const page = await deps.extract.extract(hit.url).catch(() => null);
+    candidates.push(hit);
+    if (candidates.length >= MAX_SOURCES) break;
+  }
+  // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
+  const fetched = await Promise.all(
+    candidates.map(async (hit) => ({ hit, page: await extract.extract(hit.url).catch(() => null) })),
+  );
+  for (const { hit, page } of fetched) {
     if (!page?.markdown) continue;
+    const domain = domainOf(hit.url);
     const clean = cleanText(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
     sources.push({
       index: sources.length + 1,
       url: hit.url,
       domain,
-      tier,
+      tier: tierOf(domain, official),
       text: clean,
       publishedAt: hit.publishedAt,
       retrievedAt: new Date().toISOString(),
       via: "extract",
     });
-  }
-  return sources;
+  }  return sources;
 }
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
   const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
