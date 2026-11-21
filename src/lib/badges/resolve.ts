@@ -1,11 +1,9 @@
 /**
  * Team badge resolution, pure parts (unit-tested). The server job in resolve.server.ts does the network calls:
- *   1. Parallel Search finds the team's English Wikipedia article.
- *   2. The Wikipedia summary API gives the article's lead image, which for clubs is the crest.
- *   3. Checks: the article is about a football club or national team (not a person, stadium or disambiguation page),
- *      the image is on upload.wikimedia.org and looks like a crest/logo, then it is mirrored to Supabase Storage.
- * Nothing is guessed: a team that fails the checks stays unbadged and its fixtures stay hidden until an admin sets
- * a badge by hand.
+ *   1. Parallel Search finds the best-matching English Wikipedia article for the club or national team.
+ *   2. The Wikipedia summary API supplies the lead image, which is checked as a genuine team crest or logo.
+ *   3. The verified image is mirrored to Supabase Storage; unsupported or ambiguous matches remain for admin review.
+ * The same pipeline covers football, rugby, basketball and cricket teams, including the curated home marquee.
  */
 import { normaliseTeam, teamSlug } from "../pfie/teams";
 
