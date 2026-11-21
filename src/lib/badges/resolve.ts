@@ -74,7 +74,8 @@ export function wikipediaCandidates(
     if (WOMEN.test(title) !== WOMEN.test(name)) continue;
     const t = badgeKey(title.replace(/_/g, " "));
     // The title must share a real word with the team name (or an alias of it).
-    if (words.length > 0 && !words.some((w) => t.includes(w))) continue;
+    // Require the first meaningful team-name token: "Iberia Tbilisi" must not match "Dinamo Tbilisi".
+    if (words.length > 0 && !t.includes(words[0]!)) continue;
     const list = CLUBBY_TITLE.test(title) ? clubby : other;
     if (!clubby.includes(title) && !other.includes(title)) list.push(title);
   }
