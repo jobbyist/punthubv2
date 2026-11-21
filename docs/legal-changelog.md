@@ -1,3 +1,17 @@
+## 2026-11-22, Gravitas operator disclosure and new-signup support alerts (Terms r22, Privacy r20)
+
+- **Operator:** Puntr South Africa is operated by Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07), a South
+  African-registered company. English and Afrikaans Terms, Privacy, Cookies, Affiliate Disclosure and Refunds now
+  identify the operator. Footer copyright was corrected to the operating company.
+- **Signup alert:** on every new Supabase Auth account insert, a database trigger queues a service email to
+  `support@puntr.co.za` with the new account email, account ID and SAST registration time. It is sent through the
+  existing email outbox and Resend quota controls; a signup is not blocked if alert queuing fails. Events are
+  deduplicated by Auth user ID. The Privacy Policy now describes the alert data and internal recipient.
+- **Notices:** Terms `2026-11-22-r22`; Privacy `2026-11-22-r20`, recorded in `notice_versions`.
+- **Review `[attorney review]`:** confirm the contracting-party and POPIA responsible-party wording, Information
+  Officer details/registration, retention of internal support alerts, and the English/Afrikaans translations before
+  treating either legal page as approved.
+ 
 # Legal changelog (for the owner and counsel)
 
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
