@@ -1,6 +1,6 @@
 /**
  * League standings from web pages. The model copies each table row with a quote; plain code checks every row
- * (arithmetic, positions, team count, quote and team on the page) and publishes only when at least two
+ * (arithmetic, positions, team count, accent-insensitive local row-stat evidence) and publishes only when at least two
  * independent, non-Wikipedia domains agree on every team's complete W/D/L and goals record.
  * AI never decides a position or a points total.
  */
