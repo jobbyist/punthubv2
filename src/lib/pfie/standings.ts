@@ -271,6 +271,12 @@ export function validateTables(
   return { tables, rejected };
 }
 
+/** Treat known multi-domain publishers as one upstream source for independence checks. */
+export function independentSourceKey(domain: string): string {
+  if (/(^|\\.)bbc\\.(com|co\\.uk)$/i.test(domain)) return "bbc";
+  return domain.toLowerCase().replace(/^www\\./, "");
+}
+
 /** Compare every material standings statistic. Position is deliberately excluded because leagues can
  * apply different tie-break ordering while agreeing on the underlying match record. */
 const signature = (t: SourceTable) =>
@@ -309,12 +315,18 @@ export function chooseTable(
     groups.set(key, [...(groups.get(key) ?? []), table]);
   }
   const ranked = [...groups.values()]
-    .map((group) => ({
-      group,
-      domains: [...new Set(group.map((t) => t.source.domain))],
-    }))
-    .filter((g) => g.domains.length >= 2)
-    .sort((a, b) => b.domains.length - a.domains.length);
+    .map((group) => {
+      const byPublisher = new Map<string, SourceTable>();
+      for (const table of group) {
+        const key = independentSourceKey(table.source.domain);
+        const prior = byPublisher.get(key);
+        if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
+          byPublisher.set(key, table);
+      }
+      return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
+    })
+    .filter((g) => g.publishers.length >= 2)
+    .sort((a, b) => b.publishers.length - a.publishers.length);
   const best = ranked[0];
   if (!best) return null;
   const quality = (t: SourceTable) => (t.source.tier === "official" ? 0 : 1);
@@ -322,6 +334,6 @@ export function chooseTable(
   return {
     table,
     verdict: "two_sources",
-    supportingDomains: best.domains.sort(),
+    supportingDomains: best.group.map((t) => t.source.domain).sort(),
   };
 }
