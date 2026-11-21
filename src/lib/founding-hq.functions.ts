@@ -189,7 +189,11 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
       id,
       displayName,
       xHandle: text(o.xHandle, 80)?.replace(/^@/, "") ?? null,
-      profileUrl: text(o.profileUrl, 500),
+      profileUrl: (() => {
+        const url = text(o.profileUrl, 500);
+        if (url && !/^https?:\\/\\//i.test(url)) throw new Error("Invalid profile URL");
+        return url;
+      })(),
       segment,
       country: text(o.country, 80) ?? "South Africa",
       followerCount: followers,
@@ -264,7 +268,7 @@ export const adminDeleteFoundingHqLead = createServerFn({ method: "POST" })
       .delete({ count: "exact" })
       .eq("id", data.id);
     if (error) return { ok: false, code: "error", message: error.message };
-    if (count === 0) return { ok: false, code: "not_found" };
+    if (!count) return { ok: false, code: "not_found" };
     await logAdminAction(db, ctx.userId, "founding_hq.lead_deleted", { leadId: data.id });
     return { ok: true };
   });
