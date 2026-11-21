@@ -19,6 +19,7 @@ import { PFIE_SOURCES, tierOf } from "./provider";
 import {
   STANDINGS_COMPETITIONS,
   chooseTable,
+  independentSourceKey,
   parseStandings,
   standingsRequest,
   validateTables,
@@ -262,9 +263,10 @@ async function gatherSources(
   // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
   for (const hit of ranked) {
     const domain = domainOf(hit.url);
+    const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
-    if (sources.length >= MAX_SOURCES || !deps.extract || tier === "other" || isBlockedDomain(domain) || seenDomains.has(domain)) continue;
-    seenDomains.add(domain);
+    if (sources.length >= MAX_SOURCES || !deps.extract || tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
+    seenDomains.add(sourceKey);
     const page = await deps.extract.extract(hit.url).catch(() => null);
     if (!page?.markdown) continue;
     const clean = cleanText(page.markdown, MAX_CHARS);
