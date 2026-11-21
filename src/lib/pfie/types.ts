@@ -13,6 +13,8 @@ export interface PfieSource {
   publishedAt?: string | null;
   /** Time this source page was fetched for the current PFIE run. */
   retrievedAt?: string;
+  /** Search excerpt or freshly fetched full page. */
+  via?: "search" | "extract";
 }
 
 /** What the model says one page states about one match. Untrusted until validated. */
