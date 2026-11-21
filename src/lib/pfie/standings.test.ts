@@ -79,6 +79,13 @@ describe("validateTables", () => {
       ).rejected[0]!.reason,
     ).toMatch(/quote_not_on_page/);
   });
+  it("rejects explicitly dated tables older than 72 hours", () => {
+    const dateQuote = "Updated: 2026-11-18";
+    const dated = page("league.com", "official", 1, [...lines, dateQuote]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-18", tableDateQuote: dateQuote }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.rejected[0]!.reason).toBe("table_date_older_than_72h");
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
