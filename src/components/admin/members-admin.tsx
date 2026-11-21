@@ -183,33 +183,73 @@ function MemberCard({
 
       {open && (
         <div className="mt-4 space-y-4 border-t border-border pt-4 text-sm">
-          <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
-            <Info label={t("members.f.name")} value={m.displayName || "-"} />
-            <Info
-              label={t("members.f.email")}
-              value={`${m.email ?? "-"}${m.emailConfirmed ? "" : ` (${t("members.unconfirmed")})`}`}
-            />
-            <Info
-              label={t("members.f.lastSeen")}
-              value={m.lastSignInAt ? formatDateTime(m.lastSignInAt) : "-"}
-            />
-            <Info
-              label={t("members.f.marketing")}
-              value={m.marketingOptIn ? t("members.yes") : t("members.no")}
-            />
-            <Info label={t("members.f.points")} value={String(m.points)} />
-            <Info label={t("members.f.credits")} value={String(m.credits)} />
-            <Info label={t("members.f.practice")} value={String(m.practicePicks)} />
-            {m.suspendedUntil && (
+          <section className="space-y-2">
+            <h3 className="font-semibold">Account & registration</h3>
+            <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
+              <Info label="Account ID" value={m.id} />
+              <Info label="Username" value={`@${m.username}`} />
               <Info
-                label={t("members.f.suspendedUntil")}
-                value={formatDateTime(m.suspendedUntil)}
+                label={t("members.f.email")}
+                value={`${m.email ?? "-"}${m.emailConfirmed ? "" : ` (${t("members.unconfirmed")})`}`}
               />
-            )}
-            {m.limitedUntil && (
-              <Info label={t("members.f.limitedUntil")} value={formatDateTime(m.limitedUntil)} />
-            )}
-          </dl>
+              <Info label="Email confirmation" value={m.emailConfirmedAt ? formatDateTime(m.emailConfirmedAt) : "Not confirmed"} />
+              <Info label="Phone confirmation" value={m.phoneConfirmedAt ? formatDateTime(m.phoneConfirmedAt) : "Not confirmed"} />
+              <Info label="Sign-in methods" value={m.authProviders.join(", ") || "Email"} />
+              <Info label="Registered" value={m.authCreatedAt ? formatDateTime(m.authCreatedAt) : formatDateTime(m.createdAt)} />
+              <Info label={t("members.f.lastSeen")} value={m.lastSignInAt ? formatDateTime(m.lastSignInAt) : "-"} />
+              <Info label="Account role" value={m.role} />
+              <Info label="Account type" value={m.accountType} />
+              <Info label="Founding number" value={m.foundingNumber === null ? "-" : String(m.foundingNumber)} />
+              <Info label="Entitlements" value={m.entitlements.join(", ") || "None"} />
+              <Info label={t("members.f.marketing")} value={m.marketingOptIn ? t("members.yes") : t("members.no")} />
+              {m.suspendedUntil && <Info label={t("members.f.suspendedUntil")} value={formatDateTime(m.suspendedUntil)} />}
+              {m.limitedUntil && <Info label={t("members.f.limitedUntil")} value={formatDateTime(m.limitedUntil)} />}
+            </dl>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="font-semibold">Profile & contact details</h3>
+            <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
+              <Info label={t("members.f.name")} value={m.displayName || "-"} />
+              <Info label="First name" value={m.firstName ?? "-"} />
+              <Info label="Last name" value={m.lastName ?? "-"} />
+              <Info label="Phone" value={m.phone ?? "-"} />
+              <Info label="Date of birth" value={m.dateOfBirth ?? "-"} />
+              <Info label="Birth year" value={m.birthYear === null ? "-" : String(m.birthYear)} />
+              <Info label="Province" value={m.province ?? "-"} />
+              <Info label="18+ attested" value={m.ageAttested ? "Yes" : "No"} />
+              <Info label="POPIA consent recorded" value={m.popiaConsentAt ? formatDateTime(m.popiaConsentAt) : "-"} />
+              <Info label="Preferred language" value={m.language} />
+              <Info label="Avatar URL" value={m.avatarUrl ?? "-"} />
+            </dl>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="font-semibold">Identity verification</h3>
+            <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
+              <Info label="Verification status" value={m.identityStatus ?? "Not submitted"} />
+              <Info label="Verification method" value={m.identityMethod ?? "-"} />
+              <Info label="18+ confirmed by ID" value={m.identityOver18 === null ? "-" : m.identityOver18 ? "Yes" : "No"} />
+              <Info label="Document submitted" value={m.identitySubmittedAt ? formatDateTime(m.identitySubmittedAt) : "-"} />
+              <Info label="Review completed" value={m.identityReviewedAt ? formatDateTime(m.identityReviewedAt) : "-"} />
+            </dl>
+            <p className="text-xs text-muted-foreground">ID document images and ID numbers are not retained after a verification decision; this view shows the verification outcome only.</p>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="font-semibold">Interests & activity</h3>
+            <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
+              <Info label="Favourite sports" value={m.sports.join(", ") || "-"} />
+              <Info label="Favourite competitions" value={m.competitions.join(", ") || "-"} />
+              <Info label="Favourite teams" value={m.teams.join(", ") || "-"} />
+              <Info label={t("members.f.points")} value={String(m.points)} />
+              <Info label={t("members.f.credits")} value={String(m.credits)} />
+              <Info label={t("members.f.practice")} value={String(m.practicePicks)} />
+              <Info label="Published predictions" value={String(m.predictionCount)} />
+              <Info label="Invited members" value={String(m.inviteCount)} />
+              <Info label="Open warnings" value={String(m.openWarnings)} />
+            </dl>
+          </section>
 
           <div className="flex flex-wrap gap-2">
             {(["message", "warn", "account", "credits"] as const).map((p) => (
@@ -496,7 +536,7 @@ function Info({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-3 py-0.5">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="truncate text-right font-medium">{value}</dd>
+      <dd className="max-w-[65%] break-words whitespace-normal text-right font-medium">{value}</dd>
     </div>
   );
 }
