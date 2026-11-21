@@ -102,6 +102,13 @@ describe("validateTables", () => {
     expect(result.rejected).toEqual([]);
     expect(result.tables).toHaveLength(1);
   });
+  it("ignores an unverified model-supplied table date without discarding source-backed rows", () => {
+    const undated = page("league.com", "official", 1, lines);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22", tableDateQuote: "date not present on page" }));
+    const result = validateTables(rows, [undated], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.rejected).toEqual([]);
+    expect(result.tables[0]!.tableDate).toBeNull();
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
