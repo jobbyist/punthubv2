@@ -15,29 +15,20 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_COMPETITIONS: Partial<
-  Record<CompetitionKey, { teams: number; queries: string[] }>
+  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[] }>
 > = {
   psl: { teams: 16, refreshHours: 12, queries: ["Betway Premiership log standings", "PSL log table"] },
   epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
   laliga: { teams: 20, refreshHours: 12, queries: ["La Liga table standings", "LaLiga table"] },
   seriea: { teams: 20, refreshHours: 12, queries: ["Serie A table standings", "Serie A table"] },
   bundesliga: { teams: 18, refreshHours: 12, queries: ["Bundesliga table standings", "Bundesliga table"] },
-  ligue1: { teams: 18, queries: ["Ligue 1 table standings", "Ligue 1 table"] , refreshHours: 24},
-  eredivisie: { teams: 18, queries: ["Eredivisie table standings", "Eredivisie table"] , refreshHours: 24},
-  primeira: { teams: 18, queries: ["Liga Portugal table standings", "Primeira Liga table"] , refreshHours: 24},
-  championship: { teams: 24, queries: ["EFL Championship table standings", "Championship table"] , refreshHours: 24},
-  "saudi-pro": {
-    teams: 18,
-    queries: ["Saudi Pro League table standings", "Saudi Pro League table"],
-  },
-  "sa-championship": {
-    teams: 16,
-    queries: ["Motsepe Foundation Championship log standings", "Motsepe Championship log table"],
-  },
-  ucl: {
-    teams: 36,
-    queries: ["Champions League league phase table", "UCL standings league phase"],
-  , refreshHours: 24},
+  ligue1: { teams: 18, refreshHours: 24, queries: ["Ligue 1 table standings", "Ligue 1 table"] },
+  eredivisie: { teams: 18, refreshHours: 24, queries: ["Eredivisie table standings", "Eredivisie table"] },
+  primeira: { teams: 18, refreshHours: 24, queries: ["Liga Portugal table standings", "Primeira Liga table"] },
+  championship: { teams: 24, refreshHours: 24, queries: ["EFL Championship table standings", "Championship table"] },
+  "saudi-pro": { teams: 18, refreshHours: 24, queries: ["Saudi Pro League table standings", "Saudi Pro League table"] },
+  "sa-championship": { teams: 16, refreshHours: 24, queries: ["Motsepe Foundation Championship log standings", "Motsepe Championship log table"] },
+  ucl: { teams: 36, refreshHours: 24, queries: ["Champions League league phase table", "UCL standings league phase"] },
 };
 
 export interface RawStandingRow {
@@ -203,6 +194,10 @@ export function validateTables(
       fail("unknown_source");
       continue;
     }
+    if (/(^|\\.)wikipedia\\.org$/i.test(source.domain)) {
+      fail("wikipedia_not_allowed_for_live_standings");
+      continue;
+    }
     if (rows.length !== expectedTeams) {
       fail(`team_count_${rows.length}_expected_${expectedTeams}`);
       continue;
@@ -217,6 +212,22 @@ export function validateTables(
     }
     const page = normalise(source.text);
     let bad: string | null = null;
+    const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
+    if (tableDates.length > 1) bad = "inconsistent_table_dates";
+    const tableDate = tableDates[0] ?? null;
+    if (tableDate) {
+      const dateQuote = rows.find((r) => r.tableDateQuote)?.tableDateQuote;
+      if (!dateQuote || !page.includes(normalise(dateQuote))) bad = "table_date_quote_not_on_page";
+      else {
+        const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
+        if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
+        if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
+      }
+    }
+    if (bad) {
+      fail(bad);
+      continue;
+    }
     const out: StandingRow[] = [];
     const names = new Set<string>();
     for (const r of rows) {
