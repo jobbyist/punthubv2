@@ -263,7 +263,7 @@ export function validateTables(
         (!!dateQuote && page.includes(normalise(dateQuote))) || dateAppearsOnPage(source.text, proposedTableDate);
       if (dateEvidence) {
         tableDate = proposedTableDate;
-        const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
+        const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999+02:00`);
         if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
         if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
       }
