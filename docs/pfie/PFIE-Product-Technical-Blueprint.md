@@ -107,6 +107,18 @@ Priority key: **M** must for 9 November, **S** should by launch on 1 December, *
 
 **Reliability is measured, not assumed.** `data_sources.reliability` is recalculated from how often each source's observations agree with the final verified record.
 
+### 4.2.1 Current league standings: live multi-source verification
+
+League tables are a separate, freshness-sensitive PFIE data product; they are not populated from the historical season archive importer.
+
+- Parallel Search discovers current standings pages for each competition using date-aware queries. Search excerpts are discovery only and never count as corroborating evidence.
+- Parallel Extract retrieves up to four independent official/trusted full pages per refresh. Current table extraction requests a maximum 15-minute cache age and disables stale-cache fallback.
+- A table is publishable only when at least two independent domains agree on every team's complete played, wins, draws, losses, goals-for, goals-against and points record. Official status improves source ranking but never bypasses corroboration.
+- Wikipedia and historical-season pages are not valid current-table sources. The archive importer may still use its two-source historical result reconciliation for the results archive, but it cannot write to the current standings read model.
+- Deterministic checks validate team count, positions, W+D+L=played, points=3W+D, team names, evidence quotes, unique teams and any explicitly printed table date. A printed table date must be quoted from the page and be no older than 72 hours.
+- Premier League, Betway Premiership, La Liga, Serie A and Bundesliga refresh every 12 hours. Other configured tables refresh every 24 hours. A newly confirmed result can trigger an earlier refresh. The cron schedule runs two daily windows, and the public stale notice appears after 18 hours.
+- The stored sync metadata records the agreeing source domains, source count, primary source URL, optional table date and extraction model. A failed or disputed refresh never replaces the last verified table.
+
 ### 4.3 Competition registry (51 targeted, all configurable)
 
 Each competition starts as `planned`. It becomes `active` only when at least one permitted source exists and the corroboration rule can be met. Coverage is never promised ahead of that.
