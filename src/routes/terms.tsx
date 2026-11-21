@@ -347,7 +347,7 @@ function Terms() {
             <p className="mb-3 leading-relaxed text-muted-foreground">
               All content, features, and functionality of the Service, including but not limited to
               text, graphics, logos, icons, images, audio clips, and software, are the exclusive
-              property of Puntr (Pty) Ltd and are protected by South African and international
+              property of Gravitas Industries (Pty) Ltd and are protected by South African and international
               copyright, trademark, and other intellectual property laws.
             </p>
             <p className="leading-relaxed text-muted-foreground">
@@ -407,7 +407,7 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">17. Indemnification</h2>
             <p className="leading-relaxed text-muted-foreground">
-              You agree to indemnify, defend, and hold harmless Puntr (Pty) Ltd, its officers,
+              You agree to indemnify, defend, and hold harmless Gravitas Industries (Pty) Ltd, its officers,
               directors, employees, and affiliates from any claims, damages, losses, liabilities,
               and expenses (including legal fees) arising from your use of the Service or violation
               of these Terms.
