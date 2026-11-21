@@ -1,5 +1,5 @@
 /**
- * Server job for team badges: finds teams in fixtures without a verified badge and resolves them with Parallel
+ * Server job for team badges: finds fixture and curated marquee teams without a verified badge and resolves them with Parallel
  * Search + Wikipedia, then mirrors the crest to Supabase Storage (`media/teams/...`). Quota-guarded: every Parallel
  * call claims a unit of the shared `parallel` quota, so badges never push the account past its cap.
  */
@@ -215,7 +215,7 @@ export async function setManualBadge(team: TeamRef, url: string): Promise<string
   return logoUrl;
 }
 
-/** One cron run: up to `limit` teams that need a badge (new, or failed more than a day ago and under 3 tries). */
+/** One cron run: up to `limit` teams that need a badge (new, or failed more than a day ago and under 6 tries). */
 export async function runBadgeJob(limit = 8, force = false) {
   const client = await db();
   const teams = await teamsInFixtures(client);
