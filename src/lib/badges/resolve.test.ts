@@ -54,6 +54,19 @@ describe("pickWikipediaTitle", () => {
   });
 });
 
+describe("strict team-name matching", () => {
+  it("does not confuse Iberia Tbilisi with Dinamo Tbilisi", () => {
+    expect(
+      wikipediaCandidates(
+        [
+          { url: "https://en.wikipedia.org/wiki/FC_Dinamo_Tbilisi" },
+          { url: "https://en.wikipedia.org/wiki/FC_Iberia_1999" },
+        ],
+        "Iberia Tbilisi",
+      ),
+    ).toEqual(["FC_Iberia_1999"]);
+  });
+});
 describe("pickCrestImage", () => {
   const club = {
     type: "standard",
