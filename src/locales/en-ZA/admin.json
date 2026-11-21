@@ -827,8 +827,8 @@
   },
   "endorse": {
     "title": "Endorsements",
-    "body": "Organisations we are asking for guidance, recognition or an endorsement. Track the status and reasons, draft outreach or follow-up emails with Gemini, edit them, then send through Resend from Michael or Puntr Partners.",
-    "rule": "Never claim an endorsement we do not have. Drafts are checked for banned wording and for claims of approval or partnership. Gemini only sees the organisation's name, type, region, the contact's role, what we ask for, why, and Puntr's fact sheet. It never sees the contact's name or any member data.",
+    "body": "Organisations we are approaching for regulatory guidance, responsible-gambling education, sports-sector engagement or other appropriate collaboration. Track each relationship, draft tailored outreach or follow-ups with Gemini, edit them, then send through Resend from Michael or Puntr Partners.",
+    "rule": "Never claim an endorsement, approval or partnership we do not have. Requests must fit the organisation's mandate: regulators are approached for guidance, not endorsements or logo permission; public-benefit and sports bodies are approached for suitable education or community collaboration. Drafts are checked for prohibited wording and false relationship claims. Gemini only sees the organisation's name, type, region, the contact's role, what we ask for, why, and Puntr's fact sheet. It never sees the contact's name or any member data.",
     "add": "Add organisation",
     "newOrg": "New organisation",
     "name": "Organisation name",
