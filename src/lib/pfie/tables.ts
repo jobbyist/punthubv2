@@ -6,7 +6,7 @@
  */
 import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
-import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
+import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
