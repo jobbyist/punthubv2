@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
-import { chooseTable, independentSourceKey, parseStandings, validateTables, type RawStandingRow } from "./standings";
+import { chooseTable, independentSourceKey, parseStandings, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -132,6 +132,18 @@ describe("chooseTable", () => {
   });
 });
 
+describe("tableRegression", () => {
+  it("rejects a table that moves played matches or statistics backwards", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const stale = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r);
+    expect(tableRegression(stale, previous)).toBe("played_regressed_Alpha FC");
+  });
+  it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
+    expect(tableRegression(newer, previous)).toBeNull();
+  });
+});
 describe("parseStandings", () => {
   it("rejects invalid JSON", () => expect(parseStandings("nope")).toBeNull());
 });
