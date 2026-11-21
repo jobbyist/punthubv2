@@ -358,6 +358,8 @@ const TRUSTED = [
   "reuters.com",
   "kickoff.com",
   "soccerladuma.co.za",
+  "ladumaanalytics.co.za",
+  "45min.co.za",
   "sabcsport.com",
   "goal.com",
   "uefa.com",
