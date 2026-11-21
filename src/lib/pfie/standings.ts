@@ -1,7 +1,7 @@
 /**
  * League standings from web pages. The model copies each table row with a quote; plain code checks every row
- * (arithmetic, positions, team count, quote and team on the page) and publishes a table only when the
- * competition's own site gives it, or two different sites give the same played and points for every team.
+ * (arithmetic, positions, team count, quote and team on the page) and publishes only when at least two
+ * independent, non-Wikipedia domains agree on every team's complete W/D/L and goals record.
  * AI never decides a position or a points total.
  */
 import { z } from "zod";
@@ -15,29 +15,20 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_COMPETITIONS: Partial<
-  Record<CompetitionKey, { teams: number; queries: string[] }>
+  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[] }>
 > = {
-  psl: { teams: 16, queries: ["Betway Premiership log standings", "PSL log table"] },
-  epl: { teams: 20, queries: ["Premier League table standings", "Premier League table"] },
-  laliga: { teams: 20, queries: ["La Liga table standings", "LaLiga table"] },
-  seriea: { teams: 20, queries: ["Serie A table standings", "Serie A table"] },
-  bundesliga: { teams: 18, queries: ["Bundesliga table standings", "Bundesliga table"] },
-  ligue1: { teams: 18, queries: ["Ligue 1 table standings", "Ligue 1 table"] },
-  eredivisie: { teams: 18, queries: ["Eredivisie table standings", "Eredivisie table"] },
-  primeira: { teams: 18, queries: ["Liga Portugal table standings", "Primeira Liga table"] },
-  championship: { teams: 24, queries: ["EFL Championship table standings", "Championship table"] },
-  "saudi-pro": {
-    teams: 18,
-    queries: ["Saudi Pro League table standings", "Saudi Pro League table"],
-  },
-  "sa-championship": {
-    teams: 16,
-    queries: ["Motsepe Foundation Championship log standings", "Motsepe Championship log table"],
-  },
-  ucl: {
-    teams: 36,
-    queries: ["Champions League league phase table", "UCL standings league phase"],
-  },
+  psl: { teams: 16, refreshHours: 12, queries: ["Betway Premiership log standings", "PSL log table"] },
+  epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
+  laliga: { teams: 20, refreshHours: 12, queries: ["La Liga table standings", "LaLiga table"] },
+  seriea: { teams: 20, refreshHours: 12, queries: ["Serie A table standings", "Serie A table"] },
+  bundesliga: { teams: 18, refreshHours: 12, queries: ["Bundesliga table standings", "Bundesliga table"] },
+  ligue1: { teams: 18, refreshHours: 24, queries: ["Ligue 1 table standings", "Ligue 1 table"] },
+  eredivisie: { teams: 18, refreshHours: 24, queries: ["Eredivisie table standings", "Eredivisie table"] },
+  primeira: { teams: 18, refreshHours: 24, queries: ["Liga Portugal table standings", "Primeira Liga table"] },
+  championship: { teams: 24, refreshHours: 24, queries: ["EFL Championship table standings", "Championship table"] },
+  "saudi-pro": { teams: 18, refreshHours: 24, queries: ["Saudi Pro League table standings", "Saudi Pro League table"] },
+  "sa-championship": { teams: 16, refreshHours: 24, queries: ["Motsepe Foundation Championship log standings", "Motsepe Championship log table"] },
+  ucl: { teams: 36, refreshHours: 24, queries: ["Champions League league phase table", "UCL standings league phase"] },
 };
 
 export interface RawStandingRow {
@@ -52,6 +43,9 @@ export interface RawStandingRow {
   goalsAgainst: number;
   points: number;
   quote: string;
+  /** Explicit table "as of" date, when the source states one. */
+  tableDate?: string | null;
+  tableDateQuote?: string | null;
 }
 
 export interface StandingRow {
@@ -69,6 +63,8 @@ export interface StandingRow {
 export interface SourceTable {
   source: PfieSource;
   rows: StandingRow[];
+  /** Optional explicit table date found on the page. */
+  tableDate?: string | null;
 }
 
 const SCHEMA = {
@@ -90,6 +86,8 @@ const SCHEMA = {
           goalsAgainst: { type: "INTEGER" },
           points: { type: "INTEGER" },
           quote: { type: "STRING" },
+          tableDate: { type: "STRING" },
+          tableDateQuote: { type: "STRING" },
         },
         required: [
           "source",
@@ -127,7 +125,9 @@ export function standingsRequest(input: {
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
       "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
-      "4. Ignore tables of other competitions, seasons, groups or form-only tables.",
+      "4. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
+      "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
+      "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.",
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}\n\nSources:\n\n${sources}`,
     schema: SCHEMA,
     temperature: 0,
@@ -150,6 +150,8 @@ const rawSchema = z.object({
       goalsAgainst: int,
       points: z.number().int().min(-50).max(500),
       quote: z.string().trim().min(1),
+      tableDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+      tableDateQuote: z.string().trim().min(1).nullable().optional(),
     }),
   ),
 });
@@ -178,6 +180,7 @@ export function validateTables(
   sources: PfieSource[],
   expectedTeams: number,
   knownTeams: readonly string[] = [],
+  now: Date = new Date(),
 ): { tables: SourceTable[]; rejected: TableRejection[] } {
   const bySource = new Map<number, RawStandingRow[]>();
   for (const r of raw) bySource.set(r.source, [...(bySource.get(r.source) ?? []), r]);
@@ -189,6 +192,10 @@ export function validateTables(
     const fail = (reason: string) => rejected.push({ source: index, reason });
     if (!source) {
       fail("unknown_source");
+      continue;
+    }
+    if (source.domain.toLowerCase() === "wikipedia.org" || source.domain.toLowerCase().endsWith(".wikipedia.org")) {
+      fail("wikipedia_not_allowed_for_live_standings");
       continue;
     }
     if (rows.length !== expectedTeams) {
@@ -205,6 +212,22 @@ export function validateTables(
     }
     const page = normalise(source.text);
     let bad: string | null = null;
+    const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
+    if (tableDates.length > 1) bad = "inconsistent_table_dates";
+    const tableDate = tableDates[0] ?? null;
+    if (tableDate) {
+      const dateQuote = rows.find((r) => r.tableDateQuote)?.tableDateQuote;
+      if (!dateQuote || !page.includes(normalise(dateQuote))) bad = "table_date_quote_not_on_page";
+      else {
+        const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
+        if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
+        if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
+      }
+    }
+    if (bad) {
+      fail(bad);
+      continue;
+    }
     const out: StandingRow[] = [];
     const names = new Set<string>();
     for (const r of rows) {
@@ -243,34 +266,97 @@ export function validateTables(
       fail("points_out_of_order");
       continue;
     }
-    tables.push({ source, rows: ordered });
+    tables.push({ source, rows: ordered, tableDate });
   }
   return { tables, rejected };
 }
 
+/** Treat known multi-domain publishers as one upstream source for independence checks. */
+export function independentSourceKey(domain: string): string {
+  const value = domain.toLowerCase().replace(/^www\./, "");
+  if (value.endsWith("bbc.com") || value.endsWith("bbc.co.uk")) return "bbc";
+  return value;
+}
+
+/** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
+export function tableRegression(
+  candidate: StandingRow[],
+  previous: StandingRow[],
+): string | null {
+  if (previous.length === 0) return null;
+  if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
+  const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
+  for (const old of previous) {
+    const next = nextByTeam.get(normaliseTeam(old.team));
+    if (!next) return `team_missing_from_new_snapshot_${old.team}`;
+    if (next.played < old.played) return `played_regressed_${old.team}`;
+    const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
+    for (const field of fields) {
+      if (next[field] < old[field]) return `${field}_regressed_${old.team}`;
+      if (next.played === old.played && next[field] !== old[field])
+        return `${field}_changed_without_new_matches_${old.team}`;
+    }
+  }
+  return null;
+}
+
+/** Compare every material standings statistic. Position is deliberately excluded because leagues can
+ * apply different tie-break ordering while agreeing on the underlying match record. */
 const signature = (t: SourceTable) =>
   t.rows
-    .map((r) => `${normaliseTeam(r.team)}:${r.played}:${r.points}`)
+    .map((r) =>
+      [
+        normaliseTeam(r.team),
+        r.played,
+        r.won,
+        r.drawn,
+        r.lost,
+        r.goalsFor,
+        r.goalsAgainst,
+        r.points,
+      ].join(":"),
+    )
     .sort()
     .join("|");
 
 /**
- * Picks the table to publish: an official table, else the first table that another site (different domain)
- * matches exactly on team, played and points. Returns null when nothing is verified.
+ * A current table is publishable only when at least two independent, non-Wikipedia domains agree on
+ * every team's complete played/W/D/L/GF/GA/points record. Official status improves source ranking but
+ * never bypasses corroboration. The strongest table from the largest agreeing group is published.
  */
 export function chooseTable(
   tables: SourceTable[],
-): { table: SourceTable; verdict: "official" | "two_sources" } | null {
-  const official = tables.find((t) => t.source.tier === "official");
-  if (official) return { table: official, verdict: "official" };
-  for (let i = 0; i < tables.length; i++)
-    for (let j = i + 1; j < tables.length; j++) {
-      const a = tables[i]!;
-      const b = tables[j]!;
-      if (a.source.domain !== b.source.domain && signature(a) === signature(b)) {
-        const pick = a.source.tier === "trusted" || b.source.tier !== "trusted" ? a : b;
-        return { table: pick, verdict: "two_sources" };
+): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {
+  const eligible = tables.filter(
+    (t) =>
+      !(t.source.domain.toLowerCase() === "wikipedia.org" || t.source.domain.toLowerCase().endsWith(".wikipedia.org")) &&
+      (t.source.tier === "official" || t.source.tier === "trusted"),
+  );
+  const groups = new Map<string, SourceTable[]>();
+  for (const table of eligible) {
+    const key = signature(table);
+    groups.set(key, [...(groups.get(key) ?? []), table]);
+  }
+  const ranked = [...groups.values()]
+    .map((group) => {
+      const byPublisher = new Map<string, SourceTable>();
+      for (const table of group) {
+        const key = independentSourceKey(table.source.domain);
+        const prior = byPublisher.get(key);
+        if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
+          byPublisher.set(key, table);
       }
-    }
-  return null;
+      return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
+    })
+    .filter((g) => g.publishers.length >= 2)
+    .sort((a, b) => b.publishers.length - a.publishers.length);
+  const best = ranked[0];
+  if (!best) return null;
+  const quality = (t: SourceTable) => (t.source.tier === "official" ? 0 : 1);
+  const table = [...best.group].sort((a, b) => quality(a) - quality(b))[0]!;
+  return {
+    table,
+    verdict: "two_sources",
+    supportingDomains: best.group.map((t) => t.source.domain).sort(),
+  };
 }

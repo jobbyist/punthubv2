@@ -1,7 +1,8 @@
 /**
  * Runs the season archive import (see archive.ts). One job = one competition season = two page reads. Finished
- * seasons are imported once; the current season is refreshed at most once every 20 hours, which also keeps its
- * league table corroborated. Every attempt is recorded in `sync_status` as job `archive`, scope `<key>:<startYear>`.
+ * seasons are imported once; the current season is refreshed at most once every 20 hours. This path imports
+ * historical results only; current league tables are owned by the live multi-source standings job. Every attempt
+ * is recorded in `sync_status` as job `archive`, scope `<key>:<startYear>`.
  */
 import { seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
@@ -10,10 +11,8 @@ import {
   archiveCompetition,
   archiveSeasons,
   archiveUrls,
-  corroborateTable,
   parseFbrefSchedule,
   parseResultsMatrix,
-  parseWikiTable,
   reconcileSeason,
 } from "./archive";
 import { retryDue, type SyncStatusRow, type TablesDeps } from "./tables";
@@ -88,51 +87,14 @@ export async function runArchiveJob(
       return { ok: false, detail: `nothing confirmed (${JSON.stringify(report)})` };
     }
 
-    // Current season: the table is replaced only when it matches the verified results exactly.
-    let table = "not checked";
-    if (year === seasonFor(c.seasonRule, now)) {
-      const parsed = parseWikiTable(wiki.markdown);
-      const check = parsed ? corroborateTable(parsed, rows) : { reason: "no table on the page" };
-      if ("rows" in check) {
-        const n = await deps.store.replaceStandings({
-          key,
-          competition: c.name,
-          season: String(year),
-          rows: check.rows,
-          domain: "wikipedia.org",
-          url: urls.wikipedia,
-        });
-        await deps.store.record("standings", key, true, null, {
-          verdict: "archive_two_sources",
-          domain: "wikipedia.org+fbref.com",
-          teams: n,
-        });
-        table = `${n} teams`;
-      } else {
-        table = `left alone (${check.reason})`;
-        if (!parsed) {
-          // Diagnostics (public page text only): where the reader put the table header, if anywhere.
-          const md = wiki.markdown;
-          const at = md.search(/\|\s*Pos\s*\|/);
-          await deps.store.record(
-            "archive",
-            scope,
-            false,
-            "no league table on the wikipedia page",
-            {
-              wikiChars: md.length,
-              posAt: at,
-              snippet: at >= 0 ? md.slice(Math.max(0, at - 20), at + 500) : md.slice(0, 200),
-            },
-          );
-        }
-      }
-    }
+    // Archive/Wikipedia sources are retained only for historical result reconciliation.
+    // Current league standings are sourced separately through Parallel's live multi-source PFIE pipeline.
+    const table = "deferred to live multi-source standings sync";
 
     await deps.store.record("archive", scope, true, null, { ...meta, table });
     return {
       ok: true,
-      detail: `${inserted} new of ${rows.length} confirmed (${report.disagreed} disagreed, ${report.unmatched} unmatched); table ${table}`,
+      detail: `${inserted} new of ${rows.length} confirmed (${report.disagreed} disagreed, ${report.unmatched} unmatched); standings ${table}`,
     };
   } catch (e) {
     const msg = e instanceof Error ? e.message.slice(0, 280) : "unexpected error";

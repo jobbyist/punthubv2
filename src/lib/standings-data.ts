@@ -55,9 +55,9 @@ export async function fetchSyncStatuses(): Promise<SyncStatus[]> {
   return (data ?? []) as SyncStatus[];
 }
 
-const STALE_MS = 36 * 3_600_000;
+const STALE_MS = 18 * 3_600_000;
 
-/** Stale when the last successful refresh is older than 36 hours or the latest attempt failed. */
+/** Stale when the last successful refresh is older than 18 hours or the latest attempt failed. */
 export function isStale(s: SyncStatus | undefined, now = Date.now()): boolean {
   if (!s?.last_success_at) return true;
   return s.consecutive_failures > 0 || now - Date.parse(s.last_success_at) > STALE_MS;

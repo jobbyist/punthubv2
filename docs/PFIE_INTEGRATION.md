@@ -73,22 +73,22 @@ match and compare with the official score before any settlement is trusted.
 
 ## League standings and form history (14 Nov 2026)
 
-- Separate processes. **Standings**: `league_standings`, replaced atomically by `replace_standings()` from a table
-  that passes `validateTables` (N teams, positions 1..N, W+D+L=P, Pts=3W+D, quote and team on the page, points
-  never rising down the table) and `chooseTable` (official site, or two domains agreeing on every team's played
-  and points). **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
+- Separate processes. **Standings**: `league_standings`, replaced atomically by `replace_standings()` only after at least two independent non-Wikipedia domains agree
+  on every team's full played/W/D/L/GF/GA/points record. Each candidate is a freshly fetched full page from Parallel
+  Extract (15-minute maximum cache age, no stale-cache fallback), discovered by Parallel Search. Quotes, team names,
+  arithmetic, team count, positions and any explicitly printed table date are validated in code. An official source
+  improves ranking but never bypasses independent corroboration. **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
   plus `team_results`, a one-time backfill of the last 42 days verified by the official site or two domains).
-- Daily: `/api/cron/sync-tables`, every 10 minutes 04:10-05:50 SAST, two due jobs per call. Standings refresh when
-  there is no table, when a match finished since the last refresh, or weekly. History runs once per league (and
-  again only if a quarter of teams have fewer than 5 recorded results).
+- Refresh: `/api/cron/sync-tables`, every 10 minutes 04:10-05:50 SAST and 16:10-17:50 SAST, two due jobs per call. The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
+  of teams have fewer than 5 recorded results).
 - Matchday: trigger `fixtures_after_result` calls `apply_result_to_standings()` when a result is confirmed: the
   result is applied once (`standings_applied`), only if it kicked off after the table was taken; positions are
   re-ranked (points, GD, GF, name) until the next refresh restores each league's tie-break rules. No API call.
 - Reliability: every attempt goes through `record_sync()` (`sync_status`: last attempt, success, failures, error,
-  meta). Failures retry after 20 and 40 minutes, then wait a day. `/standings` shows a stale notice when the last
-  success is older than 36 h or the last attempt failed; Admin > System shows the Data sync panel.
-- Cost: per standings refresh 1 Parallel search + up to 2 page reads + 1 Gemini Flash-Lite call; refreshes only
-  when needed, so typically 5-10 a day across 12 leagues. Quotas go through `api_quota_claim` as before.
+  meta). Failures retry after 20 and 40 minutes, then wait a day. `/tables` shows a stale notice when the last success is older than 18 h or the last attempt failed; Admin > System
+  shows the Data sync panel.
+- Cost: per standings refresh 1 Parallel search + up to 4 Parallel page extracts + 1 Gemini Flash-Lite call. Priority tables
+  refresh twice daily; other tables refresh daily. Quotas go through `api_quota_claim` as before. Quotas go through `api_quota_claim` as before.
 - No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.
 
 
@@ -113,3 +113,14 @@ match and compare with the official score before any settlement is trusted.
 - A window that fails six times in a row is left alone, so empty windows (international breaks) stop using quota.
 - Cron `sync-season` runs every 10 minutes at 04:00-05:50 UTC (06:00-07:50 SAST), three windows per call. About
   36 windows a night, newest first, so the current season fills in about two weeks.
+
+
+## 22 Nov 2026: live multi-source standings verification
+
+- Current league tables no longer come from the Wikipedia/FBref season-archive importer. That importer remains available for historical result reconciliation only.
+- Parallel Search discovers current table pages. Parallel Extract fetches up to four independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled.
+- A table is publishable only when at least two independent domains agree on each team's played, wins, draws, losses, goals for, goals against and points. Official status improves source ranking but is not a single-source bypass.
+- Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus. A candidate is also checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress.
+- Every row still passes deterministic checks: full team count, positions, row quote and team name on the source, W+D+L=played, points=3W+D, unique team identities and table ordering. An explicit table date must be quoted from the page and no older than 72 hours.
+- Priority tables refresh every 12 hours; other configured tables every 24 hours. Confirmed match results can trigger an earlier refresh. The cron window runs twice daily, with the stale indicator set at 18 hours.
+- Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`.

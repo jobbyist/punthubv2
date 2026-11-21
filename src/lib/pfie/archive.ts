@@ -10,9 +10,8 @@
  * comes from FBref. Any disagreement, an unmatched team or a missing cell leaves the match out. Double round-robin
  * leagues only (each pair meets once at each ground), which is what makes the matrix unambiguous.
  *
- * For the current season, the Wikipedia league table is also checked against the verified results: when every
- * team's played, won, drawn, lost, goals for and against match the results exactly (and points = 3W + D), the table
- * is corroborated by two sources and replaces the stored one.
+ * Current league standings are deliberately excluded from this archive path. The live standings job uses
+ * Parallel Search + fresh Parallel Extract pages and independent full-table corroboration.
  */
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
@@ -214,7 +213,7 @@ export function parseResultsMatrix(markdown: string): ResultsMatrix | null {
   return null;
 }
 
-/** The first "Pos | Team | Pld | W | D | L | GF | GA | GD | Pts" table on a Wikipedia season page. */
+/** Legacy parser for historical archive diagnostics only. Never used to publish current league standings. */
 export function parseWikiTable(markdown: string): StandingRow[] | null {
   const lines = tableLines(markdown);
   for (let i = 0; i < lines.length; i++) {
@@ -352,6 +351,7 @@ export function reconcileSeason(
 }
 
 /**
+ * Legacy historical-table consistency helper. The live standings publisher does not call this function.
  * The Wikipedia table is accepted only when every row matches the verified results exactly (played, W, D, L, GF,
  * GA), points equal 3W + D (a deduction fails and the table is left to the daily job), positions run 1..N and every
  * team has results. Returns the rows with stored team names, or the reason it failed.

@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * League standings refresh and one-time form history backfill (PFIE). Scheduled every 10 minutes from 04:10 to
- * 05:50 SAST; each call handles the next two due jobs. `?only=epl,psl`, `?job=standings|history` and
+ * League standings refresh and one-time form history backfill (PFIE). Scheduled in two daily 10-minute windows (04:10-05:50 and 16:10-17:50 SAST); each call handles the next two due jobs. `?only=epl,psl`, `?job=standings|history` and
  * `?max=N` (1-4) are for manual runs.
  */
 export const Route = createFileRoute("/api/cron/sync-tables")({
@@ -54,10 +53,19 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                       createParallelExtract(keys.parallelKey!, { timeoutMs: 45_000 }),
                       claim,
                     )
-                  : createPageReader(
-                      { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
-                      (r) => guardExtract(r, claim),
-                    ),
+                  : job === "history" || job === "season"
+                    ? createPageReader(
+                        { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
+                        (r) => guardExtract(r, claim),
+                      )
+                    : guardExtract(
+                        createParallelExtract(
+                          keys.parallelKey!,
+                          { timeoutMs: 45_000 },
+                          { maxAgeSeconds: 900 },
+                        ),
+                        claim,
+                      ),
               llm: guardLlm(createGemini(keys.geminiKey!), claim),
               store: createTablesStore(),
               models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","))

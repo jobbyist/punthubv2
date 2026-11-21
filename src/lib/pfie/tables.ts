@@ -6,7 +6,7 @@
  */
 import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
-import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
+import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
@@ -19,7 +19,9 @@ import { PFIE_SOURCES, tierOf } from "./provider";
 import {
   STANDINGS_COMPETITIONS,
   chooseTable,
+  independentSourceKey,
   parseStandings,
+  tableRegression,
   standingsRequest,
   validateTables,
   type StandingRow,
@@ -42,6 +44,7 @@ export interface TablesStore {
   latestFinished(since: Date): Promise<Map<string, number>>;
   knownTeams(competition: string): Promise<string[]>;
   completedCounts(competition: string): Promise<Map<string, number>>;
+  currentStandings(key: CompetitionKey, season: string): Promise<StandingRow[]>;
   replaceStandings(input: {
     key: CompetitionKey;
     competition: string;
@@ -72,8 +75,8 @@ export interface TablesDeps {
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-const MAX_SOURCES = 5;
-const MAX_CHARS = 14_000;
+const MAX_SOURCES = 4;
+const MAX_CHARS = 10_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
@@ -160,20 +163,20 @@ export function retryDue(s: SyncStatusRow | undefined, now: Date): boolean {
 }
 
 /**
- * Standings are refreshed when there is no table yet, when a league match has finished since the last refresh
- * (the matchday trigger keeps it current in between, the refresh restores official tie-breaks), or weekly.
+ * Standings refresh on a 12-hour cadence for priority leagues and 24-hour cadence for other configured leagues.
+ * A newly confirmed match result can trigger an earlier refresh; the matchday trigger applies that result immediately.
  */
 export function standingsDue(
   s: SyncStatusRow | undefined,
   latestFinishedMs: number | undefined,
   now: Date,
+  refreshHours = 24,
 ): boolean {
   if (!retryDue(s, now)) return false;
   if (!s?.lastSuccessAt) return true;
   const last = Date.parse(s.lastSuccessAt);
-  const age = now.getTime() - last;
-  if (age < 18 * HOUR) return false;
-  return (latestFinishedMs !== undefined && latestFinishedMs > last) || age > 7 * DAY;
+  if (latestFinishedMs !== undefined && latestFinishedMs > last) return true;
+  return now.getTime() - last >= refreshHours * HOUR;
 }
 
 export async function runTablesSync(
@@ -206,7 +209,7 @@ export async function runTablesSync(
     const c = competitions.find((x) => x.key === key)!;
     if (
       opts.job !== "history" &&
-      standingsDue(status("standings", key), finished.get(c.name), now())
+      standingsDue(status("standings", key), finished.get(c.name), now(), STANDINGS_COMPETITIONS[key]!.refreshHours)
     )
       due.push({ job: "standings", key });
   }
@@ -252,35 +255,45 @@ async function gatherSources(
   queries: string[],
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
-  const hits = await deps.search.search({ objective, queries, maxResults: 10 });
-  const sources: PfieSource[] = [];
-  const seen = new Set<string>();
-  const add = (url: string, text: string) => {
-    const domain = domainOf(url);
-    const clean = cleanText(text, MAX_CHARS);
-    if (clean.length < 300 || isBlockedDomain(domain) || seen.has(canonicalUrl(url))) return false;
-    seen.add(canonicalUrl(url));
-    sources.push({ index: 0, url, domain, tier: tierOf(domain, official), text: clean });
-    return true;
-  };
-  // Tables and result lists rarely fit in a search excerpt: read the two best pages in full.
+  const hits = await deps.search.search({ objective, queries, maxResults: 20 });
   const order = { official: 0, trusted: 1, other: 2 } as const;
   const ranked = [...hits].sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
-  let reads = 0;
+  const seenDomains = new Set<string>();
+  const candidates = [] as typeof ranked;
+  const extract = deps.extract;
+  if (!extract) return [];
+  // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
   for (const hit of ranked) {
-    if (reads >= 2 || !deps.extract) break;
-    if (tierOf(domainOf(hit.url), official) === "other") continue;
-    reads++;
-    const page = await deps.extract.extract(hit.url).catch(() => null);
-    if (page) add(hit.url, page.markdown);
+    const domain = domainOf(hit.url);
+    const sourceKey = independentSourceKey(domain);
+    const tier = tierOf(domain, official);
+    if (tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
+    seenDomains.add(sourceKey);
+    candidates.push(hit);
+    if (candidates.length >= MAX_SOURCES) break;
   }
-  for (const hit of ranked) add(hit.url, hit.excerpt);
-  sources.sort((a, b) => order[a.tier] - order[b.tier]);
-  sources.splice(MAX_SOURCES);
-  sources.forEach((s, i) => (s.index = i + 1));
-  return sources;
+  // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
+  const fetched = await Promise.all(
+    candidates.map(async (hit) => ({ hit, page: await extract.extract(hit.url).catch(() => null) })),
+  );
+  for (const { hit, page } of fetched) {
+    if (!page?.markdown) continue;
+    const domain = domainOf(hit.url);
+    const clean = cleanText(page.markdown, MAX_CHARS);
+    if (clean.length < 300) continue;
+    sources.push({
+      index: sources.length + 1,
+      url: hit.url,
+      domain,
+      tier: tierOf(domain, official),
+      text: clean,
+      publishedAt: hit.publishedAt,
+      retrievedAt: new Date().toISOString(),
+      via: "extract",
+    });
+  }  return sources;
 }
 
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
@@ -299,19 +312,19 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   const cfg = STANDINGS_COMPETITIONS[key]!;
   const season = String(seasonFor(c.seasonRule, now()));
   try {
+    const today = sastDate(now());
     const sources = await gatherSources(
       deps,
       key,
-      `${c.name} current league table for the ${season} season with played, won, drawn, lost, goals for, goals ` +
-        `against and points for every team. Prefer the official competition site.`,
-      cfg.queries,
+      `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
+      [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources }));
     const raw = parseStandings(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known);
+    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
     const chosen = chooseTable(tables);
     if (!chosen) {
       const why =
@@ -319,23 +332,30 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         `${tables.length} unconfirmed tables`;
       throw new Error(`no verified table (${why})`);
     }
+    const previous = await deps.store.currentStandings(key, season);
+    const regression = tableRegression(chosen.table.rows, previous);
+    if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
       key,
       competition: c.name,
       season,
       rows: chosen.table.rows,
-      domain: chosen.table.source.domain,
+      domain: chosen.supportingDomains.join(" + "),
       url: chosen.table.source.url,
     });
     await deps.store.record("standings", key, true, null, {
       verdict: chosen.verdict,
-      domain: chosen.table.source.domain,
+      domain: chosen.supportingDomains.join(" + "),
+      sourceCount: chosen.supportingDomains.length,
+      sources: chosen.supportingDomains,
+      primarySource: chosen.table.source.url,
+      tableDate: chosen.table.tableDate ?? null,
       teams: n,
       model: answer.model,
     });
     return {
       ok: true,
-      detail: `${n} teams from ${chosen.table.source.domain} (${chosen.verdict})`,
+      detail: `${n} teams verified by ${chosen.supportingDomains.length} sources (${chosen.supportingDomains.join(", ")})`,
     };
   } catch (e) {
     await deps.store.record("standings", key, false, message(e), {}).catch(() => undefined);

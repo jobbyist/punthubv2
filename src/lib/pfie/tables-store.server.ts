@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 import type { SyncStatusRow, TablesStore } from "./tables";
+import type { StandingRow } from "./standings";
 
 const db = supabaseAdmin as unknown as SupabaseClient;
 
@@ -60,6 +61,26 @@ export function createTablesStore(): TablesStore {
         for (const t of [r.home, r.away])
           counts.set(t.toLowerCase(), (counts.get(t.toLowerCase()) ?? 0) + 1);
       return counts;
+    },
+    async currentStandings(key, season): Promise<StandingRow[]> {
+      const { data, error } = await db
+        .from("league_standings")
+        .select("position, team, played, won, drawn, lost, goals_for, goals_against, points")
+        .eq("competition_key", key)
+        .eq("season", season)
+        .order("position");
+      if (error) throw new Error(`league_standings: ${error.message}`);
+      return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+        position: r["position"] as number,
+        team: r["team"] as string,
+        played: r["played"] as number,
+        won: r["won"] as number,
+        drawn: r["drawn"] as number,
+        lost: r["lost"] as number,
+        goalsFor: r["goals_for"] as number,
+        goalsAgainst: r["goals_against"] as number,
+        points: r["points"] as number,
+      }));
     },
     async replaceStandings(input) {
       const { data, error } = await db.rpc("replace_standings", {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
-import { chooseTable, parseStandings, validateTables, type RawStandingRow } from "./standings";
+import { chooseTable, independentSourceKey, parseStandings, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -25,6 +25,7 @@ const page = (
   domain,
   tier,
   text: rows.join("\n"),
+  via: "extract",
 });
 // position, team, P W D L GF GA Pts
 const data: [number, string, number, number, number, number, number, number, number][] = [
@@ -78,6 +79,13 @@ describe("validateTables", () => {
       ).rejected[0]!.reason,
     ).toMatch(/quote_not_on_page/);
   });
+  it("rejects explicitly dated tables older than 72 hours", () => {
+    const dateQuote = "Updated: 2026-11-17";
+    const dated = page("league.com", "official", 1, [...lines, dateQuote]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-17", tableDateQuote: dateQuote }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.rejected[0]!.reason).toBe("table_date_older_than_72h");
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
@@ -90,33 +98,52 @@ describe("validateTables", () => {
 });
 
 describe("chooseTable", () => {
-  const a = page("site-a.com", "trusted", 1, lines);
-  const b = page("site-b.com", "other", 2, lines);
+  const a = page("site-a.com", "official", 1, lines);
+  const b = page("site-b.com", "trusted", 2, lines);
   it("needs the official site or two agreeing sites", () => {
     const one = validateTables(raw(1), [a], 4).tables;
     expect(chooseTable(one)).toBeNull();
     const two = validateTables([...raw(1), ...raw(2)], [a, b], 4).tables;
     expect(chooseTable(two)).toMatchObject({ verdict: "two_sources" });
   });
-  it("does not accept two sites that disagree", () => {
-    const b2 = page(
-      "site-b.com",
-      "other",
-      2,
-      lines.map((l) => l.replace("10 7 2 1 20 8 23", "11 8 2 1 22 8 26")),
-    );
+  it("does not accept two sites that disagree on any full-table statistic", () => {
+    const b2 = page("site-b.com", "trusted", 2, lines.map((l) => l.replace("10 7 2 1 20 8 23", "10 6 3 1 20 8 21")));
     const rows = [
       ...raw(1),
-      ...raw(2, (r) =>
-        r.team === "Alpha FC"
-          ? { ...r, played: 11, won: 8, goalsFor: 22, points: 26, quote: b2.text.split("\n")[0]! }
-          : r,
-      ),
+      ...raw(2, (r) => r.team === "Alpha FC" ? { ...r, won: 6, drawn: 3, points: 21, quote: b2.text.split("\n")[0]! } : r),
     ];
     expect(chooseTable(validateTables(rows, [a, b2], 4).tables)).toBeNull();
   });
+
+  it("requires an official source to be independently corroborated", () => {
+    expect(chooseTable(validateTables(raw(1), [a], 4).tables)).toBeNull();
+  });
+
+  it("does not count mirrored BBC domains as independent publishers", () => {
+    expect(independentSourceKey("bbc.com")).toBe(independentSourceKey("bbc.co.uk"));
+    const bbcCom = page("bbc.com", "trusted", 1, lines);
+    const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
+    const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
+    expect(chooseTable(tables)).toBeNull();
+  });
+  it("rejects Wikipedia as a live standings source", () => {
+    const wiki = page("en.wikipedia.org", "trusted", 1, lines);
+    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe("wikipedia_not_allowed_for_live_standings");
+  });
 });
 
+describe("tableRegression", () => {
+  it("rejects a table that moves played matches or statistics backwards", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const stale = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r);
+    expect(tableRegression(stale, previous)).toBe("played_regressed_Alpha FC");
+  });
+  it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
+    expect(tableRegression(newer, previous)).toBeNull();
+  });
+});
 describe("parseStandings", () => {
   it("rejects invalid JSON", () => expect(parseStandings("nope")).toBeNull());
 });
@@ -186,14 +213,14 @@ describe("scheduling", () => {
       retryDue(s({ lastAttemptAt: "2026-11-15T00:00:00Z", consecutiveFailures: 3 }), now),
     ).toBe(false);
   });
-  it("refreshes only after a finished match or weekly", () => {
-    const fresh = s({
-      lastSuccessAt: "2026-11-14T02:10:00Z",
-      lastAttemptAt: "2026-11-14T02:10:00Z",
-    });
-    expect(standingsDue(fresh, undefined, now)).toBe(false);
-    expect(standingsDue(fresh, Date.parse("2026-11-13T15:00:00Z"), now)).toBe(false);
-    expect(standingsDue(fresh, Date.parse("2026-11-14T15:00:00Z"), now)).toBe(true);
+  it("refreshes priority tables every 12 hours and other tables every 24 hours", () => {
+    const fresh = s({ lastSuccessAt: "2026-11-14T20:10:00Z", lastAttemptAt: "2026-11-14T20:10:00Z" });
+    expect(standingsDue(fresh, undefined, now, 12)).toBe(false);
+    expect(standingsDue(fresh, undefined, now, 24)).toBe(false);
+    const due12h = s({ lastSuccessAt: "2026-11-14T14:10:00Z", lastAttemptAt: "2026-11-14T14:10:00Z" });
+    expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
+    expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
+    expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
   });
 });
 
