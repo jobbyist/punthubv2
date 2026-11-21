@@ -117,7 +117,7 @@ League tables are a separate, freshness-sensitive PFIE data product; they are no
 - Wikipedia and historical-season pages are not valid current-table sources. The archive importer may still use its two-source historical result reconciliation for the results archive, but it cannot write to the current standings read model.
 - Deterministic checks validate team count, positions, W+D+L=played, points=3W+D, team names, evidence quotes, unique teams and any explicitly printed table date. A printed table date must be quoted from the page and be no older than 72 hours.
 - Premier League, Betway Premiership, La Liga, Serie A and Bundesliga refresh every 12 hours. Other configured tables refresh every 24 hours. A newly confirmed result can trigger an earlier refresh. The cron schedule runs two daily windows, and the public stale notice appears after 18 hours.
-- The stored sync metadata records the agreeing source domains, source count, primary source URL, optional table date and extraction model. A failed or disputed refresh never replaces the last verified table.
+- Each candidate is checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress. The stored sync metadata records the agreeing source domains, source count, primary source URL, optional table date and extraction model. A failed, stale or disputed refresh never replaces the last verified table.
 
 ### 4.3 Competition registry (51 targeted, all configurable)
 
