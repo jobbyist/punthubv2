@@ -161,8 +161,8 @@ export function retryDue(s: SyncStatusRow | undefined, now: Date): boolean {
 }
 
 /**
- * Standings are refreshed when there is no table yet, when a league match has finished since the last refresh
- * (the matchday trigger keeps it current in between, the refresh restores official tie-breaks), or weekly.
+ * Standings refresh on a 12-hour cadence for priority leagues and 24-hour cadence for other configured leagues.
+ * A newly confirmed match result can trigger an earlier refresh; the matchday trigger applies that result immediately.
  */
 export function standingsDue(
   s: SyncStatusRow | undefined,
