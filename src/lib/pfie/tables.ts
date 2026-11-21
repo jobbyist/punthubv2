@@ -252,37 +252,36 @@ async function gatherSources(
   queries: string[],
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
-  const hits = await deps.search.search({ objective, queries, maxResults: 10 });
-  const sources: PfieSource[] = [];
-  const seen = new Set<string>();
-  const add = (url: string, text: string) => {
-    const domain = domainOf(url);
-    const clean = cleanText(text, MAX_CHARS);
-    if (clean.length < 300 || isBlockedDomain(domain) || seen.has(canonicalUrl(url))) return false;
-    seen.add(canonicalUrl(url));
-    sources.push({ index: 0, url, domain, tier: tierOf(domain, official), text: clean });
-    return true;
-  };
-  // Tables and result lists rarely fit in a search excerpt: read the two best pages in full.
+  const hits = await deps.search.search({ objective, queries, maxResults: 20 });
   const order = { official: 0, trusted: 1, other: 2 } as const;
   const ranked = [...hits].sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
-  let reads = 0;
+  const seenDomains = new Set<string>();
+  const sources: PfieSource[] = [];
+  // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
   for (const hit of ranked) {
-    if (reads >= 2 || !deps.extract) break;
-    if (tierOf(domainOf(hit.url), official) === "other") continue;
-    reads++;
+    const domain = domainOf(hit.url);
+    const tier = tierOf(domain, official);
+    if (sources.length >= MAX_SOURCES || !deps.extract || tier === "other" || isBlockedDomain(domain) || seenDomains.has(domain)) continue;
+    seenDomains.add(domain);
     const page = await deps.extract.extract(hit.url).catch(() => null);
-    if (page) add(hit.url, page.markdown);
+    if (!page?.markdown) continue;
+    const clean = cleanText(page.markdown, MAX_CHARS);
+    if (clean.length < 300) continue;
+    sources.push({
+      index: sources.length + 1,
+      url: hit.url,
+      domain,
+      tier,
+      text: clean,
+      publishedAt: hit.publishedAt,
+      retrievedAt: new Date().toISOString(),
+      via: "extract",
+    });
   }
-  for (const hit of ranked) add(hit.url, hit.excerpt);
-  sources.sort((a, b) => order[a.tier] - order[b.tier]);
-  sources.splice(MAX_SOURCES);
-  sources.forEach((s, i) => (s.index = i + 1));
   return sources;
 }
-
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
   const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
