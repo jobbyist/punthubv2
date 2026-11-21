@@ -35,7 +35,7 @@ export function badgeSearchRequest(name: string, competition: string, sport: str
     : sport === "basketball" ? "professional basketball team"
     : `${sport} team`;
   return {
-    objective: `Find the English Wikipedia article for the ${kind} "${name}" (${full}) that plays in ${competition}. The article's infobox shows the official club crest or badge.`,
+    objective: `Search for the official logo, crest or badge for the ${kind} "${name}" (${full}) in ${competition}. Prefer official team or governing-body sources; use an English Wikipedia article as a corroborating image source when needed.`,
     queries: [`${full} ${kind} official logo crest badge`, `${full} ${competition} official team logo`, `${full} ${kind} Wikipedia`],
   };
 }
@@ -46,7 +46,7 @@ const NOT_CLUB_TITLE = /(season|stadium|academy|reserves|_u\d\d|under-\d\d|_\d{4
 const WOMEN = /(women|ladies)/i;
 
 const CLUBBY_TITLE =
-  /(F\.?C\.?|A\.?F\.?C\.?|S\.?C\.?|C\.?F\.?|football|club|united|city|national)/i;
+  /(F\.?C\.?|A\.?F\.?C\.?|S\.?C\.?|C\.?F\.?|football|basketball|rugby|club|united|city|national|team)/i;
 
 /**
  * English Wikipedia articles in the search hits that could be the club, best first: titles that look like a club
