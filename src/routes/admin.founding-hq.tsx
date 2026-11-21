@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin/founding-hq")({
     meta: [
       { title: "Founding HQ | Puntr Admin" },
       { name: "robots", content: "noindex, nofollow" },
+      { name: "googlebot", content: "noindex, nofollow" },
     ],
   }),
   component: FoundingHqRoute,
