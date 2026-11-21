@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
+import { tierOf } from "./provider";
 import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
@@ -53,10 +54,24 @@ const raw = (source: number, tweak?: (r: RawStandingRow) => RawStandingRow): Raw
     return tweak ? tweak(r) : r;
   });
 
+describe("trusted standings publisher domains", () => {
+  it("recognises the two South African table publishers as trusted", () => {
+    expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
+    expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
+  });
+});
 describe("configured direct standings sources", () => {
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
+  });
+  it("includes direct official and independent pages for the other priority leagues", () => {
+    expect(STANDINGS_COMPETITIONS.psl?.pages).toEqual([
+      "https://stats.ladumaanalytics.co.za/log",
+      "https://45min.co.za/tables",
+    ]);
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
+    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain("https://www.skysports.com/football/competitions/serie-a/table");
   });
 });
 describe("validateTables", () => {
