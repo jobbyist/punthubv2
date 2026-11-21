@@ -38,7 +38,7 @@ function DevPage() {
           Sign in to Puntr with an administrator account, then open this page again.
         </p>
         <Link
-          to="/login"
+          to="/join"
           className="mt-5 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
         >
           Sign in
