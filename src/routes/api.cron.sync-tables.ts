@@ -54,10 +54,19 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                       createParallelExtract(keys.parallelKey!, { timeoutMs: 45_000 }),
                       claim,
                     )
-                  : createPageReader(
-                      { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
-                      (r) => guardExtract(r, claim),
-                    ),
+                  : job === "standings"
+                    ? guardExtract(
+                        createParallelExtract(
+                          keys.parallelKey!,
+                          { timeoutMs: 45_000 },
+                          { maxAgeSeconds: 900 },
+                        ),
+                        claim,
+                      )
+                    : createPageReader(
+                        { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
+                        (r) => guardExtract(r, claim),
+                      ),
               llm: guardLlm(createGemini(keys.geminiKey!), claim),
               store: createTablesStore(),
               models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","))
