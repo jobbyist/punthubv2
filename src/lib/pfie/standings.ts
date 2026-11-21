@@ -1,6 +1,6 @@
 /**
  * League standings from web pages. The model copies each table row with a quote; plain code checks every row
- * (arithmetic, positions, team count, quote and team on the page) and publishes only when at least two
+ * (arithmetic, positions, team count and local row-stat evidence) and publishes only when at least two
  * independent, non-Wikipedia domains agree on every team's complete W/D/L and goals record.
  * AI never decides a position or a points total.
  */
@@ -210,7 +210,7 @@ function dateAppearsOnPage(page: string, date: string): boolean {
 /**
  * Checks each source's table on its own. A table passes only when every row is consistent and the table is
  * complete: N teams, positions 1..N once each, W+D+L = P, points = 3W + D (a points deduction fails the check and
- * the table is left for the next run rather than guessed), every team and quote found on the page.
+ * the table is left for the next run rather than guessed), every team and its complete numeric row found together on the source page.
  */
 export function validateTables(
   raw: RawStandingRow[],
