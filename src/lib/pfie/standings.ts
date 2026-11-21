@@ -273,8 +273,9 @@ export function validateTables(
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
 export function independentSourceKey(domain: string): string {
-  if (/(^|\\.)bbc\\.(com|co\\.uk)$/i.test(domain)) return "bbc";
-  return domain.toLowerCase().replace(/^www\\./, "");
+  const value = domain.toLowerCase().replace(/^www\./, "");
+  if (value.endsWith("bbc.com") || value.endsWith("bbc.co.uk")) return "bbc";
+  return value;
 }
 
 /** Compare every material standings statistic. Position is deliberately excluded because leagues can
