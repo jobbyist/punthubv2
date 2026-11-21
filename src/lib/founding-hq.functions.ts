@@ -191,7 +191,7 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
       xHandle: text(o.xHandle, 80)?.replace(/^@/, "") ?? null,
       profileUrl: (() => {
         const url = text(o.profileUrl, 500);
-        if (url && !/^https?:\\/\\//i.test(url)) throw new Error("Invalid profile URL");
+        if (url && !(url.startsWith("https://") || url.startsWith("http://"))) throw new Error("Invalid profile URL");
         return url;
       })(),
       segment,
