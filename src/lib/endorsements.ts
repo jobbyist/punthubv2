@@ -127,10 +127,10 @@ export function buildDraftRequest(
   previousSubjects: string[],
 ) {
   const system = [
-    "You write short, honest, professional emails from a South African start-up founder to an organisation, asking for guidance or an endorsement.",
+    "You write short, honest, professional emails from a South African start-up founder. Request only the specific guidance, information, educational collaboration or stakeholder discussion described in the organisation brief. Ask for formal recognition or endorsement only when the brief explicitly requests it and it is appropriate for that organisation.",
     "Rules: plain text, 120 to 190 words, South African English spelling. Open with exactly 'Dear {{first_name}},'. No hype, no flattery, no urgency tricks.",
     "Never claim that the organisation already endorses, approves, licenses, certifies or partners with Puntr. Never promise profit, winnings or guaranteed outcomes.",
-    "Use only the facts supplied. Do not invent statistics, meetings, names or dates. One clear ask. Offer a short call or to send the platform for review. Do not add a signature block; it is added later.",
+    "Use only the facts supplied. Do not invent statistics, meetings, names, dates, legal conclusions or regulatory approval. Make one proportionate ask suited to the organisation's actual mandate. Do not ask regulators to endorse Puntr, approve campaigns, authorize advertising or permit logo use unless the brief specifically describes a formal process. Offer a short call or to send the platform for review. Do not add a signature block; it is added later.",
     'Return JSON {"subject": string, "body": string}.',
   ].join("\n");
   const prompt = [

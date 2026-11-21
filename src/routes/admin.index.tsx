@@ -35,27 +35,17 @@ export const Route = createFileRoute("/admin/")({
   component: Admin,
 });
 
-const TABS = [
-  "system",
-  "users",
-  "newsroom",
-  "notifications",
-  "analytics",
-  "log",
-  "fixtures",
-  "settlement",
-  "reports",
-  "identity",
-  "rewards",
-  "quests",
-  "waitlist",
-  "campaigns",
-  "annualPass",
-  "affiliates",
-  "draw",
-  "logos",
-  "endorsements",
-  "translations",
+const TAB_GROUPS = [
+  { label: "Overview", items: ["system", "analytics", "log"] },
+  { label: "Community", items: ["users", "waitlist", "notifications", "reports"] },
+  {
+    label: "Growth & partnerships",
+    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw"],
+  },
+  {
+    label: "Platform",
+    items: ["fixtures", "settlement", "identity", "rewards", "quests", "logos", "translations"],
+  },
 ] as const;
 
 /** The database and every server function re-check the role; hiding the UI is only a convenience. */
@@ -63,95 +53,166 @@ function Admin() {
   const { t } = useTranslation("admin");
   const { isAdmin } = useSession();
   const [tab, setTab] = useState<string>("system");
+  const activeTab = TAB_GROUPS.flatMap((group) => group.items).find((item) => item === tab);
+
   return (
     <RequireMember>
       {() => (
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-3xl">{t("title")}</h1>
-          <a
-            href="/admin/founding-hq"
-            className="inline-flex h-9 items-center border border-primary/30 bg-primary/5 px-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
-          >
-            Founding HQ
-          </a>
-        </div>
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+          <header className="mb-7 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                Puntr / Control centre
+              </p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Manage members, operations, partnerships and platform settings.
+              </p>
+            </div>
+            <a
+              href="/admin/founding-hq"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-4 text-sm font-semibold text-primary shadow-sm transition hover:border-primary/40 hover:bg-primary/10"
+            >
+              Founding HQ <span aria-hidden="true">↗</span>
+            </a>
+          </header>
+
           {!isAdmin ? (
             <p className="mt-4 text-sm text-muted-foreground">{t("forbidden")}</p>
           ) : (
             <>
               <NotificationBanner onOpenAudience={() => setTab("waitlist")} />
-              <Tabs value={tab} onValueChange={setTab} className="mt-6">
-                <TabsList className="flex h-auto flex-wrap justify-start">
-                  {TABS.map((k) => (
-                    <TabsTrigger key={k} value={k}>
-                      {t(`tabs.${k}`)}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                <TabsContent value="system" className="mt-5">
-                  <SystemTab />
-                </TabsContent>
-                <TabsContent value="newsroom" className="mt-5">
-                  <NewsroomTab />
-                </TabsContent>
-                <TabsContent value="notifications" className="mt-5">
-                  <NotificationsTab />
-                </TabsContent>
-                <TabsContent value="analytics" className="mt-5">
-                  <AnalyticsTab />
-                </TabsContent>
-                <TabsContent value="log" className="mt-5">
-                  <ActionLogTab />
-                </TabsContent>
-                <TabsContent value="fixtures" className="mt-5">
-                  <FixturesTab />
-                </TabsContent>
-                <TabsContent value="settlement" className="mt-5">
-                  <SettlementTab />
-                </TabsContent>
-                <TabsContent value="reports" className="mt-5">
-                  <ReportsTab />
-                </TabsContent>
-                <TabsContent value="users" className="mt-5">
-                  <MembersTab />
-                  <div className="mt-5">
-                    <UsersTab />
+              <Tabs
+                value={tab}
+                onValueChange={setTab}
+                className="mt-6 grid min-w-0 gap-5 lg:grid-cols-[230px_minmax(0,1fr)] lg:items-start"
+              >
+                <div className="min-w-0">
+                  <label htmlFor="admin-section-select" className="sr-only">
+                    Choose an admin section
+                  </label>
+                  <select
+                    id="admin-section-select"
+                    value={tab}
+                    onChange={(event) => setTab(event.target.value)}
+                    className="h-11 w-full rounded-xl border border-border bg-card px-3 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 lg:hidden"
+                  >
+                    {TAB_GROUPS.map((group) => (
+                      <optgroup key={group.label} label={group.label}>
+                        {group.items.map((key) => (
+                          <option key={key} value={key}>
+                            {t(`tabs.${key}`)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+
+                  <aside className="hidden lg:block">
+                    <TabsList
+                      aria-label="Admin sections"
+                      orientation="vertical"
+                      className="flex h-auto w-full flex-col items-stretch gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm"
+                    >
+                      {TAB_GROUPS.map((group) => (
+                        <div key={group.label} className="space-y-1">
+                          <p className="px-3 pt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                            {group.label}
+                          </p>
+                          {group.items.map((key) => (
+                            <TabsTrigger
+                              key={key}
+                              value={key}
+                              className="w-full justify-start rounded-lg px-3 py-2.5 text-left text-sm data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none"
+                            >
+                              {t(`tabs.${key}`)}
+                            </TabsTrigger>
+                          ))}
+                        </div>
+                      ))}
+                    </TabsList>
+                  </aside>
+                </div>
+
+                <main className="min-w-0">
+                  <div className="mb-4 flex items-center justify-between gap-3 border-b border-border pb-3">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                        Current section
+                      </p>
+                      <h2 className="mt-0.5 text-xl font-semibold tracking-tight">
+                        {activeTab ? t(`tabs.${activeTab}`) : t("title")}
+                      </h2>
+                    </div>
+                    <span className="hidden rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] font-medium text-muted-foreground sm:inline-flex">
+                      Admin workspace
+                    </span>
                   </div>
-                </TabsContent>
-                <TabsContent value="identity" className="mt-5">
-                  <IdentityTab />
-                </TabsContent>
-                <TabsContent value="rewards" className="mt-5">
-                  <RewardsTab />
-                </TabsContent>
-                <TabsContent value="quests" className="mt-5">
-                  <QuestsTab />
-                </TabsContent>
-                <TabsContent value="waitlist" className="mt-5">
-                  <WaitlistTab />
-                </TabsContent>
-                <TabsContent value="campaigns" className="mt-5">
-                  <CampaignsTab />
-                </TabsContent>
-                <TabsContent value="annualPass" className="mt-5">
-                  <AnnualPassTab />
-                </TabsContent>
-                <TabsContent value="affiliates" className="mt-5">
-                  <AffiliatesTab />
-                </TabsContent>
-                <TabsContent value="endorsements" className="mt-5">
-                  <EndorsementsTab />
-                </TabsContent>
-                <TabsContent value="logos" className="mt-5">
-                  <LogosTab />
-                </TabsContent>
-                <TabsContent value="translations" className="mt-5">
-                  <TranslationsTab />
-                </TabsContent>
-                <TabsContent value="draw" className="mt-5">
-                  <PracticeDrawTab />
-                </TabsContent>
+
+                  <TabsContent value="system" className="mt-0">
+                    <SystemTab />
+                  </TabsContent>
+                  <TabsContent value="newsroom" className="mt-0">
+                    <NewsroomTab />
+                  </TabsContent>
+                  <TabsContent value="notifications" className="mt-0">
+                    <NotificationsTab />
+                  </TabsContent>
+                  <TabsContent value="analytics" className="mt-0">
+                    <AnalyticsTab />
+                  </TabsContent>
+                  <TabsContent value="log" className="mt-0">
+                    <ActionLogTab />
+                  </TabsContent>
+                  <TabsContent value="fixtures" className="mt-0">
+                    <FixturesTab />
+                  </TabsContent>
+                  <TabsContent value="settlement" className="mt-0">
+                    <SettlementTab />
+                  </TabsContent>
+                  <TabsContent value="reports" className="mt-0">
+                    <ReportsTab />
+                  </TabsContent>
+                  <TabsContent value="users" className="mt-0">
+                    <MembersTab />
+                    <div className="mt-5">
+                      <UsersTab />
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="identity" className="mt-0">
+                    <IdentityTab />
+                  </TabsContent>
+                  <TabsContent value="rewards" className="mt-0">
+                    <RewardsTab />
+                  </TabsContent>
+                  <TabsContent value="quests" className="mt-0">
+                    <QuestsTab />
+                  </TabsContent>
+                  <TabsContent value="waitlist" className="mt-0">
+                    <WaitlistTab />
+                  </TabsContent>
+                  <TabsContent value="campaigns" className="mt-0">
+                    <CampaignsTab />
+                  </TabsContent>
+                  <TabsContent value="annualPass" className="mt-0">
+                    <AnnualPassTab />
+                  </TabsContent>
+                  <TabsContent value="affiliates" className="mt-0">
+                    <AffiliatesTab />
+                  </TabsContent>
+                  <TabsContent value="endorsements" className="mt-0">
+                    <EndorsementsTab />
+                  </TabsContent>
+                  <TabsContent value="logos" className="mt-0">
+                    <LogosTab />
+                  </TabsContent>
+                  <TabsContent value="translations" className="mt-0">
+                    <TranslationsTab />
+                  </TabsContent>
+                  <TabsContent value="draw" className="mt-0">
+                    <PracticeDrawTab />
+                  </TabsContent>
+                </main>
               </Tabs>
             </>
           )}
