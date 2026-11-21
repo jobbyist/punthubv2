@@ -86,6 +86,24 @@ describe("validateTables", () => {
     const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
     expect(result.rejected[0]!.reason).toBe("table_date_older_than_72h");
   });
+  it("accepts rows whose formatting differs from the copied quote when all seven statistics appear beside the team", () => {
+    const formatted = raw(1, (r) => ({ ...r, quote: "A differently formatted row" }));
+    const result = validateTables(formatted, [official], 4, teams);
+    expect(result.rejected).toEqual([]);
+    expect(result.tables).toHaveLength(1);
+  });
+  it("rejects a row when its statistics are not present near the named team", () => {
+    const incorrect = raw(1, (r) => r.team === "Alpha FC" ? { ...r, quote: "unmatched", points: 99 } : r);
+    const result = validateTables(incorrect, [official], 4, teams);
+    expect(result.rejected[0]!.reason).toMatch(/points_Alpha FC/);
+  });
+  it("accepts a table date printed in a common human-readable format", () => {
+    const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22", tableDateQuote: "unreliable model quote" }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.rejected).toEqual([]);
+    expect(result.tables).toHaveLength(1);
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
