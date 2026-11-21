@@ -256,8 +256,14 @@ async function gatherSources(
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
+  const configuredPages = (STANDINGS_COMPETITIONS[key]?.pages ?? []).map((url) => ({
+    url,
+    title: "Configured official standings page",
+    excerpt: "",
+    publishedAt: null,
+  }));
   const order = { official: 0, trusted: 1, other: 2 } as const;
-  const ranked = [...hits].sort(
+  const ranked = [...configuredPages, ...hits].sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
   const sources: PfieSource[] = [];

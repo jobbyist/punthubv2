@@ -111,7 +111,7 @@ Priority key: **M** must for 9 November, **S** should by launch on 1 December, *
 
 League tables are a separate, freshness-sensitive PFIE data product; they are not populated from the historical season archive importer.
 
-- Parallel Search discovers current standings pages for each competition using date-aware queries. Search excerpts are discovery only and never count as corroborating evidence. Each full page is extracted in a separate Gemini request so rows cannot be blended between source pages.
+- Parallel Search discovers current standings pages for each competition using date-aware queries. Search excerpts are discovery only and never count as corroborating evidence. Competitions may also declare direct official pages for Parallel Extract; Bundesliga uses its official table and the DFB data centre as separate publishers. Each full page is extracted in a separate Gemini request so rows cannot be blended between source pages.
 - Parallel Extract retrieves up to four independent official/trusted full pages per refresh. Current table extraction requests a maximum 15-minute cache age and disables stale-cache fallback.
 - A table is publishable only when at least two independent domains agree on every team's complete played, wins, draws, losses, goals-for, goals-against and points record. Official status improves source ranking but never bypasses corroboration.
 - Wikipedia and historical-season pages are not valid current-table sources. The archive importer may still use its two-source historical result reconciliation for the results archive, but it cannot write to the current standings read model.
