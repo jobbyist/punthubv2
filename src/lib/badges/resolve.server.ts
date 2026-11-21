@@ -58,7 +58,7 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
   for (const item of MARQUEE_BADGE_TEAMS) {
     const k = `${item.sport}:${badgeKey(item.team)}`;
     if (!seen.has(k))
-      seen.set(k, { sport: item.sport, name: item.team, competition: "Puntr hero marquee" });
+      seen.set(k, { sport: item.sport, name: item.team, competition: item.competition });
   }
   return [...seen.values()];
 }
