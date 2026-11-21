@@ -91,6 +91,21 @@ export const MARQUEE_MATCHUPS: readonly MarqueeMatchup[] = [
   },
 ];
 
+/** Curated teams shown in the home hero badge marquee, across all supported sports. */
+export const MARQUEE_BADGE_TEAMS = [
+  { sport: "soccer", team: "Orlando Pirates", label: "Orlando Pirates" },
+  { sport: "soccer", team: "Kaizer Chiefs", label: "Kaizer Chiefs" },
+  { sport: "rugby", team: "South Africa", label: "Springboks" },
+  { sport: "rugby", team: "New Zealand", label: "All Blacks" },
+  { sport: "soccer", team: "Real Madrid", label: "Real Madrid" },
+  { sport: "soccer", team: "Barcelona", label: "FC Barcelona" },
+  { sport: "rugby", team: "Stormers", label: "DHL Stormers" },
+  { sport: "rugby", team: "Bulls", label: "Vodacom Bulls" },
+  { sport: "basketball", team: "Boston Celtics", label: "Boston Celtics" },
+  { sport: "basketball", team: "Los Angeles Lakers", label: "LA Lakers" },
+  { sport: "cricket", team: "South Africa", label: "Proteas" },
+  { sport: "soccer", team: "Australia", label: "Australia · World Cup" },
+] as const;
 /** The SSR/first-paint matchup: always the Soweto Derby, so server and client render the same markup. */
 export const DEFAULT_MATCHUP_ID: MarqueeMatchup["id"] = "soweto";
 
