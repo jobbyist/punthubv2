@@ -120,7 +120,7 @@ match and compare with the official score before any settlement is trusted.
 - Current league tables no longer come from the Wikipedia/FBref season-archive importer. That importer remains available for historical result reconciliation only.
 - Parallel Search discovers current table pages. Parallel Extract fetches up to four independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled.
 - A table is publishable only when at least two independent domains agree on each team's played, wins, draws, losses, goals for, goals against and points. Official status improves source ranking but is not a single-source bypass.
-- Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus.
+- Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus. A candidate is also checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress.
 - Every row still passes deterministic checks: full team count, positions, row quote and team name on the source, W+D+L=played, points=3W+D, unique team identities and table ordering. An explicit table date must be quoted from the page and no older than 72 hours.
 - Priority tables refresh every 12 hours; other configured tables every 24 hours. Confirmed match results can trigger an earlier refresh. The cron window runs twice daily, with the stale indicator set at 18 hours.
 - Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`.
