@@ -1,7 +1,6 @@
 -- PFIE live standings refresh windows (22 Nov 2026).
 -- Reconfigure the morning window to process three jobs per invocation, then add a second daily window so priority
 -- leagues refresh every 12 hours and all other configured tables refresh daily.
--- Keep the existing morning windows but increase each invocation to three due jobs.
 select cron.unschedule('sync-tables')
 where exists (select 1 from cron.job where jobname = 'sync-tables');
 select cron.schedule(
@@ -31,5 +30,5 @@ where exists (select 1 from cron.job where jobname = 'sync-tables-evening-late')
 select cron.schedule(
   'sync-tables-evening-late',
   '0,10,20,30,40,50 15 * * *',
-  $$select public.invoke_cron('/api/cron/sync-tables?job=standings')$$
+  $select public.invoke_cron('/api/cron/sync-tables?job=standings&max=3')$
 );
