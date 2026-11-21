@@ -194,7 +194,7 @@ export function validateTables(
       fail("unknown_source");
       continue;
     }
-    if (/(^|\\.)wikipedia\\.org$/i.test(source.domain)) {
+    if (source.domain.toLowerCase() === "wikipedia.org" || source.domain.toLowerCase().endsWith(".wikipedia.org")) {
       fail("wikipedia_not_allowed_for_live_standings");
       continue;
     }
@@ -329,7 +329,7 @@ export function chooseTable(
 ): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {
   const eligible = tables.filter(
     (t) =>
-      !/(^|\\.)wikipedia\\.org$/i.test(t.source.domain) &&
+      !(t.source.domain.toLowerCase() === "wikipedia.org" || t.source.domain.toLowerCase().endsWith(".wikipedia.org")) &&
       (t.source.tier === "official" || t.source.tier === "trusted"),
   );
   const groups = new Map<string, SourceTable[]>();
