@@ -333,37 +333,44 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     const raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
-    // Extract each page independently; if deterministic checks reject it, retry that page once with the exact
-    // rejection reason. A bad source never poisons rows extracted from another publisher.
-    for (const source of sources) {
-      let answer = await generate(
-        deps,
-        standingsRequest({ competition: c.name, season, sources: [source] }),
-      );
-      modelsUsed.add(answer.model);
-      let parsed = parseStandings(answer.text);
-      let validation = parsed
-        ? validateTables(parsed, [source], cfg.teams, known, now())
-        : { tables: [], rejected: [{ source: source.index, reason: "invalid_json" }] };
-      if (validation.tables.length === 0) {
-        const hint = validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
-        answer = await generate(
+    // Run the bounded first-pass Gemini calls concurrently. If a source fails deterministic validation,
+    // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
+    const initial = await Promise.all(
+      sources.map(async (source) => {
+        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source] }));
+        modelsUsed.add(answer.model);
+        const parsed = parseStandings(answer.text);
+        const validation = parsed
+          ? validateTables(parsed, [source], cfg.teams, known, now())
+          : { ...validateTables([], [source], cfg.teams, known, now()), rejected: [{ source: source.index, reason: "invalid_json" }] };
+        return { source, parsed, validation };
+      }),
+    );
+    const retryCandidates = initial.filter((result) => result.validation.tables.length === 0);
+    const retried = await Promise.all(
+      retryCandidates.map(async (result) => {
+        const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
+        const answer = await generate(
           deps,
-          standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint }),
+          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint }),
         );
         modelsUsed.add(answer.model);
-        parsed = parseStandings(answer.text);
-        validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now())
-          : { tables: [], rejected: [{ source: source.index, reason: "invalid_json_on_retry" }] };
-      }
-      if (parsed && validation.tables.length > 0) raw.push(...parsed);
+        const parsed = parseStandings(answer.text);
+        const validation = parsed
+          ? validateTables(parsed, [result.source], cfg.teams, known, now())
+          : { ...validateTables([], [result.source], cfg.teams, known, now()), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+        return { source: result.source, parsed, validation };
+      }),
+    );
+    const retryByIndex = new Map(retried.map((result) => [result.source.index, result]));
+    for (const firstPass of initial) {
+      const result = retryByIndex.get(firstPass.source.index) ?? firstPass;
+      if (result.parsed && result.validation.tables.length > 0) raw.push(...result.parsed);
       else {
-        const reason = validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
-        sourceFailures.push(`${source.index}:${reason}`);
+        const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
+        sourceFailures.push(`${result.source.index}:${reason}`);
       }
-    }
-    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
+    }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
     const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
     const chosen = chooseTable(tables);
     if (!chosen) {
