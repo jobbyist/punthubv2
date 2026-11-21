@@ -150,6 +150,8 @@ describe("chooseTable", () => {
 
   it("does not count mirrored BBC domains as independent publishers", () => {
     expect(independentSourceKey("bbc.com")).toBe(independentSourceKey("bbc.co.uk"));
+    expect(independentSourceKey("datencenter.dfb.de")).toBe(independentSourceKey("dfb.de"));
+    expect(independentSourceKey("products.bundesliga.com")).toBe(independentSourceKey("bundesliga.com"));
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
