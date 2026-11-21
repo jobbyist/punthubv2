@@ -408,7 +408,7 @@ export function FoundingHqPage() {
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    {lead.profileUrl && /^https?:\\/\\//i.test(lead.profileUrl) && <Button asChild size="sm" variant="outline"><a href={lead.profileUrl} target="_blank" rel="noreferrer noopener">Profile <ArrowUpRight className="ml-1 size-3.5" /></a></Button>}
+                    {lead.profileUrl && (lead.profileUrl.startsWith("https://") || lead.profileUrl.startsWith("http://")) && <Button asChild size="sm" variant="outline"><a href={lead.profileUrl} target="_blank" rel="noreferrer noopener">Profile <ArrowUpRight className="ml-1 size-3.5" /></a></Button>}
                     <Button size="sm" variant="outline" onClick={() => openEdit(lead)}>Manage</Button>
                   </div>
                 </div>
