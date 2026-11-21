@@ -90,6 +90,12 @@ describe("validateTables", () => {
     const rows = raw(1, (r) => ({ ...r, quote: `Source row for ${r.team}` }));
     expect(validateTables(rows, [official], 4).tables).toHaveLength(1);
   });
+  it("ignores an unverified model-extracted table date instead of rejecting an otherwise valid page", () => {
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-17", tableDateQuote: "Updated 17 November 2026" }));
+    const result = validateTables(rows, [official], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.tables).toHaveLength(1);
+    expect(result.tables[0]!.tableDate).toBeNull();
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
