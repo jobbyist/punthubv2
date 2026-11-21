@@ -278,6 +278,28 @@ export function independentSourceKey(domain: string): string {
   return value;
 }
 
+/** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
+export function tableRegression(
+  candidate: StandingRow[],
+  previous: StandingRow[],
+): string | null {
+  if (previous.length === 0) return null;
+  if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
+  const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
+  for (const old of previous) {
+    const next = nextByTeam.get(normaliseTeam(old.team));
+    if (!next) return `team_missing_from_new_snapshot_${old.team}`;
+    if (next.played < old.played) return `played_regressed_${old.team}`;
+    const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
+    for (const field of fields) {
+      if (next[field] < old[field]) return `${field}_regressed_${old.team}`;
+      if (next.played === old.played && next[field] !== old[field])
+        return `${field}_changed_without_new_matches_${old.team}`;
+    }
+  }
+  return null;
+}
+
 /** Compare every material standings statistic. Position is deliberately excluded because leagues can
  * apply different tie-break ordering while agreeing on the underlying match record. */
 const signature = (t: SourceTable) =>
