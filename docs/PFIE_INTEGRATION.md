@@ -79,17 +79,16 @@ match and compare with the official score before any settlement is trusted.
   arithmetic, team count, positions and any explicitly printed table date are validated in code. An official source
   improves ranking but never bypasses independent corroboration. **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
   plus `team_results`, a one-time backfill of the last 42 days verified by the official site or two domains).
-- Refresh: `/api/cron/sync-tables`, every 10 minutes 04:10-05:50 SAST and 16:10-17:50 SAST, two due jobs per call. The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. Standings refresh when
-  there is no table, when a match finished since the last refresh, or weekly. History runs once per league (and
-  again only if a quarter of teams have fewer than 5 recorded results).
+- Refresh: `/api/cron/sync-tables`, every 10 minutes 04:10-05:50 SAST and 16:10-17:50 SAST, two due jobs per call. The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
+  of teams have fewer than 5 recorded results).
 - Matchday: trigger `fixtures_after_result` calls `apply_result_to_standings()` when a result is confirmed: the
   result is applied once (`standings_applied`), only if it kicked off after the table was taken; positions are
   re-ranked (points, GD, GF, name) until the next refresh restores each league's tie-break rules. No API call.
 - Reliability: every attempt goes through `record_sync()` (`sync_status`: last attempt, success, failures, error,
-  meta). Failures retry after 20 and 40 minutes, then wait a day. `/standings` shows a stale notice when the last
-  success is older than 36 h or the last attempt failed; Admin > System shows the Data sync panel.
-- Cost: per standings refresh 1 Parallel search + up to 2 page reads + 1 Gemini Flash-Lite call; refreshes only
-  when needed, so typically 5-10 a day across 12 leagues. Quotas go through `api_quota_claim` as before.
+  meta). Failures retry after 20 and 40 minutes, then wait a day. `/tables` shows a stale notice when the last success is older than 18 h or the last attempt failed; Admin > System
+  shows the Data sync panel.
+- Cost: per standings refresh 1 Parallel search + up to 4 Parallel page extracts + 1 Gemini Flash-Lite call. Priority tables
+  refresh twice daily; other tables refresh daily. Quotas go through `api_quota_claim` as before. Quotas go through `api_quota_claim` as before.
 - No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.
 
 
