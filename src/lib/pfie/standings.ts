@@ -1,6 +1,6 @@
 /**
  * League standings from web pages. The model copies each table row with a quote; plain code checks every row
- * (arithmetic, positions, team count, quote and team on the page) and publishes only when at least two
+ * (arithmetic, positions, team count and local row-stat evidence) and publishes only when at least two
  * independent, non-Wikipedia domains agree on every team's complete W/D/L and goals record.
  * AI never decides a position or a points total.
  */
@@ -170,10 +170,47 @@ export interface TableRejection {
   reason: string;
 }
 
+/** Match the seven core numeric columns in order near the named club.
+ * Exact copied quotes are brittle across publishers; row values must still be evidenced locally.
+ */
+function rowStatsAppearNearTeam(page: string, row: RawStandingRow): boolean {
+  const text = normalise(page);
+  const team = normalise(row.team);
+  const expected = [row.played, row.won, row.drawn, row.lost, row.goalsFor, row.goalsAgainst, row.points];
+  let start = 0;
+  while (start < text.length) {
+    const at = text.indexOf(team, start);
+    if (at < 0) return false;
+    const numbers = text.slice(at, at + 420).match(/\d+/g)?.map(Number) ?? [];
+    let cursor = 0;
+    const found = expected.every((value) => {
+      const index = numbers.findIndex((candidate, i) => i >= cursor && candidate === value);
+      if (index < 0) return false;
+      cursor = index + 1;
+      return true;
+    });
+    if (found) return true;
+    start = at + team.length;
+  }
+  return false;
+}
+
+function dateAppearsOnPage(page: string, date: string): boolean {
+  const [year, month, day] = date.split('-').map(Number);
+  const dateObj = new Date(Date.UTC(year!, month! - 1, day!));
+  const monthLong = dateObj.toLocaleString('en-GB', { month: 'long', timeZone: 'UTC' });
+  const monthShort = dateObj.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' });
+  const d = String(day), dd = String(day).padStart(2, '0');
+  const forms = [date, d + ' ' + monthLong + ' ' + year, dd + ' ' + monthLong + ' ' + year,
+    monthLong + ' ' + d + ', ' + year, monthLong + ' ' + dd + ', ' + year,
+    d + ' ' + monthShort + ' ' + year, monthShort + ' ' + d + ', ' + year];
+  const text = normalise(page);
+  return forms.some((form) => text.includes(normalise(form)));
+}
 /**
  * Checks each source's table on its own. A table passes only when every row is consistent and the table is
  * complete: N teams, positions 1..N once each, W+D+L = P, points = 3W + D (a points deduction fails the check and
- * the table is left for the next run rather than guessed), every team and quote found on the page.
+ * the table is left for the next run rather than guessed), every team and its complete numeric row found together on the source page.
  */
 export function validateTables(
   raw: RawStandingRow[],
@@ -235,8 +272,7 @@ export function validateTables(
     if (tableDates.length > 1) bad = "inconsistent_table_dates";
     const tableDate = tableDates[0] ?? null;
     if (tableDate) {
-      const dateQuote = rows.find((r) => r.tableDateQuote)?.tableDateQuote;
-      if (!dateQuote || !page.includes(normalise(dateQuote))) bad = "table_date_quote_not_on_page";
+      if (!dateAppearsOnPage(source.text, tableDate)) bad = "table_date_not_on_page";
       else {
         const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
         if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
@@ -252,8 +288,8 @@ export function validateTables(
     for (const r of rows) {
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
-      else if (!page.includes(normalise(r.quote)) && !hasRowEvidence(r)) bad = `quote_not_on_page_${r.team}`;
       else if (!page.includes(normalise(r.team))) bad = `team_not_on_page_${r.team}`;
+      else if (!rowStatsAppearNearTeam(source.text, r)) bad = `row_stats_not_on_page_${r.team}`;
       if (bad) break;
       const resolved = knownTeams.length ? resolveTeam(r.team, knownTeams) : null;
       const team = resolved && resolved !== "ambiguous" ? resolved : r.team.trim();
