@@ -43,6 +43,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; email and profile details are removed when you delete it",
   ],
   [
+    "Internal signup notifications",
+    "Your account email address, account ID and registration time, sent to Puntr's support inbox when a new account is created",
+    "Our legitimate interest in monitoring new registrations and providing account support",
+    "Retained in the support mailbox and email systems under their applicable retention controls and any legal obligations",
+  ],
+  [
     "Your details (optional)",
     "First name, last name, phone number, date of birth and province, only if you choose to save them in your account. Only you and Puntr admins can see them; they are never public",
     "Your consent (you choose to add them)",
@@ -177,16 +183,18 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 15 November 2026 (version 2026-11-15-r19). Draft pending
+          <strong>Last updated:</strong> 22 November 2026 (version 2026-11-22-r20). Draft pending
           attorney review.
         </p>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Who is responsible</h2>
           <p>
-            Puntr (puntr.co.za) is the responsible party under the Protection of Personal
-            Information Act (POPIA). Our Information Officer is the founder, [name to be confirmed],
-            registered with the Information Regulator [registration pending]. Contact:{" "}
+            Puntr South Africa (puntr.co.za) is operated by Gravitas Industries (Pty) Ltd
+            (CK No.: 2024/596436/07), a company registered in South Africa. Gravitas Industries
+            (Pty) Ltd is the responsible party under the Protection of Personal Information Act
+            (POPIA). Our Information Officer is the founder, [name to be confirmed], registered
+            with the Information Regulator [registration pending]. Contact:{" "}
             <a className="underline" href="mailto:privacy@puntr.co.za">
               privacy@puntr.co.za
             </a>
