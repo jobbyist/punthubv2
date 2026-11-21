@@ -15,13 +15,21 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_COMPETITIONS: Partial<
-  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[] }>
+  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[]; pages?: string[] }>
 > = {
   psl: { teams: 16, refreshHours: 12, queries: ["Betway Premiership log standings", "PSL log table"] },
   epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
   laliga: { teams: 20, refreshHours: 12, queries: ["La Liga table standings", "LaLiga table"] },
   seriea: { teams: 20, refreshHours: 12, queries: ["Serie A table standings", "Serie A table"] },
-  bundesliga: { teams: 18, refreshHours: 12, queries: ["Bundesliga table standings", "Bundesliga table"] },
+  bundesliga: {
+    teams: 18,
+    refreshHours: 12,
+    queries: ["Bundesliga table standings", "Bundesliga table", "DFB Bundesliga table current season"],
+    pages: [
+      "https://www.bundesliga.com/en/bundesliga/table?view=full",
+      "https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center",
+    ],
+  },
   ligue1: { teams: 18, refreshHours: 24, queries: ["Ligue 1 table standings", "Ligue 1 table"] },
   eredivisie: { teams: 18, refreshHours: 24, queries: ["Eredivisie table standings", "Eredivisie table"] },
   primeira: { teams: 18, refreshHours: 24, queries: ["Liga Portugal table standings", "Primeira Liga table"] },
