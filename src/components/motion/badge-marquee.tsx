@@ -1,25 +1,19 @@
-import { useBadges } from "@/lib/badges/store";
+import { TeamLogo } from "@/components/team-logo";
+import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
 
 /**
- * Endless strip of real club badges (verified badges only). Decorative: the names are in the alt text of the first
- * copy and the duplicate copy is hidden from screen readers.
+ * Endless strip of curated team badges across sports. TeamLogo resolves the verified Parallel-sourced badge from
+ * the registry and keeps a neutral initials fallback while a team is being resolved.
  */
 export function BadgeMarquee({ label }: { label: string }) {
-  const badges = useBadges();
-  const items = badges
-    ? [...badges.entries()].filter(([k]) => k.startsWith("soccer:")).slice(0, 30)
-    : [];
-  if (items.length < 6) return null;
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={hidden || undefined}>
-      {items.map(([key, url]) => (
-        <li key={`${hidden ? "b" : "a"}-${key}`}>
-          <img
-            src={url}
-            alt={hidden ? "" : key.replace("soccer:", "")}
-            loading="lazy"
-            className="size-12 rounded-full bg-white object-contain p-1 opacity-80 ring-1 ring-border grayscale transition hover:opacity-100 hover:grayscale-0"
-          />
+      {MARQUEE_BADGE_TEAMS.map((item) => (
+        <li key={`${hidden ? "b" : "a"}-${item.sport}:${item.team}`} className="flex items-center gap-2.5">
+          <TeamLogo team={item.team} sport={item.sport} size="lg" />
+          <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
+            {item.label}
+          </span>
         </li>
       ))}
     </ul>
