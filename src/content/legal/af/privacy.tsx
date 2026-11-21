@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-15-r19.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r20.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -25,6 +25,12 @@ const PURPOSES: [string, string, string, string][] = [
     "E-pos (van jou e-pos- of Google-aantekening), 'n eenrigting-hash van jou wagwoord as jy een stel, gebruikersnaam, vertoonnaam, profielfoto (opsioneel), bevestiging van 18+, geboortejaar, taal, stigtersnommer, verwysingskode",
     "Kontrak (om Puntr aan jou te verskaf)",
     "Terwyl jou rekening oop is; e-pos- en profielbesonderhede word verwyder wanneer jy dit skrap",
+  ],
+  [
+    "Interne registrasiekennisgewings",
+    "Jou rekening se e-posadres, rekening-ID en registrasietyd, wat aan Puntr se ondersteuningsposbus gestuur word wanneer 'n nuwe rekening geskep word",
+    "Ons regmatige belang om nuwe registrasies te monitor en rekeningondersteuning te verskaf",
+    "Word in die ondersteuningsposbus en e-posstelsels gehou volgens die toepaslike behoudsinstellings en enige regsverpligtinge",
   ],
   [
     "Jou besonderhede (opsioneel)",
@@ -165,16 +171,19 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 15 November 2026 (weergawe 2026-11-15-r19). Konsep wat op
+          <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r20). Konsep wat op
           hersiening deur 'n prokureur wag.
         </p>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Wie verantwoordelik is</h2>
           <p>
-            Puntr (puntr.co.za) is die verantwoordelike party ingevolge die Wet op die Beskerming
-            van Persoonlike Inligting (POPIA). Ons inligtingsbeampte is die stigter, [naam word
-            bevestig], geregistreer by die Inligtingsreguleerder [registrasie hangend]. Kontak:{" "}
+            Puntr South Africa (puntr.co.za) word deur Gravitas Industries (Pty) Ltd
+            (CK No.: 2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is, bedryf.
+            Gravitas Industries (Pty) Ltd is die verantwoordelike party ingevolge die Wet op die
+            Beskerming van Persoonlike Inligting (POPIA). Ons inligtingsbeampte is die stigter,
+            [naam word bevestig], geregistreer by die Inligtingsreguleerder [registrasie hangend].
+            Kontak:{" "}
             <a className="underline" href="mailto:privacy@puntr.co.za">
               privacy@puntr.co.za
             </a>
