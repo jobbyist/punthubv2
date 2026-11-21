@@ -25,6 +25,7 @@ const page = (
   domain,
   tier,
   text: rows.join("\n"),
+  via: "extract",
 });
 // position, team, P W D L GF GA Pts
 const data: [number, string, number, number, number, number, number, number, number][] = [
@@ -90,30 +91,30 @@ describe("validateTables", () => {
 });
 
 describe("chooseTable", () => {
-  const a = page("site-a.com", "trusted", 1, lines);
-  const b = page("site-b.com", "other", 2, lines);
+  const a = page("site-a.com", "official", 1, lines);
+  const b = page("site-b.com", "trusted", 2, lines);
   it("needs the official site or two agreeing sites", () => {
     const one = validateTables(raw(1), [a], 4).tables;
     expect(chooseTable(one)).toBeNull();
     const two = validateTables([...raw(1), ...raw(2)], [a, b], 4).tables;
     expect(chooseTable(two)).toMatchObject({ verdict: "two_sources" });
   });
-  it("does not accept two sites that disagree", () => {
-    const b2 = page(
-      "site-b.com",
-      "other",
-      2,
-      lines.map((l) => l.replace("10 7 2 1 20 8 23", "11 8 2 1 22 8 26")),
-    );
+  it("does not accept two sites that disagree on any full-table statistic", () => {
+    const b2 = page("site-b.com", "trusted", 2, lines.map((l) => l.replace("10 7 2 1 20 8 23", "10 6 3 1 20 8 21")));
     const rows = [
       ...raw(1),
-      ...raw(2, (r) =>
-        r.team === "Alpha FC"
-          ? { ...r, played: 11, won: 8, goalsFor: 22, points: 26, quote: b2.text.split("\n")[0]! }
-          : r,
-      ),
+      ...raw(2, (r) => r.team === "Alpha FC" ? { ...r, won: 6, drawn: 3, points: 21, quote: b2.text.split("\n")[0]! } : r),
     ];
     expect(chooseTable(validateTables(rows, [a, b2], 4).tables)).toBeNull();
+  });
+
+  it("requires an official source to be independently corroborated", () => {
+    expect(chooseTable(validateTables(raw(1), [a], 4).tables)).toBeNull();
+  });
+
+  it("rejects Wikipedia as a live standings source", () => {
+    const wiki = page("en.wikipedia.org", "trusted", 1, lines);
+    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe("wikipedia_not_allowed_for_live_standings");
   });
 });
 
