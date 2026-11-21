@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   badgeKey,
   badgePath,
+  badgeSearchRequest,
   cleanManualLogoUrl,
   pickCrestImage,
   pickWikipediaTitle,
@@ -10,6 +11,19 @@ import {
   wikipediaCandidates,
 } from "./resolve";
 
+describe("Parallel search requests", () => {
+  it("uses sport- and competition-aware queries for marquee teams", () => {
+    expect(badgeSearchRequest("Australia", "FIFA World Cup", "soccer").queries.join(" ")).toContain(
+      "national football team",
+    );
+    expect(badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries.join(" ")).toContain(
+      "professional basketball team",
+    );
+    expect(badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries.join(" ")).toContain(
+      "rugby union team",
+    );
+  });
+});
 describe("names", () => {
   it("normalises short forms", () => {
     expect(badgeKey("Man Utd")).toBe("manchester united");
@@ -40,6 +54,19 @@ describe("pickWikipediaTitle", () => {
   });
 });
 
+describe("strict team-name matching", () => {
+  it("does not confuse Iberia Tbilisi with Dinamo Tbilisi", () => {
+    expect(
+      wikipediaCandidates(
+        [
+          { url: "https://en.wikipedia.org/wiki/FC_Dinamo_Tbilisi" },
+          { url: "https://en.wikipedia.org/wiki/FC_Iberia_1999" },
+        ],
+        "Iberia Tbilisi",
+      ),
+    ).toEqual(["FC_Iberia_1999"]);
+  });
+});
 describe("pickCrestImage", () => {
   const club = {
     type: "standard",

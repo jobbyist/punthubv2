@@ -1,9 +1,11 @@
 /**
- * Server job for team badges: finds teams in fixtures without a verified badge and resolves them with Parallel
+ * Server job for team badges: finds fixture and curated marquee teams without a verified badge and resolves them with Parallel
  * Search + Wikipedia, then mirrors the crest to Supabase Storage (`media/teams/...`). Quota-guarded: every Parallel
  * call claims a unit of the shared `parallel` quota, so badges never push the account past its cap.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+
+import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
 
 import {
   badgeKey,
@@ -17,7 +19,7 @@ import {
 const UA = "PuntrBadgeBot/1.0 (https://puntr.co.za; support@puntr.co.za)";
 const MAX_IMAGE_BYTES = 1_000_000;
 const RETRY_AFTER_MS = 24 * 3600 * 1000;
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 6;
 
 async function db(): Promise<SupabaseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -52,6 +54,11 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
       const k = `${f.sport}:${badgeKey(name)}`;
       if (!seen.has(k)) seen.set(k, { sport: f.sport, name, competition: f.competition });
     }
+  }
+  for (const item of MARQUEE_BADGE_TEAMS) {
+    const k = `${item.sport}:${badgeKey(item.team)}`;
+    if (!seen.has(k))
+      seen.set(k, { sport: item.sport, name: item.team, competition: item.competition });
   }
   return [...seen.values()];
 }
@@ -208,7 +215,7 @@ export async function setManualBadge(team: TeamRef, url: string): Promise<string
   return logoUrl;
 }
 
-/** One cron run: up to `limit` teams that need a badge (new, or failed more than a day ago and under 3 tries). */
+/** One cron run: up to `limit` teams that need a badge (new, or failed more than a day ago and under 6 tries). */
 export async function runBadgeJob(limit = 8, force = false) {
   const client = await db();
   const teams = await teamsInFixtures(client);
@@ -235,14 +242,17 @@ export async function runBadgeJob(limit = 8, force = false) {
     return !r.checked_at || Date.now() - new Date(r.checked_at).getTime() > RETRY_AFTER_MS;
   });
   const out = { teams: teams.length, due: due.length, verified: 0, failed: 0, quota: false };
-  for (const team of due.slice(0, limit)) {
-    const r = await resolveTeamBadge(client, team);
-    if (r === "verified") out.verified++;
-    if (r === "failed") out.failed++;
-    if (r === "quota") {
-      out.quota = true;
-      break;
+  // Small parallel batches keep the admin action responsive while the database quota claim remains the
+  // authority for spend. Stop after the first batch that reports exhausted quota.
+  const selected = due.slice(0, limit);
+  for (let i = 0; i < selected.length; i += 4) {
+    const batch = await Promise.all(selected.slice(i, i + 4).map((team) => resolveTeamBadge(client, team)));
+    for (const result of batch) {
+      if (result === "verified") out.verified++;
+      if (result === "failed") out.failed++;
+      if (result === "quota") out.quota = true;
     }
+    if (out.quota) break;
   }
   return out;
 }

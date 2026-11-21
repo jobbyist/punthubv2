@@ -50,7 +50,7 @@ Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Ch
 | Slip analysis | none for parsing (on-device OCR + parser); odds check against stored odds | per slip | n/a | $0 |
 | Punt AI chatbot | Answers first from Puntr's own data via Gemini; **Chat low** only for questions needing the live web, and only for Pro or credit-paying members | per message | 1 h per normalised question | charged to the member's credits |
 | Newsroom research | Search fast + Extract (existing) | 1 article a day | 6 h | ~8, $0.008 |
-| Team badges | Search fast (existing, one-off per team) | until each team has a badge | permanent | ~0 |
+| Team badges | Parallel Search fast + Wikipedia summary verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
 
 **Steady state: about $0.20 a day ($6 a month).** That is a little over the free $5, so the planner keeps it under by
 skipping competitions with no fixture in the next 10 days and by the cache. If it still runs over, the Monitor and

@@ -1,11 +1,9 @@
 /**
  * Team badge resolution, pure parts (unit-tested). The server job in resolve.server.ts does the network calls:
- *   1. Parallel Search finds the team's English Wikipedia article.
- *   2. The Wikipedia summary API gives the article's lead image, which for clubs is the crest.
- *   3. Checks: the article is about a football club or national team (not a person, stadium or disambiguation page),
- *      the image is on upload.wikimedia.org and looks like a crest/logo, then it is mirrored to Supabase Storage.
- * Nothing is guessed: a team that fails the checks stays unbadged and its fixtures stay hidden until an admin sets
- * a badge by hand.
+ *   1. Parallel Search finds the best-matching English Wikipedia article for the club or national team.
+ *   2. The Wikipedia summary API supplies the lead image, which is checked as a genuine team crest or logo.
+ *   3. The verified image is mirrored to Supabase Storage; unsupported or ambiguous matches remain for admin review.
+ * The same pipeline covers football, rugby, basketball and cricket teams, including the curated home marquee.
  */
 import { normaliseTeam, teamSlug } from "../pfie/teams";
 
@@ -28,10 +26,15 @@ export function searchName(name: string): string {
 
 export function badgeSearchRequest(name: string, competition: string, sport: string) {
   const full = searchName(name);
-  const kind = sport === "soccer" ? "football club" : `${sport} team`;
+  const national = /world cup|international|national/i.test(competition);
+  const kind = sport === "soccer"
+    ? national ? "national football team" : "football club"
+    : sport === "rugby" ? "rugby union team"
+    : sport === "basketball" ? "professional basketball team"
+    : `${sport} team`;
   return {
-    objective: `Find the English Wikipedia article for the ${kind} "${name}" (${full}) that plays in ${competition}. The article's infobox shows the official club crest or badge.`,
-    queries: [`${full} ${kind} Wikipedia`, `${full} ${competition} crest`],
+    objective: `Search for the official logo, crest or badge for the ${kind} "${name}" (${full}) in ${competition}. Prefer official team or governing-body sources; use an English Wikipedia article as a corroborating image source when needed.`,
+    queries: [`${full} ${kind} official logo crest badge`, `${full} ${competition} official team logo`, `${full} ${kind} Wikipedia`],
   };
 }
 
@@ -41,7 +44,7 @@ const NOT_CLUB_TITLE = /(season|stadium|academy|reserves|_u\d\d|under-\d\d|_\d{4
 const WOMEN = /(women|ladies)/i;
 
 const CLUBBY_TITLE =
-  /(F\.?C\.?|A\.?F\.?C\.?|S\.?C\.?|C\.?F\.?|football|club|united|city|national)/i;
+  /(F\.?C\.?|A\.?F\.?C\.?|S\.?C\.?|C\.?F\.?|football|basketball|rugby|club|united|city|national|team)/i;
 
 /**
  * English Wikipedia articles in the search hits that could be the club, best first: titles that look like a club
@@ -71,7 +74,8 @@ export function wikipediaCandidates(
     if (WOMEN.test(title) !== WOMEN.test(name)) continue;
     const t = badgeKey(title.replace(/_/g, " "));
     // The title must share a real word with the team name (or an alias of it).
-    if (words.length > 0 && !words.some((w) => t.includes(w))) continue;
+    // Require the first meaningful team-name token: "Iberia Tbilisi" must not match "Dinamo Tbilisi".
+    if (words.length > 0 && !t.includes(words[0]!)) continue;
     const list = CLUBBY_TITLE.test(title) ? clubby : other;
     if (!clubby.includes(title) && !other.includes(title)) list.push(title);
   }
@@ -96,7 +100,7 @@ export interface WikiSummary {
 }
 
 const CLUB_WORDS =
-  /(football club|association football|soccer club|football team|national (football|soccer|rugby|cricket) team|basketball team|rugby union team|cricket team|professional football)/i;
+  /(football club|association football|soccer club|football team|national.*(football|soccer|rugby|basketball|cricket).*team|basketball team|rugby union team|cricket team|professional football)/i;
 const PERSON_WORDS = /\b(born|footballer|player|manager|coach|politician|singer|actor)\b/i;
 const CREST_FILE = /(logo|crest|badge|emblem|fc|f\.c\.|afc|club|united|city|\.svg)/i;
 const PHOTO_FILE = /(stadium|ground|arena|park|squad|team_photo|players|kit|\.jpe?g$)/i;

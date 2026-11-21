@@ -40,6 +40,7 @@ export function TeamBadgesPanel() {
     <section className="card-surface p-5">
       <h2 className="text-lg">{t("badges.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{t("badges.body")}</p>
+      <p className="mt-2 text-xs text-muted-foreground">Parallel searches and verifies badges first. Add a manual image URL only when a team remains unresolved or the sourced badge is incorrect.</p>
       {data && (
         <p className="mt-3 text-sm font-semibold">
           {t("badges.summary", { total: data.length, missing })}
@@ -130,19 +131,23 @@ function BadgeItem({ row, onChange }: { row: BadgeRow; onChange: () => void }) {
         )}
       </div>
       <div className="flex flex-wrap gap-2">
-        <Input
-          className="w-56"
-          placeholder={t("badges.urlPlaceholder")}
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <Button
-          size="sm"
-          disabled={busy || !url.startsWith("https://")}
-          onClick={() => void save()}
-        >
-          {t("badges.set")}
-        </Button>
+        {row.status !== "verified" && (
+          <>
+            <Input
+              className="w-56"
+              placeholder={t("badges.urlPlaceholder")}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <Button
+              size="sm"
+              disabled={busy || !url.startsWith("https://")}
+              onClick={() => void save()}
+            >
+              {t("badges.set")}
+            </Button>
+          </>
+        )}
         {row.status === "verified" && (
           <Button size="sm" variant="outline" onClick={() => void reject()}>
             {t("badges.reject")}

@@ -113,8 +113,8 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
       if (!res.ok) {
         setState(prev);
         setError(
-          res.reason === "locked"
-            ? "Your session has ended. Reload and sign in again."
+          res.reason === "forbidden"
+            ? "Admin access is required. Sign in with an administrator account and reload."
             : "Could not save. Try again.",
         );
       }
