@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * League standings refresh and one-time form history backfill (PFIE). Scheduled in two daily 10-minute windows (04:10-05:50 and 16:10-17:50 SAST); each call handles the next two due jobs. `?only=epl,psl`, `?job=standings|history` and
+ * League standings refresh and one-time form history backfill (PFIE). Scheduled in two daily 10-minute windows (04:00-05:50 and 16:00-17:50 SAST); production cron processes one due competition per request to stay within the HTTP timeout. `?only=epl,psl`, `?job=standings|history` and
  * `?max=N` (1-4) are for manual runs.
  */
 export const Route = createFileRoute("/api/cron/sync-tables")({
