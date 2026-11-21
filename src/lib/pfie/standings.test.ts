@@ -90,6 +90,18 @@ describe("validateTables", () => {
     const rows = raw(1, (r) => ({ ...r, quote: `Source row for ${r.team}` }));
     expect(validateTables(rows, [official], 4).tables).toHaveLength(1);
   });
+  it("rejects row statistics that are not present beside the named team", () => {
+    const incorrect = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: 19, goalsAgainst: 9 } : r);
+    const result = validateTables(incorrect, [official], 4, teams);
+    expect(result.rejected[0]!.reason).toBe("row_stats_not_on_page_Alpha FC");
+  });
+  it("accepts a printed table date in a common human-readable format", () => {
+    const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22", tableDateQuote: "model-formatted quote" }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
+    expect(result.rejected).toEqual([]);
+    expect(result.tables).toHaveLength(1);
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
