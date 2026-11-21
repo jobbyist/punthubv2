@@ -214,7 +214,7 @@ export function parseResultsMatrix(markdown: string): ResultsMatrix | null {
   return null;
 }
 
-/** The first "Pos | Team | Pld | W | D | L | GF | GA | GD | Pts" table on a Wikipedia season page. */
+/** Legacy parser for historical archive diagnostics only. Never used to publish current league standings. */
 export function parseWikiTable(markdown: string): StandingRow[] | null {
   const lines = tableLines(markdown);
   for (let i = 0; i < lines.length; i++) {
