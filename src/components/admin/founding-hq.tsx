@@ -274,12 +274,16 @@ export function FoundingHqPage() {
     }
   }
 
-  async function deleteLead(lead: FoundingHqLead) {
-    if (!window.confirm(`Delete ${lead.displayName} from the campaign tracker? This also deletes their activity history.`)) return;
+  async function deleteLead(lead: FoundingHqLead): Promise<boolean> {
+    if (!window.confirm(`Delete ${lead.displayName} from the campaign tracker? This also deletes their activity history.`)) return false;
     const result = await adminDeleteFoundingHqLead({ data: { id: lead.id } });
-    if (!result.ok) return void toast.error(result.message ?? "Could not delete prospect.");
+    if (!result.ok) {
+      toast.error(result.message ?? "Could not delete prospect.");
+      return false;
+    }
     toast.success("Prospect deleted.");
     await refresh();
+    return true;
   }
 
   if (loading) {
@@ -511,7 +515,7 @@ export function FoundingHqPage() {
               <Field label="Prospect notes" className="sm:col-span-2"><Textarea rows={3} value={draft.notes} onChange={(e) => setDraft({ ...draft, notes: e.target.value })} placeholder="Relevant post, engagement quality, audience fit, conversation context..." /></Field>
               <Field label={draft.id ? "Add activity note (optional)" : "Initial activity note (optional)"} className="sm:col-span-2"><Textarea rows={2} value={activityBody} onChange={(e) => setActivityBody(e.target.value)} placeholder="e.g. Replied to their post about the PSL; invited them to a private platform tour..." /></Field>
               <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-4 sm:col-span-2">
-                <div>{draft.id && <Button type="button" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => { const lead = leads.find((item) => item.id === draft.id); if (lead) void deleteLead(lead); setModalOpen(false); }}><Trash2 className="mr-2 size-4" /> Delete</Button>}</div>
+                <div>{draft.id && <Button type="button" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => { const lead = leads.find((item) => item.id === draft.id); if (lead) void deleteLead(lead).then((deleted) => { if (deleted) setModalOpen(false); }); }}><Trash2 className="mr-2 size-4" /> Delete</Button>}</div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
                   <Button type="submit" disabled={saving || draft.displayName.trim().length < 2}>{saving ? "Saving..." : draft.id ? "Save changes" : "Add prospect"}</Button>
