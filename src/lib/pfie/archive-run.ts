@@ -1,7 +1,8 @@
 /**
  * Runs the season archive import (see archive.ts). One job = one competition season = two page reads. Finished
- * seasons are imported once; the current season is refreshed at most once every 20 hours, which also keeps its
- * league table corroborated. Every attempt is recorded in `sync_status` as job `archive`, scope `<key>:<startYear>`.
+ * seasons are imported once; the current season is refreshed at most once every 20 hours. This path imports
+ * historical results only; current league tables are owned by the live multi-source standings job. Every attempt
+ * is recorded in `sync_status` as job `archive`, scope `<key>:<startYear>`.
  */
 import { seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
