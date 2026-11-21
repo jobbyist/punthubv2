@@ -60,7 +60,7 @@ describe("validateTables", () => {
     expect(rejected).toEqual([]);
     expect(tables[0]!.rows.map((r) => r.team)).toEqual(teams);
   });
-  it("rejects bad arithmetic, wrong team counts and quotes not on the page", () => {
+  it("rejects bad arithmetic, wrong team counts and unsupported row statistics", () => {
     expect(
       validateTables(
         raw(1, (r) => (r.team === "Alpha FC" ? { ...r, points: 24 } : r)),
@@ -73,11 +73,11 @@ describe("validateTables", () => {
     );
     expect(
       validateTables(
-        raw(1, (r) => ({ ...r, quote: "invented row" })),
+        raw(1, (r) => (r.team === "Alpha FC" ? { ...r, goalsFor: 19, goalsAgainst: 9 } : r)),
         [official],
         4,
       ).rejected[0]!.reason,
-    ).toMatch(/quote_not_on_page/);
+    ).toBe("row_stats_not_on_page_Alpha FC");
   });
   it("rejects explicitly dated tables older than 72 hours", () => {
     const dateQuote = "Updated: 2026-11-17";
@@ -93,9 +93,9 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
   });
   it("rejects a row when its statistics are not present near the named team", () => {
-    const incorrect = raw(1, (r) => r.team === "Alpha FC" ? { ...r, quote: "unmatched", points: 99 } : r);
+    const incorrect = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: 19, goalsAgainst: 9, quote: "unmatched" } : r);
     const result = validateTables(incorrect, [official], 4, teams);
-    expect(result.rejected[0]!.reason).toMatch(/points_Alpha FC/);
+    expect(result.rejected[0]!.reason).toBe("row_stats_not_on_page_Alpha FC");
   });
   it("accepts a table date printed in a common human-readable format", () => {
     const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
