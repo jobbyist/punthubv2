@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
-import { chooseTable, independentSourceKey, parseStandings, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import { chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -152,6 +152,19 @@ describe("tableRegression", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
     const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
     expect(tableRegression(newer, previous)).toBeNull();
+  });
+});
+describe("standingsRequest", () => {
+  it("pins extraction to one source and includes targeted retry guidance", () => {
+    const request = standingsRequest({
+      competition: "Premier League",
+      season: "2026/27",
+      sources: [page("premierleague.com", "official", 2, lines)],
+      retryHint: "wdl_Aston Villa",
+    });
+    expect(request.system).toContain("every row must use that exact source n value");
+    expect(request.prompt).toContain("wdl_Aston Villa");
+    expect(request.prompt).toContain("Copy exact values from this page only");
   });
 });
 describe("parseStandings", () => {
