@@ -298,19 +298,19 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   const cfg = STANDINGS_COMPETITIONS[key]!;
   const season = String(seasonFor(c.seasonRule, now()));
   try {
+    const today = sastDate(now());
     const sources = await gatherSources(
       deps,
       key,
-      `${c.name} current league table for the ${season} season with played, won, drawn, lost, goals for, goals ` +
-        `against and points for every team. Prefer the official competition site.`,
-      cfg.queries,
+      `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
+      [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources }));
     const raw = parseStandings(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known);
+    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
     const chosen = chooseTable(tables);
     if (!chosen) {
       const why =
@@ -323,18 +323,22 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       competition: c.name,
       season,
       rows: chosen.table.rows,
-      domain: chosen.table.source.domain,
+      domain: chosen.supportingDomains.join(" + "),
       url: chosen.table.source.url,
     });
     await deps.store.record("standings", key, true, null, {
       verdict: chosen.verdict,
-      domain: chosen.table.source.domain,
+      domain: chosen.supportingDomains.join(" + "),
+      sourceCount: chosen.supportingDomains.length,
+      sources: chosen.supportingDomains,
+      primarySource: chosen.table.source.url,
+      tableDate: chosen.table.tableDate ?? null,
       teams: n,
       model: answer.model,
     });
     return {
       ok: true,
-      detail: `${n} teams from ${chosen.table.source.domain} (${chosen.verdict})`,
+      detail: `${n} teams verified by ${chosen.supportingDomains.length} sources (${chosen.supportingDomains.join(", ")})`,
     };
   } catch (e) {
     await deps.store.record("standings", key, false, message(e), {}).catch(() => undefined);
