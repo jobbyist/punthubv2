@@ -283,7 +283,7 @@ export function validateTables(
     // to discard an otherwise fully evidenced table. Never persist or use that date for freshness decisions.
     const tableDate = reportedDate && dateAppearsOnPage(source.text, reportedDate) ? reportedDate : null;
     if (tableDate) {
-      const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
+      const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999+02:00`);
       if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
       if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
     }
