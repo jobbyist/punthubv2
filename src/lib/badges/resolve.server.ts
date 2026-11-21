@@ -20,6 +20,7 @@ const UA = "PuntrBadgeBot/1.0 (https://puntr.co.za; support@puntr.co.za)";
 const MAX_IMAGE_BYTES = 1_000_000;
 const RETRY_AFTER_MS = 24 * 3600 * 1000;
 const MAX_ATTEMPTS = 6;
+const MARQUEE_BADGE_KEYS = new Set(MARQUEE_BADGE_TEAMS.map((t) => `${t.sport}:${badgeKey(t.team)}`));
 
 async function db(): Promise<SupabaseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -233,14 +234,21 @@ export async function runBadgeJob(limit = 8, force = false) {
       }[]
     ).map((r) => [`${r.sport}:${r.team_key}`, r]),
   );
-  const due = teams.filter((t) => {
-    const r = state.get(`${t.sport}:${badgeKey(t.name)}`);
-    if (!r) return true;
-    if (r.status === "verified" || r.status === "rejected") return false;
-    if (force) return true;
-    if (r.attempts >= MAX_ATTEMPTS) return false;
-    return !r.checked_at || Date.now() - new Date(r.checked_at).getTime() > RETRY_AFTER_MS;
-  });
+  const due = teams
+    .filter((t) => {
+      const r = state.get(`${t.sport}:${badgeKey(t.name)}`);
+      if (!r) return true;
+      if (r.status === "verified" || r.status === "rejected") return false;
+      if (force) return true;
+      if (r.attempts >= MAX_ATTEMPTS) return false;
+      return !r.checked_at || Date.now() - new Date(r.checked_at).getTime() > RETRY_AFTER_MS;
+    })
+    // Resolve the curated home marquee before the wider fixture backlog so its launch-critical badges cannot starve.
+    .sort((a, b) => {
+      const aPriority = MARQUEE_BADGE_KEYS.has(`${a.sport}:${badgeKey(a.name)}`) ? 0 : 1;
+      const bPriority = MARQUEE_BADGE_KEYS.has(`${b.sport}:${badgeKey(b.name)}`) ? 0 : 1;
+      return aPriority - bPriority || a.name.localeCompare(b.name);
+    });
   const out = { teams: teams.length, due: due.length, verified: 0, failed: 0, quota: false };
   // Small parallel batches keep the admin action responsive while the database quota claim remains the
   // authority for spend. Stop after the first batch that reports exhausted quota.
