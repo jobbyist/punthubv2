@@ -17,15 +17,15 @@ import type { PfieSource } from "./types";
 export const STANDINGS_COMPETITIONS: Partial<
   Record<CompetitionKey, { teams: number; queries: string[] }>
 > = {
-  psl: { teams: 16, queries: ["Betway Premiership log standings", "PSL log table"] },
-  epl: { teams: 20, queries: ["Premier League table standings", "Premier League table"] },
-  laliga: { teams: 20, queries: ["La Liga table standings", "LaLiga table"] },
-  seriea: { teams: 20, queries: ["Serie A table standings", "Serie A table"] },
-  bundesliga: { teams: 18, queries: ["Bundesliga table standings", "Bundesliga table"] },
-  ligue1: { teams: 18, queries: ["Ligue 1 table standings", "Ligue 1 table"] },
-  eredivisie: { teams: 18, queries: ["Eredivisie table standings", "Eredivisie table"] },
-  primeira: { teams: 18, queries: ["Liga Portugal table standings", "Primeira Liga table"] },
-  championship: { teams: 24, queries: ["EFL Championship table standings", "Championship table"] },
+  psl: { teams: 16, refreshHours: 12, queries: ["Betway Premiership log standings", "PSL log table"] },
+  epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
+  laliga: { teams: 20, refreshHours: 12, queries: ["La Liga table standings", "LaLiga table"] },
+  seriea: { teams: 20, refreshHours: 12, queries: ["Serie A table standings", "Serie A table"] },
+  bundesliga: { teams: 18, refreshHours: 12, queries: ["Bundesliga table standings", "Bundesliga table"] },
+  ligue1: { teams: 18, queries: ["Ligue 1 table standings", "Ligue 1 table"] , refreshHours: 24},
+  eredivisie: { teams: 18, queries: ["Eredivisie table standings", "Eredivisie table"] , refreshHours: 24},
+  primeira: { teams: 18, queries: ["Liga Portugal table standings", "Primeira Liga table"] , refreshHours: 24},
+  championship: { teams: 24, queries: ["EFL Championship table standings", "Championship table"] , refreshHours: 24},
   "saudi-pro": {
     teams: 18,
     queries: ["Saudi Pro League table standings", "Saudi Pro League table"],
@@ -37,7 +37,7 @@ export const STANDINGS_COMPETITIONS: Partial<
   ucl: {
     teams: 36,
     queries: ["Champions League league phase table", "UCL standings league phase"],
-  },
+  , refreshHours: 24},
 };
 
 export interface RawStandingRow {
@@ -189,6 +189,7 @@ export function validateTables(
   sources: PfieSource[],
   expectedTeams: number,
   knownTeams: readonly string[] = [],
+  now: Date = new Date(),
 ): { tables: SourceTable[]; rejected: TableRejection[] } {
   const bySource = new Map<number, RawStandingRow[]>();
   for (const r of raw) bySource.set(r.source, [...(bySource.get(r.source) ?? []), r]);
