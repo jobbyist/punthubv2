@@ -21,6 +21,7 @@ import {
   chooseTable,
   independentSourceKey,
   parseStandings,
+  tableRegression,
   standingsRequest,
   validateTables,
   type StandingRow,
@@ -43,6 +44,7 @@ export interface TablesStore {
   latestFinished(since: Date): Promise<Map<string, number>>;
   knownTeams(competition: string): Promise<string[]>;
   completedCounts(competition: string): Promise<Map<string, number>>;
+  currentStandings(key: CompetitionKey, season: string): Promise<StandingRow[]>;
   replaceStandings(input: {
     key: CompetitionKey;
     competition: string;
@@ -329,6 +331,9 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         `${tables.length} unconfirmed tables`;
       throw new Error(`no verified table (${why})`);
     }
+    const previous = await deps.store.currentStandings(key, season);
+    const regression = tableRegression(chosen.table.rows, previous);
+    if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
       key,
       competition: c.name,
