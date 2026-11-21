@@ -16,6 +16,14 @@ community sender only if Resend rejects the domain).
 
 `/auth/confirm` verifies only when the member taps **Continue**, so mail scanners cannot use the link up.
 
+## New-account support notification
+
+A Postgres trigger on `auth.users` queues one internal service email to **support@puntr.co.za** for each new
+account. It includes the new account's email address, Auth user ID and registration time in SAST. The trigger writes
+to `public.email_outbox` with an idempotency key derived from the Auth user ID; a queueing failure does not block
+registration. The existing `/api/cron/email-outbox` job sends queued messages every five minutes through Resend and
+the shared email quota. This is an internal account/service notification, not a marketing email.
+
 ## One-time setup (owner, Supabase dashboard + Vercel)
 
 1. Supabase > Authentication > **Hooks** > *Send Email hook* > Enable > type **HTTPS** > URL
