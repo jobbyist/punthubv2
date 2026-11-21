@@ -4,6 +4,23 @@ Owner brief (14 Nov 2026): design and implement PuntPoints economics and mechani
 fair-usage limits and abuse mitigation, **between Sat 21 Nov and Mon 23 Nov 2026**, before the 1 Dec launch.
 Counsel has approved duel stakes (switched on 14 Nov).
 
+## Launch adjustment (22 Nov)
+
+- **Reward prices increased fivefold** before the first redemption. The catalogue now starts at 2,000 points for an
+  OTT voucher worth R20; larger OTT vouchers scale at 100 points per R1 face value. Other launch rewards were
+  repriced proportionally (for example, 10 PAYG credits = 1,500 points; 7 days of Puntr Pro = 3,750 points; a cap
+  = 15,000; two PSL tickets = 30,000). These are redemption thresholds, not a promise that PuntPoints have cash
+  value or can be converted to rand.
+- **Basis:** the production ledger had a median member balance of 160 points, a 90th percentile of about 317 points
+  and a maximum of 334 points across 15 profiles. There had been no redemptions. The former R20 voucher price of
+  400 points was too close to the highest pre-launch balance; the new 2,000-point threshold is about six times
+  that maximum and 12.5 times the median.
+- **Controls still outstanding:** a global minting budget, reward funding/budget caps, redemption velocity limits,
+  liability reporting and anomaly monitoring remain open work. Price increases alone do not cap the platform's
+  maximum exposure. Keep each reward's stock, funding source and voucher-code inventory current; activate
+  sponsored or retail rewards only when fulfilment is funded and available. Revisit costs once real earning and
+  redemption data exist.
+
 ## Where we are (14 Nov)
 - Ledger: `puntpoints_ledger` (append-only kinds: award, spend, refund, adjust, reversal, transfer_in/out,
   duel_stake/payout/refund). Balance = sum. Transferable = balance minus invite points and points from the last
