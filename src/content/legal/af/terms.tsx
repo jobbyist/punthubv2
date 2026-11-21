@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r22.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r23.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r22). Konsep wat
+            <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r23). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -414,7 +414,7 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>16. Beperking van aanspreeklikheid</h2>
             <p className={P}>
-              TOT DIE MAKSIMUM MATE WAT SUID-AFRIKAANSE WETGEWING TOELAAT, IS PUNTR (EDMS.) BPK. NIE
+              TOT DIE MAKSIMUM MATE WAT SUID-AFRIKAANSE WETGEWING TOELAAT, IS GRAVITAS INDUSTRIES (PTY) LTD NIE
               AANSPREEKLIK VIR ENIGE INDIREKTE, TOEVALLIGE, SPESIALE, GEVOLGLIKE OF STRAFSKADE NIE,
               INSLUITEND MAAR NIE BEPERK NIE TOT VERLIES AAN WINS, DATA OF ANDER ONTASBARE VERLIESE
               WAT VOORTSPRUIT UIT:

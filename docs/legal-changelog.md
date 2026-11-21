@@ -1,3 +1,10 @@
+## 2026-11-22, Terms operator name consistency (Terms r23)
+
+- **Correction:** the limitation-of-liability clause in both English and Afrikaans now names Gravitas Industries (Pty) Ltd,
+  rather than the retired Puntr company name. Terms notice version r23 recorded in `notice_versions`.
+- **Review `[attorney review]`:** counsel to confirm the operator is consistently identified as the contracting party
+  and that the liability limitation is enforceable as drafted.
+
 ## 2026-11-22, Gravitas operator disclosure and new-signup support alerts (Terms r22, Privacy r20)
 
 - **Operator:** Puntr South Africa is operated by Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07), a South
