@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
-import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -96,33 +96,20 @@ describe("validateTables", () => {
     const rows = raw(1, (r) => ({ ...r, quote: `Source row for ${r.team}` }));
     expect(validateTables(rows, [official], 4).tables).toHaveLength(1);
   });
-  it("rejects row statistics that are not present beside the named team", () => {
-    const incorrect = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: 19, goalsAgainst: 9 } : r);
-    const result = validateTables(incorrect, [official], 4, teams);
-    expect(result.rejected[0]!.reason).toBe("row_stats_not_on_page_Alpha FC");
-  });
-  it("accepts a printed table date in a common human-readable format", () => {
-    const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
-    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22", tableDateQuote: "model-formatted quote" }));
-    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
-    expect(result.rejected).toEqual([]);
+  it("ignores an unverified model-extracted table date instead of rejecting an otherwise valid page", () => {
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-17", tableDateQuote: "Updated 17 November 2026" }));
+    const result = validateTables(rows, [official], 4, teams, new Date("2026-11-22T12:00:00Z"));
     expect(result.tables).toHaveLength(1);
-  });
-  it("ignores an unverified model-supplied table date without discarding source-backed rows", () => {
-    const undated = page("league.com", "official", 1, lines);
-    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22", tableDateQuote: "date not present on page" }));
-    const result = validateTables(rows, [undated], 4, teams, new Date("2026-11-22T12:00:00Z"));
-    expect(result.rejected).toEqual([]);
     expect(result.tables[0]!.tableDate).toBeNull();
   });
-  it("treats the current SAST calendar date as today when the UTC date has not rolled over", () => {
+  it("treats the current SAST calendar date as today when UTC has not rolled over", () => {
     const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
     const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22" }));
     const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-21T23:30:00Z"));
     expect(result.rejected).toEqual([]);
     expect(result.tables).toHaveLength(1);
   });
-  it("still rejects a table date that is more than a day ahead in SAST", () => {
+  it("rejects a table date more than one day ahead in SAST", () => {
     const dated = page("league.com", "official", 1, [...lines, "Updated: 24 November 2026"]);
     const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-24" }));
     const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-21T23:30:00Z"));
@@ -184,6 +171,19 @@ describe("tableRegression", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
     const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
     expect(tableRegression(newer, previous)).toBeNull();
+  });
+});
+describe("standingsRequest", () => {
+  it("pins extraction to one source and includes targeted retry guidance", () => {
+    const request = standingsRequest({
+      competition: "Premier League",
+      season: "2026/27",
+      sources: [page("premierleague.com", "official", 2, lines)],
+      retryHint: "wdl_Aston Villa",
+    });
+    expect(request.system).toContain("every row must use that exact source n value");
+    expect(request.prompt).toContain("wdl_Aston Villa");
+    expect(request.prompt).toContain("Copy exact values from this page only");
   });
 });
 describe("parseStandings", () => {

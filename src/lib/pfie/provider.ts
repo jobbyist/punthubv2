@@ -375,6 +375,14 @@ const TRUSTED = [
   "spl.com.sa",
   "cafonline.com",
   "safa.net",
+  "fbref.com",
+  "worldfootball.net",
+  "transfermarkt.com",
+  "flashscore.com",
+  "soccerway.com",
+  "kicker.de",
+  "onefootball.com",
+  "football-italia.net",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {

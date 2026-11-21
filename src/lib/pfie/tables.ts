@@ -319,37 +319,55 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   const c = competitions.find((x) => x.key === key)!;
   const cfg = STANDINGS_COMPETITIONS[key]!;
   const season = String(seasonFor(c.seasonRule, now()));
+  let sources: PfieSource[] = [];
+  const modelsUsed = new Set<string>();
+  const sourceFailures: string[] = [];
   try {
     const today = sastDate(now());
-    const sources = await gatherSources(
+    sources = await gatherSources(
       deps,
       key,
       `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
       [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
     );
     if (sources.length === 0) throw new Error("no usable source");
-    // Extract each source separately. This prevents the model from blending rows across sites or assigning
-    // a table to the wrong source index, and gives each source its own independent validation result.
+    const known = await deps.store.knownTeams(c.name).catch(() => []);
     const raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
-    const modelsUsed = new Set<string>();
+    // Extract each page independently; if deterministic checks reject it, retry that page once with the exact
+    // rejection reason. A bad source never poisons rows extracted from another publisher.
     for (const source of sources) {
-      const answer = await generate(
+      let answer = await generate(
         deps,
         standingsRequest({ competition: c.name, season, sources: [source] }),
       );
-      const parsed = parseStandings(answer.text);
-      if (!parsed) continue;
-      raw.push(...parsed);
       modelsUsed.add(answer.model);
+      let parsed = parseStandings(answer.text);
+      let validation = parsed
+        ? validateTables(parsed, [source], cfg.teams, known, now())
+        : { tables: [], rejected: [{ source: source.index, reason: "invalid_json" }] };
+      if (validation.tables.length === 0) {
+        const hint = validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
+        answer = await generate(
+          deps,
+          standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint }),
+        );
+        modelsUsed.add(answer.model);
+        parsed = parseStandings(answer.text);
+        validation = parsed
+          ? validateTables(parsed, [source], cfg.teams, known, now())
+          : { tables: [], rejected: [{ source: source.index, reason: "invalid_json_on_retry" }] };
+      }
+      if (parsed && validation.tables.length > 0) raw.push(...parsed);
+      else {
+        const reason = validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
+        sourceFailures.push(`${source.index}:${reason}`);
+      }
     }
-    if (raw.length === 0) throw new Error("no source returned valid standings JSON");
-    const known = await deps.store.knownTeams(c.name).catch(() => []);
+    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
     const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
     const chosen = chooseTable(tables);
     if (!chosen) {
-      const why =
-        rejected.map((r) => `${r.source}:${r.reason}`).join(", ") ||
-        `${tables.length} unconfirmed tables`;
+      const why = [...sourceFailures, ...rejected.map((r) => `${r.source}:${r.reason}`)].join(", ") || `${tables.length} unconfirmed tables`;
       throw new Error(`no verified table (${why})`);
     }
     const previous = await deps.store.currentStandings(key, season);
@@ -368,6 +386,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       domain: chosen.supportingDomains.join(" + "),
       sourceCount: chosen.supportingDomains.length,
       sources: chosen.supportingDomains,
+      sourceFailures,
       primarySource: chosen.table.source.url,
       tableDate: chosen.table.tableDate ?? null,
       teams: n,
@@ -378,11 +397,14 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       detail: `${n} teams verified by ${chosen.supportingDomains.length} sources (${chosen.supportingDomains.join(", ")})`,
     };
   } catch (e) {
-    await deps.store.record("standings", key, false, message(e), {}).catch(() => undefined);
+    await deps.store.record("standings", key, false, message(e), {
+      sources: sources.map((source) => ({ index: source.index, domain: source.domain, url: source.url, via: source.via, retrievedAt: source.retrievedAt })),
+      sourceFailures,
+      models: [...modelsUsed],
+    }).catch(() => undefined);
     return { ok: false, detail: message(e) };
   }
 }
-
 async function syncSeasonWindow(
   deps: TablesDeps,
   key: CompetitionKey,
