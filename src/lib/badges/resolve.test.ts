@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   badgeKey,
   badgePath,
+  badgeSearchRequest,
   cleanManualLogoUrl,
   pickCrestImage,
   pickWikipediaTitle,
@@ -10,6 +11,19 @@ import {
   wikipediaCandidates,
 } from "./resolve";
 
+describe("Parallel search requests", () => {
+  it("uses sport- and competition-aware queries for marquee teams", () => {
+    expect(badgeSearchRequest("Australia", "FIFA World Cup", "soccer").queries[0]).toContain(
+      "national football team",
+    );
+    expect(badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries[0]).toContain(
+      "professional basketball team",
+    );
+    expect(badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries[0]).toContain(
+      "rugby union team",
+    );
+  });
+});
 describe("names", () => {
   it("normalises short forms", () => {
     expect(badgeKey("Man Utd")).toBe("manchester united");
