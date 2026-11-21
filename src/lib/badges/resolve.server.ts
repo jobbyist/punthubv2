@@ -242,14 +242,17 @@ export async function runBadgeJob(limit = 8, force = false) {
     return !r.checked_at || Date.now() - new Date(r.checked_at).getTime() > RETRY_AFTER_MS;
   });
   const out = { teams: teams.length, due: due.length, verified: 0, failed: 0, quota: false };
-  for (const team of due.slice(0, limit)) {
-    const r = await resolveTeamBadge(client, team);
-    if (r === "verified") out.verified++;
-    if (r === "failed") out.failed++;
-    if (r === "quota") {
-      out.quota = true;
-      break;
+  // Small parallel batches keep the admin action responsive while the database quota claim remains the
+  // authority for spend. Stop after the first batch that reports exhausted quota.
+  const selected = due.slice(0, limit);
+  for (let i = 0; i < selected.length; i += 4) {
+    const batch = await Promise.all(selected.slice(i, i + 4).map((team) => resolveTeamBadge(client, team)));
+    for (const result of batch) {
+      if (result === "verified") out.verified++;
+      if (result === "failed") out.failed++;
+      if (result === "quota") out.quota = true;
     }
+    if (out.quota) break;
   }
   return out;
 }
