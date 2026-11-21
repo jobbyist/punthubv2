@@ -171,6 +171,17 @@ export interface TableRejection {
   reason: string;
 }
 
+function dateAppearsOnPage(page: string, date: string): boolean {
+  const [year, month, day] = date.split("-").map(Number);
+  const dateObj = new Date(Date.UTC(year!, month! - 1, day!));
+  const monthLong = dateObj.toLocaleString("en-GB", { month: "long", timeZone: "UTC" });
+  const monthShort = dateObj.toLocaleString("en-GB", { month: "short", timeZone: "UTC" });
+  const d = String(day);
+  const dd = String(day).padStart(2, "0");
+  const forms = [date, `${d} ${monthLong} ${year}`, `${dd} ${monthLong} ${year}`, `${monthLong} ${d}, ${year}`, `${monthLong} ${dd}, ${year}`, `${d} ${monthShort} ${year}`, `${monthShort} ${d}, ${year}`];
+  const text = normalise(page);
+  return forms.some((form) => text.includes(normalise(form)));
+}
 /**
  * Checks each source's table on its own. A table passes only when every row is consistent and the table is
  * complete: N teams, positions 1..N once each, W+D+L = P, points = 3W + D (a points deduction fails the check and
@@ -241,7 +252,7 @@ export function validateTables(
       // A model-extracted date is metadata only when its quote (or ISO date) is verifiably present on the page.
       // If the page formats dates differently, ignore the unverified date and rely on fresh Parallel retrieval.
       const dateEvidence =
-        (!!dateQuote && page.includes(normalise(dateQuote))) || page.includes(normalise(proposedTableDate));
+        (!!dateQuote && page.includes(normalise(dateQuote))) || dateAppearsOnPage(source.text, proposedTableDate);
       if (dateEvidence) {
         tableDate = proposedTableDate;
         const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
