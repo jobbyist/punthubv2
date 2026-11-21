@@ -81,7 +81,7 @@ describe("validateTables", () => {
     expect(rejected).toEqual([]);
     expect(tables[0]!.rows.map((r) => r.team)).toEqual(teams);
   });
-  it("rejects bad arithmetic, wrong team counts and quotes not on the page", () => {
+  it("rejects bad arithmetic, wrong team counts and unsupported row statistics", () => {
     expect(
       validateTables(
         raw(1, (r) => (r.team === "Alpha FC" ? { ...r, points: 24 } : r)),
@@ -98,7 +98,18 @@ describe("validateTables", () => {
         [official],
         4,
       ).rejected[0]!.reason,
-    ).toMatch(/quote_not_on_page/);
+    ).toMatch(/row_evidence_not_on_page/);
+  });
+  it("matches accentless source rows when the model includes a three-letter team code", () => {
+    const sourceLines = [...lines];
+    sourceLines[0] = "1 Atletico de Madrid 10 7 2 1 20 8 23";
+    const source = page("league.com", "official", 1, sourceLines);
+    const rows = raw(1, (r) => r.team === "Alpha FC"
+      ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched model quote" }
+      : r);
+    const result = validateTables(rows, [source], 4);
+    expect(result.rejected).toEqual([]);
+    expect(result.tables[0]!.rows[0]!.team).toBe("ATM Atlético de Madrid");
   });
   it("rejects explicitly dated tables older than 72 hours", () => {
     const dateQuote = "Updated: 2026-11-17";

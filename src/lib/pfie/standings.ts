@@ -1,6 +1,6 @@
 /**
  * League standings from web pages. The model copies each table row with a quote; plain code checks every row
- * (arithmetic, positions, team count, quote and team on the page) and publishes only when at least two
+ * (arithmetic, positions, team count, accent-insensitive local row-stat evidence) and publishes only when at least two
  * independent, non-Wikipedia domains agree on every team's complete W/D/L and goals record.
  * AI never decides a position or a points total.
  */
@@ -267,14 +267,17 @@ export function validateTables(
       fail("positions_not_1_to_n");
       continue;
     }
-    const page = normalise(source.text);
+    const fold = (value: string) => normalise(value).normalize("NFKD").replace(/\p{Diacritic}/gu, "");
+    const page = fold(source.text);
     const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow) => {
-      const team = normalise(r.team);
+      const variants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].map(fold).filter(Boolean);
       const expected = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
       for (let i = 0; i < sourceLines.length; i++) {
-        if (!normalise(sourceLines[i] ?? "").includes(team)) continue;
-        const context = normalise(sourceLines.slice(i, i + 3).join(" "));
+        const line = fold(sourceLines[i] ?? "");
+        if (!variants.some((team) => line.includes(team))) continue;
+        // Allow for source layouts that place badge labels or metadata between a team and its statistics.
+        const context = fold(sourceLines.slice(i, i + 10).join(" "));
         const numbers = context.match(/[0-9]+/g)?.map(Number) ?? [];
         let cursor = 0;
         const ordered = expected.every((value) => {
@@ -285,7 +288,26 @@ export function validateTables(
         });
         if (ordered) return true;
       }
-      return false;
+      // Some pages extract as a long row-major text block rather than one line per row.
+      const foldedPage = fold(source.text);
+      return variants.some((team) => {
+        let offset = 0;
+        while (offset < foldedPage.length) {
+          const at = foldedPage.indexOf(team, offset);
+          if (at < 0) return false;
+          const numbers = foldedPage.slice(at, at + 1800).match(/[0-9]+/g)?.map(Number) ?? [];
+          let cursor = 0;
+          const ordered = expected.every((value) => {
+            const found = numbers.indexOf(value, cursor);
+            if (found < 0) return false;
+            cursor = found + 1;
+            return true;
+          });
+          if (ordered) return true;
+          offset = at + team.length;
+        }
+        return false;
+      });
     };
     let bad: string | null = null;
     const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
@@ -314,8 +336,9 @@ export function validateTables(
     for (const r of rows) {
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
-      else if (!page.includes(normalise(r.quote)) && !hasRowEvidence(r)) bad = `quote_not_on_page_${r.team}`;
-      else if (!page.includes(normalise(r.team))) bad = `team_not_on_page_${r.team}`;
+      else if (!page.includes(fold(r.quote)) && !hasRowEvidence(r)) bad = `row_evidence_not_on_page_${r.team}`;
+      else if (![r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].some((team) => page.includes(fold(team))))
+        bad = `team_not_on_page_${r.team}`;
       if (bad) break;
       const resolved = knownTeams.length ? resolveTeam(r.team, knownTeams) : null;
       const team = resolved && resolved !== "ambiguous" ? resolved : r.team.trim();
