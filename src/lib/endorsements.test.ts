@@ -40,6 +40,11 @@ describe("buildDraftRequest", () => {
     expect(r.prompt).not.toContain("Thandi");
     expect(r.system).toContain("Dear {{first_name}},");
   });
+  it("keeps institutional requests proportionate to the organisation mandate", () => {
+    const r = buildDraftRequest({ ...org }, "outreach", "michael", "", []);
+    expect(r.system).toContain("Ask for formal recognition or endorsement only when the brief explicitly requests it");
+    expect(r.system).toContain("Do not ask regulators to endorse Puntr");
+  });
   it("lists earlier subjects for a follow-up", () => {
     const r = buildDraftRequest(org, "follow_up", "partners", "", ["Intro to Puntr"]);
     expect(r.prompt).toContain("Intro to Puntr");
