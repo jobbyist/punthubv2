@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
-import { chooseTable, parseStandings, validateTables, type RawStandingRow } from "./standings";
+import { chooseTable, independentSourceKey, parseStandings, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -119,6 +119,13 @@ describe("chooseTable", () => {
     expect(chooseTable(validateTables(raw(1), [a], 4).tables)).toBeNull();
   });
 
+  it("does not count mirrored BBC domains as independent publishers", () => {
+    expect(independentSourceKey("bbc.com")).toBe(independentSourceKey("bbc.co.uk"));
+    const bbcCom = page("bbc.com", "trusted", 1, lines);
+    const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
+    const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
+    expect(chooseTable(tables)).toBeNull();
+  });
   it("rejects Wikipedia as a live standings source", () => {
     const wiki = page("en.wikipedia.org", "trusted", 1, lines);
     expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe("wikipedia_not_allowed_for_live_standings");
