@@ -270,14 +270,14 @@ export function validateTables(
     let bad: string | null = null;
     const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
     if (tableDates.length > 1) bad = "inconsistent_table_dates";
-    const tableDate = tableDates[0] ?? null;
+    const reportedDate = tableDates[0] ?? null;
+    // A model-supplied date that cannot be found on the source page is unverified metadata, not a reason
+    // to discard an otherwise fully evidenced table. Never persist or use that date for freshness decisions.
+    const tableDate = reportedDate && dateAppearsOnPage(source.text, reportedDate) ? reportedDate : null;
     if (tableDate) {
-      if (!dateAppearsOnPage(source.text, tableDate)) bad = "table_date_not_on_page";
-      else {
-        const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
-        if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
-        if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
-      }
+      const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999Z`);
+      if (age > 72 * 60 * 60_000) bad = "table_date_older_than_72h";
+      if (age < -24 * 60 * 60_000) bad = "table_date_in_future";
     }
     if (bad) {
       fail(bad);
