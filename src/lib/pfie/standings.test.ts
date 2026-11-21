@@ -187,14 +187,14 @@ describe("scheduling", () => {
       retryDue(s({ lastAttemptAt: "2026-11-15T00:00:00Z", consecutiveFailures: 3 }), now),
     ).toBe(false);
   });
-  it("refreshes only after a finished match or weekly", () => {
-    const fresh = s({
-      lastSuccessAt: "2026-11-14T02:10:00Z",
-      lastAttemptAt: "2026-11-14T02:10:00Z",
-    });
-    expect(standingsDue(fresh, undefined, now)).toBe(false);
-    expect(standingsDue(fresh, Date.parse("2026-11-13T15:00:00Z"), now)).toBe(false);
-    expect(standingsDue(fresh, Date.parse("2026-11-14T15:00:00Z"), now)).toBe(true);
+  it("refreshes priority tables every 12 hours and other tables every 24 hours", () => {
+    const fresh = s({ lastSuccessAt: "2026-11-14T20:10:00Z", lastAttemptAt: "2026-11-14T20:10:00Z" });
+    expect(standingsDue(fresh, undefined, now, 12)).toBe(false);
+    expect(standingsDue(fresh, undefined, now, 24)).toBe(false);
+    const due12h = s({ lastSuccessAt: "2026-11-14T14:10:00Z", lastAttemptAt: "2026-11-14T14:10:00Z" });
+    expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
+    expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
+    expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
   });
 });
 
