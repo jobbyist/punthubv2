@@ -260,6 +260,7 @@ async function gatherSources(
   const ranked = [...hits].sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
+  const sources: PfieSource[] = [];
   const seenDomains = new Set<string>();
   const candidates = [] as typeof ranked;
   const extract = deps.extract;
@@ -293,7 +294,8 @@ async function gatherSources(
       retrievedAt: new Date().toISOString(),
       via: "extract",
     });
-  }  return sources;
+  }
+  return sources;
 }
 
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
