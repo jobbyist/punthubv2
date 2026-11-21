@@ -270,8 +270,7 @@ export function validateTables(
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
       else if (!page.includes(normalise(r.team))) bad = `team_not_on_page_${r.team}`;
-      else if (!page.includes(normalise(r.quote)) && !rowStatsAppearNearTeam(source.text, r))
-        bad = `row_evidence_not_on_page_${r.team}`;
+      else if (!rowStatsAppearNearTeam(source.text, r)) bad = `row_stats_not_on_page_${r.team}`;
       if (bad) break;
       const resolved = knownTeams.length ? resolveTeam(r.team, knownTeams) : null;
       const team = resolved && resolved !== "ambiguous" ? resolved : r.team.trim();
