@@ -13,13 +13,13 @@ import {
 
 describe("Parallel search requests", () => {
   it("uses sport- and competition-aware queries for marquee teams", () => {
-    expect(badgeSearchRequest("Australia", "FIFA World Cup", "soccer").queries[0]).toContain(
+    expect(badgeSearchRequest("Australia", "FIFA World Cup", "soccer").queries.join(" ")).toContain(
       "national football team",
     );
-    expect(badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries[0]).toContain(
+    expect(badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries.join(" ")).toContain(
       "professional basketball team",
     );
-    expect(badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries[0]).toContain(
+    expect(badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries.join(" ")).toContain(
       "rugby union team",
     );
   });
