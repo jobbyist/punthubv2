@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 22 November 2026 (version 2026-11-22-r22). Draft pending
+            <strong>Last Updated:</strong> 22 November 2026 (version 2026-11-22-r23). Draft pending
             attorney review.
           </p>
 
@@ -390,7 +390,7 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">16. Limitation of Liability</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              TO THE MAXIMUM EXTENT PERMITTED BY SOUTH AFRICAN LAW, PUNTR (PTY) LTD SHALL NOT BE
+              TO THE MAXIMUM EXTENT PERMITTED BY SOUTH AFRICAN LAW, GRAVITAS INDUSTRIES (PTY) LTD SHALL NOT BE
               LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES,
               INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR OTHER INTANGIBLE LOSSES ARISING
               FROM:
