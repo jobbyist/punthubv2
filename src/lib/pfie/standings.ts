@@ -17,10 +17,47 @@ import type { PfieSource } from "./types";
 export const STANDINGS_COMPETITIONS: Partial<
   Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[]; pages?: string[] }>
 > = {
-  psl: { teams: 16, refreshHours: 12, queries: ["Betway Premiership log standings", "PSL log table"] },
+  psl: {
+    teams: 16,
+    refreshHours: 12,
+    queries: [
+      "Betway Premiership log table 2026/27",
+      "PSL standings table current season",
+      "site:stats.ladumaanalytics.co.za/log Betway Premiership",
+      "site:45min.co.za/tables Betway Premiership",
+    ],
+    pages: [
+      "https://stats.ladumaanalytics.co.za/log",
+      "https://45min.co.za/tables",
+    ],
+  },
   epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
-  laliga: { teams: 20, refreshHours: 12, queries: ["La Liga table standings", "LaLiga table"] },
-  seriea: { teams: 20, refreshHours: 12, queries: ["Serie A table standings", "Serie A table"] },
+  laliga: {
+    teams: 20,
+    refreshHours: 12,
+    queries: [
+      "LaLiga EA Sports standings 2026/27",
+      "La Liga current table full standings",
+      "site:skysports.com/football/competitions/la-liga/table La Liga table",
+    ],
+    pages: [
+      "https://www.laliga.com/en-US/laliga-easports/standing",
+      "https://www.skysports.com/football/competitions/la-liga/table",
+    ],
+  },
+  seriea: {
+    teams: 20,
+    refreshHours: 12,
+    queries: [
+      "Serie A Enilive standings 2026/27",
+      "Italian Serie A current table full standings",
+      "site:skysports.com/football/competitions/serie-a/table Serie A table",
+    ],
+    pages: [
+      "https://en.legaseriea.it/serie-a/standings",
+      "https://www.skysports.com/football/competitions/serie-a/table",
+    ],
+  },
   bundesliga: {
     teams: 18,
     refreshHours: 12,
