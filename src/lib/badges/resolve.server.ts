@@ -5,6 +5,8 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
+
 import {
   badgeKey,
   badgePath,
@@ -17,7 +19,7 @@ import {
 const UA = "PuntrBadgeBot/1.0 (https://puntr.co.za; support@puntr.co.za)";
 const MAX_IMAGE_BYTES = 1_000_000;
 const RETRY_AFTER_MS = 24 * 3600 * 1000;
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 6;
 
 async function db(): Promise<SupabaseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -52,6 +54,11 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
       const k = `${f.sport}:${badgeKey(name)}`;
       if (!seen.has(k)) seen.set(k, { sport: f.sport, name, competition: f.competition });
     }
+  }
+  for (const item of MARQUEE_BADGE_TEAMS) {
+    const k = `${item.sport}:${badgeKey(item.team)}`;
+    if (!seen.has(k))
+      seen.set(k, { sport: item.sport, name: item.team, competition: "Puntr hero marquee" });
   }
   return [...seen.values()];
 }
