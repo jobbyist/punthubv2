@@ -109,6 +109,7 @@
       "flyout": {
         "fixtures": "Wedstryde",
         "results": "Uitslae",
+        "tables": "Puntelyste",
         "insights": "Insigte",
         "leaderboards": "Ranglyste",
         "discussions": "Sportgesprekke",
@@ -195,7 +196,7 @@
       "appStore": "die App Store",
       "googlePlay": "Google Play"
     },
-    "copyright": "© 2026 Puntr (Edms.) Bpk. Alle regte voorbehou. Slegs 18+.",
+    "copyright": "© 2026 Gravitas Industries (Edms.) Bpk. Alle regte voorbehou. Slegs 18+.",
     "partnersLabel": "Reguleerders, betalings- en tegnologievennote",
     "partnersPending": "Logo's wat wag om opgelaai of geaktiveer te word (slegs vir admins sigbaar)"
   },

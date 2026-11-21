@@ -71,6 +71,10 @@ function Cookies() {
         subtitle="Cookies and tracking on Puntr. Everything optional is off unless you turn it on."
       />
       <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Puntr South Africa is operated by Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07),
+          a company registered in South Africa.
+        </p>
         <section>
           <h2 className="font-display text-lg font-bold">Essential (always on)</h2>
           <p className="mt-1 text-sm text-muted-foreground">

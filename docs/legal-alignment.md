@@ -15,6 +15,7 @@ legal pages in the same PR. The owner and counsel approve afterwards, so each ch
 | New processor or third-party service | | §6 processors | Cookies if it sets any | |
 | New cookie, localStorage or sessionStorage key | | §10 | Essential or optional list | `docs/legal-alignment.md` storage list |
 | Emails, WhatsApp or SMS the platform sends | | §4 marketing | | `docs/launch-notify.md` |
+| New-account support notification | | §2 internal signup notifications | | Supabase Auth trigger → `email_outbox` → Resend → `support@puntr.co.za` |
 | Picks, grading, corrections, hiding | §9 | §5 public record | | `/how-it-works#grading` |
 | Invites and referrals | §7 | Data table (invites) | | `docs/growth.md` |
 | Points, rewards, prizes | §6, §8 | | | |

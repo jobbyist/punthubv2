@@ -38,6 +38,10 @@ function Refunds() {
       />
 
       <div className="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Puntr South Africa is operated by Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07),
+          a company registered in South Africa.
+        </p>
         <section className="card-surface p-6">
           <h2 className="text-xl">Founding Annual Pass</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

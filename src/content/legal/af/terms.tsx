@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-15-r21.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r22.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 15 November 2026 (weergawe 2026-11-15-r21). Konsep wat
+            <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r22). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -33,9 +33,12 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>1. Inleiding</h2>
             <p className={P}>
-              Welkom by Puntr (Edms.) Bpk. ("Puntr", "ons" of "ons s'n"). Hierdie bepalings en
-              voorwaardes ("Bepalings") beheer jou toegang tot en gebruik van die Puntr-platform,
-              -webwerf, -mobiele toepassings en verwante dienste (gesamentlik die "Diens").
+              Welkom by Puntr South Africa ("Puntr"), 'n platform wat deur Gravitas Industries (Pty) Ltd
+              (CK No.: 2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is ("Gravitas"),
+              bedryf word. In hierdie Bepalings verwys "ons" en "ons s'n" na Gravitas, die operateur
+              van Puntr. Hierdie bepalings en voorwaardes ("Bepalings") beheer jou toegang tot en
+              gebruik van die Puntr-platform, -webwerf, -mobiele toepassings en verwante dienste
+              (gesamentlik die "Diens").
             </p>
             <p className={PL}>
               Deur ons Diens te gebruik of toegang daartoe te verkry, stem jy in om deur hierdie
@@ -367,7 +370,7 @@ export function TermsAf() {
             <p className={P}>
               Alle inhoud, funksies en funksionaliteit van die Diens, insluitend maar nie beperk nie
               tot teks, grafika, logo's, ikone, beelde, klankgrepe en sagteware, is die uitsluitlike
-              eiendom van Puntr (Edms.) Bpk. en word deur Suid-Afrikaanse en internasionale
+              eiendom van Gravitas Industries (Pty) Ltd en word deur Suid-Afrikaanse en internasionale
               outeursreg-, handelsmerk- en ander wette op intellektuele eiendom beskerm.
             </p>
             <p className={PL}>
@@ -428,7 +431,7 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>17. Vrywaring</h2>
             <p className={PL}>
-              Jy stem in om Puntr (Edms.) Bpk., sy beamptes, direkteure, werknemers en verbonde
+              Jy stem in om Gravitas Industries (Pty) Ltd, sy beamptes, direkteure, werknemers en verbonde
               partye te vrywaar, te verdedig en skadeloos te hou teen enige eise, skade, verliese,
               aanspreeklikhede en uitgawes (insluitend regskoste) wat voortspruit uit jou gebruik
               van die Diens of oortreding van hierdie Bepalings.

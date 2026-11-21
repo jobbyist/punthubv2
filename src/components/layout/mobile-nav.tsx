@@ -56,6 +56,7 @@ type FlyoutItem = {
   to:
     | "/fixtures"
     | "/results"
+    | "/tables"
     | "/insights"
     | "/leaderboards"
     | "/forum"
@@ -80,9 +81,10 @@ const flyoutGroups: Record<
     items: [
       { key: "fixtures", to: "/fixtures", icon: CalendarDays },
       { key: "results", to: "/results", icon: CheckCircle2 },
+      { key: "tables", to: "/tables", icon: BarChart3 },
       { key: "insights", to: "/insights", icon: BarChart3 },
     ],
-    match: ["/predictions", "/fixtures", "/results", "/insights", "/match"],
+    match: ["/predictions", "/fixtures", "/results", "/tables", "/insights", "/match"],
   },
   community: {
     icon: Users,

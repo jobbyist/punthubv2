@@ -66,16 +66,40 @@ export interface AdminMember {
   suspendedUntil: string | null;
   limitedUntil: string | null;
   createdAt: string;
+  authCreatedAt: string | null;
   lastSignInAt: string | null;
+  emailConfirmedAt: string | null;
+  phoneConfirmedAt: string | null;
+  authProviders: string[];
   marketingOptIn: boolean;
+  birthYear: number | null;
+  ageAttested: boolean;
+  popiaConsentAt: string | null;
+  language: string;
+  avatarUrl: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  dateOfBirth: string | null;
+  province: string | null;
+  sports: string[];
+  competitions: string[];
+  teams: string[];
+  identityStatus: string | null;
+  identityMethod: string | null;
+  identityOver18: boolean | null;
+  identitySubmittedAt: string | null;
+  identityReviewedAt: string | null;
   entitlements: string[];
   openWarnings: number;
   points: number;
   credits: number;
   practicePicks: number;
+  predictionCount: number;
+  inviteCount: number;
 }
 
-/** Members list with search and filters. Emails come from Supabase Auth and are shown to admins only. */
+/** Every profile and optional member detail, visible to admins only. Emails are read from Supabase Auth. */
 export const adminListMembers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => {
@@ -100,7 +124,7 @@ export const adminListMembers = createServerFn({ method: "POST" })
     let q = db
       .from("profiles")
       .select(
-        "id, username, display_name, role, account_type, founding_number, is_banned, suspended_until, posting_paused_until, created_at, marketing_opt_in",
+        "id, username, display_name, role, account_type, founding_number, is_banned, suspended_until, posting_paused_until, created_at, marketing_opt_in, birth_year, is_18_attested, popia_consent_at, language, avatar_url",
       )
       .not("username", "like", "deleted-%")
       .order("created_at", { ascending: false })
@@ -116,34 +140,82 @@ export const adminListMembers = createServerFn({ method: "POST" })
     const ids = profiles.map((p) => String(p["id"]));
     if (ids.length === 0) return [];
 
-    const [ents, warns, points, credits, practice, users] = await Promise.all([
-      db
-        .from("user_entitlements")
-        .select("user_id, entitlement, expires_at, revoked_at")
-        .in("user_id", ids),
-      db.from("account_warnings").select("user_id").in("user_id", ids).is("acknowledged_at", null),
-      db.from("puntpoints_ledger").select("user_id, points").in("user_id", ids),
-      db.from("credit_ledger").select("user_id, credits").in("user_id", ids),
-      db.from("practice_predictions").select("user_id").in("user_id", ids),
-      db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
-    ]);
+    const [ents, warns, points, credits, practice, users, details, preferences, identity, predictions, referrals] =
+      await Promise.all([
+        db
+          .from("user_entitlements")
+          .select("user_id, entitlement, expires_at, revoked_at")
+          .in("user_id", ids),
+        db.from("account_warnings").select("user_id").in("user_id", ids).is("acknowledged_at", null),
+        db.from("puntpoints_ledger").select("user_id, points").in("user_id", ids),
+        db.from("credit_ledger").select("user_id, credits").in("user_id", ids),
+        db.from("practice_predictions").select("user_id").in("user_id", ids),
+        db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+        db
+          .from("member_details")
+          .select("user_id, first_name, last_name, phone, date_of_birth, province")
+          .in("user_id", ids),
+        db.from("member_preferences").select("user_id, sports, competitions, teams").in("user_id", ids),
+        db
+          .from("identity_verifications")
+          .select("user_id, status, method, over_18, submitted_at, reviewed_at")
+          .in("user_id", ids),
+        db.from("predictions").select("user_id").in("user_id", ids),
+        db.from("profiles").select("referred_by").in("referred_by", ids),
+      ]);
+
     const now = Date.now();
     const sum = (list: unknown, key: string, id: string) =>
       ((list as Record<string, unknown>[] | null) ?? [])
         .filter((r) => r["user_id"] === id)
         .reduce((a, r) => a + Number(r[key] ?? 0), 0);
+    const countByUser = (list: unknown) => {
+      const counts = new Map<string, number>();
+      for (const row of (list as Record<string, unknown>[] | null) ?? []) {
+        const id = typeof row["user_id"] === "string" ? row["user_id"] : "";
+        if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+      return counts;
+    };
+    const countByReferred = (list: unknown) => {
+      const counts = new Map<string, number>();
+      for (const row of (list as Record<string, unknown>[] | null) ?? []) {
+        const id = typeof row["referred_by"] === "string" ? row["referred_by"] : "";
+        if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+      return counts;
+    };
     const authById = new Map((users.data?.users ?? []).map((u) => [u.id, u]));
+    const detailsById = new Map(((details.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
+    const preferencesById = new Map(((preferences.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
+    const identityById = new Map(((identity.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
+    const predictionCounts = countByUser(predictions.data);
+    const inviteCounts = countByReferred(referrals.data);
     const future = (v: unknown) => (typeof v === "string" && Date.parse(v) > now ? v : null);
+    const stringArray = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
 
     return profiles.map((p) => {
       const id = String(p["id"]);
       const auth = authById.get(id);
+      const detail = detailsById.get(id);
+      const prefs = preferencesById.get(id);
+      const verification = identityById.get(id);
+      const authProviders = Array.from(
+        new Set(
+          [
+            typeof auth?.app_metadata?.provider === "string" ? auth.app_metadata.provider : "",
+            ...(auth?.identities ?? []).map((identity) => identity.provider ?? ""),
+          ].filter(Boolean),
+        ),
+      );
       return {
         id,
         username: String(p["username"]),
         displayName: String(p["display_name"] ?? ""),
         email: auth?.email ?? null,
         emailConfirmed: Boolean(auth?.email_confirmed_at),
+        emailConfirmedAt: auth?.email_confirmed_at ?? null,
+        phoneConfirmedAt: auth?.phone_confirmed_at ?? null,
         role: String(p["role"]),
         accountType: String(p["account_type"] ?? "free"),
         foundingNumber: (p["founding_number"] as number | null) ?? null,
@@ -151,8 +223,28 @@ export const adminListMembers = createServerFn({ method: "POST" })
         suspendedUntil: future(p["suspended_until"]),
         limitedUntil: future(p["posting_paused_until"]),
         createdAt: String(p["created_at"]),
+        authCreatedAt: auth?.created_at ?? null,
         lastSignInAt: auth?.last_sign_in_at ?? null,
+        authProviders,
         marketingOptIn: p["marketing_opt_in"] === true,
+        birthYear: (p["birth_year"] as number | null) ?? null,
+        ageAttested: p["is_18_attested"] === true,
+        popiaConsentAt: (p["popia_consent_at"] as string | null) ?? null,
+        language: String(p["language"] ?? "en-ZA"),
+        avatarUrl: (p["avatar_url"] as string | null) ?? null,
+        firstName: (detail?.["first_name"] as string | null) ?? null,
+        lastName: (detail?.["last_name"] as string | null) ?? null,
+        phone: (detail?.["phone"] as string | null) ?? null,
+        dateOfBirth: (detail?.["date_of_birth"] as string | null) ?? null,
+        province: (detail?.["province"] as string | null) ?? null,
+        sports: stringArray(prefs?.["sports"]),
+        competitions: stringArray(prefs?.["competitions"]),
+        teams: stringArray(prefs?.["teams"]),
+        identityStatus: (verification?.["status"] as string | null) ?? null,
+        identityMethod: (verification?.["method"] as string | null) ?? null,
+        identityOver18: (verification?.["over_18"] as boolean | null) ?? null,
+        identitySubmittedAt: (verification?.["submitted_at"] as string | null) ?? null,
+        identityReviewedAt: (verification?.["reviewed_at"] as string | null) ?? null,
         entitlements: ((ents.data ?? []) as Record<string, unknown>[])
           .filter(
             (e) =>
@@ -169,6 +261,8 @@ export const adminListMembers = createServerFn({ method: "POST" })
         practicePicks: ((practice.data ?? []) as Record<string, unknown>[]).filter(
           (r) => r["user_id"] === id,
         ).length,
+        predictionCount: predictionCounts.get(id) ?? 0,
+        inviteCount: inviteCounts.get(id) ?? 0,
       };
     });
   });

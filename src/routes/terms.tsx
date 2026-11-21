@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 15 November 2026 (version 2026-11-15-r21). Draft pending
+            <strong>Last Updated:</strong> 22 November 2026 (version 2026-11-22-r22). Draft pending
             attorney review.
           </p>
 
@@ -44,9 +44,11 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">1. Introduction</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Welcome to Puntr (Pty) Ltd ("Puntr", "we", "us", or "our"). These Terms & Conditions
-              ("Terms") govern your access to and use of the Puntr platform, website, mobile
-              applications, and related services (collectively, the "Service").
+              Welcome to Puntr South Africa ("Puntr"), a platform operated by Gravitas Industries (Pty) Ltd
+              (CK No.: 2024/596436/07), a company registered in South Africa ("Gravitas"). In these
+              Terms, "we", "us" and "our" refer to Gravitas, the operator of Puntr. These Terms &
+              Conditions ("Terms") govern your access to and use of the Puntr platform, website,
+              mobile applications and related services (collectively, the "Service").
             </p>
             <p className="leading-relaxed text-muted-foreground">
               By accessing or using our Service, you agree to be bound by these Terms. If you do not
@@ -345,7 +347,7 @@ function Terms() {
             <p className="mb-3 leading-relaxed text-muted-foreground">
               All content, features, and functionality of the Service, including but not limited to
               text, graphics, logos, icons, images, audio clips, and software, are the exclusive
-              property of Puntr (Pty) Ltd and are protected by South African and international
+              property of Gravitas Industries (Pty) Ltd and are protected by South African and international
               copyright, trademark, and other intellectual property laws.
             </p>
             <p className="leading-relaxed text-muted-foreground">
@@ -405,7 +407,7 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">17. Indemnification</h2>
             <p className="leading-relaxed text-muted-foreground">
-              You agree to indemnify, defend, and hold harmless Puntr (Pty) Ltd, its officers,
+              You agree to indemnify, defend, and hold harmless Gravitas Industries (Pty) Ltd, its officers,
               directors, employees, and affiliates from any claims, damages, losses, liabilities,
               and expenses (including legal fees) arising from your use of the Service or violation
               of these Terms.

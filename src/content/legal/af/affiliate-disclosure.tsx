@@ -16,6 +16,10 @@ export function AffiliateDisclosureAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-4 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
+          Puntr South Africa word deur Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07), 'n
+          maatskappy wat in Suid-Afrika geregistreer is, bedryf.
+        </p>
+        <p>
           Puntr kan 'n kommissie verdien as jy op 'n vennootskakel klik en by daardie vennoot
           registreer. Elke sulke skakel is gemerk &quot;Advertensie&quot;. 'n Vennoot verskyn eers
           nadat ons nagegaan het dat dit die lisensie het wat dit nodig het.
