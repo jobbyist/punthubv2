@@ -112,6 +112,7 @@ export function standingsRequest(input: {
   competition: string;
   season: string;
   sources: PfieSource[];
+  retryHint?: string;
 }): LlmRequest {
   const sources = input.sources
     .map((s) => `<source n="${s.index}" site="${s.domain}">\n${s.text}\n</source>`)
@@ -128,7 +129,7 @@ export function standingsRequest(input: {
       "4. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.",
-    prompt: `Competition: ${input.competition}\nSeason: ${input.season}\n\nSources:\n\n${sources}`,
+    prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
     schema: SCHEMA,
     temperature: 0,
     maxOutputTokens: 8_192,
