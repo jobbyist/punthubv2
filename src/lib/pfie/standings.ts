@@ -267,11 +267,11 @@ export function validateTables(
       fail("positions_not_1_to_n");
       continue;
     }
-    const fold = (value: string) => normalise(value).normalize("NFKD").replace(/\\p{Diacritic}/gu, "");
+    const fold = (value: string) => normalise(value).normalize("NFKD").replace(/\p{Diacritic}/gu, "");
     const page = fold(source.text);
-    const sourceLines = source.text.split("\\n");
+    const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow) => {
-      const variants = [r.team, r.team.replace(/^[A-Z]{2,4}\\s+/, "")].map(fold).filter(Boolean);
+      const variants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].map(fold).filter(Boolean);
       const expected = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
       for (let i = 0; i < sourceLines.length; i++) {
         const line = fold(sourceLines[i] ?? "");
