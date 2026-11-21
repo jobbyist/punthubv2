@@ -425,7 +425,7 @@ export function SiteHeader() {
                 )}
                 {isAdmin && (
                   <MenuItem
-                    icon={ClipboardList}
+                    icon={ClipboardCheck}
                     label="Founding HQ"
                     onSelect={() => navigate({ to: "/admin/founding-hq" })}
                   />
