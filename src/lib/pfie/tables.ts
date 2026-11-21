@@ -295,6 +295,7 @@ async function gatherSources(
     });
   }  return sources;
 }
+
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
   const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
