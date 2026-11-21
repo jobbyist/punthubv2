@@ -18,6 +18,10 @@ export function RefundsAf() {
       <LegalTranslationNotice />
 
       <div className="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Puntr South Africa word deur Gravitas Industries (Pty) Ltd (CK No.: 2024/596436/07), 'n
+          maatskappy wat in Suid-Afrika geregistreer is, bedryf.
+        </p>
         <section className="card-surface p-6">
           <h2 className="text-xl">Stigters-jaarpas</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
