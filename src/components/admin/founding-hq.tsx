@@ -27,8 +27,6 @@ import {
 } from "@/lib/founding-hq.functions";
 
 const panel = "card-surface border border-border/70 p-4 sm:p-5";
-const fieldClass =
-  "h-10 w-full border border-input bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15";
 const selectClass =
   "h-10 w-full border border-input bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15";
 const stages = [
@@ -410,7 +408,7 @@ export function FoundingHqPage() {
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    {lead.profileUrl && <Button asChild size="sm" variant="outline"><a href={lead.profileUrl} target="_blank" rel="noreferrer">Profile <ArrowUpRight className="ml-1 size-3.5" /></a></Button>}
+                    {lead.profileUrl && /^https?:\\/\\//i.test(lead.profileUrl) && <Button asChild size="sm" variant="outline"><a href={lead.profileUrl} target="_blank" rel="noreferrer noopener">Profile <ArrowUpRight className="ml-1 size-3.5" /></a></Button>}
                     <Button size="sm" variant="outline" onClick={() => openEdit(lead)}>Manage</Button>
                   </div>
                 </div>
