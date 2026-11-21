@@ -9,6 +9,10 @@ export interface PfieSource {
   domain: string;
   tier: SourceTier;
   text: string;
+  /** Search result publication date, when supplied by Parallel. */
+  publishedAt?: string | null;
+  /** Time this source page was fetched for the current PFIE run. */
+  retrievedAt?: string;
 }
 
 /** What the model says one page states about one match. Untrusted until validated. */
