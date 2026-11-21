@@ -72,8 +72,8 @@ export interface TablesDeps {
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-const MAX_SOURCES = 5;
-const MAX_CHARS = 14_000;
+const MAX_SOURCES = 4;
+const MAX_CHARS = 10_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
