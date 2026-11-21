@@ -77,7 +77,7 @@ export const adminRunBadges = createServerFn({ method: "POST" })
     const db = await adminDb(ctx);
     if (!db) return { ok: false as const, message: "forbidden" };
     const { runBadgeJob } = await import("@/lib/badges/resolve.server");
-    const r = await runBadgeJob(10, true);
+    const r = await runBadgeJob(25, true);
     await log(db, ctx.userId, "badges.run", r);
     return { ok: true as const, ...r };
   });
