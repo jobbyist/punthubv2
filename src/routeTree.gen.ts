@@ -52,6 +52,7 @@ import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as DuelsIndexRouteImport } from './routes/duels.index'
@@ -305,6 +306,11 @@ const AdminFixturesRoute = AdminFixturesRouteImport.update({
   path: '/admin/fixtures',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFoundingHqRoute = AdminFoundingHqRouteImport.update({
+  id: '/admin/founding-hq',
+  path: '/admin/founding-hq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthConfirmRoute = AuthConfirmRouteImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
@@ -507,6 +513,7 @@ export interface FileRoutesByFullPath {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/admin/founding-hq': typeof AdminFoundingHqRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
@@ -973,6 +980,7 @@ export interface RootRouteChildren {
   AccountPrivacyRoute: typeof AccountPrivacyRoute
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
+  AdminFoundingHqRoute: typeof AdminFoundingHqRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
   DuelsDuelIdRoute: typeof DuelsDuelIdRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
@@ -1318,6 +1326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFixturesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/founding-hq': {
+      id: '/admin/founding-hq'
+      path: '/admin/founding-hq'
+      fullPath: '/admin/founding-hq'
+      preLoaderRoute: typeof AdminFoundingHqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/confirm': {
       id: '/auth/confirm'
       path: '/auth/confirm'
@@ -1581,6 +1596,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountPrivacyRoute: AccountPrivacyRoute,
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
+  AdminFoundingHqRoute: AdminFoundingHqRoute,
   AuthConfirmRoute: AuthConfirmRoute,
   DuelsDuelIdRoute: DuelsDuelIdRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,

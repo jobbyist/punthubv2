@@ -67,7 +67,15 @@ function Admin() {
     <RequireMember>
       {() => (
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-3xl">{t("title")}</h1>
+          <a
+            href="/admin/founding-hq"
+            className="inline-flex h-9 items-center border border-primary/30 bg-primary/5 px-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+          >
+            Founding HQ
+          </a>
+        </div>
           {!isAdmin ? (
             <p className="mt-4 text-sm text-muted-foreground">{t("forbidden")}</p>
           ) : (

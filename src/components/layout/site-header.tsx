@@ -423,6 +423,13 @@ export function SiteHeader() {
                     onSelect={() => navigate({ to: "/admin" })}
                   />
                 )}
+                {isAdmin && (
+                  <MenuItem
+                    icon={ClipboardCheck}
+                    label="Founding HQ"
+                    onSelect={() => navigate({ to: "/admin/founding-hq" })}
+                  />
+                )}
                 <DropdownMenuSeparator />
                 <MenuItem
                   icon={LogOut}
