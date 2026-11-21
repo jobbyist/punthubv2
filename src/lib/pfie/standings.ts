@@ -355,7 +355,14 @@ export function validateTables(
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
 export function independentSourceKey(domain: string): string {
   const value = domain.toLowerCase().replace(/^www\./, "");
-  if (value.endsWith("bbc.com") || value.endsWith("bbc.co.uk")) return "bbc";
+  const publisherRoots: Array<[string, string[]]> = [
+    ["bbc", ["bbc.com", "bbc.co.uk"]],
+    ["dfb", ["dfb.de"]],
+    ["bundesliga", ["bundesliga.com"]],
+  ];
+  for (const [publisher, roots] of publisherRoots) {
+    if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;
+  }
   return value;
 }
 
