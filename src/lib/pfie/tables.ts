@@ -322,9 +322,21 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
     );
     if (sources.length === 0) throw new Error("no usable source");
-    const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources }));
-    const raw = parseStandings(answer.text);
-    if (!raw) throw new Error("extraction answer was not valid JSON");
+    // Extract each source separately. This prevents the model from blending rows across sites or assigning
+    // a table to the wrong source index, and gives each source its own independent validation result.
+    const raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
+    const modelsUsed = new Set<string>();
+    for (const source of sources) {
+      const answer = await generate(
+        deps,
+        standingsRequest({ competition: c.name, season, sources: [source] }),
+      );
+      const parsed = parseStandings(answer.text);
+      if (!parsed) continue;
+      raw.push(...parsed);
+      modelsUsed.add(answer.model);
+    }
+    if (raw.length === 0) throw new Error("no source returned valid standings JSON");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
     const chosen = chooseTable(tables);
@@ -353,7 +365,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       primarySource: chosen.table.source.url,
       tableDate: chosen.table.tableDate ?? null,
       teams: n,
-      model: answer.model,
+      models: [...modelsUsed],
     });
     return {
       ok: true,

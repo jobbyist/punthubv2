@@ -73,7 +73,7 @@ describe("validateTables", () => {
     );
     expect(
       validateTables(
-        raw(1, (r) => ({ ...r, quote: "invented row" })),
+        raw(1, (r) => ({ ...r, quote: "invented row", goalsFor: r.goalsFor + 1 })),
         [official],
         4,
       ).rejected[0]!.reason,
@@ -85,6 +85,10 @@ describe("validateTables", () => {
     const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-17", tableDateQuote: dateQuote }));
     const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-22T12:00:00Z"));
     expect(result.rejected[0]!.reason).toBe("table_date_older_than_72h");
+  });
+  it("accepts a row when normalized quote formatting differs but the full numeric row is present", () => {
+    const rows = raw(1, (r) => ({ ...r, quote: `Source row for ${r.team}` }));
+    expect(validateTables(rows, [official], 4).tables).toHaveLength(1);
   });
   it("rejects duplicate positions", () => {
     expect(
