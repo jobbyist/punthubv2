@@ -167,13 +167,13 @@ export function standingsDue(
   s: SyncStatusRow | undefined,
   latestFinishedMs: number | undefined,
   now: Date,
+  refreshHours = 24,
 ): boolean {
   if (!retryDue(s, now)) return false;
   if (!s?.lastSuccessAt) return true;
   const last = Date.parse(s.lastSuccessAt);
-  const age = now.getTime() - last;
-  if (age < 18 * HOUR) return false;
-  return (latestFinishedMs !== undefined && latestFinishedMs > last) || age > 7 * DAY;
+  if (latestFinishedMs !== undefined && latestFinishedMs > last) return true;
+  return now.getTime() - last >= refreshHours * HOUR;
 }
 
 export async function runTablesSync(
@@ -206,7 +206,7 @@ export async function runTablesSync(
     const c = competitions.find((x) => x.key === key)!;
     if (
       opts.job !== "history" &&
-      standingsDue(status("standings", key), finished.get(c.name), now())
+      standingsDue(status("standings", key), finished.get(c.name), now(), STANDINGS_COMPETITIONS[key]!.refreshHours)
     )
       due.push({ job: "standings", key });
   }
