@@ -102,6 +102,19 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.tableDate).toBeNull();
   });
+  it("treats the current SAST calendar date as today when UTC has not rolled over", () => {
+    const dated = page("league.com", "official", 1, [...lines, "Updated: 22 November 2026"]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-22" }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-21T23:30:00Z"));
+    expect(result.rejected).toEqual([]);
+    expect(result.tables).toHaveLength(1);
+  });
+  it("rejects a table date more than one day ahead in SAST", () => {
+    const dated = page("league.com", "official", 1, [...lines, "Updated: 24 November 2026"]);
+    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-24" }));
+    const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-21T23:30:00Z"));
+    expect(result.rejected[0]!.reason).toBe("table_date_in_future");
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
