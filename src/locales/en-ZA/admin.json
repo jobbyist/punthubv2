@@ -53,7 +53,8 @@
     "quests": "Quests",
     "logos": "Logos/Branding",
     "endorsements": "Endorsements",
-    "translations": "Translations"
+    "translations": "Translations",
+    "push": "Push notifications"
   },
   "settle": {
     "title": "Settlement",
