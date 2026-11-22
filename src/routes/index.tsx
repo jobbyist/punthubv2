@@ -1,4 +1,5 @@
 import { LatestFromPuntr } from "@/components/latest-from-puntr";
+import { TheGoodSportPromo } from "@/components/podcast/the-good-sport";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
@@ -307,25 +308,7 @@ function Landing() {
         </motion.section>
       )}
 
-      {/* Platforms */}
-      {SHOW_BOOKMAKER_WALL && (
-        <motion.section {...fade} className="section-y text-center">
-          <h2 className="text-3xl">{t("platforms.title")}</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-            {t("platforms.body")}
-          </p>
-          <div className="mt-8">
-            <PlatformRail />
-          </div>
-          <div className="mx-auto mt-5 max-w-3xl text-left">
-            <BookmakerIndependenceNotice compact />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
-          <RgNotice variant="compact" className="mt-1" />
-        </motion.section>
-      )}
-
-      <LatestFromPuntr />
+      <TheGoodSportPromo />
 
       {/* Join CTA */}
       <motion.section
@@ -356,6 +339,28 @@ function Landing() {
         </Button>
         <RgNotice variant="compact" className="mt-4" />
       </motion.section>
+
+
+      {/* Platforms */}
+      {SHOW_BOOKMAKER_WALL && !isSignedIn && (
+        <motion.section {...fade} className="section-y text-center">
+          <h2 className="text-3xl">{t("platforms.title")}</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+            {t("platforms.body")}
+          </p>
+          <div className="mt-8">
+            <PlatformRail />
+          </div>
+          <div className="mx-auto mt-5 max-w-3xl text-left">
+            <BookmakerIndependenceNotice compact />
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
+          <RgNotice variant="compact" className="mt-1" />
+        </motion.section>
+      )}
+
+
+      <LatestFromPuntr />
 
       {isVideoModalOpen && (
         <div
