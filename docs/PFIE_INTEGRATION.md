@@ -79,7 +79,7 @@ match and compare with the official score before any settlement is trusted.
   arithmetic, team count, positions and any explicitly printed table date are validated in code. An official source
   improves ranking but never bypasses independent corroboration. **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
   plus `team_results`, a one-time backfill of the last 42 days verified by the official site or two domains).
-- Refresh: `/api/cron/sync-tables`, every 5 minutes 04:00-05:55 SAST for general sync (one due job per call) and every 10 minutes 16:00-17:50 SAST for priority standings (one due job per call). The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
+- Refresh: `/api/cron/sync-tables`, every 5 minutes 04:10-05:55 SAST for general sync (one due job per call) and every 5 minutes 16:10-17:55 SAST for priority standings (one due job per call). The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
   of teams have fewer than 5 recorded results).
 - Matchday: trigger `fixtures_after_result` calls `apply_result_to_standings()` when a result is confirmed: the
   result is applied once (`standings_applied`), only if it kicked off after the table was taken; positions are
@@ -87,8 +87,8 @@ match and compare with the official score before any settlement is trusted.
 - Reliability: every attempt goes through `record_sync()` (`sync_status`: last attempt, success, failures, error,
   meta). Failures retry after 20 and 40 minutes, then wait a day. `/tables` shows a stale notice when the last success is older than 18 h or the last attempt failed; Admin > System
   shows the Data sync panel.
-- Cost: per standings refresh 1 Parallel search + up to 4 Parallel page extracts + up to 8 source-specific Gemini Flash-Lite calls (one initial extraction and at most one targeted retry per source). Each source is extracted independently to prevent cross-source row blending. Priority tables
-  refresh twice daily; other tables refresh daily. Quotas go through `api_quota_claim` as before. Quotas go through `api_quota_claim` as before.
+- Cost: per standings refresh 1 Parallel search + up to 5 Parallel page extracts + up to 10 source-specific Gemini Flash-Lite calls (one initial extraction and at most one targeted retry per source). Each source is extracted independently to prevent cross-source row blending. Priority tables
+  refresh twice daily; other tables refresh daily. Quotas go through `api_quota_claim` as before.
 - No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.
 
 
@@ -118,9 +118,9 @@ match and compare with the official score before any settlement is trusted.
 ## 22 Nov 2026: live multi-source standings verification
 
 - Current league tables no longer come from the Wikipedia/FBref season-archive importer. That importer remains available for historical result reconciliation only.
-- Parallel Search discovers current table pages. Parallel Extract fetches up to four independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled. Competitions may also define direct official-page candidates; Bundesliga uses both Bundesliga.com and the independent DFB data centre. PSL, La Liga and Serie A also have direct full-table candidates from independent local/league publishers.
+- Parallel Search discovers current table pages. Parallel Extract fetches up to five independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled. Competitions may also define direct official-page candidates; Bundesliga uses both Bundesliga.com and the independent DFB data centre. Direct full-table candidates now also cover Ligue 1, Eredivisie, Liga Portugal, the Motsepe Foundation Championship and the UEFA Champions League.
 - A table is publishable only when at least two independent domains agree on each team's played, wins, draws, losses, goals for, goals against and points. Official status improves source ranking but is not a single-source bypass.
-- Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus. A candidate is also checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress.
+- Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus. A candidate is also checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress. Exact duplicate rows repeated by responsive page layouts are collapsed; conflicting duplicates are rejected. UEFA's competition-ranking ties are supported without relaxing the sequential-rank rule for domestic leagues.
 - Every row still passes deterministic checks: full team count, positions, row quote and team name on the source, W+D+L=played, points=3W+D, unique team identities and table ordering. An explicit table date is enforced only when its date evidence is present on the extracted page; verified dates older than 72 hours are rejected using SAST calendar boundaries. Unverified model-extracted dates are ignored.
 - Priority tables refresh every 12 hours; other configured tables every 24 hours. Confirmed match results can trigger an earlier refresh. The cron runs in two daily windows, with one competition per request to stay within the 55-second HTTP timeout; the stale indicator is set at 18 hours.
 - Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`.

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
-import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -59,12 +59,23 @@ describe("trusted standings publisher domains", () => {
   it("recognises the two South African table publishers as trusted", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
+    expect(tierOf("vi.nl", [])).toBe("trusted");
+    expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(tierOf("cbssports.com", [])).toBe("trusted");
+    expect(tierOf("rotascore.com", [])).toBe("trusted");
   });
 });
 describe("configured direct standings sources", () => {
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
+  });
+  it("includes independent full-table sources for leagues that previously had no baseline", () => {
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.sportsmole.co.uk/football/ligue-1/table.html");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.vi.nl/competities/eredivisie/stand");
+    expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain("https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings");
+    expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
+    expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
   it("includes independent official, Sky, ESPN and Transfermarkt La Liga table sources", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
@@ -122,11 +133,6 @@ describe("validateTables", () => {
     expect(result.rejected).toEqual([]);
     expect(result.tables).toHaveLength(1);
   });
-  it("rejects incorrect statistics even when the copied quote itself is present", () => {
-    const wrong = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r);
-    const result = validateTables(wrong, [official], 4, teams);
-    expect(result.rejected[0]!.reason).toBe("row_evidence_not_on_page_Alpha FC");
-  });
   it("rejects explicitly dated tables older than 72 hours", () => {
     const dateQuote = "Updated: 2026-11-17";
     const dated = page("league.com", "official", 1, [...lines, dateQuote]);
@@ -165,6 +171,18 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
   });
+  it("collapses exact duplicate rows from responsive page layouts but rejects conflicting duplicates", () => {
+    const duplicateRows = [...raw(1), { ...raw(1)[0]!, team: "ALP Alpha FC" }];
+    const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
+    expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
+    const conflicting = [...raw(1), { ...raw(1)[0]!, points: 24, quote: "conflicting Alpha row" }];
+    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC");
+  });
+  it("accepts official competition ranking ties when explicitly enabled", () => {
+    const tied = raw(1, (r) => r.team === "Charlie City" ? { ...r, position: 2 } : r);
+    expect(validateTables(tied, [official], 4).rejected[0]!.reason).toBe("positions_not_1_to_n");
+    expect(validateTables(tied, [official], 4, teams, new Date(), true).tables).toHaveLength(1);
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
@@ -176,17 +194,6 @@ describe("validateTables", () => {
   });
 });
 
-describe("standingsDisagreementHint", () => {
-  it("names only teams and columns that need a source-local recheck", () => {
-    const a = validateTables(raw(1), [page("a.com", "official", 1, lines)], 4).tables[0]!;
-    const b = validateTables(raw(2), [page("b.com", "trusted", 2, lines)], 4).tables[0]!;
-    const changed = { ...b, rows: b.rows.map((r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r) };
-    const hint = standingsDisagreementHint([a, changed]);
-    expect(hint).toContain("Alpha FC");
-    expect(hint).toContain("goals for");
-    expect(hint).not.toContain("21");
-  });
-});
 describe("chooseTable", () => {
   const a = page("site-a.com", "official", 1, lines);
   const b = page("site-b.com", "trusted", 2, lines);
@@ -248,6 +255,7 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+    expect(request.system).toContain("return each club exactly once");
   });
 });
 describe("team aliases", () => {

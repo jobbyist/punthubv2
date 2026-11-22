@@ -23,7 +23,6 @@ import {
   parseStandings,
   tableRegression,
   standingsRequest,
-  standingsDisagreementHint,
   validateTables,
   type StandingRow,
 } from "./standings";
@@ -76,7 +75,7 @@ export interface TablesDeps {
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-const MAX_SOURCES = 4;
+const MAX_SOURCES = 5;
 const MAX_CHARS = 10_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
@@ -333,7 +332,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     );
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
+    const raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
     // Run the bounded first-pass Gemini calls concurrently. If a source fails deterministic validation,
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
@@ -342,8 +341,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now())
-          : { ...validateTables([], [source], cfg.teams, known, now()), rejected: [{ source: source.index, reason: "invalid_json" }] };
+          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl")
+          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: source.index, reason: "invalid_json" }] };
         return { source, parsed, validation };
       }),
     );
@@ -358,8 +357,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [result.source], cfg.teams, known, now())
-          : { ...validateTables([], [result.source], cfg.teams, known, now()), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl")
+          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
         return { source: result.source, parsed, validation };
       }),
     );
@@ -372,46 +371,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceFailures.push(`${result.source.index}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    let validation = validateTables(raw, sources, cfg.teams, known, now());
-    let chosen = chooseTable(validation.tables);
-    if (!chosen && validation.tables.length >= 2) {
-      const hint = standingsDisagreementHint(validation.tables);
-      if (hint) {
-        // Re-read each valid source independently once when complete tables disagree.
-        const consensusRetries = await Promise.all(
-          validation.tables.map(async (table) => {
-            const source = sources.find((candidate) => candidate.index === table.source.index);
-            if (!source) return null;
-            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint }));
-            modelsUsed.add(answer.model);
-            const parsed = parseStandings(answer.text);
-            const result = parsed
-              ? validateTables(parsed, [source], cfg.teams, known, now())
-              : { ...validateTables([], [source], cfg.teams, known, now()), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
-            return { source, parsed, result };
-          }),
-        );
-        const bySource = new Map<number, NonNullable<ReturnType<typeof parseStandings>>>();
-        for (const row of raw) bySource.set(row.source, [...(bySource.get(row.source) ?? []), row]);
-        for (const retry of consensusRetries) {
-          if (!retry) continue;
-          if (retry.parsed && retry.result.tables.length > 0) {
-            bySource.set(retry.source.index, retry.parsed.filter((row) => row.source === retry.source.index));
-          } else {
-            const reason = retry.result.rejected.map((item) => item.reason).join(";") || "consensus_retry_incomplete";
-            sourceFailures.push("consensus_retry_" + retry.source.index + ":" + reason);
-          }
-        }
-        raw = [...bySource.values()].flat();
-        validation = validateTables(raw, sources, cfg.teams, known, now());
-        chosen = chooseTable(validation.tables);
-      }
-    }
+    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+    const chosen = chooseTable(tables);
     if (!chosen) {
-      const domains = validation.tables.map((table) => table.source.domain).join(", ");
-      const why = [...sourceFailures, ...validation.rejected.map((r) => String(r.source) + ":" + r.reason)].join(", ") ||
-        String(validation.tables.length) + " unconfirmed tables" + (domains ? " from " + domains : "");
-      throw new Error("no verified table (" + why + ")");
+      const why = [...sourceFailures, ...rejected.map((r) => `${r.source}:${r.reason}`)].join(", ") || `${tables.length} unconfirmed tables`;
+      throw new Error(`no verified table (${why})`);
     }
     const previous = await deps.store.currentStandings(key, season);
     const regression = tableRegression(chosen.table.rows, previous);
