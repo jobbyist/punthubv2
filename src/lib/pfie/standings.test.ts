@@ -3,17 +3,7 @@ import { describe, expect, it } from "vitest";
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
 import { normaliseTeam, resolveTeam } from "./teams";
-import {
-  STANDINGS_COMPETITIONS,
-  chooseTable,
-  independentSourceKey,
-  parseStandings,
-  standingsRequest,
-  standingsDisagreementHint,
-  tableRegression,
-  validateTables,
-  type RawStandingRow,
-} from "./standings";
+import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -95,22 +85,19 @@ describe("trusted standings publisher domains", () => {
 });
 describe("configured direct standings sources", () => {
   it("includes the official Bundesliga table and independent DFB data centre", () => {
-    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
-      "https://www.bundesliga.com/en/bundesliga/table?view=full",
-    );
-    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
-      "https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center",
-    );
+    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
+    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
-      independentSourceKey("premierleague.com"),
-    );
-    expect(independentSourceKey("www.tactix.football")).toBe(
-      independentSourceKey("tactix.football"),
-    );
-    expect(independentSourceKey("stats.footballedgelab.com")).toBe(
-      independentSourceKey("footballedgelab.com"),
-    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.sportsmole.co.uk/football/ligue-1/table.html");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.tntsports.co.uk/football/ligue-1/standings.shtml");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.cbssports.com/soccer/ligue-1/standings/");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.ninetyminutesplus.com/league/ligue-1/standings");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.vi.nl/competities/eredivisie/stand");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://statz.ai/competitions/eredivisie");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://sportmetrics.org/league/netherlands-eredivisie-75672/2026-27/");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.flashscore.com/football/netherlands/eredivisie/standings/");
+    expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain("https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings");
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
@@ -381,27 +368,19 @@ describe("chooseTable", () => {
   });
   it("rejects Wikipedia as a live standings source", () => {
     const wiki = page("en.wikipedia.org", "trusted", 1, lines);
-    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe(
-      "wikipedia_not_allowed_for_live_standings",
-    );
+    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe("wikipedia_not_allowed_for_live_standings");
   });
 });
 
 describe("tableRegression", () => {
   it("rejects a table that moves played matches or statistics backwards", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
-      .rows;
-    const stale = previous.map((r) =>
-      r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r,
-    );
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const stale = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r);
     expect(tableRegression(stale, previous)).toBe("played_regressed_Alpha FC");
   });
   it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
-      .rows;
-    const newer = previous.map((r) =>
-      r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r,
-    );
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
     expect(tableRegression(newer, previous)).toBeNull();
   });
 });
@@ -496,16 +475,10 @@ describe("scheduling", () => {
     ).toBe(false);
   });
   it("refreshes priority tables every 12 hours and other tables every 24 hours", () => {
-    const fresh = s({
-      lastSuccessAt: "2026-11-14T20:10:00Z",
-      lastAttemptAt: "2026-11-14T20:10:00Z",
-    });
+    const fresh = s({ lastSuccessAt: "2026-11-14T20:10:00Z", lastAttemptAt: "2026-11-14T20:10:00Z" });
     expect(standingsDue(fresh, undefined, now, 12)).toBe(false);
     expect(standingsDue(fresh, undefined, now, 24)).toBe(false);
-    const due12h = s({
-      lastSuccessAt: "2026-11-14T14:10:00Z",
-      lastAttemptAt: "2026-11-14T14:10:00Z",
-    });
+    const due12h = s({ lastSuccessAt: "2026-11-14T14:10:00Z", lastAttemptAt: "2026-11-14T14:10:00Z" });
     expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
     expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
@@ -550,11 +523,7 @@ describe("seasonQueries", () => {
 });
 
 describe("season backfill sync", () => {
-  const long = Array.from(
-    { length: 8 },
-    (_, i) =>
-      `Motsepe Foundation Championship historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`,
-  ).join("\n");
+  const long = Array.from({ length: 8 }, (_, i) => `Motsepe Foundation Championship historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`).join("\n");
   const answer = (matches: unknown[]) => JSON.stringify({ matches });
   const make = (replies: string[]) => {
     const recorded: { ok: boolean; error: string | null }[] = [];
