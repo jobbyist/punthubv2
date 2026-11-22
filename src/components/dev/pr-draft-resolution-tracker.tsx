@@ -138,7 +138,11 @@ export function PrDraftResolutionTracker() {
                       <GateIcon state={gate.state} />
                       <span className="min-w-0 flex-1">{gate.label}</span>
                       <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
-                        {gate.state === "done" ? "Done" : gate.state === "open" ? "Open" : "Deferred"}
+                        {gate.state === "done"
+                          ? "Done"
+                          : gate.state === "open"
+                            ? "Open"
+                            : "Deferred"}
                       </span>
                     </li>
                   ))}
@@ -164,7 +168,8 @@ export function PrDraftResolutionTracker() {
         })}
       </div>
       <p className="text-xs text-muted-foreground">
-        Gate progress is an operational snapshot, not GitHub CI status or merge authorization. Recheck the pull request and its required checks before merging.
+        Gate progress is an operational snapshot, not GitHub CI status or merge authorization.
+        Recheck the pull request and its required checks before merging.
       </p>
     </section>
   );
