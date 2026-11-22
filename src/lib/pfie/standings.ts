@@ -467,16 +467,38 @@ export function validateTables(
       else if (!teamVariants.some((name) => page.includes(fold(name)))) bad = `team_not_on_page_${r.team}`;
       if (bad) break;
       const key = normaliseTeam(team);
-      const duplicate = out.find((existing) => normaliseTeam(existing.team) === key);
-      if (duplicate) {
-        const identical = duplicate.played === r.played &&
-          duplicate.won === r.won && duplicate.drawn === r.drawn && duplicate.lost === r.lost &&
-          duplicate.goalsFor === r.goalsFor && duplicate.goalsAgainst === r.goalsAgainst &&
-          duplicate.points === r.points;
-        // Some publisher pages repeat the same overall table in responsive layouts. Collapse only exact
-        // duplicate rows; conflicting duplicate club records still invalidate the source.
+      const duplicateIndex = out.findIndex((existing) => normaliseTeam(existing.team) === key);
+      if (duplicateIndex >= 0) {
+        const duplicate = out[duplicateIndex]!;
+        const priorValues = [
+          duplicate.played, duplicate.won, duplicate.drawn, duplicate.lost,
+          duplicate.goalsFor, duplicate.goalsAgainst, duplicate.points,
+        ];
+        const rowValues = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
+        const identical = duplicate.position === r.position &&
+          priorValues.every((value, i) => value === rowValues[i]);
         if (identical) continue;
-        bad = `duplicate_team_${team}`;
+        const dominates = (left: number[], right: number[]) =>
+          left.every((value, i) => value >= right[i]!) &&
+          left.some((value, i) => value > right[i]!);
+        if (dominates(rowValues, priorValues)) {
+          // Team aliases can resolve to one canonical club only after known-team matching. Apply the same
+          // cumulative overall-row preference after resolution as before it.
+          out[duplicateIndex] = {
+            position: r.position,
+            team,
+            played: r.played,
+            won: r.won,
+            drawn: r.drawn,
+            lost: r.lost,
+            goalsFor: r.goalsFor,
+            goalsAgainst: r.goalsAgainst,
+            points: r.points,
+          };
+          continue;
+        }
+        if (dominates(priorValues, rowValues)) continue;
+        bad = `duplicate_team_${team}_${priorValues.join("/")}_vs_${rowValues.join("/")}`;
         break;
       }
       names.add(key);
