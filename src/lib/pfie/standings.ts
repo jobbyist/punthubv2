@@ -466,7 +466,11 @@ export function validateTables(
     for (const r of rows) {
       const sourceName = r.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolved = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
-      const team = resolved && resolved !== "ambiguous" ? resolved : sourceName;
+      const team = resolved && resolved !== "ambiguous"
+        ? resolved
+        : knownTeams.length
+          ? sourceName
+          : r.team.trim();
       const teamVariants = [r.team, sourceName, team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
