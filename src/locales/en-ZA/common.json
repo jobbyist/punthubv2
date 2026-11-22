@@ -185,6 +185,13 @@
     "iosStep1": "Tap the Share button in Safari.",
     "iosStep2": "Scroll down and choose Add to Home Screen.",
     "iosStep3": "Tap Add. Open Puntr from your home screen.",
-    "gotIt": "Got it"
+    "gotIt": "Got it",
+    "push": {
+      "title": "Stay in the game.",
+      "body": "Allow Puntr notifications for important announcements and matchday updates. You stay in control and can switch them off in Account settings.",
+      "allow": "Allow notifications",
+      "notNow": "Not now",
+      "error": "Couldn't enable notifications."
+    }
   }
 }
