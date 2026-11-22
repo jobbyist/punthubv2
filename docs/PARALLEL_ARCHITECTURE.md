@@ -141,3 +141,6 @@ The La Liga direct-page candidate roster is capped at five independent publisher
 - PR #185: five independent La Liga publishers are configured (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta). The focused source-cap regression, typecheck and Vercel build pass. The full PFIE standings test file passes (47/47); production-like extraction and two-source consensus are still required before calling the new source roster operationally verified.
 - PR #195: targeted lint, typecheck, 15 evidence tests and Vercel build pass. Review threads are resolved. Its service-role-only migration remains unapplied until production migration history and backup/rollback are reconciled.
 - PR #196 remains post-launch only.
+
+
+PR #195's reference-price foundation stores source IDs and publisher domains separately. The bookmaker count must match both arrays, and a database trigger enforces distinct identities and checks that every source is an enabled, licensed ZA bookmaker with recorded licence/terms evidence. The migration remains unapplied pending migration-baseline reconciliation.
