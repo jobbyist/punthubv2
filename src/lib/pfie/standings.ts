@@ -41,12 +41,16 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:skysports.com/football/competitions/la-liga/table La Liga table",
       "La Liga current standings ESPN table",
       "La Liga current standings Transfermarkt table",
+      "La Liga standings table Flashscore",
+      "BBC Sport La Liga table standings",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
       "https://www.skysports.com/football/competitions/la-liga/table",
       "https://www.espn.com/soccer/standings/_/league/esp.1",
       "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
+      "https://www.flashscore.com/football/spain/laliga/standings/",
+      "https://www.bbc.com/sport/football/la-liga/table",
     ],
   },
   seriea: {
