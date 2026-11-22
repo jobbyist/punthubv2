@@ -239,7 +239,7 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 - [ ] South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review.
 - [ ] Roster membership references a canonical PFIE team record rather than free-text team names.
 - [ ] RLS is enabled and anon/authenticated have no grants on foundation tables; service-role access is explicit.
-- [x] 15 evidence unit tests, targeted ESLint, typecheck and Vercel build pass; review threads resolved. [ ] Validate SQL in a disposable database before any production migration.
+- [x] 15 evidence unit tests, targeted ESLint, typecheck and Vercel build pass; reference-price source IDs/domains are distinct and licence-gated by trigger; review threads resolved. [ ] Validate SQL in a disposable database before any production migration.
 - [ ] Migration remains unapplied in production pending baseline reconciliation and owner approval.
 
 **#196 — post-launch only**
@@ -262,7 +262,7 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 ### Current PR execution state
 
 - [x] #185 — five-source roster, focused cap test, typecheck and Vercel build verified; ready for review. [ ] Production-like extraction and two-publisher consensus evidence remain outstanding. Full PFIE standings suite now passes (47/47).
-- [x] #195 — targeted ESLint, typecheck, 15 evidence tests, schema/RLS/grant review and Vercel build verified; ready for review. [ ] Production migration remains unapplied pending full migration-baseline reconciliation and separate approval.
+- [x] #195 — targeted ESLint, typecheck, 15 evidence tests, targeted ESLint, typecheck, schema/RLS/grant review, distinct reference-price source-ID/domain trigger and Vercel build verified; ready for review. [ ] Production migration remains unapplied pending full migration-baseline reconciliation and separate approval.
 - [x] #196 — explicitly deferred to post-launch; no pre-launch merge or activation.
 
 **Merge rule:** #185 and #195 are marked ready for review, not merged. #185 still requires production-like extraction and two-publisher consensus evidence. #195 may be merged as a code/schema foundation after reviewer approval, but its production migration remains a separate, blocked change until migration history and backup/rollback are reconciled.
