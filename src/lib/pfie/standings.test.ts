@@ -170,9 +170,7 @@ describe("La Liga live source configuration", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://www.tactix.football/standings?country=spain&league=140&season=2026",
     );
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://footballedgelab.com/la-liga",
-    );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://footballedgelab.com/la-liga");
     expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
     expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
     expect(tierOf("theanalyst.com", ["laliga.com"])).toBe("trusted");
