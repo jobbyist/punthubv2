@@ -154,7 +154,7 @@ export function FantasyArenaPromo() {
         <div className="absolute inset-1 rounded-2xl border border-primary/30 bg-primary/5" />
         <div className="absolute inset-3 rounded-xl border border-primary/20" />
         {!reduce && <motion.div className="absolute inset-0 rounded-2xl border-t-2 border-primary" animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }} />}
-        <motion.div className="relative grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20" animate={reduce ? undefined : { y: [0, -4, 0], rotate: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}><Trophy className="size-5" /></motion.div>
+        <motion.div className="relative grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20" animate={reduce ? false : { y: [0, -4, 0], rotate: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}><Trophy className="size-5" /></motion.div>
         <Swords className="absolute -right-1 -top-1 size-5 text-primary" />
       </div>
     </section>
