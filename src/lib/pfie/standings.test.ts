@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
-import { normaliseTeam } from "./teams";
+import { normaliseTeam, resolveTeam } from "./teams";
 import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
@@ -231,6 +231,29 @@ describe("validateTables", () => {
       points: 20,
     });
   });
+  it("canonicalizes a known team alias before collapsing a repeated overall subset row", () => {
+    const overall = raw(1)[0]!;
+    const aliasSubset = {
+      ...overall,
+      team: "Alpha",
+      position: 3,
+      played: 5,
+      won: 3,
+      drawn: 1,
+      lost: 1,
+      goalsFor: 8,
+      goalsAgainst: 4,
+      points: 10,
+      quote: "Alpha 5 3 1 1 8 4 10",
+    };
+    const aliasPage = page("league.com", "official", 1, [...lines, aliasSubset.quote]);
+    const result = validateTables([...raw(1), aliasSubset], [aliasPage], 4, teams);
+    expect(result.tables).toHaveLength(1);
+    expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
+      played: 10,
+      points: 20,
+    });
+  });
   it("accepts official competition ranking ties when explicitly enabled", () => {
     const tied = raw(1, (r) => r.team === "Charlie City" ? { ...r, position: 2 } : r);
     expect(validateTables(tied, [official], 4).rejected[0]!.reason).toBe("positions_not_1_to_n");
@@ -247,6 +270,11 @@ describe("validateTables", () => {
   });
 });
 
+describe("ambiguous Paris team shorthand", () => {
+  it("does not silently map Paris to PSG when Paris FC is also a known club", () => {
+    expect(resolveTeam("Paris", ["Paris Saint-Germain", "Paris FC"])).toBeNull();
+  });
+});
 describe("La Liga cross-publisher team aliases", () => {
   it("normalizes official LaLiga names to independent publisher names", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
