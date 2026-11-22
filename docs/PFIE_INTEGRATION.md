@@ -145,3 +145,10 @@ When source tables pass local checks but no two independent publishers agree, PF
 - **#185 La Liga source coverage (pre-launch):** use five independent page candidates only — LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). Keep the configured page and query lists at five. Existing full-team, row-quote, arithmetic, date/freshness, regression and two-independent-publisher consensus rules remain mandatory. Configured sources are candidates, not proof of successful extraction.
 - **#195 verified data products foundation (pre-launch):** shared deterministic evidence validation, curated publisher identity, South African bookmaker licence/terms gate and canonical team/roster identity are the scope. Require captured page text for quotes and service-role-only RLS/grants. Review and test the migration in a disposable environment. Do not apply it to production until the migration baseline is reconciled and backup/PITR/rollback approval is recorded.
 - **#196 match intelligence / odds / exclusions (post-launch):** deferred. No automated bookmaker odds or match-intelligence feature from this PR is to be enabled for the 1 December MVP. Revisit data rights, legal, security, quota, migration and end-to-end requirements after launch.
+
+
+## 22 Nov 2026 — implementation verification snapshot
+
+- PR #185's five-source La Liga cap regression, typecheck and Vercel production build passed. Six remaining standings-suite failures also reproduce on main and are tracked as baseline test debt. The Analyst/Opta is in the trusted-publisher registry; live extraction and two-publisher consensus are not yet certified.
+- PR #195's targeted ESLint, typecheck, 15 evidence tests and Vercel production build passed. Review threads are resolved. The migration is source-control only until the production migration baseline and backup/rollback plan are reconciled.
+- PR #196 is explicitly post-launch and is not an MVP dependency.
