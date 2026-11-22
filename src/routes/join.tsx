@@ -416,7 +416,7 @@ function AuthStep({
             <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>
           ) : (
             <p className="text-xs">
-              <Link to="/reset-password" className="font-semibold text-primary hover:underline">
+              <Link to="/reset-password" search={{ next: redirectTo }} className="font-semibold text-primary hover:underline">
                 {t("join.forgot")}
               </Link>
             </p>
