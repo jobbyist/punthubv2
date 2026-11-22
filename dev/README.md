@@ -51,8 +51,8 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 | PR | Status | Decision |
 |---|---|---|
 | [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft — pre-launch, hardening in progress | Five independent publishers only (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst (Opta)); strict complete-table validation and two-publisher consensus. Merge only after lint, typecheck, tests, build, preview and production-like extraction checks pass |
-| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft — pre-launch, hardening in progress | Reusable evidence/domain/licence/roster foundation. Merge only after lint, typecheck, tests, build, schema/RLS/grant review and preview pass. Source-control merge does not authorize production migration |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Ready for review — pre-launch | Five independent publishers (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta); source-cap regression, typecheck and build pass. Six unrelated standings-suite failures reproduce on main; live extraction/consensus evidence remains a release gate |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Ready for review — pre-launch | 15 evidence tests, targeted ESLint, typecheck and Vercel build pass. Curated publisher identity, page-text quote checks, ZA licence gate, canonical team IDs and service-role-only schema. Production migration remains separately blocked |
 | [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred from MVP. No automated bookmaker odds without written data rights. Revisit match-intelligence workers, exclusions scope, migration, security and legal validation after launch |
 | #173, #177 | Closed, not merged | Their code paths are already present in main |
 | #183 | Closed, not merged | Duplicate of #185 |
@@ -61,8 +61,17 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 
 ## PR execution sequence (owner decision, 22 November 2026)
 
-- **#185 — pre-launch:** complete the five-source La Liga configuration and source-cap tests. Keep strict two-independent-publisher consensus; source candidates do not count as verified coverage until extraction and validation succeed.
-- **#195 — pre-launch merge candidate:** complete deterministic evidence validation, curated publisher identity, South African bookmaker licence checks, canonical team/roster identity, migration SQL review and tests. The migration may be merged into source control only after review; do not apply it to production until the full migration baseline and backup/rollback plan are reconciled.
+- **#185 — pre-launch:** ready for review. Five-source cap, focused regression, typecheck and build pass. Keep strict two-independent-publisher consensus; source candidates do not count as verified coverage until extraction and validation succeed.
+- **#195 — pre-launch merge candidate:** ready for review after targeted lint, typecheck, 15 evidence tests and Vercel build passed. The migration may be merged into source control only after review; do not apply it to production until the full migration baseline and backup/rollback plan are reconciled.
 - **#196 — post-launch:** keep draft and out of the 1 December critical path. Automated odds remain disabled pending written collection/storage/display/redistribution rights. Revisit its match-intelligence workers, exclusion-page scope, migration and compliance gates after launch.
 
 A successful preview deployment is not a substitute for test, security, data-rights or production-migration approval.
+
+
+### Verification snapshot (22 November 2026)
+
+- PR #185: focused five-source cap test passed; TypeScript typecheck and Vercel production build passed. The full standings test file still has six baseline failures, reproduced on main; they are documented in the PR and do not originate from the new source roster. Live extraction and two-publisher consensus remain unverified until a production-like run.
+- PR #195: targeted ESLint, TypeScript typecheck, all 15 evidence tests and Vercel production build passed. Review threads are resolved and the branch is mergeable. Its migration is not applied to production.
+- PR #196 remains draft and post-launch only.
+- GitHub-hosted Actions jobs did not acquire a runner; no failing workflow was left in the repository. Validation evidence above comes from isolated Vercel preview builds, not a green repository-wide Actions pipeline.
+
