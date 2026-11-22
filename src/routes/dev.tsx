@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 
+import { GoodSportLaunchChecklist } from "@/components/dev/good-sport-launch-checklist";
 import { ReadinessPanel } from "@/components/dev/readiness-panel";
 import { PwaHardeningRoadmap } from "@/components/dev/pwa-hardening-roadmap";
 import { useSession } from "@/components/session";
@@ -88,6 +89,7 @@ function DevPage() {
         </Link>
       </div>
       <ReadinessPanel snapshot={page.readiness} />
+      <GoodSportLaunchChecklist />
       <PwaHardeningRoadmap />
     </div>
   );
