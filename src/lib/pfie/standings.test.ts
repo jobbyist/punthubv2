@@ -298,6 +298,7 @@ describe("validateTables", () => {
 describe("ambiguous Paris team shorthand", () => {
   it("does not silently map Paris to PSG when Paris FC is also a known club", () => {
     expect(resolveTeam("Paris", ["Paris Saint-Germain", "Paris FC"])).toBeNull();
+    expect(resolveTeam("Paris FC", ["Paris Saint-Germain", "Paris FC"])).toBe("Paris FC");
   });
 });
 describe("La Liga cross-publisher team aliases", () => {
