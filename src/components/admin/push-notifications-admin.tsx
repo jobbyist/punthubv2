@@ -103,7 +103,7 @@ export function PushNotificationsAdmin() {
 
       <section className={panel}>
         <h3 className="text-lg font-semibold">Compose push campaign</h3>
-        <p className="mt-1 text-sm text-muted-foreground">Push notifications are sent only to members who explicitly opted in. Existing in-app notifications are managed separately.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Push notifications are sent only to members who explicitly opted in. Existing in-app notifications are managed separately. Never include personal, account, payment or betting information in notification text.</p>
         <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="space-y-3">
             <Input value={title} maxLength={120} placeholder="Notification title (3–120 characters)" onChange={(e) => setTitle(e.target.value)} />
