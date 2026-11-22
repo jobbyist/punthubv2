@@ -172,7 +172,7 @@ describe("validateTables", () => {
     expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
   });
   it("collapses exact duplicate rows from responsive page layouts but rejects conflicting duplicates", () => {
-    const duplicateRows = [...raw(1), raw(1)[0]!];
+    const duplicateRows = [...raw(1), { ...raw(1)[0]!, team: "ALP Alpha FC" }];
     const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
     expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
     const conflicting = [...raw(1), { ...raw(1)[0]!, points: 24, quote: "conflicting Alpha row" }];
