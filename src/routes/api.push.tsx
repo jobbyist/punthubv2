@@ -143,6 +143,14 @@ export const Route = createFileRoute("/api/push")({
           }).select("id").single();
           if (campaignError || !campaign) return json({ error: "Could not create push campaign." }, 500);
           const list = subscriptions ?? [];
+          if (list.length === 0) {
+            return json({
+              error: action === "test"
+                ? "No active devices registered for your account. Enable push notifications on this device in Account settings, then try again."
+                : "No opted-in devices match this audience. No campaign was created.",
+              activeSubscriptions: 0,
+            }, 409);
+          }
           let sentCount = 0;
           let failedCount = 0;
           if (list.length > 0) {
