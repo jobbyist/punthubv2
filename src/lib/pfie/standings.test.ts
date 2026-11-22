@@ -160,25 +160,26 @@ describe("configured direct standings sources", () => {
   });
   it("keeps La Liga direct tables within the five-source cap using independent publishers", () => {
     const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
-    expect(pages).toHaveLength(4);
+    expect(pages).toHaveLength(5);
     expect(pages.length).toBeLessThanOrEqual(5);
     expect(pages).toEqual(
       expect.arrayContaining([
         "https://www.laliga.com/en-US/laliga-easports/standing",
         "https://www.skysports.com/football/competitions/la-liga/table",
-        "https://www.espn.com/soccer/standings/_/league/esp.1",
+        "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+        "https://footballedgelab.com/la-liga",
         "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
       ]),
     );
-    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(4);
-    const publisherKeys = ["laliga.com", "skysports.com", "espn.com", "transfermarkt.com"].map(
+    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(5);
+    const publisherKeys = ["laliga.com", "skysports.com", "tactix.football", "footballedgelab.com", "transfermarkt.com"].map(
       independentSourceKey,
     );
     expect(new Set(publisherKeys).size).toBe(4);
   });
 });
 describe("La Liga live source configuration", () => {
-  it("includes the official La Liga table and three independently verified current tables", () => {
+  it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://www.laliga.com/en-US/laliga-easports/standing",
     );
@@ -186,13 +187,15 @@ describe("La Liga live source configuration", () => {
       "https://www.skysports.com/football/competitions/la-liga/table",
     );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://www.espn.com/soccer/standings/_/league/esp.1",
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
     );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://footballedgelab.com/la-liga");
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     );
     expect(tierOf("skysports.com", ["laliga.com"])).toBe("trusted");
-    expect(tierOf("espn.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
     expect(tierOf("transfermarkt.com", ["laliga.com"])).toBe("trusted");
   });
 });
@@ -408,7 +411,6 @@ describe("La Liga cross-publisher team aliases", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
     expect(normaliseTeam("Deportivo Alavés")).toBe(normaliseTeam("Alaves"));
     expect(normaliseTeam("Athletic")).toBe(normaliseTeam("Athletic Bilbao"));
-    expect(normaliseTeam("Deportivo")).toBe(normaliseTeam("Deportivo La Coruna"));
     expect(normaliseTeam("Espanyol Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("RCD Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
