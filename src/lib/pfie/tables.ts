@@ -371,10 +371,50 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceFailures.push(`${result.source.index}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
-    const chosen = chooseTable(tables);
+    let finalValidation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+    let chosen = chooseTable(finalValidation.tables);
+    if (!chosen && finalValidation.tables.length >= 2) {
+      // Individually valid tables can still disagree. Re-read only those complete sources with a targeted
+      // consensus hint; the model must verify its own page and must never copy another publisher's values.
+      const consensusRetry = await Promise.all(
+        finalValidation.tables.map(async (table) => {
+          const source = sources.find((candidate) => candidate.index === table.source.index);
+          if (!source) return null;
+          const answer = await generate(
+            deps,
+            standingsRequest({
+              competition: c.name,
+              season,
+              sources: [source],
+              retryHint: "This complete table disagrees with other independent publishers on one or more rows. Re-read this page only and verify the exact P/W/D/L/GF/GA/points values for every team. Do not copy or conform to another source; use only values visibly present on this page.",
+            }),
+          );
+          modelsUsed.add(answer.model);
+          const parsed = parseStandings(answer.text);
+          const validation = parsed
+            ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl")
+            : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
+          return { source, parsed, validation };
+        }),
+      );
+      const retryRows = raw.filter((row) => !consensusRetry.some((result) => result?.source.index === row.source));
+      for (const result of consensusRetry) {
+        if (!result) continue;
+        if (result.parsed && result.validation.tables.length > 0) retryRows.push(...result.parsed);
+        else {
+          const reason = result.validation.rejected.map((r) => r.reason).join(";") || "invalid_consensus_retry";
+          sourceFailures.push(`${result.source.index}:consensus_retry_${reason}`);
+        }
+      }
+      raw.splice(0, raw.length, ...retryRows);
+      finalValidation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+      chosen = chooseTable(finalValidation.tables);
+    }
     if (!chosen) {
-      const why = [...sourceFailures, ...rejected.map((r) => `${r.source}:${r.reason}`)].join(", ") || `${tables.length} unconfirmed tables`;
+      const rejected = finalValidation.rejected;
+      const domains = finalValidation.tables.map((table) => table.source.domain);
+      const why = [...sourceFailures, ...rejected.map((r) => `${r.source}:${r.reason}`)].join(", ") ||
+        (domains.length ? `independent sources disagree: ${domains.join(" + ")}` : `${finalValidation.tables.length} unconfirmed tables`);
       throw new Error(`no verified table (${why})`);
     }
     const previous = await deps.store.currentStandings(key, season);
