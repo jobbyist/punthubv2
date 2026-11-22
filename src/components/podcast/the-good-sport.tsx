@@ -55,7 +55,7 @@ export const GOOD_SPORT_EPISODES = [
 ] as const;
 const YOUTUBE_URL =
   (import.meta.env["VITE_PUNTR_YOUTUBE_URL"] as string | undefined) ||
-  "https://www.youtube.com/watch?v=pBCncBbeWkc";
+  "https://youtube.com/@puntr_za?si=URxhuKhi1Yl82gqh";
 const AUDIO_URL = import.meta.env["VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL"] as string | undefined;
 const COVER_URL = import.meta.env["VITE_GOOD_SPORT_COVER_ART_URL"] as string | undefined;
 const PREMIERE_AT = Date.parse("2026-12-01T07:00:00Z");
