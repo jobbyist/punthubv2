@@ -76,6 +76,15 @@ export async function enablePushNotifications(source: "account" | "pwa_prompt" =
   }
 }
 
+export async function removeCurrentPushDevice(): Promise<void> {
+  if (!supportsWebPush()) return;
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription) return;
+  await pushApiRequest({ action: "unsubscribe-device", endpoint: subscription.endpoint });
+  await subscription.unsubscribe();
+}
+
 export async function disablePushNotifications(): Promise<void> {
   if (supportsWebPush()) {
     const registration = await navigator.serviceWorker.ready;
