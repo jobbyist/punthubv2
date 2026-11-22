@@ -1,12 +1,12 @@
 {
   "meta": {
-    "title": "Wedstryde en voorspellings | Puntr",
-    "description": "Komende sokkerwedstryde in die Betway Premiership, Premier League, Champions League en meer. Keuses open met die bekendstelling op 1 Desember 2026. Sluit nou gratis aan. 18+.",
-    "ogTitle": "Wedstryde en voorspellings | Puntr",
-    "ogDescription": "Komende PSL-, EPL-, UCL- en ander sokkerwedstryde."
+    "title": "Ontdek sportvoorspellings | Puntr",
+    "description": "Verken komende sokkerwedstryde, geverifieerde uitslae, ligapuntelyste, kop-aan-kop-duelle en weeklikse ranglyste. 18+.",
+    "ogTitle": "Ontdek sportvoorspellings | Puntr",
+    "ogDescription": "Wedstryde, uitslae, ligapuntelyste, tweestryde en weeklikse leiers."
   },
-  "title": "Voorspellings",
-  "subtitle": "Jou wedstryddag-spilpunt: komende wedstryde, jongste uitslae, puntelyste, kop-aan-kop-tweestryde en ranglyste, alles in Suid-Afrikaanse tyd. Voorspellings open by die bekendstelling op 1 Desember 2026.",
+  "title": "Ontdek",
+  "subtitle": "Jou sportspilpunt: komende wedstryde, geverifieerde uitslae, ligapuntelyste, kop-aan-kop-duelle en weeklikse leiers, alles in Suid-Afrikaanse tyd.",
   "filter": {
     "all": "Alle ligas",
     "soccer": "Sokker",
@@ -99,6 +99,17 @@
       "cta": "Ranglyste",
       "empty": "Die weeklikse lys vul soos voorspellings vereffen word.",
       "units": "{{units}} eenhede"
+    },
+    "newsroom": {
+      "title": "Uit die nuuskamer",
+      "cta": "Alle sportnuus",
+      "empty": "Nuwe sportdekking sal hier verskyn sodra dit gepubliseer word."
     }
+  },
+  "fantasy": {
+    "eyebrow": "KOM BINNEKORT",
+    "title": "Fantasy Arena",
+    "body": "Bou jou span, pak kop-aan-kop-duelle aan en klim op die fantasie-ranglys. Jou volgende manier om deel te neem, kry vorm.",
+    "cta": "Verken die padkaart"
   }
 }
