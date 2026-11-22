@@ -91,6 +91,7 @@ function Admin() {
             <>
               <NotificationBanner onOpenAudience={() => setTab("waitlist")} />
               <Tabs
+                orientation="vertical"
                 value={tab}
                 onValueChange={setTab}
                 className="mt-6 grid min-w-0 gap-5 lg:grid-cols-[230px_minmax(0,1fr)] lg:items-start"
@@ -119,7 +120,6 @@ function Admin() {
                   <aside className="hidden lg:block">
                     <TabsList
                       aria-label="Admin sections"
-                      orientation="vertical"
                       className="flex h-auto w-full flex-col items-stretch gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm"
                     >
                       {TAB_GROUPS.map((group) => (
