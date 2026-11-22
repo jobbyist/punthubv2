@@ -191,7 +191,8 @@
       "body": "Laat Puntr-kennisgewings toe vir belangrike aankondigings en wedstryddag-opdaterings. Jy bly in beheer en kan dit enige tyd in Rekeninginstellings afskakel.",
       "allow": "Laat kennisgewings toe",
       "notNow": "Nie nou nie",
-      "error": "Kon nie kennisgewings aktiveer nie."
+      "error": "Kon nie kennisgewings aktiveer nie.",
+      "enabling": "Aktiveer…"
     }
   }
 }
