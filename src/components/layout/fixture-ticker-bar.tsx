@@ -47,7 +47,7 @@ export function FixtureTickerBar() {
   const reduceMotion = useReducedMotion();
   const [fixtures, setFixtures] = useState<UpcomingFixture[]>(FALLBACK);
   const [isFallback, setIsFallback] = useState(true);
-  const [minuteTick, setMinuteTick] = useState(0);
+  const [, setMinuteTick] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -111,7 +111,7 @@ export function FixtureTickerBar() {
               const status = fixture.status === "live" ? (
                 <span className="ml-1 inline-flex shrink-0 items-center gap-1 text-[9px] font-bold text-emerald-600 sm:text-[10px]">
                   <span className="puntr-blink size-1.5 rounded-full bg-emerald-500" />
-                  {liveMinute(fixture.kickoff_at) + minuteTick}'
+                  {liveMinute(fixture.kickoff_at)}'
                   {fixture.home_score !== null && fixture.home_score !== undefined && fixture.away_score !== null && fixture.away_score !== undefined
                     ? <span className="font-extrabold text-foreground">{fixture.home_score}–{fixture.away_score}</span>
                     : null}
