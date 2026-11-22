@@ -14,40 +14,58 @@ const launchTasks = [
   {
     title: "Apply and verify the Supabase migration",
     description:
-      "Apply the podcast premiere notification migration to the production Supabase project. Verify the opt-in table, row-level security policies, retention cleanup and both scheduled cron jobs are present and running.",
+      "Complete. Production migration applied; the opt-in table has RLS enabled, anon/authenticated access is revoked, and both the premiere and retention cron jobs are active.",
+    status: "Complete",
+    statusTone: "complete",
     icon: ShieldCheck,
   },
   {
     title: "Configure production email and cron secrets",
     description:
-      "Set SUPABASE_SERVICE_ROLE_KEY, CRON_SECRET and RESEND_API_KEY in the production environment. Confirm the cron endpoint authenticates correctly and Resend is authorised to send from the configured sender domain.",
+      "Complete. SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CRON_SECRET and RESEND_API_KEY are configured in Vercel production. A live signup verified the Supabase service-role path; a Vault-authenticated cron request returned the expected 200 response.",
+    status: "Complete",
+    statusTone: "complete",
     icon: Mail,
   },
   {
     title: "Upload official Episode 01 artwork",
     description:
-      "Approve and publish the final The Good Sport cover artwork, then set VITE_GOOD_SPORT_COVER_ART_URL in the relevant Vercel environments.",
+      "Deferred by request. Upload the approved cover art and set VITE_GOOD_SPORT_COVER_ART_URL in the relevant Vercel environments.",
+    status: "Deferred",
+    statusTone: "deferred",
     icon: Palette,
   },
   {
     title: "Upload and configure the Episode 01 audio master",
     description:
-      "Approve the final mastered episode audio, host it at a stable HTTPS URL and set VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL. Verify playback, seeking and controls on desktop and mobile.",
+      "Deferred by request. Upload the final mastered audio to a stable HTTPS location, set VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL and verify playback on desktop and mobile.",
+    status: "Deferred",
+    statusTone: "deferred",
     icon: PlayCircle,
   },
   {
     title: "Verify and configure the official YouTube channel",
     description:
-      "Confirm the canonical Puntr YouTube channel URL and set VITE_PUNTR_YOUTUBE_URL. Replace the current intro-video fallback and test that the CTA opens the correct channel.",
+      "Complete. Verified the Puntr - South Africa channel associated with the official explainer video and configured VITE_PUNTR_YOUTUBE_URL across production, preview and development.",
+    status: "Complete",
+    statusTone: "complete",
     icon: Youtube,
   },
   {
     title: "Complete a real premiere-notification delivery test",
     description:
-      "Test the full opt-in-to-email path using a controlled address: signup cutoff, cron authentication, 09:00 SAST schedule, hourly retry window, Resend delivery, idempotency and database delivery acknowledgement. Confirm failures are visible and do not create duplicate emails.",
+      "Partially verified. The production opt-in form successfully accepted a controlled signup; the record was checked and then removed. Vault-authenticated cron invocation returned the expected pre-premiere response. Resend accepted a one-off internal smoke-test email (HTTP 200). Actual inbox receipt, scheduled 1 December sends, retry behavior and delivery acknowledgement remain to be verified during the premiere window.",
+    status: "Partially verified",
+    statusTone: "partial",
     icon: Mail,
   },
 ];
+
+const statusClasses: Record<string, string> = {
+  complete: "bg-emerald-500/10 text-emerald-600",
+  deferred: "bg-muted text-muted-foreground",
+  partial: "bg-amber-500/10 text-amber-700",
+};
 
 export function GoodSportLaunchChecklist() {
   const [open, setOpen] = useState(true);
@@ -61,13 +79,13 @@ export function GoodSportLaunchChecklist() {
           </span>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-              Deferred launch tasks · Not yet verified
+              Premiere readiness · 3 complete · 1 partially verified · 2 deferred
             </p>
             <h2 className="mt-1 text-lg font-semibold">
               The Good Sport · Premiere readiness
             </h2>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Outstanding production dependencies for the Episode 01 premiere on 1 December 2026. Keep these open until each item has been completed and verified.
+              Production readiness for the Episode 01 premiere on 1 December 2026. Statuses reflect verified work; deferred assets remain untouched.
             </p>
           </div>
         </div>
@@ -102,8 +120,10 @@ export function GoodSportLaunchChecklist() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <h3 className="text-sm font-semibold">{task.title}</h3>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                      Pending
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${statusClasses[task.statusTone]}`}
+                    >
+                      {task.status}
                     </span>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -116,7 +136,7 @@ export function GoodSportLaunchChecklist() {
         </div>
       )}
       <p className="mt-4 text-xs text-muted-foreground">
-        Release gate: all six tasks verified, then complete a final production preview and end-to-end premiere rehearsal before launch.
+        Release gate: confirm actual inbox receipt, scheduled sends, retries and database delivery acknowledgement during the premiere window. Artwork and audio remain deferred.
       </p>
     </section>
   );
