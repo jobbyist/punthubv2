@@ -1,9 +1,9 @@
 {
-  "id": "/predictions",
+  "id": "/discover",
   "name": "Puntr",
   "short_name": "Puntr",
   "description": "Predict smarter. Prove it.",
-  "start_url": "/predictions?source=pwa",
+  "start_url": "/discover?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": [
