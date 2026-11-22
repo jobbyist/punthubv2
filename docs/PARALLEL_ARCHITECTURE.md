@@ -117,6 +117,6 @@ The live La Liga table now has three direct candidates: the official LaLiga stan
 - Four active PFIE table cron jobs exist in production (IDs 61–64). Their current schedules differ from the latest pending schedule migration. Keep the live schedule unchanged until a complete migration mapping and backup/rollback plan are verified.
 - 20261122110000_pfie_live_standings_refresh.sql contains malformed dollar-quote syntax and must not be applied as written.
 - Production audit: standings have 7/12 scopes with a recorded successful sync; 5/12 have never succeeded. Automated odds have 0/11 successful scopes. Recent fixture/result runs exist.
-- cron.job_run_details returned no rows in the inspected window. net._http_response showed successful Vercel responses and one 55-second timeout; the response record did not retain the request path, so the timeout could not be assigned to a specific cron job.
+- cron.job_run_details contains 17,919 records overall, but none yet for the new PFIE table job IDs 61–64 as of 01:22 UTC; their first scheduled window begins at 02:10 UTC. Other scheduled jobs continue to run. net._http_response showed successful Vercel responses and one 55-second timeout; the response record did not retain the request path, so the timeout could not be assigned to a specific cron job.
 - No production migration, cron schedule or schema change was made during this audit. The detailed launch gate and reconciliation procedure are tracked in /dev/IMPLEMENTATION-PRIORITIES.md.
 
