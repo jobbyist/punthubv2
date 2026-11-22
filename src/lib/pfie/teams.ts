@@ -30,6 +30,7 @@ const ALIASES: Record<string, string> = {
   barca: "barcelona",
   "deportivo alaves": "alaves",
   "rcd espanyol de barcelona": "espanyol",
+  "espanyol de barcelona": "espanyol",
   "rc deportivo": "deportivo la coruna",
   "r racing club": "racing santander",
   celta: "celta vigo",
