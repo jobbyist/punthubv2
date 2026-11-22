@@ -36,13 +36,14 @@ export function Preloader() {
   const [standalone, setStandalone] = useState(false);
 
   useEffect(() => {
-    setStandalone(window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true);
+    const standaloneMode = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+    setStandalone(standaloneMode);
     // Only a marketing page shows (and uses up) the preloader for this session.
     if (!isMarketingPath(window.location.pathname)) {
       setState("gone");
       return;
     }
-    if (document.documentElement.hasAttribute("data-preloaded")) {
+    if (!standaloneMode && document.documentElement.hasAttribute("data-preloaded")) {
       setState("gone");
       return;
     }
