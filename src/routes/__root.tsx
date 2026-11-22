@@ -148,12 +148,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           rel: "icon",
           type: "image/png",
           sizes: "32x32",
-          href: "/puntr-icon-512.png",
+          href: "https://puntr.co.za/puntrgreen.png",
         },
         {
           rel: "apple-touch-icon",
           sizes: "180x180",
-          href: "/puntr-icon-192.png",
+          href: "https://puntr.co.za/puntrgreen.png",
         },
         {
           rel: "stylesheet",
@@ -202,6 +202,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                   "https://x.com/puntr_za",
                   "https://facebook.com/puntrza",
                   "https://www.instagram.com/puntr_za",
+                  "https://youtube.com/@puntr_za?si=URxhuKhi1Yl82gqh",
                 ],
                 contactPoint: [
                   {
