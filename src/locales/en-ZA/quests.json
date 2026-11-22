@@ -24,7 +24,9 @@
     "join_whatsapp": "Join group",
     "join_telegram": "Join",
     "go": "Go",
-    "check": "Check"
+    "check": "Check",
+    "enablePush": "Enable notifications",
+    "installApp": "Install app"
   },
   "error": {
     "open_link_first": "Open the link first, then send your username.",
@@ -32,7 +34,8 @@
     "bad_evidence": "Enter the username you used (2 to 120 characters).",
     "notInstalled": "Open Puntr from your home screen first, then tap Check.",
     "pushOff": "Allow notifications for Puntr in your browser first.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "pushUnsupported": "Push notifications are not supported by this browser."
   },
   "completion": {
     "title": "Profile completion",
@@ -59,5 +62,6 @@
     "stats": "Quests verified: {{verified}} · waiting: {{waiting}} · points given: {{points}}",
     "open": "Open Puntr's page"
   },
-  "stayConnected": "Stay connected (no points, just the latest from Puntr)"
+  "stayConnected": "Stay connected (no points, just the latest from Puntr)",
+  "installPrompt": "Install Puntr, then open it from your home screen and tap Check to claim your points."
 }

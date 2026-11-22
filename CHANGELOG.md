@@ -20,6 +20,12 @@
 - Add database migrations and operational documentation in `docs/PWA_PUSH_NOTIFICATIONS.md`.
 - GitHub Actions remains disabled as a verification dependency due to the account billing issue; use Vercel Sandbox for lint, typecheck, tests and production build.
 
+## 22 November 2026 — Onboarding device rewards and historical results milestone
+
+- Make the push-notification quest an actionable opt-in: request browser permission, create the Web Push subscription, confirm the subscription is active, then claim the one-time PuntPoints reward.
+- Make the install-app quest open the existing PWA install experience; members claim the reward after opening Puntr in installed/standalone mode.
+- Update the /dev historical-results milestone from 2,500 to 7,000 verified match results and align its automated readiness test.
+
 # Changelog
 
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and

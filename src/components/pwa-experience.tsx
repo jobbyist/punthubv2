@@ -41,6 +41,16 @@ export function PwaExperience() {
   }, []);
 
   useEffect(() => {
+    const requestInstall = () => {
+      if (isStandalone()) return;
+      setShowPrompt(true);
+      if (isIosSafari()) setShowIosGuide(true);
+    };
+    window.addEventListener("puntr:request-install", requestInstall);
+    return () => window.removeEventListener("puntr:request-install", requestInstall);
+  }, []);
+
+  useEffect(() => {
     if (isStandalone()) return;
     const iosDevice = isIosSafari();
     setIos(iosDevice);
