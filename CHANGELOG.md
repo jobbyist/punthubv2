@@ -20,11 +20,17 @@
 - Add database migrations and operational documentation in `docs/PWA_PUSH_NOTIFICATIONS.md`.
 - GitHub Actions remains disabled as a verification dependency due to the account billing issue; use Vercel Sandbox for lint, typecheck, tests and production build.
 
-## 22 November 2026 — Onboarding device rewards and historical results milestone
+## 22 November 2026 — Onboarding rewards and historical-results milestone correction
 
-- Make the push-notification quest an actionable opt-in: request browser permission, create the Web Push subscription, confirm the subscription is active, then claim the one-time PuntPoints reward.
-- Make the install-app quest open the existing PWA install experience; members claim the reward after opening Puntr in installed/standalone mode.
-- Update the /dev historical-results milestone from 2,500 to 7,000 verified match results and align its automated readiness test.
+- Preserve the historical-results milestone target at 2,500. Mark it achieved with 7,775 verified historical results imported and available under /results.
+
+## 22 November 2026 — Matchday discovery and interaction upgrades
+
+- Reuse the Discover betting-slip animation at the top of /slips.
+- Add global Cmd/Ctrl+K and Tap to Search for upcoming fixtures, league position and a transparent last-five form index.
+- Add haptic and spring/checkmark feedback to successful pick locks and PuntPoints balance updates.
+- Replace the match crowd split rows with a segmented, animated three-outcome bar and count-up percentages.
+- Add a match-page Challenge a Friend entry point, presetting a 50 PuntPoints stake and generating a WhatsApp duel link after successful creation.
 
 # Changelog
 

@@ -8,6 +8,7 @@ import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { FilterChips } from "@/components/match/filter-chips";
 import { useSession } from "@/components/session";
 import { SlipCard } from "@/components/slips/slip-card";
+import { BettingSlipGraphic } from "@/components/predictions/betting-slip-graphic";
 import { SlipEditor } from "@/components/slips/slip-editor";
 import { Button } from "@/components/ui/button";
 import { fetchUpcomingFixtures, type UpcomingFixture } from "@/lib/fixtures";
@@ -94,7 +95,16 @@ function SlipsPage() {
 
   return (
     <AppShell>
-      <PageHeading art="podium" title={t("title")} subtitle={t("subtitle")} />
+      <section className="relative mb-8 overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-br from-primary-soft via-background to-background p-5 sm:p-7">
+        <div className="grid items-center gap-4 sm:grid-cols-[1fr_240px]">
+          <div>
+            <h1 className="text-3xl sm:text-[34px]">{t("title")}</h1>
+            <span className="puntr-grow-x mt-3 block h-1 w-14 rounded-full bg-primary" />
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">{t("subtitle")}</p>
+          </div>
+          <BettingSlipGraphic compact />
+        </div>
+      </section>
       <FilterChips
         id="slip-tabs"
         className="mb-5"
