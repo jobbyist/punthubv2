@@ -53,7 +53,7 @@ function LeftRail() {
   const sportName = (name: string) => t(`sport.${SPORT_KEYS[name] ?? "soccer"}`);
   return (
     <aside
-      className={`hidden shrink-0 border-r border-border py-6 pr-3 transition-[width] duration-200 lg:block ${collapsed ? "w-16" : "w-[220px] pr-5"}`}
+      className={`hidden shrink-0 border-r border-border py-6 pr-3 transition-[width] duration-200 xl:block ${collapsed ? "w-16" : "w-[220px] pr-5"}`}
     >
       <div className={`mb-3 flex items-center ${collapsed ? "justify-center" : "justify-end"}`}>
         <button
@@ -125,7 +125,7 @@ export function RightRail() {
   const { data: leaders } = useAsync(() => fetchThisWeeksLeaders(5), []);
   const { data: live } = useAsync(() => fetchLiveFixtures(), []);
   return (
-    <aside className="hidden w-[280px] shrink-0 space-y-5 py-6 xl:block">
+    <aside className="hidden w-[280px] shrink-0 space-y-5 py-6 2xl:block">
       <div className="card-surface p-4">
         <div className="flex items-center justify-between">
           <h4 className="flex items-center gap-2 text-sm">{t("side.topTipsters")}</h4>
