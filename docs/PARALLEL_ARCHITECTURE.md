@@ -107,7 +107,7 @@ That leaves headroom to raise the season-backfill caps so it finishes before 1 D
 
 ## 22 Nov 2026: La Liga standings source coverage
 
-The La Liga direct-page candidate roster is capped at five independent publishers: official LaLiga, TACTIX, Football Edge Lab, Flashscore and BBC Sport. Parallel Extract reads each independently; publisher identity normalization prevents subdomains or mirrored properties from inflating consensus. These are candidate sources, not guaranteed coverage: each must pass the same 20-team, row-evidence, arithmetic, date and two-independent-publisher checks before publication.
+The La Liga direct-page candidate roster is capped at five independent publishers: official LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole. Parallel Extract reads each independently; publisher identity normalization prevents subdomains or mirrored properties from inflating consensus. These are candidate sources, not guaranteed coverage: each must pass the same 20-team, row-evidence, arithmetic, date and two-independent-publisher checks before publication.
 
 
 ## Production status and migration/cron audit (22 Nov 2026)
@@ -124,6 +124,6 @@ The La Liga direct-page candidate roster is capped at five independent publisher
 
 ## 22 Nov 2026: PFIE pull-request sequencing
 
-- **PR #185 (pre-launch):** La Liga direct-page candidates are capped at five: LaLiga, TACTIX, Football Edge Lab, Flashscore and BBC Sport. A source candidate is not a verified table; extraction, freshness, complete-row evidence and two-independent-publisher consensus remain mandatory. If fewer than two sources pass, retain the last verified table and surface stale/unavailable status.
+- **PR #185 (pre-launch):** La Liga direct-page candidates are capped at five: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole. A source candidate is not a verified table; extraction, freshness, complete-row evidence and two-independent-publisher consensus remain mandatory. If fewer than two sources pass, retain the last verified table and surface stale/unavailable status.
 - **PR #195 (pre-launch merge candidate):** evidence validation must require captured page text and a curated source-registry mapping from each source ID to its publisher identity. Bookmaker source policy requires explicit ZA licence evidence and terms review. Roster records use canonical PFIE team IDs. Its migration is not approved for production application until the complete migration baseline and backup/rollback plan are reconciled.
 - **PR #196 (post-launch):** match intelligence, automated odds and the associated exclusions-page work are deferred from the 1 December MVP. Automated odds remain disabled until written rights cover collection, storage, display, attribution, retention and redistribution. A technical API or affiliate approval alone is not sufficient.
