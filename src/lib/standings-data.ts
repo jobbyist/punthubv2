@@ -62,3 +62,14 @@ export function isStale(s: SyncStatus | undefined, now = Date.now()): boolean {
   if (!s?.last_success_at) return true;
   return s.consecutive_failures > 0 || now - Date.parse(s.last_success_at) > STALE_MS;
 }
+
+/** Only expose configured competitions with a recent successful standings sync. */
+export function freshStandingsKeys<T extends string>(
+  keys: readonly T[],
+  statuses: SyncStatus[],
+  now = Date.now(),
+): T[] {
+  return keys.filter((key) =>
+    !isStale(statuses.find((status) => status.job === "standings" && status.scope === key), now),
+  );
+}
