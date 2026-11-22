@@ -69,7 +69,11 @@ describe("mvp readiness", () => {
     const exceeded = computeReadiness({}, { completedResults: 7781 });
     expect(below.openBlockers.some((task) => task.id === "history-volume")).toBe(true);
     expect(atTarget.openBlockers.some((task) => task.id === "history-volume")).toBe(false);
-    expect(exceeded.workstreams.find((w) => w.id === "data")?.tasks.find((task) => task.id === "history-volume")?.value).toBe(7781);
+    expect(
+      exceeded.workstreams
+        .find((w) => w.id === "data")
+        ?.tasks.find((task) => task.id === "history-volume")?.value,
+    ).toBe(7781);
   });
 
   it("metric tasks cannot be ticked by hand", () => {
