@@ -173,7 +173,7 @@
   },
   "pushNotifications": {
     "title": "Push notifications",
-    "body": "Get important Puntr updates on this device, including announcements and matchday alerts. You can turn them off at any time.",
+    "body": "Get important Puntr updates on your devices, including announcements and matchday alerts. Turning notifications off here stops delivery to all devices on your account.",
     "enable": "Enable push notifications",
     "disable": "Turn off push notifications",
     "unsupported": "This browser does not support web push notifications.",
