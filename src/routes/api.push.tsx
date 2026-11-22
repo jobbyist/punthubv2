@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
-import webpush from "web-push";
+import * as webpush from "web-push";
 
 type Audience = "all" | "founding" | "member" | "test";
 
