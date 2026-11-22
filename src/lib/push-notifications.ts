@@ -50,6 +50,17 @@ export async function enablePushNotifications(): Promise<void> {
     await subscription.unsubscribe().catch(() => false);
     throw error;
   }
+  const { error: consentError } = await supabase.rpc("record_consent", {
+    p_purpose: "push_notifications",
+    p_granted: true,
+    p_notice_version: "push-notifications-v1",
+    p_source: "account",
+  });
+  if (consentError) {
+    await subscription.unsubscribe().catch(() => false);
+    await supabase.functions.invoke("push-notifications", { body: { action: "unsubscribe" } });
+    throw consentError;
+  }
 }
 
 export async function disablePushNotifications(): Promise<void> {
@@ -60,4 +71,11 @@ export async function disablePushNotifications(): Promise<void> {
   }
   const { error } = await supabase.functions.invoke("push-notifications", { body: { action: "unsubscribe" } });
   if (error) throw error;
+  const { error: consentError } = await supabase.rpc("record_consent", {
+    p_purpose: "push_notifications",
+    p_granted: false,
+    p_notice_version: "push-notifications-v1",
+    p_source: "account",
+  });
+  if (consentError) throw consentError;
 }
