@@ -15,10 +15,7 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_COMPETITIONS: Partial<
-  Record<
-    CompetitionKey,
-    { teams: number; refreshHours: number; queries: string[]; pages?: string[] }
-  >
+  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[]; pages?: string[] }>
 > = {
   psl: {
     teams: 16,
@@ -29,13 +26,12 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:stats.ladumaanalytics.co.za/log Betway Premiership",
       "site:45min.co.za/tables Betway Premiership",
     ],
-    pages: ["https://stats.ladumaanalytics.co.za/log", "https://45min.co.za/tables"],
+    pages: [
+      "https://stats.ladumaanalytics.co.za/log",
+      "https://45min.co.za/tables",
+    ],
   },
-  epl: {
-    teams: 20,
-    refreshHours: 12,
-    queries: ["Premier League table standings", "Premier League table"],
-  },
+  epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
   laliga: {
     teams: 20,
     refreshHours: 12,
@@ -70,11 +66,7 @@ export const STANDINGS_COMPETITIONS: Partial<
   bundesliga: {
     teams: 18,
     refreshHours: 12,
-    queries: [
-      "Bundesliga table standings",
-      "Bundesliga table",
-      "DFB Bundesliga table current season",
-    ],
+    queries: ["Bundesliga table standings", "Bundesliga table", "DFB Bundesliga table current season"],
     pages: [
       "https://www.bundesliga.com/en/bundesliga/table?view=full",
       "https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center",
@@ -131,10 +123,8 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.tntsports.co.uk/football/primeira-liga/standings.shtml",
     ],
   },
-  championship: {
-    teams: 24,
-    refreshHours: 24,
-          duplicate.points,
+  championship: { teams: 24, refreshHours: 24, queries: ["EFL Championship table standings", "Championship table"] },
+  "saudi-pro": { teams: 18, refreshHours: 24, queries: ["Saudi Pro League table standings", "Saudi Pro League table"] },
   "sa-championship": {
     teams: 16,
     refreshHours: 24,
@@ -496,8 +486,7 @@ export function validateTables(
           duplicate.goalsFor, duplicate.goalsAgainst, duplicate.points,
         ];
         const rowValues = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
-        const identical =
-          duplicate.position === r.position &&
+        const identical = duplicate.position === r.position &&
           priorValues.every((value, i) => value === rowValues[i]);
         if (identical) continue;
         const dominates = (left: number[], right: number[]) =>
@@ -578,7 +567,10 @@ export function independentSourceKey(domain: string): string {
 }
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
-export function tableRegression(candidate: StandingRow[], previous: StandingRow[]): string | null {
+export function tableRegression(
+  candidate: StandingRow[],
+  previous: StandingRow[],
+): string | null {
   if (previous.length === 0) return null;
   if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
   const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
@@ -623,13 +615,8 @@ const signature = (t: SourceTable) =>
 export function standingsDisagreementHint(tables: SourceTable[]): string | null {
   if (tables.length < 2) return null;
   const fields = [
-    ["played", "played"],
-    ["won", "won"],
-    ["drawn", "drawn"],
-    ["lost", "lost"],
-    ["goalsFor", "goals for"],
-    ["goalsAgainst", "goals against"],
-    ["points", "points"],
+    ["played", "played"], ["won", "won"], ["drawn", "drawn"], ["lost", "lost"],
+    ["goalsFor", "goals for"], ["goalsAgainst", "goals against"], ["points", "points"],
   ] as const;
   const baseline = tables[0]!;
   const issues = new Set<string>();
@@ -637,34 +624,23 @@ export function standingsDisagreementHint(tables: SourceTable[]): string | null 
     const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
     for (const row of baseline.rows) {
       const peer = byTeam.get(normaliseTeam(row.team));
-      if (!peer) {
-        issues.add(row.team + ": team missing");
-        continue;
-      }
-      const differing = fields
-        .filter(([field]) => row[field] !== peer[field])
-        .map(([, label]) => label);
+      if (!peer) { issues.add(row.team + ": team missing"); continue; }
+      const differing = fields.filter(([field]) => row[field] !== peer[field]).map(([, label]) => label);
       if (differing.length) issues.add(row.team + ": " + differing.join(", "));
     }
   }
   if (issues.size === 0) return null;
-  return (
-    "The first extraction passed local checks but did not agree with another independent table. " +
+  return "The first extraction passed local checks but did not agree with another independent table. " +
     "Re-read the overall/Total table in this source only; do not use Home or Away views. " +
-    "Re-check these team rows and columns carefully: " +
-    [...issues].slice(0, 12).join("; ") +
-    ". Copy only values visibly printed in this source."
-  );
+    "Re-check these team rows and columns carefully: " + [...issues].slice(0, 12).join("; ") +
+    ". Copy only values visibly printed in this source.";
 }
 export function chooseTable(
   tables: SourceTable[],
 ): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {
   const eligible = tables.filter(
     (t) =>
-      !(
-        t.source.domain.toLowerCase() === "wikipedia.org" ||
-        t.source.domain.toLowerCase().endsWith(".wikipedia.org")
-      ) &&
+      !(t.source.domain.toLowerCase() === "wikipedia.org" || t.source.domain.toLowerCase().endsWith(".wikipedia.org")) &&
       (t.source.tier === "official" || t.source.tier === "trusted"),
   );
   const groups = new Map<string, SourceTable[]>();
