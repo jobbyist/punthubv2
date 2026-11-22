@@ -56,7 +56,7 @@ Apply migration `20261122230000_pwa_push_notifications.sql` to the linked Puntr 
 ## QA and release
 Run the QA sequence in a Vercel Sandbox, not GitHub Actions (the GitHub Actions billing issue is known):
 1. `bun install --frozen-lockfile`
-2. `bun run lint`
+2. `bun run lint:fix` (apply safe ESLint/Prettier fixes), then `bun run lint` (verify no errors)
 3. `bun run typecheck`
 4. `bun run test`
 5. `bun run build`
