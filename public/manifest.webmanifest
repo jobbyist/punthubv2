@@ -20,7 +20,7 @@
   "icons": [
     {
       "src": "https://puntr.co.za/puntrgreen.png",
-      "sizes": "any",
+      "sizes": "2000x2000",
       "type": "image/png",
       "purpose": "any"
     },
