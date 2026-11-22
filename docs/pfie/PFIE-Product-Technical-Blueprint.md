@@ -486,7 +486,7 @@ The following owner decisions supersede any earlier proposed dates or scope in t
 
 ## Appendix F. 22 November 2026 — verification status
 
-PR #185's focused five-source regression, typecheck and Vercel build passed. Six unrelated standings-suite failures also reproduce on main; the PR records them as existing test debt. A production-like extraction is still required before the additional source roster is considered operationally verified.
+PR #185's focused five-source regression, typecheck and Vercel build passed. The full PFIE standings test file now passes (47/47). A production-like extraction is still required before the additional source roster is considered operationally verified.
 
 PR #195 passed targeted ESLint, typecheck, all 15 evidence unit tests and a Vercel production build. The migration is not applied to production and remains gated by the complete migration-history reconciliation and a verified backup/rollback plan.
 
