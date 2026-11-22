@@ -395,6 +395,7 @@ const TRUSTED = [
   "tntsports.co.uk",
   "tactix.football",
   "footballedgelab.com",
+  "theanalyst.com",
   "cbssports.com",
   "foxsports.com",
   "statz.ai",

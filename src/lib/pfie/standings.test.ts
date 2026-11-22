@@ -73,7 +73,7 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("vi.nl", [])).toBe("trusted");
-    expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(tierOf("theanalyst.com", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
     expect(tierOf("rotascore.com", [])).toBe("trusted");
     expect(tierOf("statz.ai", [])).toBe("trusted");
@@ -101,11 +101,22 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
-  it("includes independent official, Sky, ESPN and Transfermarkt La Liga table sources", () => {
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
+  it("caps La Liga direct table candidates at five independent publishers", () => {
+    const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
+    expect(pages).toHaveLength(5);
+    expect(pages).toEqual(expect.arrayContaining([
+      "https://www.laliga.com/en-US/laliga-easports/standing",
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+      "https://footballedgelab.com/la-liga",
+      "https://www.flashscore.com/football/spain/laliga/standings/",
+      "https://theanalyst.com/competition/la-liga/table",
+    ]));
+    expect(pages).not.toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
+    expect(pages).not.toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
+    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(5);
+    const publisherKeys = ["laliga.com", "tactix.football", "footballedgelab.com", "flashscore.com", "theanalyst.com"]
+      .map(independentSourceKey);
+    expect(new Set(publisherKeys).size).toBe(5);
   });
 });
 describe("La Liga live source configuration", () => {
@@ -510,7 +521,7 @@ describe("seasonQueries", () => {
 });
 
 describe("season backfill sync", () => {
-  const long = "x".repeat(400);
+  const long = "Motsepe Foundation Championship historical results and final score table. Team A 2-1 Team B. ".repeat(8);
   const answer = (matches: unknown[]) => JSON.stringify({ matches });
   const make = (replies: string[]) => {
     const recorded: { ok: boolean; error: string | null }[] = [];
@@ -520,12 +531,12 @@ describe("season backfill sync", () => {
         name: "fake",
         search: async () => [
           { url: "https://www.psl.co.za/a", title: "a", excerpt: long, publishedAt: null },
-          { url: "https://www.bbc.co.uk/b", title: "b", excerpt: long, publishedAt: null },
-          { url: "https://www.skysports.com/c", title: "c", excerpt: long, publishedAt: null },
-          { url: "https://www.example.org/d", title: "d", excerpt: long, publishedAt: null },
         ],
       },
-      extract: null,
+      extract: {
+        name: "fake",
+        extract: async () => ({ markdown: long }),
+      },
       llm: {
         name: "fake",
         generate: async () => ({
