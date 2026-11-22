@@ -170,7 +170,7 @@ export const adminSettlementOverview = createServerFn({ method: "GET" })
             ? `${f.home_score} - ${f.away_score}`
             : null,
         pending: byFixture.get(f.id) ?? 0,
-        settleable: f.status !== "finished" || (f.home_score !== null && f.away_score !== null),
+        settleable: f.status === "finished" && f.home_score !== null && f.away_score !== null,
       })),
       resultPending,
     };

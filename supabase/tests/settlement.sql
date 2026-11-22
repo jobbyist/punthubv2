@@ -53,7 +53,7 @@ begin
 end $$;
 
 -- 2. pending_result_fixtures: overdue scheduled fixtures with unsettled picks are visible, but not settleable.
-do $
+do $$
 declare v_n integer; v_picks integer;
 begin
   set local role service_role;
@@ -65,9 +65,9 @@ begin
   if v_n <> 1 or v_picks <> 1 then
     raise exception 'ASSERT FAILED: expected one overdue scheduled fixture with one pending pick, got % rows / % picks', v_n, v_picks;
   end if;
-end $;
+end $$;
 
--- 2. apply: correct units are written once; wrong units and repeat runs are ignored
+-- 3. apply: correct units are written once; wrong units and repeat runs are ignored
 do $$
 declare
   v_rows jsonb;
