@@ -99,3 +99,8 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
 
 **Current state (22 Nov 2026):** PR #185 and #195 are ready for review. PR #185 still needs production-like extraction and two-publisher consensus evidence. PR #195 is ready for code review, but its migration remains blocked from production application until migration-baseline reconciliation and backup/rollback approval. PR #196 remains deferred.
+
+
+- [x] Reference-price schema stores source IDs and publisher domains separately; bookmaker count is tied to both array cardinalities.
+- [x] Database trigger rejects duplicate source IDs/domains, unlicensed/non-ZA sources, and domain/source mismatches.
+- [ ] Validate the trigger in a disposable database before any production migration.
