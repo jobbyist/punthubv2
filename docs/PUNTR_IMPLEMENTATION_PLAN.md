@@ -130,3 +130,16 @@ results, featured images for articles.
 
 Documents still to be written as their phase starts: `PUNTR_ARCHITECTURE.md`, `PFIE_INTEGRATION.md`,
 `PLAYER_DASHBOARD.md`, `PRACTICE_MODE.md`, `DATABASE_CHANGES.md`, `API_INTEGRATIONS.md`, `DEPLOYMENT_GUIDE.md`.
+
+## PWA authentication and push notifications — 22 November 2026
+
+**Status: In progress — implementation branch `feat/puntr-pwa-auth-push`; migration pending PR merge and production rollout.**
+
+- Installed PWA entry remains `/predictions?source=pwa`.
+- Auth continuation preserves the originating route through password, email OTP, Google OAuth/PKCE, email confirmation, onboarding, MFA and password recovery. Return paths are same-origin and validated.
+- Predictions guest gate now navigates to `/join` directly; the nested authentication iframe has been removed.
+- Explicit Web Push opt-in, account-wide disable, consent ledger entries, notification-click deep links and expired endpoint cleanup are included.
+- Admin > Community > Push notifications includes test delivery, targeted campaigns, reach and delivery metrics, and campaign history.
+- Migration `20261122230000_pwa_push_notifications.sql` must be applied before production use. Vercel VAPID environment variables have been created for all environments.
+- GitHub Actions is not a QA dependency due to the account billing issue. Use the documented Vercel Sandbox workflow: frozen install, lint, typecheck, unit tests, build, and preview inspection.
+- Separate PWA gap audit and enhancement PR will be prepared only after owner approval; it will not be bundled into this implementation PR.
