@@ -72,7 +72,7 @@ export function safeNext(value: string | null | undefined, fallback: string): st
       host.endsWith(".vercel.app");
     if (!ours || u.username || u.password) return fallback;
     path = `${u.pathname}${u.search}${u.hash}`;
-    if (path.includes("\\") || /%2f|%5c/i.test(path)) return fallback;
+    if (u.pathname.includes("\\") || /%2f|%5c/i.test(u.pathname)) return fallback;
   } catch {
     return fallback;
   }
