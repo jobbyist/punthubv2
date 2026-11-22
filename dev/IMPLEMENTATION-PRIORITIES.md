@@ -211,15 +211,15 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 
 | PR | Target | Current status | Required exit criteria | Production constraint |
 |---|---|---|---|---|
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Pre-launch | Draft; active priority | Exactly five configured La Liga page candidates; configuration test enforces the cap; each candidate has an independent publisher identity; strict two-publisher consensus and all existing row/date/arithmetic checks remain intact; lint, typecheck, tests, build and preview pass | Candidate configuration is not proof of live extraction success. Never publish a table without two independent validated sources |
-| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Pre-launch merge candidate | Draft; code-hardening in progress | Fix parser/normalization defects; require captured page text for quote validation; count curated publisher domains rather than source hosts; require ZA licence evidence; use canonical team IDs for rosters; test RLS/service-role-only schema and migration syntax; clear review findings and CI | Migration can be merged as source code only after review. Do not apply, push or repair production migration history until the 101-entry local/remote baseline is fully mapped and backup/rollback are verified |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Pre-launch | Draft; changed-scope tests pass | Five independent La Liga page candidates; independent publisher identities; strict two-publisher consensus; all row/date/arithmetic checks preserved; standings tests 47/47, typecheck and Vercel build pass | Four remaining full-suite failures also reproduce on main; this PR fixes nine additional standings regressions. Production-like extraction is a launch QA gate |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Pre-launch foundation | Draft; code checks green, isolated SQL validation pending | Evidence quotes require captured page text; publisher independence uses curated source IDs; ZA licence evidence and canonical team IDs enforced; service-role-only RLS/grants; reference-price source IDs/domains are distinct and case-insensitive | 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass; all review threads resolved. The only Supabase branch is MIGRATIONS_FAILED; do not apply migration until isolated SQL validation, migration-baseline mapping and backup/PITR/rollback approval |
 | [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Post-launch | Draft; explicitly deferred | Reopen after MVP stabilization. Fix malformed SQL; confirm source rights and legal review; validate quotas, provenance, RLS, worker back-off, public read models, UI and end-to-end tests. Keep the exclusions page education/referral-only and verify its official contacts before any release | No automated bookmaker odds until written rights cover collection, storage, display, attribution, retention and redistribution. Do not merge or deploy as part of MVP |
 
 ### PR sequencing and dependencies
 
-1. #185 and #195 are ready for review as separate changes; neither depends on #196. Their Vercel verification is recorded below; GitHub-hosted Actions did not acquire a runner.
-2. #185 may be merged once its five-source cap, independent publisher configuration, strict consensus and full CI gates pass.
-3. #195 may be merged once code/schema review and CI pass, but its migration remains unapplied in production until the migration baseline reconciliation is complete. Merge approval and production migration approval are separate decisions.
+1. #185 remains draft while the shared full-suite baseline is tracked. Its changed-scope standings suite (47/47), typecheck and Vercel build pass. Four remaining full-suite failures also occur on main; this PR fixes nine additional standings failures. Keep production-like extraction as a launch QA gate.
+2. #195 remains draft until its SQL migration is validated in an isolated database. Its 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass; all review findings are resolved.
+3. The only Supabase branch is currently MIGRATIONS_FAILED. Do not create/rebase a branch or apply the PR migration to production until the full migration baseline is reconciled and a safe isolated validation path exists.
 4. Keep #196 in draft through MVP launch. It is not a prerequisite for #185 or #195 and must not consume pre-launch capacity.
 5. Record the final PR state, head SHA, CI result and reviewer disposition here after each milestone. Do not mark a PR merge-ready based solely on Vercel preview status.
 
@@ -261,11 +261,11 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 
 ### Current PR execution state
 
-- [x] #185 — five-source roster, focused cap test, typecheck and Vercel build verified; ready for review. [ ] Production-like extraction and two-publisher consensus evidence remain outstanding. Full PFIE standings suite now passes (47/47).
-- [x] #195 — targeted ESLint, typecheck, 15 evidence tests, targeted ESLint, typecheck, schema/RLS/grant review, distinct reference-price source-ID/domain trigger and Vercel build verified; ready for review. [ ] Production migration remains unapplied pending full migration-baseline reconciliation and separate approval.
+- [x] #185 — five-source roster, team-resolution regressions, standings tests 47/47, typecheck and Vercel build verified. [ ] Four full-suite failures remain, all reproduced on main; production-like extraction and two-publisher consensus remain launch QA gates.
+- [x] #195 — evidence safeguards, 15 evidence tests, targeted Prettier/ESLint, typecheck, RLS/grant review, case-insensitive reference-price domain guard and Vercel build verified; review findings resolved. [ ] Isolated SQL validation remains pending because Supabase's only branch is MIGRATIONS_FAILED; production migration remains unapplied.
 - [x] #196 — explicitly deferred to post-launch; no pre-launch merge or activation.
 
-**Merge rule:** #185 and #195 are marked ready for review, not merged. #185 still requires production-like extraction and two-publisher consensus evidence. #195 may be merged as a code/schema foundation after reviewer approval, but its production migration remains a separate, blocked change until migration history and backup/rollback are reconciled.
+**Merge rule:** #185 remains draft until the shared test baseline and final review disposition are accepted; production-like extraction is a launch QA gate because unverified sources cannot bypass two-publisher consensus. #195 remains draft until the migration is validated in an isolated database. No PR migration may be applied to production until migration history and backup/PITR/rollback are reconciled.
 
 
 ### Verification note — 22 November 2026
@@ -295,3 +295,8 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 - Keep draft and outside the MVP release scope. No automated bookmaker odds, match-intelligence worker or exclusions feature from #196 is enabled for MVP.
 
 **Merge decision:** #185 and #195 remain drafts. A ready Vercel deployment proves the build can deploy; it does not clear a failing full test suite, missing production-like data evidence, or the #195 disposable-schema validation gate.
+
+
+### Shared test baseline — 22 November 2026
+
+Current main has 13 failing tests across four files. PR #185 has four failures across three files; the same four failures reproduce on main, while the PR fixes nine additional standings regressions. PR #195 retains the 13-test main baseline, including the two season-backfill fixture failures. Do not describe the repository-wide suite as green.
