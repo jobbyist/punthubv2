@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "theme-color", content: "#000000" },
         { name: "mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-capable", content: "yes" },
-        { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+        { name: "apple-mobile-web-app-status-bar-style", content: "default" },
         { name: "apple-mobile-web-app-title", content: "Puntr" },
         { property: "og:title", content: t("meta.title") },
         { property: "og:description", content: t("meta.ogDescription") },
@@ -184,7 +184,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 publisher: { "@id": "https://puntr.co.za/#organization" },
                 potentialAction: {
                   "@type": "SearchAction",
-                  target: "https://puntr.co.za/predictions?q={search_term_string}",
+                  target: "https://puntr.co.za/discover?q={search_term_string}",
                   "query-input": "required name=search_term_string",
                 },
               },
