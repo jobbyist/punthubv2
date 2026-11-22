@@ -27,6 +27,7 @@ import { fetchUpcomingFixtures } from "@/lib/fixtures";
 import { formatDate, formatTime } from "@/lib/format";
 import { FixtureCard, KickoffMeta } from "@/components/fixture-card";
 import { PageArt } from "@/components/motion/page-art";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -67,11 +68,21 @@ function Landing() {
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
   const { loading: sessionLoading, isSignedIn } = useSession();
+  const [headlineVariant, setHeadlineVariant] = useState<"A" | "B">("A");
   const [postLaunch, setPostLaunch] = useState(false);
   useEffect(() => {
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
     setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
   }, []);
+  useEffect(() => {
+    if (sessionLoading) return;
+    const variant = Math.random() < 0.5 ? "A" : "B";
+    setHeadlineVariant(variant);
+    trackEvent("home_hero_headline_viewed", {
+      variant,
+      authenticated: isSignedIn,
+    });
+  }, [sessionLoading, isSignedIn]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
@@ -86,32 +97,56 @@ function Landing() {
         <HeroBackdrop />
         <div className="puntr-rise min-w-0">
           <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            {t("hero.badge")}
+            SOUTH AFRICA’S SPORTS PREDICTION &amp; INTELLIGENCE PLATFORM
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
-            {t("hero.title1")}
-            <br />
-            <span className="text-primary">{t("hero.title2")}</span>
+            {headlineVariant === "A" ? (
+              <>Predict smarter.<br /><span className="text-primary">Prove it.</span></>
+            ) : (
+              <>Know your sport?<br /><span className="text-primary">Back your call.</span></>
+            )}
           </h1>
-          <p className="mt-4 text-base font-semibold sm:text-lg">{t("hero.tagline")}</p>
+          <p className="mt-4 text-base font-semibold sm:text-lg">
+            100% free to join. No card required. Sign up for early access.
+          </p>
           <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            <Trans t={t} i18nKey="hero.body" components={{ 1: <Em /> }} />
+            Puntr is a growing online community where South African sports fans come to lock in match predictions, track verified records and get rewarded for knowing the game. It’s really that simple.
+          </p>
+          <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
+            Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading, and a public record that speaks for itself.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
               size="lg"
               className="puntr-sheen h-12 px-6 text-[15px]"
-              onClick={() => navigate({ to: "/join" })}
+              onClick={() => {
+                trackEvent("home_hero_primary_cta_clicked", {
+                  authenticated: isSignedIn,
+                  destination: isSignedIn ? "discover" : "join",
+                });
+                navigate({ to: isSignedIn ? "/discover" : "/join" });
+              }}
             >
-              {tc("cta.becomeFounding")}
+              {isSignedIn ? "Make a prediction" : "Become a Founding Member"}
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="h-12 px-6 text-[15px]"
-              onClick={() => setIsVideoModalOpen(true)}
+              onClick={() => {
+                if (isSignedIn) {
+                  trackEvent("home_hero_secondary_cta_clicked", {
+                    authenticated: true,
+                    destination: "leaderboards",
+                  });
+                  navigate({ to: "/leaderboards" });
+                } else {
+                  trackEvent("home_hero_video_clicked", { authenticated: false });
+                  setIsVideoModalOpen(true);
+                }
+              }}
             >
-              <Play className="mr-2 size-4" /> {t("hero.watch")}
+              {isSignedIn ? "View leaderboards" : <><Play className="mr-2 size-4" /> Watch the video</>}
             </Button>
           </div>
           <FoundingCounter className="mt-4" />
