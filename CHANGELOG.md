@@ -377,3 +377,12 @@ Pending
 - Guard fixture ticker and rail array access for strict TypeScript settings.
 - Omit optional motion props when reduced-motion mode is enabled, avoiding undefined animation props.
 - Add the missing Afrikaans mobile navigation label for Fantasy Arena.
+
+
+## 22 November 2026 — PWA and desktop hardening
+
+- Allow signed-in desktop browser sessions to explicitly opt in to web push; permission is no longer restricted to installed PWAs.
+- Reject test and campaign sends when no active opted-in recipients match, preventing empty campaigns and false success messages.
+- Require at least one confirmed device delivery before the admin test action reports success.
+- Guard fixture ticker and rail array access for strict TypeScript settings; omit optional motion props when reduced-motion mode is enabled.
+- Complete the Afrikaans mobile navigation label for Fantasy Arena.
