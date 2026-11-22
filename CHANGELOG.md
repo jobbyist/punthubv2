@@ -364,3 +364,9 @@ Pending
 - Generated articles could not be saved: `on conflict (generation_job_id)` needs a non-partial unique index (migration 20261113190000, applied).
 - Gemini primary timeout 40 s to 30 s so the fallback has time; run budget 50 s to 120 s (a production run took 88 s without being stopped).
 - One revision pass when the first draft fails a critical check.
+
+## 2026-11-22 — Context-aware fixture rails
+- Added a pre-launch guest Matchday Intelligence rail with snap scrolling, timed auto-advance, pause-on-interaction, and a Founding Member join CTA.
+- Added a compact member/post-launch live and upcoming fixture ticker, with direct links to match rooms for real fixtures.
+- Switched the sitewide top strip between Founding Bar and Fixture Ticker using session state and the configured launch date.
+- Added clearly labelled illustrative fixtures for offline/empty-data states; no fabricated scores, AI confidence percentages, or community-pick percentages are displayed.

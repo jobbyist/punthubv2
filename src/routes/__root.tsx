@@ -11,7 +11,7 @@ import { type ReactNode, useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { SessionProvider } from "@/components/session";
-import { FoundingBar } from "@/components/founding-bar";
+import { ContextAwareTopStrip } from "@/components/layout/context-aware-top-strip";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdminNotch } from "@/components/admin-notch";
 import { SecurityPrompt } from "@/components/security-prompt";
@@ -282,7 +282,7 @@ function RootComponent() {
         <RouteProgress />
         <MfaGate />
         <div className="flex min-h-dvh flex-col">
-          <FoundingBar />
+          <ContextAwareTopStrip />
           <SiteHeader />
           <SecurityPrompt />
           <div className="flex-1">

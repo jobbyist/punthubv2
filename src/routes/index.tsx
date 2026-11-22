@@ -9,6 +9,7 @@ import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
+import { HeroFixtureRail } from "@/components/match/hero-fixture-rail";
 import { MatchdayWidget } from "@/components/favourites/matchday-widget";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { useSession } from "@/components/session";
@@ -17,7 +18,8 @@ import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { Trans, useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
@@ -64,6 +66,12 @@ function Landing() {
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
+  const { loading: sessionLoading, isSignedIn } = useSession();
+  const [postLaunch, setPostLaunch] = useState(false);
+  useEffect(() => {
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
+  }, []);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
