@@ -19,13 +19,16 @@ export const DEFAULT_GEMINI_MODELS = [
   "gemini-3.1-flash-lite",
 ] as const;
 
-/** PFIE extraction is high volume and simple: the Flash-Lite models go first, the Flash models back them up. */
+/**
+ * PFIE standings require exact row-level extraction and cross-publisher reconciliation. Prefer the strongest
+ * available free Flash models first; use Flash-Lite as quota-aware fallbacks for high-volume runs.
+ */
 export const DEFAULT_PFIE_MODELS = [
-  "gemini-3.1-flash-lite",
-  "gemini-3.5-flash-lite",
   "gemini-3.8-flash",
   "gemini-3.6-flash",
   "gemini-3.5-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
 ] as const;
 
 /**

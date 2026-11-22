@@ -87,7 +87,7 @@ match and compare with the official score before any settlement is trusted.
 - Reliability: every attempt goes through `record_sync()` (`sync_status`: last attempt, success, failures, error,
   meta). Failures retry after 20 and 40 minutes, then wait a day. `/tables` shows a stale notice when the last success is older than 18 h or the last attempt failed; Admin > System
   shows the Data sync panel.
-- Cost: per standings refresh 1 Parallel search + up to 5 Parallel page extracts + up to 10 source-specific Gemini Flash-Lite calls (one initial extraction and at most one targeted retry per source). Each source is extracted independently to prevent cross-source row blending. Priority tables
+- Cost: per standings refresh 1 Parallel search + up to 5 Parallel page extracts + up to 10 source-specific Gemini Flash/Flash-Lite calls (one initial extraction and at most one targeted retry per source). Each source is extracted independently to prevent cross-source row blending. Priority tables
   refresh twice daily; other tables refresh daily. Quotas go through `api_quota_claim` as before.
 - No cache layer exists to invalidate: pages read Supabase directly, so a table change shows on the next load.
 

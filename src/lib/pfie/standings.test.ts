@@ -55,6 +55,19 @@ const raw = (source: number, tweak?: (r: RawStandingRow) => RawStandingRow): Raw
     return tweak ? tweak(r) : r;
   });
 
+describe("PFIE standings extraction model order", () => {
+  it("uses the strongest free Flash models before Flash-Lite fallbacks", () => {
+    expect(DEFAULT_PFIE_MODELS.slice(0, 3)).toEqual([
+      "gemini-3.8-flash",
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+    ]);
+    expect(DEFAULT_PFIE_MODELS.slice(3)).toEqual([
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+    ]);
+  });
+});
 describe("trusted standings publisher domains", () => {
   it("recognises the two South African table publishers as trusted", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
