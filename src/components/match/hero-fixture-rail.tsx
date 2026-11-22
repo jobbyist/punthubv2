@@ -53,7 +53,7 @@ export function HeroFixtureRail() {
     const next = (index + direction + cards.length) % cards.length;
     setIndex(next);
     el.scrollTo({
-      left: cards[next].offsetLeft - cards[0].offsetLeft,
+      left: (cards[next]?.offsetLeft ?? 0) - (cards[0]?.offsetLeft ?? 0),
       behavior: reduceMotion ? "auto" : "smooth",
     });
   }, [index, reduceMotion]);
