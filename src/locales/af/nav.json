@@ -44,7 +44,8 @@
       "activity": "My aktiwiteit",
       "money": "Beursie en belonings",
       "settings": "Instellings"
-    }
+    },
+    "referralProgram": "Verwysingsprogram"
   },
   "desktop": {
     "groups": {
@@ -63,7 +64,11 @@
       "bookmakers": "Boekmakergids",
       "puntPoints": "PuntPoints en belonings",
       "about": "Oor Puntr",
-      "support": "Kontak ons hulpspan"
+      "support": "Kontak ons hulpspan",
+      "fantasyArena": "Fantasie-arena",
+      "referrals": "Verwys en verdien",
+      "brandAmbassadors": "Handelsmerkambassadeurs",
+      "responsiblePlay": "Verantwoordelike spel"
     },
     "direct": {
       "home": "Tuis",
@@ -94,7 +99,8 @@
       "liveScores": "Regstreekse tellings",
       "puntPoints": "PuntPoints",
       "referrals": "Verwysings",
-      "fantasyArena": "Fantasie-arena"
+      "fantasyArena": "Fantasie-arena",
+      "brandAmbassadors": "Handelsmerkambassadeurs"
     },
     "signIn": "Teken aan",
     "roadmap": "Padkaart",
@@ -121,7 +127,8 @@
         "roadmap": "Produkpadkaart",
         "feedback": "Deel terugvoer"
       }
-    }
+    },
+    "responsiblePlay": "Verantwoordelike spel"
   },
   "sport": {
     "soccer": "Sokker",
@@ -174,11 +181,16 @@
       "verify": "Verifieer die rekord",
       "roadmap": "Padkaart",
       "cookies": "Koekies",
-      "disclosures": "Openbaarmakings",
+      "disclosures": "Geaffilieerde bekendmaking",
       "fixtures": "Wedstryde",
       "tables": "Puntelyste",
       "discussions": "Sportbesprekings",
-      "duels": "Kop-aan-kop-tweestryde"
+      "duels": "Kop-aan-kop-tweestryde",
+      "fantasyArena": "Fantasie-arena",
+      "bookmakers": "Boekmakergids",
+      "referrals": "Verwysings",
+      "brandAmbassadors": "Handelsmerkambassadeurs",
+      "responsiblePlay": "Verantwoordelike spel"
     },
     "social": {
       "x": "Puntr op X",

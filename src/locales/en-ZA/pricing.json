@@ -57,7 +57,7 @@
     "tagline": "For sports fans and Tipsters who want deeper analysis, stronger tools and recognition for a consistent track record.",
     "price": "{{price}} per month",
     "note": "Tipster Support launches subject to verification, eligibility thresholds and published programme rules. Tips earn PuntPoints, not cash; points cannot be withdrawn and never affect rankings.",
-    "f1": "<1>AI-Powered Insights</1>: match previews and slip checks",
+    "f1": "<1>Planned AI-powered insights</1>: match previews and slip checks",
     "f2": "Advanced tipster analytics: units, ROI and form by market, sport and odds range",
     "f3": "Custom alerts for fixtures and settled picks you follow",
     "f4": "Early access to new tools",
@@ -75,5 +75,11 @@
     "saving": "Save R889 · 75% less",
     "fine": "Reserving is free on Puntr. We then email you a secure PayFast link: pay the R299 within 48 hours to confirm your place, or the reservation lapses and the place is released.",
     "cta": "Create an account & reserve"
+  },
+  "referral": {
+    "eyebrow": "Refer & earn",
+    "title": "Earn 10–30% recurring commission on eligible Puntr Pro referrals.",
+    "body": "Share Puntr with your community. When an eligible referral becomes a paying Pro subscriber, you can earn recurring commission under the programme terms.",
+    "cta": "Explore the referral programme"
   }
 }

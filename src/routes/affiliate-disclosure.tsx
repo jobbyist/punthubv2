@@ -52,6 +52,14 @@ function AffiliateDisclosure() {
           the responsible-gambling message. Partners do not receive your personal information.
         </p>
         <p>
+          Puntr also operates a separate member referral programme. Approved referrers may earn
+          10–30% recurring commission on eligible Puntr Pro subscription revenue when a referred
+          member becomes a paying Pro subscriber. This commission relates to Puntr subscriptions,
+          not bookmaker deposits, stakes, losses or winnings. Rates, attribution and payment terms
+          are governed by the approved referral programme agreement. See the{" "}
+          <a className="underline" href="/referrals">referral programme</a>.
+        </p>
+        <p>
           Commercial partners do not control or influence Puntr’s picks, results, prediction
           assessments, editorial content or leaderboards.
         </p>

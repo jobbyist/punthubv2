@@ -44,7 +44,8 @@
       "activity": "My activity",
       "money": "Wallet and rewards",
       "settings": "Settings"
-    }
+    },
+    "referralProgram": "Referral programme"
   },
   "desktop": {
     "groups": {
@@ -63,7 +64,11 @@
       "bookmakers": "Bookmaker Directory",
       "puntPoints": "PuntPoints & Rewards",
       "about": "About Puntr",
-      "support": "Contact Support"
+      "support": "Contact Support",
+      "fantasyArena": "Fantasy Arena",
+      "referrals": "Refer & earn",
+      "brandAmbassadors": "Brand ambassadors",
+      "responsiblePlay": "Responsible Play"
     },
     "direct": {
       "home": "Home",
@@ -94,7 +99,8 @@
       "liveScores": "Live scores",
       "fantasyArena": "Fantasy Arena",
       "puntPoints": "PuntPoints",
-      "referrals": "Referrals"
+      "referrals": "Referrals",
+      "brandAmbassadors": "Brand ambassadors"
     },
     "signIn": "Sign in",
     "roadmap": "Roadmap",
@@ -121,7 +127,8 @@
         "roadmap": "Product roadmap",
         "feedback": "Share feedback"
       }
-    }
+    },
+    "responsiblePlay": "Responsible Play"
   },
   "sport": {
     "soccer": "Soccer",
@@ -174,11 +181,16 @@
       "verify": "Verify the record",
       "roadmap": "Roadmap",
       "cookies": "Cookies",
-      "disclosures": "Disclosures",
+      "disclosures": "Affiliate Disclosure",
       "fixtures": "Fixtures",
       "tables": "Tables",
       "discussions": "Sports Discussions",
-      "duels": "Head-to-Head Duels"
+      "duels": "Head-to-Head Duels",
+      "fantasyArena": "Fantasy Arena",
+      "bookmakers": "Bookmaker directory",
+      "referrals": "Referrals",
+      "brandAmbassadors": "Brand ambassadors",
+      "responsiblePlay": "Responsible Play"
     },
     "social": {
       "x": "Puntr on X",

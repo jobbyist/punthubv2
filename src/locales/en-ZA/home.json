@@ -96,8 +96,8 @@
     "iframeTitle": "How Puntr works"
   },
   "platforms": {
-    "title": "Predictions, trends and insights across South Africa's top bookmakers",
-    "body": "Members can record predictions against fixtures and odds offered by the platforms shown. Puntr does not accept bets and is not necessarily affiliated with or endorsed by those platforms.",
+    "title": "Bookmaker brands South African sports fans may encounter",
+    "body": "These are independent third-party businesses. Puntr does not accept bets or operate as a bookmaker. A logo or listing is not an endorsement or proof of a current affiliate relationship. Check licensing and terms directly with the relevant regulator and operator.",
     "fine": "18+ only. T&Cs apply."
   },
   "next": {
@@ -172,7 +172,7 @@
       }
     },
     "ai": {
-      "pick": "Punt AI pick",
+      "pick": "Sample AI pick",
       "dial": "Sample AI confidence",
       "lean": "Lean: {{outcome}}",
       "win": "{{team}} win"

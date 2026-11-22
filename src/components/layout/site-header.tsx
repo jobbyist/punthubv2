@@ -235,12 +235,12 @@ export function SiteHeader() {
                   ))}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
-              <DropdownMenuItem disabled className="rounded-lg px-3 py-2.5">
-                <Target className="size-4 text-muted-foreground" />
-                <span className="flex-1">{t("desktop.items.fantasyLeague")}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-                  {t("desktop.comingSoon")}
-                </span>
+              <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2.5">
+                <Link to="/fantasy-arena" className={isActive(path, "/fantasy-arena") ? "text-primary" : ""}>
+                  <Target className="size-4 text-muted-foreground" />
+                  <span className="flex-1">{t("desktop.items.fantasyArena")}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-primary">In development</span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -249,7 +249,7 @@ export function SiteHeader() {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/bookmakers", "/puntpoints", "/about", "/support"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=open]:bg-muted ${["/bookmakers", "/puntpoints", "/about", "/support", "/referrals", "/brand-ambassadors", "/responsible-play"].some((to) => isActive(path, to)) ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
               >
                 {t("desktop.groups.more")}
                 <ChevronDown className="size-3.5 opacity-60" />
@@ -268,6 +268,9 @@ export function SiteHeader() {
                   { key: "puntPoints", to: "/puntpoints", icon: Coins },
                   { key: "about", to: "/about", icon: Info },
                   { key: "support", to: "/support", icon: LifeBuoy },
+                  { key: "referrals", to: "/referrals", icon: Gift },
+                  { key: "brandAmbassadors", to: "/brand-ambassadors", icon: Users },
+                  { key: "responsiblePlay", to: "/responsible-play", icon: ShieldCheck },
                 ] as const
               ).map(({ key, to, icon: Icon }) => (
                 <DropdownMenuItem
@@ -394,6 +397,11 @@ export function SiteHeader() {
                           "noopener,noreferrer",
                         );
                       }}
+                    />
+                    <MenuItem
+                      icon={Gift}
+                      label={t("header.referralProgram")}
+                      onSelect={() => navigate({ to: "/referrals" })}
                     />
                   </>
                 )}

@@ -13,12 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AffiliateDisclosureRouteImport } from './routes/affiliate-disclosure'
 import { Route as BookmakersRouteImport } from './routes/bookmakers'
+import { Route as BrandAmbassadorsRouteImport } from './routes/brand-ambassadors'
 import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as FantasyArenaRouteImport } from './routes/fantasy-arena'
 import { Route as FixturesRouteImport } from './routes/fixtures'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as FoundingRouteImport } from './routes/founding'
@@ -34,6 +36,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PuntpointsRouteImport } from './routes/puntpoints'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as ResponsiblePlayRouteImport } from './routes/responsible-play'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResultsRouteImport } from './routes/results'
@@ -215,6 +218,21 @@ const PuntpointsRoute = PuntpointsRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponsiblePlayRoute = ResponsiblePlayRouteImport.update({
+  id: '/responsible-play',
+  path: '/responsible-play',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandAmbassadorsRoute = BrandAmbassadorsRouteImport.update({
+  id: '/brand-ambassadors',
+  path: '/brand-ambassadors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasyArenaRoute = FantasyArenaRouteImport.update({
+  id: '/fantasy-arena',
+  path: '/fantasy-arena',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundsRoute = RefundsRouteImport.update({
@@ -511,12 +529,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/bookmakers': typeof BookmakersRoute
+  '/brand-ambassadors': typeof BrandAmbassadorsRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
+  '/fantasy-arena': typeof FantasyArenaRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -532,6 +552,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
@@ -595,12 +616,14 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/bookmakers': typeof BookmakersRoute
+  '/brand-ambassadors': typeof BrandAmbassadorsRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
+  '/fantasy-arena': typeof FantasyArenaRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -616,6 +639,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
@@ -680,12 +704,14 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/affiliate-disclosure': typeof AffiliateDisclosureRoute
   '/bookmakers': typeof BookmakersRoute
+  '/brand-ambassadors': typeof BrandAmbassadorsRoute
   '/coming-soon': typeof ComingSoonRoute
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
+  '/fantasy-arena': typeof FantasyArenaRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -701,6 +727,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
@@ -1019,12 +1046,14 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AffiliateDisclosureRoute: typeof AffiliateDisclosureRoute
   BookmakersRoute: typeof BookmakersRoute
+  BrandAmbassadorsRoute: typeof BrandAmbassadorsRoute
   ComingSoonRoute: typeof ComingSoonRoute
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
   DiscoverRoute: typeof DiscoverRoute
   FeedbackRoute: typeof FeedbackRoute
+  FantasyArenaRoute: typeof FantasyArenaRoute
   FixturesRoute: typeof FixturesRoute
   ForumRoute: typeof ForumRoute
   FoundingRoute: typeof FoundingRoute
@@ -1040,6 +1069,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PuntpointsRoute: typeof PuntpointsRoute
   ReferralsRoute: typeof ReferralsRoute
+  ResponsiblePlayRoute: typeof ResponsiblePlayRoute
   RefundsRoute: typeof RefundsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResultsRoute: typeof ResultsRoute
@@ -1694,12 +1724,14 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AffiliateDisclosureRoute: AffiliateDisclosureRoute,
   BookmakersRoute: BookmakersRoute,
+  BrandAmbassadorsRoute: BrandAmbassadorsRoute,
   ComingSoonRoute: ComingSoonRoute,
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
   DiscoverRoute: DiscoverRoute,
   FeedbackRoute: FeedbackRoute,
+  FantasyArenaRoute: FantasyArenaRoute,
   FixturesRoute: FixturesRoute,
   ForumRoute: ForumRoute,
   FoundingRoute: FoundingRoute,
@@ -1715,6 +1747,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PuntpointsRoute: PuntpointsRoute,
   ReferralsRoute: ReferralsRoute,
+  ResponsiblePlayRoute: ResponsiblePlayRoute,
   RefundsRoute: RefundsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResultsRoute: ResultsRoute,
