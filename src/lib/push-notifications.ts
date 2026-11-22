@@ -81,17 +81,20 @@ export async function removeCurrentPushDevice(): Promise<void> {
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registration.pushManager.getSubscription();
   if (!subscription) return;
-  await pushApiRequest({ action: "unsubscribe-device", endpoint: subscription.endpoint });
+  const result = await Promise.allSettled([
+    pushApiRequest({ action: "unsubscribe-device", endpoint: subscription.endpoint }),
+  ]);
   await subscription.unsubscribe();
+  if (result[0].status === "rejected") throw result[0].reason;
 }
 
 export async function disablePushNotifications(): Promise<void> {
+  await pushApiRequest({ action: "unsubscribe" });
   if (supportsWebPush()) {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) await subscription.unsubscribe();
   }
-  await pushApiRequest({ action: "unsubscribe" });
   const { error: consentError } = await supabase.rpc("record_consent", {
     p_purpose: "push_notifications",
     p_granted: false,
