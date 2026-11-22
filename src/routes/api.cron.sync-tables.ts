@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * League standings refresh and one-time form history backfill (PFIE). Scheduled every five minutes in two daily windows (04:10-05:55 and 16:10-17:55 SAST); production cron processes one due competition per request to stay within the HTTP timeout. `?only=epl,psl`, `?job=standings|history` and
- * `?max=N` (1-4) are for manual runs.
+ * League standings refresh and one-time form history backfill (PFIE). Scheduled every five minutes in two daily windows; one due competition per request. Search is capped at 10s, live Extract at 20s and Gemini at 10s to stay within the 55s pg_net timeout. `?only=epl,psl` and `?job=standings|history` are for manual runs.
  */
 export const Route = createFileRoute("/api/cron/sync-tables")({
   server: {
@@ -27,7 +26,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
           jobParam === "archive"
             ? jobParam
             : undefined;
-        const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
+        const max = 1;
 
         const { DEFAULT_PFIE_MODELS, parseModelList, readContentEnv } =
           await import("@/lib/content/config");
@@ -44,7 +43,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
           const pfieStore = createPfieStore();
           const report = await runTablesSync(
             {
-              search: guardSearch(createParallelSearch(keys.parallelKey!), claim),
+              search: guardSearch(createParallelSearch(keys.parallelKey!, { timeoutMs: 10_000, attempts: 1 }), claim),
               // Archive pages are long and stable: Parallel Extract only (cached copies are fine, Firecrawl's free
               // tier is kept for live pages), with a longer timeout.
               extract:
@@ -63,15 +62,15 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                           keys.parallelKey!,
                           // Five independent full-page reads run concurrently. Use one bounded attempt per
                           // publisher; a slow source is skipped rather than retried inside the pg_net 55s window.
-                          { timeoutMs: 30_000, attempts: 1 },
+                          { timeoutMs: 20_000, attempts: 1 },
                           { maxAgeSeconds: 900 },
                         ),
                         claim,
                       ),
-              llm: guardLlm(createGemini(keys.geminiKey!), claim),
+              llm: guardLlm(createGemini(keys.geminiKey!, { timeoutMs: 10_000, attempts: 1 }), claim),
               store: createTablesStore(),
               models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","))
-                .models,
+                .models.slice(0, 1),
               usageToday: () => pfieStore.usageToday(),
             },
             {
