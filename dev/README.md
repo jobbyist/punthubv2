@@ -51,10 +51,18 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 | PR | Status | Decision |
 |---|---|---|
 | [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
-| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft | Post-launch foundation; hold for migration baseline, tests and complete integrations |
-| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft | Hold: odds source rights absent, migration SQL needs correction, and production validation/legal review incomplete |
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft | Hold: review found six configured pages against a five-source cap |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft — pre-launch priority | Fix five-source configuration, enforce cap in tests, preserve independent two-publisher consensus; validate extraction and CI |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft — pre-launch merge candidate | Harden evidence/domain/licensing validation and canonical roster identity; merge only after code review and CI. Migration remains unapplied until production baseline reconciliation |
+| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred. No automated odds without written data rights; fix migration, complete production/security/legal validation and test the match-intelligence/exclusions scope after launch |
 | #173, #177 | Closed, not merged | Their code paths are already present in main |
 | #183 | Closed, not merged | Duplicate of #185 |
 | #81 | Closed, not merged | Owner-confirmed draw terms were carried into the legal changelog in PR #200 |
 
+
+## PR execution sequence (owner decision, 22 November 2026)
+
+- **#185 — pre-launch:** complete the five-source La Liga configuration and source-cap tests. Keep strict two-independent-publisher consensus; source candidates do not count as verified coverage until extraction and validation succeed.
+- **#195 — pre-launch merge candidate:** complete deterministic evidence validation, curated publisher identity, South African bookmaker licence checks, canonical team/roster identity, migration SQL review and tests. The migration may be merged into source control only after review; do not apply it to production until the full migration baseline and backup/rollback plan are reconciled.
+- **#196 — post-launch:** keep draft and out of the 1 December critical path. Automated odds remain disabled pending written collection/storage/display/redistribution rights. Revisit its match-intelligence workers, exclusion-page scope, migration and compliance gates after launch.
+
+A successful preview deployment is not a substitute for test, security, data-rights or production-migration approval.
