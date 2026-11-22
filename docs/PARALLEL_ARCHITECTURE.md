@@ -122,3 +122,8 @@ That leaves headroom to raise the season-backfill caps so it finishes before 1 D
 - Task result endpoint (`GET /v1/tasks/runs/{run_id}/result`, used by the SDK) and the exact `basis` field names.
 - Monitor billing per scheduled execution, and the update/cancel endpoints.
 - Chat endpoint `/v1beta/chat/completions` request shape (OpenAI-compatible).
+
+
+## 22 Nov 2026: La Liga standings source coverage
+
+The live La Liga table now has three direct candidates: the official LaLiga standings page, TACTIX and Football Edge Lab. Parallel Extract reads each independently; publisher identity normalization prevents subdomains from inflating consensus. These candidates still pass the same 20-team, row-evidence, arithmetic, date and two-independent-publisher checks before publication.
