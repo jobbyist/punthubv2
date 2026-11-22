@@ -158,6 +158,42 @@ create index if not exists pfie_bookmaker_prices_fixture_market_idx
 create index if not exists pfie_bookmaker_prices_source_idx
   on public.pfie_bookmaker_prices(source_id, captured_at desc);
 
+
+-- Every raw bookmaker price must point to a currently enabled, reviewed South African bookmaker source.
+-- The application performs the same checks, but this trigger protects service-role writes and future workers.
+create or replace function public.pfie_validate_bookmaker_price_source()
+returns trigger
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $pfie$
+begin
+  if not exists (
+    select 1
+    from public.pfie_data_sources s
+    where s.id = new.source_id
+      and s.tier = 'licensed_bookmaker'
+      and s.enabled is true
+      and s.jurisdiction = 'ZA'
+      and nullif(trim(s.licence_reference), '') is not null
+      and s.licence_checked_at is not null
+      and s.terms_reviewed_at is not null
+      and s.ingestion_mode in ('official_api', 'affiliate_feed', 'terms_approved_public_page')
+  ) then
+    raise exception 'PFIE bookmaker prices require an enabled, reviewed South African licensed bookmaker source';
+  end if;
+  return new;
+end;
+$pfie$;
+
+drop trigger if exists pfie_bookmaker_prices_source_guard on public.pfie_bookmaker_prices;
+create trigger pfie_bookmaker_prices_source_guard
+  before insert or update of source_id on public.pfie_bookmaker_prices
+  for each row execute function public.pfie_validate_bookmaker_price_source();
+
+revoke all on function public.pfie_validate_bookmaker_price_source() from PUBLIC, anon, authenticated;
+grant execute on function public.pfie_validate_bookmaker_price_source() to service_role;
+
 -- This is the future aggregate reference-price model. Keep it service-role-only until a reviewed
 -- public read view is deliberately added. A row requires two independently permitted sources.
 create table if not exists public.pfie_reference_prices (
@@ -191,6 +227,7 @@ declare
   distinct_source_count integer;
   distinct_domain_count integer;
   permitted_source_count integer;
+  registry_domain_count integer;
 begin
   select count(distinct u.source_id)
     into distinct_source_count
@@ -200,11 +237,17 @@ begin
     into distinct_domain_count
     from unnest(new.source_domains) as u(domain);
 
+  select count(distinct lower(regexp_replace(trim(s.domain), '^www[.]', '')))
+    into registry_domain_count
+    from public.pfie_data_sources s
+    where s.id = any(new.source_ids);
+
   if new.bookmaker_count < 2
     or new.bookmaker_count <> cardinality(new.source_ids)
     or new.bookmaker_count <> cardinality(new.source_domains)
     or distinct_source_count <> cardinality(new.source_ids)
-    or distinct_domain_count <> cardinality(new.source_domains) then
+    or distinct_domain_count <> cardinality(new.source_domains)
+    or registry_domain_count <> cardinality(new.source_ids) then
     raise exception 'PFIE reference prices require at least two distinct source IDs and publisher domains matching bookmaker_count';
   end if;
 
@@ -226,15 +269,26 @@ begin
 
   if exists (
     select 1
-    from unnest(new.source_domains) as u(domain)
+    from unnest(new.source_ids) as selected(source_id)
+    join public.pfie_data_sources s on s.id = selected.source_id
+    where not exists (
+      select 1
+      from unnest(new.source_domains) as supplied(domain)
+      where lower(regexp_replace(trim(s.domain), '^www[.]', '')) =
+        lower(regexp_replace(trim(supplied.domain), '^www[.]', ''))
+    )
+  ) or exists (
+    select 1
+    from unnest(new.source_domains) as supplied(domain)
     where not exists (
       select 1
       from public.pfie_data_sources s
       where s.id = any(new.source_ids)
-        and lower(regexp_replace(trim(s.domain), '^www[.]', '')) = lower(regexp_replace(trim(u.domain), '^www[.]', ''))
+        and lower(regexp_replace(trim(s.domain), '^www[.]', '')) =
+          lower(regexp_replace(trim(supplied.domain), '^www[.]', ''))
     )
   ) then
-    raise exception 'PFIE reference-price publisher domains must match the selected source IDs';
+    raise exception 'PFIE reference-price publisher domains must match one-to-one with the selected source IDs';
   end if;
 
   return new;
