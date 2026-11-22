@@ -66,8 +66,11 @@ export async function createMatchIntelligenceStore(): Promise<MatchIntelligenceS
       for (const result of [statuses, savedLineups, savedStats]) {
         if (result.error) throw new Error("match intelligence due jobs: " + result.error.message);
       }
-      const statusMap = new Map(
-        (statuses.data ?? []).map((row) => [String(row.job) + ":" + String(row.scope), row.last_attempt_at as string | null]),
+      const statusMap = new Map<string, string | null>(
+        (statuses.data ?? []).map((row) => [
+          String(row.job) + ":" + String(row.scope),
+          row.last_attempt_at as string | null,
+        ] as const),
       );
       const lineupIds = new Set((savedLineups.data ?? []).map((row) => String(row.fixture_id)));
       const statsIds = new Set((savedStats.data ?? []).map((row) => String(row.fixture_id)));
