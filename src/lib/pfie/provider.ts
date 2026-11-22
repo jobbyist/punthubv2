@@ -385,6 +385,16 @@ const TRUSTED = [
   "kicker.de",
   "onefootball.com",
   "football-italia.net",
+  "vi.nl",
+  "ziggo.nl",
+  "sportsmole.co.uk",
+  "stat-football.com",
+  "rotascore.com",
+  "treble.co.za",
+  "nasiscore.co.za",
+  "tntsports.co.uk",
+  "cbssports.com",
+  "foxsports.com",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {
