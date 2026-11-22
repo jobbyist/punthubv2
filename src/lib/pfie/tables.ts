@@ -323,6 +323,10 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   let sources: PfieSource[] = [];
   const modelsUsed = new Set<string>();
   const sourceFailures: string[] = [];
+  const sourceLabel = (index: number) => {
+    const source = sources.find((item) => item.index === index);
+    return source ? `${index}@${source.domain}` : String(index);
+  };
   try {
     const today = sastDate(now());
     sources = await gatherSources(
@@ -369,7 +373,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       if (result.parsed && result.validation.tables.length > 0) raw.push(...result.parsed);
       else {
         const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
-        sourceFailures.push(`${result.source.index}:${reason}`);
+        sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
     let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
@@ -399,7 +403,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             bySource.set(retry.source.index, retry.parsed.filter((row) => row.source === retry.source.index));
           } else {
             const reason = retry.result.rejected.map((item) => item.reason).join(";") || "consensus_retry_incomplete";
-            sourceFailures.push("consensus_retry_" + retry.source.index + ":" + reason);
+            sourceFailures.push("consensus_retry_" + sourceLabel(retry.source.index) + ":" + reason);
           }
         }
         raw = [...bySource.values()].flat();
@@ -409,7 +413,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     }
     if (!chosen) {
       const domains = validation.tables.map((table) => table.source.domain).join(", ");
-      const why = [...sourceFailures, ...validation.rejected.map((r) => String(r.source) + ":" + r.reason)].join(", ") ||
+      const why = [...sourceFailures, ...validation.rejected.map((r) => sourceLabel(r.source) + ":" + r.reason)].join(", ") ||
         String(validation.tables.length) + " unconfirmed tables" + (domains ? " from " + domains : "");
       const disagreement = standingsDisagreementHint(validation.tables);
       throw new Error("no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")");

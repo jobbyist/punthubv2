@@ -378,7 +378,7 @@ export function validateTables(
         continue;
       }
       if (dominates(priorValues, rowValues)) continue;
-      duplicateConflict = `duplicate_team_${row.team}`;
+      duplicateConflict = `duplicate_team_${row.team}_${priorValues.join("/")}_vs_${rowValues.join("/")}`;
       break;
     }
     if (duplicateConflict) {
