@@ -343,7 +343,7 @@ export function validateTables(
     for (const r of rows) {
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
-      else if (!page.includes(fold(r.quote)) && !hasRowEvidence(r)) bad = `row_evidence_not_on_page_${r.team}`;
+      else if (!hasRowEvidence(r)) bad = `row_evidence_not_on_page_${r.team}`;
       else if (![r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].some((team) => page.includes(fold(team))))
         bad = `team_not_on_page_${r.team}`;
       if (bad) break;
