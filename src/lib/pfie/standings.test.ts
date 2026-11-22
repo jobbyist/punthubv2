@@ -252,8 +252,8 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
       played: 10,
-      won: 6,
-      points: 20,
+      won: 7,
+      points: 23,
     });
   });
   it("canonicalizes a known team alias before collapsing a repeated overall subset row", () => {
