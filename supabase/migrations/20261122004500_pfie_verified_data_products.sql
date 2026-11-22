@@ -196,7 +196,7 @@ begin
     into distinct_source_count
     from unnest(new.source_ids) as u(source_id);
 
-  select count(distinct lower(trim(u.domain)))
+  select count(distinct lower(regexp_replace(trim(u.domain), '^www[.]', '')))
     into distinct_domain_count
     from unnest(new.source_domains) as u(domain);
 
@@ -231,7 +231,7 @@ begin
       select 1
       from public.pfie_data_sources s
       where s.id = any(new.source_ids)
-        and lower(trim(s.domain)) = lower(trim(u.domain))
+        and lower(regexp_replace(trim(s.domain), '^www[.]', '')) = lower(regexp_replace(trim(u.domain), '^www[.]', ''))
     )
   ) then
     raise exception 'PFIE reference-price publisher domains must match the selected source IDs';
