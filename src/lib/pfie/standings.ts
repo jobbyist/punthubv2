@@ -353,16 +353,33 @@ export function validateTables(
         rows.push(row);
         continue;
       }
+      const values = (value: RawStandingRow) => [
+        value.played, value.won, value.drawn, value.lost,
+        value.goalsFor, value.goalsAgainst, value.points,
+      ];
+      const priorValues = values(prior);
+      const rowValues = values(row);
       const sameRecord = prior.position === row.position &&
-        prior.played === row.played && prior.won === row.won &&
-        prior.drawn === row.drawn && prior.lost === row.lost &&
-        prior.goalsFor === row.goalsFor && prior.goalsAgainst === row.goalsAgainst &&
-        prior.points === row.points;
-      if (!sameRecord) {
-        duplicateConflict = `duplicate_team_${row.team}`;
-        break;
+        priorValues.every((value, i) => value === rowValues[i]);
+      if (sameRecord) {
+        // Responsive layouts can repeat an identical club row; keep one copy only.
+        continue;
       }
-      // Responsive layouts can repeat an identical club row; keep one copy only.
+      const dominates = (left: number[], right: number[]) =>
+        left.every((value, i) => value >= right[i]!) &&
+        left.some((value, i) => value > right[i]!);
+      if (dominates(rowValues, priorValues)) {
+        // Some publishers include overall, home and away tables in one extract. The overall row is the
+        // cumulative record: it dominates a home/away subset on P/W/D/L/GF/GA/points. Prefer it only when
+        // every cumulative statistic is at least as high; otherwise this is a genuine conflict.
+        const priorIndex = rows.indexOf(prior);
+        if (priorIndex >= 0) rows[priorIndex] = row;
+        byTeam.set(key, row);
+        continue;
+      }
+      if (dominates(priorValues, rowValues)) continue;
+      duplicateConflict = `duplicate_team_${row.team}`;
+      break;
     }
     if (duplicateConflict) {
       fail(duplicateConflict);
