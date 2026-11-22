@@ -165,7 +165,7 @@ export function buildAuthEmail(i: AuthEmailInput): AuthEmail {
             : ["Tap the button to choose a new password."]),
         ],
         ...(code ? { code } : {}),
-        cta: { label: "Choose a new password", url: link("recovery", "/reset-password") },
+        cta: { label: "Choose a new password", url: link("recovery", "/predictions") },
         afterCta: [
           EXPIRY,
           "Didn't ask for this? Ignore this email; your password stays the same. If you keep getting these, reply and let us know.",
