@@ -1,8 +1,7 @@
 /**
- * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each call refreshes the next due competitions that
- * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per refresh window (every
- * 4 hours at most), so two windows a day (07:00 and 14:00 SAST) cost about one search and two page reads per
- * competition each. Nothing is collected after kick-off (pre-match only, no in-play).
+ * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each bounded request refreshes one due competition
+ * with fixtures kicking off in the next 72 hours. Two daily windows rotate four independent bookmaker sources per
+ * competition; nothing is collected after kick-off (pre-match only, no in-play).
  */
 import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
@@ -10,6 +9,7 @@ import { canonicalUrl, cleanText, domainOf } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, LlmRequest, SearchProvider } from "@/lib/content/types";
 
 import {
+  DEFAULT_ODDS_SOURCE_DOMAINS,
   type OddsSource,
   type ReferencePrice,
   type UpcomingFixture,
