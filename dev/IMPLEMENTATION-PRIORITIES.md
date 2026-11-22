@@ -247,3 +247,22 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 - [ ] Automated odds remain disabled until written data rights are obtained and approved.
 - [ ] Malformed migration SQL, worker status constraints, source independence, quota/security, provenance, RLS and end-to-end test gaps are resolved before reconsideration.
 
+
+
+## PR hardening and merge gates — 22 November 2026
+
+This section is part of the MVP Launch Hardening sprint. The PR order is fixed by the owner: #185 and #195 are pre-launch work; #196 is post-launch.
+
+| PR | MVP priority | Required work before merge | Explicit exclusions |
+|---|---|---|---|
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Pre-launch P0.1 | Keep exactly five independent publisher page candidates: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole. Keep query/page arrays aligned. Add tests for count, identities and exclusions. Run standings tests, lint, typecheck, production build, Vercel preview and a production-like extraction proving at least two independent complete tables agree. | No weakening of row-level quote, arithmetic, team-count, freshness, date, regression or two-publisher consensus gates. A configured source is not verified coverage until extraction passes. |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Pre-launch P0.5 code foundation | Verify source quote against captured page text; use curated publisher-domain identity; require ZA bookmaker licence and terms evidence; use canonical team_id for roster membership; review RLS, grants, indexes, foreign keys and SQL; validate migration in a disposable database; pass unit tests, lint, typecheck, build and preview. | No bookmaker is seeded/enabled. No adapter, ingestion cron, public read view or UI is activated. The migration is not applied to production until migration-ledger reconciliation, PITR/backup and rollback approval are complete. |
+| [#196 match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Post-launch only | Keep draft. Reopen after MVP launch for a separate scope review, legal/data-rights review, migration reconciliation, security/quota review and end-to-end tests. | No part of #196 is an MVP launch dependency. Automated odds remain disabled without written collection, storage, display, attribution, retention and redistribution rights. |
+
+### Current PR execution state
+
+- [ ] #185 — source roster and regression tests corrected; awaiting full lint/typecheck/test/build and preview/extraction evidence.
+- [ ] #195 — evidence/schema safeguards reviewed in code; awaiting clean lint/typecheck/test/build, schema/RLS/grant review and preview. Production migration remains unapplied.
+- [x] #196 — explicitly deferred to post-launch; no pre-launch merge or activation.
+
+**Merge rule:** Do not mark #185 or #195 merge-ready based on a clean Git merge or Vercel preview alone. Require all applicable automated checks, review threads resolved, no high-severity findings, and evidence recorded here. #195's repository merge and production migration are separate approvals.
