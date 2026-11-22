@@ -81,7 +81,7 @@ export function Preloader() {
       role="status"
       aria-label={t("preloader.label")}
     >
-      {standalone ? <img src="/puntr-pwa-splash.png" alt={t("preloader.label")} className="absolute inset-0 h-full w-full object-cover" /> : <div className="flex w-64 flex-col items-center text-center">
+      {standalone ? <div className="absolute inset-0 flex flex-col items-center justify-center bg-black px-8 text-center text-white"><img src="/puntr-icon-512.png" alt="" className="w-full max-w-[260px]" /><p className="mt-8 font-display text-sm font-extrabold uppercase tracking-[0.18em]">{t("preloader.slogan")}</p><div className="mt-6 h-1 w-56 max-w-full overflow-hidden rounded-full bg-white/15"><div className="h-full w-2/3 rounded-full bg-[#16A34A]" /></div><p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-white/45">{t("preloader.tag")}</p></div> : <div className="flex w-64 flex-col items-center text-center">
         <img src="/puntrlogorounded.png" alt="" className="logo size-20" width={80} height={80} />
         <p className="mt-5 font-display text-lg font-extrabold tracking-tight">
           {words.map((w, i) => (
