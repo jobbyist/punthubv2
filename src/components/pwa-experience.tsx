@@ -90,7 +90,7 @@ export function PwaExperience() {
       <aside className="fixed inset-x-3 z-[90] mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-4 text-white shadow-2xl shadow-black/30"
         style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)" }} aria-label={t("pwa.promptLabel")}>
         <div className="flex items-start gap-3">
-          <img src="/puntr-icon-192.png" alt="" width={52} height={52} className="shrink-0 rounded-xl" />
+          <img src="/puntr-icon-512.png" alt="" width={52} height={52} className="shrink-0 rounded-xl" />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <p className="font-display text-sm font-extrabold tracking-tight">puntr<span className="text-[#16A34A]">.</span></p>
@@ -112,7 +112,7 @@ export function PwaExperience() {
         <div className="fixed inset-0 z-[110] flex items-end justify-center bg-black/65 p-3 sm:items-center" role="presentation" onClick={() => setShowIosGuide(false)}>
           <section role="dialog" aria-modal="true" aria-labelledby="puntr-ios-install-title" onClick={(event) => event.stopPropagation()} className="w-full max-w-sm rounded-3xl border border-white/10 bg-[#101010] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-white shadow-2xl">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3"><img src="/puntr-icon-192.png" alt="" width={44} height={44} className="rounded-xl" /><div><p className="font-display text-sm font-extrabold">puntr<span className="text-[#16A34A]">.</span></p><p className="text-xs text-white/55">{t("pwa.iosSubtitle")}</p></div></div>
+              <div className="flex items-center gap-3"><img src="/puntr-icon-512.png" alt="" width={44} height={44} className="rounded-xl" /><div><p className="font-display text-sm font-extrabold">puntr<span className="text-[#16A34A]">.</span></p><p className="text-xs text-white/55">{t("pwa.iosSubtitle")}</p></div></div>
               <button type="button" onClick={() => setShowIosGuide(false)} aria-label={t("action.close")} className="rounded-full p-2 text-white/60 hover:bg-white/10"><X className="size-4" /></button>
             </div>
             <h2 id="puntr-ios-install-title" className="mt-5 font-display text-lg font-extrabold">{t("pwa.iosTitle")}</h2>
