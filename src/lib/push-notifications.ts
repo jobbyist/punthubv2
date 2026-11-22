@@ -43,7 +43,7 @@ export async function getPushStatus(): Promise<PushStatus> {
   };
 }
 
-export async function enablePushNotifications(): Promise<void> {
+export async function enablePushNotifications(source: "account" | "pwa_prompt" = "account"): Promise<void> {
   if (!supportsWebPush()) throw new Error("Push notifications are not supported by this browser.");
   const publicKey = import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY;
   if (!publicKey) throw new Error("Puntr push notifications are not configured yet.");
@@ -67,7 +67,7 @@ export async function enablePushNotifications(): Promise<void> {
     p_purpose: "push_notifications",
     p_granted: true,
     p_notice_version: "push-notifications-v1",
-    p_source: "account",
+    p_source: source,
   });
   if (consentError) {
     await subscription.unsubscribe().catch(() => false);
