@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, Check, CircleDashed, Flag, Gauge, Rocket } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { PrDraftResolutionTracker } from "@/components/dev/pr-draft-resolution-tracker";
 import { setDevReadinessTask } from "@/lib/dev-gate.functions";
 import {
   computeReadiness,
@@ -174,6 +175,8 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
         />
       </div>
 
+      <PrDraftResolutionTracker />
+
       <section className="space-y-3" aria-labelledby="ws-heading">
         <h2 id="ws-heading" className="text-lg">
           Score by workstream
@@ -290,6 +293,13 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
                         {fmt.format(t.metric.target)} {t.metric.unit}
                       </span>
                     </div>
+                  ) : null}
+                  {t.metric && t.value !== null && t.value >= t.metric.target ? (
+                    <p className="text-xs font-medium text-primary">
+                      {t.value > t.metric.target
+                        ? `Target exceeded by ${fmt.format(t.value - t.metric.target)} ${t.metric.unit}`
+                        : "Target met"}
+                    </p>
                   ) : null}
                   {t.ref ? <div className="text-xs text-muted-foreground">{t.ref}</div> : null}
                 </div>
