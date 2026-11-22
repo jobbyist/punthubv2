@@ -32,7 +32,7 @@ This folder is the operational workspace for launch readiness. The checklist is 
 | P0.4 | Payments, affiliate and responsible-gambling compliance | Not verified |
 | P0.5 | Production operations and release readiness | Blocked pending migration baseline reconciliation |
 
-See the full checklist for evidence and completion criteria. Update the status table when an item changes; add a dated note with evidence rather than silently changing historical findings.
+See the full checklist for evidence and completion criteria. The live `/dev` page now includes a PR Draft Resolution Tracker for #185/#195 pre-launch and #196 post-launch, with cleared/open/deferred gates and next actions. Update the status table when an item changes; add a dated note with evidence rather than silently changing historical findings.
 
 ## Production audit snapshot (22 November)
 
