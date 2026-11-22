@@ -458,3 +458,14 @@ Mermaid source files are in `docs/pfie/diagrams/`: `ingestion-lifecycle.mmd`, `d
 - OpenFootball England data: https://github.com/openfootball/england
 - football-data.org pricing: https://www.football-data.org/pricing
 - Repository: `supabase/migrations/20261029071500_mvp_core.sql`, `src/lib/sports/provider.ts`, `supabase/migrations/20261030070000_cron_schedule.sql`
+
+
+## Appendix E. 22 November 2026 — MVP scope and evidence foundation decisions
+
+The MVP release is limited to football/soccer and does not depend on automated bookmaker odds, event-level match statistics, player/roster intelligence or the match-intelligence workers described in later sections. Member-entered bookmaker and odds values remain user-submitted records and must not be described as live or independently verified.
+
+La Liga standings direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and BBC Sport. Each candidate must be fetched and validated independently; no table is published without complete row evidence and two-independent-publisher consensus.
+
+The PR #195 evidence foundation requires page-text-backed quote validation and curated publisher identity mapping. South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review. Player roster membership must reference a canonical PFIE team record, not a free-text team label. Its migration remains unapplied in production until the full production migration baseline and backup/rollback plan are reconciled.
+
+PR #196 is deferred until after MVP launch. No automated bookmaker odds collection or display is permitted without written rights covering collection, storage, display, attribution, retention and redistribution. A technical integration or affiliate approval alone is insufficient.
