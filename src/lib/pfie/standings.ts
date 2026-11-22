@@ -319,7 +319,7 @@ export function validateTables(
       const teamVariants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, ""), team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
-      else if (!page.includes(fold(r.quote)) && !hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
+      else if (!hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
       else if (!teamVariants.some((name) => page.includes(fold(name)))) bad = `team_not_on_page_${r.team}`;
       if (bad) break;
       const key = normaliseTeam(team);
@@ -415,6 +415,29 @@ const signature = (t: SourceTable) =>
  * every team's complete played/W/D/L/GF/GA/points record. Official status improves source ranking but
  * never bypasses corroboration. The strongest table from the largest agreeing group is published.
  */
+export function standingsDisagreementHint(tables: SourceTable[]): string | null {
+  if (tables.length < 2) return null;
+  const fields = [
+    ["played", "played"], ["won", "won"], ["drawn", "drawn"], ["lost", "lost"],
+    ["goalsFor", "goals for"], ["goalsAgainst", "goals against"], ["points", "points"],
+  ] as const;
+  const baseline = tables[0]!;
+  const issues = new Set<string>();
+  for (const other of tables.slice(1)) {
+    const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
+    for (const row of baseline.rows) {
+      const peer = byTeam.get(normaliseTeam(row.team));
+      if (!peer) { issues.add(row.team + ": team missing"); continue; }
+      const differing = fields.filter(([field]) => row[field] !== peer[field]).map(([, label]) => label);
+      if (differing.length) issues.add(row.team + ": " + differing.join(", "));
+    }
+  }
+  if (issues.size === 0) return null;
+  return "The first extraction passed local checks but did not agree with another independent table. " +
+    "Re-read the overall/Total table in this source only; do not use Home or Away views. " +
+    "Re-check these team rows and columns carefully: " + [...issues].slice(0, 12).join("; ") +
+    ". Copy only values visibly printed in this source.";
+}
 export function chooseTable(
   tables: SourceTable[],
 ): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {

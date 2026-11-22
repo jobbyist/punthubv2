@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
-import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -124,6 +124,11 @@ describe("validateTables", () => {
     expect(result.rejected).toEqual([]);
     expect(result.tables).toHaveLength(1);
   });
+  it("rejects incorrect statistics even when the copied quote itself is present", () => {
+    const wrong = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r);
+    const result = validateTables(wrong, [official], 4, teams);
+    expect(result.rejected[0]!.reason).toBe("row_evidence_not_on_page_Alpha FC");
+  });
   it("rejects explicitly dated tables older than 72 hours", () => {
     const dateQuote = "Updated: 2026-11-17";
     const dated = page("league.com", "official", 1, [...lines, dateQuote]);
@@ -173,6 +178,17 @@ describe("validateTables", () => {
   });
 });
 
+describe("standingsDisagreementHint", () => {
+  it("names only teams and columns that need a source-local recheck", () => {
+    const a = validateTables(raw(1), [page("a.com", "official", 1, lines)], 4).tables[0]!;
+    const b = validateTables(raw(2), [page("b.com", "trusted", 2, lines)], 4).tables[0]!;
+    const changed = { ...b, rows: b.rows.map((r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r) };
+    const hint = standingsDisagreementHint([a, changed]);
+    expect(hint).toContain("Alpha FC");
+    expect(hint).toContain("goals for");
+    expect(hint).not.toContain("21");
+  });
+});
 describe("chooseTable", () => {
   const a = page("site-a.com", "official", 1, lines);
   const b = page("site-b.com", "trusted", 2, lines);
