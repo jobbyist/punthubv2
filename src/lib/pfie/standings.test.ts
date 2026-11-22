@@ -209,12 +209,12 @@ describe("validateTables", () => {
     const source = page("league.com", "official", 1, sourceLines);
     const rows = raw(1, (r) =>
       r.team === "Alpha FC"
-        ? { ...r, team: "ATM AtlÃ©tico de Madrid", quote: "unmatched model quote" }
+        ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched model quote" }
         : r,
     );
     const result = validateTables(rows, [source], 4);
     expect(result.rejected).toEqual([]);
-    expect(result.tables[0]!.rows[0]!.team).toBe("ATM Atlético de Madrid");
+    expect(result.tables[0]!.rows[0]!.team).toBe("Atlético de Madrid");
   });
   it("accepts points-first source columns used by LaLiga", () => {
     const source = page("laliga.com", "official", 1, [
@@ -225,7 +225,7 @@ describe("validateTables", () => {
       r.team === "Alpha FC"
         ? {
             ...r,
-            team: "ATM AtlÃ©tico de Madrid",
+            team: "ATM Atlético de Madrid",
             played: 12,
             won: 9,
             drawn: 1,
@@ -285,7 +285,7 @@ describe("validateTables", () => {
     const source = page("laliga.com", "official", 1, sourceLines);
     const rows = raw(1, (r) =>
       r.team === "Alpha FC"
-        ? { ...r, team: "ATM AtlÃ©tico de Madrid", quote: "unmatched quote" }
+        ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched quote" }
         : r,
     );
     const result = validateTables(rows, [source], 4, ["Atletico Madrid"]);
