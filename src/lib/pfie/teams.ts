@@ -103,4 +103,5 @@ const GENERIC = new Set([
   "sporting",
   "wanderers",
   "stars",
+  "paris",
 ]);
