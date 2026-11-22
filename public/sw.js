@@ -33,3 +33,57 @@ self.addEventListener("fetch", (event) => {
     });
   }));
 });
+
+
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch {
+    payload = { title: "Puntr", body: event.data?.text() || "You have a new update." };
+  }
+  const title = typeof payload.title === "string" ? payload.title.slice(0, 120) : "Puntr";
+  const body = typeof payload.body === "string" ? payload.body.slice(0, 220) : "There's a new update waiting for you.";
+  const rawUrl = typeof payload.url === "string" ? payload.url : "/predictions";
+  let targetUrl = "/predictions";
+  try {
+    const parsed = new URL(rawUrl, self.location.origin);
+    if (parsed.origin === self.location.origin && !parsed.pathname.startsWith("/auth/") && !parsed.pathname.startsWith("/admin/")) {
+      targetUrl = parsed.pathname + parsed.search + parsed.hash;
+    }
+  } catch {
+    // Keep the safe Predictions fallback.
+  }
+  event.waitUntil(self.registration.showNotification(title, {
+    body,
+    icon: "/puntr-icon-192.png",
+    badge: "/puntr-icon-192.png",
+    tag: typeof payload.tag === "string" ? payload.tag.slice(0, 100) : "puntr-update",
+    data: { url: targetUrl },
+    renotify: false,
+  }));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const rawUrl = event.notification.data?.url;
+  let targetUrl = new URL("/predictions", self.location.origin).href;
+  try {
+    const parsed = new URL(typeof rawUrl === "string" ? rawUrl : "/predictions", self.location.origin);
+    if (parsed.origin === self.location.origin && !parsed.pathname.startsWith("/auth/") && !parsed.pathname.startsWith("/admin/")) {
+      targetUrl = parsed.href;
+    }
+  } catch {
+    // Keep the safe Predictions fallback.
+  }
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of windows) {
+      if ("focus" in client) {
+        await client.navigate(targetUrl);
+        return client.focus();
+      }
+    }
+    return self.clients.openWindow(targetUrl);
+  })());
+});
