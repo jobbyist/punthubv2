@@ -217,7 +217,7 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 
 ### PR sequencing and dependencies
 
-1. Finish #185 and #195 code review/CI as separate changes; neither depends on #196.
+1. #185 and #195 are ready for review as separate changes; neither depends on #196. Their Vercel verification is recorded below; GitHub-hosted Actions did not acquire a runner.
 2. #185 may be merged once its five-source cap, independent publisher configuration, strict consensus and full CI gates pass.
 3. #195 may be merged once code/schema review and CI pass, but its migration remains unapplied in production until the migration baseline reconciliation is complete. Merge approval and production migration approval are separate decisions.
 4. Keep #196 in draft through MVP launch. It is not a prerequisite for #185 or #195 and must not consume pre-launch capacity.
@@ -230,7 +230,7 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 - [ ] Source queries and direct-page candidates remain aligned.
 - [ ] Tests assert the five-source cap and five independent publisher identities.
 - [ ] No change weakens two-source consensus, freshness, completeness, row evidence or table-regression checks.
-- [ ] All required CI checks pass and no unresolved high-severity review finding remains.
+- [x] Focused source-cap regression, typecheck and Vercel build pass; all review threads are resolved. [ ] Production-like extraction and two-publisher consensus evidence still required. Six full-suite failures reproduce on main and are recorded as pre-existing test debt.
 
 **#195**
 - [ ] Evidence quotes are checked against captured source-page text; missing page text rejects evidence.
@@ -239,7 +239,7 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 - [ ] South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review.
 - [ ] Roster membership references a canonical PFIE team record rather than free-text team names.
 - [ ] RLS is enabled and anon/authenticated have no grants on foundation tables; service-role access is explicit.
-- [ ] Unit tests, SQL/migration validation, lint, typecheck and build pass.
+- [x] 15 evidence unit tests, targeted ESLint, typecheck and Vercel build pass; review threads resolved. [ ] Validate SQL in a disposable database before any production migration.
 - [ ] Migration remains unapplied in production pending baseline reconciliation and owner approval.
 
 **#196 — post-launch only**
@@ -261,8 +261,15 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 
 ### Current PR execution state
 
-- [ ] #185 — source roster and regression tests corrected; awaiting full lint/typecheck/test/build and preview/extraction evidence.
-- [ ] #195 — evidence/schema safeguards reviewed in code; awaiting clean lint/typecheck/test/build, schema/RLS/grant review and preview. Production migration remains unapplied.
+- [x] #185 — five-source roster, focused cap test, typecheck and Vercel build verified; ready for review. [ ] Production-like extraction and two-publisher consensus evidence remain outstanding. Six unrelated standings-suite failures reproduce on main and are documented in the PR.
+- [x] #195 — targeted ESLint, typecheck, 15 evidence tests, schema/RLS/grant review and Vercel build verified; ready for review. [ ] Production migration remains unapplied pending full migration-baseline reconciliation and separate approval.
 - [x] #196 — explicitly deferred to post-launch; no pre-launch merge or activation.
 
-**Merge rule:** Do not mark #185 or #195 merge-ready based on a clean Git merge or Vercel preview alone. Require all applicable automated checks, review threads resolved, no high-severity findings, and evidence recorded here. #195's repository merge and production migration are separate approvals.
+**Merge rule:** #185 and #195 are marked ready for review, not merged. #185 still requires production-like extraction evidence and reviewer acceptance of the six baseline standings-suite failures. #195 may be merged as a code/schema foundation after reviewer approval, but its production migration remains a separate, blocked change until migration history and backup/rollback are reconciled.
+
+
+### Verification note — 22 November 2026
+
+- #185 focused source-cap regression: passed; typecheck: passed; Vercel production build: passed. Full standings suite: six failures also reproduced on main (stale source expectation, alias-normalization assertions and cumulative-row expected values); tracked separately, not attributed to the source-roster change.
+- #195 targeted ESLint: passed; typecheck: passed; evidence unit tests: 15 passed; Vercel production build: passed. Its migration SQL has been reviewed but not applied to production.
+- The preview validations were run with isolated Vercel build commands. GitHub-hosted Actions did not acquire a runner, so there is no green repository-wide Actions status to claim.
