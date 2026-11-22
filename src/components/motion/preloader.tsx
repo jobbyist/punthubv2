@@ -36,8 +36,72 @@ export function Preloader() {
   const [standalone, setStandalone] = useState(false);
 
   useEffect(() => {
-    const standaloneMode =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+    const standaloneMode = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
     setStandalone(standaloneMode);
-    // Only a marketing page shows (¶»§q«^
+    // Only a marketing page shows (and uses up) the preloader for this session.
+    if (!isMarketingPath(window.location.pathname)) {
+      setState("gone");
+      return;
+    }
+    if (!standaloneMode && document.documentElement.hasAttribute("data-preloaded")) {
+      setState("gone");
+      return;
+    }
+    const started = performance.now();
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      const wait = Math.max(0, MIN_MS - (performance.now() - started));
+      window.setTimeout(() => {
+        setState("leaving");
+        try {
+          sessionStorage.setItem(PRELOADED_KEY, "1");
+        } catch {
+          /* ignore */
+        }
+        window.setTimeout(() => setState("gone"), 380);
+      }, wait);
+    };
+    if (document.readyState === "complete") finish();
+    else window.addEventListener("load", finish, { once: true });
+    const cap = window.setTimeout(finish, MAX_MS);
+    return () => {
+      window.removeEventListener("load", finish);
+      window.clearTimeout(cap);
+    };
+  }, []);
+
+  if (state === "gone" || !isMarketingPath(path)) return null;
+  const words = t("preloader.slogan").split(" ");
+
+  return (
+    <div
+      className="puntr-preloader fixed inset-0 z-[100] grid place-items-center bg-background"
+      data-done={state === "leaving" ? "true" : undefined}
+      role="status"
+      aria-label={t("preloader.label")}
+    >
+      {standalone ? <div className="absolute inset-0 flex flex-col items-center justify-center bg-black px-8 text-center text-white"><img src="/puntr-icon-512.png" alt="" className="w-full max-w-[260px]" /><p className="mt-8 font-display text-sm font-extrabold uppercase tracking-[0.18em]">{t("preloader.slogan")}</p><div className="mt-6 h-1 w-56 max-w-full overflow-hidden rounded-full bg-white/15"><div className="h-full w-2/3 rounded-full bg-[#16A34A]" /></div><p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-white/45">{t("preloader.tag")}</p></div> : <div className="flex w-64 flex-col items-center text-center">
+        <img src="/puntrlogorounded.png" alt="" className="logo size-20" width={80} height={80} />
+        <p className="mt-5 font-display text-lg font-extrabold tracking-tight">
+          {words.map((w, i) => (
+            <span
+              key={`${w}-${i}`}
+              className={`word ${i >= words.length - 2 ? "text-primary" : ""}`}
+              style={{ animationDelay: `${250 + i * 110}ms` }}
+            >
+              {w}&nbsp;
+            </span>
+          ))}
+        </p>
+        <div className="mt-5 h-1 w-full overflow-hidden bg-muted">
+          <div className="bar h-full bg-primary" />
+        </div>
+        <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          {t("preloader.tag")}
+        </p>
+      </div>}
+    </div>
+  );
+}

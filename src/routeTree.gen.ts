@@ -25,4 +25,1654 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
-import { Route as LeaderboardsRouteImport } from¶»§q«^
+import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
+import { Route as LiveScoresRouteImport } from './routes/live-scores'
+import { Route as PracticeRouteImport } from './routes/practice'
+import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PuntpointsRouteImport } from './routes/puntpoints'
+import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ResultsRouteImport } from './routes/results'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SlipsRouteImport } from './routes/slips'
+import { Route as StandingsRouteImport } from './routes/standings'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as TablesRouteImport } from './routes/tables'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
+import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
+import { Route as AccountSecurityRouteImport } from './routes/account.security'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
+import { Route as ApiPushRouteImport } from './routes/api.push'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as DuelsIndexRouteImport } from './routes/duels.index'
+import { Route as DuelsDuelIdRouteImport } from './routes/duels.$duelId'
+import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
+import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
+import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
+import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
+import { Route as SportsSportRouteImport } from './routes/sports.$sport'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
+import { Route as ApiAuthSendEmailRouteImport } from './routes/api.auth.send-email'
+import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.annual-pass-expired'
+import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
+import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
+import { Route as ApiCronContentDailyRouteImport } from './routes/api.cron.content-daily'
+import { Route as ApiCronEmailOutboxRouteImport } from './routes/api.cron.email-outbox'
+import { Route as ApiCronFoundingCampaignRouteImport } from './routes/api.cron.founding-campaign'
+import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.founding-sequence'
+import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
+import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
+import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
+import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.practice-tick'
+import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
+import { Route as ApiCronSlipImagesRouteImport } from './routes/api.cron.slip-images'
+import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-fixtures'
+import { Route as ApiCronSyncOddsRouteImport } from './routes/api.cron.sync-odds'
+import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
+import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
+import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
+import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
+import { Route as ApiPayfastItnRouteImport } from './routes/api.payfast.itn'
+
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AffiliateDisclosureRoute = AffiliateDisclosureRouteImport.update({
+  id: '/affiliate-disclosure',
+  path: '/affiliate-disclosure',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmakersRoute = BookmakersRouteImport.update({
+  id: '/bookmakers',
+  path: '/bookmakers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComingSoonRoute = ComingSoonRouteImport.update({
+  id: '/coming-soon',
+  path: '/coming-soon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevRoute = DevRouteImport.update({
+  id: '/dev',
+  path: '/dev',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FixturesRoute = FixturesRouteImport.update({
+  id: '/fixtures',
+  path: '/fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForumRoute = ForumRouteImport.update({
+  id: '/forum',
+  path: '/forum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoundingRoute = FoundingRouteImport.update({
+  id: '/founding',
+  path: '/founding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardsRoute = LeaderboardsRouteImport.update({
+  id: '/leaderboards',
+  path: '/leaderboards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveScoresRoute = LiveScoresRouteImport.update({
+  id: '/live-scores',
+  path: '/live-scores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PracticeRoute = PracticeRouteImport.update({
+  id: '/practice',
+  path: '/practice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictionsRoute = PredictionsRouteImport.update({
+  id: '/predictions',
+  path: '/predictions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PuntpointsRoute = PuntpointsRouteImport.update({
+  id: '/puntpoints',
+  path: '/puntpoints',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultsRoute = ResultsRouteImport.update({
+  id: '/results',
+  path: '/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlipsRoute = SlipsRouteImport.update({
+  id: '/slips',
+  path: '/slips',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StandingsRoute = StandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TablesRoute = TablesRouteImport.update({
+  id: '/tables',
+  path: '/tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountPrivacyRoute = AccountPrivacyRouteImport.update({
+  id: '/account/privacy',
+  path: '/account/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountSecurityRoute = AccountSecurityRouteImport.update({
+  id: '/account/security',
+  path: '/account/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFixturesRoute = AdminFixturesRouteImport.update({
+  id: '/admin/fixtures',
+  path: '/admin/fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFoundingHqRoute = AdminFoundingHqRouteImport.update({
+  id: '/admin/founding-hq',
+  path: '/admin/founding-hq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPushRoute = ApiPushRouteImport.update({
+  id: '/api/push',
+  path: '/api/push',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/auth/confirm',
+  path: '/auth/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuelsIndexRoute = DuelsIndexRouteImport.update({
+  id: '/duels/',
+  path: '/duels/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuelsDuelIdRoute = DuelsDuelIdRouteImport.update({
+  id: '/duels/$duelId',
+  path: '/duels/$duelId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchFixtureIdRoute = MatchFixtureIdRouteImport.update({
+  id: '/match/$fixtureId',
+  path: '/match/$fixtureId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsroomIndexRoute = NewsroomIndexRouteImport.update({
+  id: '/newsroom/',
+  path: '/newsroom/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsroomSlugRoute = NewsroomSlugRouteImport.update({
+  id: '/newsroom/$slug',
+  path: '/newsroom/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRequestRoute = PrivacyRequestRouteImport.update({
+  id: '/privacy_/request',
+  path: '/privacy/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SportsSportRoute = SportsSportRouteImport.update({
+  id: '/sports/$sport',
+  path: '/sports/$sport',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAnnualPassPayRoute = ApiAnnualPassPayRouteImport.update({
+  id: '/api/annual-pass/pay',
+  path: '/api/annual-pass/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSendEmailRoute = ApiAuthSendEmailRouteImport.update({
+  id: '/api/auth/send-email',
+  path: '/api/auth/send-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronAnnualPassExpiredRoute =
+  ApiCronAnnualPassExpiredRouteImport.update({
+    id: '/api/cron/annual-pass-expired',
+    path: '/api/cron/annual-pass-expired',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronAnnualPassReminderRoute =
+  ApiCronAnnualPassReminderRouteImport.update({
+    id: '/api/cron/annual-pass-reminder',
+    path: '/api/cron/annual-pass-reminder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronChainHeadRoute = ApiCronChainHeadRouteImport.update({
+  id: '/api/cron/chain-head',
+  path: '/api/cron/chain-head',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronContentDailyRoute = ApiCronContentDailyRouteImport.update({
+  id: '/api/cron/content-daily',
+  path: '/api/cron/content-daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronEmailOutboxRoute = ApiCronEmailOutboxRouteImport.update({
+  id: '/api/cron/email-outbox',
+  path: '/api/cron/email-outbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronFoundingCampaignRoute = ApiCronFoundingCampaignRouteImport.update({
+  id: '/api/cron/founding-campaign',
+  path: '/api/cron/founding-campaign',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronFoundingSequenceRoute = ApiCronFoundingSequenceRouteImport.update({
+  id: '/api/cron/founding-sequence',
+  path: '/api/cron/founding-sequence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronFoundingWelcomeRoute = ApiCronFoundingWelcomeRouteImport.update({
+  id: '/api/cron/founding-welcome',
+  path: '/api/cron/founding-welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronIdentityRetentionRoute =
+  ApiCronIdentityRetentionRouteImport.update({
+    id: '/api/cron/identity-retention',
+    path: '/api/cron/identity-retention',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
+  id: '/api/cron/launch-notify',
+  path: '/api/cron/launch-notify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronPracticeTickRoute = ApiCronPracticeTickRouteImport.update({
+  id: '/api/cron/practice-tick',
+  path: '/api/cron/practice-tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSettleRoute = ApiCronSettleRouteImport.update({
+  id: '/api/cron/settle',
+  path: '/api/cron/settle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSlipImagesRoute = ApiCronSlipImagesRouteImport.update({
+  id: '/api/cron/slip-images',
+  path: '/api/cron/slip-images',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncFixturesRoute = ApiCronSyncFixturesRouteImport.update({
+  id: '/api/cron/sync-fixtures',
+  path: '/api/cron/sync-fixtures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncOddsRoute = ApiCronSyncOddsRouteImport.update({
+  id: '/api/cron/sync-odds',
+  path: '/api/cron/sync-odds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncResultsRoute = ApiCronSyncResultsRouteImport.update({
+  id: '/api/cron/sync-results',
+  path: '/api/cron/sync-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronSyncTablesRoute = ApiCronSyncTablesRouteImport.update({
+  id: '/api/cron/sync-tables',
+  path: '/api/cron/sync-tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronTeamBadgesRoute = ApiCronTeamBadgesRouteImport.update({
+  id: '/api/cron/team-badges',
+  path: '/api/cron/team-badges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNewsroomCoverSlugRoute = ApiNewsroomCoverSlugRouteImport.update({
+  id: '/api/newsroom-cover/$slug',
+  path: '/api/newsroom-cover/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPayfastItnRoute = ApiPayfastItnRouteImport.update({
+  id: '/api/payfast/itn',
+  path: '/api/payfast/itn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
+  '/coming-soon': typeof ComingSoonRoute
+  '/community': typeof CommunityRoute
+  '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
+  '/founding': typeof FoundingRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
+  '/predictions': typeof PredictionsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
+  '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/results': typeof ResultsRoute
+  '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
+  '/standings': typeof StandingsRoute
+  '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
+  '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
+  '/admin/founding-hq': typeof AdminFoundingHqRoute
+  '/api/push': typeof ApiPushRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
+  '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/duels/': typeof DuelsIndexRoute
+  '/newsroom/': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
+  '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
+  '/coming-soon': typeof ComingSoonRoute
+  '/community': typeof CommunityRoute
+  '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
+  '/founding': typeof FoundingRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
+  '/predictions': typeof PredictionsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
+  '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/results': typeof ResultsRoute
+  '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
+  '/standings': typeof StandingsRoute
+  '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
+  '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
+  '/privacy/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account': typeof AccountIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/duels': typeof DuelsIndexRoute
+  '/newsroom': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
+  '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/affiliate-disclosure': typeof AffiliateDisclosureRoute
+  '/bookmakers': typeof BookmakersRoute
+  '/coming-soon': typeof ComingSoonRoute
+  '/community': typeof CommunityRoute
+  '/cookies': typeof CookiesRoute
+  '/dev': typeof DevRoute
+  '/feedback': typeof FeedbackRoute
+  '/fixtures': typeof FixturesRoute
+  '/forum': typeof ForumRoute
+  '/founding': typeof FoundingRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/insights': typeof InsightsRoute
+  '/join': typeof JoinRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/leaderboards': typeof LeaderboardsRoute
+  '/live-scores': typeof LiveScoresRoute
+  '/practice': typeof PracticeRoute
+  '/predictions': typeof PredictionsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/puntpoints': typeof PuntpointsRoute
+  '/referrals': typeof ReferralsRoute
+  '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/results': typeof ResultsRoute
+  '/rewards': typeof RewardsRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/slips': typeof SlipsRoute
+  '/standings': typeof StandingsRoute
+  '/support': typeof SupportRoute
+  '/tables': typeof TablesRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/verify': typeof VerifyRoute
+  '/wallet': typeof WalletRoute
+  '/account/privacy': typeof AccountPrivacyRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/admin/fixtures': typeof AdminFixturesRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/duels/$duelId': typeof DuelsDuelIdRoute
+  '/match/$fixtureId': typeof MatchFixtureIdRoute
+  '/newsroom/$slug': typeof NewsroomSlugRoute
+  '/privacy_/request': typeof PrivacyRequestRoute
+  '/sports/$sport': typeof SportsSportRoute
+  '/u/$username': typeof UUsernameRoute
+  '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/duels/': typeof DuelsIndexRoute
+  '/newsroom/': typeof NewsroomIndexRoute
+  '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
+  '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
+  '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
+  '/api/cron/chain-head': typeof ApiCronChainHeadRoute
+  '/api/cron/content-daily': typeof ApiCronContentDailyRoute
+  '/api/cron/email-outbox': typeof ApiCronEmailOutboxRoute
+  '/api/cron/founding-campaign': typeof ApiCronFoundingCampaignRoute
+  '/api/cron/founding-sequence': typeof ApiCronFoundingSequenceRoute
+  '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
+  '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
+  '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
+  '/api/cron/settle': typeof ApiCronSettleRoute
+  '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
+  '/api/cron/sync-fixtures': typeof ApiCronSyncFixturesRoute
+  '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
+  '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
+  '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
+  '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
+  '/api/payfast/itn': typeof ApiPayfastItnRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/affiliate-disclosure'
+    | '/bookmakers'
+    | '/coming-soon'
+    | '/community'
+    | '/cookies'
+    | '/dev'
+    | '/feedback'
+    | '/fixtures'
+    | '/forum'
+    | '/founding'
+    | '/how-it-works'
+    | '/insights'
+    | '/join'
+    | '/leaderboard'
+    | '/leaderboards'
+    | '/live-scores'
+    | '/practice'
+    | '/predictions'
+    | '/pricing'
+    | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
+    | '/refunds'
+    | '/reset-password'
+    | '/results'
+    | '/rewards'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/slips'
+    | '/standings'
+    | '/support'
+    | '/tables'
+    | '/terms'
+    | '/tools'
+    | '/unsubscribe'
+    | '/verify'
+    | '/wallet'
+    | '/account/privacy'
+    | '/account/security'
+    | '/admin/fixtures'
+    | '/auth/confirm'
+    | '/duels/$duelId'
+    | '/match/$fixtureId'
+    | '/newsroom/$slug'
+    | '/privacy/request'
+    | '/sports/$sport'
+    | '/u/$username'
+    | '/account/'
+    | '/admin/'
+    | '/duels/'
+    | '/newsroom/'
+    | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
+    | '/api/cron/annual-pass-expired'
+    | '/api/cron/annual-pass-reminder'
+    | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
+    | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
+    | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
+    | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
+    | '/api/cron/settle'
+    | '/api/cron/slip-images'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
+    | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
+    | '/api/cron/team-badges'
+    | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/about'
+    | '/affiliate-disclosure'
+    | '/bookmakers'
+    | '/coming-soon'
+    | '/community'
+    | '/cookies'
+    | '/dev'
+    | '/feedback'
+    | '/fixtures'
+    | '/forum'
+    | '/founding'
+    | '/how-it-works'
+    | '/insights'
+    | '/join'
+    | '/leaderboard'
+    | '/leaderboards'
+    | '/live-scores'
+    | '/practice'
+    | '/predictions'
+    | '/pricing'
+    | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
+    | '/refunds'
+    | '/reset-password'
+    | '/results'
+    | '/rewards'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/slips'
+    | '/standings'
+    | '/support'
+    | '/tables'
+    | '/terms'
+    | '/tools'
+    | '/unsubscribe'
+    | '/verify'
+    | '/wallet'
+    | '/account/privacy'
+    | '/account/security'
+    | '/admin/fixtures'
+    | '/auth/confirm'
+    | '/duels/$duelId'
+    | '/match/$fixtureId'
+    | '/newsroom/$slug'
+    | '/privacy/request'
+    | '/sports/$sport'
+    | '/u/$username'
+    | '/account'
+    | '/admin'
+    | '/duels'
+    | '/newsroom'
+    | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
+    | '/api/cron/annual-pass-expired'
+    | '/api/cron/annual-pass-reminder'
+    | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
+    | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
+    | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
+    | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
+    | '/api/cron/settle'
+    | '/api/cron/slip-images'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
+    | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
+    | '/api/cron/team-badges'
+    | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/affiliate-disclosure'
+    | '/bookmakers'
+    | '/coming-soon'
+    | '/community'
+    | '/cookies'
+    | '/dev'
+    | '/feedback'
+    | '/fixtures'
+    | '/forum'
+    | '/founding'
+    | '/how-it-works'
+    | '/insights'
+    | '/join'
+    | '/leaderboard'
+    | '/leaderboards'
+    | '/live-scores'
+    | '/practice'
+    | '/predictions'
+    | '/pricing'
+    | '/privacy'
+    | '/puntpoints'
+    | '/referrals'
+    | '/refunds'
+    | '/reset-password'
+    | '/results'
+    | '/rewards'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/slips'
+    | '/standings'
+    | '/support'
+    | '/tables'
+    | '/terms'
+    | '/tools'
+    | '/unsubscribe'
+    | '/verify'
+    | '/wallet'
+    | '/account/privacy'
+    | '/account/security'
+    | '/admin/fixtures'
+    | '/auth/confirm'
+    | '/duels/$duelId'
+    | '/match/$fixtureId'
+    | '/newsroom/$slug'
+    | '/privacy_/request'
+    | '/sports/$sport'
+    | '/u/$username'
+    | '/account/'
+    | '/admin/'
+    | '/duels/'
+    | '/newsroom/'
+    | '/api/annual-pass/pay'
+    | '/api/auth/send-email'
+    | '/api/cron/annual-pass-expired'
+    | '/api/cron/annual-pass-reminder'
+    | '/api/cron/chain-head'
+    | '/api/cron/content-daily'
+    | '/api/cron/email-outbox'
+    | '/api/cron/founding-campaign'
+    | '/api/cron/founding-sequence'
+    | '/api/cron/founding-welcome'
+    | '/api/cron/identity-retention'
+    | '/api/cron/launch-notify'
+    | '/api/cron/practice-tick'
+    | '/api/cron/settle'
+    | '/api/cron/slip-images'
+    | '/api/cron/sync-fixtures'
+    | '/api/cron/sync-odds'
+    | '/api/cron/sync-results'
+    | '/api/cron/sync-tables'
+    | '/api/cron/team-badges'
+    | '/api/newsroom-cover/$slug'
+    | '/api/payfast/itn'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AffiliateDisclosureRoute: typeof AffiliateDisclosureRoute
+  BookmakersRoute: typeof BookmakersRoute
+  ComingSoonRoute: typeof ComingSoonRoute
+  CommunityRoute: typeof CommunityRoute
+  CookiesRoute: typeof CookiesRoute
+  DevRoute: typeof DevRoute
+  FeedbackRoute: typeof FeedbackRoute
+  FixturesRoute: typeof FixturesRoute
+  ForumRoute: typeof ForumRoute
+  FoundingRoute: typeof FoundingRoute
+  HowItWorksRoute: typeof HowItWorksRoute
+  InsightsRoute: typeof InsightsRoute
+  JoinRoute: typeof JoinRoute
+  LeaderboardRoute: typeof LeaderboardRoute
+  LeaderboardsRoute: typeof LeaderboardsRoute
+  LiveScoresRoute: typeof LiveScoresRoute
+  PracticeRoute: typeof PracticeRoute
+  PredictionsRoute: typeof PredictionsRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  PuntpointsRoute: typeof PuntpointsRoute
+  ReferralsRoute: typeof ReferralsRoute
+  RefundsRoute: typeof RefundsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  ResultsRoute: typeof ResultsRoute
+  RewardsRoute: typeof RewardsRoute
+  RoadmapRoute: typeof RoadmapRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SlipsRoute: typeof SlipsRoute
+  StandingsRoute: typeof StandingsRoute
+  SupportRoute: typeof SupportRoute
+  TablesRoute: typeof TablesRoute
+  TermsRoute: typeof TermsRoute
+  ToolsRoute: typeof ToolsRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
+  VerifyRoute: typeof VerifyRoute
+  WalletRoute: typeof WalletRoute
+  AccountPrivacyRoute: typeof AccountPrivacyRoute
+  AccountSecurityRoute: typeof AccountSecurityRoute
+  AdminFixturesRoute: typeof AdminFixturesRoute
+  AdminFoundingHqRoute: typeof AdminFoundingHqRoute
+  ApiPushRoute: typeof ApiPushRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthConfirmRoute: typeof AuthConfirmRoute
+  DuelsDuelIdRoute: typeof DuelsDuelIdRoute
+  MatchFixtureIdRoute: typeof MatchFixtureIdRoute
+  NewsroomSlugRoute: typeof NewsroomSlugRoute
+  PrivacyRequestRoute: typeof PrivacyRequestRoute
+  SportsSportRoute: typeof SportsSportRoute
+  UUsernameRoute: typeof UUsernameRoute
+  AccountIndexRoute: typeof AccountIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  DuelsIndexRoute: typeof DuelsIndexRoute
+  NewsroomIndexRoute: typeof NewsroomIndexRoute
+  ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
+  ApiAuthSendEmailRoute: typeof ApiAuthSendEmailRoute
+  ApiCronAnnualPassExpiredRoute: typeof ApiCronAnnualPassExpiredRoute
+  ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
+  ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
+  ApiCronContentDailyRoute: typeof ApiCronContentDailyRoute
+  ApiCronEmailOutboxRoute: typeof ApiCronEmailOutboxRoute
+  ApiCronFoundingCampaignRoute: typeof ApiCronFoundingCampaignRoute
+  ApiCronFoundingSequenceRoute: typeof ApiCronFoundingSequenceRoute
+  ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
+  ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
+  ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
+  ApiCronPracticeTickRoute: typeof ApiCronPracticeTickRoute
+  ApiCronSettleRoute: typeof ApiCronSettleRoute
+  ApiCronSlipImagesRoute: typeof ApiCronSlipImagesRoute
+  ApiCronSyncFixturesRoute: typeof ApiCronSyncFixturesRoute
+  ApiCronSyncOddsRoute: typeof ApiCronSyncOddsRoute
+  ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
+  ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
+  ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
+  ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
+  ApiPayfastItnRoute: typeof ApiPayfastItnRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/affiliate-disclosure': {
+      id: '/affiliate-disclosure'
+      path: '/affiliate-disclosure'
+      fullPath: '/affiliate-disclosure'
+      preLoaderRoute: typeof AffiliateDisclosureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookmakers': {
+      id: '/bookmakers'
+      path: '/bookmakers'
+      fullPath: '/bookmakers'
+      preLoaderRoute: typeof BookmakersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coming-soon': {
+      id: '/coming-soon'
+      path: '/coming-soon'
+      fullPath: '/coming-soon'
+      preLoaderRoute: typeof ComingSoonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev': {
+      id: '/dev'
+      path: '/dev'
+      fullPath: '/dev'
+      preLoaderRoute: typeof DevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fixtures': {
+      id: '/fixtures'
+      path: '/fixtures'
+      fullPath: '/fixtures'
+      preLoaderRoute: typeof FixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forum': {
+      id: '/forum'
+      path: '/forum'
+      fullPath: '/forum'
+      preLoaderRoute: typeof ForumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/founding': {
+      id: '/founding'
+      path: '/founding'
+      fullPath: '/founding'
+      preLoaderRoute: typeof FoundingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboards': {
+      id: '/leaderboards'
+      path: '/leaderboards'
+      fullPath: '/leaderboards'
+      preLoaderRoute: typeof LeaderboardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live-scores': {
+      id: '/live-scores'
+      path: '/live-scores'
+      fullPath: '/live-scores'
+      preLoaderRoute: typeof LiveScoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/practice': {
+      id: '/practice'
+      path: '/practice'
+      fullPath: '/practice'
+      preLoaderRoute: typeof PracticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predictions': {
+      id: '/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof PredictionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/puntpoints': {
+      id: '/puntpoints'
+      path: '/puntpoints'
+      fullPath: '/puntpoints'
+      preLoaderRoute: typeof PuntpointsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/results': {
+      id: '/results'
+      path: '/results'
+      fullPath: '/results'
+      preLoaderRoute: typeof ResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/slips': {
+      id: '/slips'
+      path: '/slips'
+      fullPath: '/slips'
+      preLoaderRoute: typeof SlipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/standings': {
+      id: '/standings'
+      path: '/standings'
+      fullPath: '/standings'
+      preLoaderRoute: typeof StandingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tables': {
+      id: '/tables'
+      path: '/tables'
+      fullPath: '/tables'
+      preLoaderRoute: typeof TablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/privacy': {
+      id: '/account/privacy'
+      path: '/account/privacy'
+      fullPath: '/account/privacy'
+      preLoaderRoute: typeof AccountPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/security': {
+      id: '/account/security'
+      path: '/account/security'
+      fullPath: '/account/security'
+      preLoaderRoute: typeof AccountSecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/fixtures': {
+      id: '/admin/fixtures'
+      path: '/admin/fixtures'
+      fullPath: '/admin/fixtures'
+      preLoaderRoute: typeof AdminFixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/founding-hq': {
+      id: '/admin/founding-hq'
+      path: '/admin/founding-hq'
+      fullPath: '/admin/founding-hq'
+      preLoaderRoute: typeof AdminFoundingHqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/push': {
+      id: '/api/push'
+      path: '/api/push'
+      fullPath: '/api/push'
+      preLoaderRoute: typeof ApiPushRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/auth/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duels/': {
+      id: '/duels/'
+      path: '/duels'
+      fullPath: '/duels/'
+      preLoaderRoute: typeof DuelsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duels/$duelId': {
+      id: '/duels/$duelId'
+      path: '/duels/$duelId'
+      fullPath: '/duels/$duelId'
+      preLoaderRoute: typeof DuelsDuelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/match/$fixtureId': {
+      id: '/match/$fixtureId'
+      path: '/match/$fixtureId'
+      fullPath: '/match/$fixtureId'
+      preLoaderRoute: typeof MatchFixtureIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsroom/': {
+      id: '/newsroom/'
+      path: '/newsroom'
+      fullPath: '/newsroom/'
+      preLoaderRoute: typeof NewsroomIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsroom/$slug': {
+      id: '/newsroom/$slug'
+      path: '/newsroom/$slug'
+      fullPath: '/newsroom/$slug'
+      preLoaderRoute: typeof NewsroomSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy_/request': {
+      id: '/privacy_/request'
+      path: '/privacy/request'
+      fullPath: '/privacy/request'
+      preLoaderRoute: typeof PrivacyRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sports/$sport': {
+      id: '/sports/$sport'
+      path: '/sports/$sport'
+      fullPath: '/sports/$sport'
+      preLoaderRoute: typeof SportsSportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/annual-pass/pay': {
+      id: '/api/annual-pass/pay'
+      path: '/api/annual-pass/pay'
+      fullPath: '/api/annual-pass/pay'
+      preLoaderRoute: typeof ApiAnnualPassPayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/send-email': {
+      id: '/api/auth/send-email'
+      path: '/api/auth/send-email'
+      fullPath: '/api/auth/send-email'
+      preLoaderRoute: typeof ApiAuthSendEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/annual-pass-expired': {
+      id: '/api/cron/annual-pass-expired'
+      path: '/api/cron/annual-pass-expired'
+      fullPath: '/api/cron/annual-pass-expired'
+      preLoaderRoute: typeof ApiCronAnnualPassExpiredRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/annual-pass-reminder': {
+      id: '/api/cron/annual-pass-reminder'
+      path: '/api/cron/annual-pass-reminder'
+      fullPath: '/api/cron/annual-pass-reminder'
+      preLoaderRoute: typeof ApiCronAnnualPassReminderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/chain-head': {
+      id: '/api/cron/chain-head'
+      path: '/api/cron/chain-head'
+      fullPath: '/api/cron/chain-head'
+      preLoaderRoute: typeof ApiCronChainHeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/content-daily': {
+      id: '/api/cron/content-daily'
+      path: '/api/cron/content-daily'
+      fullPath: '/api/cron/content-daily'
+      preLoaderRoute: typeof ApiCronContentDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/email-outbox': {
+      id: '/api/cron/email-outbox'
+      path: '/api/cron/email-outbox'
+      fullPath: '/api/cron/email-outbox'
+      preLoaderRoute: typeof ApiCronEmailOutboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/founding-campaign': {
+      id: '/api/cron/founding-campaign'
+      path: '/api/cron/founding-campaign'
+      fullPath: '/api/cron/founding-campaign'
+      preLoaderRoute: typeof ApiCronFoundingCampaignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/founding-sequence': {
+      id: '/api/cron/founding-sequence'
+      path: '/api/cron/founding-sequence'
+      fullPath: '/api/cron/founding-sequence'
+      preLoaderRoute: typeof ApiCronFoundingSequenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/founding-welcome': {
+      id: '/api/cron/founding-welcome'
+      path: '/api/cron/founding-welcome'
+      fullPath: '/api/cron/founding-welcome'
+      preLoaderRoute: typeof ApiCronFoundingWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/identity-retention': {
+      id: '/api/cron/identity-retention'
+      path: '/api/cron/identity-retention'
+      fullPath: '/api/cron/identity-retention'
+      preLoaderRoute: typeof ApiCronIdentityRetentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/launch-notify': {
+      id: '/api/cron/launch-notify'
+      path: '/api/cron/launch-notify'
+      fullPath: '/api/cron/launch-notify'
+      preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/practice-tick': {
+      id: '/api/cron/practice-tick'
+      path: '/api/cron/practice-tick'
+      fullPath: '/api/cron/practice-tick'
+      preLoaderRoute: typeof ApiCronPracticeTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/settle': {
+      id: '/api/cron/settle'
+      path: '/api/cron/settle'
+      fullPath: '/api/cron/settle'
+      preLoaderRoute: typeof ApiCronSettleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/slip-images': {
+      id: '/api/cron/slip-images'
+      path: '/api/cron/slip-images'
+      fullPath: '/api/cron/slip-images'
+      preLoaderRoute: typeof ApiCronSlipImagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-fixtures': {
+      id: '/api/cron/sync-fixtures'
+      path: '/api/cron/sync-fixtures'
+      fullPath: '/api/cron/sync-fixtures'
+      preLoaderRoute: typeof ApiCronSyncFixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-odds': {
+      id: '/api/cron/sync-odds'
+      path: '/api/cron/sync-odds'
+      fullPath: '/api/cron/sync-odds'
+      preLoaderRoute: typeof ApiCronSyncOddsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-results': {
+      id: '/api/cron/sync-results'
+      path: '/api/cron/sync-results'
+      fullPath: '/api/cron/sync-results'
+      preLoaderRoute: typeof ApiCronSyncResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/sync-tables': {
+      id: '/api/cron/sync-tables'
+      path: '/api/cron/sync-tables'
+      fullPath: '/api/cron/sync-tables'
+      preLoaderRoute: typeof ApiCronSyncTablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/team-badges': {
+      id: '/api/cron/team-badges'
+      path: '/api/cron/team-badges'
+      fullPath: '/api/cron/team-badges'
+      preLoaderRoute: typeof ApiCronTeamBadgesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/newsroom-cover/$slug': {
+      id: '/api/newsroom-cover/$slug'
+      path: '/api/newsroom-cover/$slug'
+      fullPath: '/api/newsroom-cover/$slug'
+      preLoaderRoute: typeof ApiNewsroomCoverSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payfast/itn': {
+      id: '/api/payfast/itn'
+      path: '/api/payfast/itn'
+      fullPath: '/api/payfast/itn'
+      preLoaderRoute: typeof ApiPayfastItnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AffiliateDisclosureRoute: AffiliateDisclosureRoute,
+  BookmakersRoute: BookmakersRoute,
+  ComingSoonRoute: ComingSoonRoute,
+  CommunityRoute: CommunityRoute,
+  CookiesRoute: CookiesRoute,
+  DevRoute: DevRoute,
+  FeedbackRoute: FeedbackRoute,
+  FixturesRoute: FixturesRoute,
+  ForumRoute: ForumRoute,
+  FoundingRoute: FoundingRoute,
+  HowItWorksRoute: HowItWorksRoute,
+  InsightsRoute: InsightsRoute,
+  JoinRoute: JoinRoute,
+  LeaderboardRoute: LeaderboardRoute,
+  LeaderboardsRoute: LeaderboardsRoute,
+  LiveScoresRoute: LiveScoresRoute,
+  PracticeRoute: PracticeRoute,
+  PredictionsRoute: PredictionsRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  PuntpointsRoute: PuntpointsRoute,
+  ReferralsRoute: ReferralsRoute,
+  RefundsRoute: RefundsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  ResultsRoute: ResultsRoute,
+  RewardsRoute: RewardsRoute,
+  RoadmapRoute: RoadmapRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SlipsRoute: SlipsRoute,
+  StandingsRoute: StandingsRoute,
+  SupportRoute: SupportRoute,
+  TablesRoute: TablesRoute,
+  TermsRoute: TermsRoute,
+  ToolsRoute: ToolsRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
+  VerifyRoute: VerifyRoute,
+  WalletRoute: WalletRoute,
+  AccountPrivacyRoute: AccountPrivacyRoute,
+  AccountSecurityRoute: AccountSecurityRoute,
+  AdminFixturesRoute: AdminFixturesRoute,
+  AdminFoundingHqRoute: AdminFoundingHqRoute,
+  ApiPushRoute: ApiPushRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthConfirmRoute: AuthConfirmRoute,
+  DuelsDuelIdRoute: DuelsDuelIdRoute,
+  MatchFixtureIdRoute: MatchFixtureIdRoute,
+  NewsroomSlugRoute: NewsroomSlugRoute,
+  PrivacyRequestRoute: PrivacyRequestRoute,
+  SportsSportRoute: SportsSportRoute,
+  UUsernameRoute: UUsernameRoute,
+  AccountIndexRoute: AccountIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  DuelsIndexRoute: DuelsIndexRoute,
+  NewsroomIndexRoute: NewsroomIndexRoute,
+  ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
+  ApiAuthSendEmailRoute: ApiAuthSendEmailRoute,
+  ApiCronAnnualPassExpiredRoute: ApiCronAnnualPassExpiredRoute,
+  ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
+  ApiCronChainHeadRoute: ApiCronChainHeadRoute,
+  ApiCronContentDailyRoute: ApiCronContentDailyRoute,
+  ApiCronEmailOutboxRoute: ApiCronEmailOutboxRoute,
+  ApiCronFoundingCampaignRoute: ApiCronFoundingCampaignRoute,
+  ApiCronFoundingSequenceRoute: ApiCronFoundingSequenceRoute,
+  ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
+  ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
+  ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
+  ApiCronPracticeTickRoute: ApiCronPracticeTickRoute,
+  ApiCronSettleRoute: ApiCronSettleRoute,
+  ApiCronSlipImagesRoute: ApiCronSlipImagesRoute,
+  ApiCronSyncFixturesRoute: ApiCronSyncFixturesRoute,
+  ApiCronSyncOddsRoute: ApiCronSyncOddsRoute,
+  ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
+  ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,
+  ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,
+  ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
+  ApiPayfastItnRoute: ApiPayfastItnRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

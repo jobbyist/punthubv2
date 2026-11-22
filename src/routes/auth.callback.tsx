@@ -32,4 +32,24 @@ function AuthCallback() {
     started.current = true;
     void supabase.auth.exchangeCodeForSession(code).then(({ error: exchangeError }) => {
       if (exchangeError) {
-        setError("This s¶»§q«^
+        setError("This sign-in link has expired or has already been used. Please try again.");
+        return;
+      }
+      void navigate({ to: "/join", search: { next: returnTo } });
+    });
+  }, [code, errorDescription, navigate, returnTo]);
+
+  return (
+    <AccountPage>
+      <h1 className="text-2xl font-bold">Finishing your sign-in</h1>
+      {error ? (
+        <>
+          <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>
+          <Button asChild className="mt-5"><Link to="/join" search={{ next: returnTo }}>Return to Puntr sign in</Link></Button>
+        </>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">Verifying your session. You will be returned to where you started.</p>
+      )}
+    </AccountPage>
+  );
+}

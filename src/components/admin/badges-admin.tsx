@@ -40,5 +40,120 @@ export function TeamBadgesPanel() {
     <section className="card-surface p-5">
       <h2 className="text-lg">{t("badges.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{t("badges.body")}</p>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Parallel searches and verifies badges first. Add a manual image URL only ¶»§q«^
+      <p className="mt-2 text-xs text-muted-foreground">Parallel searches and verifies badges first. Add a manual image URL only when a team remains unresolved or the sourced badge is incorrect.</p>
+      {data && (
+        <p className="mt-3 text-sm font-semibold">
+          {t("badges.summary", { total: data.length, missing })}
+        </p>
+      )}
+      <Button className="mt-3" disabled={busy} onClick={() => void run()}>
+        {busy ? t("badges.running") : t("badges.run")}
+      </Button>
+      {loading && !data && <p className="mt-3 text-sm text-muted-foreground">â€¦</p>}
+      {data && (
+        <ul className="mt-4 divide-y divide-border">
+          {data.map((r) => (
+            <BadgeItem
+              key={`${r.sport}:${r.name}`}
+              row={r}
+              onChange={() => setTick((n) => n + 1)}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function BadgeItem({ row, onChange }: { row: BadgeRow; onChange: () => void }) {
+  const { t } = useTranslation("admin");
+  const [url, setUrl] = useState("");
+  const [busy, setBusy] = useState(false);
+  const team = { name: row.name, sport: row.sport, competition: row.competition };
+
+  async function save() {
+    setBusy(true);
+    try {
+      const r = await adminSetBadge({ data: { ...team, url } });
+      if (r.ok) {
+        setUrl("");
+        onChange();
+      } else toast.error(r.message);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function reject() {
+    if (!window.confirm(t("badges.rejectConfirm", { team: row.name }))) return;
+    const r = await adminRejectBadge({ data: team });
+    if (r.ok) onChange();
+    else toast.error(r.message);
+  }
+
+  return (
+    <li className="flex flex-wrap items-center gap-3 py-3 text-sm">
+      {row.logoUrl ? (
+        <img
+          src={row.logoUrl}
+          alt=""
+          className="size-10 rounded-full bg-white object-contain p-0.5 ring-1 ring-border"
+        />
+      ) : (
+        <span className="grid size-10 place-items-center rounded-full bg-muted text-xs font-bold text-destructive ring-1 ring-border">
+          ?
+        </span>
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="font-semibold">
+          {row.name} <span className="font-normal text-muted-foreground">Â· {row.competition}</span>
+        </p>
+        <p
+          className={
+            row.status === "verified" ? "text-xs text-primary" : "text-xs text-destructive"
+          }
+        >
+          {t(`badges.status.${row.status}`)}
+          {row.method ? ` Â· ${row.method}` : ""}
+          {row.lastError && row.status !== "verified" ? ` Â· ${row.lastError}` : ""}
+          {row.checkedAt ? ` Â· ${formatDateTime(row.checkedAt)}` : ""}
+        </p>
+        {row.sourcePage && (
+          <a
+            href={row.sourcePage}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-xs text-muted-foreground underline"
+          >
+            {t("badges.source")}
+          </a>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {row.status !== "verified" && (
+          <>
+            <Input
+              className="w-56"
+              placeholder={t("badges.urlPlaceholder")}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <Button
+              size="sm"
+              disabled={busy || !url.startsWith("https://")}
+              onClick={() => void save()}
+            >
+              {t("badges.set")}
+            </Button>
+          </>
+        )}
+        {row.status === "verified" && (
+          <Button size="sm" variant="outline" onClick={() => void reject()}>
+            {t("badges.reject")}
+          </Button>
+        )}
+      </div>
+    </li>
+  );
+}

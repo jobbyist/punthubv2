@@ -1,14 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 
-type PushStatus = {
-  enabled: boolean;
-  activeCount: number;
-  permission: NotificationPermission | "unsupported";
-};
+type PushStatus = { enabled: boolean; activeCount: number; permission: NotificationPermission | "unsupported" };
 
-export async function pushApiRequest<T = Record<string, unknown>>(
-  payload: Record<string, unknown>,
-): Promise<T> {
+export async function pushApiRequest<T = Record<string, unknown>>(payload: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   if (error || !token) throw new Error("Please sign in again to manage push notifications.");
@@ -18,7 +12,7 @@ export async function pushApiRequest<T = Record<string, unknown>>(
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(payload),
   });
-  const result = (await response.json()) as T & { error?: string };
+  const result = await response.json() as T & { error?: string };
   if (!response.ok) throw new Error(result.error || "Push notification request failed.");
   return result;
 }
@@ -33,12 +27,79 @@ function decodeVapidKey(value: string): Uint8Array {
 }
 
 export function supportsWebPush(): boolean {
-  return (
-    typeof window !== "undefined" &&
+  return typeof window !== "undefined" &&
     "serviceWorker" in navigator &&
     "PushManager" in window &&
-    "Notification" in window
-  );
+    "Notification" in window;
 }
 
-export async function getPushStatus(): Promise<P¶»§q«^
+export async function getPushStatus(): Promise<PushStatus> {
+  if (!supportsWebPush()) return { enabled: false, activeCount: 0, permission: "unsupported" };
+  const data = await pushApiRequest<{ enabled: boolean; activeCount: number }>({ action: "status" });
+  return {
+    enabled: Boolean(data?.enabled),
+    activeCount: Number(data?.activeCount ?? 0),
+    permission: Notification.permission,
+  };
+}
+
+export async function enablePushNotifications(source: "account" | "pwa_prompt" = "account"): Promise<void> {
+  if (!supportsWebPush()) throw new Error("Push notifications are not supported by this browser.");
+  const publicKey = import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY;
+  if (!publicKey) throw new Error("Puntr push notifications are not configured yet.");
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") throw new Error(permission === "denied" ? "Notifications are blocked in browser settings." : "Notification permission was not granted.");
+  const registration = await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+  if (!subscription) {
+    subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: decodeVapidKey(publicKey).buffer as ArrayBuffer,
+    });
+  }
+  try {
+    await pushApiRequest({ action: "subscribe", subscription: subscription.toJSON(), userAgent: navigator.userAgent.slice(0, 300) });
+  } catch (error) {
+    await subscription.unsubscribe().catch(() => false);
+    throw error;
+  }
+  const { error: consentError } = await supabase.rpc("record_consent", {
+    p_purpose: "push_notifications",
+    p_granted: true,
+    p_notice_version: "push-notifications-v1",
+    p_source: source,
+  });
+  if (consentError) {
+    await subscription.unsubscribe().catch(() => false);
+    await pushApiRequest({ action: "unsubscribe" }).catch(() => undefined);
+    throw consentError;
+  }
+}
+
+export async function removeCurrentPushDevice(): Promise<void> {
+  if (!supportsWebPush()) return;
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription) return;
+  const result = await Promise.allSettled([
+    pushApiRequest({ action: "unsubscribe-device", endpoint: subscription.endpoint }),
+  ]);
+  await subscription.unsubscribe();
+  if (result[0].status === "rejected") throw result[0].reason;
+}
+
+export async function disablePushNotifications(): Promise<void> {
+  await pushApiRequest({ action: "unsubscribe" });
+  if (supportsWebPush()) {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+    if (subscription) await subscription.unsubscribe();
+  }
+  const { error: consentError } = await supabase.rpc("record_consent", {
+    p_purpose: "push_notifications",
+    p_granted: false,
+    p_notice_version: "push-notifications-v1",
+    p_source: "account",
+  });
+  if (consentError) throw consentError;
+}

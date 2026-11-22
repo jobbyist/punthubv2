@@ -9,10 +9,7 @@ export function BadgeMarquee({ label }: { label: string }) {
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={hidden || undefined}>
       {MARQUEE_BADGE_TEAMS.map((item) => (
-        <li
-          key={`${hidden ? "b" : "a"}-${item.sport}:${item.team}`}
-          className="flex items-center gap-2.5"
-        >
+        <li key={`${hidden ? "b" : "a"}-${item.sport}:${item.team}`} className="flex items-center gap-2.5">
           <TeamLogo team={item.team} sport={item.sport} size="lg" />
           <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
             {item.label}
