@@ -284,8 +284,8 @@ const rawSchema = z.object({
       goalsAgainst: int,
       points: z.number().int().min(-50).max(500),
       quote: z.string().trim().min(1),
-      tableDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-      tableDateQuote: z.string().trim().min(1).nullable().optional(),
+      tableDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().default(null),
+      tableDateQuote: z.string().trim().min(1).nullable().default(null),
     }),
   ),
 });
