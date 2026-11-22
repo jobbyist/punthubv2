@@ -3,7 +3,7 @@ const CACHE_PREFIX = "puntr-pwa";
 const CACHE_VERSION = "v1";
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/puntr-icon-512.png"];
+const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/puntr-icon-192.png", "/puntr-icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
