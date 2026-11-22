@@ -131,6 +131,6 @@ The La Liga direct-page candidate roster is capped at five independent publisher
 
 ## PR sequencing and launch boundary (22 Nov 2026)
 
-- **PR #185 (pre-launch):** La Liga table source candidates are limited to five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole. The configured source list is not proof of operational coverage. Publish only after the existing full-table validation and two-independent-publisher consensus succeed.
+- **PR #185 (pre-launch):** La Liga table source candidates are limited to five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The configured source list is not proof of operational coverage. Publish only after the existing full-table validation and two-independent-publisher consensus succeed.
 - **PR #195 (pre-launch foundation):** shared evidence checks and service-role-only schema foundation may be merged after tests and schema/security review. No bookmaker source is seeded or enabled, and no automated ingestion path is activated. Its migration remains unapplied in production pending migration-ledger reconciliation and explicit backup/rollback approval.
 - **PR #196 (post-launch):** match intelligence, automated odds and exclusions work remain out of the MVP critical path. Keep the PR draft until a post-launch scope, rights, legal, security, quota and migration review is completed.
