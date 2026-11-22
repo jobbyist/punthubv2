@@ -61,9 +61,9 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                     : guardExtract(
                         createParallelExtract(
                           keys.parallelKey!,
-                          // Five independent full-page reads run concurrently. Bound each read so one slow
-                          // publisher cannot consume the pg_net 55-second request window for the whole table.
-                          { timeoutMs: 25_000 },
+                          // Five independent full-page reads run concurrently. Use one bounded attempt per
+                          // publisher; a slow source is skipped rather than retried inside the pg_net 55s window.
+                          { timeoutMs: 30_000, attempts: 1 },
                           { maxAgeSeconds: 900 },
                         ),
                         claim,
