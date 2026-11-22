@@ -427,7 +427,7 @@ export function SiteHeader() {
                   <MenuItem
                     icon={ClipboardCheck}
                     label="Founding HQ"
-                    onSelect={() => navigate({ to: "/admin/founding-hq" })}
+                    onSelect={() => window.location.assign("/admin/founding-hq")}
                   />
                 )}
                 <DropdownMenuSeparator />
