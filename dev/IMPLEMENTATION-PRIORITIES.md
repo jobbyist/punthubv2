@@ -22,7 +22,7 @@ This is the operational source of truth for the final MVP hardening sprint. Tick
 
 ## P0.1 — PFIE fixtures, results and standings reliability
 
-**Current evidence:** The production database contains recent PFIE fixture/result runs. The 22 Nov sync-status snapshot reports 7 of 12 standings scopes with a prior success and 5 with no successful snapshot. The most recent standings attempts include source-level failures (for example, incomplete La Liga table extraction). The live cron jobs are active. One recent net._http_response request timed out at 55 seconds, but the response record does not preserve the request path, so it cannot be attributed confidently to a specific cron job.
+**Current evidence:** The production database contains recent PFIE fixture/result runs. The `completed_matches` table contains 7,781 rows (read-only count on 22 Nov), exceeding the 2,500 historical-results minimum by 5,281; this tracker is complete and remains live-counted in `/dev`. The 22 Nov sync-status snapshot reports 7 of 12 standings scopes with a prior success and 5 with no successful snapshot. The most recent standings attempts include source-level failures (for example, incomplete La Liga table extraction). The live cron jobs are active. One recent net._http_response request timed out at 55 seconds, but the response record does not preserve the request path, so it cannot be attributed confidently to a specific cron job.
 
 - [ ] Confirm the exact launch competition list and hide/defer competitions without dependable data.
 - [ ] For every launch competition, verify upcoming fixture coverage, kickoff time/date, team identity and latest successful sync.
