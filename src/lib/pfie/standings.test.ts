@@ -230,7 +230,7 @@ describe("validateTables", () => {
     const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
     expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
     const conflicting = [...raw(1), { ...raw(1)[0]!, played: 9, points: 22, quote: "conflicting Alpha row" }];
-    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC_10/6/2/2/20/10/20_vs_9/6/2/2/20/10/22");
+    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC_10/7/2/1/20/8/23_vs_9/8/0/1/21/8/24");
   });
   it("prefers the cumulative overall row over a home or away subset", () => {
     const overall = raw(1)[0]!;
