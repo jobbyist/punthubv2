@@ -108,7 +108,7 @@ export function SiteHeader() {
 
   const directLinks = [
     { key: "home", to: "/", icon: House },
-    { key: "fixtures", to: "/predictions", icon: CalendarDays },
+    { key: "fixtures", to: "/discover", icon: CalendarDays },
     { key: "community", to: "/forum", icon: Users },
   ] as const;
 
@@ -228,7 +228,7 @@ export function SiteHeader() {
                       asChild
                       className="cursor-pointer rounded-lg px-3 py-2"
                     >
-                      <Link to="/predictions" search={{ competition: competition.name }}>
+                      <Link to="/discover" search={{ competition: competition.name }}>
                         <span className="flex-1">{competition.name}</span>
                       </Link>
                     </DropdownMenuItem>

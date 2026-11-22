@@ -679,3 +679,10 @@ html[data-preloaded] .puntr-preloader {
     display: none;
   }
 }
+
+
+/* Installed PWAs: reserve the status-bar safe area above the sticky header. */
+@media (display-mode: standalone) {
+  html { min-height: 100%; }
+  body { padding-top: env(safe-area-inset-top, 0px); }
+}

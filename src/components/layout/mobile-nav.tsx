@@ -57,7 +57,6 @@ type FlyoutItem = {
     | "/fixtures"
     | "/results"
     | "/tables"
-    | "/insights"
     | "/leaderboards"
     | "/forum"
     | "/duels"
@@ -82,9 +81,8 @@ const flyoutGroups: Record<
       { key: "fixtures", to: "/fixtures", icon: CalendarDays },
       { key: "results", to: "/results", icon: CheckCircle2 },
       { key: "tables", to: "/tables", icon: BarChart3 },
-      { key: "insights", to: "/insights", icon: BarChart3 },
     ],
-    match: ["/predictions", "/fixtures", "/results", "/tables", "/insights", "/match"],
+    match: ["/discover", "/fixtures", "/results", "/tables", "/match"],
   },
   community: {
     icon: Users,
@@ -499,14 +497,6 @@ export function MobileNav() {
                       {t("mobile.invite")} <ChevronRight className="size-3.5" />
                     </span>
                   }
-                />
-                <NavLink
-                  path={path}
-                  onNavigate={close}
-                  to="/forum"
-                  icon={Users}
-                  label={t("primary.community")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
                 />
               </div>
 

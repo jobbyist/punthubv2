@@ -17,7 +17,6 @@ const columns = [
       ["fixtures", "/fixtures"],
       ["results", "/results"],
       ["tables", "/tables"],
-      ["insights", "/insights"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
     ],
