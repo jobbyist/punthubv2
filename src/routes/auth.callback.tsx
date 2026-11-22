@@ -28,15 +28,54 @@ function AuthCallback() {
   const returnTo = safeNext(next, "/predictions");
 
   useEffect(() => {
-    if (!code || started.current || errorDescription) return;
+    if (started.current || errorDescription) return;
     started.current = true;
-    void supabase.auth.exchangeCodeForSession(code).then(({ error: exchangeError }) => {
-      if (exchangeError) {
-        setError("This sign-in link has expired or has already been used. Please try again.");
-        return;
+
+    void (async () => {
+      try {
+        // Exchange the PKCE code when present. Also accept an existing session for
+        // providers/configurations that return the session directly in the URL fragment.
+        if (!code) {
+          const { data: existing, error: existingError } = await supabase.auth.getSession();
+          if (existingError) throw existingError;
+          if (!existing.session) {
+            await navigate({ to: "/join", search: { next: returnTo }, replace: true });
+            return;
+          }
+        } else {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) throw exchangeError;
+        }
+
+        const { data, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        const session = data.session;
+        if (!session?.user) throw new Error("No authenticated session was returned by Google.");
+
+        // Existing members go straight to their requested destination. New OAuth users
+        // continue through the existing profile/onboarding flow.
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("id", session.user.id)
+          .maybeSingle();
+
+        if (profileError) {
+          console.warn("[Puntr] Could not check OAuth profile; returning to the requested page", profileError);
+          await navigate({ to: returnTo as never, replace: true });
+          return;
+        }
+
+        if (profile) {
+          await navigate({ to: returnTo as never, replace: true });
+        } else {
+          await navigate({ to: "/join", search: { next: returnTo }, replace: true });
+        }
+      } catch (callbackError) {
+        console.error("[Puntr] Google OAuth callback failed", callbackError);
+        setError("We couldn't finish signing you in. Please return to Puntr and try Google sign-in again.");
       }
-      void navigate({ to: "/join", search: { next: returnTo } });
-    });
+    })();
   }, [code, errorDescription, navigate, returnTo]);
 
   return (

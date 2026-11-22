@@ -60,7 +60,7 @@ export function HeroFixtureRail() {
 
   useEffect(() => {
     if (paused || reduceMotion || fixtures.length < 2) return;
-    const timer = window.setInterval(() => advance(1), 7000);
+    const timer = window.setInterval(() => advance(1), 15000);
     return () => window.clearInterval(timer);
   }, [advance, fixtures.length, paused, reduceMotion]);
 

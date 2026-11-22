@@ -204,6 +204,7 @@ function NavLink({
   badge,
   badgeColor = "bg-primary-soft text-primary",
   right,
+  disabled = false,
   active: forceActive,
 }: {
   path: string;
@@ -215,16 +216,21 @@ function NavLink({
   badge?: string;
   badgeColor?: string;
   right?: ReactNode;
+  disabled?: boolean;
   active?: boolean;
 }) {
   const active = forceActive ?? (to ? path === to : false);
   const content = (
     <div
       className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-colors ${
-        active ? "bg-primary-soft text-primary" : "text-foreground hover:bg-muted"
+        disabled
+          ? "cursor-not-allowed text-muted-foreground/60"
+          : active
+            ? "bg-primary-soft text-primary"
+            : "text-foreground hover:bg-muted"
       }`}
     >
-      <Icon className={`size-5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
+      <Icon className={`size-5 shrink-0 ${disabled ? "text-muted-foreground/50" : active ? "text-primary" : "text-muted-foreground"}`} />
       <span className="flex-1 truncate">{label}</span>
       {badge && (
         <span
@@ -236,6 +242,10 @@ function NavLink({
       {right}
     </div>
   );
+
+  if (disabled) {
+    return <div aria-disabled="true">{content}</div>;
+  }
 
   if (to) {
     return (
@@ -384,13 +394,6 @@ export function MobileNav() {
                 <NavLink
                   path={path}
                   onNavigate={close}
-                  to="/coming-soon"
-                  icon={BarChart3}
-                  label={t("primary.insights")}
-                />
-                <NavLink
-                  path={path}
-                  onNavigate={close}
                   to="/tools"
                   icon={Wrench}
                   label={t("primary.tools")}
@@ -459,19 +462,21 @@ export function MobileNav() {
                 <NavLink
                   path={path}
                   onNavigate={close}
-                  to="/bookmakers"
                   icon={Building2}
                   label={t("mobile.tools.bookmakers")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
+                  disabled
+                  badge={tc("badge.comingSoon")}
+                  badgeColor="bg-muted text-muted-foreground"
                 />
 
                 <NavLink
                   path={path}
                   onNavigate={close}
-                  to="/live-scores"
-                  icon={Radio}
-                  label={t("mobile.tools.liveScores")}
-                  right={<ChevronRight className="size-4 text-muted-foreground" />}
+                  icon={Trophy}
+                  label={t("mobile.tools.fantasyArena")}
+                  disabled
+                  badge={tc("badge.comingSoon")}
+                  badgeColor="bg-muted text-muted-foreground"
                 />
               </div>
 
