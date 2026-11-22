@@ -9,8 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { validatePassword } from "@/lib/password";
+import { safeNext } from "@/lib/email/auth-emails";
 
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: (search: Record<string, unknown>): { next?: string } => ({
+    ...(typeof search["next"] === "string" ? { next: search["next"].slice(0, 200) } : {}),
+  }),
   head: () => ({
     meta: [
       { title: "Reset your password | Puntr" },
@@ -30,6 +34,8 @@ function ResetPassword() {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
   const { user } = useSession();
+  const { next } = Route.useSearch();
+  const returnTo = safeNext(next, "/predictions");
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
@@ -44,7 +50,7 @@ function ResetPassword() {
     setBusy(true);
     setError(null);
     const { error: err } = await supabase.auth.resetPasswordForEmail(address, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}${returnTo}`,
     });
     setBusy(false);
     if (err?.status === 429) return setError(t("join.error.rate"));
@@ -80,7 +86,7 @@ function ResetPassword() {
       return setError(t("join.error.generic"));
     }
     toast.success(t("reset.done"));
-    void navigate({ to: "/account" });
+    void navigate({ to: returnTo as never });
   };
 
   return (
@@ -145,7 +151,7 @@ function ResetPassword() {
         </p>
       )}
       <p className="mt-6 text-sm">
-        <Link to="/join" className="text-primary underline">
+        <Link to="/join" search={{ next: returnTo }} className="text-primary underline">
           {t("reset.back")}
         </Link>
       </p>

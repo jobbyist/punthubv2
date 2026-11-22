@@ -78,9 +78,15 @@ describe("planAuthEmails", () => {
 
 describe("auth email content", () => {
   it("keeps next paths on puntr only", () => {
-    expect(safeNext("https://puntr.co.za/join", "/x")).toBe("/join");
+    expect(safeNext("https://puntr.co.za/join", "/x")).toBe("/x");
     expect(safeNext("https://evil.example/join", "/x")).toBe("/x");
     expect(safeNext("/admin", "/x")).toBe("/x");
+    expect(safeNext("/join", "/predictions")).toBe("/predictions");
+    expect(safeNext("/predictions?source=pwa&sport=soccer", "/x")).toBe("/predictions?source=pwa&sport=soccer");
+    expect(safeNext("https://puntr.co.za/predictions?competition=Premier%20League", "/x")).toBe("/predictions?competition=Premier%20League");
+    expect(safeNext("//evil.example/predictions", "/x")).toBe("/x");
+    expect(safeNext("/predictions%2f..%2fadmin", "/x")).toBe("/x");
+    expect(safeNext("/reset-password?next=%2Fpredictions", "/x")).toBe("/reset-password?next=%2Fpredictions");
     expect(confirmUrl("h", "recovery", "/reset-password")).toBe(
       "https://puntr.co.za/auth/confirm?token_hash=h&type=recovery&next=%2Freset-password",
     );

@@ -17,6 +17,7 @@ import { IdentityTab } from "@/components/admin/identity-admin";
 import { MembersTab } from "@/components/admin/members-admin";
 import { NewsroomTab } from "@/components/admin/newsroom-admin";
 import { NotificationsTab } from "@/components/admin/notifications-admin";
+import { PushNotificationsAdmin } from "@/components/admin/push-notifications-admin";
 import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/admin/")({
 
 const TAB_GROUPS = [
   { label: "Overview", items: ["system", "analytics", "log"] },
-  { label: "Community", items: ["users", "waitlist", "notifications", "reports"] },
+  { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
     items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw"],
@@ -165,6 +166,9 @@ function Admin() {
                   </TabsContent>
                   <TabsContent value="notifications" className="mt-0">
                     <NotificationsTab />
+                  </TabsContent>
+                  <TabsContent value="push" className="mt-0">
+                    <PushNotificationsAdmin />
                   </TabsContent>
                   <TabsContent value="analytics" className="mt-0">
                     <AnalyticsTab />

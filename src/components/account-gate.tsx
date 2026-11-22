@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -47,6 +47,7 @@ export function RequireMember({
 }) {
   const { t } = useTranslation("account");
   const { loading, profile } = useSession();
+  const returnTo = useRouterState({ select: (state) => state.location.href });
   if (loading) return <AccountSkeleton />;
   if (!profile) {
     return (
@@ -54,7 +55,7 @@ export function RequireMember({
         <h1 className="text-2xl">{t("signInNeeded.title")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t("signInNeeded.body")}</p>
         <Button asChild className="mt-4">
-          <Link to="/join">{t("signInNeeded.cta")}</Link>
+          <Link to="/join" search={{ next: returnTo }}>{t("signInNeeded.cta")}</Link>
         </Button>
       </AccountPage>
     );

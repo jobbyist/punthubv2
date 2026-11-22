@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { removeCurrentPushDevice } from "@/lib/push-notifications";
 import { claimFoundingSpot } from "@/lib/accounts.functions";
 import { notifyPointsChanged } from "@/lib/rewards-data";
 import { useLocale } from "@/lib/i18n/provider";
@@ -157,6 +158,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [canSyncPoints, userId]);
 
   const signOut = useCallback(async () => {
+    await removeCurrentPushDevice().catch((error) => {
+      console.warn("[Puntr PWA] Could not remove this device push subscription before sign-out", error);
+    });
     await supabase.auth.signOut();
     setSession(null);
     setProfile(null);

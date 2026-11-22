@@ -12,11 +12,11 @@ const TYPES = ["signup", "invite", "magiclink", "recovery", "email_change", "ema
 type ConfirmType = (typeof TYPES)[number];
 
 const DEFAULT_NEXT: Record<ConfirmType, string> = {
-  signup: "/join",
-  invite: "/join",
-  magiclink: "/join",
-  email: "/join",
-  recovery: "/reset-password",
+  signup: "/predictions",
+  invite: "/predictions",
+  magiclink: "/predictions",
+  email: "/predictions",
+  recovery: "/predictions",
   email_change: "/account/security",
 };
 
@@ -59,7 +59,15 @@ function Confirm() {
     if (err) return setError(err.status === 429 ? t("join.error.rate") : t("confirm.expired"));
     const target = safeNext(next, DEFAULT_NEXT[kind]);
     // Recovery always lands on the reset form, whatever the link said.
-    void navigate({ to: kind === "recovery" ? "/reset-password" : target });
+    if (kind === "recovery") {
+      void navigate({ to: "/reset-password", search: { next: target } });
+      return;
+    }
+    if (kind === "email_change") {
+      void navigate({ to: target as never });
+      return;
+    }
+    void navigate({ to: "/join", search: { next: target } });
   };
 
   return (
@@ -85,6 +93,7 @@ function Confirm() {
       <p className="mt-6 text-sm">
         <Link
           to={kind === "recovery" ? "/reset-password" : "/join"}
+          search={{ next: safeNext(next, DEFAULT_NEXT[kind]) }}
           className="text-primary underline"
         >
           {kind === "recovery" ? t("confirm.newReset") : t("confirm.newCode")}

@@ -1,15 +1,9 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 /** How many items guests can read in full before proprietary fields are blurred. */
 export const FREE_ITEMS = 2;
@@ -65,7 +59,8 @@ export function FoundingGateCard({ as: Tag = "div", top }: { as?: "div" | "li"; 
 
 function GateCardInner({ overlap }: { overlap: boolean }) {
   const { t } = useTranslation("intel");
-  const [signupOpen, setSignupOpen] = useState(false);
+  const navigate = useNavigate();
+  const returnTo = useRouterState({ select: (state) => state.location.href });
 
   return (
     <>
@@ -81,29 +76,13 @@ function GateCardInner({ overlap }: { overlap: boolean }) {
             {t("gate.title")}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">{t("gate.body")}</p>
-          <Button size="lg" className="mt-4 h-11 w-full" onClick={() => setSignupOpen(true)}>
+          <Button size="lg" className="mt-4 h-11 w-full" onClick={() => void navigate({ to: "/join", search: { next: returnTo } })}>
             {t("gate.cta")}
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">{t("gate.reassure")}</p>
         </aside>
       </div>
-      <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
-        <DialogContent className="flex h-[min(90dvh,900px)] w-[calc(100%-1rem)] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:w-[calc(100%-2rem)]">
-          <DialogHeader className="shrink-0 border-b border-border px-5 py-3 text-left">
-            <DialogTitle className="text-base font-extrabold">{t("gate.modalTitle")}</DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
-              {t("gate.modalBody")}
-            </DialogDescription>
-          </DialogHeader>
-          <iframe
-            title={t("gate.signupFrameTitle")}
-            src="/join"
-            className="min-h-0 w-full flex-1 border-0 bg-background"
-            allow="clipboard-read; clipboard-write"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
-          />
-        </DialogContent>
-      </Dialog>
+
     </>
   );
 }

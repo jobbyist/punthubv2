@@ -57,8 +57,7 @@ const NOT_YOU =
 const SIGN: [string, string] = ["The Puntr team", "Puntr - South Africa"];
 
 /** Pages the confirm screen may send a member on to after verifying. Anything else falls back to the default. */
-const ALLOWED_NEXT =
-  /^\/(join|account(\/[a-z-]+)?|reset-password|founding|practice|wallet|rewards|onboarding)(\?[\w=&%-]*)?$/;
+const ALLOWED_NEXT = /^\/(?!\/|join(?:\/|$)|auth(?:\/|$)|api(?:\/|$)|admin(?:\/|$)|logout(?:\/|$))(?:[a-zA-Z0-9._~-]+(?:\/[a-zA-Z0-9._~-]+)*)?(?:\?[\w=&%.,:+@~-]*)?(?:#[\w-]*)?$/;
 
 export function safeNext(value: string | null | undefined, fallback: string): string {
   if (!value) return fallback;
@@ -71,12 +70,13 @@ export function safeNext(value: string | null | undefined, fallback: string): st
       host === "www.puntr.co.za" ||
       host === "localhost" ||
       host.endsWith(".vercel.app");
-    if (!ours) return fallback;
-    path = `${u.pathname}${u.search}`;
+    if (!ours || u.username || u.password) return fallback;
+    path = `${u.pathname}${u.search}${u.hash}`;
+    if (u.pathname.includes("\\") || /%2f|%5c/i.test(u.pathname)) return fallback;
   } catch {
     return fallback;
   }
-  return ALLOWED_NEXT.test(path) ? path : fallback;
+  return ALLOWED_NEXT.test(path) && path !== "/" ? path : fallback;
 }
 
 export function confirmUrl(tokenHash: string, type: string, next: string): string {
@@ -165,7 +165,7 @@ export function buildAuthEmail(i: AuthEmailInput): AuthEmail {
             : ["Tap the button to choose a new password."]),
         ],
         ...(code ? { code } : {}),
-        cta: { label: "Choose a new password", url: link("recovery", "/reset-password") },
+        cta: { label: "Choose a new password", url: link("recovery", "/predictions") },
         afterCta: [
           EXPIRY,
           "Didn't ask for this? Ignore this email; your password stays the same. If you keep getting these, reply and let us know.",

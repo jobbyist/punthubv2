@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r20.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r21.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -110,6 +110,13 @@ const PURPOSES: [string, string, string, string][] = [
     "Kontrak en ons belang om rekeninge veilig te hou",
     "Terwyl jou rekening oop is",
   ],
+  [
+    "Drukkennisgewings (opsioneel)",
+    "Jou blaaier se druk-eindpunt, geënkripteerde intekeningsleutels, toestel-/blaaierbesonderhede, rekeningkennisgewingvoorkeur en afleweringstatus. Die kennisgewingtitel, boodskap en bestemming word na jou blaaier se drukkennisgewingsdiens gestuur; Puntr sluit nie private rekening- of weddata in kennisgewings in nie.",
+    "Jou uitdruklike toestemming om drukkennisgewings te ontvang. Jy kan dit enige tyd in Rekeninginstellings terugtrek of die blaaier se toestemming herroep.",
+    "Toestelintekeninge word verwyder wanneer jy kennisgewings afskakel of jou rekening skrap. Beperkte veldtog- en afleweringsouditrekords kan vir platformsekuriteit, misbruikvoorkoming en bedryfsverslagdoening gehou word [prokureur se hersiening]",
+  ],
+
   [
     "Openbare keuserekord",
     "Jou keuses, pryse, uitslae, 'n hash van elke keuse, enige regstelling van 'n uitslag met die rede, en, waar daar een was, die markverwysingsprys toe jy geplaas het en of jou pryse as ongeverifieer gemerk is (saam met die keuse gewys)",

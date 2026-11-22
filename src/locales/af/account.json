@@ -170,5 +170,18 @@
     "saved": "Foto gestoor.",
     "removed": "Foto verwyder.",
     "alt": "{{username}} se profielfoto"
+  },
+  "pushNotifications": {
+    "title": "Drukkennisgewings",
+    "body": "Ontvang belangrike Puntr-opdaterings op jou toestelle, insluitend aankondigings en wedstryddag-waarskuwings. As jy kennisgewings hier afskakel, stop aflewering na al jou rekening se toestelle.",
+    "enable": "Skakel drukkennisgewings aan",
+    "disable": "Skakel drukkennisgewings af",
+    "unsupported": "Hierdie blaaier ondersteun nie webdrukkennisgewings nie.",
+    "blocked": "Kennisgewings word deur jou blaaier geblokkeer. Verander die werftoestemming in jou blaaierinstellings voordat jy dit hier aktiveer.",
+    "enabled": "Drukkennisgewings is aan.",
+    "disabled": "Drukkennisgewings is vir jou Puntr-rekening afgeskakel.",
+    "error": "Kon nie drukkennisgewinginstellings bywerk nie.",
+    "loading": "Laai…",
+    "updating": "Werk by…"
   }
 }

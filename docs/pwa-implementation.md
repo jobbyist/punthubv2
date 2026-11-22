@@ -14,3 +14,10 @@
 
 ## QA
 Run bun run lint, bun run typecheck, bun run test and bun run build. Verify installation on Android Chrome and iOS Safari, standalone relaunch, offline navigation, cache update behaviour and authenticated flows. Confirm no API or private response is present in Cache Storage.
+
+## Authentication and push notification extensions
+See [PWA, authentication return paths and Web Push](./PWA_PUSH_NOTIFICATIONS.md) for the current architecture, database rollout, consent ledger, VAPID environment variables, admin console and release checklist.
+
+The installed app continues to use `/predictions?source=pwa` as its manifest entry point. Auth gates now preserve the full internal destination in a validated `next` parameter through OAuth, email confirmation, password login, OTP, onboarding and password recovery. Push notification clicks validate same-origin URLs and route back into the app.
+
+Push subscriptions are never cached. Only the server-side Vercel endpoint can read or mutate subscription records. Push opt-in is explicit; Account settings can withdraw consent and remove all account subscriptions.

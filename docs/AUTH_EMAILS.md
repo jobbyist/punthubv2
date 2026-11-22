@@ -38,3 +38,6 @@ the shared email quota. This is an internal account/service notification, not a 
 Order matters: deploy this code and add the secret **before** enabling the hook, or sign-in emails fail.
 Auth emails are never held back by Puntr's daily email cap (members must always be able to sign in) but count toward it.
 Resend free plan: 100 emails/day; at higher volume upgrade Resend or move marketing sends later in the day.
+
+## Persistent return destinations
+Authentication links now carry a validated internal `next` destination. OAuth uses `/auth/callback` for PKCE code exchange; email confirmation resumes `/join` so onboarding/MFA can complete before the user returns. Password recovery carries the same destination through the reset form. The Predictions guest gate no longer embeds `/join` in an iframe. See [PWA_PUSH_NOTIFICATIONS.md](./PWA_PUSH_NOTIFICATIONS.md).

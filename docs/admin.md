@@ -27,3 +27,6 @@ Paste a pick ID. The browser recomputes the SHA-256 from the stored fields and t
 ## Applied
 
 `20261030100500_chain_head_fix.sql` is applied on the live project and `supabase/tests/admin_chain.sql` passes.
+
+## Web Push operations
+The Admin > Community > Push notifications panel is documented in [PWA_PUSH_NOTIFICATIONS.md](./PWA_PUSH_NOTIFICATIONS.md). It provides subscription reach, 30-day delivery metrics, a self-test, targeted campaigns, preview, and campaign history. Dispatch is restricted server-side to admin profiles and sends only to explicitly opted-in active subscriptions.

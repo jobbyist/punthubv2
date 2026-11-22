@@ -35,15 +35,15 @@ const AMBASSADOR_STAGES: AmbassadorStage[] = [
   "not_approached", "identified", "approached", "in_discussion", "agreed", "active", "declined",
 ];
 
-async function adminDb(context: Ctx): Promise<SupabaseClient<any> | null> {
+async function adminDb(context: Ctx): Promise<SupabaseClient | null> {
   const { data } = await context.supabase.rpc("is_admin");
   if (data !== true) return null;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  return supabaseAdmin as unknown as SupabaseClient<any>;
+  return supabaseAdmin as unknown as SupabaseClient;
 }
 
 async function logAdminAction(
-  db: SupabaseClient<any>,
+  db: SupabaseClient,
   adminId: string,
   action: string,
   detail: Record<string, unknown>,
@@ -127,7 +127,7 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
     if (memberResult.error) throw new Error(memberResult.error.message);
     if (activityResult.error) throw new Error(activityResult.error.message);
 
-    const leads = (leadResult.data ?? []).map((row: any): FoundingHqLead => ({
+    const leads = (leadResult.data ?? []).map((row): FoundingHqLead => ({
       id: row.id,
       displayName: row.display_name,
       xHandle: row.x_handle,
@@ -151,7 +151,7 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
       foundingMembers: memberResult.count ?? 0,
       target: 100,
       leads,
-      activities: (activityResult.data ?? []).map((row: any) => ({
+      activities: (activityResult.data ?? []).map((row) => ({
         id: row.id,
         leadId: row.lead_id,
         kind: row.kind,

@@ -26,13 +26,16 @@ import { FoundingCounter } from "@/components/founding-counter";
 import { QuestsChecklist } from "@/components/quests-checklist";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
 import { FOUNDING_CAP } from "@/lib/flags";
+import { safeNext } from "@/lib/email/auth-emails";
 import { headT } from "@/lib/i18n/head";
 import { useLocale } from "@/lib/i18n/provider";
 import { enabledLocales, locales, type LocaleCode } from "@/locales/config";
 
 export const Route = createFileRoute("/join")({
-  validateSearch: (search: Record<string, unknown>): { ref?: string } =>
-    typeof search["ref"] === "string" && search["ref"] ? { ref: search["ref"].slice(0, 32) } : {},
+  validateSearch: (search: Record<string, unknown>): { ref?: string; next?: string } => ({
+    ...(typeof search["ref"] === "string" && search["ref"] ? { ref: search["ref"].slice(0, 32) } : {}),
+    ...(typeof search["next"] === "string" ? { next: search["next"].slice(0, 200) } : {}),
+  }),
   head: ({ match }) => {
     const t = headT(match.context.locale, "auth");
     return {
@@ -56,7 +59,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Join() {
   const { t } = useTranslation("auth");
-  const { ref } = Route.useSearch();
+  const { ref, next } = Route.useSearch();
+  const navigate = useNavigate();
+  const returnTo = safeNext(next, "/predictions");
   const { user, profile, loading, refreshProfile } = useSession();
 
   const [step, setStep] = useState<Step>("email");
@@ -81,6 +86,7 @@ function Join() {
       if (profile) {
         setFoundingNumber((n) => n ?? profile.founding_number);
         setStep("done");
+        void navigate({ to: returnTo as never });
       } else if (user) {
         setEmail((e) => e || user.email || "");
         setStep((s) => (s === "email" || s === "code" || s === "mfa" ? "onboarding" : s));
@@ -89,7 +95,7 @@ function Join() {
     return () => {
       active = false;
     };
-  }, [loading, profile, user, mfaTick]);
+  }, [loading, profile, user, mfaTick, navigate, returnTo]);
 
   return (
     <div className="relative mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
@@ -104,6 +110,7 @@ function Join() {
       <div className="card-surface mt-6 p-6">
         {step === "email" && (
           <AuthStep
+            redirectTo={returnTo}
             onNeedsCode={(e, kind) => {
               setEmail(e);
               setCodeKind(kind);
@@ -115,6 +122,7 @@ function Join() {
           <CodeStep
             email={email}
             kind={codeKind}
+            redirectTo={returnTo}
             onChangeEmail={() => setStep("email")}
             onVerified={() => setMfaTick((n) => n + 1)}
           />
@@ -145,6 +153,7 @@ function Join() {
               setFoundingNumber(n);
               await refreshProfile();
               setStep("done");
+              void navigate({ to: returnTo as never });
             }}
           />
         )}
@@ -197,7 +206,13 @@ function GoogleLogo() {
 // success so the screen never reveals whether an address is registered.
 const NO_ACCOUNT_CODES = new Set(["otp_disabled", "signup_disabled", "user_not_found"]);
 
-function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind) => void }) {
+function AuthStep({
+  onNeedsCode,
+  redirectTo,
+}: {
+  onNeedsCode: (email: string, kind: CodeKind) => void;
+  redirectTo: string;
+}) {
   const { t } = useTranslation("auth");
   const [mode, setMode] = useState<"create" | "signin">("create");
   const [method, setMethod] = useState<"password" | "code">("password");
@@ -210,13 +225,13 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
   const create = mode === "create";
   const usesPassword = method === "password";
   const redirectOption =
-    typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}/join` };
+    typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}${redirectTo}` };
 
   const google = async () => {
     setError(null);
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/join` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}` },
     });
     if (err) setError(t("join.error.oauth"));
   };
@@ -401,7 +416,7 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
             <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>
           ) : (
             <p className="text-xs">
-              <Link to="/reset-password" className="font-semibold text-primary hover:underline">
+              <Link to="/reset-password" search={{ next: redirectTo }} className="font-semibold text-primary hover:underline">
                 {t("join.forgot")}
               </Link>
             </p>
@@ -445,11 +460,13 @@ function AuthStep({ onNeedsCode }: { onNeedsCode: (email: string, kind: CodeKind
 function CodeStep({
   email,
   kind,
+  redirectTo,
   onChangeEmail,
   onVerified,
 }: {
   email: string;
   kind: CodeKind;
+  redirectTo: string;
   onChangeEmail: () => void;
   onVerified: () => void;
 }) {
@@ -484,8 +501,8 @@ function CodeStep({
     setError(null);
     const { error: err } =
       kind === "signup"
-        ? await supabase.auth.resend({ type: "signup", email })
-        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+        ? await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${window.location.origin}${redirectTo}` } })
+        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}${redirectTo}` } });
     if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
     setCooldown(RESEND_SECONDS);
   };
