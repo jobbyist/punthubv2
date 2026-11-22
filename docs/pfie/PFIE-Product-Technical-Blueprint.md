@@ -469,3 +469,16 @@ La Liga standings direct-page candidates are capped at five independent publishe
 The PR #195 evidence foundation requires page-text-backed quote validation and curated publisher identity mapping. South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review. Player roster membership must reference a canonical PFIE team record, not a free-text team label. Its migration remains unapplied in production until the full production migration baseline and backup/rollback plan are reconciled.
 
 PR #196 is deferred until after MVP launch. No automated bookmaker odds collection or display is permitted without written rights covering collection, storage, display, attribution, retention and redistribution. A technical integration or affiliate approval alone is insufficient.
+
+
+---
+
+## 22 November 2026 — MVP PR sequencing addendum
+
+The following owner decisions supersede any earlier proposed dates or scope in this draft blueprint.
+
+- **PR #185 — pre-launch source coverage hardening:** La Liga's configured direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole. Existing deterministic row validation and two-independent-publisher agreement remain unchanged. A candidate source is not considered operationally verified until a production-like extraction succeeds.
+- **PR #195 — pre-launch reusable evidence foundation:** the intended merge scope is evidence quote verification against captured page text, curated publisher identity, South African bookmaker licence/terms checks, canonical team/roster identity and service-role-only schema access. No source is seeded or enabled; no odds ingestion adapter, cron, public read view or product UI is activated. Merge to source control does not apply its migration to production.
+- **Production migration constraint:** PR #195's migration must remain unapplied until the repository/production migration histories are reconciled, PITR/backup and rollback procedures are verified, and a separate production change is approved.
+- **PR #196 — post-launch only:** match intelligence, automated bookmaker odds and exclusions work are deferred beyond the 1 December 2026 MVP. Written data rights and separate legal, security, quota, migration and end-to-end reviews are required before implementation or activation.
+- **Merge status:** #185 and #195 remain in hardening until lint, typecheck, tests, build, preview and applicable review/security checks pass. Neither is merge-ready solely because the branch is mergeable.
