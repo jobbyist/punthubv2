@@ -235,6 +235,7 @@ describe("La Liga cross-publisher team aliases", () => {
     expect(normaliseTeam("CA Osasuna")).toBe(normaliseTeam("Osasuna"));
     expect(normaliseTeam("Levante UD")).toBe(normaliseTeam("Levante"));
     expect(normaliseTeam("RAC R. Racing Club")).toBe(normaliseTeam("Racing Santander"));
+    expect(normaliseTeam("Dépor")).toBe(normaliseTeam("Deportivo La Coruna"));
     expect(normaliseTeam("ATM Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
     expect(normaliseTeam("FC Barcelona")).toBe(normaliseTeam("Barcelona"));
   });
