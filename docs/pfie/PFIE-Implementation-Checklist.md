@@ -98,7 +98,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep it draft and out of pre-launch merge/release scope.
 - [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
 
-**Current state (22 Nov 2026):** PR #185 and #195 are ready for review. PR #185 still needs production-like extraction and two-publisher consensus evidence. PR #195 is ready for code review, but its migration remains blocked from production application until migration-baseline reconciliation and backup/rollback approval. PR #196 remains deferred.
+**Current state (22 Nov 2026):** PR #185 remains draft: five-source configuration, team-resolution regressions, standings tests (47/47), typecheck and Vercel build pass. Four remaining full-suite failures also reproduce on main; production-like extraction and two-publisher consensus remain launch QA gates. PR #195 remains draft: 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass; all review findings are resolved, but isolated SQL validation is pending because the only Supabase branch is MIGRATIONS_FAILED. Its migration remains unapplied. PR #196 remains post-launch only.
 
 
 - [x] Reference-price schema stores source IDs and publisher domains separately; bookmaker count is tied to both array cardinalities.
