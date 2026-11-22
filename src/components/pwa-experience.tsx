@@ -83,10 +83,6 @@ export function PwaExperience() {
       return;
     }
 
-    const onBeforeInstall = (event: Event) => {
-      event.preventDefault();
-      setInstallEvent(event as InstallPromptEvent);
-    };
     const onInstalled = () => {
       setShowPrompt(false);
       setShowNotch(false);
@@ -98,14 +94,12 @@ export function PwaExperience() {
         /* Ignore unavailable storage. */
       }
     };
-    window.addEventListener("beforeinstallprompt", onBeforeInstall);
     window.addEventListener("appinstalled", onInstalled);
     const timer = window.setTimeout(() => {
       if (iosDevice || installEvent) setShowPrompt(true);
     }, 6500);
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, [installEvent]);
