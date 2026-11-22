@@ -339,14 +339,16 @@ export function validateTables(
     const byTeam = new Map<string, RawStandingRow>();
     let duplicateConflict: string | null = null;
     for (const row of extractedRows) {
-      const key = normaliseTeam(row.team);
+      const sourceName = row.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
+      const key = normaliseTeam(sourceName);
       const prior = byTeam.get(key);
       if (!prior) {
         byTeam.set(key, row);
         rows.push(row);
         continue;
       }
-      const sameRecord = prior.played === row.played && prior.won === row.won &&
+      const sameRecord = prior.position === row.position &&
+        prior.played === row.played && prior.won === row.won &&
         prior.drawn === row.drawn && prior.lost === row.lost &&
         prior.goalsFor === row.goalsFor && prior.goalsAgainst === row.goalsAgainst &&
         prior.points === row.points;
