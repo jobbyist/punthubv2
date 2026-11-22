@@ -14,7 +14,7 @@ This milestone makes the installed Puntr app open on `/predictions`, preserves a
 ## Web Push architecture
 - Browser subscription is created only after an explicit user gesture and browser permission grant.
 - `PushNotificationPrompt` is shown to signed-in users in installed standalone mode when permission is still `default`; dismissals are remembered for 14 days.
-- Account home includes a push settings control. Turning push off removes all active subscriptions for the signed-in account and records withdrawal of consent.
+- Account home includes a push settings control. Turning push off removes all active subscriptions for the signed-in account and records withdrawal of consent. Normal sign-out removes the current device subscription before ending the session, without withdrawing account-wide consent.
 - The append-only `consent_records` ledger records `push_notifications` grant/withdrawal events with notice version `push-notifications-v1`.
 - `push_subscriptions` stores per-device endpoint and encryption keys. RLS is enabled and direct anon/authenticated table access is revoked. Only the Vercel server endpoint uses the service-role key.
 - `POST /api/push` authenticates the bearer session with Supabase, enforces an active profile, and checks the admin role for campaign operations.
