@@ -8,6 +8,7 @@ import {
   type RawPrice,
   type UpcomingFixture,
   isOddsSource,
+  oddsBookmakerKey,
   isOddsUnverified,
   toDecimalOdds,
   oddsSourceDomains,
@@ -16,7 +17,7 @@ import {
   settleOdds,
   validatePrices,
 } from "./reference";
-import { type OddsStatus, type OddsStore, oddsDue, runOddsSync } from "./sync";
+import { type OddsStatus, type OddsStore, oddsDue, oddsQueries, rotateBookmakerDomains, runOddsSync } from "./sync";
 
 const fixtures: UpcomingFixture[] = [
   { id: "f1", home: "Orlando Pirates", away: "Kaizer Chiefs", kickoffAt: "2026-11-21T15:30:00Z" },
@@ -48,6 +49,29 @@ const x12 = (source = 1, h = 2.1, d = 3.2, a = 3.6): RawPrice[] => [
   p({ source, selection: "away", price: a, quote: `2 ${a.toFixed(2)}` }),
 ];
 
+describe("rotateBookmakerDomains", () => {
+  it("uses different bookmaker groups across the two daily windows and covers all nine over successive days", () => {
+    const morning = rotateBookmakerDomains(allowed, "Premier League", new Date("2026-11-22T05:00:00Z")).slice(0, 4);
+    const afternoon = rotateBookmakerDomains(allowed, "Premier League", new Date("2026-11-22T12:00:00Z")).slice(0, 4);
+    const nextMorning = rotateBookmakerDomains(allowed, "Premier League", new Date("2026-11-23T05:00:00Z")).slice(0, 4);
+    expect(new Set([...morning, ...afternoon]).size).toBe(8);
+    expect(new Set([...morning, ...afternoon, ...nextMorning]).size).toBe(9);
+  });
+});
+
+describe("oddsQueries", () => {
+  it("targets every approved bookmaker domain so source rotation can use the full registry", () => {
+    const queries = oddsQueries("Premier League", fixtures, allowed);
+    expect(allowed).toHaveLength(9);
+    expect(queries).toHaveLength(1 + allowed.length);
+    for (const domain of allowed) {
+      expect(queries).toContain(
+        "site:" + domain + " Premier League football odds Orlando Pirates Kaizer Chiefs Mamelodi Sundowns Stellenbosch",
+      );
+    }
+  });
+});
+
 describe("member-odds rule", () => {
   it("marks odds more than 25% above the reference, matching the database trigger", () => {
     expect(isOddsUnverified(1.6, 1.2)).toBe(true); // 1.20 x 1.25 = 1.50
@@ -69,13 +93,18 @@ describe("sources", () => {
     expect(isOddsSource("www.betway.co.za", allowed)).toBe(true);
     expect(isOddsSource("oddschecker.com", allowed)).toBe(false);
     expect(isOddsSource("notbetway.co.za", allowed)).toBe(false);
+    expect(oddsBookmakerKey("sports.betway.co.za")).toBe("betway");
+    expect(oddsBookmakerKey("wsb.co.za")).toBeNull();
+    expect(oddsBookmakerKey("sports.playabets.co.za")).toBe("playabets");
+    expect(oddsBookmakerKey("gaming.supabets.co.za")).toBe("supabets");
   });
 
   it("reads an override list and ignores junk", () => {
-    expect(oddsSourceDomains("betway.co.za, www.gbets.co.za ,bad")).toEqual([
+    expect(oddsSourceDomains("betway.co.za, www.topbet.co.za ,bad")).toEqual([
       "betway.co.za",
-      "gbets.co.za",
+      "topbet.co.za",
     ]);
+    expect(oddsSourceDomains("unknownbookmaker.co.za")).toEqual([]);
     expect(oddsSourceDomains("")).toEqual(allowed);
   });
 });
@@ -106,8 +135,8 @@ describe("parse and validate", () => {
       p({ selection: "away", price: 2.6, quote: "KAIZER CHIEFS 2.6" }),
     ];
     const { prices, rejected } = validatePrices(
-      raw,
-      [src(1, "hollywoodbets.net", hwb)],
+      [...raw, ...x12(2)],
+      [src(1, "hollywoodbets.net", hwb), src(2, "betway.co.za")],
       fixtures,
       allowed,
     );
@@ -124,8 +153,13 @@ describe("parse and validate", () => {
     expect(priceTokens(3)).toContain("3");
   });
 
-  it("keeps a complete, plausible market from a listed bookmaker", () => {
-    const { prices, rejected } = validatePrices(x12(), [src(1, "betway.co.za")], fixtures, allowed);
+  it("requires two independent licensed bookmakers for a reference market", () => {
+    const { prices, rejected } = validatePrices(
+      [...x12(1), ...x12(2)],
+      [src(1, "betway.co.za"), src(2, "topbet.co.za")],
+      fixtures,
+      allowed,
+    );
     expect(rejected).toEqual([]);
     expect(prices.map((r) => [r.fixtureId, r.selection, r.price])).toEqual(
       expect.arrayContaining([
@@ -134,7 +168,24 @@ describe("parse and validate", () => {
         ["f1", "away", 3.6],
       ]),
     );
-    expect(prices[0]?.sourceDomain).toBe("betway.co.za");
+    expect(prices[0]?.sourceDomain.split(",").sort()).toEqual(["betway.co.za", "topbet.co.za"]);
+  });
+
+  it("does not count two subdomains of the same bookmaker as independent sources", () => {
+    const { prices, rejected } = validatePrices(
+      [...x12(1), ...x12(2)],
+      [src(1, "betway.co.za"), src(2, "sports.betway.co.za")],
+      fixtures,
+      allowed,
+    );
+    expect(prices).toEqual([]);
+    expect(rejected.some((item) => item.reason === "insufficient independent bookmaker sources")).toBe(true);
+  });
+
+  it("does not publish a reference market from one bookmaker alone", () => {
+    const { prices, rejected } = validatePrices(x12(), [src(1, "betway.co.za")], fixtures, allowed);
+    expect(prices).toEqual([]);
+    expect(rejected.some((item) => item.reason === "insufficient independent bookmaker sources")).toBe(true);
   });
 
   it("rejects unlisted sites, unknown fixtures, invented prices and incomplete markets", () => {
@@ -182,16 +233,16 @@ describe("parse and validate", () => {
     const pageC = "Orlando Pirates v Kaizer Chiefs 1 2.00 X 3.30 2 3.80";
     const { prices } = validatePrices(
       [...x12(1), ...x12(2, 2.2, 3.1, 3.4), ...x12(3, 2.0, 3.3, 3.8)],
-      [src(1, "betway.co.za"), src(2, "gbets.co.za", pageB), src(3, "supabets.co.za", pageC)],
+      [src(1, "betway.co.za"), src(2, "10bet.co.za", pageB), src(3, "yesplay.bet", pageC)],
       fixtures,
       allowed,
     );
     const home = prices.find((r) => r.selection === "home")!;
     expect(home.price).toBe(2.1);
     expect(home.sourceDomain.split(",").sort()).toEqual([
+      "10bet.co.za",
       "betway.co.za",
-      "gbets.co.za",
-      "supabets.co.za",
+      "yesplay.bet",
     ]);
   });
 });
@@ -222,6 +273,7 @@ describe("runOddsSync", () => {
           excerpt: page,
           publishedAt: null,
         },
+        { url: "https://www.topbet.co.za/sport/soccer/psl", title: "", excerpt: page, publishedAt: null },
         { url: "https://oddschecker.com/psl", title: "", excerpt: page, publishedAt: null },
       ]),
     };
@@ -233,7 +285,7 @@ describe("runOddsSync", () => {
       name: "gemini",
       generate: vi.fn(async (model: string) => ({
         model,
-        text: overrides.llmText ?? JSON.stringify({ prices: x12() }),
+        text: overrides.llmText ?? JSON.stringify({ prices: [...x12(1), ...x12(2)] }),
       })),
     };
     return {
@@ -255,7 +307,7 @@ describe("runOddsSync", () => {
     });
     expect(d.inserted).toHaveLength(3);
     expect(d.records[0]).toMatchObject({ ok: true });
-    expect(d.extract.extract).toHaveBeenCalledTimes(1); // oddschecker.com is never read
+    expect(d.extract.extract).toHaveBeenCalledTimes(2); // unlicensed oddschecker.com is never read
   });
 
   it("skips a competition tried in this refresh window", async () => {

@@ -42,9 +42,27 @@
     "makePick": "Make your pick",
     "loading": "Loading match intelligence…",
     "error": "Could not load this right now. Try again in a moment.",
-    "source": "From final scores Puntr has recorded. No expected-goals (xG) or third-party stats are shown.",
+    "source": "Form is calculated from Puntr's verified final scores. Third-party stats and line-ups appear only when at least two independent trusted sources agree. Expected goals (xG) are not shown.",
     "home": "H",
-    "away": "A"
+    "away": "A",
+    "stats": {
+      "title": "Verified match stats",
+      "possession": "Possession",
+      "shots": "Shots",
+      "shotsOnTarget": "Shots on target",
+      "corners": "Corners",
+      "fouls": "Fouls",
+      "yellowCards": "Yellow cards",
+      "redCards": "Red cards",
+      "verifiedBy": "Corroborated by {{count}} independent sources"
+    },
+    "lineups": {
+      "title": "Confirmed starting XI & bench",
+      "player": "Player",
+      "starter": "Starting XI",
+      "substitute": "Substitute",
+      "verifiedBy": "Line-ups corroborated by {{count}} independent sources"
+    }
   },
   "filter": {
     "label": "Filter matches",

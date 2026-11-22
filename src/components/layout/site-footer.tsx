@@ -37,6 +37,7 @@ const columns = [
     key: "company",
     links: [
       ["about", "/about"],
+      ["exclusions", "/exclusions"],
       ["terms", "/terms"],
       ["privacy", "/privacy"],
       ["cookies", "/cookies"],

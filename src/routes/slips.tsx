@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { EmptyState } from "@/components/empty-state";
-import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { AppShell } from "@/components/layout/app-shell";
+import { SlipConverterVisual } from "@/components/predictions/slip-converter-promo";
 import { FilterChips } from "@/components/match/filter-chips";
 import { useSession } from "@/components/session";
 import { SlipCard } from "@/components/slips/slip-card";
@@ -94,7 +95,15 @@ function SlipsPage() {
 
   return (
     <AppShell>
-      <PageHeading art="podium" title={t("title")} subtitle={t("subtitle")} />
+      <header className="mb-8 grid items-center gap-4 overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-br from-primary-soft via-background to-background p-5 sm:grid-cols-[1fr_260px] sm:p-7">
+        <div>
+          <h1 className="font-display text-2xl font-extrabold sm:text-3xl">{t("title")}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <div className="relative h-56 overflow-hidden">
+          <SlipConverterVisual />
+        </div>
+      </header>
       <FilterChips
         id="slip-tabs"
         className="mb-5"

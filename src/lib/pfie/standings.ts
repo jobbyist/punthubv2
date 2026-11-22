@@ -538,6 +538,16 @@ export function independentSourceKey(domain: string): string {
     ["bbc", ["bbc.com", "bbc.co.uk"]],
     ["dfb", ["dfb.de"]],
     ["bundesliga", ["bundesliga.com"]],
+    ["espn", ["espn.com", "espn.co.uk"]],
+    ["sky-sports", ["skysports.com"]],
+    ["supersport", ["supersport.com"]],
+    ["goal", ["goal.com"]],
+    ["uefa", ["uefa.com"]],
+    ["fifa", ["fifa.com"]],
+    ["premier-league", ["premierleague.com"]],
+    ["soccerway", ["soccerway.com"]],
+    ["transfermarkt", ["transfermarkt.com"]],
+    ["worldfootball", ["worldfootball.net"]],
   ];
   for (const [publisher, roots] of publisherRoots) {
     if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;

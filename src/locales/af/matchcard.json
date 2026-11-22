@@ -42,9 +42,27 @@
     "makePick": "Maak jou keuse",
     "loading": "Laai wedstrydintelligensie…",
     "error": "Kon dit nie nou laai nie. Probeer weer oor ’n oomblik.",
-    "source": "Uit eindtellings wat Puntr aangeteken het. Geen verwagte doele (xG) of derdeparty-statistieke word gewys nie.",
+    "source": "Vorm word uit Puntr se geverifieerde eindtellings bereken. Derdeparty-statistieke en spanlyste verskyn slegs wanneer minstens twee onafhanklike betroubare bronne ooreenstem. Verwagte doele (xG) word nie gewys nie.",
     "home": "T",
-    "away": "W"
+    "away": "W",
+    "stats": {
+      "title": "Geverifieerde wedstrydstatistieke",
+      "possession": "Balkbesit",
+      "shots": "Skote",
+      "shotsOnTarget": "Skote op teiken",
+      "corners": "Hoekskoppe",
+      "fouls": "Oortredings",
+      "yellowCards": "Geel kaarte",
+      "redCards": "Rooi kaarte",
+      "verifiedBy": "Bevestig deur {{count}} onafhanklike bronne"
+    },
+    "lineups": {
+      "title": "Bevestigde beginspan en plaasvervangers",
+      "player": "Speler",
+      "starter": "Beginspan",
+      "substitute": "Plaasvervanger",
+      "verifiedBy": "Spanlyste bevestig deur {{count}} onafhanklike bronne"
+    }
   },
   "filter": {
     "label": "Filtreer wedstryde",
