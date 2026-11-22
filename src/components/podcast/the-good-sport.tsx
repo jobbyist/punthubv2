@@ -300,14 +300,18 @@ export function TheGoodSportPromo() {
   const { isSignedIn } = useSession();
   const [episodesOpen, setEpisodesOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
   async function toggle() {
-    if (!isSignedIn || !AUDIO_URL || !audio.current) return;
+    if (!isSignedIn) {
+      setAuthOpen(true);
+      return;
+    }
+    if (!AUDIO_URL || !audio.current) return;
     if (audio.current.paused) await audio.current.play();
     else audio.current.pause();
   }
-  if (!isSignedIn) return null;
   return (
     <section className="relative isolate mt-12 overflow-hidden rounded-[2rem] border border-border bg-[#0c100d] p-5 text-white sm:mt-16 sm:p-8 lg:p-10">
       <div className="pointer-events-none absolute -right-20 -top-24 -z-10 size-80 rounded-full bg-[#16A34A]/15 blur-3xl" />
