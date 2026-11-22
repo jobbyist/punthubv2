@@ -191,7 +191,8 @@
       "body": "Allow Puntr notifications for important announcements and matchday updates. You stay in control and can switch them off in Account settings.",
       "allow": "Allow notifications",
       "notNow": "Not now",
-      "error": "Couldn't enable notifications."
+      "error": "Couldn't enable notifications.",
+      "enabling": "Enabling…"
     }
   }
 }
