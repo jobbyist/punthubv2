@@ -76,6 +76,12 @@ describe("mvp readiness", () => {
     ).toBe(7781);
   });
 
+  it("allows the PR resolution tracker gates to persist independently of the readiness score", () => {
+    expect(TASK_IDS.has("pr185-live-consensus")).toBe(true);
+    expect(TASK_IDS.has("pr195-disposable-sql")).toBe(true);
+    expect(TASK_IDS.has("pr196-mvp-scope-excluded")).toBe(true);
+  });
+
   it("metric tasks cannot be ticked by hand", () => {
     expect(TASK_IDS.has("founding-100")).toBe(false);
     expect(TASK_IDS.has("payg-checkout")).toBe(true);
