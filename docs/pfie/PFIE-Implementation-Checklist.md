@@ -81,7 +81,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep the query list and page list aligned at five; test source count and publisher identity.
 - [ ] Preserve complete-team, row-level quote, arithmetic, date/freshness and regression checks.
 - [ ] Verify two independent publishers agree on every material table statistic in a production-like extraction.
-- [ ] Pass standings tests, lint, typecheck, production build and Vercel preview; resolve all review findings before merge.
+- [x] Focused five-source cap regression, typecheck and Vercel production build pass; review threads resolved. [ ] Complete production-like extraction and two-publisher consensus. Six other standings-suite failures reproduce on main and are tracked separately.
 
 ### PR #195 — reusable evidence foundation (pre-launch)
 - [ ] Require every evidence quote to be present in captured source-page text.
@@ -89,7 +89,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Require ZA jurisdiction, nonblank licence reference, valid licence-check timestamp and recorded terms review before a bookmaker source is permitted.
 - [ ] Store roster membership against canonical PFIE team UUID, not free-text team names.
 - [ ] Review SQL constraints, foreign keys, RLS, grants, indexes and service-role-only access; validate in a disposable database.
-- [ ] Pass evidence unit tests, lint, typecheck, production build and preview; resolve all review findings before merge.
+- [x] 15 evidence unit tests, targeted ESLint, typecheck and Vercel production build pass; review threads resolved.
 - [ ] Keep all sources disabled/unseeded and do not add adapters, cron jobs or public read access in this PR.
 - [ ] Do not apply the migration to production until the 101-entry migration baseline is mapped and backup/PITR/rollback approval is documented.
 
@@ -98,4 +98,4 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep it draft and out of pre-launch merge/release scope.
 - [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
 
-**Current state:** PR #185 and #195 are still undergoing code and CI/preview hardening; neither should be treated as merge-ready until every applicable gate above is evidenced. PR #196 remains deferred.
+**Current state (22 Nov 2026):** PR #185 and #195 are ready for review. PR #185 still needs production-like extraction/consensus evidence and explicit handling of six pre-existing standings-suite failures. PR #195 is ready for code review, but its migration remains blocked from production application until migration-baseline reconciliation and backup/rollback approval. PR #196 remains deferred.
