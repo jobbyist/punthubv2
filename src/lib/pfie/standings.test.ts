@@ -169,6 +169,7 @@ describe("La Liga live source configuration", () => {
     );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+    );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://footballedgelab.com/la-liga",
     );
