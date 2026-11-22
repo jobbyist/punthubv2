@@ -75,7 +75,7 @@ export interface TablesDeps {
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-const MAX_SOURCES = 4;
+const MAX_SOURCES = 5;
 const MAX_CHARS = 10_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
@@ -341,8 +341,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now())
-          : { ...validateTables([], [source], cfg.teams, known, now()), rejected: [{ source: source.index, reason: "invalid_json" }] };
+          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl")
+          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: source.index, reason: "invalid_json" }] };
         return { source, parsed, validation };
       }),
     );
@@ -371,7 +371,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceFailures.push(`${result.source.index}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now());
+    const { tables, rejected } = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
     const chosen = chooseTable(tables);
     if (!chosen) {
       const why = [...sourceFailures, ...rejected.map((r) => `${r.source}:${r.reason}`)].join(", ") || `${tables.length} unconfirmed tables`;
