@@ -77,13 +77,11 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
-  it("includes direct official and independent pages for the other priority leagues", () => {
-    expect(STANDINGS_COMPETITIONS.psl?.pages).toEqual([
-      "https://stats.ladumaanalytics.co.za/log",
-      "https://45min.co.za/tables",
-    ]);
+  it("includes independent official, Sky, ESPN and Transfermarkt La Liga table sources", () => {
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
-    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain("https://www.skysports.com/football/competitions/serie-a/table");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
   });
 });
 describe("validateTables", () => {
@@ -168,7 +166,7 @@ describe("validateTables", () => {
   it("uses known team aliases when validating source row evidence", () => {
     const sourceLines = lines.map((line) => line.replace("Alpha FC", "Atletico Madrid"));
     const source = page("laliga.com", "official", 1, sourceLines);
-    const rows = raw(1, (r) => r.team === "Alpha FC" ? { ...r, team: "Atlético de Madrid", quote: "unmatched quote" } : r);
+    const rows = raw(1, (r) => r.team === "Alpha FC" ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched quote" } : r);
     const result = validateTables(rows, [source], 4, ["Atletico Madrid"]);
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
