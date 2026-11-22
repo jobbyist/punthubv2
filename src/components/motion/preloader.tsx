@@ -33,8 +33,10 @@ export function Preloader() {
   const { t } = useTranslation("common");
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [state, setState] = useState<"show" | "leaving" | "gone">("show");
+  const [standalone, setStandalone] = useState(false);
 
   useEffect(() => {
+    setStandalone(window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true);
     // Only a marketing page shows (and uses up) the preloader for this session.
     if (!isMarketingPath(window.location.pathname)) {
       setState("gone");
@@ -79,7 +81,7 @@ export function Preloader() {
       role="status"
       aria-label={t("preloader.label")}
     >
-      <div className="flex w-64 flex-col items-center text-center">
+      {standalone ? <img src="/puntr-pwa-splash.png" alt={t("preloader.label")} className="absolute inset-0 h-full w-full object-cover" /> : <div className="flex w-64 flex-col items-center text-center">
         <img src="/puntrlogorounded.png" alt="" className="logo size-20" width={80} height={80} />
         <p className="mt-5 font-display text-lg font-extrabold tracking-tight">
           {words.map((w, i) => (
@@ -98,7 +100,7 @@ export function Preloader() {
         <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
           {t("preloader.tag")}
         </p>
-      </div>
+      </div>}
     </div>
   );
 }
