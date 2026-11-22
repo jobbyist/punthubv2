@@ -144,3 +144,25 @@ The La Liga direct-page candidate roster is capped at five independent publisher
 
 
 PR #195's reference-price foundation stores source IDs and publisher domains separately. The bookmaker count must match both arrays, and a database trigger enforces distinct identities and checks that every source is an enabled, licensed ZA bookmaker with recorded licence/terms evidence. The migration remains unapplied pending migration-baseline reconciliation.
+
+
+## Latest PR verification snapshot — 22 November 2026
+
+**#185 — La Liga source coverage (pre-launch; still draft)**
+- Current branch head: 11b5fd1fd45cc58dc95110d5987c73fb91c991cc.
+- Five configured independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The source-cap regression test asserts five unique publisher identities.
+- Targeted verification: formatting, ESLint, TypeScript and the standings suite passed (47/47).
+- Production build and Vercel preview are ready: https://punthubv2-oeg3a5wg2-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red (4 failed tests across 3 files). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
+
+**#195 — PFIE evidence foundation (pre-launch; still draft)**
+- Current branch head: 2864449c0153fec08bf0f9cd6ae195f72654f034.
+- Targeted verification: formatting, ESLint, TypeScript and the evidence suite passed (15/15).
+- Production build and Vercel preview are ready: https://punthubv2-kar2042aa-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red (13 failed tests across 4 files on the last full-suite run). The current branch's targeted evidence suite passes, but the full-suite baseline must be reconciled before merge.
+- Disposable-database SQL validation and the final schema/RLS/grant review remain outstanding. The migration is source-control only and must not be applied to production before migration-ledger reconciliation and separate backup/PITR/rollback approval.
+
+**#196 — post-launch only**
+- Keep draft and outside the MVP release scope. No automated bookmaker odds, match-intelligence worker or exclusions feature from #196 is enabled for MVP.
+
+**Merge decision:** #185 and #195 remain drafts. A ready Vercel deployment proves the build can deploy; it does not clear a failing full test suite, missing production-like data evidence, or the #195 disposable-schema validation gate.
