@@ -6,6 +6,7 @@ import { AccountPage, RequireMember } from "@/components/account-gate";
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { AvatarUploader } from "@/components/avatar-uploader";
 import { IdentityCard } from "@/components/identity-card";
+import { PushNotificationSettings } from "@/components/push-notification-settings";
 import { MemberDetailsForm } from "@/components/member-details-form";
 import { ProfileCompletion } from "@/components/profile-completion";
 import { QuestsChecklist } from "@/components/quests-checklist";
@@ -60,6 +61,7 @@ function Account() {
           {user ? <FavouritesEditor userId={user.id} /> : null}
 
           <IdentityCard />
+          <PushNotificationSettings />
 
           <dl className="card-surface mt-6 divide-y divide-border">
             <div className="flex items-center justify-between gap-4 p-4 text-sm">
