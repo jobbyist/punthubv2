@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { pushApiRequest } from "@/lib/push-notifications";
 
 type Campaign = {
   id: string;
@@ -39,9 +39,8 @@ export function PushNotificationsAdmin() {
   const [username, setUsername] = useState("");
 
   const refresh = useCallback(async () => {
-    const { data, error } = await supabase.functions.invoke("push-notifications", { body: { action: "overview" } });
-    if (error) throw error;
-    setOverview(data as Overview);
+    const data = await pushApiRequest<Overview>({ action: "overview" });
+    setOverview(data);
   }, []);
 
   useEffect(() => {
@@ -57,17 +56,14 @@ export function PushNotificationsAdmin() {
   async function dispatch(test: boolean) {
     setBusy(true);
     try {
-      const { data, error } = await supabase.functions.invoke("push-notifications", {
-        body: {
-          action: test ? "test" : "dispatch",
-          title: test ? "Puntr test notification" : title,
-          message: test ? "Push notifications are working on this device." : message,
-          targetUrl: test ? "/predictions?source=push-test" : targetUrl,
-          audience,
-          username,
-        },
+      const data = await pushApiRequest<{ ok?: boolean; error?: string; sent?: number; failed?: number }>({
+        action: test ? "test" : "dispatch",
+        title: test ? "Puntr test notification" : title,
+        message: test ? "Push notifications are working on this device." : message,
+        targetUrl: test ? "/predictions?source=push-test" : targetUrl,
+        audience,
+        username,
       });
-      if (error) throw error;
       if (!data?.ok && !test) throw new Error(data?.error || "Push campaign failed.");
       if (test && data?.ok !== true) throw new Error(data?.error || "Test notification failed.");
       toast.success(test ? "Test notification sent to your active devices." : `Push sent: ${data.sent} delivered, ${data.failed} failed.`);
