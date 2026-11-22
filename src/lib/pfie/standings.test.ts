@@ -59,12 +59,23 @@ describe("trusted standings publisher domains", () => {
   it("recognises the two South African table publishers as trusted", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
+    expect(tierOf("vi.nl", [])).toBe("trusted");
+    expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(tierOf("cbssports.com", [])).toBe("trusted");
+    expect(tierOf("rotascore.com", [])).toBe("trusted");
   });
 });
 describe("configured direct standings sources", () => {
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
+  });
+  it("includes independent full-table sources for leagues that previously had no baseline", () => {
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.sportsmole.co.uk/football/ligue-1/table.html");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.vi.nl/competities/eredivisie/stand");
+    expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain("https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings");
+    expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
+    expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
   it("includes direct official and independent pages for the other priority leagues", () => {
     expect(STANDINGS_COMPETITIONS.psl?.pages).toEqual([
@@ -162,6 +173,18 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
   });
+  it("collapses exact duplicate rows from responsive page layouts but rejects conflicting duplicates", () => {
+    const duplicateRows = [...raw(1), raw(1)[0]!];
+    const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
+    expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
+    const conflicting = [...raw(1), { ...raw(1)[0]!, points: 24, quote: "conflicting Alpha row" }];
+    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC");
+  });
+  it("accepts official competition ranking ties when explicitly enabled", () => {
+    const tied = raw(1, (r) => r.team === "Charlie City" ? { ...r, position: 2 } : r);
+    expect(validateTables(tied, [official], 4).rejected[0]!.reason).toBe("positions_not_1_to_n");
+    expect(validateTables(tied, [official], 4, teams, new Date(), true).tables).toHaveLength(1);
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
@@ -234,6 +257,7 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+    expect(request.system).toContain("return each club exactly once");
   });
 });
 describe("team aliases", () => {
