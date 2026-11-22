@@ -48,7 +48,10 @@ const TRACKED_PRS: TrackedPr[] = [
         defaultDone: true,
       },
       { label: "Production-like two-publisher consensus evidence", taskId: "pr185-live-consensus" },
-      { label: "Shared full-suite baseline accepted or repaired", taskId: "pr185-full-suite-baseline" },
+      {
+        label: "Shared full-suite baseline accepted or repaired",
+        taskId: "pr185-full-suite-baseline",
+      },
     ],
   },
   {
@@ -67,7 +70,11 @@ const TRACKED_PRS: TrackedPr[] = [
         taskId: "pr195-focused-validation",
         defaultDone: true,
       },
-      { label: "Inline review findings resolved", taskId: "pr195-review-threads", defaultDone: true },
+      {
+        label: "Inline review findings resolved",
+        taskId: "pr195-review-threads",
+        defaultDone: true,
+      },
       {
         label: "Distinct source IDs/domains and ZA licence gate",
         taskId: "pr195-source-licence-guard",
@@ -140,9 +147,7 @@ export function PrDraftResolutionTracker({
         {TRACKED_PRS.map((pr) => {
           const gates = pr.gates.map((gate) => ({
             ...gate,
-            done: gate.taskId
-              ? (state[gate.taskId]?.done ?? Boolean(gate.defaultDone))
-              : false,
+            done: gate.taskId ? (state[gate.taskId]?.done ?? Boolean(gate.defaultDone)) : false,
           }));
           const done = gates.filter((gate) => gate.done).length;
           const total = gates.length;
@@ -231,7 +236,8 @@ export function PrDraftResolutionTracker({
       </div>
       <p className="text-xs text-muted-foreground">
         Gate ticks save to the shared admin checklist. This is an operational snapshot, not GitHub
-        CI status or merge authorization; recheck the pull request and required checks before merging.
+        CI status or merge authorization; recheck the pull request and required checks before
+        merging.
       </p>
     </section>
   );
