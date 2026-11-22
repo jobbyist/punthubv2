@@ -203,3 +203,47 @@ The latest pending migration (20261122140000) instead schedules the morning jobs
 - [PFIE match intelligence plan](../docs/PFIE_MATCH_INTELLIGENCE_PLAN.md)
 - [Self-Exclusion & Education Programme plan](../docs/SELF_EXCLUSION_PROGRAM_PLAN.md)
 - [Legal changelog](../docs/legal-changelog.md)
+
+
+## Draft PR resolution tracker (owner decision, 22 November 2026)
+
+This tracker is part of the MVP Launch Hardening sprint. It distinguishes work that must be completed before launch from work explicitly deferred until after launch.
+
+| PR | Target | Current status | Required exit criteria | Production constraint |
+|---|---|---|---|---|
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Pre-launch | Draft; active priority | Exactly five configured La Liga page candidates; configuration test enforces the cap; each candidate has an independent publisher identity; strict two-publisher consensus and all existing row/date/arithmetic checks remain intact; lint, typecheck, tests, build and preview pass | Candidate configuration is not proof of live extraction success. Never publish a table without two independent validated sources |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Pre-launch merge candidate | Draft; code-hardening in progress | Fix parser/normalization defects; require captured page text for quote validation; count curated publisher domains rather than source hosts; require ZA licence evidence; use canonical team IDs for rosters; test RLS/service-role-only schema and migration syntax; clear review findings and CI | Migration can be merged as source code only after review. Do not apply, push or repair production migration history until the 101-entry local/remote baseline is fully mapped and backup/rollback are verified |
+| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Post-launch | Draft; explicitly deferred | Reopen after MVP stabilization. Fix malformed SQL; confirm source rights and legal review; validate quotas, provenance, RLS, worker back-off, public read models, UI and end-to-end tests. Keep the exclusions page education/referral-only and verify its official contacts before any release | No automated bookmaker odds until written rights cover collection, storage, display, attribution, retention and redistribution. Do not merge or deploy as part of MVP |
+
+### PR sequencing and dependencies
+
+1. Finish #185 and #195 code review/CI as separate changes; neither depends on #196.
+2. #185 may be merged once its five-source cap, independent publisher configuration, strict consensus and full CI gates pass.
+3. #195 may be merged once code/schema review and CI pass, but its migration remains unapplied in production until the migration baseline reconciliation is complete. Merge approval and production migration approval are separate decisions.
+4. Keep #196 in draft through MVP launch. It is not a prerequisite for #185 or #195 and must not consume pre-launch capacity.
+5. Record the final PR state, head SHA, CI result and reviewer disposition here after each milestone. Do not mark a PR merge-ready based solely on Vercel preview status.
+
+### PR-specific acceptance checklists
+
+**#185**
+- [ ] Exactly five La Liga direct page candidates are configured.
+- [ ] Source queries and direct-page candidates remain aligned.
+- [ ] Tests assert the five-source cap and five independent publisher identities.
+- [ ] No change weakens two-source consensus, freshness, completeness, row evidence or table-regression checks.
+- [ ] All required CI checks pass and no unresolved high-severity review finding remains.
+
+**#195**
+- [ ] Evidence quotes are checked against captured source-page text; missing page text rejects evidence.
+- [ ] Publisher identity comes from a curated source registry mapping, not model-supplied hostnames or arbitrary subdomains.
+- [ ] URL/domain normalization handles protocol, www and whitespace correctly.
+- [ ] South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review.
+- [ ] Roster membership references a canonical PFIE team record rather than free-text team names.
+- [ ] RLS is enabled and anon/authenticated have no grants on foundation tables; service-role access is explicit.
+- [ ] Unit tests, SQL/migration validation, lint, typecheck and build pass.
+- [ ] Migration remains unapplied in production pending baseline reconciliation and owner approval.
+
+**#196 — post-launch only**
+- [ ] Remains draft and is excluded from the 1 December release scope.
+- [ ] Automated odds remain disabled until written data rights are obtained and approved.
+- [ ] Malformed migration SQL, worker status constraints, source independence, quota/security, provenance, RLS and end-to-end test gaps are resolved before reconsideration.
+
