@@ -263,18 +263,55 @@ function NotifyForm({ close }: { close: () => void }) {
   );
 }
 
+function AuthPromptModal({ close }: { close: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[130] grid place-items-center bg-black/80 p-4" onClick={close}>
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="good-sport-auth-title"
+        onClick={(event) => event.stopPropagation()}
+        className="w-full max-w-md rounded-3xl border border-white/10 bg-[#101210] p-6 text-white shadow-2xl"
+      >
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#4ADE80]">Members-only listening</span>
+          <button type="button" onClick={close} aria-label="Close" className="rounded-full p-2 text-white/60 hover:bg-white/10">
+            <X className="size-4" />
+          </button>
+        </div>
+        <h2 id="good-sport-auth-title" className="mt-3 font-display text-2xl font-black">Join the conversation.</h2>
+        <p className="mt-2 text-sm leading-relaxed text-white/65">
+          Create a free Puntr account or log in to listen to The Good Sport. The series is open to explore; episode playback is reserved for members.
+        </p>
+        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+          <Link to="/join" className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-[#16A34A] px-4 text-sm font-extrabold text-white hover:bg-[#15803D]">
+            Sign up or log in
+          </Link>
+          <button type="button" onClick={close} className="h-11 rounded-xl border border-white/15 px-4 text-sm font-bold text-white/75 hover:bg-white/10">
+            Maybe later
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export function TheGoodSportPromo() {
   const { isSignedIn } = useSession();
   const [episodesOpen, setEpisodesOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
   async function toggle() {
-    if (!isSignedIn || !AUDIO_URL || !audio.current) return;
+    if (!isSignedIn) {
+      setAuthOpen(true);
+      return;
+    }
+    if (!AUDIO_URL || !audio.current) return;
     if (audio.current.paused) await audio.current.play();
     else audio.current.pause();
   }
-  if (!isSignedIn) return null;
   return (
     <section className="relative isolate mt-12 overflow-hidden rounded-[2rem] border border-border bg-[#0c100d] p-5 text-white sm:mt-16 sm:p-8 lg:p-10">
       <div className="pointer-events-none absolute -right-20 -top-24 -z-10 size-80 rounded-full bg-[#16A34A]/15 blur-3xl" />
@@ -333,7 +370,7 @@ export function TheGoodSportPromo() {
                 <p className="mt-1 text-xs text-white/50">Episode 01 · The game before the game</p>
               </div>
             </div>
-            {AUDIO_URL && (
+            {AUDIO_URL && isSignedIn && (
               <audio
                 ref={audio}
                 src={AUDIO_URL}
@@ -349,7 +386,7 @@ export function TheGoodSportPromo() {
               <button
                 type="button"
                 onClick={() => void toggle()}
-                disabled={!AUDIO_URL}
+                disabled={!AUDIO_URL && isSignedIn}
                 aria-label={playing ? "Pause podcast" : "Play podcast"}
                 className="grid size-11 shrink-0 place-items-center rounded-full bg-[#16A34A] text-white disabled:opacity-50"
               >
@@ -362,7 +399,7 @@ export function TheGoodSportPromo() {
                   />
                 </div>
                 <div className="mt-2 flex justify-between text-[9px] font-semibold uppercase tracking-wider text-white/35">
-                  <span>{AUDIO_URL ? "Episode preview" : "Premieres 1 Dec"}</span>
+                  <span>{AUDIO_URL ? (isSignedIn ? "Episode preview" : "Sign in to listen") : "Premieres 1 Dec"}</span>
                   <span>—:—</span>
                 </div>
               </div>
@@ -398,6 +435,7 @@ export function TheGoodSportPromo() {
       </div>
       {episodesOpen && <EpisodeList close={() => setEpisodesOpen(false)} />}
       {notifyOpen && <NotifyForm close={() => setNotifyOpen(false)} />}
+      {authOpen && <AuthPromptModal close={() => setAuthOpen(false)} />}
     </section>
   );
 }
@@ -546,6 +584,7 @@ export function TheGoodSportPage() {
 export function TheGoodSportEpisodePage() {
   const { isSignedIn } = useSession();
   const [notifyOpen, setNotifyOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   return (
     <main className="mx-auto w-full max-w-5xl px-4 pb-20 pt-10 sm:px-6">
       <Link to="/the-good-sport" className="text-sm font-semibold text-primary">
@@ -599,14 +638,23 @@ export function TheGoodSportEpisodePage() {
             <Play className="mx-auto size-7 text-primary" />
             <p className="mt-3 text-sm font-bold">
               {!isSignedIn
-                ? "Sign in to Puntr to listen to episodes."
+                ? "Create a free account or log in to listen."
                 : premiereUpcoming()
                   ? "Audio drops on launch day."
                   : "The episode audio is being prepared."}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {isSignedIn ? "The player will activate when the episode master is uploaded." : "Your Puntr account is required for episode playback."}
+              {isSignedIn ? "The player will activate when the episode master is uploaded." : "Episode playback is reserved for Puntr members."}
             </p>
+            {!isSignedIn && (
+              <button
+                type="button"
+                onClick={() => setAuthOpen(true)}
+                className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-extrabold text-primary-foreground"
+              >
+                Sign up or log in to listen
+              </button>
+            )}
           </div>
         )}
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -647,6 +695,7 @@ export function TheGoodSportEpisodePage() {
         )}
       </section>
       {notifyOpen && <NotifyForm close={() => setNotifyOpen(false)} />}
+      {authOpen && <AuthPromptModal close={() => setAuthOpen(false)} />}
     </main>
   );
 }

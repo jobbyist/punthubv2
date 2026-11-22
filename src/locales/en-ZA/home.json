@@ -74,7 +74,22 @@
     "f4": "A <1>Community-First Platform</1> to learn from",
     "f5": "<1>AI-Powered Insights</1>, coming soon",
     "f6": "Free for Founding Members",
-    "f7": "Planned Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash."
+    "f7": "Planned Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash.",
+    "steps": {
+      "one": {
+        "title": "Lock in your call",
+        "body": "Select match outcomes across the Betway Premiership, Premier League, and UCL before kickoff."
+      },
+      "two": {
+        "title": "Timestamped at kickoff",
+        "body": "The moment the referee blows the whistle, your pick is locked on your public ledger. No deleted losses. No edited history."
+      },
+      "three": {
+        "title": "Prove your track record",
+        "body": "Automatic grading updates your win rate, ROI, and leaderboard rank. Share your verified record with mates and earn PuntPoints."
+      }
+    },
+    "guideCta": "See how it works"
   },
   "video": {
     "close": "Close video",
