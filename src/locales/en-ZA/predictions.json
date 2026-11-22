@@ -45,7 +45,7 @@
     "privacy": "Photos are read on your device and personal details are removed before anything is saved."
   },
   "hub": {
-    "navLabel": "Predictions hub",
+    "navLabel": "Discover hub",
     "tiles": {
       "fixtures": {
         "title": "Fixtures",
