@@ -3,7 +3,7 @@ const CACHE_PREFIX = "puntr-pwa";
 const CACHE_VERSION = "v1";
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL,"/manifest.webmanifest","/puntr-icon-192.png","/puntr-icon-512.png","/puntr-icon-maskable-512.png","/apple-touch-icon.png","/puntr-pwa-splash.png"];
+const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/puntr-icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
@@ -17,7 +17,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/auth/") || url.pathname.startsWith("/functions/") || url.pathname.startsWith("/rest/") || url.pathname.startsWith("/storage/") || url.pathname.startsWith("/realtime/")) return;
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(async () => (await caches.match(OFFLINE_URL)) || new Response("<!doctype html><html lang='en'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Puntr offline</title><body style='margin:0;background:#000;color:#fff;font:16px sans-serif;display:grid;min-height:100vh;place-items:center;text-align:center'><main><h1>You're offline.</h1><p>Reconnect to refresh live sports information.</p><a style='color:#4ade80' href='/'>Try again</a></main></body></html>",{headers:{"Content-Type":"text/html; charset=utf-8"}})));
+    event.respondWith(fetch(request).catch(async () => (await caches.match(OFFLINE_URL)) || new Response("<!doctype html><html lang='en'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Puntr offline</title><body style='margin:0;background:#000;color:#fff;font:16px sans-serif;display:grid;min-height:100vh;place-items:center;text-align:center'><main><h1>You're offline.</h1><p>Reconnect to refresh live sports information.</p><a style='color:#4ade80' href='/'>Try again</a></main></body></html>", {headers:{"Content-Type":"text/html; charset=utf-8"}})));
     return;
   }
   const isStaticAsset = url.pathname.startsWith("/assets/") || /\.(?:png|jpg|jpeg|webp|svg|woff2?|ttf|ico)$/.test(url.pathname) || url.pathname === "/manifest.webmanifest";
