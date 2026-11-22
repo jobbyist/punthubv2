@@ -167,7 +167,12 @@ create table if not exists public.pfie_reference_prices (
   selection text not null,
   decimal_odds numeric(10,4) not null check (decimal_odds > 1 and decimal_odds <= 1000),
   bookmaker_count integer not null check (bookmaker_count >= 2),
-  source_domains text[] not null,
+  source_ids uuid[] not null check (cardinality(source_ids) >= 2),
+  source_domains text[] not null check (cardinality(source_domains) >= 2),
+  constraint pfie_reference_price_source_counts_match check (
+    bookmaker_count = cardinality(source_ids)
+    and bookmaker_count = cardinality(source_domains)
+  ),
   captured_at timestamptz not null,
   verified_at timestamptz not null,
   run_id uuid references public.pfie_data_runs(id) on delete set null,
@@ -175,6 +180,75 @@ create table if not exists public.pfie_reference_prices (
 );
 create index if not exists pfie_reference_prices_fixture_idx
   on public.pfie_reference_prices(fixture_id, captured_at desc);
+
+create or replace function public.pfie_validate_reference_price_sources()
+returns trigger
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $pfie$
+declare
+  distinct_source_count integer;
+  distinct_domain_count integer;
+  permitted_source_count integer;
+begin
+  select count(distinct u.source_id)
+    into distinct_source_count
+    from unnest(new.source_ids) as u(source_id);
+
+  select count(distinct lower(trim(u.domain)))
+    into distinct_domain_count
+    from unnest(new.source_domains) as u(domain);
+
+  if new.bookmaker_count < 2
+    or new.bookmaker_count <> cardinality(new.source_ids)
+    or new.bookmaker_count <> cardinality(new.source_domains)
+    or distinct_source_count <> cardinality(new.source_ids)
+    or distinct_domain_count <> cardinality(new.source_domains) then
+    raise exception 'PFIE reference prices require at least two distinct source IDs and publisher domains matching bookmaker_count';
+  end if;
+
+  select count(*)
+    into permitted_source_count
+    from public.pfie_data_sources s
+    where s.id = any(new.source_ids)
+      and s.tier = 'licensed_bookmaker'
+      and s.enabled is true
+      and s.jurisdiction = 'ZA'
+      and nullif(trim(s.licence_reference), '') is not null
+      and s.licence_checked_at is not null
+      and s.terms_reviewed_at is not null
+      and s.ingestion_mode in ('official_api', 'affiliate_feed', 'terms_approved_public_page');
+
+  if permitted_source_count <> cardinality(new.source_ids) then
+    raise exception 'PFIE reference prices may only use distinct, permitted South African bookmaker sources';
+  end if;
+
+  if exists (
+    select 1
+    from unnest(new.source_domains) as u(domain)
+    where not exists (
+      select 1
+      from public.pfie_data_sources s
+      where s.id = any(new.source_ids)
+        and lower(trim(s.domain)) = lower(trim(u.domain))
+    )
+  ) then
+    raise exception 'PFIE reference-price publisher domains must match the selected source IDs';
+  end if;
+
+  return new;
+end;
+$pfie$;
+
+drop trigger if exists pfie_reference_prices_source_guard on public.pfie_reference_prices;
+create trigger pfie_reference_prices_source_guard
+  before insert or update of bookmaker_count, source_ids, source_domains
+  on public.pfie_reference_prices
+  for each row execute function public.pfie_validate_reference_price_sources();
+
+revoke all on function public.pfie_validate_reference_price_sources() from PUBLIC, anon, authenticated;
+grant execute on function public.pfie_validate_reference_price_sources() to service_role;
 
 -- All ingestion and audit tables are service-role only until reviewed public/admin read views are added.
 alter table public.pfie_data_sources enable row level security;
