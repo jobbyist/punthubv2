@@ -370,3 +370,10 @@ Pending
 - Added a compact member/post-launch live and upcoming fixture ticker, with direct links to match rooms for real fixtures.
 - Switched the sitewide top strip between Founding Bar and Fixture Ticker using session state and the configured launch date.
 - Added clearly labelled illustrative fixtures for offline/empty-data states; no fabricated scores, AI confidence percentages, or community-pick percentages are displayed.
+
+
+## 22 November 2026 — Desktop motion and translation fixes
+
+- Guard fixture ticker and rail array access for strict TypeScript settings.
+- Omit optional motion props when reduced-motion mode is enabled, avoiding undefined animation props.
+- Add the missing Afrikaans mobile navigation label for Fantasy Arena.
