@@ -233,11 +233,11 @@ begin
     into distinct_source_count
     from unnest(new.source_ids) as u(source_id);
 
-  select count(distinct lower(regexp_replace(trim(u.domain), '^www[.]', '')))
+  select count(distinct regexp_replace(lower(trim(u.domain)), '^www[.]', ''))
     into distinct_domain_count
     from unnest(new.source_domains) as u(domain);
 
-  select count(distinct lower(regexp_replace(trim(s.domain), '^www[.]', '')))
+  select count(distinct regexp_replace(lower(trim(s.domain)), '^www[.]', ''))
     into registry_domain_count
     from public.pfie_data_sources s
     where s.id = any(new.source_ids);
@@ -274,8 +274,8 @@ begin
     where not exists (
       select 1
       from unnest(new.source_domains) as supplied(domain)
-      where lower(regexp_replace(trim(s.domain), '^www[.]', '')) =
-        lower(regexp_replace(trim(supplied.domain), '^www[.]', ''))
+      where regexp_replace(lower(trim(s.domain)), '^www[.]', '') =
+        regexp_replace(lower(trim(supplied.domain)), '^www[.]', '')
     )
   ) or exists (
     select 1
@@ -284,8 +284,8 @@ begin
       select 1
       from public.pfie_data_sources s
       where s.id = any(new.source_ids)
-        and lower(regexp_replace(trim(s.domain), '^www[.]', '')) =
-          lower(regexp_replace(trim(supplied.domain), '^www[.]', ''))
+        and regexp_replace(lower(trim(s.domain)), '^www[.]', '') =
+          regexp_replace(lower(trim(supplied.domain)), '^www[.]', '')
     )
   ) then
     raise exception 'PFIE reference-price publisher domains must match one-to-one with the selected source IDs';
