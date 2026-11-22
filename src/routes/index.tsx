@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { Check, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
 import { PlatformRail } from "@/components/affiliate";
-import { Em } from "@/components/em";
 import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
@@ -21,13 +20,12 @@ import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
 import { useEffect, useRef, useState } from "react";
 import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
 import { fetchUpcomingFixtures } from "@/lib/fixtures";
 import { formatDate, formatTime } from "@/lib/format";
 import { FixtureCard, KickoffMeta } from "@/components/fixture-card";
-import { PageArt } from "@/components/motion/page-art";
 import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
@@ -194,6 +192,45 @@ function Landing() {
       </div>
       <BadgeMarquee label={t("marquee")} />
 
+      {!isSignedIn && (
+        <motion.section
+          {...fade}
+          className="card-surface relative isolate mb-4 mt-8 overflow-hidden p-6 sm:p-8"
+          aria-labelledby="home-steps-title"
+        >
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Three steps. One public record.</p>
+          <h2 id="home-steps-title" className="mt-2 text-2xl sm:text-3xl">{t("join.title")}</h2>
+          <ol className="mt-6 grid gap-4 md:grid-cols-3">
+            <li className="rounded-xl border border-border p-4">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 1</span>
+              <h3 className="mt-2 text-base font-bold">Lock in your call</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Select match outcomes across the Betway Premiership, Premier League, and UCL before kickoff.</p>
+            </li>
+            <li className="rounded-xl border border-border p-4">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 2</span>
+              <h3 className="mt-2 text-base font-bold">Timestamped at kickoff</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">The moment the referee blows the whistle, your pick is locked on your public ledger. No deleted losses. No edited history.</p>
+            </li>
+            <li className="rounded-xl border border-border p-4">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 3</span>
+              <h3 className="mt-2 text-base font-bold">Prove your track record</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Automatic grading updates your win rate, ROI, and leaderboard rank. Share your verified record with mates and earn PuntPoints.</p>
+            </li>
+          </ol>
+          <Button
+            size="lg"
+            className="puntr-sheen mt-6 h-12 px-6"
+            onClick={() => {
+              trackEvent("home_how_it_works_clicked", { authenticated: false, destination: "how-it-works" });
+              navigate({ to: "/how-it-works" });
+            }}
+          >
+            See how it works
+          </Button>
+          <RgNotice variant="compact" className="mt-4" />
+        </motion.section>
+      )}
+
       {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
       <motion.section
         {...fade}
@@ -310,38 +347,6 @@ function Landing() {
         </motion.section>
       )}
 
-      <TheGoodSportPromo />
-
-      {/* Join CTA */}
-      <motion.section
-        {...fade}
-        className="card-surface relative isolate mb-4 mt-12 overflow-hidden p-6 sm:mt-16 sm:p-10"
-      >
-        <PageArt
-          kind="podium"
-          className="absolute bottom-6 right-6 -z-10 hidden h-40 w-64 opacity-80 lg:block"
-        />
-        <h2 className="text-2xl sm:text-3xl">{t("join.title")}</h2>
-        <ul className="mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">
-          {(["f1", "f2", "f3", "f4", "f5", "f6", "f7"] as const).map((f) => (
-            <li key={f} className="flex items-center gap-3 text-sm">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-                <Check className="size-4" aria-hidden="true" />
-              </span>
-              <Trans t={t} i18nKey={`join.${f}`} components={{ 1: <Em /> }} />
-            </li>
-          ))}
-        </ul>
-        <Button
-          size="lg"
-          className="puntr-sheen mt-7 h-12 px-6"
-          onClick={() => navigate({ to: "/join" })}
-        >
-          {tc("cta.createAccount")}
-        </Button>
-        <RgNotice variant="compact" className="mt-4" />
-      </motion.section>
-
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (
         <motion.section {...fade} className="section-y text-center">
@@ -359,6 +364,8 @@ function Landing() {
           <RgNotice variant="compact" className="mt-1" />
         </motion.section>
       )}
+
+      <TheGoodSportPromo />
 
       <LatestFromPuntr />
 
