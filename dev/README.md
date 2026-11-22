@@ -41,7 +41,7 @@ See the full checklist for evidence and completion criteria. Update the status t
 - Four PFIE table cron jobs are active (IDs 61–64), but their live schedules differ from the latest pending schedule migration.
 - The first pending PFIE schedule migration contains malformed dollar-quote syntax.
 - Standings: 7/12 scopes have a recorded success; 5 have never succeeded. Odds: 0/11 scopes have a recorded successful sync.
-- Recent fixture/result runs exist. cron.job_run_details returned no rows in the inspected window; net._http_response showed recent successful Vercel responses and one 55-second timeout without enough request metadata to attribute it to a specific job.
+- Recent fixture/result runs exist. cron.job_run_details has 17,919 records overall, but none yet for the new PFIE table job IDs 61–64 as of 01:22 UTC; their first scheduled window begins at 02:10 UTC. Other scheduled jobs continue to run. net._http_response showed recent successful Vercel responses and one 55-second timeout without enough request metadata to attribute it to a specific job.
 - No production migration history, cron schedule or schema changes were made during the audit.
 
 The safe reconciliation plan is documented in the readiness checklist. Production changes require a complete migration mapping and verified backup/rollback plan.
@@ -50,7 +50,7 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 
 | PR | Status | Decision |
 |---|---|---|
-| [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | Draft documentation PR | Review preview, then merge if checks remain clean |
+| [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
 | [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft | Post-launch foundation; hold for migration baseline, tests and complete integrations |
 | [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft | Hold: odds source rights absent, migration SQL needs correction, and production validation/legal review incomplete |
 | [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft | Hold: review found six configured pages against a five-source cap |
