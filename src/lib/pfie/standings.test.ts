@@ -175,7 +175,7 @@ describe("configured direct standings sources", () => {
     const publisherKeys = ["laliga.com", "skysports.com", "tactix.football", "footballedgelab.com", "transfermarkt.com"].map(
       independentSourceKey,
     );
-    expect(new Set(publisherKeys).size).toBe(4);
+    expect(new Set(publisherKeys).size).toBe(5);
   });
 });
 describe("La Liga live source configuration", () => {
