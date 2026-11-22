@@ -145,6 +145,33 @@ export const WORKSTREAMS: Workstream[] = [
         ref: "PR #120",
       },
       {
+        id: "pr185-laliga",
+        title: "PR #185: five independent La Liga sources, regression tests and two-source extraction QA",
+        weight: 1,
+        blocker: true,
+        ref: "PR #185 · docs/PFIE_INTEGRATION.md",
+      },
+      {
+        id: "pr195-evidence",
+        title: "PR #195: evidence and schema foundation passes tests and RLS/grant review (migration unapplied)",
+        weight: 1,
+        blocker: true,
+        ref: "PR #195 · docs/pfie/PFIE-Implementation-Checklist.md",
+      },
+      {
+        id: "pr196-postlaunch",
+        title: "PR #196: post-launch match intelligence / odds / exclusions review",
+        weight: 1,
+        ref: "PR #196 · deferred until after MVP launch",
+      },
+      {
+        id: "manual-odds-qa",
+        title: "Manual bookmaker and odds submission QA; timestamp persistence and User-submitted label",
+        weight: 1,
+        blocker: true,
+        ref: "docs/PARALLEL_ARCHITECTURE.md",
+      },
+      {
         id: "fixtures-volume",
         title: "Upcoming fixtures loaded (next 14 days)",
         weight: 3,
@@ -181,9 +208,8 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "odds-prematch",
-        title: "Pre-match reference odds feed and member-odds check, with Terms copy (no in-play)",
+        title: "Automated pre-match reference odds feed (post-launch only; written data rights required)",
         weight: 2,
-        blocker: true,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
       },
       {
