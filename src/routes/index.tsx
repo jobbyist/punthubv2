@@ -19,7 +19,7 @@ import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -70,6 +70,7 @@ function Landing() {
   const { next } = Route.useLoaderData();
   const { loading: sessionLoading, isSignedIn } = useSession();
   const [headlineVariant, setHeadlineVariant] = useState<"A" | "B">("A");
+  const headlineAssigned = useRef(false);
   const [hasPostedPick, setHasPostedPick] = useState(false);
   const [postLaunch, setPostLaunch] = useState(false);
   useEffect(() => {
@@ -77,7 +78,8 @@ function Landing() {
     setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
   }, []);
   useEffect(() => {
-    if (sessionLoading) return;
+    if (sessionLoading || headlineAssigned.current) return;
+    headlineAssigned.current = true;
     const variant = Math.random() < 0.5 ? "A" : "B";
     setHeadlineVariant(variant);
     try {
@@ -340,7 +342,6 @@ function Landing() {
         <RgNotice variant="compact" className="mt-4" />
       </motion.section>
 
-
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (
         <motion.section {...fade} className="section-y text-center">
@@ -358,7 +359,6 @@ function Landing() {
           <RgNotice variant="compact" className="mt-1" />
         </motion.section>
       )}
-
 
       <LatestFromPuntr />
 
