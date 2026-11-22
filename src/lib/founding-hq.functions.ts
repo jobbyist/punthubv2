@@ -165,46 +165,46 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => {
     const o = obj(input);
-    const displayName = text(o.displayName, 120);
+    const displayName = text(o["displayName"], 120);
     if (!displayName || displayName.length < 2) throw new Error("A name or handle is required");
-    const segment = typeof o.segment === "string" && SEGMENTS.includes(o.segment as Segment)
-      ? (o.segment as Segment)
+    const segment = typeof o["segment"] === "string" && SEGMENTS.includes(o["segment"] as Segment)
+      ? (o["segment"] as Segment)
       : "punter";
-    const stage = typeof o.stage === "string" && STAGES.includes(o.stage as Stage)
-      ? (o.stage as Stage)
+    const stage = typeof o["stage"] === "string" && STAGES.includes(o["stage"] as Stage)
+      ? (o["stage"] as Stage)
       : "new";
     const ambassadorStage =
-      typeof o.ambassadorStage === "string" && AMBASSADOR_STAGES.includes(o.ambassadorStage as AmbassadorStage)
-        ? (o.ambassadorStage as AmbassadorStage)
+      typeof o["ambassadorStage"] === "string" && AMBASSADOR_STAGES.includes(o["ambassadorStage"] as AmbassadorStage)
+        ? (o["ambassadorStage"] as AmbassadorStage)
         : "not_approached";
     const followers =
-      typeof o.followerCount === "number" && Number.isFinite(o.followerCount)
-        ? Math.max(0, Math.min(100_000_000, Math.floor(o.followerCount)))
+      typeof o["followerCount"] === "number" && Number.isFinite(o["followerCount"])
+        ? Math.max(0, Math.min(100_000_000, Math.floor(o["followerCount"])))
         : null;
-    if (o.registered !== undefined && typeof o.registered !== "boolean") throw new Error("Invalid registration flag");
-    if (o.isAmbassador !== undefined && typeof o.isAmbassador !== "boolean") throw new Error("Invalid ambassador flag");
-    const id = o.id === undefined || o.id === null || o.id === "" ? null : uuid(o.id);
-    if (o.id && !id) throw new Error("Invalid lead ID");
+    if (o["registered"] !== undefined && typeof o["registered"] !== "boolean") throw new Error("Invalid registration flag");
+    if (o["isAmbassador"] !== undefined && typeof o["isAmbassador"] !== "boolean") throw new Error("Invalid ambassador flag");
+    const id = o["id"] === undefined || o["id"] === null || o["id"] === "" ? null : uuid(o["id"]);
+    if (o["id"] && !id) throw new Error("Invalid lead ID");
     return {
       id,
       displayName,
-      xHandle: text(o.xHandle, 80)?.replace(/^@/, "") ?? null,
+      xHandle: text(o["xHandle"], 80)?.replace(/^@/, "") ?? null,
       profileUrl: (() => {
-        const url = text(o.profileUrl, 500);
+        const url = text(o["profileUrl"], 500);
         if (url && !(url.startsWith("https://") || url.startsWith("http://"))) throw new Error("Invalid profile URL");
         return url;
       })(),
       segment,
-      country: text(o.country, 80) ?? "South Africa",
+      country: text(o["country"], 80) ?? "South Africa",
       followerCount: followers,
-      source: text(o.source, 80) ?? "X",
+      source: text(o["source"], 80) ?? "X",
       stage,
-      lastContactedOn: date(o.lastContactedOn),
-      followUpOn: date(o.followUpOn),
-      registered: o.registered === true || stage === "registered",
-      isAmbassador: o.isAmbassador === true,
+      lastContactedOn: date(o["lastContactedOn"]),
+      followUpOn: date(o["followUpOn"]),
+      registered: o["registered"] === true || stage === "registered",
+      isAmbassador: o["isAmbassador"] === true,
       ambassadorStage,
-      notes: text(o.notes, 4000),
+      notes: text(o["notes"], 4000),
     };
   })
   .handler(async ({ data, context }): Promise<{ ok: true; id: string } | Fail> => {
@@ -255,7 +255,7 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
 export const adminDeleteFoundingHqLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => {
-    const id = uuid(obj(input).id);
+    const id = uuid(obj(input)["id"]);
     if (!id) throw new Error("Invalid lead ID");
     return { id };
   })
@@ -277,10 +277,10 @@ export const adminAddFoundingHqActivity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => {
     const o = obj(input);
-    const leadId = uuid(o.leadId);
-    const body = text(o.body, 2000);
-    const kind = ["note", "reply", "meeting", "status", "referral", "other"].includes(String(o.kind))
-      ? String(o.kind)
+    const leadId = uuid(o["leadId"]);
+    const body = text(o["body"], 2000);
+    const kind = ["note", "reply", "meeting", "status", "referral", "other"].includes(String(o["kind"]))
+      ? String(o["kind"])
       : "note";
     if (!leadId || !body) throw new Error("A lead and activity note are required");
     return { leadId, body, kind };
