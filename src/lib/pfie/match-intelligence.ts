@@ -216,7 +216,7 @@ export function validateMatchStats(
   sources: IntelligenceSource[],
   fixture: IntelligenceFixture,
 ): VerifiedMatchStats | null {
-  const byIndex = new Map(sources.map((source) => [source.index, source]));
+  const byIndex = new Map<number, IntelligenceSource>(sources.map((source) => [source.index, source] as const));
   const accepted: { source: IntelligenceSource; home: MatchStatValues; away: MatchStatValues; quote: string }[] = [];
   const date = fixtureLocalDate(fixture.kickoffAt);
 
@@ -272,7 +272,7 @@ export function validateMatchStats(
     homeStats,
     awayStats,
     sourceDomains: domains,
-    sources: sourceDetails(domains, sources, new Map(accepted.map((item) => [item.source.domain, item.quote]))),
+    sources: sourceDetails(domains, sources, new Map<string, string>(accepted.map((item) => [item.source.domain, item.quote] as const))),
   };
 }
 
