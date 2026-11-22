@@ -80,6 +80,10 @@ function isSubset(small: string[], large: Set<string>): boolean {
  * teams fit, and null when none does.
  */
 export function resolveTeam(name: string, known: readonly string[]): string | "ambiguous" | null {
+  const rawName = name.trim().toLocaleLowerCase();
+  const exactRaw = known.find((team) => team.trim().toLocaleLowerCase() === rawName);
+  if (exactRaw) return exactRaw;
+
   const n = normaliseTeam(name);
   if (!n || GENERIC.has(n)) return null;
   const exact = known.find((k) => normaliseTeam(k) === n);
