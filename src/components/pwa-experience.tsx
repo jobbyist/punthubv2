@@ -44,7 +44,8 @@ export function PwaExperience() {
     if (isStandalone()) return;
     const iosDevice = isIosSafari();
     setIos(iosDevice);
-    const dismissedUntil = Number(localStorage.getItem(DISMISS_KEY) || 0);
+    let dismissedUntil = 0;
+    try { dismissedUntil = Number(localStorage.getItem(DISMISS_KEY) || 0); } catch { /* Storage may be unavailable in private browsing. */ }
     if (dismissedUntil > Date.now()) return;
 
     const onBeforeInstall = (event: Event) => {
@@ -68,7 +69,7 @@ export function PwaExperience() {
   }, [installEvent]);
 
   const dismiss = () => {
-    localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 24 * 60 * 60 * 1000));
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 24 * 60 * 60 * 1000)); } catch { /* Dismiss for this render when storage is unavailable. */ }
     setShowPrompt(false);
     setShowIosGuide(false);
   };
