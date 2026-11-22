@@ -9,6 +9,7 @@ import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
+import { HeroFixtureRail } from "@/components/match/hero-fixture-rail";
 import { MatchdayWidget } from "@/components/favourites/matchday-widget";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { useSession } from "@/components/session";
@@ -64,6 +65,7 @@ function Landing() {
   const { t: tc } = useTranslation("common");
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
+  const { loading: sessionLoading, isSignedIn } = useSession();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
