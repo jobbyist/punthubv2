@@ -78,7 +78,7 @@ describe("planAuthEmails", () => {
 
 describe("auth email content", () => {
   it("keeps next paths on puntr only", () => {
-    expect(safeNext("https://puntr.co.za/join", "/x")).toBe("/join");
+    expect(safeNext("https://puntr.co.za/join", "/x")).toBe("/x");
     expect(safeNext("https://evil.example/join", "/x")).toBe("/x");
     expect(safeNext("/admin", "/x")).toBe("/x");
     expect(safeNext("/join", "/predictions")).toBe("/predictions");
