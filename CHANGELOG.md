@@ -370,3 +370,19 @@ Pending
 - Added a compact member/post-launch live and upcoming fixture ticker, with direct links to match rooms for real fixtures.
 - Switched the sitewide top strip between Founding Bar and Fixture Ticker using session state and the configured launch date.
 - Added clearly labelled illustrative fixtures for offline/empty-data states; no fabricated scores, AI confidence percentages, or community-pick percentages are displayed.
+
+
+## 22 November 2026 — Desktop motion and translation fixes
+
+- Guard fixture ticker and rail array access for strict TypeScript settings.
+- Omit optional motion props when reduced-motion mode is enabled, avoiding undefined animation props.
+- Add the missing Afrikaans mobile navigation label for Fantasy Arena.
+
+
+## 22 November 2026 — PWA and desktop hardening
+
+- Allow signed-in desktop browser sessions to explicitly opt in to web push; permission is no longer restricted to installed PWAs.
+- Reject test and campaign sends when no active opted-in recipients match, preventing empty campaigns and false success messages.
+- Require at least one confirmed device delivery before the admin test action reports success.
+- Guard fixture ticker and rail array access for strict TypeScript settings; omit optional motion props when reduced-motion mode is enabled.
+- Complete the Afrikaans mobile navigation label for Fantasy Arena.
