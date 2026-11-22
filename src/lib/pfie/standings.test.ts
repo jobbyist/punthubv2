@@ -108,6 +108,20 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
   });
 });
+describe("La Liga live source configuration", () => {
+  it("includes the official La Liga table and an independent current TACTIX table", () => {
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+    );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://footballedgelab.com/la-liga",
+    );
+    expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
+  });
+});
+
 describe("validateTables", () => {
   const official = page("league.com", "official", 1, lines);
   it("accepts a complete, consistent table", () => {
@@ -332,6 +346,13 @@ describe("chooseTable", () => {
     expect(independentSourceKey("sports.espn.com")).toBe(independentSourceKey("espn.com"));
     expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
     expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
+    expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
+    expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
+    expect(independentSourceKey("sports.espn.com")).toBe(independentSourceKey("espn.com"));
+    expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
+    expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
+    expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
+    expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
@@ -367,6 +388,7 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+    expect(request.system).toContain("Ignore projected, predicted, simulated, modelled");
     expect(request.system).toContain("return each club exactly once");
   });
 });
