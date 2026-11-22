@@ -185,6 +185,13 @@
     "iosStep1": "Tik die Deel-knoppie in Safari.",
     "iosStep2": "Rol af en kies Voeg by tuisskerm.",
     "iosStep3": "Tik Voeg by. Maak Puntr vanaf jou tuisskerm oop.",
-    "gotIt": "Goed"
+    "gotIt": "Goed",
+    "push": {
+      "title": "Bly in die spel.",
+      "body": "Laat Puntr-kennisgewings toe vir belangrike aankondigings en wedstryddag-opdaterings. Jy bly in beheer en kan dit enige tyd in Rekeninginstellings afskakel.",
+      "allow": "Laat kennisgewings toe",
+      "notNow": "Nie nou nie",
+      "error": "Kon nie kennisgewings aktiveer nie."
+    }
   }
 }
