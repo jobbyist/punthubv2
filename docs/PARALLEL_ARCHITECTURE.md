@@ -40,10 +40,10 @@ Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Ch
 | Fixtures (21 competitions) | Search fast + Extract fallback | daily 03:00-03:42, only competitions with matches in the next 10 days | 12 h | ~40 calls, $0.04 |
 | Results | Search fast | after full time with back-off (existing) | 30 min | ~30, $0.03 |
 | League tables | Search fast + Extract | daily when stale (existing) | 18 h | ~12, $0.012 |
-| Team news and line-ups | **Monitor lite**, one per league, `1d` | daily; webhook writes `team_news` | n/a | 12 executions, $0.036 |
-| Match stats (post-match) | Extract of the official match page found by results search | once per finished fixture | permanent | ~15, $0.015 |
-| **Pre-match odds** | Extract of one competition page per source (all fixtures on one page), Gemini parses, code validates | 2 runs a day, only fixtures kicking off in the next 72 h | 6 h | ~40 URLs, $0.04 |
-| **Member-entered odds** (picks and slips) | none: typed by the member, checked against the market reference | per pick | n/a | $0 |
+| Team news and line-ups | Not production-live; Monitor/webhook pipeline is not yet implemented and verified | Deferred | n/a | $0 at MVP |
+| Match stats (post-match) | Current outcome aggregates are derived from stored verified results; no dedicated event-level stats feed is production-live | Deferred | n/a | $0 at MVP |
+| **Pre-match odds** | Deferred. No South African bookmaker has supplied Puntr an authorized odds API, affiliate feed or other integration. Parallel Search/Extract/Monitor are not data rights. | Disabled for MVP | n/a | $0 at MVP |
+| **Member-entered odds** (picks and slips) | Typed by the member; retain the submitted bookmaker, decimal price and timestamp as the member's record. Label user-submitted; no market-reference check is required for MVP. | per pick | n/a | $0 |
 | Confidence Score | none: deterministic model on stored form, H2H, table, home/away and odds | on fixture change | n/a | $0 |
 | Deep Analysis drawer | none for numbers; Gemini prose from stored facts, cached per fixture | once per fixture per day | 24 h | $0 (Gemini free tier) |
 | Deep research brief (featured fixtures only) | Task **lite** with a JSON output schema and source policy | ~3 a matchday | until kick-off | ~$0.02 |
@@ -52,43 +52,24 @@ Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Ch
 | Newsroom research | Search fast + Extract (existing) | 1 article a day | 6 h | ~8, $0.008 |
 | Team badges | Parallel Search fast + Wikipedia summary verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
 
-**Steady state: about $0.20 a day ($6 a month).** That is a little over the free $5, so the planner keeps it under by
-skipping competitions with no fixture in the next 10 days and by the cache. If it still runs over, the Monitor and
-deep-research briefs are the first to be throttled (they degrade gracefully: the card shows "no team news yet").
+**Cost note:** The earlier steady-state estimate is not a current forecast: it assumed automated odds and Monitor-based team news that are not launch-enabled. Use api_spend_status() and the live quota/budget tables before increasing any provider cadence. At MVP, automated bookmaker odds and team-news Monitor jobs remain disabled.
 
-## Odds rules (owner decisions, 15 Nov 2026)
+## Odds rules (owner decision, 22 Nov 2026)
 
-There are two kinds of odds, and neither overrides the other:
+**MVP decision: member-entered odds only. Automated bookmaker odds are deferred.**
 
-1. **Market reference odds (automated, pre-match only).** Collected through Parallel (or another automated
-   source) at most twice a day, never after kick-off, never in-play. Shown on match cards and in the pick form as
-   "Market reference, as at 14:00 SAST".
-2. **Member-entered odds (manual).** The price a member types when submitting a pick or a slip leg. This is the
-   member's own record: it is what they took, it stays on their pick, and it is part of the pick's verification
-   hash (`src/lib/verify.ts`). It is never replaced by the reference price.
+Puntr has not received an authorized odds API, affiliate odds feed or other odds-data integration from any South African bookmaker. Affiliate approval (including Hollywoodbets) does not by itself grant odds-feed rights.
 
-How they work together (proposed defaults, owner to confirm):
-
-- The pick form shows the reference price next to the odds field as a hint and can prefill it; the member can
-  change it.
-- When a member's odds are far from the reference at the time of the pick (default: more than 25% above it), the
-  pick is saved as entered but marked **"odds unverified"**. It cannot be blocked: the member may genuinely have
-  found a better price.
-- Anything that rewards higher odds uses the lower of the two prices for "odds unverified" picks: today that is the
-  ranking threshold in `src/lib/records.ts` (picks at 1.50 or more), and later any ROI or yield figure. Points for
-  correct picks do not depend on odds, so they are unaffected.
-- With no reference price for that market, member odds stand as entered (as today).
-
-Display and compliance rules for the reference price:
-
-- **One reference price per selection, no comparison table.** CLAUDE.md forbids odds comparison at launch;
-  changing that needs the owner and a CLAUDE.md edit.
-- **No bookmaker branding or links** next to a price until that bookmaker is `live` in `affiliate_partners`
-  (Hollywoodbets 2.10: approved creatives only).
-- Sources: only licensed SA bookmaker sites, and only where their terms allow automated reading `[attorney review]`.
-- Always through `odds()` from `src/lib/format.ts`; never for members under 18 or on a break.
-- Legal copy in the same PR as the feature: Terms (reference odds are indicative, may be out of date, not an offer
-  from Puntr; how "odds unverified" affects rankings).
+- **Member-entered odds:** the member enters the bookmaker and price for a pick or slip leg. Preserve the submitted price, bookmaker attribution and timestamp as the member's record and in the pick verification hash (src/lib/verify.ts). Never overwrite it with a later market price.
+- Label these values **User-submitted**. Do not imply that Puntr independently verified the price or that it is live/current.
+- Do not block pick submission because no automated reference price exists.
+- Do not enable automated odds, comparison tables, bookmaker logos or odds links unless the relevant data rights and branding permissions are documented and approved.
+- Parallel Search can discover potential sources; Extract can retrieve pages only where automated access and reuse are permitted; Monitor can detect scheduled changes. None is a substitute for a licensed data feed or permission to store/display/redistribute prices.
+- Do not bypass logins, bot protections, geofencing, CAPTCHAs, rate limits or other access controls.
+- A future automated reference-price product needs written rights for South African coverage, collection, storage, display, attribution, refresh frequency, retention and redistribution. Prefer an authorized bookmaker API/affiliate feed or a commercial data provider with those rights.
+- If enabled later, keep bookmaker prices separate by operator, fixture, market, selection and capture time. Do not treat differing prices as conflicting facts. Only calculate a benchmark when at least two independent, permitted bookmakers cover the same selection; otherwise show no benchmark.
+- Reject stale, suspended, in-play, mismatched or post-kick-off prices from a pre-match reference product. Never use stale prices as current.
+- Member-entered odds remain immutable and separate from any future reference price.
 
 ## One-off work to fund from the expiring balance (before 7 Dec)
 
@@ -106,16 +87,16 @@ The ~$50 does not roll over, so spend it on lasting data while it exists. Estima
 
 That leaves headroom to raise the season-backfill caps so it finishes before 1 Dec instead of trickling.
 
-## Build order
+## Build order and MVP launch scope (22 Nov 2026)
 
-1. **This PR, foundation:** `src/lib/parallel/` with prices, a cost function, a cache key, the response cache, a
-   USD budget guard, and Task and Chat clients. Migration `parallel_cache`, `api_unit_prices`, `api_budgets`,
-   quota rows for the new provider keys, `api_spend_status()`. Existing callers keep working unchanged.
-2. Pre-match reference odds feed + "odds unverified" check on member-entered odds + Terms copy.
-3. Team news via Monitor (webhook route with a shared secret, `team_news` table) on match cards.
-4. Confidence Score model (deterministic, tested) + Deep Analysis drawer on real data.
-5. One-off jobs above, run before 7 Dec.
-6. Punt AI chatbot (credits, AI label, no-advice disclaimer, legal copy).
+1. **PFIE fixtures/results:** implemented multi-source verification; launch work is production freshness, coverage and settlement QA.
+2. **Standings:** multi-source extraction and deterministic validation exist; coverage is uneven and needs competition-by-competition readiness checks.
+3. **Form:** derived deterministically from verified completed results.
+4. **Member-entered odds:** existing manual path is the MVP approach; verify persistence, bookmaker attribution, timestamp and user-submitted labelling.
+5. **Automated odds:** deferred until written source rights are secured and a permitted feed is tested end-to-end.
+6. **Match stats and player/roster data:** dedicated event-level and canonical player data products remain post-launch work.
+7. **Team news / Monitor:** not production-live; defer until webhook, provenance, retention, costs and failure handling are implemented.
+8. **Punt AI, Confidence Score and Deep Analysis:** only surface claims based on verified stored facts; keep any unsupported or uncalibrated capability disabled.
 
 ## Unknowns to confirm on the first live call
 
@@ -127,3 +108,15 @@ That leaves headroom to raise the season-backfill caps so it finishes before 1 D
 ## 22 Nov 2026: La Liga standings source coverage
 
 The live La Liga table now has three direct candidates: the official LaLiga standings page, TACTIX and Football Edge Lab. Parallel Extract reads each independently; publisher identity normalization prevents subdomains from inflating consensus. These candidates still pass the same 20-team, row-evidence, arithmetic, date and two-independent-publisher checks before publication.
+
+
+## Production status and migration/cron audit (22 Nov 2026)
+
+- Production migration history contains 101 entries and ends at 20261121235610.
+- The repository main branch also has 101 migration files, but only one exact version-prefix match exists between the two histories. Several entries are renamed, split or consolidated; do not use filename similarity alone to repair migration history.
+- Four active PFIE table cron jobs exist in production (IDs 61–64). Their current schedules differ from the latest pending schedule migration. Keep the live schedule unchanged until a complete migration mapping and backup/rollback plan are verified.
+- 20261122110000_pfie_live_standings_refresh.sql contains malformed dollar-quote syntax and must not be applied as written.
+- Production audit: standings have 7/12 scopes with a recorded successful sync; 5/12 have never succeeded. Automated odds have 0/11 successful scopes. Recent fixture/result runs exist.
+- cron.job_run_details returned no rows in the inspected window. net._http_response showed successful Vercel responses and one 55-second timeout; the response record did not retain the request path, so the timeout could not be assigned to a specific cron job.
+- No production migration, cron schedule or schema change was made during this audit. The detailed launch gate and reconciliation procedure are tracked in /dev/IMPLEMENTATION-PRIORITIES.md.
+
