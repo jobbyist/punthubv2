@@ -177,6 +177,11 @@
     "enable": "Skakel drukkennisgewings aan",
     "disable": "Skakel drukkennisgewings af",
     "unsupported": "Hierdie blaaier ondersteun nie webdrukkennisgewings nie.",
-    "blocked": "Kennisgewings word deur jou blaaier geblokkeer. Verander die werftoestemming in jou blaaierinstellings voordat jy dit hier aktiveer."
+    "blocked": "Kennisgewings word deur jou blaaier geblokkeer. Verander die werftoestemming in jou blaaierinstellings voordat jy dit hier aktiveer.",
+    "enabled": "Drukkennisgewings is aan.",
+    "disabled": "Drukkennisgewings is vir jou Puntr-rekening afgeskakel.",
+    "error": "Kon nie drukkennisgewinginstellings bywerk nie.",
+    "loading": "Laai…",
+    "updating": "Werk by…"
   }
 }
