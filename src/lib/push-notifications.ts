@@ -54,7 +54,7 @@ export async function enablePushNotifications(): Promise<void> {
   if (!subscription) {
     subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: decodeVapidKey(publicKey),
+      applicationServerKey: decodeVapidKey(publicKey).buffer as ArrayBuffer,
     });
   }
   try {
