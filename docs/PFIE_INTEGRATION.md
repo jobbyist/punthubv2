@@ -152,3 +152,6 @@ When source tables pass local checks but no two independent publishers agree, PF
 - PR #185's five-source La Liga cap regression, typecheck and Vercel production build passed. The full PFIE standings test file now passes (47/47). The Analyst/Opta is in the trusted-publisher registry; live extraction and two-publisher consensus are not yet certified.
 - PR #195's targeted ESLint, typecheck, 15 evidence tests and Vercel production build passed. Review threads are resolved. The migration is source-control only until the production migration baseline and backup/rollback plan are reconciled.
 - PR #196 is explicitly post-launch and is not an MVP dependency.
+
+
+PR #195 also requires distinct source IDs and publisher domains for any future reference-price row. The bookmaker count must match both arrays, and a database trigger verifies the IDs resolve to enabled, licensed ZA bookmaker sources with recorded licence/terms evidence. A single bookmaker cannot satisfy the multi-source reference-price gate.
