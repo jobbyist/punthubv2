@@ -68,7 +68,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 
 ## 22 Nov 2026 — MVP PR sequencing addendum
 
-- PR #185 is a pre-launch priority. La Liga direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and FootballCritic. Keep strict two-source consensus and all existing deterministic checks.
+- PR #185 is a pre-launch priority. La Liga direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst. Keep strict two-source consensus and all existing deterministic checks.
 - PR #195 is a pre-launch merge candidate for reusable evidence and schema foundations. Before merge, require captured page text for quote verification, curated publisher identity, ZA bookmaker licence evidence, canonical PFIE team IDs for rosters, service-role-only grants/RLS, migration validation and passing CI.
 - PR #195's migration must not be applied to production until the full migration baseline, PITR/backup and rollback plan are reconciled and approved. A repository merge is not a production migration approval.
 - PR #196 is explicitly post-launch and must remain draft during the 1 December release. Automated odds remain disabled until written data rights and legal/security/production validation are complete.
