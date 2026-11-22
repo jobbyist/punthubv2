@@ -51,7 +51,7 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 | PR | Status | Decision |
 |---|---|---|
 | [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Ready for review — pre-launch | Five independent publishers (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta); source-cap regression, typecheck and build pass. Six unrelated standings-suite failures reproduce on main; live extraction/consensus evidence remains a release gate |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Ready for review — pre-launch | Five independent publishers (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta); full standings suite (47/47), typecheck and build pass; live extraction/consensus evidence remains a release gate |
 | [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Ready for review — pre-launch | 15 evidence tests, targeted ESLint, typecheck and Vercel build pass. Curated publisher identity, page-text quote checks, ZA licence gate, canonical team IDs and service-role-only schema. Production migration remains separately blocked |
 | [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred from MVP. No automated bookmaker odds without written data rights. Revisit match-intelligence workers, exclusions scope, migration, security and legal validation after launch |
 | #173, #177 | Closed, not merged | Their code paths are already present in main |
@@ -70,7 +70,7 @@ A successful preview deployment is not a substitute for test, security, data-rig
 
 ### Verification snapshot (22 November 2026)
 
-- PR #185: focused five-source cap test passed; TypeScript typecheck and Vercel production build passed. The full standings test file still has six baseline failures, reproduced on main; they are documented in the PR and do not originate from the new source roster. Live extraction and two-publisher consensus remain unverified until a production-like run.
+- PR #185: focused five-source cap test passed; TypeScript typecheck and Vercel production build passed. The full PFIE standings test file passes (47/47). Live extraction and two-publisher consensus remain unverified until a production-like run. Live extraction and two-publisher consensus remain unverified until a production-like run.
 - PR #195: targeted ESLint, TypeScript typecheck, all 15 evidence tests and Vercel production build passed. Review threads are resolved and the branch is mergeable. Its migration is not applied to production.
 - PR #196 remains draft and post-launch only.
 - GitHub-hosted Actions jobs did not acquire a runner; no failing workflow was left in the repository. Validation evidence above comes from isolated Vercel preview builds, not a green repository-wide Actions pipeline.
