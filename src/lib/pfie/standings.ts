@@ -348,7 +348,11 @@ export function validateTables(
     for (const row of extractedRows) {
       const sourceName = row.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolvedName = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
-      const canonicalName = resolvedName && resolvedName !== "ambiguous" ? resolvedName : sourceName;
+      const canonicalName = resolvedName && resolvedName !== "ambiguous"
+        ? resolvedName
+        : knownTeams.length
+          ? sourceName
+          : row.team.trim();
       const key = normaliseTeam(canonicalName);
       const prior = byTeam.get(key);
       if (!prior) {
