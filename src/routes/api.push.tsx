@@ -138,10 +138,6 @@ export const Route = createFileRoute("/api/push")({
             const { count } = await db.from("push_notification_campaigns").select("id", { count: "exact", head: true }).eq("created_by", user.id).gte("created_at", since);
             if ((count ?? 0) >= 5) return json({ error: "Campaign limit reached. Try again later." }, 429);
           }
-          const { data: campaign, error: campaignError } = await db.from("push_notification_campaigns").insert({
-            title, body: message, target_url: destination, audience, created_by: user.id, status: "sending",
-          }).select("id").single();
-          if (campaignError || !campaign) return json({ error: "Could not create push campaign." }, 500);
           const list = subscriptions ?? [];
           if (list.length === 0) {
             return json({
@@ -151,6 +147,10 @@ export const Route = createFileRoute("/api/push")({
               activeSubscriptions: 0,
             }, 409);
           }
+          const { data: campaign, error: campaignError } = await db.from("push_notification_campaigns").insert({
+            title, body: message, target_url: destination, audience, created_by: user.id, status: "sending",
+          }).select("id").single();
+          if (campaignError || !campaign) return json({ error: "Could not create push campaign." }, 500);
           let sentCount = 0;
           let failedCount = 0;
           if (list.length > 0) {
