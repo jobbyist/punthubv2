@@ -11,7 +11,7 @@ function json(body: unknown, status = 200) {
 function targetPath(value: unknown): string {
   if (typeof value !== "string" || !value.trim()) return "/predictions";
   const raw = value.trim();
-  if (!raw.startsWith("/") || raw.startsWith("//") || raw.includes("\\")) throw new Error("Push links must be internal Puntr paths.");
+  if (!raw.startsWith("/") || raw.startsWith("//") || raw.includes("\\") || /%2f|%5c/i.test(raw)) throw new Error("Push links must be internal Puntr paths.");
   const url = new URL(raw, "https://puntr.co.za");
   if (url.origin !== "https://puntr.co.za" || url.pathname.startsWith("/auth/") || url.pathname.startsWith("/admin/")) {
     throw new Error("This destination is not available for push notifications.");
