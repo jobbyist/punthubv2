@@ -535,3 +535,8 @@ Brought the pages in line with the platform as built through PRs #18 to #27.
 - What changed: code and database for buying credit packs (R25, R60, R120) through PayFast. `payment_orders` stores the member, pack, amount and status; credits are granted on a verified PayFast notification. No personal information is sent to PayFast. Nothing is live: `payments_enabled` is false. One credit price list (AI preview 5, deep stats 2, match insight 2) now matches `/pricing` in the database.
 - Pages: none changed yet, because the product does not take payments yet. `[attorney review]` before the switch is turned on: `/terms` (purchase and credit terms), `/privacy` (PayFast as operator, payment records kept), `/refunds` (credits are not refundable as cash; unused credits and failed payments), `/pricing` ("planned" wording) and the Privacy choices page. Prices are shown in rand; Puntr is not VAT-registered.
 - New processor: PayFast (payments). The owner decides under their compliance policy; it is not enabled by this change.
+
+
+## 11 Nov 2026: Draw terms confirmed by owner
+- What changed: no copy change. The owner confirmed (11 Nov 2026, 21:53 SAST) the two terms already published on /feedback: Puntr team members and their immediate family cannot enter, and if the winner cannot be reached Puntr may select another winner. The Draw admin screen is documented separately.
+- Pages changed: none. No new data is collected; no legal page text changed. Counsel retroactive review remains optional per the owner.
