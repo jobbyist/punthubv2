@@ -17,6 +17,7 @@ import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as FixturesRouteImport } from './routes/fixtures'
 import { Route as ForumRouteImport } from './routes/forum'
@@ -44,6 +45,7 @@ import { Route as StandingsRouteImport } from './routes/standings'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TablesRouteImport } from './routes/tables'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TheGoodSportRouteImport } from './routes/the-good-sport'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -52,10 +54,10 @@ import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
 import { Route as ApiPushRouteImport } from './routes/api.push'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
-import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as DuelsIndexRouteImport } from './routes/duels.index'
 import { Route as DuelsDuelIdRouteImport } from './routes/duels.$duelId'
@@ -64,6 +66,7 @@ import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as SportsSportRouteImport } from './routes/sports.$sport'
+import { Route as TheGoodSportEpisode01RouteImport } from './routes/the-good-sport.episode-01'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
 import { Route as ApiAuthSendEmailRouteImport } from './routes/api.auth.send-email'
@@ -77,6 +80,7 @@ import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.f
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
 import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
+import { Route as ApiCronPodcastPremiereRouteImport } from './routes/api.cron.podcast-premiere'
 import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.practice-tick'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
 import { Route as ApiCronSlipImagesRouteImport } from './routes/api.cron.slip-images'
@@ -126,6 +130,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DevRoute = DevRouteImport.update({
   id: '/dev',
   path: '/dev',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedbackRoute = FeedbackRouteImport.update({
@@ -263,6 +272,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TheGoodSportRoute = TheGoodSportRouteImport.update({
+  id: '/the-good-sport',
+  path: '/the-good-sport',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -363,6 +377,11 @@ const SportsSportRoute = SportsSportRouteImport.update({
   path: '/sports/$sport',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TheGoodSportEpisode01Route = TheGoodSportEpisode01RouteImport.update({
+  id: '/episode-01',
+  path: '/episode-01',
+  getParentRoute: () => TheGoodSportRoute,
+} as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
@@ -431,6 +450,11 @@ const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   path: '/api/cron/launch-notify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronPodcastPremiereRoute = ApiCronPodcastPremiereRouteImport.update({
+  id: '/api/cron/podcast-premiere',
+  path: '/api/cron/podcast-premiere',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronPracticeTickRoute = ApiCronPracticeTickRouteImport.update({
   id: '/api/cron/practice-tick',
   path: '/api/cron/practice-tick',
@@ -491,6 +515,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
@@ -518,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
+  '/the-good-sport': typeof TheGoodSportRouteWithChildren
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -534,6 +560,7 @@ export interface FileRoutesByFullPath {
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -551,6 +578,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
@@ -571,6 +599,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
@@ -598,6 +627,7 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
+  '/the-good-sport': typeof TheGoodSportRouteWithChildren
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -605,12 +635,16 @@ export interface FileRoutesByTo {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/admin/founding-hq': typeof AdminFoundingHqRoute
+  '/api/push': typeof ApiPushRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -628,6 +662,7 @@ export interface FileRoutesByTo {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
@@ -649,6 +684,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
+  '/discover': typeof DiscoverRoute
   '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
@@ -676,6 +712,7 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
+  '/the-good-sport': typeof TheGoodSportRouteWithChildren
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -683,12 +720,16 @@ export interface FileRoutesById {
   '/account/privacy': typeof AccountPrivacyRoute
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
+  '/admin/founding-hq': typeof AdminFoundingHqRoute
+  '/api/push': typeof ApiPushRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -706,6 +747,7 @@ export interface FileRoutesById {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
   '/api/cron/slip-images': typeof ApiCronSlipImagesRoute
@@ -728,6 +770,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/discover'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -755,6 +798,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/tables'
     | '/terms'
+    | '/the-good-sport'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -762,12 +806,16 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/admin/founding-hq'
+    | '/api/push'
+    | '/auth/callback'
     | '/auth/confirm'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
     | '/sports/$sport'
+    | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -785,6 +833,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/slip-images'
@@ -805,6 +854,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/discover'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -832,6 +882,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/tables'
     | '/terms'
+    | '/the-good-sport'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -839,12 +890,16 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/admin/founding-hq'
+    | '/api/push'
+    | '/auth/callback'
     | '/auth/confirm'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy/request'
     | '/sports/$sport'
+    | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account'
     | '/admin'
@@ -862,6 +917,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/slip-images'
@@ -882,6 +938,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/cookies'
     | '/dev'
+    | '/discover'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -909,6 +966,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/tables'
     | '/terms'
+    | '/the-good-sport'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -916,12 +974,16 @@ export interface FileRouteTypes {
     | '/account/privacy'
     | '/account/security'
     | '/admin/fixtures'
+    | '/admin/founding-hq'
+    | '/api/push'
+    | '/auth/callback'
     | '/auth/confirm'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
     | '/privacy_/request'
     | '/sports/$sport'
+    | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account/'
     | '/admin/'
@@ -939,6 +1001,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
     | '/api/cron/slip-images'
@@ -960,6 +1023,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
+  DiscoverRoute: typeof DiscoverRoute
   FeedbackRoute: typeof FeedbackRoute
   FixturesRoute: typeof FixturesRoute
   ForumRoute: typeof ForumRoute
@@ -987,6 +1051,7 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TablesRoute: typeof TablesRoute
   TermsRoute: typeof TermsRoute
+  TheGoodSportRoute: typeof TheGoodSportRouteWithChildren
   ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
@@ -1020,6 +1085,7 @@ export interface RootRouteChildren {
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
   ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
+  ApiCronPodcastPremiereRoute: typeof ApiCronPodcastPremiereRoute
   ApiCronPracticeTickRoute: typeof ApiCronPracticeTickRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
   ApiCronSlipImagesRoute: typeof ApiCronSlipImagesRoute
@@ -1088,6 +1154,13 @@ declare module '@tanstack/react-router' {
       path: '/dev'
       fullPath: '/dev'
       preLoaderRoute: typeof DevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feedback': {
@@ -1279,6 +1352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/the-good-sport': {
+      id: '/the-good-sport'
+      path: '/the-good-sport'
+      fullPath: '/the-good-sport'
+      preLoaderRoute: typeof TheGoodSportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -1419,6 +1499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SportsSportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/the-good-sport/episode-01': {
+      id: '/the-good-sport/episode-01'
+      path: '/episode-01'
+      fullPath: '/the-good-sport/episode-01'
+      preLoaderRoute: typeof TheGoodSportEpisode01RouteImport
+      parentRoute: typeof TheGoodSportRoute
+    }
     '/u/$username': {
       id: '/u/$username'
       path: '/u/$username'
@@ -1510,6 +1597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/podcast-premiere': {
+      id: '/api/cron/podcast-premiere'
+      path: '/api/cron/podcast-premiere'
+      fullPath: '/api/cron/podcast-premiere'
+      preLoaderRoute: typeof ApiCronPodcastPremiereRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/practice-tick': {
       id: '/api/cron/practice-tick'
       path: '/api/cron/practice-tick'
@@ -1583,6 +1677,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface TheGoodSportRouteChildren {
+  TheGoodSportEpisode01Route: typeof TheGoodSportEpisode01Route
+}
+
+const TheGoodSportRouteChildren: TheGoodSportRouteChildren = {
+  TheGoodSportEpisode01Route: TheGoodSportEpisode01Route,
+}
+
+const TheGoodSportRouteWithChildren = TheGoodSportRoute._addFileChildren(
+  TheGoodSportRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -1592,6 +1698,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
+  DiscoverRoute: DiscoverRoute,
   FeedbackRoute: FeedbackRoute,
   FixturesRoute: FixturesRoute,
   ForumRoute: ForumRoute,
@@ -1619,6 +1726,7 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TablesRoute: TablesRoute,
   TermsRoute: TermsRoute,
+  TheGoodSportRoute: TheGoodSportRouteWithChildren,
   ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,
@@ -1652,6 +1760,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
   ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
+  ApiCronPodcastPremiereRoute: ApiCronPodcastPremiereRoute,
   ApiCronPracticeTickRoute: ApiCronPracticeTickRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
   ApiCronSlipImagesRoute: ApiCronSlipImagesRoute,
