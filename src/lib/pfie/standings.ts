@@ -38,13 +38,14 @@ export const STANDINGS_COMPETITIONS: Partial<
     queries: [
       "LaLiga EA Sports standings 2026/27",
       "La Liga current table full standings",
+      "site:tactix.football/standings?country=spain La Liga live table updated",
       "site:skysports.com/football/competitions/la-liga/table La Liga table",
       "La Liga current standings ESPN table",
       "La Liga current standings Transfermarkt table",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
-      "https://www.skysports.com/football/competitions/la-liga/table",
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
       "https://www.espn.com/soccer/standings/_/league/esp.1",
       "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
@@ -538,6 +539,17 @@ export function independentSourceKey(domain: string): string {
     ["bbc", ["bbc.com", "bbc.co.uk"]],
     ["dfb", ["dfb.de"]],
     ["bundesliga", ["bundesliga.com"]],
+    ["espn", ["espn.com", "espn.co.uk"]],
+    ["sky-sports", ["skysports.com"]],
+    ["supersport", ["supersport.com"]],
+    ["goal", ["goal.com"]],
+    ["uefa", ["uefa.com"]],
+    ["fifa", ["fifa.com"]],
+    ["premier-league", ["premierleague.com"]],
+    ["soccerway", ["soccerway.com"]],
+    ["transfermarkt", ["transfermarkt.com"]],
+    ["worldfootball", ["worldfootball.net"]],
+    ["tactix", ["tactix.football"]],
   ];
   for (const [publisher, roots] of publisherRoots) {
     if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;

@@ -393,6 +393,7 @@ const TRUSTED = [
   "treble.co.za",
   "nasiscore.co.za",
   "tntsports.co.uk",
+  "tactix.football",
   "cbssports.com",
   "foxsports.com",
   "statz.ai",
