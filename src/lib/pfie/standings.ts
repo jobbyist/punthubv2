@@ -270,51 +270,24 @@ export function validateTables(
     const fold = (value: string) => normalise(value).normalize("NFKD").replace(/\p{Diacritic}/gu, "");
     const page = fold(source.text);
     const sourceLines = source.text.split("\n");
-    const hasRowEvidence = (r: RawStandingRow) => {
-      const variants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].map(fold).filter(Boolean);
-      const expectedOrders = [
-        [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points],
-        [r.points, r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst],
-      ];
+    const hasRowEvidence = (r: RawStandingRow, teamVariants: string[]) => {
+      const variants = teamVariants.map(fold).filter(Boolean);
+      const expected = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
       for (let i = 0; i < sourceLines.length; i++) {
         const line = fold(sourceLines[i] ?? "");
         if (!variants.some((team) => line.includes(team))) continue;
-        // Allow for source layouts that place badge labels or metadata between a team and its statistics.
         const context = fold(sourceLines.slice(i, i + 10).join(" "));
         const numbers = context.match(/[0-9]+/g)?.map(Number) ?? [];
-        const ordered = expectedOrders.some((expected) => {
-          let cursor = 0;
-          return expected.every((value) => {
-            const found = numbers.indexOf(value, cursor);
-            if (found < 0) return false;
-            cursor = found + 1;
-            return true;
-          });
+        let cursor = 0;
+        const ordered = expected.every((value) => {
+          const found = numbers.indexOf(value, cursor);
+          if (found < 0) return false;
+          cursor = found + 1;
+          return true;
         });
         if (ordered) return true;
       }
-      // Some pages extract as a long row-major text block rather than one line per row.
-      const foldedPage = fold(source.text);
-      return variants.some((team) => {
-        let offset = 0;
-        while (offset < foldedPage.length) {
-          const at = foldedPage.indexOf(team, offset);
-          if (at < 0) return false;
-          const numbers = foldedPage.slice(at, at + 1800).match(/[0-9]+/g)?.map(Number) ?? [];
-          const ordered = expectedOrders.some((expected) => {
-            let cursor = 0;
-            return expected.every((value) => {
-              const found = numbers.indexOf(value, cursor);
-              if (found < 0) return false;
-              cursor = found + 1;
-              return true;
-            });
-          });
-          if (ordered) return true;
-          offset = at + team.length;
-        }
-        return false;
-      });
+      return false;
     };
     let bad: string | null = null;
     const tableDates = [...new Set(rows.map((r) => r.tableDate).filter((d): d is string => !!d))];
@@ -341,14 +314,14 @@ export function validateTables(
     const out: StandingRow[] = [];
     const names = new Set<string>();
     for (const r of rows) {
-      if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
-      else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
-      else if (!page.includes(fold(r.quote)) && !hasRowEvidence(r)) bad = `row_evidence_not_on_page_${r.team}`;
-      else if (![r.team, r.team.replace(/^[A-Z]{2,4}\s+/, "")].some((team) => page.includes(fold(team))))
-        bad = `team_not_on_page_${r.team}`;
-      if (bad) break;
       const resolved = knownTeams.length ? resolveTeam(r.team, knownTeams) : null;
       const team = resolved && resolved !== "ambiguous" ? resolved : r.team.trim();
+      const teamVariants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, ""), team].filter(Boolean);
+      if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
+      else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
+      else if (!page.includes(fold(r.quote)) && !hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
+      else if (!teamVariants.some((name) => page.includes(fold(name)))) bad = `team_not_on_page_${r.team}`;
+      if (bad) break;
       const key = normaliseTeam(team);
       if (names.has(key)) {
         bad = `duplicate_team_${team}`;

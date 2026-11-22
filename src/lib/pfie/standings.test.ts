@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
+import { normaliseTeam } from "./teams";
 import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
@@ -153,6 +154,14 @@ describe("validateTables", () => {
     const result = validateTables(rows, [dated], 4, teams, new Date("2026-11-21T23:30:00Z"));
     expect(result.rejected[0]!.reason).toBe("table_date_in_future");
   });
+  it("uses known team aliases when validating source row evidence", () => {
+    const sourceLines = lines.map((line) => line.replace("Alpha FC", "Atletico Madrid"));
+    const source = page("laliga.com", "official", 1, sourceLines);
+    const rows = raw(1, (r) => r.team === "Alpha FC" ? { ...r, team: "Atlético de Madrid", quote: "unmatched quote" } : r);
+    const result = validateTables(rows, [source], 4, ["Atletico Madrid"]);
+    expect(result.tables).toHaveLength(1);
+    expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
+  });
   it("rejects duplicate positions", () => {
     expect(
       validateTables(
@@ -225,6 +234,11 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+  });
+});
+describe("team aliases", () => {
+  it("normalizes Atlético de Madrid to the same identity as Atletico Madrid", () => {
+    expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
   });
 });
 describe("parseStandings", () => {
