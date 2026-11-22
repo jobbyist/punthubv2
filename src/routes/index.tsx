@@ -1,4 +1,5 @@
 import { LatestFromPuntr } from "@/components/latest-from-puntr";
+import { TheGoodSportPromo } from "@/components/podcast/the-good-sport";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
@@ -18,7 +19,7 @@ import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -27,6 +28,7 @@ import { fetchUpcomingFixtures } from "@/lib/fixtures";
 import { formatDate, formatTime } from "@/lib/format";
 import { FixtureCard, KickoffMeta } from "@/components/fixture-card";
 import { PageArt } from "@/components/motion/page-art";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -67,11 +69,29 @@ function Landing() {
   const navigate = useNavigate();
   const { next } = Route.useLoaderData();
   const { loading: sessionLoading, isSignedIn } = useSession();
+  const [headlineVariant, setHeadlineVariant] = useState<"A" | "B">("A");
+  const headlineAssigned = useRef(false);
+  const [hasPostedPick, setHasPostedPick] = useState(false);
   const [postLaunch, setPostLaunch] = useState(false);
   useEffect(() => {
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
     setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
   }, []);
+  useEffect(() => {
+    if (sessionLoading || headlineAssigned.current) return;
+    headlineAssigned.current = true;
+    const variant = Math.random() < 0.5 ? "A" : "B";
+    setHeadlineVariant(variant);
+    try {
+      setHasPostedPick(!!window.sessionStorage.getItem("puntr:analytics:event:pick_posted"));
+    } catch {
+      setHasPostedPick(false);
+    }
+    trackEvent("home_hero_headline_viewed", {
+      variant,
+      authenticated: isSignedIn,
+    });
+  }, [sessionLoading, isSignedIn]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
@@ -86,32 +106,56 @@ function Landing() {
         <HeroBackdrop />
         <div className="puntr-rise min-w-0">
           <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            {t("hero.badge")}
+            SOUTH AFRICA’S SPORTS PREDICTION &amp; INTELLIGENCE PLATFORM
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
-            {t("hero.title1")}
-            <br />
-            <span className="text-primary">{t("hero.title2")}</span>
+            {headlineVariant === "A" ? (
+              <>Predict smarter.<br /><span className="text-primary">Prove it.</span></>
+            ) : (
+              <>Know your sport?<br /><span className="text-primary">Back your call.</span></>
+            )}
           </h1>
-          <p className="mt-4 text-base font-semibold sm:text-lg">{t("hero.tagline")}</p>
+          <p className="mt-4 text-base font-semibold sm:text-lg">
+            100% free to join. No card required. Sign up for early access.
+          </p>
           <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            <Trans t={t} i18nKey="hero.body" components={{ 1: <Em /> }} />
+            Puntr is a growing online community where South African sports fans come to lock in match predictions, track verified records and get rewarded for knowing the game. It’s really that simple.
+          </p>
+          <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
+            Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading, and a public record that speaks for itself.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
               size="lg"
               className="puntr-sheen h-12 px-6 text-[15px]"
-              onClick={() => navigate({ to: "/join" })}
+              onClick={() => {
+                trackEvent("home_hero_primary_cta_clicked", {
+                  authenticated: isSignedIn,
+                  destination: !isSignedIn ? "join" : hasPostedPick ? "leaderboards" : "discover",
+                });
+                navigate({ to: !isSignedIn ? "/join" : hasPostedPick ? "/leaderboards" : "/discover" });
+              }}
             >
-              {tc("cta.becomeFounding")}
+              {!isSignedIn ? "Become a Founding Member" : hasPostedPick ? "View your leaderboard position" : "Make your first prediction"}
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="h-12 px-6 text-[15px]"
-              onClick={() => setIsVideoModalOpen(true)}
+              onClick={() => {
+                if (isSignedIn) {
+                  trackEvent("home_hero_secondary_cta_clicked", {
+                    authenticated: true,
+                    destination: "discover",
+                  });
+                  navigate({ to: "/discover" });
+                } else {
+                  trackEvent("home_hero_video_clicked", { authenticated: false });
+                  setIsVideoModalOpen(true);
+                }
+              }}
             >
-              <Play className="mr-2 size-4" /> {t("hero.watch")}
+              {isSignedIn ? "Explore predictions" : <><Play className="mr-2 size-4" /> Watch the video</>}
             </Button>
           </div>
           <FoundingCounter className="mt-4" />
@@ -266,25 +310,7 @@ function Landing() {
         </motion.section>
       )}
 
-      {/* Platforms */}
-      {SHOW_BOOKMAKER_WALL && (
-        <motion.section {...fade} className="section-y text-center">
-          <h2 className="text-3xl">{t("platforms.title")}</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-            {t("platforms.body")}
-          </p>
-          <div className="mt-8">
-            <PlatformRail />
-          </div>
-          <div className="mx-auto mt-5 max-w-3xl text-left">
-            <BookmakerIndependenceNotice compact />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
-          <RgNotice variant="compact" className="mt-1" />
-        </motion.section>
-      )}
-
-      <LatestFromPuntr />
+      <TheGoodSportPromo />
 
       {/* Join CTA */}
       <motion.section
@@ -315,6 +341,26 @@ function Landing() {
         </Button>
         <RgNotice variant="compact" className="mt-4" />
       </motion.section>
+
+      {/* Platforms */}
+      {SHOW_BOOKMAKER_WALL && !isSignedIn && (
+        <motion.section {...fade} className="section-y text-center">
+          <h2 className="text-3xl">{t("platforms.title")}</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+            {t("platforms.body")}
+          </p>
+          <div className="mt-8">
+            <PlatformRail />
+          </div>
+          <div className="mx-auto mt-5 max-w-3xl text-left">
+            <BookmakerIndependenceNotice compact />
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">{t("platforms.fine")}</p>
+          <RgNotice variant="compact" className="mt-1" />
+        </motion.section>
+      )}
+
+      <LatestFromPuntr />
 
       {isVideoModalOpen && (
         <div

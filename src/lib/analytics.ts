@@ -22,6 +22,13 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
 
   const data = { event, ...payload, timestamp: new Date().toISOString() };
 
+  // Keep consented, session-scoped activity signals available for contextual in-app CTAs.
+  try {
+    window.sessionStorage.setItem(`puntr:analytics:event:${event}`, data.timestamp);
+  } catch {
+    /* storage may be unavailable; analytics delivery must remain unaffected */
+  }
+
   try {
     window.dataLayer = window.dataLayer ?? [];
     window.dataLayer.push(data);

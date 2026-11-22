@@ -5,13 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { formatDate } from "@/lib/format";
 import { fetchPublished } from "@/lib/newsroom";
-import { TheGoodSportPromo } from "@/components/podcast/the-good-sport";
 
 /** Homepage section: the three most recent published Newsroom articles. Renders nothing until there is one. */
 export function LatestFromPuntr() {
   const { t } = useTranslation("newsroom");
   const { data } = useAsync(() => fetchPublished({ limit: 3 }).catch(() => []), []);
-  if (!data || data.length === 0) return <TheGoodSportPromo />;
+  if (!data || data.length === 0) return null;
   return (
     <>
       <section className="card-surface mt-8 p-6 sm:p-8" aria-labelledby="latest-from-puntr">
@@ -47,7 +46,6 @@ export function LatestFromPuntr() {
           <Link to="/newsroom">{t("home.cta")}</Link>
         </Button>
       </section>
-      <TheGoodSportPromo />
     </>
   );
 }
