@@ -300,3 +300,26 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 ### Shared test baseline — 22 November 2026
 
 Current main has 13 failing tests across four files. PR #185 has four failures across three files; the same four failures reproduce on main, while the PR fixes nine additional standings regressions. PR #195 retains the 13-test main baseline, including the two season-backfill fixture failures. Do not describe the repository-wide suite as green.
+
+
+## Live /dev tracker update — 22 November 2026
+
+### PR Draft Resolution Tracker
+
+The `/dev` readiness page now includes a dedicated PR Draft Resolution Tracker with a card for each tracked PR, target release lane, current draft state, resolution-gate progress, cleared/open/deferred criteria, a concrete next action and a direct GitHub link.
+
+| PR | Release lane | Tracker state | Cleared | Remaining gate / next action |
+|---|---|---|---:|---|
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Pre-launch | Open · Draft | 3/5 | Capture a production-like La Liga run with two independent complete tables agreeing on all material statistics; owner must accept or repair the four shared full-suite baseline failures |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Pre-launch foundation | Open · Draft | 3/5 | Validate migration in a disposable database; complete schema/RLS/grant review; reconcile production migration baseline and obtain backup/PITR/rollback approval before production application |
+| [#196 match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Post-launch | Draft · Deferred | 1/4 | Reopen only after MVP launch for scope, rights/legal, migration, security/quota and end-to-end review |
+
+Tracker progress is an operational summary, not a GitHub CI result or merge authorization. Recheck live PR status, required checks and review state before merging. #196 remains explicitly outside the 1 December MVP path.
+
+### Historical results imported — threshold exceeded
+
+- The `completed_matches` table contains **7,781 rows**, verified with a read-only production count on 22 November 2026.
+- The existing `/dev` minimum remains **2,500 results**. The verified count exceeds it by **5,281 results** (approximately **3.1×** the threshold).
+- The metric is still read live by `/dev`; the target is a minimum threshold, not a cap or a hard-coded achievement.
+- The readiness task now reads **“Historical results imported (2,500 minimum)”** and automatically completes when `completedResults >= 2500`. The UI explicitly displays the amount above target.
+- No manual tick or production data change was required. The live metric remains the source of truth.
