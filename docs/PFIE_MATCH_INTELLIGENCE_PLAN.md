@@ -123,3 +123,8 @@ Public clients receive read-only access. Only the service role can write. The ma
 ## 6. Separation from Self-Exclusion
 
 The Self-Exclusion & Education Programme is a separate responsible-gambling workflow. Do not search for, extract, store or send any person's identity, health, counselling, gambling-harm or exclusion data through Parallel, Gemini, bookmaker feeds or analytics. The public /exclusions page is an education/referral holding page; it is not a statutory exclusion application.
+
+
+### Standings source coverage carried forward
+
+The live standings pipeline uses direct source candidates for Bundesliga (Bundesliga.com + DFB) and La Liga (official LaLiga + TACTIX + Football Edge Lab). Projected/simulated tables are excluded. When two publishers do not agree, the prior verified table remains published and per-source row snapshots are stored in sync metadata for diagnosis.
