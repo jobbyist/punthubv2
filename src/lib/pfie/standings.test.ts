@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
-import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
