@@ -77,7 +77,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 ## 22 Nov 2026 — PR hardening and release sequencing
 
 ### PR #185 — La Liga source coverage (pre-launch)
-- [ ] Keep exactly five independent direct-page publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole.
+- [ ] Keep exactly five independent direct-page publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta).
 - [ ] Keep the query list and page list aligned at five; test source count and publisher identity.
 - [ ] Preserve complete-team, row-level quote, arithmetic, date/freshness and regression checks.
 - [ ] Verify two independent publishers agree on every material table statistic in a production-like extraction.
