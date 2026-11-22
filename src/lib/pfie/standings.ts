@@ -77,14 +77,16 @@ export const STANDINGS_COMPETITIONS: Partial<
     queries: [
       "Ligue 1 2026/27 current full overall standings table",
       "Ligue 1 standings table W D L GF GA points",
-      "site:sportsmole.co.uk/football/ligue-1/table.html Ligue 1 table",
-      "site:goal.com/en-us/competition/ligue-1/table Ligue 1 table",
+      "site:tntsports.co.uk/football/ligue-1/standings.shtml Ligue 1 table",
+      "site:cbssports.com/soccer/ligue-1/standings Ligue 1 standings",
+      "site:ninetyminutesplus.com/league/ligue-1/standings",
     ],
     pages: [
       "https://ligue1.com/fr",
       "https://www.sportsmole.co.uk/football/ligue-1/table.html",
-      "https://www.goal.com/en-us/competition/ligue-1/table/dm5ka0os1e3dxcp3vh05kmp33",
-      "https://www.stat-football.com/en/t/fra10.php",
+      "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
+      "https://www.cbssports.com/soccer/ligue-1/standings/",
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
     ],
   },
   eredivisie: {
@@ -92,13 +94,17 @@ export const STANDINGS_COMPETITIONS: Partial<
     refreshHours: 24,
     queries: [
       "Eredivisie 2026/27 current standings full table",
-      "Eredivisie stand played wins draws losses goals points",
-      "site:vi.nl/competities/eredivisie/stand Eredivisie stand",
-      "site:ziggo.nl Eredivisie klassement 2026/27",
+      "Eredivisie stand played wins draws losses goals for goals against points",
+      "site:statz.ai/competitions/eredivisie Eredivisie table",
+      "site:sportmetrics.org/league/netherlands-eredivisie-75672/2026-27 Eredivisie standings",
+      "site:tribuna.com/en/league/eredivisie/table/2026-2027 Eredivisie table",
     ],
     pages: [
       "https://www.vi.nl/competities/eredivisie/stand",
-      "https://www.ziggo.nl/entertainment/sport/voetbal/eredivisie/stand",
+      "https://statz.ai/competitions/eredivisie",
+      "https://sportmetrics.org/league/netherlands-eredivisie-75672/2026-27/",
+      "https://tribuna.com/en/league/eredivisie/table/2026-2027/",
+      "https://www.flashscore.com/football/netherlands/eredivisie/standings/",
     ],
   },
   primeira: {

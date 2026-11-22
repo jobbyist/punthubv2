@@ -63,6 +63,11 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
     expect(tierOf("rotascore.com", [])).toBe("trusted");
+    expect(tierOf("statz.ai", [])).toBe("trusted");
+    expect(tierOf("sportmetrics.org", [])).toBe("trusted");
+    expect(tierOf("tribuna.com", [])).toBe("trusted");
+    expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
+    expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
   });
 });
 describe("configured direct standings sources", () => {
@@ -72,7 +77,13 @@ describe("configured direct standings sources", () => {
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.sportsmole.co.uk/football/ligue-1/table.html");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.tntsports.co.uk/football/ligue-1/standings.shtml");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.cbssports.com/soccer/ligue-1/standings/");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.ninetyminutesplus.com/league/ligue-1/standings");
     expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.vi.nl/competities/eredivisie/stand");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://statz.ai/competitions/eredivisie");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://sportmetrics.org/league/netherlands-eredivisie-75672/2026-27/");
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.flashscore.com/football/netherlands/eredivisie/standings/");
     expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain("https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings");
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
