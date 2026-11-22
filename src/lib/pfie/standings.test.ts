@@ -108,6 +108,16 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
   });
 });
+describe("La Liga live source configuration", () => {
+  it("includes the official La Liga table and an independent current TACTIX table", () => {
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+    );
+    expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
+  });
+});
+
 describe("validateTables", () => {
   const official = page("league.com", "official", 1, lines);
   it("accepts a complete, consistent table", () => {
@@ -329,6 +339,10 @@ describe("chooseTable", () => {
     expect(independentSourceKey("bbc.com")).toBe(independentSourceKey("bbc.co.uk"));
     expect(independentSourceKey("datencenter.dfb.de")).toBe(independentSourceKey("dfb.de"));
     expect(independentSourceKey("products.bundesliga.com")).toBe(independentSourceKey("bundesliga.com"));
+    expect(independentSourceKey("sports.espn.com")).toBe(independentSourceKey("espn.com"));
+    expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
+    expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
+    expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
