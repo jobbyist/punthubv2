@@ -16,7 +16,7 @@ const DEFAULT_NEXT: Record<ConfirmType, string> = {
   invite: "/join",
   magiclink: "/join",
   email: "/join",
-  recovery: "/reset-password",
+  recovery: "/predictions",
   email_change: "/account/security",
 };
 
@@ -60,7 +60,7 @@ function Confirm() {
     const target = safeNext(next, DEFAULT_NEXT[kind]);
     // Recovery always lands on the reset form, whatever the link said.
     if (kind === "recovery") {
-      void navigate({ to: "/reset-password" });
+      void navigate({ to: "/reset-password", search: { next: target } });
       return;
     }
     if (kind === "email_change") {
@@ -93,7 +93,7 @@ function Confirm() {
       <p className="mt-6 text-sm">
         <Link
           to={kind === "recovery" ? "/reset-password" : "/join"}
-          search={kind === "recovery" ? undefined : { next: safeNext(next, DEFAULT_NEXT[kind]) }}
+          search={{ next: safeNext(next, DEFAULT_NEXT[kind]) }}
           className="text-primary underline"
         >
           {kind === "recovery" ? t("confirm.newReset") : t("confirm.newCode")}
