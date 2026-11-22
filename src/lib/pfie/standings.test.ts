@@ -111,6 +111,18 @@ describe("validateTables", () => {
     expect(result.rejected).toEqual([]);
     expect(result.tables[0]!.rows[0]!.team).toBe("ATM Atlético de Madrid");
   });
+  it("accepts points-first source columns used by LaLiga", () => {
+    const source = page("laliga.com", "official", 1, [
+      "1 ATM Atlético de Madrid 28 12 9 1 2 23 10 +13",
+      ...lines.slice(1),
+    ]);
+    const rows = raw(1, (r) => r.team === "Alpha FC"
+      ? { ...r, team: "ATM Atlético de Madrid", played: 12, won: 9, drawn: 1, lost: 2, goalsFor: 23, goalsAgainst: 10, points: 28, quote: "model quote" }
+      : r);
+    const result = validateTables(rows, [source], 4);
+    expect(result.rejected).toEqual([]);
+    expect(result.tables).toHaveLength(1);
+  });
   it("rejects explicitly dated tables older than 72 hours", () => {
     const dateQuote = "Updated: 2026-11-17";
     const dated = page("league.com", "official", 1, [...lines, dateQuote]);
