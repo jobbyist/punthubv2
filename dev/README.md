@@ -51,9 +51,9 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 | PR | Status | Decision |
 |---|---|---|
 | [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft — pre-launch priority | Fix five-source configuration, enforce cap in tests, preserve independent two-publisher consensus; validate extraction and CI |
-| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft — pre-launch merge candidate | Harden evidence/domain/licensing validation and canonical roster identity; merge only after code review and CI. Migration remains unapplied until production baseline reconciliation |
-| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred. No automated odds without written data rights; fix migration, complete production/security/legal validation and test the match-intelligence/exclusions scope after launch |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft — pre-launch, hardening in progress | Five independent publishers only (LaLiga, TACTIX, Football Edge Lab, Flashscore, Sports Mole); strict complete-table validation and two-publisher consensus. Merge only after lint, typecheck, tests, build, preview and production-like extraction checks pass |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft — pre-launch, hardening in progress | Reusable evidence/domain/licence/roster foundation. Merge only after lint, typecheck, tests, build, schema/RLS/grant review and preview pass. Source-control merge does not authorize production migration |
+| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred from MVP. No automated bookmaker odds without written data rights. Revisit match-intelligence workers, exclusions scope, migration, security and legal validation after launch |
 | #173, #177 | Closed, not merged | Their code paths are already present in main |
 | #183 | Closed, not merged | Duplicate of #185 |
 | #81 | Closed, not merged | Owner-confirmed draw terms were carried into the legal changelog in PR #200 |
