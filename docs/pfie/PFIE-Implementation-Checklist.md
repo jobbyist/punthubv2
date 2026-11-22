@@ -72,3 +72,30 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - PR #195 is a pre-launch merge candidate for reusable evidence and schema foundations. Before merge, require captured page text for quote verification, curated publisher identity, ZA bookmaker licence evidence, canonical PFIE team IDs for rosters, service-role-only grants/RLS, migration validation and passing CI.
 - PR #195's migration must not be applied to production until the full migration baseline, PITR/backup and rollback plan are reconciled and approved. A repository merge is not a production migration approval.
 - PR #196 is explicitly post-launch and must remain draft during the 1 December release. Automated odds remain disabled until written data rights and legal/security/production validation are complete.
+
+
+## 22 Nov 2026 — PR hardening and release sequencing
+
+### PR #185 — La Liga source coverage (pre-launch)
+- [ ] Keep exactly five independent direct-page publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and Sports Mole.
+- [ ] Keep the query list and page list aligned at five; test source count and publisher identity.
+- [ ] Preserve complete-team, row-level quote, arithmetic, date/freshness and regression checks.
+- [ ] Verify two independent publishers agree on every material table statistic in a production-like extraction.
+- [ ] Pass standings tests, lint, typecheck, production build and Vercel preview; resolve all review findings before merge.
+
+### PR #195 — reusable evidence foundation (pre-launch)
+- [ ] Require every evidence quote to be present in captured source-page text.
+- [ ] Use trusted source-registry publisher identities; subdomains of one publisher do not count as independent.
+- [ ] Require ZA jurisdiction, nonblank licence reference, valid licence-check timestamp and recorded terms review before a bookmaker source is permitted.
+- [ ] Store roster membership against canonical PFIE team UUID, not free-text team names.
+- [ ] Review SQL constraints, foreign keys, RLS, grants, indexes and service-role-only access; validate in a disposable database.
+- [ ] Pass evidence unit tests, lint, typecheck, production build and preview; resolve all review findings before merge.
+- [ ] Keep all sources disabled/unseeded and do not add adapters, cron jobs or public read access in this PR.
+- [ ] Do not apply the migration to production until the 101-entry migration baseline is mapped and backup/PITR/rollback approval is documented.
+
+### PR #196 — post-launch only
+- [x] Owner decision: defer PR #196 until after the 1 December MVP launch.
+- [ ] Keep it draft and out of pre-launch merge/release scope.
+- [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
+
+**Current state:** PR #185 and #195 are still undergoing code and CI/preview hardening; neither should be treated as merge-ready until every applicable gate above is evidenced. PR #196 remains deferred.
