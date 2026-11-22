@@ -320,7 +320,7 @@ export function validateTables(
   const tables: SourceTable[] = [];
   const rejected: TableRejection[] = [];
 
-  for (const [index, rows] of bySource) {
+  for (const [index, extractedRows] of bySource) {
     const source = sources.find((s) => s.index === index);
     const fail = (reason: string) => rejected.push({ source: index, reason });
     if (!source) {
@@ -329,6 +329,31 @@ export function validateTables(
     }
     if (source.domain.toLowerCase() === "wikipedia.org" || source.domain.toLowerCase().endsWith(".wikipedia.org")) {
       fail("wikipedia_not_allowed_for_live_standings");
+      continue;
+    }
+    const rows: RawStandingRow[] = [];
+    const byTeam = new Map<string, RawStandingRow>();
+    let duplicateConflict: string | null = null;
+    for (const row of extractedRows) {
+      const key = normaliseTeam(row.team);
+      const prior = byTeam.get(key);
+      if (!prior) {
+        byTeam.set(key, row);
+        rows.push(row);
+        continue;
+      }
+      const sameRecord = prior.played === row.played && prior.won === row.won &&
+        prior.drawn === row.drawn && prior.lost === row.lost &&
+        prior.goalsFor === row.goalsFor && prior.goalsAgainst === row.goalsAgainst &&
+        prior.points === row.points;
+      if (!sameRecord) {
+        duplicateConflict = `duplicate_team_${row.team}`;
+        break;
+      }
+      // Responsive layouts can repeat an identical club row; keep one copy only.
+    }
+    if (duplicateConflict) {
+      fail(duplicateConflict);
       continue;
     }
     if (rows.length !== expectedTeams) {
