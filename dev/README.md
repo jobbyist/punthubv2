@@ -38,6 +38,7 @@ See the full checklist for evidence and completion criteria. The live `/dev` pag
 
 - Production migration ledger: 101 entries; last version 20261121235610.
 - Repository main: 101 migration files, but only one exact version-prefix match with the production ledger. Several migrations are renamed, split or consolidated. Do not run a blind migration push or repair.
+- Historical results: `completed_matches` currently contains **7,781 rows**, exceeding the 2,500-result minimum by 5,281. The `/dev` tracker reads this metric live and automatically marks the threshold task complete.
 - Four PFIE table cron jobs are active (IDs 61–64), but their live schedules differ from the latest pending schedule migration.
 - The first pending PFIE schedule migration contains malformed dollar-quote syntax.
 - Standings: 7/12 scopes have a recorded success; 5 have never succeeded. Odds: 0/11 scopes have a recorded successful sync.
