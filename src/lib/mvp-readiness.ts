@@ -146,17 +146,17 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "pr185-laliga",
-        title: "PR #185: five independent La Liga sources, regression tests and two-source extraction QA",
+        title: "PR #185: five-source standings tests pass; full-suite and extraction gates remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #185 · docs/PFIE_INTEGRATION.md",
+        ref: "PR #185 · preview ready · docs/PFIE_INTEGRATION.md",
       },
       {
         id: "pr195-evidence",
-        title: "PR #195: evidence and schema foundation passes tests and RLS/grant review (migration unapplied)",
+        title: "PR #195: evidence tests pass; full-suite and disposable SQL review remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #195 · docs/pfie/PFIE-Implementation-Checklist.md",
+        ref: "PR #195 · preview ready · migration unapplied · docs/pfie/PFIE-Implementation-Checklist.md",
       },
       {
         id: "pr196-postlaunch",
