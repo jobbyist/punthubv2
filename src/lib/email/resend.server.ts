@@ -21,7 +21,7 @@ async function post(payload: Record<string, unknown>, idempotencyKey?: string) {
   const lovableApiKey = process.env["LOVABLE_API_KEY"];
   const resendApiKey = process.env["RESEND_API_KEY"];
   if (!resendApiKey) return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
-  const viaGateway = Boolean(lovableApiKey);
+  const viaGateway = Boolean(lovableApiKey) && !idempotencyKey;
   const headers: Record<string, string> = viaGateway
     ? {
         "Content-Type": "application/json",
@@ -52,7 +52,10 @@ export function isEmailQuotaStop(res: { status: number; body: string }): boolean
  * Every email the app sends claims one unit of the `resend` quota first (Resend's free plan: 100 a day, 3,000 a
  * month; Puntr caps itself lower to leave room for sign-in emails). A refused claim sends nothing.
  */
-export async function sendViaResend(\n  payload: Record<string, unknown>,\n  options?: { idempotencyKey?: string },\n) {
+export async function sendViaResend(
+  payload: Record<string, unknown>,
+  options?: { idempotencyKey?: string },
+) {
   if (!process.env["RESEND_API_KEY"])
     return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
   const { createQuotaClaim } = await import("@/lib/quota.server");
@@ -67,7 +70,10 @@ export async function sendViaResend(\n  payload: Record<string, unknown>,\n  opt
   // A caller that names its own sender ("Michael from Puntr") is never silently switched to another identity.
   if (domainProblem && from !== FALLBACK_SENDER && !payload["from"]) {
     console.warn("resend: sender domain not verified, retrying from the fallback sender");
-    return post(\n      { from: FALLBACK_SENDER, ...payload },\n      options?.idempotencyKey ? `${options.idempotencyKey}-fallback` : undefined,\n    );
+    return post(
+      { from: FALLBACK_SENDER, ...payload },
+      options?.idempotencyKey ? `${options.idempotencyKey}-fallback` : undefined,
+    );
   }
   return first;
 }
