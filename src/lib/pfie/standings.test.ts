@@ -257,7 +257,17 @@ describe("standingsRequest", () => {
     expect(request.system).toContain("extract only the Total/Overall league table");
     expect(request.system).toContain("return each club exactly once");
   });
-});
+
+  it("instructs a source to re-check its own rows when complete publishers disagree", () => {
+    const request = standingsRequest({
+      competition: "La Liga",
+      season: "2026/27",
+      sources: [page("skysports.com", "trusted", 2, lines)],
+      retryHint: "This complete table disagrees with other independent publishers on one or more rows.",
+    });
+    expect(request.prompt).toContain("Do not copy or conform to another source");
+    expect(request.prompt).toContain("use only values visibly present on this page");
+  });});
 describe("team aliases", () => {
   it("normalizes Atlético de Madrid to the same identity as Atletico Madrid", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
