@@ -357,8 +357,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [result.source], cfg.teams, known, now())
-          : { ...validateTables([], [result.source], cfg.teams, known, now()), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl")
+          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
         return { source: result.source, parsed, validation };
       }),
     );
