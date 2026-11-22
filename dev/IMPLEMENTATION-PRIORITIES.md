@@ -105,7 +105,7 @@ Verified facts:
 - The two histories contain renamed, split and consolidated migration names. Examples include content_engine / pfie_fixtures versus content_engine_and_pfie_part_a, and platform_controls_wallet versus three production entries (part1, part2, part3). There are also entries present on only one side, including media_bucket and quest_evidence_purge in production history and duel_stakes_on / annual_pass_emails_to_30_nov in the repository.
 - Production has four active PFIE table jobs (job IDs 61–64). Their live schedules are not identical to the final pending migration 20261122140000_pfie_standings_timeout_batches.sql.
 - The pending 20261122110000_pfie_live_standings_refresh.sql contains malformed dollar-quote syntax in its final cron.schedule command. It must not be applied as written.
-- cron.job_run_details returned no rows in the inspected window; net._http_response has recent successful Vercel responses and one 55-second timeout, but the response log does not retain the request path.
+- cron.job_run_details contains 17,919 records overall, but none yet for the new PFIE table job IDs 61–64 as of 01:22 UTC; their first scheduled window begins at 02:10 UTC. Other scheduled jobs continue to run. net._http_response has recent successful Vercel responses and one 55-second timeout, but the response log does not retain the request path.
 - The current production cron jobs remain active. No cron schedule, migration ledger row or production schema was changed during this audit.
 
 **Live PFIE cron schedules (Postgres UTC; SAST is UTC+2):**
