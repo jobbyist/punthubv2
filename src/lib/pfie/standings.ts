@@ -8,12 +8,17 @@ import { z } from "zod";
 
 import type { LlmRequest } from "@/lib/content/types";
 import { normalise } from "@/lib/content/validate";
+import { parseJsonObject } from "@/lib/content/json";
 import type { CompetitionKey } from "@/lib/sports/competitions";
 
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
+export const STANDINGS_LAUNCH_KEYS = [
+  "psl", "epl", "laliga", "seriea", "bundesliga", "primeira", "championship", "saudi-pro",
+] as const satisfies readonly CompetitionKey[];
+
 export const STANDINGS_COMPETITIONS: Partial<
   Record<
     CompetitionKey,
@@ -308,12 +313,10 @@ const rawSchema = z.object({
 });
 
 export function parseStandings(text: string): RawStandingRow[] | null {
-  try {
-    const parsed = rawSchema.safeParse(JSON.parse(text));
-    return parsed.success ? parsed.data.rows : null;
-  } catch {
-    return null;
-  }
+  const json = parseJsonObject(text);
+  if (!json) return null;
+  const parsed = rawSchema.safeParse(json);
+  return parsed.success ? parsed.data.rows : null;
 }
 
 export interface TableRejection {

@@ -4694,6 +4694,17 @@ export type Database = {
           status: string
         }[]
       }
+      pending_result_fixtures: {
+        Args: never
+        Returns: {
+          away: string
+          fixture_id: string
+          home: string
+          kickoff_at: string
+          pending: number
+          status: string
+        }[]
+      }
       point_rules_public: {
         Args: never
         Returns: {

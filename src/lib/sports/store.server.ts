@@ -37,7 +37,7 @@ export function createFixtureStore(): FixtureStore {
     async openSince(since, now) {
       const { data, error } = await supabaseAdmin
         .from("fixtures")
-        .select("provider, provider_ref, competition, kickoff_at")
+        .select("provider, provider_ref, competition, home, away, kickoff_at")
         .in("status", ["scheduled", "live"])
         .gte("kickoff_at", since.toISOString())
         .lte("kickoff_at", now.toISOString());
@@ -46,6 +46,8 @@ export function createFixtureStore(): FixtureStore {
         provider: r.provider,
         providerRef: r.provider_ref,
         competition: r.competition,
+        home: r.home,
+        away: r.away,
         kickoffAt: r.kickoff_at,
       }));
     },

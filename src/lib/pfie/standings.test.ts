@@ -5,6 +5,7 @@ import { tierOf } from "./provider";
 import { normaliseTeam, resolveTeam } from "./teams";
 import {
   STANDINGS_COMPETITIONS,
+  STANDINGS_LAUNCH_KEYS,
   chooseTable,
   independentSourceKey,
   parseStandings,
@@ -93,6 +94,24 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
     expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
+  });
+});
+describe("launch standings coverage", () => {
+  it("keeps the eight competitions with existing validated tables and temporarily hides empty ones", () => {
+    expect(STANDINGS_LAUNCH_KEYS).toEqual([
+      "psl",
+      "epl",
+      "laliga",
+      "seriea",
+      "bundesliga",
+      "primeira",
+      "championship",
+      "saudi-pro",
+    ]);
+    expect(STANDINGS_LAUNCH_KEYS).not.toContain("eredivisie");
+    expect(STANDINGS_LAUNCH_KEYS).not.toContain("ligue1");
+    expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
+    expect(STANDINGS_LAUNCH_KEYS).not.toContain("ucl");
   });
 });
 describe("configured direct standings sources", () => {

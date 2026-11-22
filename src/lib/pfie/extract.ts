@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import type { LlmRequest } from "@/lib/content/types";
 import { normalise } from "@/lib/content/validate";
+import { parseJsonObject } from "@/lib/content/json";
 
 import { normaliseTeam } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
@@ -45,6 +46,7 @@ export function extractionRequest(input: {
   to: string;
   today: string;
   sources: PfieSource[];
+  retryHint?: string;
 }): LlmRequest {
   const sources = input.sources
     .map((s) => `<source n="${s.index}" site="${s.domain}">\n${s.text}\n</source>`)
@@ -66,9 +68,11 @@ export function extractionRequest(input: {
       "minutes, not after extra time or penalties.\n" +
       "7. `quote` is 10 to 200 characters copied word for word from that source showing the match (and the " +
       "score, for a finished match).\n" +
-      "8. Only matches of the named competition, with a date inside the given range.",
+      "8. Only matches of the named competition, with a date inside the given range.\n" +
+      "9. Return exactly one JSON object matching the schema. Do not use Markdown fences, commentary or trailing text.",
     prompt:
       `Competition: ${input.competition}\nDate range: ${input.from} to ${input.to}\nToday: ${input.today}\n\n` +
+      `${input.retryHint ? `RETRY INSTRUCTION: ${input.retryHint} Return only compact valid JSON matching the schema.\n\n` : ""}` +
       `Sources:\n\n${sources}`,
     schema: SCHEMA,
     temperature: 0,
@@ -94,12 +98,8 @@ const rawSchema = z.object({
 });
 
 export function parseObservations(text: string): RawObservation[] | null {
-  let json: unknown;
-  try {
-    json = JSON.parse(text);
-  } catch {
-    return null;
-  }
+  const json = parseJsonObject(text);
+  if (!json) return null;
   const parsed = rawSchema.safeParse(json);
   if (!parsed.success) return null;
   return parsed.data.matches.map((m) => ({

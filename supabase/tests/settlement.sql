@@ -32,9 +32,11 @@ select public.create_prediction((select id from t_f where kind = 'cancel'), '1X2
 select public.create_prediction((select id from t_f where kind = 'post'), '1X2', 'draw', null, 3.20, 3, null);
 reset role;
 
--- fin finished 2-0; cancel cancelled; post postponed with kick-off long ago; open stays scheduled.
+-- fin finished 2-0; cancel cancelled; post postponed with kick-off long ago; open is overdue but still scheduled.
 update public.fixtures set kickoff_at = now() - interval '5 hours', status = 'finished', home_score = 2, away_score = 0
   where id = (select id from t_f where kind = 'fin');
+update public.fixtures set kickoff_at = now() - interval '5 hours', status = 'scheduled'
+  where id = (select id from t_f where kind = 'open');
 update public.fixtures set kickoff_at = now() - interval '5 hours', status = 'cancelled' where id = (select id from t_f where kind = 'cancel');
 update public.fixtures set kickoff_at = now() - interval '4 days', status = 'postponed' where id = (select id from t_f where kind = 'post');
 
@@ -50,7 +52,22 @@ begin
   if v_open <> 0 then raise exception 'ASSERT FAILED: a scheduled fixture was offered for settlement'; end if;
 end $$;
 
--- 2. apply: correct units are written once; wrong units and repeat runs are ignored
+-- 2. pending_result_fixtures: overdue scheduled fixtures with unsettled picks are visible, but not settleable.
+do $$
+declare v_n integer; v_picks integer;
+begin
+  set local role service_role;
+  select count(*), coalesce(sum(pending), 0)::integer
+    into v_n, v_picks
+  from public.pending_result_fixtures()
+  where fixture_id = (select id from t_f where kind = 'open');
+  reset role;
+  if v_n <> 1 or v_picks <> 1 then
+    raise exception 'ASSERT FAILED: expected one overdue scheduled fixture with one pending pick, got % rows / % picks', v_n, v_picks;
+  end if;
+end $$;
+
+-- 3. apply: correct units are written once; wrong units and repeat runs are ignored
 do $$
 declare
   v_rows jsonb;
@@ -85,7 +102,7 @@ begin
   if v_bad <> 0 then raise exception 'ASSERT FAILED: unexpected non-auto settlements'; end if;
 end $$;
 
--- 3. Wrong units are refused; unknown results are refused
+-- 4. Wrong units are refused; unknown results are refused
 do $$
 declare v_pred uuid; v_n integer;
 begin
@@ -107,7 +124,7 @@ begin
   if v_n <> 1 then raise exception 'ASSERT FAILED: correct settlement (odds 2.50 -> 1.50) was refused'; end if;
 end $$;
 
--- 4. Clients cannot call either function
+-- 5. Clients cannot call any settlement inspection or write function
 do $$
 declare v_msg text;
 begin
@@ -115,12 +132,15 @@ begin
   begin perform public.pending_settlements(); exception when insufficient_privilege then v_msg := 'blocked'; end;
   if v_msg is distinct from 'blocked' then raise exception 'ASSERT FAILED: authenticated could call pending_settlements'; end if;
   v_msg := null;
+  begin perform public.pending_result_fixtures(); exception when insufficient_privilege then v_msg := 'blocked'; end;
+  if v_msg is distinct from 'blocked' then raise exception 'ASSERT FAILED: authenticated could call pending_result_fixtures'; end if;
+  v_msg := null;
   begin perform public.apply_auto_settlements('[]'::jsonb); exception when insufficient_privilege then v_msg := 'blocked'; end;
   reset role;
   if v_msg is distinct from 'blocked' then raise exception 'ASSERT FAILED: authenticated could call apply_auto_settlements'; end if;
 end $$;
 
--- 5. The leaderboard and stats views see the result
+-- 6. The leaderboard and stats views see the result
 do $$
 declare v_units numeric; v_settled integer;
 begin

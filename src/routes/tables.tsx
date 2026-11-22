@@ -12,18 +12,19 @@ import { TeamLogo } from "@/components/team-logo";
 import { useTeamForms } from "@/hooks/use-team-forms";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { STANDINGS_COMPETITIONS } from "@/lib/pfie/standings";
+import { STANDINGS_LAUNCH_KEYS } from "@/lib/pfie/standings";
 import { competitions, type CompetitionKey } from "@/lib/sports/competitions";
 import {
   fetchStandings,
   fetchSyncStatuses,
+  freshStandingsKeys,
   isStale,
   type StandingRow,
   type SyncStatus,
 } from "@/lib/standings-data";
 import { cn } from "@/lib/utils";
 
-const KEYS = Object.keys(STANDINGS_COMPETITIONS) as CompetitionKey[];
+const KEYS = [...STANDINGS_LAUNCH_KEYS] as CompetitionKey[];
 
 export const Route = createFileRoute("/tables")({
   validateSearch: (s: Record<string, unknown>): { league?: CompetitionKey } =>
@@ -49,21 +50,47 @@ function Standings() {
   const { t } = useTranslation("standings");
   const navigate = useNavigate({ from: "/tables" });
   const league = Route.useSearch().league ?? "psl";
-  const name = competitions.find((c) => c.key === league)?.name ?? league;
   const [rows, setRows] = useState<StandingRow[] | null>(null);
   const [failed, setFailed] = useState(false);
-  const [statuses, setStatuses] = useState<SyncStatus[]>([]);
+  const [statuses, setStatuses] = useState<SyncStatus[] | null>(null);
+  const activeKeys = useMemo(
+    () => (statuses ? freshStandingsKeys(KEYS, statuses) : []),
+    [statuses],
+  );
+  const selectedLeague = activeKeys.includes(league) ? league : activeKeys[0] ?? null;
+  const name = selectedLeague
+    ? (competitions.find((c) => c.key === selectedLeague)?.name ?? selectedLeague)
+    : "League tables";
 
   useEffect(() => {
     fetchSyncStatuses()
       .then(setStatuses)
-      .catch((e: unknown) => console.error("sync status failed", e));
+      .catch((e: unknown) => {
+        console.error("sync status failed", e);
+        setStatuses([]);
+      });
   }, []);
   useEffect(() => {
+    if (statuses !== null && selectedLeague && selectedLeague !== league) {
+      void navigate({
+        search: { league: selectedLeague },
+        replace: true,
+        resetScroll: false,
+      });
+    }
+  }, [statuses, selectedLeague, league, navigate]);
+
+  useEffect(() => {
+    if (statuses === null) return;
+    if (!selectedLeague) {
+      setRows([]);
+      setFailed(false);
+      return;
+    }
     let live = true;
     setRows(null);
     setFailed(false);
-    fetchStandings(league)
+    fetchStandings(selectedLeague)
       .then((r) => live && setRows(r))
       .catch((e: unknown) => {
         console.error("standings failed", e);
@@ -72,36 +99,47 @@ function Standings() {
     return () => {
       live = false;
     };
-  }, [league]);
+  }, [selectedLeague, statuses]);
 
   const teams = useMemo(() => (rows ?? []).map((r) => r.team), [rows]);
   const { forms } = useTeamForms(teams);
-  const status = statuses.find((s) => s.job === "standings" && s.scope === league);
+  const status = statuses?.find((s) => s.job === "standings" && s.scope === selectedLeague);
   const stale = rows !== null && rows.length > 0 && isStale(status);
   const updated = rows?.reduce((m, r) => (r.updated_at > m ? r.updated_at : m), "");
 
   return (
     <AppShell>
       <PageHeading art="podium" title={t("title")} subtitle={t("subtitle")} />
-      <FilterChips
-        id="standings-league"
-        className="mb-6"
-        chips={KEYS.map((k) => ({
-          key: k,
-          label: competitions.find((c) => c.key === k)?.name ?? k,
-        }))}
-        active={league}
-        onSelect={(k) =>
-          void navigate({
-            search: { league: k as CompetitionKey },
-            replace: true,
-            resetScroll: false,
-          })
-        }
-        label={t("filter")}
-      />
+      {statuses === null ? (
+        <div className="h-64 animate-pulse rounded-xl bg-muted" aria-hidden />
+      ) : activeKeys.length === 0 ? (
+        <EmptyState
+          art="podium"
+          title="League tables temporarily unavailable"
+          body="We only publish tables after a recent successful verification. Competitions return automatically when fresh standings are restored."
+          className="m-4"
+        />
+      ) : (
+        <>
+          <FilterChips
+            id="standings-league"
+            className="mb-6"
+            chips={activeKeys.map((k) => ({
+              key: k,
+              label: competitions.find((c) => c.key === k)?.name ?? k,
+            }))}
+            active={selectedLeague ?? activeKeys[0]!}
+            onSelect={(k) =>
+              void navigate({
+                search: { league: k as CompetitionKey },
+                replace: true,
+                resetScroll: false,
+              })
+            }
+            label={t("filter")}
+          />
 
-      <section className="card-surface overflow-hidden" aria-labelledby="table-title">
+          <section className="card-surface overflow-hidden" aria-labelledby="table-title">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
           <h2 id="table-title" className="text-base">
             <CompetitionBadge
@@ -220,7 +258,9 @@ function Standings() {
             </table>
           </div>
         )}
-      </section>
+          </section>
+        </>
+      )}
       <p className="mt-3 text-xs text-muted-foreground">{t("note")}</p>
     </AppShell>
   );

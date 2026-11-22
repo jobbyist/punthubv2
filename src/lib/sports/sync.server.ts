@@ -11,7 +11,14 @@ export interface FixtureStore {
   openSince(
     since: Date,
     now: Date,
-  ): Promise<{ provider: string; providerRef: string; competition: string; kickoffAt: string }[]>;
+  ): Promise<{
+    provider: string;
+    providerRef: string;
+    competition: string;
+    home: string;
+    away: string;
+    kickoffAt: string;
+  }[]>;
 }
 
 export interface SyncReport {
@@ -90,15 +97,15 @@ export async function syncFixturesByCompetition(
 }
 
 /**
- * Fixtures that kicked off in the last 36 hours and are not final. Calls the provider only for the competitions
- * that have such fixtures, and not at all when there are none, so the 30-minute schedule spends no quota idle.
+ * Fixtures that kicked off in the last seven days and are not final. Old unresolved fixtures stay eligible for
+ * another verified-results attempt instead of silently falling out of the sync window.
  */
 export async function syncResults(
   provider: SportsProvider,
   store: FixtureStore,
   now = new Date(),
 ): Promise<SyncReport> {
-  const since = new Date(now.getTime() - 36 * 3600 * 1000);
+  const since = new Date(now.getTime() - 7 * DAY);
   const open = await store.openSince(since, now);
   if (open.length === 0) return { ok: true, calls: 0, upserted: 0, skipped: [] };
 
@@ -121,9 +128,18 @@ export async function syncResults(
   let calls = 0;
   for (const key of only) {
     const name = activeCompetitions().find((c) => c.key === key)?.name;
-    const mine = open.filter((o) => o.competition === name);
+    const mine = open
+      .filter((o) => o.competition === name)
+      .sort((a, b) => a.kickoffAt.localeCompare(b.kickoffAt));
     const earliest = new Date(Math.min(...mine.map((o) => Date.parse(o.kickoffAt))));
-    const r = await provider.listResults(earliest, now, { only: [key] });
+    const r = await provider.listResults(earliest, now, {
+      only: [key],
+      fixtures: mine.slice(0, 3).map((fixture) => ({
+        home: fixture.home,
+        away: fixture.away,
+        kickoffAt: fixture.kickoffAt,
+      })),
+    });
     fixtures.push(...r.fixtures);
     skipped.push(...r.skipped);
     calls += r.calls;
