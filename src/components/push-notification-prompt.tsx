@@ -6,11 +6,6 @@ import { enablePushNotifications, getPushStatus, supportsWebPush } from "@/lib/p
 
 const DISMISS_KEY = "puntr:push-prompt-dismissed-until";
 
-function isStandalone(): boolean {
-  return window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-}
-
 export function PushNotificationPrompt() {
   const { profile, loading } = useSession();
   const { t } = useTranslation("common");
@@ -19,7 +14,7 @@ export function PushNotificationPrompt() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (loading || !profile || !supportsWebPush() || !isStandalone() || Notification.permission !== "default") return;
+    if (loading || !profile || !supportsWebPush() || Notification.permission !== "default") return;
     let active = true;
     try {
       if (Number(localStorage.getItem(DISMISS_KEY) || 0) > Date.now()) return;
