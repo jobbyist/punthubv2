@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 
 import { ReadinessPanel } from "@/components/dev/readiness-panel";
+import { PwaHardeningRoadmap } from "@/components/dev/pwa-hardening-roadmap";
 import { useSession } from "@/components/session";
 import { getDevPage, type DevPageData } from "@/lib/dev-gate.functions";
 
@@ -87,6 +88,7 @@ function DevPage() {
         </Link>
       </div>
       <ReadinessPanel snapshot={page.readiness} />
+      <PwaHardeningRoadmap />
     </div>
   );
 }
