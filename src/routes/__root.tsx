@@ -151,7 +151,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           rel: "apple-touch-icon",
-          href: "/puntr-icon-512.png",
+          sizes: "180x180",
+          href: "/puntr-icon-192.png",
         },
         {
           rel: "stylesheet",
