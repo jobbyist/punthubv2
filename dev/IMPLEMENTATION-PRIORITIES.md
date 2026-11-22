@@ -230,7 +230,7 @@ This tracker is part of the MVP Launch Hardening sprint. It distinguishes work t
 - [ ] Source queries and direct-page candidates remain aligned.
 - [ ] Tests assert the five-source cap and five independent publisher identities.
 - [ ] No change weakens two-source consensus, freshness, completeness, row evidence or table-regression checks.
-- [x] Focused source-cap regression, typecheck and Vercel build pass; all review threads are resolved. [ ] Production-like extraction and two-publisher consensus evidence still required. Six full-suite failures reproduce on main and are recorded as pre-existing test debt.
+- [x] Focused source-cap regression, typecheck and Vercel build pass; all review threads are resolved. [ ] Production-like extraction and two-publisher consensus evidence still required. Full PFIE standings suite passes (47/47); full repository test suite has not been re-run.
 
 **#195**
 - [ ] Evidence quotes are checked against captured source-page text; missing page text rejects evidence.
@@ -261,15 +261,15 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 
 ### Current PR execution state
 
-- [x] #185 — five-source roster, focused cap test, typecheck and Vercel build verified; ready for review. [ ] Production-like extraction and two-publisher consensus evidence remain outstanding. Six unrelated standings-suite failures reproduce on main and are documented in the PR.
+- [x] #185 — five-source roster, focused cap test, typecheck and Vercel build verified; ready for review. [ ] Production-like extraction and two-publisher consensus evidence remain outstanding. Full PFIE standings suite now passes (47/47).
 - [x] #195 — targeted ESLint, typecheck, 15 evidence tests, schema/RLS/grant review and Vercel build verified; ready for review. [ ] Production migration remains unapplied pending full migration-baseline reconciliation and separate approval.
 - [x] #196 — explicitly deferred to post-launch; no pre-launch merge or activation.
 
-**Merge rule:** #185 and #195 are marked ready for review, not merged. #185 still requires production-like extraction evidence and reviewer acceptance of the six baseline standings-suite failures. #195 may be merged as a code/schema foundation after reviewer approval, but its production migration remains a separate, blocked change until migration history and backup/rollback are reconciled.
+**Merge rule:** #185 and #195 are marked ready for review, not merged. #185 still requires production-like extraction and two-publisher consensus evidence. #195 may be merged as a code/schema foundation after reviewer approval, but its production migration remains a separate, blocked change until migration history and backup/rollback are reconciled.
 
 
 ### Verification note — 22 November 2026
 
-- #185 focused source-cap regression: passed; typecheck: passed; Vercel production build: passed. Full standings suite: six failures also reproduced on main (stale source expectation, alias-normalization assertions and cumulative-row expected values); tracked separately, not attributed to the source-roster change.
+- #185 focused source-cap regression: passed; typecheck: passed; Vercel production build: passed. Full PFIE standings test file: 47/47 passed after updating the source roster, team-label fallback and cumulative-row regression fixtures.
 - #195 targeted ESLint: passed; typecheck: passed; evidence unit tests: 15 passed; Vercel production build: passed. Its migration SQL has been reviewed but not applied to production.
 - The preview validations were run with isolated Vercel build commands. GitHub-hosted Actions did not acquire a runner, so there is no green repository-wide Actions status to claim.
