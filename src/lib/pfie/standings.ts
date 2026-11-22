@@ -39,6 +39,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       "LaLiga EA Sports standings 2026/27",
       "La Liga current table full standings",
       "site:tactix.football/standings?country=spain La Liga live table updated",
+      "site:footballedgelab.com/la-liga/tables/2026-27 La Liga standings updated",
       "site:skysports.com/football/competitions/la-liga/table La Liga table",
       "La Liga current standings ESPN table",
       "La Liga current standings Transfermarkt table",
@@ -46,6 +47,7 @@ export const STANDINGS_COMPETITIONS: Partial<
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
       "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+      "https://footballedgelab.com/la-liga/tables/2026-27",
       "https://www.espn.com/soccer/standings/_/league/esp.1",
       "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
@@ -550,6 +552,7 @@ export function independentSourceKey(domain: string): string {
     ["transfermarkt", ["transfermarkt.com"]],
     ["worldfootball", ["worldfootball.net"]],
     ["tactix", ["tactix.football"]],
+    ["football-edge-lab", ["footballedgelab.com"]],
   ];
   for (const [publisher, roots] of publisherRoots) {
     if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;
