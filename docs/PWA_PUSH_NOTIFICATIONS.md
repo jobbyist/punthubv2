@@ -63,3 +63,17 @@ Run the QA sequence in a Vercel Sandbox, not GitHub Actions (the GitHub Actions 
 6. Inspect the Vercel preview and exercise authentication return paths, push opt-in/out, test notifications and notification deep links on supported devices.
 
 Before production enablement, confirm Supabase redirect allow-list includes `https://puntr.co.za/auth/callback` and the preview callback URL if preview OAuth is tested. Review the updated privacy notice and responsible-notification policy with the appropriate legal owner.
+
+
+## Known gaps and proposed follow-up (not part of this PR)
+The following items were identified during the PWA review. They are intentionally not implemented in this milestone and require owner approval before a separate branch/PR is opened:
+
+1. **Queued campaign delivery:** current admin dispatch is synchronous and uses the PostgREST default result window. Add a durable queue, pagination, retry/backoff, idempotency and progress reporting before sending to large audiences.
+2. **Subscription lifecycle reconciliation:** handle `pushsubscriptionchange`, periodically reconcile browser permission/subscription state, and expose stale-device cleanup metrics.
+3. **Delivery observability:** show per-campaign delivery failure categories and retryable failures in the admin console, with safe export and retention controls.
+4. **Notification preferences:** add optional categories (service updates, matchday reminders, product announcements) and quiet hours if user research supports them. Keep promotional messaging separate from this service-notification consent.
+5. **Offline experience:** assess a safe, read-only offline shell and optional public content caching. Do not cache account, private predictions, betting, payment or live odds data.
+6. **PWA lifecycle polish:** add cache size/age controls, update-available UX and device-specific native splash assets where supported.
+7. **Device verification:** complete real iOS Home Screen and Android Chrome installation, push permission, notification tap, account switch, sign-out and offline tests. The current validation is a Vercel preview/build plus automated QA, not a physical-device certification.
+
+No separate follow-up PR has been created. The owner must approve the selected improvements first.
