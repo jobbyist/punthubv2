@@ -589,9 +589,24 @@ export function computeReadiness(
   };
 }
 
-export const TASK_IDS: ReadonlySet<string> = new Set(
-  WORKSTREAMS.flatMap((w) => w.tasks.filter((t) => !t.metric).map((t) => t.id)),
-);
+export const PR_TRACKER_TASK_IDS = [
+  "pr185-five-source-cap",
+  "pr185-focused-validation",
+  "pr185-review-threads",
+  "pr185-live-consensus",
+  "pr185-full-suite-baseline",
+  "pr195-focused-validation",
+  "pr195-review-threads",
+  "pr195-source-licence-guard",
+  "pr195-disposable-sql",
+  "pr195-prod-baseline-rollback",
+  "pr196-mvp-scope-excluded",
+] as const;
+
+export const TASK_IDS: ReadonlySet<string> = new Set([
+  ...WORKSTREAMS.flatMap((w) => w.tasks.filter((t) => !t.metric).map((t) => t.id)),
+  ...PR_TRACKER_TASK_IDS,
+]);
 
 export function readinessVerdict(score: number, openBlockers: number): string {
   if (score >= 90 && openBlockers === 0) return "Launch ready";
