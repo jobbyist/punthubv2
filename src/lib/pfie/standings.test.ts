@@ -199,6 +199,18 @@ describe("validateTables", () => {
   });
 });
 
+describe("La Liga cross-publisher team aliases", () => {
+  it("normalizes official LaLiga names to independent publisher names", () => {
+    expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
+    expect(normaliseTeam("Deportivo Alavés")).toBe(normaliseTeam("Alaves"));
+    expect(normaliseTeam("RCD Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
+    expect(normaliseTeam("RC Deportivo")).toBe(normaliseTeam("Deportivo La Coruna"));
+    expect(normaliseTeam("R. Racing Club")).toBe(normaliseTeam("Racing Santander"));
+    expect(normaliseTeam("Celta")).toBe(normaliseTeam("Celta Vigo"));
+    expect(normaliseTeam("CA Osasuna")).toBe(normaliseTeam("Osasuna"));
+    expect(normaliseTeam("Levante UD")).toBe(normaliseTeam("Levante"));
+  });
+});
 describe("standingsDisagreementHint", () => {
   it("names only teams and columns that need a source-local recheck", () => {
     const a = validateTables(raw(1), [page("a.com", "official", 1, lines)], 4).tables[0]!;
