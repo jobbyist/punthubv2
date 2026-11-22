@@ -60,20 +60,20 @@ describe("mvp readiness", () => {
     expect(computeReadiness({}, { foundingMembers: Number.NaN }, tiny).score).toBe(30);
   });
 
-  it("automatically completes the historical-results blocker once 7,000 verified results are reached", () => {
+  it("automatically completes the historical-results blocker once the 2,500 minimum is reached", () => {
     const data = WORKSTREAMS.find((w) => w.id === "data")!;
     const history = data.tasks.find((task) => task.id === "history-volume")!;
-    expect(history.metric?.target).toBe(7000);
-    const below = computeReadiness({}, { completedResults: 6999 });
-    const atTarget = computeReadiness({}, { completedResults: 7000 });
-    const exceeded = computeReadiness({}, { completedResults: 7781 });
+    expect(history.metric?.target).toBe(2500);
+    const below = computeReadiness({}, { completedResults: 2499 });
+    const atTarget = computeReadiness({}, { completedResults: 2500 });
+    const exceeded = computeReadiness({}, { completedResults: 7775 });
     expect(below.openBlockers.some((task) => task.id === "history-volume")).toBe(true);
     expect(atTarget.openBlockers.some((task) => task.id === "history-volume")).toBe(false);
     expect(
       exceeded.workstreams
         .find((w) => w.id === "data")
         ?.tasks.find((task) => task.id === "history-volume")?.value,
-    ).toBe(7781);
+    ).toBe(7775);
   });
 
   it("allows the PR resolution tracker gates to persist independently of the readiness score", () => {

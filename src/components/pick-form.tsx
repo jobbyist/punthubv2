@@ -32,6 +32,7 @@ import {
   type Market,
 } from "@/lib/picks";
 import { cn } from "@/lib/utils";
+import { triggerSuccessFeedback } from "@/lib/interaction-feedback";
 import { useNow } from "@/hooks/use-now";
 
 /** The pick form for one fixture. There is no edit or delete control anywhere: a pick is final once locked. */
@@ -147,6 +148,7 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
     }
 
     analytics.pickPosted(market, fixture.sport);
+    triggerSuccessFeedback();
     if (row) {
       const label = selectionLabel(
         t,

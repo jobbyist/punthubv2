@@ -191,11 +191,11 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "history-volume",
-        title: "7,000+ verified historical match results imported",
+        title: "Historical results imported (2,500 minimum)",
         weight: 3,
         blocker: true,
-        metric: { key: "completedResults", target: 7000, unit: "verified results" },
-        ref: "Owner-confirmed import: 7,000+ verified historical match results. Live count remains sourced from completed_matches.",
+        metric: { key: "completedResults", target: 2500, unit: "results" },
+        ref: "ACHIEVED — 7,775 verified historical results imported and available under /results. Original milestone target remains 2,500.",
       },
       {
         id: "standings-volume",

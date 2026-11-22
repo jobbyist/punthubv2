@@ -15,6 +15,8 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AffiliateBanner } from "@/components/affiliate";
+import { QuickSearch } from "@/components/quick-search";
+import { InteractionFeedback } from "@/components/interaction-feedback";
 import { PageArt, type PageArtKind } from "@/components/motion/page-art";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { LiveBadge } from "@/components/live-badge";
@@ -269,6 +271,8 @@ export function PageHeading({
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto flex max-w-[1400px] gap-7 px-4 sm:px-6">
+      <QuickSearch />
+      <InteractionFeedback />
       <LeftRail />
       <main className="min-w-0 flex-1 py-6 sm:py-8">
         {children}

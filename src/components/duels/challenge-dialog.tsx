@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDate, formatTime } from "@/lib/format";
 import { duelErrorKey, validCalls, type DuelCall } from "@/lib/duels";
 import { createDuel, fetchDuelConfig, type DuelConfig } from "@/lib/duels-data";
+import { whatsappUrl } from "@/lib/referral";
 
 import { CallsPicker } from "./calls-picker";
 
@@ -38,10 +39,14 @@ export function ChallengeDialog({
   fixtures,
   opponent: presetOpponent,
   trigger,
+  initialStake = 0,
+  shareAfterCreate = false,
 }: {
   fixtures: ChallengeFixture[];
   opponent?: string;
   trigger?: ReactNode;
+  initialStake?: number;
+  shareAfterCreate?: boolean;
 }) {
   const { t } = useTranslation("duels");
   const { user } = useSession();
@@ -51,25 +56,27 @@ export function ChallengeDialog({
   const [fixtureId, setFixtureId] = useState(fixtures[0]?.id ?? "");
   const [opponent, setOpponent] = useState(presetOpponent ?? "");
   const [calls, setCalls] = useState<DuelCall[]>([]);
-  const [stake, setStake] = useState(0);
+  const [stake, setStake] = useState(initialStake);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
-    fetchDuelConfig()
-      .then(setConfig)
+    fetchDuelConfig().then((next) => {
+      setConfig(next);
+      setStake(next.stakes_enabled && initialStake >= next.stake_min && initialStake <= next.stake_max && (next.transferable ?? 0) >= initialStake ? initialStake : 0);
+    })
       .catch((e: unknown) => console.error("duel config failed", e));
   }, [open]);
 
   const fixture = fixtures.find((f) => f.id === fixtureId) ?? fixtures[0];
-  const ready = !!fixture && validCalls(calls) && !busy;
+  const ready = !!fixture && validCalls(calls) && !busy && (!shareAfterCreate || stake === 50);
 
   const button = trigger ?? (
     <Button variant="outline" className="gap-2">
       <Swords className="size-4 text-primary" aria-hidden="true" />
-      {t("challenge.button")}
+      {shareAfterCreate ? "Challenge a Friend · 50 PP" : t("challenge.button")}
     </Button>
   );
 
@@ -85,6 +92,7 @@ export function ChallengeDialog({
     if (!fixture || !ready) return;
     setBusy(true);
     setError(null);
+    const shareWindow = shareAfterCreate ? window.open("about:blank", "_blank") : null;
     try {
       const id = await createDuel({
         fixtureId: fixture.id,
@@ -94,8 +102,18 @@ export function ChallengeDialog({
         message: message.trim() || null,
       });
       setOpen(false);
+      if (shareAfterCreate) {
+        const share = `Challenge accepted? Take my ${stake} PuntPoints matchday duel: ${fixture.home} vs ${fixture.away}. Join on Puntr: https://puntr.co.za/duels/${id}`;
+        if (shareWindow) {
+          shareWindow.opener = null;
+          shareWindow.location.href = whatsappUrl(share);
+        } else {
+          window.location.href = whatsappUrl(share);
+        }
+      }
       void navigate({ to: "/duels/$duelId", params: { duelId: id } });
     } catch (e) {
+      if (shareWindow) shareWindow.close();
       setError(t(duelErrorKey(e instanceof Error ? e.message : undefined)));
     } finally {
       setBusy(false);
@@ -223,6 +241,11 @@ export function ChallengeDialog({
             />
           </div>
 
+          {shareAfterCreate && stake !== 50 && (
+            <p role="status" className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-2 text-xs text-muted-foreground">
+              A 50 PuntPoints stake is required for this quick challenge. Check your available balance and duel stake settings.
+            </p>
+          )}
           {error && (
             <p role="alert" className="text-sm font-medium text-destructive">
               {error}

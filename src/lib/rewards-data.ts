@@ -1,3 +1,4 @@
+import { triggerSuccessFeedback } from "@/lib/interaction-feedback";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -89,4 +90,7 @@ export async function fetchReferralOverview() {
 }
 
 export const POINTS_CHANGED = "puntr:points-changed";
-export const notifyPointsChanged = () => window.dispatchEvent(new Event(POINTS_CHANGED));
+export const notifyPointsChanged = () => {
+  triggerSuccessFeedback();
+  window.dispatchEvent(new Event(POINTS_CHANGED));
+};
