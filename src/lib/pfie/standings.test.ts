@@ -523,7 +523,7 @@ describe("seasonQueries", () => {
 });
 
 describe("season backfill sync", () => {
-  const long = "Motsepe Foundation Championship historical results and final score table. Team A 2-1 Team B. ".repeat(8);
+  const long = Array.from({ length: 8 }, (_, i) => `Motsepe Foundation Championship historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`).join("\n");
   const answer = (matches: unknown[]) => JSON.stringify({ matches });
   const make = (replies: string[]) => {
     const recorded: { ok: boolean; error: string | null }[] = [];
