@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
+import { normaliseTeam } from "./teams";
 import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, tableRegression, validateTables, type RawStandingRow } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
@@ -233,6 +234,11 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+  });
+});
+describe("team aliases", () => {
+  it("normalizes Atlético de Madrid to the same identity as Atletico Madrid", () => {
+    expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
   });
 });
 describe("parseStandings", () => {
