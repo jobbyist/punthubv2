@@ -138,8 +138,8 @@ The La Liga direct-page candidate roster is capped at five independent publisher
 
 ## 22 Nov 2026 — verification snapshot
 
-- PR #185: five independent La Liga publishers are configured (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta). The focused source-cap regression, typecheck and Vercel build pass. The full PFIE standings test file passes (47/47); production-like extraction and two-source consensus are still required before calling the new source roster operationally verified.
-- PR #195: targeted lint, typecheck, 15 evidence tests and Vercel build pass. Review threads are resolved. Its service-role-only migration remains unapplied until production migration history and backup/rollback are reconciled.
+- PR #185: five independent La Liga publishers are configured (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta). Standings tests pass 47/47; typecheck and Vercel build pass. Four remaining full-suite failures also reproduce on main; this PR resolves nine additional standings regressions. Production-like extraction and two-source consensus remain launch QA gates.
+- PR #195: 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass; review findings are resolved, including case-insensitive www normalization. Isolated SQL validation remains pending because Supabase's only branch is MIGRATIONS_FAILED. The service-role-only migration remains unapplied.
 - PR #196 remains post-launch only.
 
 
@@ -166,3 +166,6 @@ PR #195's reference-price foundation stores source IDs and publisher domains sep
 - Keep draft and outside the MVP release scope. No automated bookmaker odds, match-intelligence worker or exclusions feature from #196 is enabled for MVP.
 
 **Merge decision:** #185 and #195 remain drafts. A ready Vercel deployment proves the build can deploy; it does not clear a failing full test suite, missing production-like data evidence, or the #195 disposable-schema validation gate.
+
+
+**Test baseline note (22 Nov 2026):** current main reports 13 failures across four test files. PR #185 reduces this to four failures across three files; the same four failures reproduce on main. PR #195 retains the 13-failure baseline. Do not treat the full repository suite as green.
