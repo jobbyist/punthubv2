@@ -125,3 +125,8 @@ match and compare with the official score before any settlement is trusted.
 - Every row still passes deterministic checks: full team count, positions, row quote and team name on the source, W+D+L=played, points=3W+D, unique team identities and table ordering. An explicit table date is enforced only when its date evidence is present on the extracted page; verified dates older than 72 hours are rejected using SAST calendar boundaries. Unverified model-extracted dates are ignored.
 - Priority tables refresh every 12 hours; other configured tables every 24 hours. Confirmed match results can trigger an earlier refresh. The cron runs in two daily windows, with one competition per request to stay within the 55-second HTTP timeout; the stale indicator is set at 18 hours.
 - Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`.
+
+
+### Standings failure diagnostics
+
+When source tables pass local checks but no two independent publishers agree, PFIE keeps the existing published table unchanged and records per-source row snapshots (publisher, URL, table date, team and numeric columns) in the failed standings sync metadata. This makes disagreements auditable without weakening the two-source publication gate.

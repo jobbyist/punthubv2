@@ -323,6 +323,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   let sources: PfieSource[] = [];
   const modelsUsed = new Set<string>();
   const sourceFailures: string[] = [];
+  let sourceDiagnostics: Array<Record<string, unknown>> = [];
   const sourceLabel = (index: number) => {
     const source = sources.find((item) => item.index === index);
     return source ? `${index}@${source.domain}` : String(index);
@@ -377,6 +378,23 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
     let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+    sourceDiagnostics = validation.tables.map((table) => ({
+      domain: table.source.domain,
+      url: table.source.url,
+      tableDate: table.tableDate ?? null,
+      rowCount: table.rows.length,
+      rows: table.rows.map((row) => ({
+        position: row.position,
+        team: row.team,
+        played: row.played,
+        won: row.won,
+        drawn: row.drawn,
+        lost: row.lost,
+        goalsFor: row.goalsFor,
+        goalsAgainst: row.goalsAgainst,
+        points: row.points,
+      })),
+    }));
     let chosen = chooseTable(validation.tables);
     if (!chosen && validation.tables.length >= 2) {
       const hint = standingsDisagreementHint(validation.tables);
@@ -408,6 +426,23 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         }
         raw = [...bySource.values()].flat();
         validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+        sourceDiagnostics = validation.tables.map((table) => ({
+      domain: table.source.domain,
+      url: table.source.url,
+      tableDate: table.tableDate ?? null,
+      rowCount: table.rows.length,
+      rows: table.rows.map((row) => ({
+        position: row.position,
+        team: row.team,
+        played: row.played,
+        won: row.won,
+        drawn: row.drawn,
+        lost: row.lost,
+        goalsFor: row.goalsFor,
+        goalsAgainst: row.goalsAgainst,
+        points: row.points,
+      })),
+    }));
         chosen = chooseTable(validation.tables);
       }
     }
@@ -448,6 +483,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     await deps.store.record("standings", key, false, message(e), {
       sources: sources.map((source) => ({ index: source.index, domain: source.domain, url: source.url, via: source.via, retrievedAt: source.retrievedAt })),
       sourceFailures,
+      sourceDiagnostics,
       models: [...modelsUsed],
     }).catch(() => undefined);
     return { ok: false, detail: message(e) };
