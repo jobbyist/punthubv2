@@ -149,14 +149,14 @@ export const WORKSTREAMS: Workstream[] = [
         title: "PR #185: five-source standings tests pass; full-suite and extraction gates remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #185 · preview ready · docs/PFIE_INTEGRATION.md",
+        ref: "PR #185 · preview: https://punthubv2-bqkf53e4x-michael-chigbus-projects-6fad9571.vercel.app",
       },
       {
         id: "pr195-evidence",
         title: "PR #195: evidence tests pass; full-suite and disposable SQL review remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #195 · preview ready · migration unapplied · docs/pfie/PFIE-Implementation-Checklist.md",
+        ref: "PR #195 · preview: https://punthubv2-b4m8sloqg-michael-chigbus-projects-6fad9571.vercel.app · migration unapplied",
       },
       {
         id: "pr196-postlaunch",
