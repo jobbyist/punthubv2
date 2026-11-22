@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/push")({
           if (raw.length > 20_000) return json({ error: "Request too large." }, 413);
           let body: Record<string, unknown>;
           try { body = JSON.parse(raw) as Record<string, unknown>; } catch { return json({ error: "Invalid request body." }, 400); }
-          const action = body.action;
+          const action = body["action"];
 
           if (action === "status") {
             const { count, error } = await db.from("push_subscriptions").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("enabled", true);
@@ -63,14 +63,14 @@ export const Route = createFileRoute("/api/push")({
           }
 
           if (action === "subscribe") {
-            const sub = body.subscription as { endpoint?: string; expirationTime?: number | null; keys?: { p256dh?: string; auth?: string } } | undefined;
+            const sub = body["subscription"] as { endpoint?: string; expirationTime?: number | null; keys?: { p256dh?: string; auth?: string } } | undefined;
             if (!sub?.endpoint || sub.endpoint.length > 2048 || !sub.endpoint.startsWith("https://") || !sub.keys?.p256dh || !sub.keys?.auth || sub.keys.p256dh.length > 256 || sub.keys.auth.length > 256) {
               return json({ error: "Invalid browser push subscription." }, 400);
             }
             const { error } = await db.from("push_subscriptions").upsert({
               user_id: user.id, endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth,
               expiration_time: sub.expirationTime ?? null,
-              user_agent: typeof body.userAgent === "string" ? body.userAgent.slice(0, 300) : null,
+              user_agent: typeof body["userAgent"] === "string" ? body["userAgent"].slice(0, 300) : null,
               enabled: true, updated_at: new Date().toISOString(), last_seen_at: new Date().toISOString(),
             }, { onConflict: "endpoint" });
             if (error) return json({ error: "Could not save this device subscription." }, 500);
@@ -98,10 +98,10 @@ export const Route = createFileRoute("/api/push")({
             return json({ activeSubscriptions: subs.count ?? 0, sent30d: sent.count ?? 0, failed30d: failed.count ?? 0, campaigns: campaigns.data ?? [] });
           }
 
-          const title = typeof body.title === "string" ? body.title.trim() : "";
-          const message = typeof body.message === "string" ? body.message.trim() : "";
+          const title = typeof body["title"] === "string" ? body["title"].trim() : "";
+          const message = typeof body["message"] === "string" ? body["message"].trim() : "";
           if (title.length < 3 || title.length > 120 || message.length < 3 || message.length > 220) return json({ error: "Title must be 3–120 characters and message 3–220 characters." }, 400);
-          const audience = action === "test" ? "test" : body.audience;
+          const audience = action === "test" ? "test" : body["audience"];
           if (!["all", "founding", "member", "test"].includes(String(audience))) return json({ error: "Invalid audience." }, 400);
 
           let targetUserIds: string[] | null = null;
@@ -112,14 +112,14 @@ export const Route = createFileRoute("/api/push")({
             targetUserIds = (data ?? []).map((row) => row.id);
           }
           if (audience === "member") {
-            const username = typeof body.username === "string" ? body.username.trim().replace(/^@/, "") : "";
+            const username = typeof body["username"] === "string" ? body["username"].trim().replace(/^@/, "") : "";
             if (!/^[a-z0-9_.-]{2,40}$/i.test(username)) return json({ error: "Enter a valid member username." }, 400);
             const { data } = await db.from("profiles").select("id").ilike("username", username).eq("is_banned", false).maybeSingle();
             if (!data) return json({ error: "Member not found." }, 404);
             targetUserIds = [data.id];
           }
           let destination: string;
-          try { destination = targetPath(body.targetUrl); } catch (error) { return json({ error: error instanceof Error ? error.message : "Invalid destination." }, 400); }
+          try { destination = targetPath(body["targetUrl"]); } catch (error) { return json({ error: error instanceof Error ? error.message : "Invalid destination." }, 400); }
           const query = db.from("push_subscriptions").select("id,user_id,endpoint,p256dh,auth,profiles!inner(is_banned)").eq("enabled", true).eq("profiles.is_banned", false);
           const { data: subscriptions, error: subError } = targetUserIds ? await query.in("user_id", targetUserIds) : await query;
           if (subError) return json({ error: "Could not load active device subscriptions." }, 500);
