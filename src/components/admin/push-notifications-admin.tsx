@@ -56,7 +56,7 @@ export function PushNotificationsAdmin() {
   async function dispatch(test: boolean) {
     setBusy(true);
     try {
-      const data = await pushApiRequest<{ ok?: boolean; error?: string; sent?: number; failed?: number }>({
+      const data = await pushApiRequest<{ ok?: boolean; error?: string; sent?: number; failed?: number; attempted?: number }>({
         action: test ? "test" : "dispatch",
         title: test ? "Puntr test notification" : title,
         message: test ? "Push notifications are working on this device." : message,
@@ -65,8 +65,10 @@ export function PushNotificationsAdmin() {
         username,
       });
       if (!data?.ok && !test) throw new Error(data?.error || "Push campaign failed.");
-      if (test && data?.ok !== true) throw new Error(data?.error || "Test notification failed.");
-      toast.success(test ? "Test notification sent to your active devices." : `Push sent: ${data.sent} delivered, ${data.failed} failed.`);
+      if (test && (data?.ok !== true || (data.sent ?? 0) < 1)) {
+        throw new Error(data?.error || "No active device received the test notification.");
+      }
+      toast.success(test ? `Test notification sent to ${data.sent} device${data.sent === 1 ? "" : "s"}.` : `Push sent: ${data.sent} delivered, ${data.failed} failed.`);
       if (!test) {
         setTitle("");
         setMessage("");
