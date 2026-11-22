@@ -3,7 +3,17 @@ import { describe, expect, it } from "vitest";
 import { needsBackfill, verifyHistory } from "./history";
 import { tierOf } from "./provider";
 import { normaliseTeam, resolveTeam } from "./teams";
-import { STANDINGS_COMPETITIONS, chooseTable, independentSourceKey, parseStandings, standingsRequest, standingsDisagreementHint, tableRegression, validateTables, type RawStandingRow } from "./standings";
+import {
+  STANDINGS_COMPETITIONS,
+  chooseTable,
+  independentSourceKey,
+  parseStandings,
+  standingsRequest,
+  standingsDisagreementHint,
+  tableRegression,
+  validateTables,
+  type RawStandingRow,
+} from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
   retryDue,
@@ -73,7 +83,9 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("vi.nl", [])).toBe("trusted");
-    expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(tierOf("skysports.com", [])).toBe("trusted");
+    expect(tierOf("espn.com", [])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
     expect(tierOf("rotascore.com", [])).toBe("trusted");
     expect(tierOf("statz.ai", [])).toBe("trusted");
@@ -85,40 +97,84 @@ describe("trusted standings publisher domains", () => {
 });
 describe("configured direct standings sources", () => {
   it("includes the official Bundesliga table and independent DFB data centre", () => {
-    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
-    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
+    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
+      "https://www.bundesliga.com/en/bundesliga/table?view=full",
+    );
+    expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
+      "https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center",
+    );
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.sportsmole.co.uk/football/ligue-1/table.html");
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.tntsports.co.uk/football/ligue-1/standings.shtml");
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.cbssports.com/soccer/ligue-1/standings/");
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain("https://www.ninetyminutesplus.com/league/ligue-1/standings");
-    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.vi.nl/competities/eredivisie/stand");
-    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://statz.ai/competitions/eredivisie");
-    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://sportmetrics.org/league/netherlands-eredivisie-75672/2026-27/");
-    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain("https://www.flashscore.com/football/netherlands/eredivisie/standings/");
-    expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain("https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings");
-    expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
-    expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.sportsmole.co.uk/football/ligue-1/table.html",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.cbssports.com/soccer/ligue-1/standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
+    );
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
+      "https://www.vi.nl/competities/eredivisie/stand",
+    );
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
+      "https://statz.ai/competitions/eredivisie",
+    );
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
+      "https://sportmetrics.org/league/netherlands-eredivisie-75672/2026-27/",
+    );
+    expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
+      "https://www.flashscore.com/football/netherlands/eredivisie/standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.primeira?.pages).toContain(
+      "https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings",
+    );
+    expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain(
+      "https://treble.co.za/motsepe-championship/log/",
+    );
+    expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain(
+      "https://www.uefa.com/uefachampionsleague/standings/",
+    );
   });
-  it("includes independent official, Sky, ESPN and Transfermarkt La Liga table sources", () => {
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
+  it("keeps La Liga direct tables within the five-source cap using independent publishers", () => {
+    const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
+    expect(pages).toHaveLength(4);
+    expect(pages.length).toBeLessThanOrEqual(5);
+    expect(pages).toEqual(
+      expect.arrayContaining([
+        "https://www.laliga.com/en-US/laliga-easports/standing",
+        "https://www.skysports.com/football/competitions/la-liga/table",
+        "https://www.espn.com/soccer/standings/_/league/esp.1",
+        "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
+      ]),
+    );
+    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(4);
+    const publisherKeys = ["laliga.com", "skysports.com", "espn.com", "transfermarkt.com"].map(
+      independentSourceKey,
+    );
+    expect(new Set(publisherKeys).size).toBe(4);
   });
 });
 describe("La Liga live source configuration", () => {
-  it("includes the official La Liga table and an independent current TACTIX table", () => {
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
+  it("includes the official La Liga table and three independently verified current tables", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+      "https://www.laliga.com/en-US/laliga-easports/standing",
     );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://footballedgelab.com/la-liga",
+      "https://www.skysports.com/football/competitions/la-liga/table",
     );
-    expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
-    expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.espn.com/soccer/standings/_/league/esp.1",
+    );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
+    );
+    expect(tierOf("skysports.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("espn.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", ["laliga.com"])).toBe("trusted");
   });
 });
 
@@ -152,9 +208,11 @@ describe("validateTables", () => {
     const sourceLines = [...lines];
     sourceLines[0] = "1 Atletico de Madrid 10 7 2 1 20 8 23";
     const source = page("league.com", "official", 1, sourceLines);
-    const rows = raw(1, (r) => r.team === "Alpha FC"
-      ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched model quote" }
-      : r);
+    const rows = raw(1, (r) =>
+      r.team === "Alpha FC"
+        ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched model quote" }
+        : r,
+    );
     const result = validateTables(rows, [source], 4);
     expect(result.rejected).toEqual([]);
     expect(result.tables[0]!.rows[0]!.team).toBe("ATM Atlético de Madrid");
@@ -164,15 +222,28 @@ describe("validateTables", () => {
       "1 ATM Atlético de Madrid 28 12 9 1 2 23 10 +13",
       ...lines.slice(1),
     ]);
-    const rows = raw(1, (r) => r.team === "Alpha FC"
-      ? { ...r, team: "ATM Atlético de Madrid", played: 12, won: 9, drawn: 1, lost: 2, goalsFor: 23, goalsAgainst: 10, points: 28, quote: "model quote" }
-      : r);
+    const rows = raw(1, (r) =>
+      r.team === "Alpha FC"
+        ? {
+            ...r,
+            team: "ATM Atlético de Madrid",
+            played: 12,
+            won: 9,
+            drawn: 1,
+            lost: 2,
+            goalsFor: 23,
+            goalsAgainst: 10,
+            points: 28,
+            quote: "model quote",
+          }
+        : r,
+    );
     const result = validateTables(rows, [source], 4);
     expect(result.rejected).toEqual([]);
     expect(result.tables).toHaveLength(1);
   });
   it("rejects incorrect statistics even when the copied quote itself is present", () => {
-    const wrong = raw(1, (r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r);
+    const wrong = raw(1, (r) => (r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r));
     const result = validateTables(wrong, [official], 4, teams);
     expect(result.rejected[0]!.reason).toBe("row_evidence_not_on_page_Alpha FC");
   });
@@ -188,7 +259,11 @@ describe("validateTables", () => {
     expect(validateTables(rows, [official], 4).tables).toHaveLength(1);
   });
   it("ignores an unverified model-extracted table date instead of rejecting an otherwise valid page", () => {
-    const rows = raw(1, (r) => ({ ...r, tableDate: "2026-11-17", tableDateQuote: "Updated 17 November 2026" }));
+    const rows = raw(1, (r) => ({
+      ...r,
+      tableDate: "2026-11-17",
+      tableDateQuote: "Updated 17 November 2026",
+    }));
     const result = validateTables(rows, [official], 4, teams, new Date("2026-11-22T12:00:00Z"));
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.tableDate).toBeNull();
@@ -209,7 +284,11 @@ describe("validateTables", () => {
   it("uses known team aliases when validating source row evidence", () => {
     const sourceLines = lines.map((line) => line.replace("Alpha FC", "Atletico Madrid"));
     const source = page("laliga.com", "official", 1, sourceLines);
-    const rows = raw(1, (r) => r.team === "Alpha FC" ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched quote" } : r);
+    const rows = raw(1, (r) =>
+      r.team === "Alpha FC"
+        ? { ...r, team: "ATM Atlético de Madrid", quote: "unmatched quote" }
+        : r,
+    );
     const result = validateTables(rows, [source], 4, ["Atletico Madrid"]);
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows[0]!.team).toBe("Atletico Madrid");
@@ -218,8 +297,23 @@ describe("validateTables", () => {
     const duplicateRows = [...raw(1), { ...raw(1)[0]!, team: "ALP Alpha FC" }];
     const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
     expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
-    const conflicting = [...raw(1), { ...raw(1)[0]!, played: 9, points: 22, quote: "conflicting Alpha row" }];
-    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC_10/6/2/2/20/10/20_vs_9/6/2/2/20/10/22");
+    const conflicting = [
+      ...raw(1),
+      {
+        ...raw(1)[0]!,
+        played: 9,
+        won: 8,
+        drawn: 0,
+        lost: 1,
+        goalsFor: 21,
+        goalsAgainst: 8,
+        points: 24,
+        quote: "conflicting Alpha row",
+      },
+    ];
+    expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe(
+      "duplicate_team_Alpha FC_10/7/2/1/20/8/23_vs_9/8/0/1/21/8/24",
+    );
   });
   it("prefers the cumulative overall row over a home or away subset", () => {
     const overall = raw(1)[0]!;
@@ -241,8 +335,8 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
       played: 10,
-      won: 6,
-      points: 20,
+      won: 7,
+      points: 23,
     });
   });
   it("canonicalizes a known team alias before collapsing a repeated overall subset row", () => {
@@ -265,11 +359,11 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
       played: 10,
-      points: 20,
+      points: 23,
     });
   });
   it("accepts official competition ranking ties when explicitly enabled", () => {
-    const tied = raw(1, (r) => r.team === "Charlie City" ? { ...r, position: 2 } : r);
+    const tied = raw(1, (r) => (r.team === "Charlie City" ? { ...r, position: 2 } : r));
     expect(validateTables(tied, [official], 4).rejected[0]!.reason).toBe("positions_not_1_to_n");
     expect(validateTables(tied, [official], 4, teams, new Date(), true).tables).toHaveLength(1);
   });
@@ -287,6 +381,7 @@ describe("validateTables", () => {
 describe("ambiguous Paris team shorthand", () => {
   it("does not silently map Paris to PSG when Paris FC is also a known club", () => {
     expect(resolveTeam("Paris", ["Paris Saint-Germain", "Paris FC"])).toBeNull();
+    expect(resolveTeam("Paris FC", ["Paris Saint-Germain", "Paris FC"])).toBe("Paris FC");
   });
 });
 describe("La Liga cross-publisher team aliases", () => {
@@ -310,7 +405,10 @@ describe("standingsDisagreementHint", () => {
   it("names only teams and columns that need a source-local recheck", () => {
     const a = validateTables(raw(1), [page("a.com", "official", 1, lines)], 4).tables[0]!;
     const b = validateTables(raw(2), [page("b.com", "trusted", 2, lines)], 4).tables[0]!;
-    const changed = { ...b, rows: b.rows.map((r) => r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r) };
+    const changed = {
+      ...b,
+      rows: b.rows.map((r) => (r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 1 } : r)),
+    };
     const hint = standingsDisagreementHint([a, changed]);
     expect(hint).toContain("Alpha FC");
     expect(hint).toContain("goals for");
@@ -327,10 +425,19 @@ describe("chooseTable", () => {
     expect(chooseTable(two)).toMatchObject({ verdict: "two_sources" });
   });
   it("does not accept two sites that disagree on any full-table statistic", () => {
-    const b2 = page("site-b.com", "trusted", 2, lines.map((l) => l.replace("10 7 2 1 20 8 23", "10 6 3 1 20 8 21")));
+    const b2 = page(
+      "site-b.com",
+      "trusted",
+      2,
+      lines.map((l) => l.replace("10 7 2 1 20 8 23", "10 6 3 1 20 8 21")),
+    );
     const rows = [
       ...raw(1),
-      ...raw(2, (r) => r.team === "Alpha FC" ? { ...r, won: 6, drawn: 3, points: 21, quote: b2.text.split("\n")[0]! } : r),
+      ...raw(2, (r) =>
+        r.team === "Alpha FC"
+          ? { ...r, won: 6, drawn: 3, points: 21, quote: b2.text.split("\n")[0]! }
+          : r,
+      ),
     ];
     expect(chooseTable(validateTables(rows, [a, b2], 4).tables)).toBeNull();
   });
@@ -342,12 +449,20 @@ describe("chooseTable", () => {
   it("does not count mirrored BBC domains as independent publishers", () => {
     expect(independentSourceKey("bbc.com")).toBe(independentSourceKey("bbc.co.uk"));
     expect(independentSourceKey("datencenter.dfb.de")).toBe(independentSourceKey("dfb.de"));
-    expect(independentSourceKey("products.bundesliga.com")).toBe(independentSourceKey("bundesliga.com"));
+    expect(independentSourceKey("products.bundesliga.com")).toBe(
+      independentSourceKey("bundesliga.com"),
+    );
     expect(independentSourceKey("sports.espn.com")).toBe(independentSourceKey("espn.com"));
     expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
-    expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
-    expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
-    expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
+    expect(independentSourceKey("www.premierleague.com")).toBe(
+      independentSourceKey("premierleague.com"),
+    );
+    expect(independentSourceKey("www.tactix.football")).toBe(
+      independentSourceKey("tactix.football"),
+    );
+    expect(independentSourceKey("stats.footballedgelab.com")).toBe(
+      independentSourceKey("footballedgelab.com"),
+    );
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
@@ -355,19 +470,27 @@ describe("chooseTable", () => {
   });
   it("rejects Wikipedia as a live standings source", () => {
     const wiki = page("en.wikipedia.org", "trusted", 1, lines);
-    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe("wikipedia_not_allowed_for_live_standings");
+    expect(validateTables(raw(1), [wiki], 4).rejected[0]!.reason).toBe(
+      "wikipedia_not_allowed_for_live_standings",
+    );
   });
 });
 
 describe("tableRegression", () => {
   it("rejects a table that moves played matches or statistics backwards", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
-    const stale = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r);
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const stale = previous.map((r) =>
+      r.team === "Alpha FC" ? { ...r, played: 9, won: 6, points: 20 } : r,
+    );
     expect(tableRegression(stale, previous)).toBe("played_regressed_Alpha FC");
   });
   it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
-    const newer = previous.map((r) => r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r);
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const newer = previous.map((r) =>
+      r.team === "Alpha FC" ? { ...r, played: 11, won: 8, points: 26 } : r,
+    );
     expect(tableRegression(newer, previous)).toBeNull();
   });
 });
@@ -462,10 +585,16 @@ describe("scheduling", () => {
     ).toBe(false);
   });
   it("refreshes priority tables every 12 hours and other tables every 24 hours", () => {
-    const fresh = s({ lastSuccessAt: "2026-11-14T20:10:00Z", lastAttemptAt: "2026-11-14T20:10:00Z" });
+    const fresh = s({
+      lastSuccessAt: "2026-11-14T20:10:00Z",
+      lastAttemptAt: "2026-11-14T20:10:00Z",
+    });
     expect(standingsDue(fresh, undefined, now, 12)).toBe(false);
     expect(standingsDue(fresh, undefined, now, 24)).toBe(false);
-    const due12h = s({ lastSuccessAt: "2026-11-14T14:10:00Z", lastAttemptAt: "2026-11-14T14:10:00Z" });
+    const due12h = s({
+      lastSuccessAt: "2026-11-14T14:10:00Z",
+      lastAttemptAt: "2026-11-14T14:10:00Z",
+    });
     expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
     expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
@@ -510,7 +639,11 @@ describe("seasonQueries", () => {
 });
 
 describe("season backfill sync", () => {
-  const long = "x".repeat(400);
+  const long = Array.from(
+    { length: 8 },
+    (_, i) =>
+      `Motsepe Foundation Championship historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`,
+  ).join("\n");
   const answer = (matches: unknown[]) => JSON.stringify({ matches });
   const make = (replies: string[]) => {
     const recorded: { ok: boolean; error: string | null }[] = [];
@@ -520,12 +653,12 @@ describe("season backfill sync", () => {
         name: "fake",
         search: async () => [
           { url: "https://www.psl.co.za/a", title: "a", excerpt: long, publishedAt: null },
-          { url: "https://www.bbc.co.uk/b", title: "b", excerpt: long, publishedAt: null },
-          { url: "https://www.skysports.com/c", title: "c", excerpt: long, publishedAt: null },
-          { url: "https://www.example.org/d", title: "d", excerpt: long, publishedAt: null },
         ],
       },
-      extract: null,
+      extract: {
+        name: "fake",
+        extract: async () => ({ markdown: long }),
+      },
       llm: {
         name: "fake",
         generate: async () => ({

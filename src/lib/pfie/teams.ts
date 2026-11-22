@@ -33,6 +33,7 @@ const ALIASES: Record<string, string> = {
   "espanyol de barcelona": "espanyol",
   "rc deportivo": "deportivo la coruna",
   "r racing club": "racing santander",
+  "r racing": "racing santander",
   celta: "celta vigo",
   "ca osasuna": "osasuna",
   "levante ud": "levante",
@@ -49,7 +50,9 @@ const ALIASES: Record<string, string> = {
 export function normaliseTeam(name: string): string {
   // Some publisher tables prefix clubs with a three-letter code (e.g. RAC R. Racing Club or ATM Atlético de Madrid).
   // Strip an uppercase code before canonicalizing so those rows match publishers that omit the code.
-  const withoutCode = name.trim().replace(/^[A-Z]{2,4}\s+/, "");
+  const trimmed = name.trim();
+  // RC is part of the official club name in "RC Deportivo", not a publisher table code.
+  const withoutCode = trimmed === "RC Deportivo" ? trimmed : trimmed.replace(/^[A-Z]{2,4}\s+/, "");
   const base = withoutCode
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
@@ -77,8 +80,12 @@ function isSubset(small: string[], large: Set<string>): boolean {
  * teams fit, and null when none does.
  */
 export function resolveTeam(name: string, known: readonly string[]): string | "ambiguous" | null {
+  const rawName = name.trim().toLocaleLowerCase();
+  const exactRaw = known.find((team) => team.trim().toLocaleLowerCase() === rawName);
+  if (exactRaw) return exactRaw;
+
   const n = normaliseTeam(name);
-  if (!n) return null;
+  if (!n || GENERIC.has(n)) return null;
   const exact = known.find((k) => normaliseTeam(k) === n);
   if (exact) return exact;
   const tokens = n.split(" ");
