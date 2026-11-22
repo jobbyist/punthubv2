@@ -501,17 +501,17 @@ Future reference-price rows must retain distinct bookmaker source IDs and distin
 ## Latest PR verification snapshot — 22 November 2026
 
 **#185 — La Liga source coverage (pre-launch; still draft)**
-- Current branch head: 9a9e1b99e36b3d7f6eba3519992f2f11906c4dbc.
+- Current branch head: b6f1ff3dfe6019dec3421daf03744a0361eb438c.
 - Five configured independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The source-cap regression test asserts five unique publisher identities.
 - Targeted verification: formatting, ESLint, TypeScript and the standings suite passed (47/47).
-- Production build and Vercel preview are ready: https://punthubv2-bqkf53e4x-michael-chigbus-projects-6fad9571.vercel.app
-- The full repository test command remains red (4 failed tests across 3 files). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
+- Production build and Vercel preview are ready: https://punthubv2-g01du2tea-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red on this head (4 failed tests across 3 files; one confirmed mismatch is the existing PFIE provider model-fallback expectation). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
 
 **#195 — PFIE evidence foundation (pre-launch; still draft)**
-- Current branch head: fff236f0835b67ed5c0d33146bbf30fea72e96e4.
+- Current branch head: ce1c95516e0b13ed85abff9bd3973565de7ed3c5.
 - Targeted verification: formatting, ESLint, TypeScript and the evidence suite passed (15/15).
-- Production build and Vercel preview are ready: https://punthubv2-b4m8sloqg-michael-chigbus-projects-6fad9571.vercel.app
-- The full repository test command remains red (13 failed tests across 4 files on the last full-suite run). The current branch's targeted evidence suite passes, but the full-suite baseline must be reconciled before merge.
+- Production build and Vercel preview are ready: https://punthubv2-g7kl1s1v5-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red on this head (13 failed tests across 4 files, including two season-backfill fixture failures on this branch). The current branch's targeted evidence suite passes, but the full-suite baseline must be reconciled before merge.
 - Disposable-database SQL validation and the final schema/RLS/grant review remain outstanding. The migration is source-control only and must not be applied to production before migration-ledger reconciliation and separate backup/PITR/rollback approval.
 
 **#196 — post-launch only**
