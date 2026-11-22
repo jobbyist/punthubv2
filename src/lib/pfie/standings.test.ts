@@ -82,6 +82,8 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.flashscore.com/football/spain/laliga/standings/");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.bbc.com/sport/football/la-liga/table");
   });
 });
 describe("validateTables", () => {
