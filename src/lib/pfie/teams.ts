@@ -31,7 +31,6 @@ const ALIASES: Record<string, string> = {
   "deportivo alaves": "alaves",
   // LaLiga publishers abbreviate these clubs differently; signatures must resolve to one canonical identity.
   athletic: "athletic bilbao",
-  deportivo: "deportivo la coruna",
   "espanyol barcelona": "espanyol",
   "rcd espanyol de barcelona": "espanyol",
   "espanyol de barcelona": "espanyol",
