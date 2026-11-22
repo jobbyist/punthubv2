@@ -36,7 +36,7 @@ const ALIASES: Record<string, string> = {
   celta: "celta vigo",
   "ca osasuna": "osasuna",
   "levante ud": "levante",
-  depor: "deportivo",
+  depor: "deportivo la coruna",
   sundowns: "mamelodi sundowns",
   pirates: "orlando pirates",
   chiefs: "kaizer chiefs",
