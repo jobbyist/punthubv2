@@ -26,6 +26,7 @@ const ALIASES: Record<string, string> = {
   inter: "inter milan",
   internazionale: "inter milan",
   atletico: "atletico madrid",
+  "atletico de madrid": "atletico madrid",
   barca: "barcelona",
   depor: "deportivo",
   sundowns: "mamelodi sundowns",
