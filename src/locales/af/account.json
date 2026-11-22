@@ -173,7 +173,7 @@
   },
   "pushNotifications": {
     "title": "Drukkennisgewings",
-    "body": "Ontvang belangrike Puntr-opdaterings op hierdie toestel, insluitend aankondigings en wedstryddag-waarskuwings. Jy kan dit enige tyd afskakel.",
+    "body": "Ontvang belangrike Puntr-opdaterings op jou toestelle, insluitend aankondigings en wedstryddag-waarskuwings. As jy kennisgewings hier afskakel, stop aflewering na al jou rekening se toestelle.",
     "enable": "Skakel drukkennisgewings aan",
     "disable": "Skakel drukkennisgewings af",
     "unsupported": "Hierdie blaaier ondersteun nie webdrukkennisgewings nie.",
