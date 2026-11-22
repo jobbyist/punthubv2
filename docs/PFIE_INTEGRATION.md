@@ -1,12 +1,11 @@
-# PFIE fixtures and results (Parallel Search + Gemini)
+# PFIE fixtures, results, standings and match intelligence
 
-Status on 13 November 2026: code and tests **completed**; migration applied; live runs **pending credentials**.
-Switch on with `SPORTS_PROVIDER=pfie` once `GEMINI_API_KEY` and `PARALLEL_API_KEY` are set in Vercel.
+Status on 22 November 2026: fixtures/results and live standings pipelines are implemented; the new match-statistics and match-day line-up worker is included in this branch. Its schema/cron migration must be applied and its first successful live runs checked before the new data is considered production-verified.
+The PFIE content workers require `GEMINI_API_KEY` and `PARALLEL_API_KEY` in Vercel; fixture/result provider selection remains controlled by `SPORTS_PROVIDER=pfie`.
 
 ## What it does, and what it is not
 
-- Once a day (02:00 UTC, existing `sync-fixtures` job) it finds fixtures for the next 14 days for the Betway
-  Premiership, the Premier League and the Champions League.
+- The chunked `sync-fixtures` job refreshes the configured 21 competitions in small batches; it prioritises competitions with fixtures in the next 10 days.
 - After a match (existing `sync-results` job, every 30 minutes, but at most one look per competition per 50 minutes
   and never sooner than 105 minutes after kick-off) it looks for the final score.
 - **It is not a live-score feed.** A result appears when the official site shows it or two independent sites agree,
@@ -79,7 +78,7 @@ match and compare with the official score before any settlement is trusted.
   arithmetic, team count, positions and any explicitly printed table date are validated in code. An official source
   improves ranking but never bypasses independent corroboration. **Form**: derived only from completed matches, via the `completed_matches` view (finished fixtures
   plus `team_results`, a one-time backfill of the last 42 days verified by the official site or two domains).
-- Refresh: `/api/cron/sync-tables`, every 5 minutes 04:10-05:55 SAST for general sync (one due job per call) and every 5 minutes 16:10-17:55 SAST for priority standings (one due job per call). The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
+- Refresh: `/api/cron/sync-tables`, every 5 minutes 04:00-05:55 SAST for general sync (one due job per call) and every 10 minutes 16:00-17:50 SAST for priority standings (one due job per call). The five priority competitions (PSL, Premier League, La Liga, Serie A and Bundesliga) refresh at least every 12 hours; other configured tables refresh at least every 24 hours. A newly confirmed result triggers an earlier refresh. History runs once per league (and again only if a quarter
   of teams have fewer than 5 recorded results).
 - Matchday: trigger `fixtures_after_result` calls `apply_result_to_standings()` when a result is confirmed: the
   result is applied once (`standings_applied`), only if it kicked off after the table was taken; positions are
@@ -118,15 +117,53 @@ match and compare with the official score before any settlement is trusted.
 ## 22 Nov 2026: live multi-source standings verification
 
 - Current league tables no longer come from the Wikipedia/FBref season-archive importer. That importer remains available for historical result reconciliation only.
-- Parallel Search discovers current table pages. Parallel Extract fetches up to five independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled. Each live page read has a single 30-second attempt (no per-page retry); a slow publisher is skipped so the remaining independent sources can still reach consensus within the pg_net request window. Competitions may also define direct official-page candidates; Bundesliga uses both Bundesliga.com and the independent DFB data centre. La Liga now pairs its official standings page with independent TACTIX and Football Edge Lab tables; their published update timestamps help reject stale publisher copies. Direct full-table candidates now also cover Ligue 1, Eredivisie, Liga Portugal, the Motsepe Foundation Championship and the UEFA Champions League.
+- Parallel Search discovers current table pages. Parallel Extract fetches up to five independent official/trusted full pages per competition with a 15-minute maximum cache age and stale-cache fallback disabled. Each live page read has a single 30-second attempt (no per-page retry); a slow publisher is skipped so the remaining independent sources can still reach consensus within the pg_net request window. Competitions may also define direct page candidates; Bundesliga uses Bundesliga.com and the DFB data centre. La Liga uses its official page plus TACTIX and Football Edge Lab. The extractor explicitly rejects projected/simulated/forecast tables and uses only current standings based on completed matches. Direct full-table candidates also cover Ligue 1, Eredivisie, Liga Portugal, the Motsepe Foundation Championship and the UEFA Champions League.
 - Ligue 1 and Eredivisie source rosters were refined after live extraction diagnostics: current CBS/TNT/Sports Mole/NinetyMinutesPlus feeds replace duplicate-prone Ligue 1 pages; current VI/Statz/Sportmetrics/Tribuna/Flashscore feeds replace the stale Ziggo page.
 - A table is publishable only when at least two independent domains agree on each team's played, wins, draws, losses, goals for, goals against and points. Official status improves source ranking but is not a single-source bypass.
 - Wikipedia is explicitly rejected for current standings. Historical pages, search snippets and unextractable pages cannot count toward consensus. A candidate is also checked against the previous verified in-season snapshot; played matches and cumulative W/D/L/GF/GA/points cannot regress. Exact duplicate rows repeated by responsive page layouts are collapsed. If a page repeats a club in overall, home and away tables, only the cumulative row that dominates the subset across P/W/D/L/GF/GA/points is retained; conflicting duplicates are rejected. UEFA's competition-ranking ties are supported without relaxing the sequential-rank rule for domestic leagues.
 - Every row still passes deterministic checks: full team count, positions, row quote and team name on the source, W+D+L=played, points=3W+D, unique team identities and table ordering. An explicit table date is enforced only when its date evidence is present on the extracted page; verified dates older than 72 hours are rejected using SAST calendar boundaries. Unverified model-extracted dates are ignored.
 - Priority tables refresh every 12 hours; other configured tables every 24 hours. Confirmed match results can trigger an earlier refresh. The cron runs in two daily windows, with one competition per request to stay within the 55-second HTTP timeout; the stale indicator is set at 18 hours.
-- Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`.
+- Production run reports persist all corroborating source domains, source count, primary URL, table date and extraction model in `sync_status.meta`. When consensus fails, per-source team/stat snapshots are also retained there for audit; the last verified table remains untouched.
 
+## 22 Nov 2026: PFIE match intelligence — statistics and player line-ups
 
-### Standings failure diagnostics
+This branch adds a separate match-intelligence worker. It does not replace or weaken the existing fixture, result or standings validators.
 
-When source tables pass local checks but no two independent publishers agree, PFIE keeps the existing published table unchanged and records per-source row snapshots (publisher, URL, table date, team and numeric columns) in the failed standings sync metadata. This makes disagreements auditable without weakening the two-source publication gate.
+### Match statistics
+
+- Candidate fixtures are completed soccer fixtures from the previous 48 hours.
+- Parallel Search discovers up to 12 candidate pages. Only official or trusted publisher domains are retained.
+- Parallel Extract reads up to four distinct publishers in parallel. Search excerpts never count as evidence.
+- Gemini extracts each source independently into the fixed home/away schema. It may not calculate or infer values.
+- Deterministic checks require the exact fixture home/away order, match date, both team names and a verbatim evidence quote on the page. Shots on target cannot exceed shots; possession values must sum to approximately 100%.
+- Each displayed metric must independently agree across at least two distinct domains. Count metrics must match exactly; possession may differ by at most one percentage point. At least three metrics per team are required before the record is published. xG, ratings and derived metrics are deliberately excluded because provider definitions differ.
+- Data is stored in public.fixture_match_stats with source domains, source URLs, short evidence excerpts and verified_at. Public clients have read-only access; only the service role writes.
+
+### Match-day players
+
+- Initial scope is soccer match-day starting XIs and rugby starting XVs, plus named substitutes; it is not a complete season squad/transfer feed.
+- The job checks soccer fixtures scheduled within the next 90 minutes and rugby fixtures within the next 72 hours, plus matches that kicked off in the previous 15 minutes. It retries failed/unverified soccer line-ups after a 10-minute back-off and rugby line-ups after 30 minutes; the cron itself runs every 15 minutes.
+- Each accepted source must show the same home/away fixture, date and player names. Each source must provide 11 starters for each side.
+- A player and role (starter/substitute) is published only when two independent sources agree. A position is shown only when two sources agree on that position.
+- Data is stored in public.fixture_lineups with source domains, URLs, short evidence excerpts and verified_at. It is read-only to public clients.
+
+### Scheduling, quota and operational limits
+
+- /api/cron/sync-match-intelligence is scheduled every 15 minutes and processes at most one due fixture per request by default. Each job makes one Parallel Search, up to four Parallel Extract requests concurrently and one Gemini structured extraction. Search cache TTL is 15 minutes; Extract requests require a maximum 15-minute source age and disable stale fallback.
+- Failed stats attempts back off for 30 minutes; failed lineup attempts back off for 10 minutes. A fixture with a verified record is not repeatedly scraped.
+- The migration 20261122023000_pfie_match_intelligence.sql creates the two public read-only tables and the pg_cron schedule. The migration must be applied before the worker can persist data.
+- First-live verification checklist: apply the migration; run one upcoming fixture through the line-up worker; run one recently completed fixture through the stats worker; inspect the source domains and stored evidence; confirm the match analytics drawer displays only records with two-source consensus; verify a failed or single-source extraction leaves no public row.
+
+### Form and full squad coverage
+
+Form remains a deterministic calculation from verified completed results; it is not a separate AI feed. Full club-season squad profiles, player transfers, injury status and player performance histories are not yet ingested. They require a separate player identity registry and competition/club-specific official source map before being exposed.
+
+## 22 Nov 2026: pre-match bookmaker odds verification
+
+- The source registry is curated in src/lib/odds/reference.ts and maps nine operator domains to legal-entity/licence disclosures: Hollywoodbets, Betway, 10bet, YesPlay, Topbet, World Sports Betting, Betfred South Africa, PlayaBets and Supabets.
+- Parallel Search discovers current match pages; only domains in the curated registry are eligible. The environment variable ODDS_SOURCE_DOMAINS may narrow the registry but cannot add an unreviewed domain.
+- The worker reads at most four distinct bookmaker identities concurrently. Multiple subdomains belonging to the same operator cannot count as separate sources.
+- A selection is stored only when at least two independent bookmaker identities provide the complete market and agree on the same selection. The reference is the median of the corroborating decimal prices.
+- The feed is pre-match only, limited to fixtures in the next 72 hours and at least 30 minutes before kick-off. Each competition is processed in one bounded request; the cron runs every five minutes within the 07:00–07:55 and 14:00–14:55 SAST windows. The four-source selection rotates between the two daily windows; over successive days it covers the full nine-operator registry. Member-entered odds remain separate and are never overwritten.
+- Licence/domain evidence is based on operator-published disclosures and the NGB verified-operators directory; this is not a legal opinion. Each operator's current provincial licence and website terms permitting automated reading still require periodic legal review. No bookmaker comparison table or branding is shown at launch.
+

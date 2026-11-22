@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * Pre-match reference odds (docs/PARALLEL_ARCHITECTURE.md). Scheduled every 10 minutes from 07:00 to 07:50 and
- * 14:00 to 14:50 SAST; each call refreshes the next two due competitions with fixtures in the next 72 hours.
- * Searches are cached (6 h) and every Parallel and Gemini call claims the quota and the monthly USD budget first.
- * `?only=Premier League` and `?max=N` (1-4) are for manual runs.
+ * Pre-match reference odds (docs/PARALLEL_ARCHITECTURE.md). Scheduled every 5 minutes from 07:00 to 07:55 and
+ * 14:00 to 14:55 SAST; each bounded call refreshes one due competition with fixtures in the next 72 hours.
+ * Searches are cached (6 h); every Parallel and Gemini call claims quota and the monthly USD budget first.
+ * A single ?only=Premier League parameter is available for manual runs.
  */
 export const Route = createFileRoute("/api/cron/sync-odds")({
   server: {
@@ -25,11 +25,11 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
           ?.split(",")
           .map((s) => s.trim())
           .filter(Boolean);
-        const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
+        const max = 1;
 
         const { DEFAULT_PFIE_MODELS, parseModelList, readContentEnv } =
           await import("@/lib/content/config");
-        const { createGemini, createPageReader, createParallelSearch } =
+        const { createGemini, createParallelExtract, createParallelSearch } =
           await import("@/lib/content/providers.server");
         const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
           await import("@/lib/quota.server");
@@ -47,21 +47,24 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
             {
               // Cache outside the guard: a cache hit claims no quota and costs nothing.
               search: withSearchCache(
-                guardSearch(createParallelSearch(keys.parallelKey!), claim),
+                guardSearch(createParallelSearch(keys.parallelKey!, { timeoutMs: 10_000, attempts: 1 }), claim),
                 await createCacheStore(),
                 "odds",
               ),
               // Prices go stale in hours: live page reads only (Parallel copies older than 15 minutes refused).
-              extract: createPageReader(
-                { firecrawl: keys.firecrawlKey, parallel: keys.parallelKey },
-                (r) => guardExtract(r, claim),
-                { maxAgeSeconds: 900 },
+              extract: guardExtract(
+                createParallelExtract(
+                  keys.parallelKey!,
+                  { timeoutMs: 20_000, attempts: 1 },
+                  { maxAgeSeconds: 900 },
+                ),
+                claim,
               ),
-              llm: guardLlm(createGemini(keys.geminiKey!), claim),
+              llm: guardLlm(createGemini(keys.geminiKey!, { timeoutMs: 10_000, attempts: 1 }), claim),
               store: await createOddsStore(),
               allowedDomains: oddsSourceDomains(env["ODDS_SOURCE_DOMAINS"]),
               models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","))
-                .models,
+                .models.slice(0, 1),
               usageToday: () => pfieStore.usageToday(),
             },
             { maxCompetitions: max, ...(only?.length ? { only } : {}) },

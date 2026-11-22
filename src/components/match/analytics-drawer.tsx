@@ -21,6 +21,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDate, formatTime } from "@/lib/format";
 import { headToHead, perMatch, type FinishedRow, type TeamForm } from "@/lib/match/form";
 import { fetchPicksForFixture, type PickRow } from "@/lib/pick-data";
+import { fetchFixtureIntelligence } from "@/lib/pfie/intelligence-data";
 
 export interface DrawerFixture {
   id: string;
@@ -34,8 +35,8 @@ export interface DrawerFixture {
 
 /**
  * Instant preview of a match's intelligence in a sheet (bottom on phones, right on larger screens), so members
- * scan many matches without leaving the list. Only Puntr's own recorded data: form, goals per game, head to head
- * and the community split. Model outputs stay labelled "at launch" until the model is live.
+ * scan many matches without leaving the list. Form and results are Puntr-verified; third-party stats and line-ups
+ * appear only after independent source agreement. Model outputs stay labelled "at launch" until the model is live.
  */
 export function AnalyticsDrawer({
   fixture,
@@ -54,6 +55,7 @@ export function AnalyticsDrawer({
   const mobile = useIsMobile();
   const [picks, setPicks] = useState<PickRow[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [intelligence, setIntelligence] = useState<Awaited<ReturnType<typeof fetchFixtureIntelligence>> | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -71,6 +73,21 @@ export function AnalyticsDrawer({
     };
   }, [open, fixture.id]);
 
+  useEffect(() => {
+    if (!open) {
+      setIntelligence(null);
+      return;
+    }
+    let live = true;
+    setIntelligence(null);
+    fetchFixtureIntelligence(fixture.id)
+      .then((value) => live && setIntelligence(value))
+      .catch((error: unknown) => console.error("match intelligence fetch failed", error));
+    return () => {
+      live = false;
+    };
+  }, [open, fixture.id]);
+
   const home = forms[fixture.home];
   const away = forms[fixture.away];
   const h2h = headToHead(rows, fixture.home, fixture.away);
@@ -78,6 +95,14 @@ export function AnalyticsDrawer({
     { team: fixture.home, form: home },
     { team: fixture.away, form: away },
   ];
+  const statKeys = ["possession", "shots", "shotsOnTarget", "corners", "fouls", "yellowCards", "redCards"];
+  const verifiedStats = intelligence?.stats;
+  const availableStats = statKeys.filter(
+    (key) =>
+      typeof verifiedStats?.home_stats[key] === "number" &&
+      typeof verifiedStats?.away_stats[key] === "number",
+  );
+  const verifiedLineups = intelligence?.lineups;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -162,6 +187,57 @@ export function AnalyticsDrawer({
               <p className="mt-2 text-[11px] text-muted-foreground">{t("drawer.notEnough")}</p>
             )}
           </section>
+
+          {verifiedStats && availableStats.length > 0 && (
+            <section>
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                {t("drawer.stats.title")}
+              </h3>
+              <div className="divide-y divide-border rounded-lg border border-border px-3">
+                {availableStats.map((key) => (
+                  <div key={key} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 py-2 text-sm">
+                    <span className="text-left font-semibold tnum">{verifiedStats.home_stats[key]}{key === "possession" ? "%" : ""}</span>
+                    <span className="text-center text-[11px] text-muted-foreground">{t("drawer.stats." + key)}</span>
+                    <span className="text-right font-semibold tnum">{verifiedStats.away_stats[key]}{key === "possession" ? "%" : ""}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[10px] text-muted-foreground">
+                {t("drawer.stats.verifiedBy", { count: verifiedStats.source_domains.length })} · {verifiedStats.source_domains.join(", ")} · {new Date(verifiedStats.verified_at).toLocaleString()}
+              </p>
+            </section>
+          )}
+
+          {verifiedLineups && (
+            <section>
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                {t("drawer.lineups.title")}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { team: fixture.home, players: verifiedLineups.home_players },
+                  { team: fixture.away, players: verifiedLineups.away_players },
+                ].map(({ team, players }) => (
+                  <div key={team} className="min-w-0 rounded-lg border border-border p-3">
+                    <p className="mb-2 truncate text-xs font-bold">{team}</p>
+                    <ul className="space-y-1.5">
+                      {players.map((player) => (
+                        <li key={player.name + player.role} className="min-w-0">
+                          <p className="truncate text-[11px] font-medium">{player.name}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {player.position || t("drawer.lineups.player")} · {t("drawer.lineups." + player.role)}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[10px] text-muted-foreground">
+                {t("drawer.lineups.verifiedBy", { count: verifiedLineups.source_domains.length })} · {verifiedLineups.source_domains.join(", ")} · {new Date(verifiedLineups.verified_at).toLocaleString()}
+              </p>
+            </section>
+          )}
 
           <section>
             <h3 className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">

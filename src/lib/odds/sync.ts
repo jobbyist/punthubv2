@@ -1,8 +1,7 @@
 /**
- * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each call refreshes the next due competitions that
- * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per refresh window (every
- * 4 hours at most), so two windows a day (07:00 and 14:00 SAST) cost about one search and two page reads per
- * competition each. Nothing is collected after kick-off (pre-match only, no in-play).
+ * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each bounded request refreshes one due competition
+ * with fixtures kicking off in the next 72 hours. Two daily windows rotate four independent bookmaker sources per
+ * competition; nothing is collected after kick-off (pre-match only, no in-play).
  */
 import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
@@ -10,10 +9,12 @@ import { canonicalUrl, cleanText, domainOf } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, LlmRequest, SearchProvider } from "@/lib/content/types";
 
 import {
+  DEFAULT_ODDS_SOURCE_DOMAINS,
   type OddsSource,
   type ReferencePrice,
   type UpcomingFixture,
   isOddsSource,
+  oddsBookmakerKey,
   oddsRequest,
   parsePrices,
   validatePrices,
@@ -55,7 +56,7 @@ export const ODDS_HORIZON_HOURS = 72;
 const MIN_LEAD_MINUTES = 30;
 const REFRESH_EVERY_HOURS = 4;
 const MAX_FIXTURES_PER_PROMPT = 12;
-const MAX_PAGES = 2;
+const MAX_PAGES = 4;
 const MAX_SOURCES = 4;
 const MAX_CHARS = 14_000;
 
@@ -71,12 +72,30 @@ export function oddsDue(status: OddsStatus | undefined, now: Date): boolean {
   return since >= wait;
 }
 
-export function oddsQueries(competition: string, fixtures: UpcomingFixture[]): string[] {
-  const first = fixtures[0];
+export function rotateBookmakerDomains(
+  domains: string[],
+  competition: string,
+  rotationTime: Date,
+): string[] {
+  if (domains.length === 0) return [];
+  const daySlot = Math.floor(rotationTime.getTime() / (24 * HOUR));
+  const windowSlot = rotationTime.getUTCHours() >= 9 ? 1 : 0;
+  const rotationSlot = daySlot * 2 + windowSlot;
+  const competitionSeed = [...competition].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const offset = (rotationSlot * MAX_PAGES + competitionSeed) % domains.length;
+  return [...domains.slice(offset), ...domains.slice(0, offset)];
+}
+
+export function oddsQueries(
+  competition: string,
+  fixtures: UpcomingFixture[],
+  domains: string[] = DEFAULT_ODDS_SOURCE_DOMAINS,
+): string[] {
+  const teams = [...new Set(fixtures.flatMap((fixture) => [fixture.home, fixture.away]))].slice(0, 8);
+  const teamQuery = teams.join(" ");
   return [
-    `${competition} odds`,
-    ...(first ? [`${first.home} vs ${first.away} odds`] : []),
-    `${competition} betting odds 1X2 over under both teams to score`,
+    competition + " odds " + teamQuery,
+    ...domains.map((domain) => "site:" + domain + " " + competition + " football odds " + teamQuery),
   ];
 }
 
@@ -84,6 +103,7 @@ async function gatherSources(
   deps: OddsDeps,
   competition: string,
   fixtures: UpcomingFixture[],
+  rotationTime: Date,
 ): Promise<OddsSource[]> {
   const list = fixtures
     .slice(0, 6)
@@ -93,27 +113,34 @@ async function gatherSources(
     objective:
       `Current pre-match decimal odds (match result 1X2, over/under 2.5 goals, both teams to score) for ` +
       `${competition} matches: ${list}. Pages of South African licensed bookmakers only.`,
-    queries: oddsQueries(competition, fixtures),
-    maxResults: 10,
+    queries: oddsQueries(competition, fixtures, deps.allowedDomains),
+    maxResults: 20,
   });
-  const licensed = hits.filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains));
+  const licensed = hits.filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains) && oddsBookmakerKey(domainOf(h.url)) !== null);
+  const priorityDomains = rotateBookmakerDomains(deps.allowedDomains, competition, rotationTime);
+  const priority = new Map<string | null, number>(priorityDomains.map((domain, index) => [oddsBookmakerKey(domain), index] as const));
+  licensed.sort((a, b) =>
+    (priority.get(oddsBookmakerKey(domainOf(a.url)) ?? "") ?? 99) -
+    (priority.get(oddsBookmakerKey(domainOf(b.url)) ?? "") ?? 99),
+  );
   const sources: OddsSource[] = [];
-  const seen = new Set<string>();
-  const add = (url: string, text: string) => {
-    const clean = cleanText(text, MAX_CHARS);
-    const key = canonicalUrl(url);
-    if (clean.length < 120 || seen.has(key)) return;
-    seen.add(key);
-    sources.push({ index: 0, url, domain: domainOf(url), text: clean });
-  };
-  // Live page reads only. Search excerpts come from the search index and can be days old (seen 15 Nov: a
-  // bookmaker excerpt "last updated" two days earlier), so they are never used as a price source.
-  let reads = 0;
-  for (const hit of licensed) {
-    if (reads >= MAX_PAGES || !deps.extract) break;
-    reads++;
-    const page = await deps.extract.extract(hit.url).catch(() => null);
-    if (page) add(hit.url, page.markdown);
+  const seenBookmakers = new Set<string>();
+  const chosen = licensed.filter((hit) => {
+    const key = oddsBookmakerKey(domainOf(hit.url));
+    if (!key || seenBookmakers.has(key)) return false;
+    seenBookmakers.add(key);
+    return true;
+  }).slice(0, MAX_PAGES);
+
+  // Read one live page per bookmaker concurrently. A second domain or subdomain owned by the same operator
+  // cannot inflate consensus or consume an additional source slot.
+  const pages = await Promise.all(chosen.map(async (hit) => {
+    const page = deps.extract ? await deps.extract.extract(hit.url).catch(() => null) : null;
+    return page ? { url: hit.url, domain: domainOf(hit.url), text: cleanText(page.markdown, MAX_CHARS) } : null;
+  }));
+  for (const page of pages) {
+    if (!page || page.text.length < 120) continue;
+    sources.push({ index: sources.length + 1, url: page.url, domain: page.domain, text: page.text });
   }
   sources.splice(MAX_SOURCES);
   sources.forEach((s, i) => (s.index = i + 1));
@@ -125,7 +152,7 @@ async function generate(deps: OddsDeps, request: LlmRequest) {
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
   for (const m of models) usedToday[m] = (usage as Record<string, number>)[`gemini:${m}`] ?? 0;
-  return createModelRouter(deps.llm, { models, usedToday }).generate(request);
+  return createModelRouter(deps.llm, { models, usedToday, retryDelayMs: 0 }).generate(request);
 }
 
 const message = (e: unknown) =>
@@ -171,7 +198,7 @@ export async function runOddsSync(
   for (const competition of batch) {
     const fixtures = byCompetition.get(competition)!.slice(0, MAX_FIXTURES_PER_PROMPT);
     try {
-      const sources = await gatherSources(deps, competition, fixtures);
+      const sources = await gatherSources(deps, competition, fixtures, start);
       if (sources.length === 0) throw new Error("no licensed bookmaker page found");
       const answer = await generate(deps, oddsRequest({ competition, fixtures, sources }));
       const raw = parsePrices(answer.text);

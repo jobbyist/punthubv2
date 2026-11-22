@@ -1,5 +1,5 @@
 /**
- * Pre-match reference odds (owner decisions, 15 Nov 2026; docs/PARALLEL_ARCHITECTURE.md, "Odds rules").
+ * Pre-match reference odds (owner decisions, 22 Nov 2026; docs/PARALLEL_ARCHITECTURE.md, "Odds rules").
  *
  * Gemini copies prices off bookmaker pages with a word-for-word quote. Plain code decides what is kept:
  *  - only licensed South African bookmaker domains (ODDS_SOURCE_DOMAINS, `[attorney review]` on each site's terms);
@@ -31,29 +31,40 @@ const MARGIN: Readonly<Record<OddsMarket, [number, number]>> = {
   BTTS: [1.0, 1.2],
 };
 
-/** A member's odds more than this factor above the reference mark the pick "odds unverified" (owner, 15 Nov). */
+/** A member's odds more than this factor above the reference mark the pick "odds unverified" (owner, 22 Nov). */
 export const ODDS_UNVERIFIED_RATIO = 1.25;
 
 /**
  * Licensed South African bookmakers whose public pages may be read for reference prices. Each needs a recorded
  * provincial licence check and a check that its terms allow automated reading before launch `[attorney review]`.
- * `ODDS_SOURCE_DOMAINS` (comma separated) replaces this list without a code change.
+ * `ODDS_SOURCE_DOMAINS` (comma separated) may narrow this curated list; it cannot add a new bookmaker without a code review.
  */
-export const DEFAULT_ODDS_SOURCE_DOMAINS = [
-  "hollywoodbets.net",
-  "betway.co.za",
-  "supabets.co.za",
-  "sportingbet.co.za",
-  "gbets.co.za",
-  "playabets.co.za",
-  "wsb.co.za",
-  "10bet.co.za",
-  "betxchange.co.za",
-  "yesplay.bet",
-  "playbet.co.za",
-  "lottostar.co.za",
-  "easybet.co.za",
+/**
+ * Bookmaker source registry. Each entry is mapped to a South African legal operator and an operator-published
+ * licence disclosure, cross-referenced with operator-published licence disclosures and the NGB verified-operators directory where listed on 22 Nov 2026.
+ * The domain list is deliberately curated: search results cannot add a bookmaker or make a domain trusted.
+ */
+export const ODDS_BOOKMAKER_REGISTRY = [
+  { key: "hollywoodbets", brand: "Hollywoodbets", domains: ["hollywoodbets.net"], licensee: "Hollywood Sportsbook provincial entities", regulator: "Multiple Provincial Licensing Authorities", licence: "Multiple provincial bookmaker licences", evidence: "https://www.hollywoodbets.net/" },
+  { key: "betway", brand: "Betway", domains: ["betway.co.za"], licensee: "Raging River Trading (Pty) Ltd; Eastern Dawn Sports (Pty) Ltd (NGB register)", regulator: "Western Cape Gambling and Racing Board; Mpumalanga Economic Regulator", licence: "Operator disclosures: 10181496-010 / 9-2-1-09798; NGB register: 10181496-012 / 9-2-1-09658", reviewNote: "Public operator and NGB records show differing licence suffixes; confirm current online licence references with the boards.", evidence: "https://www.betway.co.za/" },
+  { key: "10bet", brand: "10bet", domains: ["10bet.co.za"], licensee: "Edcobrite (Pty) Ltd", regulator: "Mpumalanga Economic Regulator", licence: "9-2-1-09661", evidence: "https://www.10bet.co.za/" },
+  { key: "yesplay", brand: "YesPlay", domains: ["yesplay.bet"], licensee: "SA Sportsbook (Pty) Ltd", regulator: "Western Cape Gambling and Racing Board", licence: "10180204-013", evidence: "https://yesplay.bet/about-us" },
+  { key: "topbet", brand: "Topbet", domains: ["topbet.co.za"], licensee: "Hatsy (Pty) Ltd; Colman (Pty) Ltd", regulator: "Western Cape Gambling and Racing Board; Eastern Cape Gambling Board", licence: "Operator disclosures: 10190445-004; ECBM 070; NGB register records 10190445-005 for Hatsy", reviewNote: "Western Cape licence suffix differs between operator footer and NGB register; confirm current reference with WCGRB.", evidence: "https://topbet.co.za/" },
+  { key: "worldsportsbetting", brand: "World Sports Betting", domains: ["worldsportsbetting.co.za"], licensee: "SWB Solutions (Pty) Ltd and provincial WSB entities", regulator: "Western Cape Gambling and Racing Board; Mpumalanga Economic Regulator", licence: "10181495-013; 9-2-1-09865", evidence: "https://www.worldsportsbetting.co.za/" },
+  { key: "betfred", brand: "Betfred South Africa", domains: ["betfred.co.za"], licensee: "Betting World (Pty) Ltd", regulator: "Mpumalanga Economic Regulator", licence: "9-2-1-00039", evidence: "https://betfred.co.za/" },
+  { key: "playabets", brand: "PlayaBets", domains: ["playabets.co.za"], licensee: "Playabets MP (Pty) Ltd", regulator: "Mpumalanga Economic Regulator", licence: "9-2-1-09689", evidence: "https://www.playabets.co.za/pages/ResponsibleGambling" },
+  { key: "supabets", brand: "Supabets", domains: ["supabets.co.za"], licensee: "Portapa 2 (Pty) Ltd", regulator: "Mpumalanga Economic Regulator", licence: "9-2-1-00055", evidence: "https://gaming.supabets.co.za/" },
 ] as const;
+
+export const DEFAULT_ODDS_SOURCE_DOMAINS = ODDS_BOOKMAKER_REGISTRY.flatMap((entry) => [...entry.domains]);
+
+/** Resolve a domain to one bookmaker identity so aliases/subdomains can never count as separate books. */
+export function oddsBookmakerKey(domain: string): string | null {
+  const value = domain.toLowerCase().replace(/^www\./, "");
+  return ODDS_BOOKMAKER_REGISTRY.find((entry) =>
+    entry.domains.some((root) => value === root || value.endsWith("." + root)),
+  )?.key ?? null;
+}
 
 /**
  * Bookmakers that show "profit" odds: the winnings per R1 staked, without the stake (decimal minus 1). Hollywoodbets
@@ -67,16 +78,14 @@ export function toDecimalOdds(shown: number, domain: string): number {
 }
 
 export function oddsSourceDomains(env: string | undefined): string[] {
-  const list = (env ?? "")
-    .split(",")
-    .map((d) =>
-      d
-        .trim()
-        .toLowerCase()
-        .replace(/^www\./, ""),
-    )
-    .filter((d) => /^[a-z0-9.-]+\.[a-z]{2,}$/.test(d));
-  return list.length ? list : [...DEFAULT_ODDS_SOURCE_DOMAINS];
+  if (!env?.trim()) return [...DEFAULT_ODDS_SOURCE_DOMAINS];
+  const requested = new Set(
+    env.split(",")
+      .map((domain) => domain.trim().toLowerCase().replace(/^www\./, ""))
+      .filter((domain) => /^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)),
+  );
+  // Environment configuration may narrow the reviewed registry, never add an unverified bookmaker/domain.
+  return DEFAULT_ODDS_SOURCE_DOMAINS.filter((domain) => requested.has(domain));
 }
 
 export function isOddsSource(domain: string, allowed: readonly string[]): boolean {
@@ -339,6 +348,11 @@ export function validatePrices(
 
   const prices: ReferencePrice[] = [];
   for (const [key, slot] of pool) {
+    const independentDomains = [...new Set(slot.domains.filter((domain) => oddsBookmakerKey(domain) !== null).map((domain) => oddsBookmakerKey(domain)!))];
+    if (independentDomains.length < 2) {
+      rejected.push({ source: slot.first.index, reason: "insufficient independent bookmaker sources" });
+      continue;
+    }
     const [fixtureId, market, selection] = key.split("|") as [string, OddsMarket, string];
     prices.push({
       fixtureId,
@@ -346,7 +360,7 @@ export function validatePrices(
       selection,
       price: median(slot.values),
       // Audit only, never displayed. Several domains: the price is their median.
-      sourceDomain: [...new Set(slot.domains)].join(","),
+      sourceDomain: [...new Set(slot.domains)].sort().join(","),
       sourceUrl: slot.first.url,
     });
   }

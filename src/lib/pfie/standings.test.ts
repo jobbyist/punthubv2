@@ -348,6 +348,11 @@ describe("chooseTable", () => {
     expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
     expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
     expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
+    expect(independentSourceKey("sports.espn.com")).toBe(independentSourceKey("espn.com"));
+    expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
+    expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
+    expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
+    expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;

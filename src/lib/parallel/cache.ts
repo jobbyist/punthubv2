@@ -7,7 +7,7 @@
  */
 
 export type CachePurpose =
-  "fixtures" | "results" | "tables" | "odds" | "news" | "research" | "badges" | "chat" | "stats";
+  "fixtures" | "results" | "tables" | "odds" | "news" | "research" | "badges" | "chat" | "stats" | "match-intelligence";
 
 /** Seconds an answer stays fresh, per purpose. Results are short because scores change at full time. */
 export const CACHE_TTL_SECONDS: Readonly<Record<CachePurpose, number>> = {
@@ -20,6 +20,7 @@ export const CACHE_TTL_SECONDS: Readonly<Record<CachePurpose, number>> = {
   badges: 30 * 24 * 3600,
   chat: 3600,
   stats: 30 * 24 * 3600,
+  "match-intelligence": 15 * 60,
 };
 
 function normalise(value: unknown): unknown {
