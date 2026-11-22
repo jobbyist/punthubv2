@@ -118,7 +118,7 @@ async function gatherSources(
   });
   const licensed = hits.filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains) && oddsBookmakerKey(domainOf(h.url)) !== null);
   const priorityDomains = rotateBookmakerDomains(deps.allowedDomains, competition, rotationTime);
-  const priority = new Map(priorityDomains.map((domain, index) => [oddsBookmakerKey(domain), index]));
+  const priority = new Map<string | null, number>(priorityDomains.map((domain, index) => [oddsBookmakerKey(domain), index] as const));
   licensed.sort((a, b) =>
     (priority.get(oddsBookmakerKey(domainOf(a.url)) ?? "") ?? 99) -
     (priority.get(oddsBookmakerKey(domainOf(b.url)) ?? "") ?? 99),
