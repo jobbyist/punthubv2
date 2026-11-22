@@ -204,8 +204,32 @@ describe("validateTables", () => {
     const duplicateRows = [...raw(1), { ...raw(1)[0]!, team: "ALP Alpha FC" }];
     const duplicatePage = page("league.com", "official", 1, [...lines, lines[0]!]);
     expect(validateTables(duplicateRows, [duplicatePage], 4).tables).toHaveLength(1);
-    const conflicting = [...raw(1), { ...raw(1)[0]!, points: 24, quote: "conflicting Alpha row" }];
+    const conflicting = [...raw(1), { ...raw(1)[0]!, played: 9, points: 22, quote: "conflicting Alpha row" }];
     expect(validateTables(conflicting, [duplicatePage], 4).rejected[0]!.reason).toBe("duplicate_team_Alpha FC");
+  });
+  it("prefers the cumulative overall row over a home or away subset", () => {
+    const overall = raw(1)[0]!;
+    const subset = {
+      ...overall,
+      team: "ALP Alpha FC",
+      position: 3,
+      played: 5,
+      won: 3,
+      drawn: 1,
+      lost: 1,
+      goalsFor: 8,
+      goalsAgainst: 4,
+      points: 10,
+      quote: "ALP Alpha FC 5 3 1 1 8 4 10",
+    };
+    const duplicatePage = page("league.com", "official", 1, [...lines, subset.quote]);
+    const result = validateTables([...raw(1), subset], [duplicatePage], 4);
+    expect(result.tables).toHaveLength(1);
+    expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
+      played: 10,
+      won: 6,
+      points: 20,
+    });
   });
   it("accepts official competition ranking ties when explicitly enabled", () => {
     const tied = raw(1, (r) => r.team === "Charlie City" ? { ...r, position: 2 } : r);
