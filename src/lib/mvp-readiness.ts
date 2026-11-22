@@ -146,17 +146,24 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "pr185-laliga",
-        title: "PR #185: five-source standings tests pass; full-suite and extraction gates remain open",
+        title: "PR #185: standings tests 47/47; four shared baseline failures and live extraction remain open",
         weight: 1,
         blocker: true,
         ref: "PR #185 · preview: https://punthubv2-g01du2tea-michael-chigbus-projects-6fad9571.vercel.app",
       },
       {
         id: "pr195-evidence",
-        title: "PR #195: evidence tests pass; full-suite and disposable SQL review remain open",
+        title: "PR #195: evidence tests 15/15; 13 shared baseline failures and isolated SQL review remain open",
         weight: 1,
         blocker: true,
         ref: "PR #195 · preview: https://punthubv2-g7kl1s1v5-michael-chigbus-projects-6fad9571.vercel.app · migration unapplied",
+      },
+      {
+        id: "test-suite-baseline",
+        title: "Resolve four shared baseline test failures (cron auth, archive aliases and PFIE model routing)",
+        weight: 1,
+        blocker: true,
+        ref: "Main baseline: 13 failures; PR #185 reduces this to four",
       },
       {
         id: "pr196-postlaunch",
