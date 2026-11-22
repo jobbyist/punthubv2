@@ -45,3 +45,16 @@ See the full checklist for evidence and completion criteria. Update the status t
 - No production migration history, cron schedule or schema changes were made during the audit.
 
 The safe reconciliation plan is documented in the readiness checklist. Production changes require a complete migration mapping and verified backup/rollback plan.
+
+## Pull request triage (22 November)
+
+| PR | Status | Decision |
+|---|---|---|
+| [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | Draft documentation PR | Review preview, then merge if checks remain clean |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft | Post-launch foundation; hold for migration baseline, tests and complete integrations |
+| [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft | Hold: odds source rights absent, migration SQL needs correction, and production validation/legal review incomplete |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft | Hold: review found six configured pages against a five-source cap |
+| #173, #177 | Closed, not merged | Their code paths are already present in main |
+| #183 | Closed, not merged | Duplicate of #185 |
+| #81 | Closed, not merged | Owner-confirmed draw terms were carried into the legal changelog in PR #200 |
+
