@@ -130,6 +130,7 @@ describe("La Liga live source configuration", () => {
     );
     expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
     expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("theanalyst.com", ["laliga.com"])).toBe("trusted");
   });
 });
 
