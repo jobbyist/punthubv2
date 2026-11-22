@@ -306,7 +306,7 @@ Current main has 13 failing tests across four files. PR #185 has four failures a
 
 ### PR Draft Resolution Tracker
 
-The `/dev` readiness page now includes a dedicated PR Draft Resolution Tracker with a card for each tracked PR, target release lane, current draft state, resolution-gate progress, cleared/open/deferred criteria, a concrete next action and a direct GitHub link.
+The `/dev` readiness page now includes a dedicated PR Draft Resolution Tracker with a card for each tracked PR, target release lane, current draft state, resolution-gate progress, persistent admin-editable ticks, cleared/open/deferred criteria, a concrete next action and a direct GitHub link.
 
 | PR | Release lane | Tracker state | Cleared | Remaining gate / next action |
 |---|---|---|---:|---|
