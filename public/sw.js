@@ -1,6 +1,6 @@
 /* Puntr service worker. Cache static assets only; never cache private or live data. */
 const CACHE_PREFIX = "puntr-pwa";
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
 const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/puntr-icon-192.png", "/puntr-icon-512.png"];
@@ -44,8 +44,8 @@ self.addEventListener("push", (event) => {
   }
   const title = typeof payload.title === "string" ? payload.title.slice(0, 120) : "Puntr";
   const body = typeof payload.body === "string" ? payload.body.slice(0, 220) : "There's a new update waiting for you.";
-  const rawUrl = typeof payload.url === "string" ? payload.url : "/predictions";
-  let targetUrl = "/predictions";
+  const rawUrl = typeof payload.url === "string" ? payload.url : "/discover";
+  let targetUrl = "/discover";
   try {
     const parsed = new URL(rawUrl, self.location.origin);
     if (parsed.origin === self.location.origin && !parsed.pathname.startsWith("/auth/") && !parsed.pathname.startsWith("/admin/")) {
@@ -67,9 +67,9 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const rawUrl = event.notification.data?.url;
-  let targetUrl = new URL("/predictions", self.location.origin).href;
+  let targetUrl = new URL("/discover", self.location.origin).href;
   try {
-    const parsed = new URL(typeof rawUrl === "string" ? rawUrl : "/predictions", self.location.origin);
+    const parsed = new URL(typeof rawUrl === "string" ? rawUrl : "/discover", self.location.origin);
     if (parsed.origin === self.location.origin && !parsed.pathname.startsWith("/auth/") && !parsed.pathname.startsWith("/admin/")) {
       targetUrl = parsed.href;
     }
