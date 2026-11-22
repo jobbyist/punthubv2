@@ -1,12 +1,12 @@
 {
   "meta": {
-    "title": "Fixtures and predictions | Puntr",
-    "description": "Upcoming Betway Premiership, Premier League, Champions League and more football fixtures. Picks open at launch on 1 December 2026. Join free now. 18+.",
-    "ogTitle": "Fixtures and predictions | Puntr",
-    "ogDescription": "Upcoming PSL, EPL, UCL and more football fixtures."
+    "title": "Discover sports predictions | Puntr",
+    "description": "Explore upcoming football fixtures, verified results, league tables, head-to-head duels and weekly leaderboards. 18+.",
+    "ogTitle": "Discover sports predictions | Puntr",
+    "ogDescription": "Fixtures, results, league tables, duels and weekly leaders."
   },
-  "title": "Predictions",
-  "subtitle": "Your matchday hub: upcoming fixtures, latest results, league tables, head-to-head duels and leaderboards, all in South African time. Picks open at launch on 1 December 2026.",
+  "title": "Discover",
+  "subtitle": "Your sports hub: upcoming fixtures, verified results, league tables, head-to-head duels and weekly leaders, all in South African time.",
   "filter": {
     "all": "All leagues",
     "soccer": "Soccer",
@@ -99,6 +99,17 @@
       "cta": "Leaderboards",
       "empty": "The weekly board fills as picks settle.",
       "units": "{{units}} units"
+    },
+    "newsroom": {
+      "title": "From the newsroom",
+      "cta": "All sports news",
+      "empty": "New sports coverage will appear here as it is published."
     }
+  },
+  "fantasy": {
+    "eyebrow": "COMING SOON",
+    "title": "Fantasy Arena",
+    "body": "Build your squad, take on head-to-head duels and climb the fantasy leaderboard. Your next way to play is taking shape.",
+    "cta": "Explore the roadmap"
   }
 }
