@@ -407,6 +407,9 @@ describe("La Liga cross-publisher team aliases", () => {
   it("normalizes official LaLiga names to independent publisher names", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
     expect(normaliseTeam("Deportivo Alavés")).toBe(normaliseTeam("Alaves"));
+    expect(normaliseTeam("Athletic")).toBe(normaliseTeam("Athletic Bilbao"));
+    expect(normaliseTeam("Deportivo")).toBe(normaliseTeam("Deportivo La Coruna"));
+    expect(normaliseTeam("Espanyol Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("RCD Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("RC Deportivo")).toBe(normaliseTeam("Deportivo La Coruna"));
