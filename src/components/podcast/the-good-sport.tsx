@@ -646,7 +646,7 @@ export function TheGoodSportEpisodePage() {
             <p className="mt-1 text-xs text-muted-foreground">
               {isSignedIn ? "The player will activate when the episode master is uploaded." : "Episode playback is reserved for Puntr members."}
             </p>
-            {!isSignedIn && !premiereUpcoming() && (
+            {!isSignedIn && (
               <button
                 type="button"
                 onClick={() => setAuthOpen(true)}
