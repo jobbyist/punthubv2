@@ -77,6 +77,16 @@ export const Route = createFileRoute("/api/push")({
             return json({ ok: true });
           }
 
+          if (action === "unsubscribe-device") {
+            const endpoint = body["endpoint"];
+            if (typeof endpoint !== "string" || !endpoint.startsWith("https://") || endpoint.length > 2048) {
+              return json({ error: "Invalid device subscription endpoint." }, 400);
+            }
+            const { error } = await db.from("push_subscriptions").delete().eq("user_id", user.id).eq("endpoint", endpoint);
+            if (error) return json({ error: "Could not remove this device subscription." }, 500);
+            return json({ ok: true });
+          }
+
           if (action === "unsubscribe") {
             const { error } = await db.from("push_subscriptions").delete().eq("user_id", user.id);
             if (error) return json({ error: "Could not turn off push notifications." }, 500);
