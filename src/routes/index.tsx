@@ -69,6 +69,7 @@ function Landing() {
   const { next } = Route.useLoaderData();
   const { loading: sessionLoading, isSignedIn } = useSession();
   const [headlineVariant, setHeadlineVariant] = useState<"A" | "B">("A");
+  const [hasPostedPick, setHasPostedPick] = useState(false);
   const [postLaunch, setPostLaunch] = useState(false);
   useEffect(() => {
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -78,6 +79,11 @@ function Landing() {
     if (sessionLoading) return;
     const variant = Math.random() < 0.5 ? "A" : "B";
     setHeadlineVariant(variant);
+    try {
+      setHasPostedPick(!!window.sessionStorage.getItem("puntr:analytics:event:pick_posted"));
+    } catch {
+      setHasPostedPick(false);
+    }
     trackEvent("home_hero_headline_viewed", {
       variant,
       authenticated: isSignedIn,
@@ -122,12 +128,12 @@ function Landing() {
               onClick={() => {
                 trackEvent("home_hero_primary_cta_clicked", {
                   authenticated: isSignedIn,
-                  destination: isSignedIn ? "discover" : "join",
+                  destination: !isSignedIn ? "join" : hasPostedPick ? "leaderboards" : "discover",
                 });
-                navigate({ to: isSignedIn ? "/discover" : "/join" });
+                navigate({ to: !isSignedIn ? "/join" : hasPostedPick ? "/leaderboards" : "/discover" });
               }}
             >
-              {isSignedIn ? "Make a prediction" : "Become a Founding Member"}
+              {!isSignedIn ? "Become a Founding Member" : hasPostedPick ? "View your leaderboard position" : "Make your first prediction"}
             </Button>
             <Button
               size="lg"
@@ -137,16 +143,16 @@ function Landing() {
                 if (isSignedIn) {
                   trackEvent("home_hero_secondary_cta_clicked", {
                     authenticated: true,
-                    destination: "leaderboards",
+                    destination: "discover",
                   });
-                  navigate({ to: "/leaderboards" });
+                  navigate({ to: "/discover" });
                 } else {
                   trackEvent("home_hero_video_clicked", { authenticated: false });
                   setIsVideoModalOpen(true);
                 }
               }}
             >
-              {isSignedIn ? "View leaderboards" : <><Play className="mr-2 size-4" /> Watch the video</>}
+              {isSignedIn ? "Explore predictions" : <><Play className="mr-2 size-4" /> Watch the video</>}
             </Button>
           </div>
           <FoundingCounter className="mt-4" />
