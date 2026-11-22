@@ -2,6 +2,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 type PushStatus = { enabled: boolean; activeCount: number; permission: NotificationPermission | "unsupported" };
 
+export async function pushApiRequest<T = Record<string, unknown>>(payload: Record<string, unknown>): Promise<T> {
+  const { data, error } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (error || !token) throw new Error("Please sign in again to manage push notifications.");
+  const response = await fetch("/api/push", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+  const result = await response.json() as T & { error?: string };
+  if (!response.ok) throw new Error(result.error || "Push notification request failed.");
+  return result;
+}
+
 function decodeVapidKey(value: string): Uint8Array {
   const padding = "=".repeat((4 - (value.length % 4)) % 4);
   const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -20,8 +35,7 @@ export function supportsWebPush(): boolean {
 
 export async function getPushStatus(): Promise<PushStatus> {
   if (!supportsWebPush()) return { enabled: false, activeCount: 0, permission: "unsupported" };
-  const { data, error } = await supabase.functions.invoke("push-notifications", { body: { action: "status" } });
-  if (error) throw error;
+  const data = await pushApiRequest<{ enabled: boolean; activeCount: number }>({ action: "status" });
   return {
     enabled: Boolean(data?.enabled),
     activeCount: Number(data?.activeCount ?? 0),
@@ -43,10 +57,9 @@ export async function enablePushNotifications(): Promise<void> {
       applicationServerKey: decodeVapidKey(publicKey),
     });
   }
-  const { error } = await supabase.functions.invoke("push-notifications", {
-    body: { action: "subscribe", subscription: subscription.toJSON(), userAgent: navigator.userAgent.slice(0, 300) },
-  });
-  if (error) {
+  try {
+    await pushApiRequest({ action: "subscribe", subscription: subscription.toJSON(), userAgent: navigator.userAgent.slice(0, 300) });
+  } catch (error) {
     await subscription.unsubscribe().catch(() => false);
     throw error;
   }
@@ -58,7 +71,7 @@ export async function enablePushNotifications(): Promise<void> {
   });
   if (consentError) {
     await subscription.unsubscribe().catch(() => false);
-    await supabase.functions.invoke("push-notifications", { body: { action: "unsubscribe" } });
+    await pushApiRequest({ action: "unsubscribe" }).catch(() => undefined);
     throw consentError;
   }
 }
@@ -69,8 +82,7 @@ export async function disablePushNotifications(): Promise<void> {
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) await subscription.unsubscribe();
   }
-  const { error } = await supabase.functions.invoke("push-notifications", { body: { action: "unsubscribe" } });
-  if (error) throw error;
+  await pushApiRequest({ action: "unsubscribe" });
   const { error: consentError } = await supabase.rpc("record_consent", {
     p_purpose: "push_notifications",
     p_granted: false,
