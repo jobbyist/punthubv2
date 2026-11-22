@@ -15,7 +15,11 @@ export type PageArtKind =
   | "radar"
   | "news"
   | "route"
-  | "gift";
+  | "gift"
+  | "responsible"
+  | "arena"
+  | "directory"
+  | "ambassadors";
 
 const line = "stroke-foreground/25";
 const soft = "fill-primary/12";
@@ -489,6 +493,96 @@ function Gift() {
   );
 }
 
+
+/** A calm shield, open hands and heartbeat line for the Responsible Play guide. */
+function Responsible() {
+  return (
+    <Frame>
+      <circle cx="120" cy="75" r="62" className="puntr-spin stroke-foreground/15" strokeDasharray="2 8" />
+      <path d="M120 22 l42 15 v34 c0 29 -19 48 -42 58 c-23 -10 -42 -29 -42 -58 V37z" className="fill-primary/10 stroke-primary" />
+      <path d="M120 43 v35" className="puntr-draw stroke-primary" strokeWidth="4" />
+      <path d="M99 83 q21 20 42 0" className="puntr-draw stroke-primary" strokeWidth="4" />
+      <path d="M38 78 h25 l9 -13 l12 27 l12 -14 h20" className="puntr-draw stroke-foreground/55" />
+      <path d="M144 78 h20 l10 -12 l12 24 l10 -12 h16" className="puntr-draw stroke-foreground/55" />
+      <circle cx="120" cy="78" r="5" className="puntr-blink fill-primary" strokeWidth="0" />
+      <circle cx="48" cy="35" r="3" className="puntr-blink fill-primary" strokeWidth="0" />
+      <circle cx="195" cy="116" r="3" className="puntr-blink fill-primary" strokeWidth="0" />
+    </Frame>
+  );
+}
+
+/** A compact arena: rotating floodlights frame a trophy and two rival lanes. */
+function Arena() {
+  return (
+    <Frame>
+      <ellipse cx="120" cy="82" rx="94" ry="52" className="puntr-spin stroke-foreground/20" strokeDasharray="5 8" />
+      <ellipse cx="120" cy="82" rx="72" ry="38" className="stroke-primary/45" />
+      <path d="M34 82 H206 M120 44 V120" className="stroke-foreground/20" />
+      <path d="M70 48 L54 28 M170 48 L186 28" className="stroke-primary/70" strokeWidth="3" />
+      <g className="puntr-bob">
+        <path d="M100 28 h40 v12 q0 20 -20 27 q-20 -7 -20 -27z" className="fill-primary/20 stroke-primary" />
+        <path d="M100 36 h-14 q0 20 17 19 M140 36 h14 q0 20 -17 19 M120 67 v12 M106 82 h28" className="stroke-primary" strokeWidth="3" />
+      </g>
+      <path d="M42 112 l18 -13 M198 112 l-18 -13" className="puntr-draw stroke-primary" />
+      <circle cx="44" cy="31" r="4" className="puntr-blink fill-primary" strokeWidth="0" />
+      <circle cx="196" cy="31" r="4" className="puntr-blink fill-primary" strokeWidth="0" />
+      <circle cx="120" cy="122" r="3" className="puntr-blink fill-primary" strokeWidth="0" />
+    </Frame>
+  );
+}
+
+/** A searchable licence register: document rows resolve into checked entries. */
+function Directory() {
+  return (
+    <Frame>
+      <rect x="34" y="14" width="172" height="122" rx="8" className="fill-card stroke-foreground/25" />
+      <rect x="48" y="27" width="144" height="18" rx="4" className="fill-primary/12 stroke-primary/50" />
+      <circle cx="59" cy="36" r="4" className="stroke-primary" />
+      <path d="M62 39 l5 5" className="stroke-primary" />
+      {[0,1,2].map((i) => (
+        <g key={i} className="puntr-pop" style={{ ["--i" as string]: i * 2 }}>
+          <rect x="48" y={56 + i * 23} width="144" height="17" rx="3" className="fill-muted stroke-foreground/15" />
+          <circle cx="61" cy={64.5 + i * 23} r="5" className="fill-primary/15 stroke-primary/60" />
+          <path d={`M58 ${64.5 + i * 23} l2 2 l4 -5`} className="stroke-primary" />
+          <line x1="74" y1={62 + i * 23} x2={150 - i * 9} y2={62 + i * 23} className="stroke-foreground/45" />
+          <line x1="74" y1={67 + i * 23} x2={126 + i * 8} y2={67 + i * 23} className="stroke-foreground/20" />
+        </g>
+      ))}
+      <g className="puntr-bob">
+        <circle cx="184" cy="112" r="17" className="fill-primary/15 stroke-primary" />
+        <path d="M196 124 l13 13" className="stroke-primary" strokeWidth="4" />
+      </g>
+    </Frame>
+  );
+}
+
+/** A community broadcast: creator profiles orbit a central megaphone. */
+function Ambassadors() {
+  return (
+    <Frame>
+      <circle cx="120" cy="76" r="62" className="puntr-spin stroke-primary/30" strokeDasharray="3 9" />
+      <circle cx="120" cy="76" r="45" className="stroke-foreground/15" />
+      <g className="puntr-bob">
+        <path d="M92 67 h18 l38 -20 v58 l-38 -20 H92z" className="fill-primary/20 stroke-primary" />
+        <path d="M107 85 l8 25 h-14 l-8 -25" className="fill-card stroke-primary" />
+        <path d="M154 59 q18 17 0 34 M164 48 q30 28 0 56" className="puntr-draw stroke-primary/70" />
+      </g>
+      <g className="puntr-pop" style={{ ["--i" as string]: 2 }}>
+        <circle cx="54" cy="42" r="12" className="fill-card stroke-foreground/40" />
+        <circle cx="54" cy="38" r="4" className="fill-primary/70" strokeWidth="0" />
+        <path d="M46 51 q8 -10 16 0" className="stroke-primary" />
+      </g>
+      <g className="puntr-pop" style={{ ["--i" as string]: 5 }}>
+        <circle cx="190" cy="110" r="12" className="fill-card stroke-foreground/40" />
+        <circle cx="190" cy="106" r="4" className="fill-primary/70" strokeWidth="0" />
+        <path d="M182 119 q8 -10 16 0" className="stroke-primary" />
+      </g>
+      <circle cx="180" cy="27" r="3" className="puntr-blink fill-primary" strokeWidth="0" />
+      <circle cx="48" cy="111" r="3" className="puntr-blink fill-primary" strokeWidth="0" />
+    </Frame>
+  );
+}
+
 const ART: Record<PageArtKind, () => ReactNode> = {
   pitch: Pitch,
   podium: Podium,
@@ -500,6 +594,10 @@ const ART: Record<PageArtKind, () => ReactNode> = {
   news: News,
   route: RouteArt,
   gift: Gift,
+  responsible: Responsible,
+  arena: Arena,
+  directory: Directory,
+  ambassadors: Ambassadors,
 };
 
 export function PageArt({ kind, className = "" }: { kind: PageArtKind; className?: string }) {

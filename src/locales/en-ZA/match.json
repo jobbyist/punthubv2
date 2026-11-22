@@ -57,7 +57,8 @@
     },
     "needEmail": "Confirm your email to post a pick.",
     "needEmailWhy": "Picks go on the public feed and the leaderboard, so we ask for a confirmed email first. It takes a minute.",
-    "needEmailCta": "Confirm my email"
+    "needEmailCta": "Confirm my email",
+    "userSubmitted": "User-submitted"
   },
   "error": {
     "kickoff_passed": "This match has kicked off - picks are locked.",
@@ -113,7 +114,9 @@
     "void": "Void",
     "pending": "Pending",
     "units": "{{units}} units",
-    "loadError": "We couldn't load the picks. Please refresh the page."
+    "loadError": "We couldn't load the picks. Please refresh the page.",
+    "submittedAt": "Submitted {{date}} at {{time}}",
+    "userSubmitted": "User-submitted"
   },
   "crowd": {
     "title": "Crowd split (Match result)",

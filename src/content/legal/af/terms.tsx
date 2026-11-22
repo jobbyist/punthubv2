@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /terms. The English route file is the version that applies; keep this in step with it
- * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r23.
+ * (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-23-r24.
  */
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { LegalTranslationNotice } from "@/components/legal-translation-notice";
@@ -24,7 +24,7 @@ export function TermsAf() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r23). Konsep wat
+            <strong>Laas bygewerk:</strong> 23 November 2026 (weergawe 2026-11-23-r24). Konsep wat
             op hersiening deur 'n prokureur wag.
           </p>
 
@@ -117,9 +117,10 @@ export function TermsAf() {
                 KI-aksies in tot 'n billike-gebruik-limiet van 40 per maand en 15 per dag; ná die
                 limiet gebruik 'n KI-aksie betaal-soos-jy-gaan-krediete. Alle ander Pro-funksies is
                 nie beperk nie [attorney review]. Terugbetalings word op die Terugbetalings-bladsy
-                gedek. Verwysingsbelonings, beplan as tot 30% in bonus-PuntPoints op kwalifiserende
-                aankope deur mense wat jy uitnooi (nooit kontant nie), is nie beskikbaar totdat ons
-                hul voorwaardes publiseer nie [attorney review]
+                gedek. Suksesvolle verwysings kan 10–30% herhalende kommissie op kwalifiserende
+                Puntr Pro-intekeninkomste verdien ingevolge die afsonderlike verwysingsprogram se
+                voorwaardes. Kommissie is nie gebaseer op boekmakerdeposito's, insette, verliese of
+                winste nie.
               </li>
               <li>Opvoedkundige inhoud en hulpbronne oor wed</li>
               <li>Skakels na gelisensieerde vennote, gemerk &quot;Advertensie&quot;</li>
@@ -148,16 +149,29 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>5. Betalings en derdeparty-dienste</h2>
             <p className={P}>
-              <strong>Betalings vir die jaarpas:</strong> Om 'n jaarpas te bespreek, is gratis op
-              Puntr. Ons e-pos 'n veilige PayFast-betaalskakel, en PayFast verwerk die betaling van
-              R299 direk. Puntr hou nie betalingsgeld nie, aanvaar nie weddenskappe nie, stel nie
-              pryse vas nie en hanteer nie wengeld nie.
+              <strong>Betalingsverwerking:</strong> Betalings vir betaalde Puntr-funksies word tans
+              deur PayFast by Network verwerk. Wanneer jy kies om te betaal, kan jy na PayFast se
+              gehoste betaalblad herlei word. PayFast ontvang en verwerk jou betalingsbewyse
+              direk. Puntr ontvang die bestelling- of intekeningverwysing, transaksieverwysing,
+              bedrag, betalingstatus en toepaslike datums om die gekoopte diens te lewer,
+              transaksies te rekonsilieer en ondersteuning te bied. Ons sien of stoor nie jou volle
+              kaart- of bankbesonderhede nie. Die Stigters-jaarpas is 'n eenmalige R299-betaling;
+              om dit op Puntr te bespreek is gratis en die veilige PayFast-skakel word per e-pos
+              gestuur.
             </p>
             <p className={P}>
-              <strong>Derdeparty-voorwaardes:</strong> As jy 'n skakel na 'n gelisensieerde
-              operateur of kleinhandelaar volg, is jy onderhewig aan daardie maatskappy se
-              bepalings, privaatheidsbeleid en betalingsvoorwaardes. Puntr is nie verantwoordelik
-              vir hul praktyke, beleide of dienste nie.
+              <strong>Betaalmetodes:</strong> PayFast by Network is die huidige betaalopsie. Ozow
+              word beplan, maar is nog nie geïntegreer of by betaalpunt beskikbaar nie. Ons sal
+              hierdie Voorwaardes en ons Privaatheidskennisgewing bywerk voordat Ozow geaktiveer
+              word. PayFast se eie voorwaardes en privaatheidskennisgewing geld ook vir die
+              betalingsverwerking wat dit uitvoer.
+            </p>
+            <p className={P}>
+              <strong>Derdepartydienste:</strong> As jy 'n skakel na 'n gelisensieerde boekmaker
+              of kleinhandelaar volg, is jy onderhewig aan daardie maatskappy se bepalings,
+              privaatheidsbeleid en betalingsvoorwaardes. Puntr is nie verantwoordelik vir hul
+              praktyke, beleide of dienste nie. Puntr aanvaar nie weddenskappe nie, hou nie
+              weddenskapsgeld nie en hanteer nie boekmakerwinste nie.
             </p>
             <p className={PL}>
               <strong>Geaffilieerde verhoudings:</strong> Puntr kan 'n kommissie verdien wanneer jy
@@ -305,17 +319,21 @@ export function TermsAf() {
           </section>
 
           <section className="mb-8">
-            <h2 className={H}>10. Betaalde opsies (nie te koop nie)</h2>
+            <h2 className={H}>10. Betaalde funksies, fakturering en kansellasie</h2>
             <p className={PL}>
-              Betaal-soos-jy-gebruik-krediete en Puntr Pro, 'n maandelikse intekening vir gevorderde
-              wedders en tipgewers (aanduidend R99 per maand), is nie te koop nie. Krediete, sodra
-              dit verkoop word, ontsluit premiumfunksies een gebruik op 'n slag, word in jou Beursie
-              gewys, en kan nie aan 'n ander lid gestuur of vir kontant omgeruil word nie. Krediete
-              wat ons aan jou gee (byvoorbeeld om 'n funksie te toets) dra geen reg op 'n
-              terugbetaling nie. Voordat enigiets verkoop word, sal ons die prys, fakturering,
-              kansellasie- en terugbetalingsvoorwaardes publiseer en dit wys voordat jy betaal.
-              Betaling sal nooit ekstra punte, 'n hoër posisie of kwalifikasie vir pryse verdien
-              nie. [attorney review: subscription terms]
+              Waar betaalpunt geaktiveer is, kan betaal-soos-jy-gebruik-kredietpakke en Puntr Pro
+              deur jou Beursie gekoop word. Die kredietpakprys en ingeslote krediete word voor
+              betaling vertoon. Krediete ontsluit kwalifiserende premiumaksies een gebruik op 'n
+              slag, verskyn in jou Beursie, kan nie aan 'n ander lid oorgedra of vir kontant
+              omgeruil word nie. Puntr Pro is 'n maandelikse intekening; die huidige prys word by
+              betaalpunt gewys. Tensy betaalpunt anders aandui, hernu dit maandeliks totdat jy dit
+              in jou Beursie kanselleer. Kansellasie stop toekomstige hernuwings, terwyl Pro-toegang
+              tot die einde van die betaalde tydperk voortduur. Die Stigters-jaarpas is 'n
+              afsonderlike eenmalige R299-aanbod en hernu nie outomaties nie. Terugbetalings en
+              betalingsnavrae word volgens die Terugbetalings-bladsy, die voorwaardes by betaalpunt
+              en toepaslike wetgewing hanteer. Krediete wat ons vir promosies of toetsing toeken,
+              is nie aankope nie en het geen kontantwaarde nie. Betaling verdien nooit ekstra punte,
+              'n hoër voorspellingsranglys of kwalifikasie vir pryse nie.
             </p>
           </section>
 

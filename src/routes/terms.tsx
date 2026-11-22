@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 22 November 2026 (version 2026-11-22-r23). Draft pending
+            <strong>Last Updated:</strong> 23 November 2026 (version 2026-11-23-r24). Draft pending
             attorney review.
           </p>
 
@@ -120,9 +120,10 @@ function Terms() {
                 after payment is received. Like monthly Puntr Pro, the Annual Pass includes AI
                 actions up to a fair-use limit of 40 a month and 15 a day; past the limit an AI
                 action uses Pay-As-You-Go credits. All other Pro features are not limited [attorney
-                review]. Refunds are covered on the Refunds page. Referral rewards, planned as up to
-                30% in bonus PuntPoints on qualifying purchases made by people you invite (never
-                cash), are not available until we publish their terms [attorney review]
+                review]. Refunds are covered on the Refunds page. Successful referrals may earn
+                10–30% recurring commission on eligible Puntr Pro subscription revenue under the
+                separate referral programme terms. Commission is not based on bookmaker deposits,
+                stakes, losses or winnings.
               </li>
               <li>Educational content and betting resources</li>
               <li>Links to licensed partners, marked &quot;Ad&quot;</li>
@@ -150,14 +151,26 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">5. Payments & Third-Party Services</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Annual Pass payments:</strong> Reserving an Annual Pass is free on Puntr. We
-              email a secure PayFast payment link, and PayFast processes the R299 payment directly.
-              Puntr does not hold payment funds, accept bets, set odds or handle winnings.
+              <strong>Payment processing:</strong> Payments for paid Puntr features are currently
+              processed by PayFast by Network. When you choose to pay, you may be redirected to
+              PayFast&apos;s hosted checkout. PayFast receives and processes your payment credentials
+              directly. Puntr receives the order or subscription reference, transaction reference,
+              amount, payment status and relevant dates so we can provide the purchased service,
+              reconcile transactions and handle support requests. We do not see or store your full
+              card or bank details. The Founding Annual Pass is a once-off R299 payment; reserving it
+              on Puntr is free and the secure PayFast payment link is sent by email.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Third-Party Terms:</strong> If you follow a link to a licensed operator or
-              retailer, you are subject to that company&apos;s terms, privacy policy and payment
-              terms. Puntr is not responsible for their practices, policies or services.
+              <strong>Payment methods:</strong> PayFast by Network is the current payment option.
+              Ozow is planned but is not yet integrated or available at checkout. We will update
+              these Terms and our Privacy Notice before Ozow is enabled. PayFast&apos;s own terms and
+              privacy notice also apply to the payment processing it performs.
+            </p>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              <strong>Third-party services:</strong> If you follow a link to a licensed bookmaker
+              or retailer, you are subject to that company&apos;s terms, privacy policy and payment
+              terms. Puntr is not responsible for their practices, policies or services. Puntr does
+              not accept bets, hold betting funds or handle bookmaker winnings.
             </p>
             <p className="leading-relaxed text-muted-foreground">
               <strong>Affiliate Relationships:</strong> Puntr may earn a commission when you use a
@@ -296,16 +309,20 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">10. Paid options (not on sale)</h2>
+            <h2 className="mb-3 text-xl font-semibold">10. Paid features, billing and cancellation</h2>
             <p className="leading-relaxed text-muted-foreground">
-              Pay-As-You-Go credits and Puntr Pro, a monthly subscription for advanced bettors and
-              tipsters (indicatively R99 per month), are not on sale. Credits, once sold, unlock
-              premium features one use at a time, are shown in your Wallet, and cannot be sent to
-              another member or exchanged for cash. Credits we give you (for example to test a
-              feature) carry no right to a refund. Before anything is sold we will publish its
-              price, billing, cancellation and refund terms and show them before you pay. Paying
-              will never earn extra points, a higher ranking or prize eligibility. [attorney review:
-              subscription terms]
+              Where checkout is enabled, Pay-As-You-Go credit packs and Puntr Pro may be purchased
+              through your Wallet. Credit-pack prices and included credits are displayed before
+              payment. Credits unlock eligible premium actions one use at a time, appear in your
+              Wallet, cannot be transferred to another member and cannot be exchanged for cash.
+              Puntr Pro is a monthly subscription; the current price is shown at checkout. Unless
+              the checkout says otherwise, it renews monthly until you cancel it from your Wallet.
+              Cancellation stops future renewals, while Pro access continues until the end of the
+              paid period. The Founding Annual Pass is a separate once-off R299 offer and does not
+              renew automatically. Refunds and payment queries are handled under the Refunds page,
+              the terms shown at checkout and applicable law. Credits we grant for promotions or
+              testing are not purchases and have no cash value. Paying never earns extra points,
+              a higher prediction ranking or prize eligibility.
             </p>
           </section>
 

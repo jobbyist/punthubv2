@@ -1,3 +1,11 @@
+## 2026-11-23, PayFast payment disclosures and Brand Ambassador applications (Terms r24, Privacy r22)
+
+- **Payments:** Terms, Privacy and Refunds now describe PayFast by Network as the current payment processor, the transaction details Puntr receives, and the fact that Puntr does not receive or store full card or bank credentials. Ozow is identified as planned but not integrated or available at checkout.
+- **Paid features:** Terms and Refunds now describe PAYG credit purchases, monthly Puntr Pro renewal/cancellation and the separate once-off Founding Annual Pass. Refund requests remain subject to the checkout terms and applicable law. No new refund entitlement is promised by this wording.
+- **Ambassador applications:** the public multi-step application collects contact, location, audience/profile links, content examples and application answers. Submissions are stored in `form_submissions` and emailed through Resend to `partners@puntr.co.za`. Privacy notice updated to describe the data, purpose and retention approach.
+- **Notice versions:** Terms r24 and Privacy r22 are recorded in migration `20261123010000_terms_r24_privacy_r22_payment_processing.sql`.
+- **Counsel review:** confirm PayFast by Network processor wording, POPIA purpose/retention for ambassador applications, payment and subscription cancellation language, and refund wording before treating these pages as final legal advice.
+
 ## 2026-11-22, Terms operator name consistency (Terms r23)
 
 - **Correction:** the limitation-of-liability clause in both English and Afrikaans now names Gravitas Industries (Pty) Ltd,

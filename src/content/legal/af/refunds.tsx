@@ -13,7 +13,7 @@ export function RefundsAf() {
       <PageHeading
         art="shield"
         title="Terugbetalings"
-        subtitle="Ons huidige standpunt oor terugbetalings en kansellasies, insluitend wat geld voordat betaalde funksies te koop is."
+        subtitle="Hoe terugbetalings en kansellasies werk vir aankope wat deur PayFast by Network verwerk word. Ozow is nog nie beskikbaar nie."
       />
       <LegalTranslationNotice />
 
@@ -25,23 +25,45 @@ export function RefundsAf() {
         <section className="card-surface p-6">
           <h2 className="text-xl">Stigters-jaarpas</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Stigterslidmaatskap is gratis. Die enigste ding wat ons voor die bekendstelling verkoop,
-            is die Stigters-jaarpas: 12 maande se Puntr Pro vir 'n eenmalige R299, betaal deur
-            PayFast, wat op 1 Desember 2026 begin en nie outomaties hernu nie. Dit word aangebied
-            aan die eerste 20 stigterslede wat dit voor 30 November 2026 opeis. Om 'n terugbetaling
-            te vra, e-pos support@puntr.co.za vanaf die adres op jou rekening. Jou regte ingevolge
-            die Wet op Verbruikersbeskerming en die Wet op Elektroniese Kommunikasie en Transaksies,
-            insluitend enige afkoelperiode, word nie geraak nie. [attorney review]
+            Die Stigters-jaarpas bied 12 maande se Puntr Pro vir 'n eenmalige R299-betaling wat
+            deur PayFast by Network verwerk word. Dit begin op 1 Desember 2026 en hernu nie
+            outomaties nie. Die aanbod is vir die eerste 20 stigterslede wat dit voor 30 November
+            2026 opeis. Om 'n terugbetaling te vra, e-pos support@puntr.co.za vanaf die e-posadres
+            op jou rekening en sluit jou PayFast-betalingsverwysing in. Jou regte ingevolge die Wet
+            op Verbruikersbeskerming en die Wet op Elektroniese Kommunikasie en Transaksies,
+            insluitend enige toepaslike afkoeltydperk, word nie geraak nie. [attorney review]
           </p>
         </section>
 
         <section className="card-surface p-6">
-          <h2 className="text-xl">Betaal-soos-jy-gebruik en Puntr Pro kom later</h2>
+          <h2 className="text-xl">Betaal-soos-jy-gebruik-krediete en Puntr Pro</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            As ons betaal-soos-jy-gebruik-krediete of die Puntr Pro-intekening te koop aanbied, sal
-            ons eers die terugbetalings- en kansellasievoorwaardes publiseer en dit wys voordat jy
-            betaal. Niks op hierdie bladsy geld vir enigeen van die twee tot dan nie. [attorney
-            review]
+            Kredietpakpryse en die ingeslote krediete word voor betaling gewys. Aangekoopte
+            krediete verskyn in jou Beursie, kan nie oorgedra of vir kontant omgeruil word nie. As
+            'n betaling gedupliseer word, 'n voltooide betaling nie in jou Beursie verskyn nie, of
+            die bedrag verkeerd lyk, kontak support@puntr.co.za vanaf jou rekening-e-posadres en
+            sluit die PayFast-transaksieverwysing in. Ons ondersoek die betaling en korrigeer of
+            betaal dit terug waar toepaslik ingevolge die voorwaardes by betaalpunt en toepaslike
+            wetgewing.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Puntr Pro is 'n maandelikse intekening teen die prys wat by betaalpunt gewys word. Jy
+            kan toekomstige hernuwings in jou Beursie kanselleer. Kansellasie stop die volgende
+            hernuwing; jou Pro-toegang duur tot die einde van die betaalde tydperk. Kansellasie
+            skep nie vanself 'n outomatiese terugbetaling vir 'n tydperk wat reeds betaal is nie.
+            Enige terugbetalingsversoek word ingevolge die voorwaardes by betaalpunt en toepaslike
+            wetgewing beoordeel. Jou statutêre regte word nie geraak nie. [attorney review]
+          </p>
+        </section>
+
+        <section className="card-surface p-6">
+          <h2 className="text-xl">Betalingsverskaffer</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Puntr gebruik tans PayFast by Network om betalings te verwerk. PayFast ontvang
+            betalingsbesonderhede direk; Puntr ontvang die transaksieverwysing, bedrag en
+            betalingstatus wat nodig is om die diens te lewer en jou aankoop te ondersteun. Ozow
+            word beplan, maar is nog nie geïntegreer of by betaalpunt beskikbaar nie. Ons sal
+            hierdie bladsy bywerk voordat 'n ander betalingsverskaffer geaktiveer word.
           </p>
         </section>
 

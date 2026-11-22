@@ -29,7 +29,7 @@ function ResourceLink({ href, children }: { href: string; children: ReactNode })
 function ResponsiblePlayPage() {
   return (
     <AppShell showAffiliateBanner={false}>
-      <PageHeading art="shield" title="Responsible Play" subtitle="Keep sport enjoyable. Stay informed, stay in control, and know where to turn for support." />
+      <PageHeading art="responsible" title="Responsible Play" subtitle="Keep sport enjoyable. Stay informed, stay in control, and know where to turn for support." />
       <div className="mx-auto max-w-4xl space-y-6">
         <section className="card-surface border-primary/40 p-5 sm:p-7">
           <div className="flex items-start gap-3">

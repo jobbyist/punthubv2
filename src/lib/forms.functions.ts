@@ -22,7 +22,7 @@ const esc = (v: string) =>
  */
 export const submitForm = createServerFn({ method: "POST" })
   .validator((input: unknown) => schema.parse(input))
-  .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
+  .handler(async ({ data }): Promise<{ ok: boolean; error?: string; emailSent?: boolean }> => {
     if (data.website) return { ok: true };
     const { supabaseAdmin: typed } = await import("@/integrations/supabase/client.server");
     // The table is new; types.ts is regenerated after the migration, so use a loose view until then.
@@ -55,10 +55,15 @@ export const submitForm = createServerFn({ method: "POST" })
       .single();
     if (error || !row) return { ok: false, error: "save_failed" };
 
+    let emailSent = false;
     try {
       const { SUPPORT_INBOX, sendViaResend } = await import("@/lib/email/resend.server");
+      const ambassadorApplication =
+        data.form === "other" && data.meta?.["application_type"] === "brand_ambassador";
+      const recipient = ambassadorApplication ? "partners@puntr.co.za" : SUPPORT_INBOX;
+      const formLabel = ambassadorApplication ? "Brand ambassador application" : data.form;
       const rows = [
-        ["Form", data.form],
+        ["Form", formLabel],
         ["Name", data.name ?? "-"],
         ["Email", data.email ?? "-"],
         ...Object.entries(data.meta ?? {}),
@@ -69,16 +74,27 @@ export const submitForm = createServerFn({ method: "POST" })
         )
         .join("");
       const res = await sendViaResend({
-        to: [SUPPORT_INBOX],
+        to: [recipient],
         ...(data.email ? { reply_to: data.email } : {}),
-        subject: `[Puntr form] ${data.form}${data.name ? ` from ${data.name}` : ""}`,
-        html: `<div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#111;"><h2 style="margin:0 0 12px;">New ${esc(data.form)} submission</h2><table>${rows}</table>${data.message ? `<p style="white-space:pre-wrap;">${esc(data.message)}</p>` : ""}</div>`,
-        text: `New ${data.form} submission\nName: ${data.name ?? "-"}\nEmail: ${data.email ?? "-"}\n\n${data.message ?? ""}`,
+        subject: ambassadorApplication
+          ? `[Puntr Partners] Brand ambassador application from ${data.name ?? "applicant"}`
+          : `[Puntr form] ${data.form}${data.name ? ` from ${data.name}` : ""}`,
+        html: `<div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#111;"><h2 style="margin:0 0 12px;">New ${esc(formLabel)} submission</h2><table>${rows}</table>${data.message ? `<p style="white-space:pre-wrap;">${esc(data.message)}</p>` : ""}</div>`,
+        text: [
+          `New ${formLabel} submission`,
+          `Name: ${data.name ?? "-"}`,
+          `Email: ${data.email ?? "-"}`,
+          ...Object.entries(data.meta ?? {}).map(([key, value]) => `${key}: ${value}`),
+          "",
+          data.message ?? "",
+        ].join("\n"),
       });
-      if (res.ok) await db.from("form_submissions").update({ emailed: true }).eq("id", row.id);
-      else console.error(`form email failed [${res.status}]`);
+      if (res.ok) {
+        emailSent = true;
+        await db.from("form_submissions").update({ emailed: true }).eq("id", row.id);
+      } else console.error(`form email failed [${res.status}]`);
     } catch (e) {
       console.error("form email threw", e);
     }
-    return { ok: true };
+    return { ok: true, emailSent };
   });

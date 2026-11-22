@@ -18,7 +18,7 @@ export const Route = createFileRoute("/fantasy-arena")({
 function FantasyArenaPage() {
   return (
     <AppShell>
-      <PageHeading art="pitch" title="Fantasy Arena" subtitle="A new arena for your sports knowledge. Compete with your community, take on rivals and build a season-long record." />
+      <PageHeading art="arena" title="Fantasy Arena" subtitle="A new arena for your sports knowledge. Compete with your community, take on rivals and build a season-long record." />
       <div className="mx-auto max-w-5xl space-y-7">
         <section className="relative overflow-hidden border border-primary/30 bg-card p-6 sm:p-10">
           <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-primary/15 blur-3xl" />

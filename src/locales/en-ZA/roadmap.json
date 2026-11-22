@@ -78,12 +78,20 @@
       "body": "Deeper sports analysis, advanced Tipster tools and planned Tipster Support, which will let Punters recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash."
     },
     "referrals": {
-      "title": "Refer and earn bonus PuntPoints",
-      "body": "Share the unique referral link or code on your profile to invite your network to join Puntr. Earn up to 30% in bonus PuntPoints on qualifying purchases made by them after they sign up. PuntPoints are redeemable only for vouchers, sponsored rewards and perks, never cash. More details coming soon."
+      "title": "Refer and earn recurring commission",
+      "body": "Earn 10–30% recurring commission on eligible Puntr Pro subscription revenue from successful referrals, under the programme’s approved tier and payment terms. Commission is not based on bookmaker deposits, stakes, losses or winnings."
     },
     "apps": {
       "title": "Mobile apps",
       "body": "Puntr for iPhone and Android."
+    },
+    "fantasyArena": {
+      "title": "Fantasy Arena 3.0",
+      "body": "In development: community leagues, head-to-head duels, seasonal leaderboards and new competition formats. Explore the dedicated product page for current scope and availability."
+    },
+    "ambassadors": {
+      "title": "Brand Ambassador Programme",
+      "body": "A structured programme for influencers, content creators, tipsters and community builders. Selected candidates complete a 30–45 day assessment before any retainer or campaign terms are offered."
     }
   },
   "note": "Target dates can move. We'd rather add a sport late than add it before its fixtures and grading are reliable.",

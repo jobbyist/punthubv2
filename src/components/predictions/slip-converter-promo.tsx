@@ -90,7 +90,7 @@ export function FantasyArenaPromo() {
         <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-primary">{t("fantasy.eyebrow")}</p>
         <h2 id="fantasy-arena-title" className="text-lg font-extrabold sm:text-xl">{t("fantasy.title")}</h2>
         <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">{t("fantasy.body")}</p>
-        <Link to="/roadmap" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">{t("fantasy.cta")} <ArrowRight className="size-3.5" aria-hidden /></Link>
+        <Link to="/fantasy-arena" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">{t("fantasy.cta")} <ArrowRight className="size-3.5" aria-hidden /></Link>
       </div>
       <div aria-hidden className="relative grid size-20 shrink-0 place-items-center sm:size-24">
         <div className="absolute inset-1 rounded-2xl border border-primary/30 bg-primary/5" />

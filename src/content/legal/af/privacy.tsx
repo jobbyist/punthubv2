@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-22-r21.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-23-r22.
  */
 import { Link } from "@tanstack/react-router";
 
@@ -81,10 +81,16 @@ const PURPOSES: [string, string, string, string][] = [
     "Terwyl jou rekening oop is; die admin-logboek word ná die skrapping van jou rekening vir ouditdoeleindes gehou, sonder jou e-pos [attorney review]",
   ],
   [
-    "Stigters-jaarpas",
-    "Rekening-ID, tyd van opeis, verval van die bespreking, en sodra betaal, die PayFast-betaalverwysing, bedrag en datum",
-    "Kontrak (om die pas aan jou te verkoop)",
-    "So lank as wat belasting- en rekeningkundige wetgewing vereis dat ons betalingsrekords hou",
+    "Betalings en intekeninge",
+    "Rekening-ID, bestelling- of intekening-ID, gekose kredietpak of plan, tyd van die jaarpas-eis en besprekingverval, PayFast by Network-transaksieverwysing, bedrag, betalingstatus, aankoop- of hernuwingsdatums, toegekende krediete, intekeningstatus en einde van die betaalde tydperk",
+    "Kontrak (om betaalde funksies te verskaf), rekeningkundige en regsverpligtinge, en voorkoming van bedrog",
+    "Solank as wat belasting- en rekeningkundige wetgewing vereis dat betalingsrekords gehou word en soos nodig om betalingsgeskille op te los",
+  ],
+  [
+    "Aansoeke vir handelsmerkambassadeurs",
+    "Jou naam, e-pos, stad/land, bevestiging dat jy 18 of ouer is, rol, platforms, openbare profielskakels, opsionele gehoorgrootte, inhoudsvoorbeelde, sport-/inhoudbelangstellings, beskikbaarheid en aansoekantwoorde. Die aansoek word in ons vormindieningstelsel gestoor en aan partners@puntr.co.za ge-e-pos.",
+    "Jou versoek om vir die program oorweeg te word en stappe wat op jou versoek geneem word voordat enige ooreenkoms bestaan",
+    "Solank as wat nodig is om die aansoek te beoordeel, enige daaropvolgende ooreenkoms te administreer en regs- of geskilverpligtinge te hanteer; jy kan 'n privaatheidsversoek indien",
   ],
   [
     "Begin-take",
@@ -178,7 +184,7 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 22 November 2026 (weergawe 2026-11-22-r20). Konsep wat op
+          <strong>Laas bygewerk:</strong> 23 November 2026 (weergawe 2026-11-23-r22). Konsep wat op
           hersiening deur 'n prokureur wag.
         </p>
 
@@ -278,9 +284,12 @@ export function PrivacyAf() {
             geregistreer het een verwelkomings-e-pos van die stigter, en ons teken aan dat dit
             gestuur is. As jy die beperkte Stigters-jaarpas opeis, stoor ons jou rekening-ID,
             wanneer jy dit opgeëis het, hoe lank jou plek gehou word, en sodra jy betaal, die
-            betaalverwysing, bedrag en datum. Betaling word op PayFast, ons betalingsverskaffer,
-            gedoen, wat jou betaalbesonderhede direk ontvang; ons sien of stoor nooit kaart- of
-            bankbesonderhede nie. As jy 'n profielfoto byvoeg, stoor ons 'n saamgeperste afskrif en
+            betaalverwysing, bedrag, status en datum. PayFast by Network ontvang jou
+            betaalbesonderhede direk; ons sien of stoor nie jou volle kaart- of bankbesonderhede
+            nie. As jy 'n Handelsmerkambassadeur-aansoek indien, stoor ons die besonderhede en
+            antwoorde wat jy verskaf sodat ons vennootskapspan dit kan beoordeel en jou kan kontak.
+            Ons e-pos die aansoek aan partners@puntr.co.za deur ons e-posverskaffer. As jy 'n
+            profielfoto byvoeg, stoor ons 'n saamgeperste afskrif en
             wys dit openbaar op jou profiel en langs jou gebruikersnaam; jy kan dit enige tyd op jou
             rekeningbladsy verwyder. [attorney review]
           </p>
@@ -308,10 +317,13 @@ export function PrivacyAf() {
           </h2>
           <p>
             Supabase (databasis, aantekening en regstreekse kennisgewings aan ons admins, gehuisves
-            in Ierland, EU), Vercel (webwerfhuisvesting), Resend (stuur van e-pos, deur 'n
-            e-poskanaal) en Google (slegs as jy kies om met Google aan te teken), en PayFast
-            (Suid-Afrika, slegs as jy die Stigters-jaarpas koop: dit neem die betaling en laat ons
-            die verwysing en bedrag weet). Ons kry ook wedstryde en uitslae van 'n
+            in Ierland, EU), Vercel (webwerfhuisvesting), Google (slegs as jy kies om met Google
+            aan te teken), PayFast by Network (Suid-Afrika; dit verwerk betaalde Puntr-transaksies
+            en stuur die transaksieverwysing, bedrag en status terug), en Resend (transaksionele
+            e-pos, insluitend Handelsmerkambassadeur-aansoeke aan partners@puntr.co.za). Ozow is 'n
+            beplande toekomstige betaalopsie; dit is nog nie geïntegreer nie en ontvang tans geen
+            persoonlike of betalingsinligting deur Puntr nie. Ons sal hierdie kennisgewing bywerk
+            voordat dit geaktiveer word. Ons kry ook wedstryde en uitslae van 'n
             sportdataverskaffer; geen persoonlike inligting word daarheen gestuur nie. Borge van
             belonings ontvang nie jou persoonlike inligting van ons nie: koopbewyse kom uit
             grootmaatkodes wat die borg verskaf, en 'n borg se eie webwerf samel data in wanneer jy
