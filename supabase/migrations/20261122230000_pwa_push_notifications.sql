@@ -4,7 +4,7 @@ alter table public.consent_records add constraint consent_records_purpose_check
   check (purpose = any (array['terms','privacy_notice','marketing_email','marketing_whatsapp','analytics','affiliate_tracking','push_notifications']::text[]));
 alter table public.consent_records drop constraint if exists consent_records_source_check;
 alter table public.consent_records add constraint consent_records_source_check
-  check (source = any (array['join','banner','account']::text[]));
+  check (source = any (array['join','banner','account','pwa_prompt']::text[]));
 
 -- Web Push subscriptions and auditable admin push campaigns.
 create table if not exists public.push_subscriptions (
