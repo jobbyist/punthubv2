@@ -187,10 +187,11 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "history-volume",
-        title: "Historical results imported",
+        title: "Historical results imported (2,500 minimum)",
         weight: 3,
         blocker: true,
         metric: { key: "completedResults", target: 2500, unit: "results" },
+        ref: "Live count from completed_matches; 2,500 is the minimum threshold, not a cap.",
       },
       {
         id: "standings-volume",
