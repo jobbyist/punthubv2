@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, Lock, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { CompetitionBadge } from "@/components/match/competition-badge";
 import { TeamLogo } from "@/components/team-logo";
@@ -28,6 +29,7 @@ export function HeroFixtureRail() {
   const [isFallback, setIsFallback] = useState(true);
   const [paused, setPaused] = useState(false);
   const [index, setIndex] = useState(0);
+  const [reservationOpen, setReservationOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -122,8 +124,8 @@ export function HeroFixtureRail() {
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-2">
-              <span className="inline-flex items-center gap-1.5 text-[10px] text-muted-foreground"><Lock className="size-3 text-primary" /> PUNT AI confidence locked</span>
-              <Link to="/join" className="shrink-0 text-[10px] font-bold text-primary hover:underline">Back this pick →</Link>
+              <button type="button" onClick={() => setReservationOpen(true)} className="inline-flex items-center gap-1.5 text-left text-[10px] text-muted-foreground hover:text-primary"><Lock className="size-3 text-primary" /> PUNT AI confidence locked</button>
+              <button type="button" onClick={() => setReservationOpen(true)} className="shrink-0 text-[10px] font-bold text-primary hover:underline">Back this pick →</button>
             </div>
             {isFallback && <p className="mt-1 text-[9px] text-muted-foreground">Illustrative fixture preview — live schedule unavailable</p>}
           </motion.article>
@@ -132,6 +134,16 @@ export function HeroFixtureRail() {
       <div className="mt-1 flex justify-center gap-1.5" aria-label={`Fixture ${index + 1} of ${fixtures.length}`}>
         {fixtures.map((fixture, i) => <span key={fixture.id} className={`h-1 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-border"}`} />)}
       </div>
+      <Dialog open={reservationOpen} onOpenChange={setReservationOpen}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Get closer to the action</DialogTitle>
+            <DialogDescription>Unlock the full PUNT AI match intelligence experience as a Puntr Founding Member. Join the first 100 members before the platform launch.</DialogDescription>
+          </DialogHeader>
+          <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs text-muted-foreground">Founding access is free. No payment is required to reserve your place. 18+ only. Gamble responsibly.</div>
+          <Link to="/join" className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90">Reserve my Founding spot</Link>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
