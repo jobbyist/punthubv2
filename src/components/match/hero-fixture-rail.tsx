@@ -73,8 +73,8 @@ export function HeroFixtureRail() {
           {isFallback && <span className="rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">Preview</span>}
         </div>
         <div className="hidden items-center gap-1 sm:flex">
-          <button type="button" onClick={() => advance(-1)} onMouseEnter={() => setPaused(true)} aria-label="Previous fixtures" className="grid size-6 place-items-center rounded-full border border-border bg-background/80 shadow-sm hover:bg-muted"><ChevronLeft className="size-3.5" /></button>
-          <button type="button" onClick={() => advance(1)} onMouseEnter={() => setPaused(true)} aria-label="Next fixtures" className="grid size-6 place-items-center rounded-full border border-border bg-background/80 shadow-sm hover:bg-muted"><ChevronRight className="size-3.5" /></button>
+          <button type="button" onClick={() => advance(-1)} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} aria-label="Previous fixtures" className="grid size-6 place-items-center rounded-full border border-border bg-background/80 shadow-sm transition-opacity hover:bg-muted sm:opacity-60 sm:hover:opacity-100"><ChevronLeft className="size-3.5" /></button>
+          <button type="button" onClick={() => advance(1)} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} aria-label="Next fixtures" className="grid size-6 place-items-center rounded-full border border-border bg-background/80 shadow-sm hover:bg-muted"><ChevronRight className="size-3.5" /></button>
         </div>
       </div>
       <div
@@ -92,7 +92,7 @@ export function HeroFixtureRail() {
           const el = rail.current;
           if (!el) return;
           const cards = [...el.querySelectorAll<HTMLElement>("[data-fixture-card]")];
-          const closest = cards.reduce((best, card, i) => Math.abs(card.offsetLeft - el.scrollLeft) < Math.abs(cards[best]?.offsetLeft - el.scrollLeft ?? Infinity) ? i : best, 0);
+          const closest = cards.reduce((best, card, i) => Math.abs(card.offsetLeft - el.scrollLeft) < Math.abs((cards[best]?.offsetLeft ?? 0) - el.scrollLeft) ? i : best, 0);
           setIndex(closest);
         }}
       >
