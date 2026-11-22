@@ -486,9 +486,9 @@ The following owner decisions supersede any earlier proposed dates or scope in t
 
 ## Appendix F. 22 November 2026 — verification status
 
-PR #185's focused five-source regression, typecheck and Vercel build passed. The full PFIE standings test file now passes (47/47). A production-like extraction is still required before the additional source roster is considered operationally verified.
+PR #185's five-source regression and team-resolution checks, full standings test file (47/47), typecheck and Vercel build passed. Four remaining full-suite failures also reproduce on main; the PR resolves nine additional standings regressions. A production-like extraction is still required before the new source roster is considered operationally verified.
 
-PR #195 passed targeted ESLint, typecheck, all 15 evidence unit tests and a Vercel production build. The migration is not applied to production and remains gated by the complete migration-history reconciliation and a verified backup/rollback plan.
+PR #195 passed targeted Prettier/ESLint, typecheck, all 15 evidence unit tests and a Vercel production build. All review findings, including case-insensitive publisher-domain normalization, are resolved. Isolated SQL validation is pending because the only Supabase branch is MIGRATIONS_FAILED; the migration is not applied to production and remains gated by migration-history reconciliation and a verified backup/rollback plan.
 
 PR #196 remains draft and post-launch only.
 
