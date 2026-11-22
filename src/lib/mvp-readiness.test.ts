@@ -60,6 +60,18 @@ describe("mvp readiness", () => {
     expect(computeReadiness({}, { foundingMembers: Number.NaN }, tiny).score).toBe(30);
   });
 
+  it("automatically completes the historical-results blocker once the 2,500 minimum is reached", () => {
+    const data = WORKSTREAMS.find((w) => w.id === "data")!;
+    const history = data.tasks.find((task) => task.id === "history-volume")!;
+    expect(history.metric?.target).toBe(2500);
+    const below = computeReadiness({}, { completedResults: 2499 });
+    const atTarget = computeReadiness({}, { completedResults: 2500 });
+    const exceeded = computeReadiness({}, { completedResults: 7781 });
+    expect(below.openBlockers.some((task) => task.id === "history-volume")).toBe(true);
+    expect(atTarget.openBlockers.some((task) => task.id === "history-volume")).toBe(false);
+    expect(exceeded.workstreams.find((w) => w.id === "data")?.tasks.find((task) => task.id === "history-volume")?.value).toBe(7781);
+  });
+
   it("metric tasks cannot be ticked by hand", () => {
     expect(TASK_IDS.has("founding-100")).toBe(false);
     expect(TASK_IDS.has("payg-checkout")).toBe(true);
