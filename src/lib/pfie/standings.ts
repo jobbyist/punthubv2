@@ -15,7 +15,10 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_COMPETITIONS: Partial<
-  Record<CompetitionKey, { teams: number; refreshHours: number; queries: string[]; pages?: string[] }>
+  Record<
+    CompetitionKey,
+    { teams: number; refreshHours: number; queries: string[]; pages?: string[] }
+  >
 > = {
   psl: {
     teams: 16,
@@ -26,12 +29,13 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:stats.ladumaanalytics.co.za/log Betway Premiership",
       "site:45min.co.za/tables Betway Premiership",
     ],
-    pages: [
-      "https://stats.ladumaanalytics.co.za/log",
-      "https://45min.co.za/tables",
-    ],
+    pages: ["https://stats.ladumaanalytics.co.za/log", "https://45min.co.za/tables"],
   },
-  epl: { teams: 20, refreshHours: 12, queries: ["Premier League table standings", "Premier League table"] },
+  epl: {
+    teams: 20,
+    refreshHours: 12,
+    queries: ["Premier League table standings", "Premier League table"],
+  },
   laliga: {
     teams: 20,
     refreshHours: 12,
@@ -127,8 +131,16 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.tntsports.co.uk/football/primeira-liga/standings.shtml",
     ],
   },
-  championship: { teams: 24, refreshHours: 24, queries: ["EFL Championship table standings", "Championship table"] },
-  "saudi-pro": { teams: 18, refreshHours: 24, queries: ["Saudi Pro League table standings", "Saudi Pro League table"] },
+  championship: {
+    teams: 24,
+    refreshHours: 24,
+    queries: ["EFL Championship table standings", "Championship table"],
+  },
+  "saudi-pro": {
+    teams: 18,
+    refreshHours: 24,
+    queries: ["Saudi Pro League table standings", "Saudi Pro League table"],
+  },
   "sa-championship": {
     teams: 16,
     refreshHours: 24,
@@ -286,7 +298,12 @@ const rawSchema = z.object({
       goalsAgainst: int,
       points: z.number().int().min(-50).max(500),
       quote: z.string().trim().min(1),
-      tableDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().default(null),
+      tableDate: z
+        .string()
+        .trim()
+        .regex(/^\d{4}-\d{2}-\d{2}$/)
+        .nullable()
+        .default(null),
       tableDateQuote: z.string().trim().min(1).nullable().default(null),
     }),
   ),
@@ -313,7 +330,15 @@ function dateAppearsOnPage(page: string, date: string): boolean {
   const monthShort = dateObj.toLocaleString("en-GB", { month: "short", timeZone: "UTC" });
   const d = String(day);
   const dd = String(day).padStart(2, "0");
-  const forms = [date, `${d} ${monthLong} ${year}`, `${dd} ${monthLong} ${year}`, `${monthLong} ${d}, ${year}`, `${monthLong} ${dd}, ${year}`, `${d} ${monthShort} ${year}`, `${monthShort} ${d}, ${year}`];
+  const forms = [
+    date,
+    `${d} ${monthLong} ${year}`,
+    `${dd} ${monthLong} ${year}`,
+    `${monthLong} ${d}, ${year}`,
+    `${monthLong} ${dd}, ${year}`,
+    `${d} ${monthShort} ${year}`,
+    `${monthShort} ${d}, ${year}`,
+  ];
   const text = normalise(page);
   return forms.some((form) => text.includes(normalise(form)));
 }
@@ -342,7 +367,10 @@ export function validateTables(
       fail("unknown_source");
       continue;
     }
-    if (source.domain.toLowerCase() === "wikipedia.org" || source.domain.toLowerCase().endsWith(".wikipedia.org")) {
+    if (
+      source.domain.toLowerCase() === "wikipedia.org" ||
+      source.domain.toLowerCase().endsWith(".wikipedia.org")
+    ) {
       fail("wikipedia_not_allowed_for_live_standings");
       continue;
     }
@@ -352,11 +380,12 @@ export function validateTables(
     for (const row of extractedRows) {
       const sourceName = row.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolvedName = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
-      const canonicalName = resolvedName && resolvedName !== "ambiguous"
-        ? resolvedName
-        : knownTeams.length
-          ? sourceName
-          : row.team.trim();
+      const canonicalName =
+        resolvedName && resolvedName !== "ambiguous"
+          ? resolvedName
+          : knownTeams.length
+            ? sourceName
+            : row.team.trim();
       const key = normaliseTeam(canonicalName);
       const prior = byTeam.get(key);
       if (!prior) {
@@ -365,20 +394,24 @@ export function validateTables(
         continue;
       }
       const values = (value: RawStandingRow) => [
-        value.played, value.won, value.drawn, value.lost,
-        value.goalsFor, value.goalsAgainst, value.points,
+        value.played,
+        value.won,
+        value.drawn,
+        value.lost,
+        value.goalsFor,
+        value.goalsAgainst,
+        value.points,
       ];
       const priorValues = values(prior);
       const rowValues = values(row);
-      const sameRecord = prior.position === row.position &&
-        priorValues.every((value, i) => value === rowValues[i]);
+      const sameRecord =
+        prior.position === row.position && priorValues.every((value, i) => value === rowValues[i]);
       if (sameRecord) {
         // Responsive layouts can repeat an identical club row; keep one copy only.
         continue;
       }
       const dominates = (left: number[], right: number[]) =>
-        left.every((value, i) => value >= right[i]!) &&
-        left.some((value, i) => value > right[i]!);
+        left.every((value, i) => value >= right[i]!) && left.some((value, i) => value > right[i]!);
       if (dominates(rowValues, priorValues)) {
         // Some publishers include overall, home and away tables in one extract. The overall row is the
         // cumulative record: it dominates a home/away subset on P/W/D/L/GF/GA/points. Prefer it only when
@@ -408,15 +441,21 @@ export function validateTables(
       if (!allowTiedPositions) return false;
       if (orderedPositions.some((p) => p < 1 || p > expectedTeams)) return false;
       const groups = new Map<number, number>();
-      for (const position of orderedPositions) groups.set(position, (groups.get(position) ?? 0) + 1);
+      for (const position of orderedPositions)
+        groups.set(position, (groups.get(position) ?? 0) + 1);
       const ranks = [...groups.entries()].sort((a, b) => a[0] - b[0]);
-      return ranks.every(([rank], i) => i === 0 ? rank === 1 : rank === ranks[i - 1]![0] + ranks[i - 1]![1]);
+      return ranks.every(([rank], i) =>
+        i === 0 ? rank === 1 : rank === ranks[i - 1]![0] + ranks[i - 1]![1],
+      );
     })();
     if (!validUniquePositions && !validTiedPositions) {
       fail("positions_not_1_to_n");
       continue;
     }
-    const fold = (value: string) => normalise(value).normalize("NFKD").replace(/\p{Diacritic}/gu, "");
+    const fold = (value: string) =>
+      normalise(value)
+        .normalize("NFKD")
+        .replace(/\p{Diacritic}/gu, "");
     const page = fold(source.text);
     const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow, teamVariants: string[]) => {
@@ -453,7 +492,8 @@ export function validateTables(
       // A model-extracted date is metadata only when its quote (or ISO date) is verifiably present on the page.
       // If the page formats dates differently, ignore the unverified date and rely on fresh Parallel retrieval.
       const dateEvidence =
-        (!!dateQuote && page.includes(normalise(dateQuote))) || dateAppearsOnPage(source.text, proposedTableDate);
+        (!!dateQuote && page.includes(normalise(dateQuote))) ||
+        dateAppearsOnPage(source.text, proposedTableDate);
       if (dateEvidence) {
         tableDate = proposedTableDate;
         const age = now.getTime() - Date.parse(`${tableDate}T23:59:59.999+02:00`);
@@ -470,27 +510,35 @@ export function validateTables(
     for (const r of rows) {
       const sourceName = r.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolved = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
-      const team = resolved && resolved !== "ambiguous"
-        ? resolved
-        : knownTeams.length
-          ? sourceName
-          : r.team.trim();
+      const team =
+        resolved && resolved !== "ambiguous"
+          ? resolved
+          : knownTeams.length
+            ? sourceName
+            : r.team.trim();
       const teamVariants = [r.team, sourceName, team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
       else if (!hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
-      else if (!teamVariants.some((name) => page.includes(fold(name)))) bad = `team_not_on_page_${r.team}`;
+      else if (!teamVariants.some((name) => page.includes(fold(name))))
+        bad = `team_not_on_page_${r.team}`;
       if (bad) break;
       const key = normaliseTeam(team);
       const duplicateIndex = out.findIndex((existing) => normaliseTeam(existing.team) === key);
       if (duplicateIndex >= 0) {
         const duplicate = out[duplicateIndex]!;
         const priorValues = [
-          duplicate.played, duplicate.won, duplicate.drawn, duplicate.lost,
-          duplicate.goalsFor, duplicate.goalsAgainst, duplicate.points,
+          duplicate.played,
+          duplicate.won,
+          duplicate.drawn,
+          duplicate.lost,
+          duplicate.goalsFor,
+          duplicate.goalsAgainst,
+          duplicate.points,
         ];
         const rowValues = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
-        const identical = duplicate.position === r.position &&
+        const identical =
+          duplicate.position === r.position &&
           priorValues.every((value, i) => value === rowValues[i]);
         if (identical) continue;
         const dominates = (left: number[], right: number[]) =>
