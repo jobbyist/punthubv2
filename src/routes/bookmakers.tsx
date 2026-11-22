@@ -38,7 +38,7 @@ function BookmakersPage() {
 
   return (
     <AppShell>
-      <PageHeading art="shield" title="South African Bookmaker Directory" subtitle="A searchable reference to bookmaker licence-holder records published by the National Gambling Board." />
+      <PageHeading art="directory" title="South African Bookmaker Directory" subtitle="A searchable reference to bookmaker licence-holder records published by the National Gambling Board." />
       <div className="space-y-6">
         <section className="card-surface border-primary/30 p-5 sm:p-6">
           <div className="flex items-start gap-3">

@@ -55,6 +55,9 @@ export function PickCard({
             )}
           </p>
           <p className="text-xs text-muted-foreground">
+            {t("picks.submittedAt", { date: formatDate(pick.created_at), time: formatTime(pick.created_at) })}
+          </p>
+          <p className="text-xs text-muted-foreground">
             {t("picks.lockedBefore", { span: lockedBefore(pick.created_at, kickoff) })}
           </p>
         </div>
@@ -110,8 +113,13 @@ export function PickCard({
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="text-muted-foreground">{t(`market.${pick.market}`)}</span>
           <span className="font-semibold">{label}</span>
-          <span className="tnum font-semibold text-primary">
-            {t("picks.odds")} {formatOdds(pick.odds)}
+          <span className="inline-flex flex-wrap items-center justify-end gap-1.5">
+            <span className="rounded-full border border-input bg-background px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-foreground">
+              {t("picks.userSubmitted")}
+            </span>
+            <span className="tnum font-semibold text-primary">
+              {t("picks.odds")} {formatOdds(pick.odds)}
+            </span>
           </span>
         </div>
         {pick.odds_unverified && pick.reference_odds !== null ? (

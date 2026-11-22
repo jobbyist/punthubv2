@@ -1,11 +1,11 @@
-# Payments: PAYG credit packs (PayFast)
+# Payments: PayFast by Network
 
-Status: built, **off**. Nothing can be bought until all three are true: PayFast variables set, `app_settings.payments_enabled = 'true'` (Admin > System), and the legal copy below is live.
+Status: PayFast checkout is the current payment route. The production `app_settings.payments_enabled` flag was verified as `true` on 23 November 2026. A checkout still requires valid PayFast environment variables and a successful provider response. No live test transaction was performed during this code review. Ozow is planned but has no integration and is not an available payment method.
 
 ## How it works
 1. Member opens `/wallet`, picks a pack (`PACKS` in `src/lib/economics.ts`: R25/25, R60/65, R120/140).
 2. `startCreditPurchase` (members only, not admins) writes a `payment_orders` row (pending) and returns a signed PayFast form. No personal information is sent to PayFast: only the order id, amount and item name.
-3. PayFast calls `POST /api/payfast/itn`. Credits are granted only if the source address is PayFast's, the signature matches, PayFast's own `/eng/query/validate` answers VALID, and `grant_credit_purchase()` finds the amount equal to the order. It writes one `credit_ledger` purchase row keyed on `pf_payment_id`; a repeat ITN grants nothing.
+3. PayFast by Network calls `POST /api/payfast/itn`. Credits are granted only if the source address is PayFast's, the signature matches, PayFast's own `/eng/query/validate` answers VALID, and `grant_credit_purchase()` finds the amount equal to the order. It writes one `credit_ledger` purchase row keyed on `pf_payment_id`; a repeat ITN grants nothing.
 4. `/wallet` shows the new balance.
 
 ## Security notes
@@ -18,7 +18,7 @@ Status: built, **off**. Nothing can be bought until all three are true: PayFast 
 
 ## Go-live checklist
 - [ ] Sandbox test: pay a Starter pack, see credits once; replay the ITN, see no second grant; pay the wrong amount, see none.
-- [ ] Legal copy (see `docs/legal-changelog.md`, 14 Nov payments entry): `/terms`, `/privacy`, `/refunds`, `/pricing` no longer say "planned"; PayFast named as payment processor.
+- [x] Legal copy updated in Terms r24, Privacy r22 and Refunds on 23 Nov 2026. PayFast by Network is named as the current processor; Ozow is explicitly marked planned/not integrated.
 - [ ] Owner switches `payments_enabled` to true in Admin > System.
 - [ ] Puntr Pro sandbox test: subscribe, see Pro on `/wallet` with a renewal date; replay the ITN (no second month);
       cancel in `/wallet` (PayFast shows it cancelled, Pro stays to the period end); a FAILED ITN marks it past due.
@@ -39,3 +39,10 @@ Status: built, **off**. Nothing can be bought until all three are true: PayFast 
 
 ## Economics
 `docs/PAYG_ECONOMICS.md`. The USD/ZAR rate used there is `app_settings.usd_zar`, editable in Admin > System.
+
+
+## Payment providers
+
+- **Current:** PayFast by Network. The platform receives order/subscription identifiers, payment references, amount, status and relevant dates. Full card and bank credentials are handled by PayFast's checkout and are not stored by Puntr.
+- **Planned:** Ozow. It is not integrated, is not available at checkout and does not currently receive Puntr payment or customer data. Update the Terms, Privacy Notice, Refunds page and this document before enabling it.
+- Legal pages: `/terms`, `/privacy`, `/refunds`. Notice versions r24/r22 are recorded in migration `20261123010000_terms_r24_privacy_r22_payment_processing.sql`.

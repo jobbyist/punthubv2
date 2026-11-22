@@ -97,10 +97,16 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; the admin log is kept for audit after your account is deleted, without your email [attorney review]",
   ],
   [
-    "Founding Annual Pass",
-    "Account ID, claim time, hold expiry, and once paid the PayFast payment reference, amount and date",
-    "Contract (selling you the pass)",
-    "For as long as tax and accounting law requires us to keep payment records",
+    "Payments and subscriptions",
+    "Account ID, order or subscription ID, selected pack or plan, Annual Pass claim time and hold expiry, PayFast by Network transaction reference, amount, payment status, purchase or renewal dates, credits granted, subscription status and current paid-period end",
+    "Contract (providing paid features), accounting and legal obligations, and fraud prevention",
+    "For as long as tax and accounting law requires payment records to be kept and as needed to resolve payment disputes",
+  ],
+  [
+    "Brand Ambassador applications",
+    "Your name, email, city/country, confirmation that you are 18 or older, role, platforms, public profile links, optional audience-size information, content examples, sports/content interests, availability and application answers. The application is stored in our form-submissions system and emailed to partners@puntr.co.za.",
+    "Your request to be considered for the programme and steps taken at your request before any agreement",
+    "For as long as needed to assess the application, administer any resulting agreement and handle legal or dispute obligations; you may submit a privacy request",
   ],
   [
     "Get-started quests",
@@ -196,7 +202,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 22 November 2026 (version 2026-11-22-r21). Draft pending
+          <strong>Last updated:</strong> 23 November 2026 (version 2026-11-23-r22). Draft pending
           attorney review.
         </p>
 
@@ -247,9 +253,11 @@ function Privacy() {
             as the check is done (and within 30 days if it is never checked). We keep only the
             result: verified or not, that you are 18 or older, who checked it and when. We never
             record your ID number, and we do not collect a selfie or biometrics. [attorney review]
-            We do not store your IP address or device details with your sign-up. Payments are made
-            on PayFast, so we hold no card or bank details. We never see your password: our sign-in
-            provider keeps only a one-way hash of it.
+            We do not store your IP address or device details with your sign-up. PayFast by Network
+            receives and processes payment credentials directly; Puntr receives the transaction
+            reference, amount, payment status and order or subscription details needed to provide
+            the service and keep accounting records. We do not see or store your full card or bank
+            details. We never see your password: our sign-in provider keeps only a one-way hash of it.
           </p>
         </section>
 
@@ -288,11 +296,13 @@ function Privacy() {
           </p>
           <p className="mt-3">
             If you join as a Founding Member and ticked marketing, we also send you one welcome
-            email from the Founder shortly after you sign up, and we record that it was sent. If you
-            claim the limited Founding Annual Pass, we store your account ID, when you claimed, how
-            long your place is held, and once you pay, the payment reference, amount and date.
-            Payment is made on PayFast, our payment provider, which receives your payment details
-            directly; we never see or store card or bank details. If you add a profile picture, we
+            email from the Founder shortly after you sign up, and we record that it was sent. For
+            any paid feature, we store the account and order or subscription identifiers, payment
+            reference, amount, status and relevant purchase or renewal dates. PayFast by Network
+            receives your payment details directly; we do not see or store your full card or bank
+            details. If you submit a Brand Ambassador application, we store the details and answers
+            you provide so our partnerships team can assess it and contact you. We email that
+            application to partners@puntr.co.za using our email provider. If you add a profile picture, we
             store a compressed copy and show it publicly on your profile and next to your username;
             you can remove it at any time on your account page. [attorney review]
           </p>
@@ -319,10 +329,14 @@ function Privacy() {
           </h2>
           <p>
             Supabase (database, sign-in and live notifications to our admins, hosted in Ireland,
-            EU), Vercel (website hosting), Resend (sending email, through an email gateway) and
-            Google (only if you choose Google to sign in), and PayFast (South Africa, only if you
-            buy the Founding Annual Pass: it takes the payment and tells us the reference and
-            amount). We also get match fixtures and results from a sports-data provider; no personal
+            EU), Vercel (website hosting), Google (only if you choose Google to sign in), PayFast by
+            Network (South Africa; it
+            processes paid Puntr transactions and returns the transaction reference, amount and
+            status), and Resend (transactional email, including Brand Ambassador applications sent
+            to partners@puntr.co.za). Ozow is a planned future payment option; it is not currently
+            integrated and does not receive your personal or payment information through Puntr.
+            We will update this notice before enabling it. We also get match fixtures and results
+            from a sports-data provider; no personal
             information is sent to it. Reward sponsors do not receive your personal information from
             us: vouchers come from bulk codes the sponsor supplies, and a sponsor&apos;s own site
             collects data when you use a code. Sending data outside South Africa is allowed under

@@ -57,7 +57,8 @@
     },
     "needEmail": "Bevestig jou e-pos om 'n keuse te plaas.",
     "needEmailWhy": "Keuses verskyn op die openbare voer en die ranglys, daarom vra ons eers vir 'n bevestigde e-pos. Dit neem 'n minuut.",
-    "needEmailCta": "Bevestig my e-pos"
+    "needEmailCta": "Bevestig my e-pos",
+    "userSubmitted": "Deur gebruiker ingedien"
   },
   "error": {
     "kickoff_passed": "Hierdie wedstryd het afgeskop - keuses is gesluit.",
@@ -113,7 +114,9 @@
     "void": "Nietig",
     "pending": "Hangend",
     "units": "{{units}} eenhede",
-    "loadError": "Ons kon nie die keuses laai nie. Herlaai asseblief die bladsy."
+    "loadError": "Ons kon nie die keuses laai nie. Herlaai asseblief die bladsy.",
+    "submittedAt": "Ingedien {{date}} om {{time}}",
+    "userSubmitted": "Deur gebruiker ingedien"
   },
   "crowd": {
     "title": "Skareverdeling (wedstrydsuitslag)",

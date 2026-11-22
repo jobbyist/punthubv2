@@ -8,6 +8,8 @@ import {
   Share2,
   Smartphone,
   Sparkles,
+  Swords,
+  Handshake,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
@@ -133,6 +135,8 @@ const ALSO = [
   ["rewards", Gift],
   ["pro", Sparkles],
   ["referrals", Share2],
+  ["fantasyArena", Swords],
+  ["ambassadors", Handshake],
   ["apps", Smartphone],
 ] as const;
 
@@ -187,17 +191,23 @@ function Roadmap() {
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("alsoIntro")}</p>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {ALSO.map(([key, Icon]) => (
-            <div key={key} className="card-surface flex gap-3 p-4">
-              <span className="grid size-9 shrink-0 place-items-center bg-primary-soft text-primary">
-                <Icon className="size-[18px]" aria-hidden />
-              </span>
-              <div>
-                <h3 className="text-base">{t(`also.${key}.title`)}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{t(`also.${key}.body`)}</p>
-              </div>
-            </div>
-          ))}
+          {ALSO.map(([key, Icon]) => {
+            const content = (
+              <>
+                <span className="grid size-9 shrink-0 place-items-center bg-primary-soft text-primary">
+                  <Icon className="size-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <h3 className="text-base">{t(`also.${key}.title`)}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{t(`also.${key}.body`)}</p>
+                </div>
+              </>
+            );
+            const className = "card-surface flex gap-3 p-4 text-left transition-colors hover:border-primary/50";
+            if (key === "fantasyArena") return <Link key={key} to="/fantasy-arena" className={className}>{content}</Link>;
+            if (key === "ambassadors") return <Link key={key} to="/brand-ambassadors" className={className}>{content}</Link>;
+            return <div key={key} className={className}>{content}</div>;
+          })}
         </div>
       </section>
 

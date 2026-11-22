@@ -293,7 +293,12 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="p-odds">{t("form.odds")}</Label>
+            <div className="flex flex-wrap items-center gap-2">
+              <Label htmlFor="p-odds">{t("form.odds")}</Label>
+              <span className="rounded-full border border-input bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-foreground">
+                {t("form.userSubmitted")}
+              </span>
+            </div>
             <Input
               id="p-odds"
               inputMode="decimal"
