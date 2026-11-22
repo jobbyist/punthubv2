@@ -149,8 +149,8 @@ When source tables pass local checks but no two independent publishers agree, PF
 
 ## 22 Nov 2026 — implementation verification snapshot
 
-- PR #185's five-source La Liga cap regression, typecheck and Vercel production build passed. The full PFIE standings test file now passes (47/47). The Analyst/Opta is in the trusted-publisher registry; live extraction and two-publisher consensus are not yet certified.
-- PR #195's targeted ESLint, typecheck, 15 evidence tests and Vercel production build passed. Review threads are resolved. The migration is source-control only until the production migration baseline and backup/rollback plan are reconciled.
+- PR #185's five-source La Liga cap regression, team-resolution regressions, full standings test file (47/47), typecheck and Vercel production build passed. The Analyst/Opta is in the trusted-publisher registry; live extraction and two-publisher consensus are a launch QA gate. Four remaining full-suite failures also reproduce on main; the PR fixes nine additional standings regressions.
+- PR #195's targeted Prettier/ESLint, typecheck, 15 evidence tests and Vercel production build passed. Review findings are resolved, including case-insensitive www normalization. Isolated SQL validation remains pending because the only Supabase branch is MIGRATIONS_FAILED; the migration remains unapplied.
 - PR #196 is explicitly post-launch and is not an MVP dependency.
 
 
@@ -177,3 +177,6 @@ PR #195 also requires distinct source IDs and publisher domains for any future r
 - Keep draft and outside the MVP release scope. No automated bookmaker odds, match-intelligence worker or exclusions feature from #196 is enabled for MVP.
 
 **Merge decision:** #185 and #195 remain drafts. A ready Vercel deployment proves the build can deploy; it does not clear a failing full test suite, missing production-like data evidence, or the #195 disposable-schema validation gate.
+
+
+**Repository test baseline (22 Nov 2026):** main has 13 failures across four files. PR #185's branch has four failures across three files, all reproduced on main; the PR resolves nine standings regressions. PR #195 retains the 13-failure baseline, while its changed-scope evidence suite passes 15/15.
