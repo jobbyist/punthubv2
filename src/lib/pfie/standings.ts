@@ -39,7 +39,19 @@ export const STANDINGS_COMPETITIONS: Partial<
   epl: {
     teams: 20,
     refreshHours: 12,
-    queries: ["Premier League table standings", "Premier League table"],
+    queries: [
+      "Premier League 2026/27 full overall table standings played won drawn lost goals for goals against points",
+      "site:bbc.com/sport/football/premier-league/table Premier League table",
+      "site:skysports.com/football/competitions/premier-league/table Premier League standings",
+      "site:espn.com/soccer/standings/_/league/eng.1 Premier League table",
+    ],
+    pages: [
+      "https://www.premierleague.com/en/tables/premier-league",
+      "https://www.bbc.com/sport/football/premier-league/table",
+      "https://www.skysports.com/football/competitions/premier-league/table",
+      "https://www.espn.com/soccer/standings/_/league/eng.1",
+      "https://www.transfermarkt.com/premier-league/tabelle/wettbewerb/GB1",
+    ],
   },
   laliga: {
     teams: 20,
@@ -47,13 +59,15 @@ export const STANDINGS_COMPETITIONS: Partial<
     queries: [
       "LaLiga EA Sports standings 2026/27",
       "site:skysports.com/football/competitions/la-liga/table La Liga 2026/27 table",
-      "site:espn.com/soccer/standings/_/league/esp.1 La Liga 2026/27 standings",
+      "site:tactix.football/standings La Liga 2026/27 table",
+      "site:footballedgelab.com/la-liga La Liga 2026/27 standings",
       "site:transfermarkt.com/laliga/tabelle/wettbewerb/ES1 La Liga 2026/27 table",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
       "https://www.skysports.com/football/competitions/la-liga/table",
-      "https://www.espn.com/soccer/standings/_/league/esp.1",
+      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+      "https://footballedgelab.com/la-liga",
       "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
   },
