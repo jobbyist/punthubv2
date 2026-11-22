@@ -114,6 +114,10 @@ describe("La Liga live source configuration", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
       "https://www.tactix.football/standings?country=spain&league=140&season=2026",
     );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://footballedgelab.com/la-liga/tables/2026-27",
+    );
+    expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
     expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
   });
 });
@@ -343,6 +347,7 @@ describe("chooseTable", () => {
     expect(independentSourceKey("news.skysports.com")).toBe(independentSourceKey("skysports.com"));
     expect(independentSourceKey("www.premierleague.com")).toBe(independentSourceKey("premierleague.com"));
     expect(independentSourceKey("www.tactix.football")).toBe(independentSourceKey("tactix.football"));
+    expect(independentSourceKey("stats.footballedgelab.com")).toBe(independentSourceKey("footballedgelab.com"));
     const bbcCom = page("bbc.com", "trusted", 1, lines);
     const bbcUk = page("bbc.co.uk", "trusted", 2, lines);
     const tables = validateTables([...raw(1), ...raw(2)], [bbcCom, bbcUk], 4).tables;
