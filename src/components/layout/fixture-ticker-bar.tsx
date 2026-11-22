@@ -28,7 +28,7 @@ function shortTeamName(name: string) {
   const known = TEAM_SHORT_NAMES[name];
   if (known) return known;
   const parts = name.trim().split(/\s+/);
-  return (parts.length > 1 ? parts.map((part) => part[0]).join("") : parts[0].slice(0, 3))
+  return (parts.length > 1 ? parts.map((part) => part[0] ?? "").join("") : (parts[0] ?? name).slice(0, 3))
     .slice(0, 3)
     .toUpperCase();
 }
@@ -92,8 +92,16 @@ export function FixtureTickerBar() {
         <div className="min-w-0 flex-1 overflow-hidden" aria-label="Live and upcoming fixtures">
           <motion.div
             className="flex w-max items-center gap-2 px-2.5 sm:gap-3 sm:px-3"
-            animate={reduceMotion ? undefined : { x: ["0%", "-50%"] }}
-            transition={reduceMotion ? undefined : { duration: Math.max(90, fixtures.length * 15), ease: "linear", repeat: Infinity }}
+            {...(reduceMotion
+              ? {}
+              : {
+                  animate: { x: ["0%", "-50%"] },
+                  transition: {
+                    duration: Math.max(90, fixtures.length * 15),
+                    ease: "linear" as const,
+                    repeat: Infinity,
+                  },
+                })}
           >
             {items.map((fixture, index) => {
               const home = (
