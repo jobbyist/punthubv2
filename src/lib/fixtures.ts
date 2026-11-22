@@ -11,6 +11,8 @@ export interface UpcomingFixture {
   away: string;
   kickoff_at: string;
   status: FixtureStatus;
+  home_score?: number | null;
+  away_score?: number | null;
 }
 
 export interface FixtureDay {
@@ -43,7 +45,7 @@ export async function fetchUpcomingFixtures(opts: {
   const to = new Date(now.getTime() + (opts.days ?? 14) * 24 * 3600 * 1000).toISOString();
   let q = supabase
     .from("fixtures")
-    .select("id, sport, competition, home, away, kickoff_at, status")
+    .select("id, sport, competition, home, away, kickoff_at, status, home_score, away_score")
     .in("status", ["scheduled", "live"])
     .gte("kickoff_at", from)
     .lte("kickoff_at", to)
