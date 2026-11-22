@@ -39,10 +39,14 @@ export const STANDINGS_COMPETITIONS: Partial<
       "LaLiga EA Sports standings 2026/27",
       "La Liga current table full standings",
       "site:skysports.com/football/competitions/la-liga/table La Liga table",
+      "La Liga current standings ESPN table",
+      "La Liga current standings Transfermarkt table",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
       "https://www.skysports.com/football/competitions/la-liga/table",
+      "https://www.espn.com/soccer/standings/_/league/esp.1",
+      "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
   },
   seriea: {
