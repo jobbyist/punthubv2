@@ -29,8 +29,8 @@
     },
     "title": "PuntPoints",
     "subtitle": "'n Bietjie erkenning omdat jy deel van die Puntr-gemeenskap is.",
-    "heading": "Punte vir deelname. Nooit vir uitslae nie.",
-    "body": "PuntPoints is ontwerp om kwalifiserende gemeenskapsbedrywigheid te erken, soos om jou e-pos te bevestig, keuses te deel en vriende uit te nooi. Dit is nie 'n inset, 'n weddenskapsaldo of 'n beloning vir wen nie.",
+    "heading": "Punte vir deelname — en vriendskaplike kompetisie.",
+    "body": "PuntPoints is nie-kontant lojaliteitspunte wat deur kwalifiserende gemeenskapsaktiwiteit en belonings verdien word. In Community Duels kan lede kwalifiserende PuntPoints in 'n kop-aan-kop-uitdaging insit. Wanneer die tweestryd afgehandel is, ontvang die wenner die PuntPoints-pot. PuntPoints is nie regte geld nie en kan nie uitbetaal word nie.",
     "cards": {
       "earn": {
         "title": "Verdien deur bedrywigheid",
@@ -42,10 +42,10 @@
       },
       "transparent": {
         "title": "Hou dit deursigtig",
-        "body": "Punte het geen kontantwaarde nie en kan nie gekoop of vir geld omgeruil word nie."
+        "body": "PuntPoints het geen kontantwaarde nie en kan nie vir geld omgeruil word nie. Community Duel-insette is beperk tot kwalifiserende punte, en die wenner ontvang die pot nadat die tweestryd afgehandel is."
       }
     },
-    "fine": "Beskikbaarheid, verdienreëls en belonings hang af van die program se status en kwalifikasie. Punte beïnvloed nie die gradering van keuses of posisies op die ranglys nie.",
+    "fine": "Verdienreëls, beskikbaarheid van belonings en perke vir tweestryd-insette geld. Slegs kwalifiserende punte kan ingesit word; rekeningouderdom- en daaglikse perke kan geld. PuntPoints beïnvloed nie die gradering van wedstrydkeuses of posisies op die ranglys nie.",
     "cta": "Maak belonings oop"
   },
   "liveScores": {
