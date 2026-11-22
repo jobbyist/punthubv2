@@ -115,7 +115,7 @@ describe("La Liga live source configuration", () => {
       "https://www.tactix.football/standings?country=spain&league=140&season=2026",
     );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://footballedgelab.com/la-liga/tables/2026-27",
+      "https://footballedgelab.com/la-liga",
     );
     expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
     expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
@@ -383,6 +383,7 @@ describe("standingsRequest", () => {
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
     expect(request.system).toContain("extract only the Total/Overall league table");
+    expect(request.system).toContain("Ignore projected, predicted, simulated, modelled");
     expect(request.system).toContain("return each club exactly once");
   });
 });
