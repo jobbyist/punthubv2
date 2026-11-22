@@ -32,6 +32,7 @@ import {
   type QuestRow,
   type QuestSummary,
 } from "@/lib/quests";
+import { enablePushNotifications, getPushStatus, supportsWebPush } from "@/lib/push-notifications";
 import type { SocialKey } from "@/lib/social";
 
 const SOCIAL: Record<string, SocialKey> = {
@@ -214,23 +215,35 @@ function QuestItem({ row, onChange }: { row: QuestRow; onChange: () => void }) {
   }
   async function claimDevice() {
     const code = row.code as "install_app" | "push_notifications";
-    if (code === "install_app" && !runningInstalled())
-      return void toast.error(t("error.notInstalled"));
-    if (
-      code === "push_notifications" &&
-      (typeof Notification === "undefined" || Notification.permission !== "granted")
-    )
-      return void toast.error(t("error.pushOff"));
+    if (code === "install_app" && !runningInstalled()) {
+      window.dispatchEvent(new Event("puntr:request-install"));
+      toast.info(t("installPrompt", { defaultValue: "Install Puntr, then open it from your home screen and tap Check to claim your points." }));
+      return;
+    }
+    if (code === "push_notifications" && !supportsWebPush()) {
+      toast.error(t("error.pushUnsupported", { defaultValue: "Push notifications are not supported by this browser." }));
+      return;
+    }
     setBusy(true);
     try {
+      if (code === "push_notifications") {
+        await enablePushNotifications("account");
+        const status = await getPushStatus();
+        if (!status.enabled || status.activeCount < 1) throw new Error("push_subscription_missing");
+      }
       const n = await claimDeviceQuest(code);
       if (n > 0) {
         toast.success(t("awarded", { points: points(n) }));
         notifyPointsChanged();
       }
       onChange();
-    } catch {
-      toast.error(t("error.generic"));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "";
+      toast.error(message.includes("permission") || message.includes("blocked")
+        ? t("error.pushOff")
+        : message.includes("supported")
+          ? t("error.pushUnsupported", { defaultValue: "Push notifications are not supported by this browser." })
+          : t("error.generic"));
     } finally {
       setBusy(false);
     }
@@ -307,7 +320,11 @@ function QuestItem({ row, onChange }: { row: QuestRow; onChange: () => void }) {
           )
         ) : row.verification === "device" ? (
           <Button size="sm" disabled={busy} onClick={() => void claimDevice()}>
-            {t("cta.check")}
+            {row.code === "push_notifications"
+              ? t("cta.enablePush", { defaultValue: "Enable notifications" })
+              : row.code === "install_app"
+                ? runningInstalled() ? t("cta.check") : t("cta.installApp", { defaultValue: "Install app" })
+                : t("cta.check")}
           </Button>
         ) : row.action_url ? (
           <Button asChild size="sm" variant="outline">

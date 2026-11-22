@@ -24,7 +24,9 @@
     "join_whatsapp": "Sluit by groep aan",
     "join_telegram": "Sluit aan",
     "go": "Gaan",
-    "check": "Kontroleer"
+    "check": "Kontroleer",
+    "enablePush": "Skakel kennisgewings aan",
+    "installApp": "Installeer app"
   },
   "error": {
     "open_link_first": "Maak eers die skakel oop en stuur dan jou gebruikersnaam.",
@@ -32,7 +34,8 @@
     "bad_evidence": "Vul die gebruikersnaam in wat jy gebruik het (2 tot 120 karakters).",
     "notInstalled": "Maak eers Puntr vanaf jou tuisskerm oop en tik dan op Kontroleer.",
     "pushOff": "Laat eers kennisgewings vir Puntr in jou blaaier toe.",
-    "generic": "Iets het skeefgeloop. Probeer asseblief weer."
+    "generic": "Iets het skeefgeloop. Probeer asseblief weer.",
+    "pushUnsupported": "Hierdie blaaier ondersteun nie stootkennisgewings nie."
   },
   "completion": {
     "title": "Profielvoltooiing",
@@ -59,5 +62,6 @@
     "stats": "Take geverifieer: {{verified}} · wag: {{waiting}} · punte gegee: {{points}}",
     "open": "Maak Puntr se bladsy oop"
   },
-  "stayConnected": "Bly in verbinding (geen punte nie, net die jongste van Puntr)"
+  "stayConnected": "Bly in verbinding (geen punte nie, net die jongste van Puntr)",
+  "installPrompt": "Installeer Puntr en maak dit dan vanaf jou tuisskerm oop. Tik Kontroleer om jou punte op te eis."
 }
