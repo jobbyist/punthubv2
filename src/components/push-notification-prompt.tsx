@@ -36,7 +36,7 @@ export function PushNotificationPrompt() {
     setBusy(true);
     setError(null);
     try {
-      await enablePushNotifications();
+      await enablePushNotifications("pwa_prompt");
       setShow(false);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t("pwa.push.error"));
