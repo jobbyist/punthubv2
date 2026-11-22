@@ -272,18 +272,23 @@ export function validateTables(
     const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow, teamVariants: string[]) => {
       const variants = teamVariants.map(fold).filter(Boolean);
-      const expected = [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points];
+      const expectedOrders = [
+        [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points],
+        [r.points, r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst],
+      ];
       for (let i = 0; i < sourceLines.length; i++) {
         const line = fold(sourceLines[i] ?? "");
         if (!variants.some((team) => line.includes(team))) continue;
         const context = fold(sourceLines.slice(i, i + 10).join(" "));
         const numbers = context.match(/[0-9]+/g)?.map(Number) ?? [];
-        let cursor = 0;
-        const ordered = expected.every((value) => {
-          const found = numbers.indexOf(value, cursor);
-          if (found < 0) return false;
-          cursor = found + 1;
-          return true;
+        const ordered = expectedOrders.some((expected) => {
+          let cursor = 0;
+          return expected.every((value) => {
+            const found = numbers.indexOf(value, cursor);
+            if (found < 0) return false;
+            cursor = found + 1;
+            return true;
+          });
         });
         if (ordered) return true;
       }
