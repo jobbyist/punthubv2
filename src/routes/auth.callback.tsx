@@ -35,7 +35,14 @@ function AuthCallback() {
       try {
         // Exchange the PKCE code when present. Also accept an existing session for
         // providers/configurations that return the session directly in the URL fragment.
-        if (code) {
+        if (!code) {
+          const { data: existing, error: existingError } = await supabase.auth.getSession();
+          if (existingError) throw existingError;
+          if (!existing.session) {
+            await navigate({ to: "/join", search: { next: returnTo }, replace: true });
+            return;
+          }
+        } else {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) throw exchangeError;
         }
@@ -54,7 +61,9 @@ function AuthCallback() {
           .maybeSingle();
 
         if (profileError) {
-          console.warn("[Puntr] Could not check OAuth profile; continuing through onboarding", profileError);
+          console.warn("[Puntr] Could not check OAuth profile; returning to the requested page", profileError);
+          await navigate({ to: returnTo as never, replace: true });
+          return;
         }
 
         if (profile) {
