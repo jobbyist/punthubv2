@@ -278,16 +278,16 @@ This section is part of the MVP Launch Hardening sprint. The PR order is fixed b
 ## Latest PR verification snapshot — 22 November 2026
 
 **#185 — La Liga source coverage (pre-launch; still draft)**
-- Current branch head: b6f1ff3dfe6019dec3421daf03744a0361eb438c.
+- Current branch head: 051f4e03bf34e6241fc9f0ac0ea22de6340de477.
 - Five configured independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The source-cap regression test asserts five unique publisher identities.
 - Targeted verification: formatting, ESLint, TypeScript and the standings suite passed (47/47).
-- Production build and Vercel preview are ready: https://punthubv2-g01du2tea-michael-chigbus-projects-6fad9571.vercel.app
+- Production build and Vercel preview are ready: https://punthubv2-ebq8bm0or-michael-chigbus-projects-6fad9571.vercel.app
 - The full repository test command remains red on this head (4 failed tests across 3 files; one confirmed mismatch is the existing PFIE provider model-fallback expectation). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
 
 **#195 — PFIE evidence foundation (pre-launch; still draft)**
-- Current branch head: ce1c95516e0b13ed85abff9bd3973565de7ed3c5.
+- Current branch head: 1b6f2e7cede4f05236ba419cb61f71a1c66b1382.
 - Targeted verification: formatting, ESLint, TypeScript and the evidence suite passed (15/15).
-- Production build and Vercel preview are ready: https://punthubv2-g7kl1s1v5-michael-chigbus-projects-6fad9571.vercel.app
+- Production build and Vercel preview are ready: https://punthubv2-lskkd1to6-michael-chigbus-projects-6fad9571.vercel.app
 - The full repository test command remains red on this head (13 failed tests across 4 files, including two season-backfill fixture failures on this branch). The current branch's targeted evidence suite passes, but the full-suite baseline must be reconciled before merge.
 - Disposable-database SQL validation and the final schema/RLS/grant review remain outstanding. The migration is source-control only and must not be applied to production before migration-ledger reconciliation and separate backup/PITR/rollback approval.
 
