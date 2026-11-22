@@ -173,23 +173,45 @@ export function SettlementTab() {
         )}
         {error ? (
           <p className="mt-3 text-sm text-destructive">{t("settle.error")}</p>
-        ) : !data || data.fixtures.length === 0 ? (
+        ) : !data || (data.fixtures.length === 0 && data.resultPending.length === 0) ? (
           <p className="mt-3 text-sm text-muted-foreground">{t("settle.none")}</p>
         ) : (
-          <ul className="mt-3 divide-y divide-border text-sm">
-            {data.fixtures.map((f) => (
-              <li key={f.fixtureId} className="flex flex-wrap items-center gap-x-3 py-2">
-                <span className="font-semibold">{f.label}</span>
-                <span className="text-muted-foreground tnum">{f.score ?? "–"}</span>
-                <span className="text-muted-foreground">
-                  {t("settle.pending", { count: f.pending })}
-                </span>
-                {!f.settleable && (
-                  <span className="text-xs text-destructive">{t("settle.noScore")}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-3 space-y-5">
+            {data.fixtures.length > 0 && (
+              <ul className="divide-y divide-border text-sm">
+                {data.fixtures.map((f) => (
+                  <li key={f.fixtureId} className="flex flex-wrap items-center gap-x-3 py-2">
+                    <span className="font-semibold">{f.label}</span>
+                    <span className="text-muted-foreground tnum">{f.score ?? "–"}</span>
+                    <span className="text-muted-foreground">
+                      {t("settle.pending", { count: f.pending })}
+                    </span>
+                    {!f.settleable && (
+                      <span className="text-xs text-destructive">{t("settle.noScore")}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {data.resultPending.length > 0 && (
+              <section className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+                <h3 className="text-sm font-semibold">Awaiting verified results</h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  These fixtures have unsettled picks but are still marked scheduled or live. Puntr will not grade them until a final result is verified.
+                </p>
+                <ul className="mt-3 divide-y divide-border text-sm">
+                  {data.resultPending.map((f) => (
+                    <li key={f.fixtureId} className="flex flex-wrap items-center gap-x-3 py-2">
+                      <span className="font-semibold">{f.label}</span>
+                      <span className="text-xs text-muted-foreground">{f.status}</span>
+                      <span className="text-xs text-muted-foreground tnum">{formatDateTime(f.kickoffAt)}</span>
+                      <span className="ml-auto text-xs text-muted-foreground">{f.pending} pending picks</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
         )}
       </section>
 

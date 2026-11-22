@@ -16,7 +16,8 @@ type Ctx = { supabase: SupabaseClient; userId: string };
 type Fail = { ok: false; code: "forbidden" | "invalid" | "not_found" | "error"; message?: string };
 
 async function adminDb(context: Ctx): Promise<SupabaseClient | null> {
-  const { data } = await context.supabase.rpc("is_admin");
+  const { data, error } = await context.supabase.rpc("is_admin");
+  if (error) throw new Error(`Could not verify admin permissions: ${error.message}`);
   if (data !== true) return null;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as SupabaseClient;
@@ -123,16 +124,18 @@ export const adminSendNotification = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ ok: true; id: string } | Fail> => {
     const ctx = context as Ctx;
     const db = await adminDb(ctx);
-    if (!db) return { ok: false, code: "forbidden" };
+    if (!db) return { ok: false, code: "forbidden", message: "Your account does not have admin permission to send notifications." };
 
     let recipientId: string | null = null;
     if (data.audience === "member") {
-      const { data: profile } = await db
+      const { data: profile, error: profileError } = await db
         .from("profiles")
         .select("id")
         .ilike("username", data.username ?? "")
         .not("username", "like", "deleted-%")
         .maybeSingle();
+      if (profileError)
+        return { ok: false, code: "error", message: `Could not look up that member: ${profileError.message}` };
       if (!profile)
         return { ok: false, code: "not_found", message: "No member with that username" };
       recipientId = (profile as { id: string }).id;
@@ -177,7 +180,7 @@ export const adminDeleteNotification = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ ok: true } | Fail> => {
     const ctx = context as Ctx;
     const db = await adminDb(ctx);
-    if (!db) return { ok: false, code: "forbidden" };
+    if (!db) return { ok: false, code: "forbidden", message: "Your account does not have admin permission to withdraw notifications." };
     const { data: rows, error } = await db
       .from("notifications")
       .delete()
@@ -186,7 +189,7 @@ export const adminDeleteNotification = createServerFn({ method: "POST" })
       .select("id, title");
     if (error) return { ok: false, code: "error", message: error.message };
     if (!rows || rows.length === 0)
-      return { ok: false, code: "invalid", message: "Not found, or linked to a newsroom article" };
+      return { ok: false, code: "invalid", message: "This notice is not withdrawable here. Newsroom-linked notices must be withdrawn from their Newsroom article." };
     await db.from("admin_actions").insert({
       admin_id: ctx.userId,
       action: "notification.delete",

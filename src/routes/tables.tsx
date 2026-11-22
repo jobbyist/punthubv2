@@ -12,7 +12,7 @@ import { TeamLogo } from "@/components/team-logo";
 import { useTeamForms } from "@/hooks/use-team-forms";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
-import { STANDINGS_COMPETITIONS } from "@/lib/pfie/standings";
+import { STANDINGS_LAUNCH_KEYS } from "@/lib/pfie/standings";
 import { competitions, type CompetitionKey } from "@/lib/sports/competitions";
 import {
   fetchStandings,
@@ -23,7 +23,7 @@ import {
 } from "@/lib/standings-data";
 import { cn } from "@/lib/utils";
 
-const KEYS = Object.keys(STANDINGS_COMPETITIONS) as CompetitionKey[];
+const KEYS = [...STANDINGS_LAUNCH_KEYS] as CompetitionKey[];
 
 export const Route = createFileRoute("/tables")({
   validateSearch: (s: Record<string, unknown>): { league?: CompetitionKey } =>

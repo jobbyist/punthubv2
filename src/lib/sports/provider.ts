@@ -4,6 +4,8 @@ import type { NormalisedFixture } from "./types";
 export interface ListOptions {
   /** Limit the call to these competitions (saves quota). Defaults to all with a configured league ID. */
   only?: CompetitionKey[];
+  /** Specific unresolved fixtures that should be prioritised in a results search. */
+  fixtures?: { home: string; away: string; kickoffAt: string }[];
 }
 
 export interface ListResult {

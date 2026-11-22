@@ -180,6 +180,11 @@ export function NotificationsTab() {
                 </Button>
               </div>
             )}
+            {!valid && (
+              <p className="text-xs text-muted-foreground">
+                Enter a title and message (at least 3 characters each). Sending to one member also requires their username.
+              </p>
+            )}
           </div>
 
           <div>
@@ -240,7 +245,11 @@ export function NotificationsTab() {
                     {t("notify.reads", { count: n.reads })}
                   </p>
                 </div>
-                {n.sentBy !== "newsroom" && (
+                {n.sentBy === "newsroom" ? (
+                  <span className="text-xs text-muted-foreground">
+                    Managed from Admin &gt; Newsroom
+                  </span>
+                ) : (
                   <Button size="sm" variant="outline" onClick={() => void withdraw(n.id)}>
                     {t("notify.withdraw")}
                   </Button>

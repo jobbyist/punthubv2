@@ -115,6 +115,14 @@ export interface SettlementOverview {
     /** False when the fixture is final but has no score yet: it cannot be graded automatically. */
     settleable: boolean;
   }[];
+  /** Picks attached to matches past kick-off whose fixture has not received a final status yet. */
+  resultPending: {
+    fixtureId: string;
+    label: string;
+    status: string;
+    kickoffAt: string;
+    pending: number;
+  }[];
 }
 
 /** Final fixtures that still have picks waiting for a first settlement. */
@@ -125,17 +133,29 @@ export const adminSettlementOverview = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: pending, error } = await supabaseAdmin.rpc("pending_settlements");
     if (error) throw error;
+    const { data: awaiting, error: awaitingError } = await supabaseAdmin.rpc("pending_result_fixtures");
+    // A Vercel preview may point at a database before this additive migration has been applied.
+    if (awaitingError && awaitingError.code !== "PGRST202") throw awaitingError;
+    const resultPending = (awaiting ?? []).map((f) => ({
+      fixtureId: f.fixture_id,
+      label: `${f.home} v ${f.away}`,
+      status: f.status,
+      kickoffAt: f.kickoff_at,
+      pending: Number(f.pending),
+    }));
     const ids = (pending ?? []).map((p) => p.prediction_id);
-    if (ids.length === 0) return { totalPending: 0, fixtures: [] };
-    const { data: preds } = await supabaseAdmin
+    if (ids.length === 0) return { totalPending: 0, fixtures: [], resultPending };
+    const { data: preds, error: predsError } = await supabaseAdmin
       .from("predictions")
       .select("id, fixture_id")
       .in("id", ids.slice(0, 500));
+    if (predsError) throw predsError;
     const fixtureIds = [...new Set((preds ?? []).map((p) => p.fixture_id))];
-    const { data: fixtures } = await supabaseAdmin
+    const { data: fixtures, error: fixturesError } = await supabaseAdmin
       .from("fixtures")
       .select("id, home, away, status, home_score, away_score")
       .in("id", fixtureIds);
+    if (fixturesError) throw fixturesError;
     const byFixture = new Map<string, number>();
     for (const p of preds ?? [])
       byFixture.set(p.fixture_id, (byFixture.get(p.fixture_id) ?? 0) + 1);
@@ -152,6 +172,7 @@ export const adminSettlementOverview = createServerFn({ method: "GET" })
         pending: byFixture.get(f.id) ?? 0,
         settleable: f.status !== "finished" || (f.home_score !== null && f.away_score !== null),
       })),
+      resultPending,
     };
   });
 

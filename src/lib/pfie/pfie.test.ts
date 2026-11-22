@@ -399,6 +399,9 @@ describe("validation", () => {
   it("rejects output that is not the expected JSON", () => {
     expect(parseObservations("here are the fixtures")).toBeNull();
     expect(parseObservations('{"matches":[{"home":"A"}]}')).toBeNull();
+    const valid = JSON.stringify({ matches: [raw({})] });
+    expect(parseObservations(```json\n${valid}\n```)).toHaveLength(1);
+    expect(parseObservations(`Here is the result:\n${valid}\nDone.`)).toHaveLength(1);
   });
 });
 
@@ -665,14 +668,15 @@ describe("provider", () => {
       only: ["psl"],
     });
     // Kick-off ~18.5 h before NOW: the back-off is a third of that.
-    expect(soon.skipped[0]?.reason).toContain("370 minutes");
+    expect(soon.skipped[0]?.reason).toContain("360 minutes");
     expect(model.models).toHaveLength(0);
   });
   it("backs off results checks as a match gets older", () => {
     const h = 3600_000;
     expect(resultsGapMs(2 * h)).toBe(50 * 60_000);
     expect(resultsGapMs(6 * h)).toBe(2 * h);
-    expect(resultsGapMs(24 * h)).toBe(8 * h);
+    expect(resultsGapMs(24 * h)).toBe(6 * h);
+    expect(resultsGapMs(7 * 24 * h)).toBe(6 * h);
   });
   it("records a failed run and returns nothing when the model output is unusable or every model fails", async () => {
     for (const bad of ["not json", new ProviderError("gemini", "quota", 429, "limit")]) {
@@ -684,6 +688,53 @@ describe("provider", () => {
       expect(store.runs[0]?.ok).toBe(false);
     }
   });
+  it("retries malformed model JSON once with a smaller source set", async () => {
+    const models: string[] = [];
+    const retrying: LlmProvider = {
+      name: "gemini",
+      async generate(model) {
+        models.push(model);
+        return { model, text: models.length === 1 ? "not json" : ANSWER };
+      },
+    };
+    const out = await createPfieProvider({ ...base, llm: retrying, store: memory() }).listFixtures(
+      WINDOW.from,
+      WINDOW.to,
+      { only: ["psl"] },
+    );
+    expect(models).toHaveLength(2);
+    expect(out.fixtures).toHaveLength(2);
+    expect(out.calls).toBe(3);
+  });
+
+  it("adds unresolved fixture-specific searches to a results lookup", async () => {
+    const captured: { value?: { objective: string; queries: string[] } } = {};
+    const targetedSearch: SearchProvider = {
+      name: "parallel",
+      async search(input) {
+        captured.value = input;
+        return SOURCES.map((s) => ({ url: s.url, title: "t", excerpt: s.text, publishedAt: null }));
+      },
+    };
+    const target = {
+      home: "Napoli",
+      away: "Torino",
+      kickoffAt: "2026-11-12T18:45:00.000Z",
+    };
+    const provider = createPfieProvider({
+      ...base,
+      search: targetedSearch,
+      llm: llm(ANSWER),
+      store: memory(),
+    });
+    await provider.listResults(new Date("2026-11-12T18:45:00Z"), NOW, {
+      only: ["seriea"],
+      fixtures: [target],
+    });
+    expect(captured.value?.queries).toContain("Napoli vs Torino result score 2026-11-12");
+    expect(captured.value?.objective).toContain("Napoli vs Torino");
+  });
+
   it("falls back to the second model on quota", async () => {
     const models: string[] = [];
     const flaky: LlmProvider = {

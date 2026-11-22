@@ -18,6 +18,7 @@ import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import {
   STANDINGS_COMPETITIONS,
+  STANDINGS_LAUNCH_KEYS,
   chooseTable,
   independentSourceKey,
   parseStandings,
@@ -200,9 +201,9 @@ export async function runTablesSync(
   }
   const status = (job: TableJob, scope: string) =>
     statuses.find((s) => s.job === job && s.scope === scope);
-  const keys = (Object.keys(STANDINGS_COMPETITIONS) as CompetitionKey[]).filter(
-    (k) => PFIE_SOURCES[k] && (!opts.only || opts.only.includes(k)),
-  );
+  const keys = STANDINGS_LAUNCH_KEYS.filter(
+    (k) => STANDINGS_COMPETITIONS[k] && PFIE_SOURCES[k] && (!opts.only || opts.only.includes(k)),
+  ) as CompetitionKey[];
   const finished = await deps.store.latestFinished(new Date(now().getTime() - 8 * DAY));
 
   const due: { job: TableJob; key: CompetitionKey }[] = [];

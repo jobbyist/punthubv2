@@ -417,11 +417,12 @@ const RESULTS_EARLIEST_MS = 105 * 60_000;
 
 /**
  * Back-off between results checks for one competition: 50 minutes soon after kick-off, then a third of the time
- * since the earliest open kick-off (6 h -> 2 h, 24 h -> 8 h). A result no site confirms no longer costs a search
- * every 50 minutes for 36 hours.
+ * since the earliest open kick-off, capped at six hours so unresolved fixtures remain in the retry cycle.
  */
 export function resultsGapMs(sinceKickoffMs: number): number {
-  return Math.max(RESULTS_MIN_GAP_MS, Math.floor(sinceKickoffMs / 3));
+  // Keep retrying old unresolved fixtures at least four times per day; a very old fixture must not
+  // push its competition's next result check out by multiple days.
+  return Math.min(6 * 60 * 60_000, Math.max(RESULTS_MIN_GAP_MS, Math.floor(sinceKickoffMs / 3)));
 }
 
 export interface PfieDeps {
@@ -447,6 +448,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     kind: "fixtures" | "results",
     from: Date,
     to: Date,
+    targetFixtures: NonNullable<ListOptions["fixtures"]> = [],
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
@@ -458,6 +460,9 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       // 1. Discovery.
       const today = sastDate(now());
       calls++;
+      const targetedMatches = targetFixtures.slice(0, 3).map(
+        (fixture) => `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
+      );
       const hits = await deps.search
         .search({
           objective:
@@ -465,12 +470,13 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               ? `${competition.name} football fixtures from ${sastDate(from)} to ${sastDate(to)} with dates and ` +
                 `kick-off times. Prefer the official competition site and established sports news sites.`
               : `${competition.name} football final scores for matches played from ${sastDate(from)} to ` +
-                `${today}. Prefer the official competition site and established sports news sites.`,
+                `${today}. ${targetedMatches.length ? `Prioritise these outstanding matches: ${targetedMatches.join("; ")}. ` : ""}` +
+                `Prefer the official competition site and established sports news sites.`,
           queries:
             kind === "fixtures"
               ? // Parallel Search takes at most 5 phrasings per call.
                 [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
-              : config.queries.results,
+              : [...config.queries.results, ...targetedMatches].slice(0, 5),
           maxResults: 10,
         })
         .then(
@@ -524,7 +530,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         },
       });
       calls++;
-      const answer = await router.generate(
+      let answer = await router.generate(
         extractionRequest({
           competition: competition.name,
           from: sastDate(from),
@@ -533,8 +539,29 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           sources,
         }),
       );
-      const raw = parseObservations(answer.text);
-      if (!raw) throw new Error("extraction answer was not valid JSON");
+      let raw = parseObservations(answer.text);
+      if (!raw) {
+        // A malformed/overlong structured response must not fail the whole competition on the first attempt.
+        // Retry with the strongest three sources and a strict JSON-only instruction; all quotes are still
+        // validated against the original, full source text below.
+        calls++;
+        const retrySources = sources.slice(0, 3).map((source) => ({
+          ...source,
+          text: source.text.slice(0, 6_500),
+        }));
+        answer = await router.generate(
+          extractionRequest({
+            competition: competition.name,
+            from: sastDate(from),
+            to: sastDate(to),
+            today,
+            sources: retrySources,
+            retryHint: "The previous response was not valid JSON or did not match the required schema.",
+          }),
+        );
+        raw = parseObservations(answer.text);
+      }
+      if (!raw) throw new Error("extraction answer was not valid JSON after one retry");
 
       // 4. Validation and corroboration: code only.
       const { accepted, rejected } = validateObservations(raw, sources, {
@@ -630,7 +657,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           });
           continue;
         }
-        const r = await run(c, "results", from, to);
+        const r = await run(c, "results", from, to, opts?.fixtures ?? []);
         // Only results: a results run never creates or moves a fixture.
         out.fixtures.push(...r.fixtures.filter((f) => f.status !== "scheduled"));
         out.calls += r.calls;

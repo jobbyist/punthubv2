@@ -235,6 +235,8 @@ describe("sync", () => {
           provider: "apisports",
           providerRef: "football:1",
           competition: "Betway Premiership",
+          home: "A",
+          away: "B",
           kickoffAt: "2026-11-07T15:30:00.000Z",
         },
       ]),
@@ -242,8 +244,13 @@ describe("sync", () => {
     const report = await syncResults(p, store, new Date("2026-11-07T19:00:00Z"));
     expect(p.listResults).toHaveBeenCalledWith(expect.any(Date), expect.any(Date), {
       only: ["psl"],
+      fixtures: [{ home: "A", away: "B", kickoffAt: "2026-11-07T15:30:00.000Z" }],
     });
     expect(report.upserted).toBe(1);
+    expect(store.openSince).toHaveBeenCalledWith(
+      new Date("2026-10-31T19:00:00.000Z"),
+      new Date("2026-11-07T19:00:00.000Z"),
+    );
     expect(store.upsert.mock.calls[0]![0][0].providerRef).toBe("football:1");
   });
 });
