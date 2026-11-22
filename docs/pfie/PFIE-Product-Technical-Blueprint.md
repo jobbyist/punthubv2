@@ -101,7 +101,7 @@ Priority key: **M** must for 9 November, **S** should by launch on 1 December, *
 | **Premier Soccer League (SA)** | Betway Premiership, Motsepe Foundation Championship | Fixtures, results | Firecrawl, Gemini | Updated by the PSL | Terms [C]. Tier C | High (official) | 1 |
 | **LaLiga, Bundesliga, Lega Serie A, Ligue 1** | Own leagues | Fixtures | Firecrawl, Gemini | League-managed | Terms [C]. Tier C | High (official) | 2 |
 | **CAF** | CAF Champions League, Confederation Cup, AFCON | Fixtures | Firecrawl, Gemini | Irregular | Terms [C]. Tier C | Medium | 2 |
-| **ESPN, FootballCritic** | Broad | Fixtures, results | Only if terms permit [C] | Frequent | Automated access is commonly restricted; verify. Tier D | Medium-high | 3 |
+| **ESPN, The Analyst** | Broad | Fixtures, results | Only if terms permit [C] | Frequent | Automated access is commonly restricted; verify. Tier D | Medium-high | 3 |
 | **Soccerway, WorldFootball.net** | Broad | Fixtures, results | Only if terms permit [C] | Frequent | Verify. Tier D | Medium | 3 |
 | **Parallel Search** | Not a data source | URL discovery | API, $5 monthly credit [V] | On demand | Card activation and overage billing [V]; commercial terms [C]. Tier X | n/a | Discovery only |
 
@@ -464,7 +464,7 @@ Mermaid source files are in `docs/pfie/diagrams/`: `ingestion-lifecycle.mmd`, `d
 
 The MVP release is limited to football/soccer and does not depend on automated bookmaker odds, event-level match statistics, player/roster intelligence or the match-intelligence workers described in later sections. Member-entered bookmaker and odds values remain user-submitted records and must not be described as live or independently verified.
 
-La Liga standings direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and FootballCritic. Each candidate must be fetched and validated independently; no table is published without complete row evidence and two-independent-publisher consensus.
+La Liga standings direct-page candidates are capped at five independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst. Each candidate must be fetched and validated independently; no table is published without complete row evidence and two-independent-publisher consensus.
 
 The PR #195 evidence foundation requires page-text-backed quote validation and curated publisher identity mapping. South African bookmaker sources require ZA jurisdiction, a nonblank licence reference, licence-check timestamp and terms review. Player roster membership must reference a canonical PFIE team record, not a free-text team label. Its migration remains unapplied in production until the full production migration baseline and backup/rollback plan are reconciled.
 
