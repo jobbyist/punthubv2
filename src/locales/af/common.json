@@ -171,5 +171,20 @@
     "label": "Admin",
     "open": "Maak die adminportaal oop",
     "dismiss": "Versteek die admin-kortpad vir 'n week"
+  },
+  "pwa": {
+    "badge": "INSTALLEERBARE TOEP",
+    "title": "Neem Puntr saam.",
+    "body": "Voeg Puntr by jou tuisskerm vir 'n vinniger, app-agtige ervaring.",
+    "install": "Installeer Puntr",
+    "notNow": "Nie nou nie",
+    "promptLabel": "Installeer die Puntr-toep",
+    "iosSubtitle": "Voeg Puntr by jou tuisskerm",
+    "iosTitle": "Installeer Puntr op jou iPhone",
+    "iosBody": "Volg hierdie vinnige stappe in Safari om Puntr altyd naby te hou.",
+    "iosStep1": "Tik die Deel-knoppie in Safari.",
+    "iosStep2": "Rol af en kies Voeg by tuisskerm.",
+    "iosStep3": "Tik Voeg by. Maak Puntr vanaf jou tuisskerm oop.",
+    "gotIt": "Goed"
   }
 }

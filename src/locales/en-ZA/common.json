@@ -171,5 +171,20 @@
     "label": "Admin",
     "open": "Open the admin portal",
     "dismiss": "Hide the admin shortcut for a week"
+  },
+  "pwa": {
+    "badge": "INSTALLABLE APP",
+    "title": "Take Puntr with you.",
+    "body": "Add Puntr to your home screen for a faster, app-like experience.",
+    "install": "Install Puntr",
+    "notNow": "Not now",
+    "promptLabel": "Install the Puntr app",
+    "iosSubtitle": "Add Puntr to your home screen",
+    "iosTitle": "Install Puntr on your iPhone",
+    "iosBody": "Follow these quick steps in Safari to keep Puntr one tap away.",
+    "iosStep1": "Tap the Share button in Safari.",
+    "iosStep2": "Scroll down and choose Add to Home Screen.",
+    "iosStep3": "Tap Add. Open Puntr from your home screen.",
+    "gotIt": "Got it"
   }
 }

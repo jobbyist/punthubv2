@@ -24,6 +24,7 @@ import { ConsentBanner } from "@/components/consent-banner";
 import { captureUtm } from "@/lib/campaign";
 import { Toaster } from "@/components/ui/sonner";
 import { Preloader } from "@/components/motion/preloader";
+import { PwaExperience } from "@/components/pwa-experience";
 import { RouteProgress } from "@/components/motion/route-progress";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { LocaleProvider } from "@/lib/i18n/provider";
@@ -114,7 +115,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "geo.region", content: "ZA" },
         { name: "geo.placename", content: "South Africa" },
         { name: "language", content: match.context.locale },
-        { name: "theme-color", content: "#16A34A" },
+        { name: "theme-color", content: "#000000" },
+        { name: "mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+        { name: "apple-mobile-web-app-title", content: "Puntr" },
         { property: "og:title", content: t("meta.title") },
         { property: "og:description", content: t("meta.ogDescription") },
         { property: "og:type", content: "website" },
@@ -137,13 +142,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "twitter:image", content: "https://puntr.co.za/og/puntr.png" },
       ],
       links: [
+        { rel: "manifest", href: "/manifest.webmanifest" },
         {
           rel: "icon",
-          href: "/puntrlogorounded.png",
+          type: "image/png",
+          sizes: "32x32",
+          href: "/puntr-icon-512.png",
         },
         {
           rel: "apple-touch-icon",
-          href: "/puntrlogorounded.png",
+          sizes: "180x180",
+          href: "/puntr-icon-192.png",
         },
         {
           rel: "stylesheet",
@@ -267,6 +276,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <Preloader />
+        <PwaExperience />
         <RouteProgress />
         <MfaGate />
         <div className="flex min-h-dvh flex-col">
