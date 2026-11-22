@@ -51,8 +51,8 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 | PR | Status | Decision |
 |---|---|---|
 | [#200 Launch-hardening workspace](https://github.com/jobbyist/punthubv2/pull/200) | **Merged to main** | Readiness dashboard, checklists, architecture and legal changelog are now live in the repository |
-| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Ready for review — pre-launch | Five independent publishers (LaLiga, TACTIX, Football Edge Lab, Flashscore, The Analyst/Opta); full standings suite (47/47), typecheck and build pass; live extraction/consensus evidence remains a release gate |
-| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Ready for review — pre-launch | 15 evidence tests, targeted ESLint, typecheck and Vercel build pass. Curated publisher identity, page-text quote checks, ZA licence gate, canonical team IDs, distinct reference-price source IDs/domains and service-role-only schema. Production migration remains separately blocked |
+| [#185 La Liga source coverage](https://github.com/jobbyist/punthubv2/pull/185) | Draft — pre-launch | Five independent publishers; standings suite 47/47, typecheck and Vercel build pass. Four remaining full-suite failures also reproduce on main; this PR resolves nine additional standings regressions. Live extraction/consensus remains a launch QA gate |
+| [#195 PFIE evidence foundation](https://github.com/jobbyist/punthubv2/pull/195) | Draft — pre-launch; isolated SQL validation pending | 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass. Review findings resolved; case-insensitive publisher-domain guard added. The only Supabase branch is MIGRATIONS_FAILED, so isolated migration validation is blocked; production migration remains unapplied |
 | [#196 Match intelligence / odds / exclusions](https://github.com/jobbyist/punthubv2/pull/196) | Draft — post-launch | Explicitly deferred from MVP. No automated bookmaker odds without written data rights. Revisit match-intelligence workers, exclusions scope, migration, security and legal validation after launch |
 | #173, #177 | Closed, not merged | Their code paths are already present in main |
 | #183 | Closed, not merged | Duplicate of #185 |
@@ -61,8 +61,8 @@ The safe reconciliation plan is documented in the readiness checklist. Productio
 
 ## PR execution sequence (owner decision, 22 November 2026)
 
-- **#185 — pre-launch:** ready for review. Five-source cap, focused regression, typecheck and build pass. Keep strict two-independent-publisher consensus; source candidates do not count as verified coverage until extraction and validation succeed.
-- **#195 — pre-launch merge candidate:** ready for review after targeted lint, typecheck, 15 evidence tests and Vercel build passed. The migration may be merged into source control only after review; do not apply it to production until the full migration baseline and backup/rollback plan are reconciled.
+- **#185 — pre-launch:** keep draft while the full-suite baseline is documented. Five-source cap and team-resolution regressions are covered; standings tests pass 47/47, typecheck and Vercel build pass. Four remaining full-suite failures also reproduce on main; this PR fixes nine additional standings failures. Production-like extraction remains a launch QA gate.
+- **#195 — pre-launch foundation:** keep draft until the migration is validated in an isolated database. Evidence tests (15/15), targeted Prettier/ESLint, typecheck and Vercel build pass; review findings are resolved. Supabase's only branch is MIGRATIONS_FAILED, so do not attempt a branch migration or production apply until the baseline is repaired.
 - **#196 — post-launch:** keep draft and out of the 1 December critical path. Automated odds remain disabled pending written collection/storage/display/redistribution rights. Revisit its match-intelligence workers, exclusion-page scope, migration and compliance gates after launch.
 
 A successful preview deployment is not a substitute for test, security, data-rights or production-migration approval.
@@ -70,8 +70,8 @@ A successful preview deployment is not a substitute for test, security, data-rig
 
 ### Verification snapshot (22 November 2026)
 
-- PR #185: focused five-source cap test passed; TypeScript typecheck and Vercel production build passed. The full PFIE standings test file passes (47/47). Live extraction and two-publisher consensus remain unverified until a production-like run. Live extraction and two-publisher consensus remain unverified until a production-like run.
-- PR #195: targeted ESLint, TypeScript typecheck, all 15 evidence tests and Vercel production build passed. Review threads are resolved and the branch is mergeable. Its migration is not applied to production.
+- PR #185: five-source cap and team-resolution regressions pass; standings tests 47/47, typecheck and Vercel build pass. Full suite has four failures across three files on this branch; the same four fail on main, while main has nine additional standings failures (13 total). Production-like extraction/two-source consensus remains a launch QA gate.
+- PR #195: 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass. Review threads are resolved, including case-insensitive www normalization. Full suite remains at 13 baseline failures on both main and this branch. Disposable SQL validation is blocked by the only Supabase branch being MIGRATIONS_FAILED; migration remains unapplied.
 - PR #196 remains draft and post-launch only.
 - GitHub-hosted Actions jobs did not acquire a runner; no failing workflow was left in the repository. Validation evidence above comes from isolated Vercel preview builds, not a green repository-wide Actions pipeline.
 
