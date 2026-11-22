@@ -53,6 +53,8 @@ import { Route as AccountPrivacyRouteImport } from './routes/account.privacy'
 import { Route as AccountSecurityRouteImport } from './routes/account.security'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
+import { Route as ApiPushRouteImport } from './routes/api.push'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminFixturesRouteImport } from './routes/admin.fixtures'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as DuelsIndexRouteImport } from './routes/duels.index'
@@ -311,6 +313,16 @@ const AdminFoundingHqRoute = AdminFoundingHqRouteImport.update({
   path: '/admin/founding-hq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPushRoute = ApiPushRouteImport.update({
+  id: '/api/push',
+  path: '/api/push',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthConfirmRoute = AuthConfirmRouteImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
@@ -514,6 +526,8 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof AccountSecurityRoute
   '/admin/fixtures': typeof AdminFixturesRoute
   '/admin/founding-hq': typeof AdminFoundingHqRoute
+  '/api/push': typeof ApiPushRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
@@ -981,6 +995,8 @@ export interface RootRouteChildren {
   AccountSecurityRoute: typeof AccountSecurityRoute
   AdminFixturesRoute: typeof AdminFixturesRoute
   AdminFoundingHqRoute: typeof AdminFoundingHqRoute
+  ApiPushRoute: typeof ApiPushRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
   DuelsDuelIdRoute: typeof DuelsDuelIdRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
@@ -1333,6 +1349,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFoundingHqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/push': {
+      id: '/api/push'
+      path: '/api/push'
+      fullPath: '/api/push'
+      preLoaderRoute: typeof ApiPushRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/confirm': {
       id: '/auth/confirm'
       path: '/auth/confirm'
@@ -1597,6 +1627,8 @@ const rootRouteChildren: RootRouteChildren = {
   AccountSecurityRoute: AccountSecurityRoute,
   AdminFixturesRoute: AdminFixturesRoute,
   AdminFoundingHqRoute: AdminFoundingHqRoute,
+  ApiPushRoute: ApiPushRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   AuthConfirmRoute: AuthConfirmRoute,
   DuelsDuelIdRoute: DuelsDuelIdRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
