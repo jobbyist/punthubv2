@@ -74,7 +74,22 @@
     "f4": "'n <1>Platform waar die gemeenskap eerste kom</1> om by te leer",
     "f5": "<1>KI-aangedrewe insigte</1>, kom binnekort",
     "f6": "Gratis vir stigterslede",
-    "f7": "Beplande tipgewer-ondersteuning: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie."
+    "f7": "Beplande tipgewer-ondersteuning: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte, nie kontant nie.",
+    "steps": {
+      "one": {
+        "title": "Bevestig jou voorspelling",
+        "body": "Kies wedstryduitslae in die Betway Premiership, Premier League en UCL voor afskop."
+      },
+      "two": {
+        "title": "Tydstempel met afskop",
+        "body": "Sodra die skeidsregter blaas, word jou keuse op jou openbare rekord vasgelê. Geen geskrapte verliese nie. Geen geredigeerde geskiedenis nie."
+      },
+      "three": {
+        "title": "Bewys jou rekord",
+        "body": "Outomatiese gradering werk jou wenkoers, ROI en ranglysposisie by. Deel jou geverifieerde rekord met vriende en verdien PuntPoints."
+      }
+    },
+    "guideCta": "Kyk hoe dit werk"
   },
   "video": {
     "close": "Maak video toe",
