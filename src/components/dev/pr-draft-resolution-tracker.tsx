@@ -1,6 +1,13 @@
 import { CheckCircle2, CircleDashed, Clock3, ExternalLink } from "lucide-react";
 
-type Gate = { label: string; state: "done" | "open" | "deferred" };
+import type { StoredState } from "@/lib/mvp-readiness";
+
+type Gate = {
+  label: string;
+  taskId?: string;
+  defaultDone?: boolean;
+  deferred?: boolean;
+};
 
 type TrackedPr = {
   number: number;
@@ -25,11 +32,23 @@ const TRACKED_PRS: TrackedPr[] = [
     nextAction:
       "Capture a production-like La Liga run with two independent complete tables agreeing on every material statistic, then record owner acceptance of the four shared full-suite baseline failures.",
     gates: [
-      { label: "Five-publisher cap and independent identity regression", state: "done" },
-      { label: "Standings tests 47/47, typecheck and Vercel build", state: "done" },
-      { label: "Inline review threads resolved", state: "done" },
-      { label: "Production-like two-publisher consensus evidence", state: "open" },
-      { label: "Shared full-suite baseline accepted or repaired", state: "open" },
+      {
+        label: "Five-publisher cap and independent identity regression",
+        taskId: "pr185-five-source-cap",
+        defaultDone: true,
+      },
+      {
+        label: "Standings tests 47/47, typecheck and Vercel build",
+        taskId: "pr185-focused-validation",
+        defaultDone: true,
+      },
+      {
+        label: "Inline review threads resolved",
+        taskId: "pr185-review-threads",
+        defaultDone: true,
+      },
+      { label: "Production-like two-publisher consensus evidence", taskId: "pr185-live-consensus" },
+      { label: "Shared full-suite baseline accepted or repaired", taskId: "pr185-full-suite-baseline" },
     ],
   },
   {
@@ -43,11 +62,22 @@ const TRACKED_PRS: TrackedPr[] = [
     nextAction:
       "Validate the migration in a disposable database, complete schema/RLS/grant review, and reconcile the production migration baseline plus backup/PITR and rollback plan before any production application.",
     gates: [
-      { label: "Evidence tests 15/15 and targeted code checks", state: "done" },
-      { label: "Inline review findings resolved", state: "done" },
-      { label: "Distinct source IDs/domains and ZA licence gate", state: "done" },
-      { label: "Disposable-database migration validation", state: "open" },
-      { label: "Production migration baseline and rollback approval", state: "open" },
+      {
+        label: "Evidence tests 15/15 and targeted code checks",
+        taskId: "pr195-focused-validation",
+        defaultDone: true,
+      },
+      { label: "Inline review findings resolved", taskId: "pr195-review-threads", defaultDone: true },
+      {
+        label: "Distinct source IDs/domains and ZA licence gate",
+        taskId: "pr195-source-licence-guard",
+        defaultDone: true,
+      },
+      { label: "Disposable-database migration validation", taskId: "pr195-disposable-sql" },
+      {
+        label: "Production migration baseline and rollback approval",
+        taskId: "pr195-prod-baseline-rollback",
+      },
     ],
   },
   {
@@ -61,21 +91,35 @@ const TRACKED_PRS: TrackedPr[] = [
     nextAction:
       "Reopen after launch for a separate scope, legal/data-rights, migration, security, quota and end-to-end test review. Automated odds remain disabled without written rights.",
     gates: [
-      { label: "Excluded from the MVP release scope", state: "done" },
-      { label: "Post-launch migration and worker review", state: "deferred" },
-      { label: "Written odds-data rights and legal approval", state: "deferred" },
-      { label: "Security, quota, provenance and end-to-end tests", state: "deferred" },
+      {
+        label: "Excluded from the MVP release scope",
+        taskId: "pr196-mvp-scope-excluded",
+        defaultDone: true,
+      },
+      { label: "Post-launch migration and worker review", deferred: true },
+      { label: "Written odds-data rights and legal approval", deferred: true },
+      { label: "Security, quota, provenance and end-to-end tests", deferred: true },
     ],
   },
 ];
 
-function GateIcon({ state }: { state: Gate["state"] }) {
-  if (state === "done") return <CheckCircle2 className="size-4 text-primary" aria-hidden />;
-  if (state === "deferred") return <Clock3 className="size-4 text-muted-foreground" aria-hidden />;
+function GateIcon({ done, deferred }: { done: boolean; deferred: boolean }) {
+  if (deferred) return <Clock3 className="size-4 text-muted-foreground" aria-hidden />;
+  if (done) return <CheckCircle2 className="size-4 text-primary" aria-hidden />;
   return <CircleDashed className="size-4 text-amber-600" aria-hidden />;
 }
 
-export function PrDraftResolutionTracker() {
+export function PrDraftResolutionTracker({
+  state,
+  stateAvailable,
+  pendingTaskId,
+  onToggle,
+}: {
+  state: StoredState;
+  stateAvailable: boolean;
+  pendingTaskId: string | null;
+  onToggle: (taskId: string, done: boolean) => void;
+}) {
   return (
     <section className="space-y-4" aria-labelledby="pr-draft-tracker-heading">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -94,8 +138,14 @@ export function PrDraftResolutionTracker() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         {TRACKED_PRS.map((pr) => {
-          const done = pr.gates.filter((gate) => gate.state === "done").length;
-          const total = pr.gates.length;
+          const gates = pr.gates.map((gate) => ({
+            ...gate,
+            done: gate.taskId
+              ? (state[gate.taskId]?.done ?? Boolean(gate.defaultDone))
+              : false,
+          }));
+          const done = gates.filter((gate) => gate.done).length;
+          const total = gates.length;
           return (
             <article key={pr.number} className="card-surface flex min-w-0 flex-col gap-4 p-4">
               <header className="space-y-2">
@@ -133,16 +183,28 @@ export function PrDraftResolutionTracker() {
                   />
                 </div>
                 <ul className="space-y-2">
-                  {pr.gates.map((gate) => (
+                  {gates.map((gate) => (
                     <li key={gate.label} className="flex items-start gap-2 text-xs">
-                      <GateIcon state={gate.state} />
+                      {gate.taskId ? (
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={gate.done}
+                          aria-label={gate.label}
+                          disabled={!stateAvailable || pendingTaskId === gate.taskId}
+                          onClick={() => onToggle(gate.taskId!, !gate.done)}
+                          className="mt-0.5 shrink-0 disabled:opacity-50"
+                        >
+                          <GateIcon done={gate.done} deferred={false} />
+                        </button>
+                      ) : (
+                        <span className="mt-0.5 shrink-0">
+                          <GateIcon done={false} deferred={Boolean(gate.deferred)} />
+                        </span>
+                      )}
                       <span className="min-w-0 flex-1">{gate.label}</span>
                       <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
-                        {gate.state === "done"
-                          ? "Done"
-                          : gate.state === "open"
-                            ? "Open"
-                            : "Deferred"}
+                        {gate.deferred ? "Deferred" : gate.done ? "Done" : "Open"}
                       </span>
                     </li>
                   ))}
@@ -168,8 +230,8 @@ export function PrDraftResolutionTracker() {
         })}
       </div>
       <p className="text-xs text-muted-foreground">
-        Gate progress is an operational snapshot, not GitHub CI status or merge authorization.
-        Recheck the pull request and its required checks before merging.
+        Gate ticks save to the shared admin checklist. This is an operational snapshot, not GitHub
+        CI status or merge authorization; recheck the pull request and required checks before merging.
       </p>
     </section>
   );
