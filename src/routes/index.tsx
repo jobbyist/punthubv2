@@ -203,18 +203,18 @@ function Landing() {
           <ol className="mt-6 grid gap-4 md:grid-cols-3">
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 1</span>
-              <h3 className="mt-2 text-base font-bold">Lock in your call</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Select match outcomes across the Betway Premiership, Premier League, and UCL before kickoff.</p>
+              <h3 className="mt-2 text-base font-bold">{t("join.steps.one.title")}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.one.body")}</p>
             </li>
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 2</span>
-              <h3 className="mt-2 text-base font-bold">Timestamped at kickoff</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">The moment the referee blows the whistle, your pick is locked on your public ledger. No deleted losses. No edited history.</p>
+              <h3 className="mt-2 text-base font-bold">{t("join.steps.two.title")}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.two.body")}</p>
             </li>
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 3</span>
-              <h3 className="mt-2 text-base font-bold">Prove your track record</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Automatic grading updates your win rate, ROI, and leaderboard rank. Share your verified record with mates and earn PuntPoints.</p>
+              <h3 className="mt-2 text-base font-bold">{t("join.steps.three.title")}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.three.body")}</p>
             </li>
           </ol>
           <Button
@@ -225,7 +225,7 @@ function Landing() {
               navigate({ to: "/how-it-works" });
             }}
           >
-            See how it works
+            {t("join.guideCta")}
           </Button>
           <RgNotice variant="compact" className="mt-4" />
         </motion.section>
