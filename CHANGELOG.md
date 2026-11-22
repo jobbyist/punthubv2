@@ -1,3 +1,14 @@
+## 22 November 2026 — PWA authentication and Web Push foundation
+
+- Preserve the originating internal route through password, OTP, Google OAuth, email confirmation, onboarding, MFA and password recovery.
+- Add the PKCE OAuth callback route and reject unsafe external/auth/admin return destinations.
+- Replace the Predictions guest-gate signup iframe with first-party navigation.
+- Add opt-in Web Push subscriptions, account-wide opt-out and auditable consent events.
+- Add a Vercel server-side push API, VAPID configuration, notification click deep links and expired endpoint cleanup.
+- Add the Admin > Community > Push notifications campaign console and delivery metrics.
+- Add database migrations and operational documentation in `docs/PWA_PUSH_NOTIFICATIONS.md`.
+- GitHub Actions remains disabled as a verification dependency due to the account billing issue; use Vercel Sandbox for lint, typecheck, tests and production build.
+
 # Changelog
 
 Implementation log for the master brief (13 November 2026). Newest first. Earlier history is in the Git log and
