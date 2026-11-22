@@ -127,6 +127,13 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open",
   ],
   [
+    "Push notifications (optional)",
+    "Your browser push endpoint, encrypted subscription keys, device/browser details, account notification preference and delivery status. Notification title, message and destination are sent to your browser's push service; Puntr does not include private account or betting data in notification payloads.",
+    "Your explicit consent to receive push notifications. You can withdraw it in Account settings or revoke the browser permission at any time.",
+    "Device subscriptions are removed when you turn notifications off or delete your account. Limited campaign and delivery audit records may be retained for platform security, abuse prevention and operational reporting [attorney review].",
+  ],
+
+  [
     "Public pick record",
     "Your picks, odds, results, a hash of each pick, any correction made to a result with the reason, and, where one existed, the market reference price when you posted and whether your odds were marked unverified (shown with the pick)",
     "Legitimate interest: a verifiable, permanent track record",
@@ -183,7 +190,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 22 November 2026 (version 2026-11-22-r20). Draft pending
+          <strong>Last updated:</strong> 22 November 2026 (version 2026-11-22-r21). Draft pending
           attorney review.
         </p>
 
