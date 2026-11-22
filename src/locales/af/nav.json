@@ -1,10 +1,9 @@
 {
   "primary": {
-    "predictions": "Voorspellings",
+    "predictions": "Ontdek",
     "leaderboards": "Ranglyste",
     "results": "Uitslae",
     "community": "Gemeenskap",
-    "insights": "Insigte",
     "roadmap": "Padkaart",
     "howItWorks": "Hoe dit werk",
     "pricing": "Pryse",
@@ -99,7 +98,7 @@
     "signIn": "Teken aan",
     "roadmap": "Padkaart",
     "dock": {
-      "predictions": "Voorspellings",
+      "predictions": "Ontdek",
       "puntPoints": "PuntPoints",
       "foundingTitle": "Word 'n stigterslid 👀🇿🇦",
       "foundingMessage": "Eerste 100 plekke · Gratis om te bespreek",
@@ -110,7 +109,6 @@
         "fixtures": "Wedstryde",
         "results": "Uitslae",
         "tables": "Puntelyste",
-        "insights": "Insigte",
         "leaderboards": "Ranglyste",
         "discussions": "Sportgesprekke",
         "duels": "Kop-aan-kop-duelle",
@@ -159,10 +157,9 @@
     "company": "Maatskappy",
     "followUs": "Volg ons",
     "link": {
-      "predictions": "Voorspellings",
+      "predictions": "Ontdek",
       "leaderboards": "Ranglyste",
       "results": "Uitslae",
-      "insights": "Insigte",
       "pricing": "Pryse",
       "feed": "Gemeenskapsvoer",
       "howItWorks": "Hoe dit werk",
