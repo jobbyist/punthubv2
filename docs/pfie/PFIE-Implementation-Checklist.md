@@ -81,7 +81,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep the query list and page list aligned at five; test source count and publisher identity.
 - [ ] Preserve complete-team, row-level quote, arithmetic, date/freshness and regression checks.
 - [ ] Verify two independent publishers agree on every material table statistic in a production-like extraction.
-- [ ] Pass standings tests, lint, typecheck, production build and Vercel preview; resolve all review findings before merge.
+- [x] Focused five-source cap regression, typecheck and Vercel production build pass; review threads resolved. [ ] Complete production-like extraction and two-publisher consensus. Full PFIE standings test file passes (47/47).
 
 ### PR #195 — reusable evidence foundation (pre-launch)
 - [ ] Require every evidence quote to be present in captured source-page text.
@@ -89,7 +89,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Require ZA jurisdiction, nonblank licence reference, valid licence-check timestamp and recorded terms review before a bookmaker source is permitted.
 - [ ] Store roster membership against canonical PFIE team UUID, not free-text team names.
 - [ ] Review SQL constraints, foreign keys, RLS, grants, indexes and service-role-only access; validate in a disposable database.
-- [ ] Pass evidence unit tests, lint, typecheck, production build and preview; resolve all review findings before merge.
+- [x] 15 evidence unit tests, targeted ESLint, typecheck and Vercel production build pass; review threads resolved.
 - [ ] Keep all sources disabled/unseeded and do not add adapters, cron jobs or public read access in this PR.
 - [ ] Do not apply the migration to production until the 101-entry migration baseline is mapped and backup/PITR/rollback approval is documented.
 
@@ -98,4 +98,31 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep it draft and out of pre-launch merge/release scope.
 - [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
 
-**Current state:** PR #185 and #195 are still undergoing code and CI/preview hardening; neither should be treated as merge-ready until every applicable gate above is evidenced. PR #196 remains deferred.
+**Current state (22 Nov 2026):** PR #185 remains draft: five-source configuration, team-resolution regressions, standings tests (47/47), typecheck and Vercel build pass. Four remaining full-suite failures also reproduce on main; production-like extraction and two-publisher consensus remain launch QA gates. PR #195 remains draft: 15 evidence tests, targeted Prettier/ESLint, typecheck and Vercel build pass; all review findings are resolved, but isolated SQL validation is pending because the only Supabase branch is MIGRATIONS_FAILED. Its migration remains unapplied. PR #196 remains post-launch only.
+
+
+- [x] Reference-price schema stores source IDs and publisher domains separately; bookmaker count is tied to both array cardinalities.
+- [x] Database trigger rejects duplicate source IDs/domains, unlicensed/non-ZA sources, and domain/source mismatches.
+- [ ] Validate the trigger in a disposable database before any production migration.
+
+
+## Latest PR verification snapshot — 22 November 2026
+
+**#185 — La Liga source coverage (pre-launch; still draft)**
+- Current branch head: 051f4e03bf34e6241fc9f0ac0ea22de6340de477.
+- Five configured independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The source-cap regression test asserts five unique publisher identities.
+- Targeted verification: TypeScript typecheck, Vercel build and standings suite (47/47) pass. Prettier also flags standings.ts and standings.test.ts on current main; this inherited formatting debt is not new to this PR.
+- Production build and Vercel preview are ready: https://punthubv2-ebq8bm0or-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red on this head (4 failed tests across 3 files; one confirmed mismatch is the existing PFIE provider model-fallback expectation). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
+
+**#195 — PFIE evidence foundation (pre-launch; still draft)**
+- Current branch head: 1b6f2e7cede4f05236ba419cb61f71a1c66b1382.
+- Targeted verification: formatting, ESLint, TypeScript and the evidence suite passed (15/15).
+- Production build and Vercel preview are ready: https://punthubv2-lskkd1to6-michael-chigbus-projects-6fad9571.vercel.app
+- The full repository test command remains red on this head (13 failed tests across 4 files, including two season-backfill fixture failures on this branch). The current branch's targeted evidence suite passes, but the full-suite baseline must be reconciled before merge.
+- Disposable-database SQL validation and the final schema/RLS/grant review remain outstanding. The migration is source-control only and must not be applied to production before migration-ledger reconciliation and separate backup/PITR/rollback approval.
+
+**#196 — post-launch only**
+- Keep draft and outside the MVP release scope. No automated bookmaker odds, match-intelligence worker or exclusions feature from #196 is enabled for MVP.
+
+**Merge decision:** #185 and #195 remain drafts. A ready Vercel deployment proves the build can deploy; it does not clear a failing full test suite, missing production-like data evidence, or the #195 disposable-schema validation gate.

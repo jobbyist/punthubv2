@@ -37,17 +37,15 @@ export const STANDINGS_COMPETITIONS: Partial<
     refreshHours: 12,
     queries: [
       "LaLiga EA Sports standings 2026/27",
-      "site:tactix.football/standings?country=spain La Liga live table updated",
-      "site:footballedgelab.com/la-liga La Liga current standings updated",
-      "site:flashscore.com/football/spain/laliga/standings La Liga standings",
-      "site:theanalyst.com/competition/la-liga/table La Liga 2026/27 Opta table",
+      "site:skysports.com/football/competitions/la-liga/table La Liga 2026/27 table",
+      "site:espn.com/soccer/standings/_/league/esp.1 La Liga 2026/27 standings",
+      "site:transfermarkt.com/laliga/tabelle/wettbewerb/ES1 La Liga 2026/27 table",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
-      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
-      "https://footballedgelab.com/la-liga",
-      "https://www.flashscore.com/football/spain/laliga/standings/",
-      "https://theanalyst.com/competition/la-liga/table",
+      "https://www.skysports.com/football/competitions/la-liga/table",
+      "https://www.espn.com/soccer/standings/_/league/esp.1",
+      "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
   },
   seriea: {

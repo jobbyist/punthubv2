@@ -146,17 +146,27 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "pr185-laliga",
-        title: "PR #185: five independent La Liga sources, regression tests and two-source extraction QA",
+        title:
+          "PR #185: standings tests 47/47; four shared baseline failures and live extraction remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #185 · docs/PFIE_INTEGRATION.md",
+        ref: "PR #185 · preview: https://punthubv2-ebq8bm0or-michael-chigbus-projects-6fad9571.vercel.app",
       },
       {
         id: "pr195-evidence",
-        title: "PR #195: evidence and schema foundation passes tests and RLS/grant review (migration unapplied)",
+        title:
+          "PR #195: evidence tests 15/15; 13 shared baseline failures and isolated SQL review remain open",
         weight: 1,
         blocker: true,
-        ref: "PR #195 · docs/pfie/PFIE-Implementation-Checklist.md",
+        ref: "PR #195 · preview: https://punthubv2-lskkd1to6-michael-chigbus-projects-6fad9571.vercel.app · migration unapplied",
+      },
+      {
+        id: "test-suite-baseline",
+        title:
+          "Resolve four shared baseline test failures (cron auth, archive aliases and PFIE model routing)",
+        weight: 1,
+        blocker: true,
+        ref: "Main baseline: 13 failures; PR #185 reduces this to four",
       },
       {
         id: "pr196-postlaunch",
@@ -166,7 +176,8 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "manual-odds-qa",
-        title: "Manual bookmaker and odds submission QA; timestamp persistence and User-submitted label",
+        title:
+          "Manual bookmaker and odds submission QA; timestamp persistence and User-submitted label",
         weight: 1,
         blocker: true,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
@@ -180,10 +191,11 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "history-volume",
-        title: "Historical results imported",
+        title: "Historical results imported (2,500 minimum)",
         weight: 3,
         blocker: true,
         metric: { key: "completedResults", target: 2500, unit: "results" },
+        ref: "Live count from completed_matches; 2,500 is the minimum threshold, not a cap.",
       },
       {
         id: "standings-volume",
@@ -208,7 +220,8 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "odds-prematch",
-        title: "Automated pre-match reference odds feed (post-launch only; written data rights required)",
+        title:
+          "Automated pre-match reference odds feed (post-launch only; written data rights required)",
         weight: 2,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
       },
@@ -576,9 +589,24 @@ export function computeReadiness(
   };
 }
 
-export const TASK_IDS: ReadonlySet<string> = new Set(
-  WORKSTREAMS.flatMap((w) => w.tasks.filter((t) => !t.metric).map((t) => t.id)),
-);
+export const PR_TRACKER_TASK_IDS = [
+  "pr185-five-source-cap",
+  "pr185-focused-validation",
+  "pr185-review-threads",
+  "pr185-live-consensus",
+  "pr185-full-suite-baseline",
+  "pr195-focused-validation",
+  "pr195-review-threads",
+  "pr195-source-licence-guard",
+  "pr195-disposable-sql",
+  "pr195-prod-baseline-rollback",
+  "pr196-mvp-scope-excluded",
+] as const;
+
+export const TASK_IDS: ReadonlySet<string> = new Set([
+  ...WORKSTREAMS.flatMap((w) => w.tasks.filter((t) => !t.metric).map((t) => t.id)),
+  ...PR_TRACKER_TASK_IDS,
+]);
 
 export function readinessVerdict(score: number, openBlockers: number): string {
   if (score >= 90 && openBlockers === 0) return "Launch ready";

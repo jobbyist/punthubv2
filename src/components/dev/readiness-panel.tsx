@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, Check, CircleDashed, Flag, Gauge, Rocket } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { PrDraftResolutionTracker } from "@/components/dev/pr-draft-resolution-tracker";
 import { setDevReadinessTask } from "@/lib/dev-gate.functions";
 import {
   computeReadiness,
@@ -126,6 +127,33 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
     }
   }
 
+  async function toggleTrackerTask(taskId: string, done: boolean) {
+    if (!snapshot.stateAvailable || pending) return;
+    const prev = state;
+    setState({
+      ...state,
+      [taskId]: { done, updatedAt: new Date().toISOString() },
+    });
+    setPending(taskId);
+    setError(null);
+    try {
+      const res = await save({ data: { taskId, done } });
+      if (!res.ok) {
+        setState(prev);
+        setError(
+          res.reason === "forbidden"
+            ? "Admin access is required. Sign in with an administrator account and reload."
+            : "Could not save. Try again.",
+        );
+      }
+    } catch {
+      setState(prev);
+      setError("Could not save. Try again.");
+    } finally {
+      setPending(null);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8 sm:px-6">
       <header className="card-surface flex flex-col gap-6 p-6 sm:flex-row sm:items-center">
@@ -173,6 +201,13 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
           }
         />
       </div>
+
+      <PrDraftResolutionTracker
+        state={state}
+        stateAvailable={snapshot.stateAvailable}
+        pendingTaskId={pending}
+        onToggle={(taskId, done) => void toggleTrackerTask(taskId, done)}
+      />
 
       <section className="space-y-3" aria-labelledby="ws-heading">
         <h2 id="ws-heading" className="text-lg">
@@ -290,6 +325,13 @@ export function ReadinessPanel({ snapshot }: { snapshot: ReadinessSnapshot }) {
                         {fmt.format(t.metric.target)} {t.metric.unit}
                       </span>
                     </div>
+                  ) : null}
+                  {t.metric && t.value !== null && t.value >= t.metric.target ? (
+                    <p className="text-xs font-medium text-primary">
+                      {t.value > t.metric.target
+                        ? `Target exceeded by ${fmt.format(t.value - t.metric.target)} ${t.metric.unit}`
+                        : "Target met"}
+                    </p>
                   ) : null}
                   {t.ref ? <div className="text-xs text-muted-foreground">{t.ref}</div> : null}
                 </div>

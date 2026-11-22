@@ -272,8 +272,8 @@ export function parseWikiTable(markdown: string): StandingRow[] | null {
 const ARCHIVE_NAMES: Record<string, string> = {
   athletic: "Athletic Bilbao",
   psv: "PSV Eindhoven",
-  "nec nijmegen": "NEC",
-  "az alkmaar": "AZ",
+  nijmegen: "NEC",
+  alkmaar: "AZ",
   "sparta r": "Sparta Rotterdam",
 };
 

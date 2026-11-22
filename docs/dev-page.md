@@ -5,7 +5,7 @@
 - The route calls `requireSupabaseAuth` and checks `public.is_admin()` on the server before returning readiness data.
 - Every checklist write repeats the admin-role check; a signed-in non-admin cannot read the snapshot or update tasks.
 - The admin dashboard links to `/dev` beside Founding HQ. The route remains noindex, private/no-store, excluded from the sitemap and public navigation.
-- The page contains the live Readiness workspace. The legacy encrypted blueprint archive is no longer rendered here; its old standalone password flow has been retired.
+- The page contains the live Readiness workspace, including the PR Draft Resolution Tracker for #185, #195 and post-launch #196. Each PR card shows its release lane, gate progress, persistent admin-editable checklist ticks, cleared/open/deferred criteria and next action. The historical-results metric is read live from `completed_matches`; 2,500 is a minimum threshold and the UI shows when it has been exceeded. The legacy encrypted blueprint archive is no longer rendered here; its old standalone password flow has been retired.
 - Checklist state is stored in `dev_readiness_state`; live metrics are read by `mvp-readiness.server.ts`.
 
 ## Access and operations

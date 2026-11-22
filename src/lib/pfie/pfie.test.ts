@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import { ProviderError } from "@/lib/content/http";
 import { withExtractFallback } from "@/lib/content/providers.server";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
@@ -613,11 +614,11 @@ const ANSWER = JSON.stringify({ matches: RAW });
 describe("provider", () => {
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
 
-  it("returns verified fixtures in the shape the existing sync expects, using the lite model first", async () => {
+  it("returns verified fixtures in the shape the existing sync expects, using the configured primary model first", async () => {
     const model = llm(ANSWER);
     const provider = createPfieProvider({ ...base, llm: model, store: memory() });
     const out = await provider.listFixtures(WINDOW.from, WINDOW.to, { only: ["psl"] });
-    expect(model.models).toEqual(["gemini-3.1-flash-lite"]);
+    expect(model.models).toEqual([DEFAULT_PFIE_MODELS[0]]);
     expect(out.fixtures.map((f) => `${f.home} v ${f.away} ${f.kickoffAt} ${f.status}`)).toEqual([
       "Durban City v Polokwane City 2026-11-24T17:30:00.000Z scheduled",
       "Stellenbosch FC v TS Galaxy 2026-11-27T17:30:00.000Z scheduled",
@@ -689,7 +690,7 @@ describe("provider", () => {
       name: "gemini",
       async generate(model) {
         models.push(model);
-        if (model === "gemini-3.1-flash-lite")
+        if (model === DEFAULT_PFIE_MODELS[0])
           throw new ProviderError("gemini", "quota", 429, "limit");
         return { model, text: ANSWER };
       },
@@ -699,7 +700,7 @@ describe("provider", () => {
       WINDOW.to,
       { only: ["psl"] },
     );
-    expect(models).toEqual(["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]);
+    expect(models).toEqual(DEFAULT_PFIE_MODELS.slice(0, 2));
     expect(out.fixtures).toHaveLength(2);
   });
 });

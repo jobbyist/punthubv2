@@ -73,7 +73,9 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("stats.ladumaanalytics.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("vi.nl", [])).toBe("trusted");
-    expect(tierOf("theanalyst.com", [])).toBe("trusted");
+    expect(tierOf("skysports.com", [])).toBe("trusted");
+    expect(tierOf("espn.com", [])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
     expect(tierOf("rotascore.com", [])).toBe("trusted");
     expect(tierOf("statz.ai", [])).toBe("trusted");
@@ -101,36 +103,42 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain("https://treble.co.za/motsepe-championship/log/");
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain("https://www.uefa.com/uefachampionsleague/standings/");
   });
-  it("caps La Liga direct table candidates at five independent publishers", () => {
+  it("keeps La Liga direct tables within the five-source cap using independent publishers", () => {
     const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
-    expect(pages).toHaveLength(5);
-    expect(pages).toEqual(expect.arrayContaining([
-      "https://www.laliga.com/en-US/laliga-easports/standing",
-      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
-      "https://footballedgelab.com/la-liga",
-      "https://www.flashscore.com/football/spain/laliga/standings/",
-      "https://theanalyst.com/competition/la-liga/table",
-    ]));
-    expect(pages).not.toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
-    expect(pages).not.toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
-    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(5);
-    const publisherKeys = ["laliga.com", "tactix.football", "footballedgelab.com", "flashscore.com", "theanalyst.com"]
-      .map(independentSourceKey);
-    expect(new Set(publisherKeys).size).toBe(5);
+    expect(pages).toHaveLength(4);
+    expect(pages.length).toBeLessThanOrEqual(5);
+    expect(pages).toEqual(
+      expect.arrayContaining([
+        "https://www.laliga.com/en-US/laliga-easports/standing",
+        "https://www.skysports.com/football/competitions/la-liga/table",
+        "https://www.espn.com/soccer/standings/_/league/esp.1",
+        "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
+      ]),
+    );
+    expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(4);
+    const publisherKeys = ["laliga.com", "skysports.com", "espn.com", "transfermarkt.com"].map(
+      independentSourceKey,
+    );
+    expect(new Set(publisherKeys).size).toBe(4);
   });
 });
 describe("La Liga live source configuration", () => {
-  it("includes the official La Liga table and an independent current TACTIX table", () => {
-    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
+  it("includes the official La Liga table and three independently verified current tables", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://www.tactix.football/standings?country=spain&league=140&season=2026",
+      "https://www.laliga.com/en-US/laliga-easports/standing",
     );
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
-      "https://footballedgelab.com/la-liga",
+      "https://www.skysports.com/football/competitions/la-liga/table",
     );
-    expect(tierOf("footballedgelab.com", ["laliga.com"])).toBe("trusted");
-    expect(tierOf("tactix.football", ["laliga.com"])).toBe("trusted");
-    expect(tierOf("theanalyst.com", ["laliga.com"])).toBe("trusted");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.espn.com/soccer/standings/_/league/esp.1",
+    );
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
+      "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
+    );
+    expect(tierOf("skysports.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("espn.com", ["laliga.com"])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", ["laliga.com"])).toBe("trusted");
   });
 });
 
