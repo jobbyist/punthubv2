@@ -49,7 +49,7 @@ const ALIASES: Record<string, string> = {
 export function normaliseTeam(name: string): string {
   // Some publisher tables prefix clubs with a three-letter code (e.g. RAC R. Racing Club or ATM Atlético de Madrid).
   // Strip an uppercase code before canonicalizing so those rows match publishers that omit the code.
-  const withoutCode = name.trim().replace(/^[A-Z]{2,4}\\s+/, "");
+  const withoutCode = name.trim().replace(/^[A-Z]{2,4}\s+/, "");
   const base = withoutCode
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
