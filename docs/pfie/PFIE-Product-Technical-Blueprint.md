@@ -491,3 +491,8 @@ PR #185's focused five-source regression, typecheck and Vercel build passed. The
 PR #195 passed targeted ESLint, typecheck, all 15 evidence unit tests and a Vercel production build. The migration is not applied to production and remains gated by the complete migration-history reconciliation and a verified backup/rollback plan.
 
 PR #196 remains draft and post-launch only.
+
+
+### Reference-price provenance gate
+
+Future reference-price rows must retain distinct bookmaker source IDs and distinct publisher domains. The stored bookmaker count must match both identity arrays, and the database trigger verifies each source is enabled, licensed for ZA, has a licence reference and terms review, and maps to the recorded publisher domain. No one-bookmaker observation can be represented as a multi-bookmaker reference price.
