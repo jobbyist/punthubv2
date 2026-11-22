@@ -66,13 +66,11 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://www.bundesliga.com/en/bundesliga/table?view=full");
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain("https://datencenter.dfb.de/en/competitions/12/seasons/current/current_matchweek?datacenter_name=data-center");
   });
-  it("includes direct official and independent pages for the other priority leagues", () => {
-    expect(STANDINGS_COMPETITIONS.psl?.pages).toEqual([
-      "https://stats.ladumaanalytics.co.za/log",
-      "https://45min.co.za/tables",
-    ]);
+  it("includes independent official, Sky, ESPN and Transfermarkt La Liga table sources", () => {
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.laliga.com/en-US/laliga-easports/standing");
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.skysports.com/football/competitions/la-liga/table");
-    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain("https://www.skysports.com/football/competitions/serie-a/table");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.espn.com/soccer/standings/_/league/esp.1");
+    expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain("https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1");
   });
 });
 describe("validateTables", () => {
