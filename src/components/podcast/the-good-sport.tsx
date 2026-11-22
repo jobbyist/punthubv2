@@ -573,7 +573,6 @@ export function TheGoodSportPage() {
       </section>
       {episodesOpen && <EpisodeList close={() => setEpisodesOpen(false)} />}
       {notifyOpen && <NotifyForm close={() => setNotifyOpen(false)} />}
-      {authOpen && <AuthPromptModal close={() => setAuthOpen(false)} />}
     </main>
   );
 }
@@ -692,6 +691,7 @@ export function TheGoodSportEpisodePage() {
         )}
       </section>
       {notifyOpen && <NotifyForm close={() => setNotifyOpen(false)} />}
+      {authOpen && <AuthPromptModal close={() => setAuthOpen(false)} />}
     </main>
   );
 }
