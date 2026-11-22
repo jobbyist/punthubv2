@@ -171,6 +171,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Until you withdraw",
   ],
   [
+    "Podcast episode notification",
+    "Email address and consent timestamp for the one-off premiere alert",
+    "Your explicit request",
+    "Until the alert is sent, then up to 30 days; deletion on request",
+  ],
+  [
     "Privacy requests",
     "Email, what you asked for",
     "Legal obligation",
@@ -197,11 +203,11 @@ function Privacy() {
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Who is responsible</h2>
           <p>
-            Puntr South Africa (puntr.co.za) is operated by Gravitas Industries (Pty) Ltd
-            (CK No.: 2024/596436/07), a company registered in South Africa. Gravitas Industries
-            (Pty) Ltd is the responsible party under the Protection of Personal Information Act
-            (POPIA). Our Information Officer is the founder, [name to be confirmed], registered
-            with the Information Regulator [registration pending]. Contact:{" "}
+            Puntr South Africa (puntr.co.za) is operated by Gravitas Industries (Pty) Ltd (CK No.:
+            2024/596436/07), a company registered in South Africa. Gravitas Industries (Pty) Ltd is
+            the responsible party under the Protection of Personal Information Act (POPIA). Our
+            Information Officer is the founder, [name to be confirmed], registered with the
+            Information Regulator [registration pending]. Contact:{" "}
             <a className="underline" href="mailto:privacy@puntr.co.za">
               privacy@puntr.co.za
             </a>

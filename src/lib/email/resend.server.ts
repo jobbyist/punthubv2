@@ -17,20 +17,22 @@ export const SENDER = `Puntr - South Africa <${SUPPORT_INBOX}>`;
 export const FALLBACK_SENDER = "Puntr Community <hello@community.puntr.co.za>";
 export const REPLY_TO = SUPPORT_INBOX;
 
-async function post(payload: Record<string, unknown>) {
+async function post(payload: Record<string, unknown>, idempotencyKey?: string) {
   const lovableApiKey = process.env["LOVABLE_API_KEY"];
   const resendApiKey = process.env["RESEND_API_KEY"];
   if (!resendApiKey) return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
-  const viaGateway = Boolean(lovableApiKey);
+  const viaGateway = Boolean(lovableApiKey) && !idempotencyKey;
+  const headers: Record<string, string> = viaGateway
+    ? {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${lovableApiKey}`,
+        "X-Connection-Api-Key": resendApiKey,
+      }
+    : { "Content-Type": "application/json", Authorization: `Bearer ${resendApiKey}` };
+  if (idempotencyKey) headers["Idempotency-Key"] = idempotencyKey;
   const response = await fetch(viaGateway ? `${GATEWAY_URL}/emails` : RESEND_URL, {
     method: "POST",
-    headers: viaGateway
-      ? {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${lovableApiKey}`,
-          "X-Connection-Api-Key": resendApiKey,
-        }
-      : { "Content-Type": "application/json", Authorization: `Bearer ${resendApiKey}` },
+    headers,
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
@@ -50,7 +52,10 @@ export function isEmailQuotaStop(res: { status: number; body: string }): boolean
  * Every email the app sends claims one unit of the `resend` quota first (Resend's free plan: 100 a day, 3,000 a
  * month; Puntr caps itself lower to leave room for sign-in emails). A refused claim sends nothing.
  */
-export async function sendViaResend(payload: Record<string, unknown>) {
+export async function sendViaResend(
+  payload: Record<string, unknown>,
+  options?: { idempotencyKey?: string },
+) {
   if (!process.env["RESEND_API_KEY"])
     return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
   const { createQuotaClaim } = await import("@/lib/quota.server");
@@ -59,13 +64,16 @@ export async function sendViaResend(payload: Record<string, unknown>) {
     return { ok: false as const, status: 429, body: EMAIL_QUOTA_REACHED };
   }
   const from = process.env["RESEND_FROM"] || SENDER;
-  const first = await post({ from, ...payload });
+  const first = await post({ from, ...payload }, options?.idempotencyKey);
   const domainProblem =
     !first.ok && (first.status === 403 || first.status === 422) && /verif|domain/i.test(first.body);
   // A caller that names its own sender ("Michael from Puntr") is never silently switched to another identity.
   if (domainProblem && from !== FALLBACK_SENDER && !payload["from"]) {
     console.warn("resend: sender domain not verified, retrying from the fallback sender");
-    return post({ from: FALLBACK_SENDER, ...payload });
+    return post(
+      { from: FALLBACK_SENDER, ...payload },
+      options?.idempotencyKey ? `${options.idempotencyKey}-fallback` : undefined,
+    );
   }
   return first;
 }
