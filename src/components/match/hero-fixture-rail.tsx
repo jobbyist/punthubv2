@@ -13,6 +13,7 @@ const PREVIEW_FIXTURES: UpcomingFixture[] = [
   { id: "preview-pirates-chiefs", sport: "soccer", competition: "Betway Premiership", home: "Orlando Pirates", away: "Kaizer Chiefs", kickoff_at: "2026-11-28T15:30:00+02:00", status: "scheduled" },
   { id: "preview-city-arsenal", sport: "soccer", competition: "Premier League", home: "Manchester City", away: "Arsenal", kickoff_at: "2026-11-29T18:30:00+02:00", status: "scheduled" },
   { id: "preview-real-bayern", sport: "soccer", competition: "UEFA Champions League", home: "Real Madrid", away: "Bayern Munich", kickoff_at: "2026-12-02T21:00:00+02:00", status: "scheduled" },
+  { id: "preview-liverpool-arsenal", sport: "soccer", competition: "Premier League", home: "Liverpool", away: "Arsenal", kickoff_at: "2026-12-03T20:00:00+02:00", status: "scheduled" },
 ];
 
 function isActive(fixture: UpcomingFixture) {
