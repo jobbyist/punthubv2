@@ -171,7 +171,7 @@ export function standingsRequest(input: {
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
       "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
-      "4. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
+      "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.",
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
