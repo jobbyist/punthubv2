@@ -25,6 +25,7 @@ import { captureUtm } from "@/lib/campaign";
 import { Toaster } from "@/components/ui/sonner";
 import { Preloader } from "@/components/motion/preloader";
 import { PwaExperience } from "@/components/pwa-experience";
+import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { RouteProgress } from "@/components/motion/route-progress";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { LocaleProvider } from "@/lib/i18n/provider";
@@ -277,6 +278,7 @@ function RootComponent() {
       <SessionProvider>
         <Preloader />
         <PwaExperience />
+        <PushNotificationPrompt />
         <RouteProgress />
         <MfaGate />
         <div className="flex min-h-dvh flex-col">
