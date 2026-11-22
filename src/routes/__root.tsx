@@ -142,13 +142,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "twitter:image", content: "https://puntr.co.za/og/puntr.png" },
       ],
       links: [
+        { rel: "manifest", href: "/manifest.webmanifest" },
         {
           rel: "icon",
+          type: "image/png",
+          sizes: "32x32",
           href: "/favicon-32.png",
         },
         {
           rel: "apple-touch-icon",
-          href: "/puntrlogorounded.png",
+          href: "/apple-touch-icon.png",
         },
         {
           rel: "stylesheet",
