@@ -162,7 +162,7 @@ PR #195 also requires distinct source IDs and publisher domains for any future r
 **#185 — La Liga source coverage (pre-launch; still draft)**
 - Current branch head: 051f4e03bf34e6241fc9f0ac0ea22de6340de477.
 - Five configured independent publishers: LaLiga, TACTIX, Football Edge Lab, Flashscore and The Analyst (Opta). The source-cap regression test asserts five unique publisher identities.
-- Targeted verification: formatting, ESLint, TypeScript and the standings suite passed (47/47).
+- Targeted verification: TypeScript typecheck, Vercel build and standings suite (47/47) pass. Prettier also flags standings.ts and standings.test.ts on current main; this inherited formatting debt is not new to this PR.
 - Production build and Vercel preview are ready: https://punthubv2-ebq8bm0or-michael-chigbus-projects-6fad9571.vercel.app
 - The full repository test command remains red on this head (4 failed tests across 3 files; one confirmed mismatch is the existing PFIE provider model-fallback expectation). Do not treat the targeted suite as a substitute for the repository-wide gate. Production-like extraction and two-publisher consensus evidence are also still required.
 
