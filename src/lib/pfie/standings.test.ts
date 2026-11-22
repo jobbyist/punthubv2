@@ -215,6 +215,7 @@ describe("La Liga cross-publisher team aliases", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
     expect(normaliseTeam("Deportivo Alavés")).toBe(normaliseTeam("Alaves"));
     expect(normaliseTeam("RCD Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
+    expect(normaliseTeam("Espanyol de Barcelona")).toBe(normaliseTeam("Espanyol"));
     expect(normaliseTeam("RC Deportivo")).toBe(normaliseTeam("Deportivo La Coruna"));
     expect(normaliseTeam("R. Racing Club")).toBe(normaliseTeam("Racing Santander"));
     expect(normaliseTeam("Celta")).toBe(normaliseTeam("Celta Vigo"));
