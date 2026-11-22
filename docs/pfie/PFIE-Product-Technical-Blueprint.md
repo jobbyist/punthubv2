@@ -482,3 +482,12 @@ The following owner decisions supersede any earlier proposed dates or scope in t
 - **Production migration constraint:** PR #195's migration must remain unapplied until the repository/production migration histories are reconciled, PITR/backup and rollback procedures are verified, and a separate production change is approved.
 - **PR #196 — post-launch only:** match intelligence, automated bookmaker odds and exclusions work are deferred beyond the 1 December 2026 MVP. Written data rights and separate legal, security, quota, migration and end-to-end reviews are required before implementation or activation.
 - **Merge status:** #185 and #195 remain in hardening until lint, typecheck, tests, build, preview and applicable review/security checks pass. Neither is merge-ready solely because the branch is mergeable.
+
+
+## Appendix F. 22 November 2026 — verification status
+
+PR #185's focused five-source regression, typecheck and Vercel build passed. Six unrelated standings-suite failures also reproduce on main; the PR records them as existing test debt. A production-like extraction is still required before the additional source roster is considered operationally verified.
+
+PR #195 passed targeted ESLint, typecheck, all 15 evidence unit tests and a Vercel production build. The migration is not applied to production and remains gated by the complete migration-history reconciliation and a verified backup/rollback plan.
+
+PR #196 remains draft and post-launch only.
