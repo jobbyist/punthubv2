@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { subscribeToPodcastPremiere } from "@/lib/podcast-notifications.functions";
+import { useSession } from "@/components/session";
 
 export const GOOD_SPORT_EPISODES = [
   {
@@ -268,10 +269,11 @@ export function TheGoodSportPromo() {
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
   async function toggle() {
-    if (!AUDIO_URL || !audio.current) return;
+    if (!isSignedIn || !AUDIO_URL || !audio.current) return;
     if (audio.current.paused) await audio.current.play();
     else audio.current.pause();
   }
+  if (!isSignedIn) return null;
   return (
     <section className="relative isolate mt-12 overflow-hidden rounded-[2rem] border border-border bg-[#0c100d] p-5 text-white sm:mt-16 sm:p-8 lg:p-10">
       <div className="pointer-events-none absolute -right-20 -top-24 -z-10 size-80 rounded-full bg-[#16A34A]/15 blur-3xl" />
@@ -588,18 +590,20 @@ export function TheGoodSportEpisodePage() {
           <p className="text-xs font-bold uppercase tracking-[.2em] text-primary">Episode player</p>
         </div>
         <h2 className="mt-3 font-display text-2xl font-black">The Good Sport · Episode 01</h2>
-        {AUDIO_URL ? (
+        {AUDIO_URL && isSignedIn ? (
           <audio controls preload="none" src={AUDIO_URL} className="mt-5 w-full" />
         ) : (
           <div className="mt-5 rounded-2xl border border-dashed border-border p-6 text-center">
             <Play className="mx-auto size-7 text-primary" />
             <p className="mt-3 text-sm font-bold">
-              {premiereUpcoming()
-                ? "Audio drops on launch day."
-                : "The episode audio is being prepared."}
+              {!isSignedIn
+                ? "Sign in to Puntr to listen to episodes."
+                : premiereUpcoming()
+                  ? "Audio drops on launch day."
+                  : "The episode audio is being prepared."}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              The player will activate when the episode master is uploaded.
+              {isSignedIn ? "The player will activate when the episode master is uploaded." : "Your Puntr account is required for episode playback."}
             </p>
           </div>
         )}
