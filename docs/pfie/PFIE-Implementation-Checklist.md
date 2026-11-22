@@ -81,7 +81,7 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep the query list and page list aligned at five; test source count and publisher identity.
 - [ ] Preserve complete-team, row-level quote, arithmetic, date/freshness and regression checks.
 - [ ] Verify two independent publishers agree on every material table statistic in a production-like extraction.
-- [x] Focused five-source cap regression, typecheck and Vercel production build pass; review threads resolved. [ ] Complete production-like extraction and two-publisher consensus. Six other standings-suite failures reproduce on main and are tracked separately.
+- [x] Focused five-source cap regression, typecheck and Vercel production build pass; review threads resolved. [ ] Complete production-like extraction and two-publisher consensus. Full PFIE standings test file passes (47/47).
 
 ### PR #195 — reusable evidence foundation (pre-launch)
 - [ ] Require every evidence quote to be present in captured source-page text.
@@ -98,4 +98,4 @@ Version 1.0 · 5 November 2026 · Companion to `PFIE-Product-Technical-Blueprint
 - [ ] Keep it draft and out of pre-launch merge/release scope.
 - [ ] After launch, conduct separate data-rights, legal, security, quota, migration and end-to-end review before implementation or activation.
 
-**Current state (22 Nov 2026):** PR #185 and #195 are ready for review. PR #185 still needs production-like extraction/consensus evidence and explicit handling of six pre-existing standings-suite failures. PR #195 is ready for code review, but its migration remains blocked from production application until migration-baseline reconciliation and backup/rollback approval. PR #196 remains deferred.
+**Current state (22 Nov 2026):** PR #185 and #195 are ready for review. PR #185 still needs production-like extraction and two-publisher consensus evidence. PR #195 is ready for code review, but its migration remains blocked from production application until migration-baseline reconciliation and backup/rollback approval. PR #196 remains deferred.
