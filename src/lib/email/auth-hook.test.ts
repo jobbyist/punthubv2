@@ -81,6 +81,7 @@ describe("auth email content", () => {
     expect(safeNext("https://puntr.co.za/join", "/x")).toBe("/join");
     expect(safeNext("https://evil.example/join", "/x")).toBe("/x");
     expect(safeNext("/admin", "/x")).toBe("/x");
+    expect(safeNext("/join", "/predictions")).toBe("/predictions");
     expect(safeNext("/predictions?source=pwa&sport=soccer", "/x")).toBe("/predictions?source=pwa&sport=soccer");
     expect(safeNext("https://puntr.co.za/predictions?competition=Premier%20League", "/x")).toBe("/predictions?competition=Premier%20League");
     expect(safeNext("//evil.example/predictions", "/x")).toBe("/x");
