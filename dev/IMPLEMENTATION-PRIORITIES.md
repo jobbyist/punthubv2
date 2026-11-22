@@ -108,6 +108,18 @@ Verified facts:
 - cron.job_run_details returned no rows in the inspected window; net._http_response has recent successful Vercel responses and one 55-second timeout, but the response log does not retain the request path.
 - The current production cron jobs remain active. No cron schedule, migration ledger row or production schema was changed during this audit.
 
+**Live PFIE cron schedules (Postgres UTC; SAST is UTC+2):**
+
+| Job ID | Job | Live schedule (UTC) | Equivalent SAST |
+|---:|---|---|---|
+| 61 | sync-tables | 10,15,20,25,30,35,40,45,50,55 2 * * * | 04:10–04:55 every 5 min |
+| 62 | sync-tables-late | 0,5,10,15,20,25,30,35,40,45,50,55 3 * * * | 05:00–05:55 every 5 min |
+| 63 | sync-tables-evening | 10,15,20,25,30,35,40,45,50,55 14 * * * | 16:10–16:55 every 5 min |
+| 64 | sync-tables-evening-late | 0,5,10,15,20,25,30,35,40,45,50,55 15 * * * | 17:00–17:55 every 5 min |
+
+The latest pending migration (20261122140000) instead schedules the morning jobs every 5 minutes from minute 0 and the evening jobs every 10 minutes from minute 0. The active schedule is staggered and more frequent in the evening. Do not replace it merely to make it match the file; first establish why the live schedule was changed and whether its higher cadence is sustainable.
+
+
 **Why no automatic repair was performed:** The repository and production migration histories are not a one-to-one sequence. Marking migrations applied based on similar names, or pushing the repository's pending files, could skip real schema changes or replay already-applied DDL. The active cron schedules also differ from the pending SQL. A safe repair requires a full mapping of every local migration to the remote history and schema effects, not just patching the final three cron files.
 
 **Approved next reconciliation procedure:**
