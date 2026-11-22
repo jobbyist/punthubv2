@@ -12,10 +12,10 @@ const TYPES = ["signup", "invite", "magiclink", "recovery", "email_change", "ema
 type ConfirmType = (typeof TYPES)[number];
 
 const DEFAULT_NEXT: Record<ConfirmType, string> = {
-  signup: "/join",
-  invite: "/join",
-  magiclink: "/join",
-  email: "/join",
+  signup: "/predictions",
+  invite: "/predictions",
+  magiclink: "/predictions",
+  email: "/predictions",
   recovery: "/predictions",
   email_change: "/account/security",
 };
