@@ -264,6 +264,7 @@ function NotifyForm({ close }: { close: () => void }) {
 }
 
 export function TheGoodSportPromo() {
+  const { isSignedIn } = useSession();
   const [episodesOpen, setEpisodesOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -543,6 +544,7 @@ export function TheGoodSportPage() {
 }
 
 export function TheGoodSportEpisodePage() {
+  const { isSignedIn } = useSession();
   const [notifyOpen, setNotifyOpen] = useState(false);
   return (
     <main className="mx-auto w-full max-w-5xl px-4 pb-20 pt-10 sm:px-6">
