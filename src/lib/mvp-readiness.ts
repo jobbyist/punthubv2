@@ -146,21 +146,24 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "pr185-laliga",
-        title: "PR #185: standings tests 47/47; four shared baseline failures and live extraction remain open",
+        title:
+          "PR #185: standings tests 47/47; four shared baseline failures and live extraction remain open",
         weight: 1,
         blocker: true,
         ref: "PR #185 · preview: https://punthubv2-ebq8bm0or-michael-chigbus-projects-6fad9571.vercel.app",
       },
       {
         id: "pr195-evidence",
-        title: "PR #195: evidence tests 15/15; 13 shared baseline failures and isolated SQL review remain open",
+        title:
+          "PR #195: evidence tests 15/15; 13 shared baseline failures and isolated SQL review remain open",
         weight: 1,
         blocker: true,
         ref: "PR #195 · preview: https://punthubv2-lskkd1to6-michael-chigbus-projects-6fad9571.vercel.app · migration unapplied",
       },
       {
         id: "test-suite-baseline",
-        title: "Resolve four shared baseline test failures (cron auth, archive aliases and PFIE model routing)",
+        title:
+          "Resolve four shared baseline test failures (cron auth, archive aliases and PFIE model routing)",
         weight: 1,
         blocker: true,
         ref: "Main baseline: 13 failures; PR #185 reduces this to four",
@@ -173,7 +176,8 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "manual-odds-qa",
-        title: "Manual bookmaker and odds submission QA; timestamp persistence and User-submitted label",
+        title:
+          "Manual bookmaker and odds submission QA; timestamp persistence and User-submitted label",
         weight: 1,
         blocker: true,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
@@ -216,7 +220,8 @@ export const WORKSTREAMS: Workstream[] = [
       },
       {
         id: "odds-prematch",
-        title: "Automated pre-match reference odds feed (post-launch only; written data rights required)",
+        title:
+          "Automated pre-match reference odds feed (post-launch only; written data rights required)",
         weight: 2,
         ref: "docs/PARALLEL_ARCHITECTURE.md",
       },
