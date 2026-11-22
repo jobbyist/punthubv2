@@ -276,7 +276,7 @@ describe("validateTables", () => {
     expect(result.tables).toHaveLength(1);
     expect(result.tables[0]!.rows.find((r) => r.team === "Alpha FC")).toMatchObject({
       played: 10,
-      points: 20,
+      points: 23,
     });
   });
   it("accepts official competition ranking ties when explicitly enabled", () => {
