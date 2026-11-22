@@ -96,8 +96,8 @@
     "iframeTitle": "Hoe Puntr werk"
   },
   "platforms": {
-    "title": "Voorspellings, tendense en diepgaande ontledings oor Suid-Afrika se gewildste boekmakers",
-    "body": "Lede kan voorspellings aanteken teen wedstryde en pryse wat die platforms hieronder aanbied. Puntr aanvaar nie weddenskappe nie en is nie noodwendig by daardie platforms geaffilieer of deur hulle onderskryf nie.",
+    "title": "Handelsmerke van boekmakers wat Suid-Afrikaanse sportaanhangers kan teëkom",
+    "body": "Dit is onafhanklike derdeparty-ondernemings. Puntr aanvaar nie weddenskappe nie en bedryf nie as 'n boekmaker nie. 'n Logo of inskrywing is nie 'n onderskrywing of bewys van 'n huidige geaffilieerde verhouding nie. Kontroleer lisensiëring en voorwaardes direk by die toepaslike reguleerder en operateur.",
     "fine": "Slegs 18+. Bepalings en voorwaardes geld."
   },
   "next": {
@@ -172,7 +172,7 @@
       }
     },
     "ai": {
-      "pick": "Punt AI-keuse",
+      "pick": "Voorbeeld-KI-keuse",
       "dial": "Voorbeeld-KI-vertroue",
       "lean": "Neiging: {{outcome}}",
       "win": "{{team}} wen"

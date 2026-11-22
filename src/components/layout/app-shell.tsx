@@ -268,7 +268,13 @@ export function PageHeading({
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  showAffiliateBanner = true,
+}: {
+  children: ReactNode;
+  showAffiliateBanner?: boolean;
+}) {
   return (
     <div className="mx-auto flex max-w-[1400px] gap-7 px-4 sm:px-6">
       <QuickSearch />
@@ -279,9 +285,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mt-10">
           <BookmakerIndependenceNotice compact />
         </div>
-        <div className="mt-6">
-          <AffiliateBanner />
-        </div>
+        {showAffiliateBanner && (
+          <div className="mt-6">
+            <AffiliateBanner />
+          </div>
+        )}
       </main>
       <RightRail />
     </div>

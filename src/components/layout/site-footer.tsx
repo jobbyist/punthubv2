@@ -19,6 +19,8 @@ const columns = [
       ["tables", "/tables"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
+      ["fantasyArena", "/fantasy-arena"],
+      ["bookmakers", "/bookmakers"],
     ],
   },
   {
@@ -30,6 +32,8 @@ const columns = [
       ["howItWorks", "/how-it-works"],
       ["puntPoints", "/puntpoints"],
       ["support", "/support"],
+      ["referrals", "/referrals"],
+      ["brandAmbassadors", "/brand-ambassadors"],
     ],
   },
   {
@@ -41,6 +45,7 @@ const columns = [
       ["cookies", "/cookies"],
       ["disclosures", "/affiliate-disclosure"],
       ["refunds", "/refunds"],
+      ["responsiblePlay", "/responsible-play"],
     ],
   },
 ] as const;

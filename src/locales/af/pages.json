@@ -1,20 +1,20 @@
 {
   "referrals": {
     "meta": {
-      "title": "Verwys 'n vriend | Puntr",
-      "description": "Nooi vriende om by Puntr aan te sluit en volg jou verwysingsbedrywigheid vanaf jou lederekening."
+      "title": "Puntr-verwysings | Verdien 10–30% herhalende Pro-kommissie",
+      "description": "Nooi vriende na Puntr en verdien 10–30% herhalende kommissie wanneer kwalifiserende verwysings betalende Puntr Pro-intekenare word."
     },
-    "title": "Verwys 'n vriend",
-    "subtitle": "Bring jou sportgemeenskap na Puntr.",
-    "heading": "Deel die spel. Laat die gemeenskap groei.",
-    "body": "Nooi vriende om by Puntr aan te sluit, sportgesprekke te deel en 'n openbare rekord van hul keuses te bou. Verwysingsnasporing is gekoppel aan jou lid-uitnodigingskode.",
+    "title": "Verwys vriende. Verdien herhalende Pro-kommissie.",
+    "subtitle": "Deel Puntr met jou sportgemeenskap en verdien 10–30% herhalende kommissie wanneer kwalifiserende verwysings Puntr Pro-intekenare word.",
+    "heading": "Laat die gemeenskap groei. Deel in die groei.",
+    "body": "Nooi vriende om by Puntr aan te sluit, 'n openbare rekord van hul voorspellings te bou en die platform saam te ontdek. Wanneer 'n kwalifiserende verwysing op Puntr Pro inteken, kan jy herhalende kommissie volgens die goedgekeurde programvoorwaardes verdien.",
     "invite": {
       "title": "Nooi jou mense",
-      "body": "Deel jou persoonlike uitnodigingskakel deur dit te kopieer of op WhatsApp te stuur."
+      "body": "Deel jou persoonlike uitnodigingskakel. 'n Gratis registrasie is 'n goeie begin, maar Pro-intekeningkommissie word slegs verdien wanneer 'n kwalifiserende verwysing 'n betalende Puntr Pro-intekenaar word."
     },
     "track": {
       "title": "Volg kwalifiserende verwysings",
-      "body": "Sien registrasies en lede wat aangesluit het vanaf jou rekening wanneer verwysingsdata beskikbaar is."
+      "body": "Volg uitnodigingsaktiwiteit vanaf jou lede-rekening. Kommissie-kwalifikasie en betalingsverslagdoening word deur die goedgekeurde programvoorwaardes bepaal."
     },
     "guest": {
       "title": "Kry jou persoonlike uitnodigingskakel",
@@ -106,18 +106,19 @@
       "body": "Hierdie opsionele gereedskap word vir Puntr Pro teen R99 per maand beplan. Die kern-gemeenskapsfunksies bly gratis.",
       "cta": "Verken Pro"
     },
-    "fine": "Gereedskap verskaf inligting en konteks vir algemene gebruik. KI-gegenereerde inhoud kan onvolledig of onakkuraat wees; kontroleer belangrike besonderhede self. Niks op Puntr waarborg 'n uitkoms of is finansiële advies nie. Slegs 18+. Dobbel verantwoordelik."
+    "fine": "Gereedskap verskaf inligting en konteks vir algemene gebruik. KI-gegenereerde inhoud kan onvolledig of onakkuraat wees; kontroleer belangrike besonderhede self. Niks op Puntr waarborg 'n uitkoms of is finansiële advies nie. Slegs 18+. Dobbel verantwoordelik.",
+    "description": "Beplan: voer 'n boekmakerstrokie in of laai dit op om keuses na naspeurbare Puntr-keuses om te skakel. KI-ontleding, gemeenskapskonteks en wedstrydkontroles sal slegs vertoon word wanneer die toepaslike integrasies beskikbaar en geverifieer is."
   },
   "bookmakers": {
     "meta": {
-      "title": "Boekmakers | Puntr",
-      "description": "Verken boekmakerhandelsmerke wat vir Suid-Afrikaanse sportaanhangers ter sake is. Vergelyk verskaffers self en kontroleer hul voorwaardes voordat jy registreer."
+      "title": "Suid-Afrikaanse boekmakergids | Puntr",
+      "description": "Blaai deur boekmakerlisensiehouer-rekords wat deur die Nasionale Dobbelraad van Suid-Afrika gepubliseer is. Kontroleer die reguleerder, provinsie en lisensieverwysing voordat jy 'n operateur gebruik."
     },
-    "title": "Boekmakers",
-    "subtitle": "'n Gids tot wedhandelsmerke wat Suid-Afrikaanse sportaanhangers dalk teëkom.",
+    "title": "Suid-Afrikaanse boekmakergids",
+    "subtitle": "'n Soekbare verwysing na boekmakerlisensiehouer-rekords wat deur die Nasionale Dobbelraad gepubliseer is.",
     "independent": {
-      "title": "Kies onafhanklik",
-      "body": "Puntr is 'n onafhanklike platform vir sportgesprekke en voorspellingsrekords. Inskrywings is slegs vir inligting; dit is nie onderskrywings, pryse-vergelykings of aanbevelings om 'n weddenskap te plaas nie. Kontroleer altyd lisensiëring, voorwaardes, ouderdomsbeperkings en veiliger-dobbel-gereedskap direk by elke verskaffer."
+      "title": "Kontroleer die lisensie. Besluit self.",
+      "body": "Puntr is 'n onafhanklike sportvoorspellings- en gemeenskapsplatform, nie 'n boekmaker nie. Hierdie gids is slegs vir inligting. 'n Boekmakerinskrywing beteken nie dat Puntr die operateur onderskryf of dat sy webwerf in elke provinsie vir aanlynweddenskappe gemagtig is nie. Bevestig die huidige lisensie en goedgekeurde aanlynweddenskapstatus direk by die toepaslike reguleerder en operateur."
     },
     "directory": "Verskaffersgids",
     "brandOnly": "Slegs handelsname",

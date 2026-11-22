@@ -1,20 +1,20 @@
 {
   "referrals": {
     "meta": {
-      "title": "Refer a friend | Puntr",
-      "description": "Invite friends to join Puntr and follow your referral activity from your member account."
+      "title": "Puntr referrals | Earn 10–30% recurring Pro commission",
+      "description": "Invite friends to Puntr and earn 10–30% recurring commission when eligible referrals become paying Puntr Pro subscribers."
     },
-    "title": "Refer a friend",
-    "subtitle": "Bring your sports community to Puntr.",
-    "heading": "Share the game. Grow the community.",
-    "body": "Invite friends to join Puntr, share sports conversations and build a public record of their picks. Referral tracking is tied to your member invite code.",
+    "title": "Refer friends. Earn recurring Pro commissions.",
+    "subtitle": "Share Puntr with your sports community and earn 10–30% recurring commission when eligible referrals become paying Puntr Pro subscribers.",
+    "heading": "Grow the community. Share in its growth.",
+    "body": "Invite friends to join Puntr, build a public record of their predictions and discover the platform together. When an eligible referral subscribes to Puntr Pro, you can earn recurring commission under the approved referral programme terms.",
     "invite": {
       "title": "Invite your people",
-      "body": "Share your personal invite link by copying it or sending it on WhatsApp."
+      "body": "Share your personal invite link. A free sign-up is a great start, but Pro subscription commission is earned only when an eligible referral becomes a paying Puntr Pro subscriber."
     },
     "track": {
       "title": "Track eligible referrals",
-      "body": "See sign-ups and joined members from your account when referral data is available."
+      "body": "Follow invite activity from your member account. Commission eligibility and payment reporting are governed by the approved programme terms."
     },
     "guest": {
       "title": "Get your personal invite link",
@@ -90,7 +90,7 @@
     "items": {
       "converter": {
         "name": "Betting Slip Converter",
-        "description": "Import or upload your bookmaker slip to instantly convert your bets into trackable Puntr picks. Get immediate AI match analysis, unlock community sentiment, and lock in your verified picks for upcoming fixtures in minutes."
+        "description": "Planned: import or upload a bookmaker slip to convert selections into trackable Puntr picks. Any AI analysis, community context and fixture checks will be shown only when the relevant integrations are available and verified."
       },
       "edge": {
         "name": "AI \"Edge Finder\" Summary Cards",
@@ -110,14 +110,14 @@
   },
   "bookmakers": {
     "meta": {
-      "title": "Bookmakers | Puntr",
-      "description": "Explore bookmaker brands relevant to South African sports fans. Compare providers independently and check their terms before signing up."
+      "title": "South African Bookmaker Directory | Puntr",
+      "description": "Browse bookmaker licence-holder records published by South Africa's National Gambling Board. Check the regulator, province and licence reference before using any operator."
     },
-    "title": "Bookmakers",
-    "subtitle": "A directory of betting brands South African sports fans may come across.",
+    "title": "South African Bookmaker Directory",
+    "subtitle": "A searchable reference to bookmaker licence-holder records published by the National Gambling Board.",
     "independent": {
-      "title": "Choose independently",
-      "body": "Puntr is an independent sports discussion and prediction-record platform. Listings are informational only; they are not endorsements, odds comparisons or recommendations to place a bet. Always check licensing, terms, age restrictions and safer-gambling tools directly with each provider."
+      "title": "Check the licence. Make your own decision.",
+      "body": "Puntr is an independent sports prediction and community platform, not a bookmaker. This directory is informational only. A bookmaker entry does not mean Puntr endorses the operator or that its website is authorised for online betting in every province. Confirm the current licence and approved online betting status directly with the relevant regulator and operator."
     },
     "directory": "Provider directory",
     "brandOnly": "Brand names only",

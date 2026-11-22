@@ -57,7 +57,7 @@
     "tagline": "Vir sportaanhangers en tipgewers wat dieper ontleding, sterker gereedskap en erkenning vir 'n konsekwente rekord wil hê.",
     "price": "{{price}} per maand",
     "note": "Tipgewer-ondersteuning word bekendgestel onderhewig aan verifikasie, kwalifikasiedrempels en gepubliseerde programreëls. Fooitjies verdien PuntPoints, nie kontant nie; punte kan nie onttrek word nie en beïnvloed nooit posisies nie.",
-    "f1": "<1>KI-aangedrewe insigte</1>: wedstrydvoorskoue en kontrole van strokies",
+    "f1": "<1>Beplande KI-aangedrewe insigte</1>: wedstrydvoorskoue en strokie-kontroles",
     "f2": "Gevorderde tipgewer-ontledings: eenhede, opbrengs en vorm volgens mark, sport en prysreeks",
     "f3": "Persoonlike waarskuwings vir wedstryde en afgehandelde keuses wat jy volg",
     "f4": "Vroeë toegang tot nuwe gereedskap",
@@ -75,5 +75,11 @@
     "saving": "Spaar R889 · 75% minder",
     "fine": "Bespreking is gratis op Puntr. Ons e-pos dan vir jou 'n veilige PayFast-skakel: betaal die R299 binne 48 uur om jou plek te bevestig, anders verval die bespreking en word die plek vrygestel.",
     "cta": "Skep 'n rekening en bespreek"
+  },
+  "referral": {
+    "eyebrow": "Verwys en verdien",
+    "title": "Verdien 10–30% herhalende kommissie op kwalifiserende Puntr Pro-verwysings.",
+    "body": "Deel Puntr met jou gemeenskap. Wanneer 'n kwalifiserende verwysing 'n betalende Pro-intekenaar word, kan jy herhalende kommissie volgens die programvoorwaardes verdien.",
+    "cta": "Verken die verwysingsprogram"
   }
 }

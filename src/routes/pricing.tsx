@@ -181,6 +181,15 @@ function Pricing() {
         {t("never")}
       </p>
 
+      <section className="mt-5 flex flex-wrap items-center gap-4 border border-border p-5 sm:p-6">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">{t("referral.eyebrow")}</p>
+          <h2 className="mt-1 text-lg font-bold">{t("referral.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("referral.body")}</p>
+        </div>
+        <Button asChild variant="outline"><a href="/referrals">{t("referral.cta")}</a></Button>
+      </section>
+
       <section className="puntr-reveal mt-10" aria-labelledby="pricing-faq">
         <h2 id="pricing-faq" className="text-xl">
           {t("faq.title")}

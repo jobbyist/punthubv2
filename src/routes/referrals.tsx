@@ -48,6 +48,34 @@ function ReferralsPage() {
           </div>
         </div>
       </section>
+
+      <section className="card-surface mt-5 border-primary/40 p-5 sm:p-7" aria-labelledby="referral-commission-title">
+        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Puntr Pro referral programme</p>
+        <div className="mt-2 flex flex-wrap items-end gap-x-3 gap-y-1">
+          <h2 id="referral-commission-title" className="font-display text-4xl font-black tracking-tight">10–30%</h2>
+          <p className="pb-1 text-sm font-semibold text-muted-foreground">recurring commission</p>
+        </div>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          Earn 10–30% recurring commission on eligible Puntr Pro subscription revenue when someone you refer becomes a paying Pro subscriber. Your approved commission rate is confirmed when you are accepted into the programme and applies to eligible subscription billing periods while the referred member remains an active paying subscriber, subject to the programme agreement.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="border border-border p-4">
+            <h3 className="font-semibold">What qualifies?</h3>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">A new member who joins through your referral and goes on to subscribe to Puntr Pro. A free sign-up alone does not generate Pro subscription commission.</p>
+          </div>
+          <div className="border border-border p-4">
+            <h3 className="font-semibold">What is not commissionable?</h3>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Bookmaker deposits, bets, stakes, losses, winnings and gambling activity are never part of Puntr referral commissions.</p>
+          </div>
+        </div>
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          Commission rates, attribution, qualifying events, reversals, reporting and payment terms are governed by the approved referral programme terms. Commission reporting may be made available separately from the member invite activity shown below.
+        </p>
+        <Link to="/brand-ambassadors" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary underline underline-offset-4">
+          Interested in a wider partnership? Explore the Brand Ambassador Programme <ArrowRight className="size-4" />
+        </Link>
+      </section>
+
       {isSignedIn && profile?.referral_code ? (
         <ReferralCard />
       ) : (

@@ -41,6 +41,14 @@ export function AffiliateDisclosureAf() {
           jou persoonlike inligting nie.
         </p>
         <p>
+          Puntr bedryf ook 'n afsonderlike lede-verwysingsprogram. Goedgekeurde verwysers kan
+          10–30% herhalende kommissie op kwalifiserende Puntr Pro-intekeningsinkomste verdien
+          wanneer 'n verwysde lid 'n betalende Pro-intekenaar word. Hierdie kommissie hou verband
+          met Puntr-intekeninge, nie boekmakerdeposito's, insette, verliese of winste nie. Tariewe,
+          toeskrywing en betalingsvoorwaardes word deur die goedgekeurde programooreenkoms bepaal.
+          Sien die <a className="underline" href="/referrals">verwysingsprogram</a>.
+        </p>
+        <p>
           Kommersiële vennote beheer of beïnvloed nie Puntr se keuses, uitslae,
           voorspellingsbeoordelings, redaksionele inhoud of ranglyste nie.
         </p>

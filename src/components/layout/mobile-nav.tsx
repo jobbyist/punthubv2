@@ -43,7 +43,7 @@ import { useTranslation } from "react-i18next";
 import { Logo } from "@/components/brand";
 import { LiveBadge } from "@/components/live-badge";
 import { useSession } from "@/components/session";
-import { HELPLINE_DISPLAY, HELPLINE_TEL } from "@/components/rg-notice";
+import { HELPLINE_DISPLAY } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SocialLinks } from "@/components/social-links";
 
@@ -462,21 +462,19 @@ export function MobileNav() {
                 <NavLink
                   path={path}
                   onNavigate={close}
+                  to="/bookmakers"
                   icon={Building2}
                   label={t("mobile.tools.bookmakers")}
-                  disabled
-                  badge={tc("badge.comingSoon")}
-                  badgeColor="bg-muted text-muted-foreground"
                 />
 
                 <NavLink
                   path={path}
                   onNavigate={close}
+                  to="/fantasy-arena"
                   icon={Trophy}
                   label={t("mobile.tools.fantasyArena")}
-                  disabled
-                  badge={tc("badge.comingSoon")}
-                  badgeColor="bg-muted text-muted-foreground"
+                  badge="In development"
+                  badgeColor="bg-primary/15 text-primary"
                 />
               </div>
 
@@ -503,22 +501,25 @@ export function MobileNav() {
                     </span>
                   }
                 />
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/brand-ambassadors"
+                  icon={Users}
+                  label={t("mobile.tools.brandAmbassadors")}
+                />
               </div>
 
               {/* Content & support */}
               <div className="mt-2 space-y-0.5 border-t border-border pt-3">
-                <a
-                  href={HELPLINE_TEL}
-                  onClick={close}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-foreground transition-colors hover:bg-muted"
-                >
-                  <Shield className="size-5 shrink-0 text-muted-foreground" />
-                  <span className="flex-1">{t("mobile.responsibleGambling")}</span>
-                  <span className="text-sm font-semibold text-primary tnum">
-                    {HELPLINE_DISPLAY}
-                  </span>
-                  <ChevronRight className="size-4 text-muted-foreground" />
-                </a>
+                <NavLink
+                  path={path}
+                  onNavigate={close}
+                  to="/responsible-play"
+                  icon={Shield}
+                  label={t("mobile.responsiblePlay")}
+                  right={<span className="text-xs font-semibold text-primary tnum">{HELPLINE_DISPLAY}</span>}
+                />
               </div>
 
               {/* Plans & store */}

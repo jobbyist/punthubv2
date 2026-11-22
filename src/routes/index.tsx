@@ -104,7 +104,7 @@ function Landing() {
         <HeroBackdrop />
         <div className="puntr-rise min-w-0">
           <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            SOUTH AFRICA’S SPORTS PREDICTION &amp; INTELLIGENCE PLATFORM
+            SOUTH AFRICA’S HOME FOR ACCOUNTABLE SPORTS PREDICTIONS
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
             {headlineVariant === "A" ? (
@@ -117,7 +117,7 @@ function Landing() {
             100% free to join. No card required. Sign up for early access.
           </p>
           <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr is a growing online community where South African sports fans come to lock in match predictions, track verified records and get rewarded for knowing the game. It’s really that simple.
+            Puntr is a sports prediction and community platform where South African fans publish timestamped picks, follow transparent grading and build a public performance record. Compete with the community and collect non-cash PuntPoints through eligible activity.
           </p>
           <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
             Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading, and a public record that speaks for itself.

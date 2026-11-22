@@ -29,6 +29,11 @@ function staticEntries(today: string): SitemapEntry[] {
     { path: "/support", changefreq: "monthly", priority: "0.7", lastmod: today },
     { path: "/newsroom", changefreq: "daily", priority: "0.7", lastmod: today },
     { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
+    { path: "/bookmakers", changefreq: "monthly", priority: "0.7", lastmod: today },
+    { path: "/referrals", changefreq: "monthly", priority: "0.7", lastmod: today },
+    { path: "/brand-ambassadors", changefreq: "monthly", priority: "0.6", lastmod: today },
+    { path: "/fantasy-arena", changefreq: "weekly", priority: "0.7", lastmod: today },
+    { path: "/responsible-play", changefreq: "monthly", priority: "0.6", lastmod: today },
     { path: "/roadmap", changefreq: "weekly", priority: "0.6", lastmod: today },
     ...["soccer", "basketball", "rugby", "racing", "combat", "athletics", "cricket", "tennis"].map(
       (s): SitemapEntry => ({
