@@ -1,3 +1,14 @@
+## 22 November 2026 — Discover hub, responsive previews and PWA safe-area fixes
+
+- Move the Predictions hub to the canonical `/discover` route; preserve `/predictions` bookmarks with a redirect and update PWA launch, notification fallback, canonical metadata and sitemap destinations.
+- Remove the Insights destination from navigation and the sitemap; legacy `/insights` visits redirect to Discover.
+- Remove the Community shortcut from the mobile header menu.
+- Improve responsive sizing and overflow handling for weekly leaders, head-to-head duels, latest results and league tables.
+- Add an animated Fantasy Arena upcoming-feature spotlight beneath the Betting Slip Converter.
+- Add a five-article sports newsroom preview beneath the weekly leaders, reading only published sports articles.
+- Reserve the installed-PWA status-bar safe area and use a non-translucent iOS status bar style.
+- No legal copy or data-collection behaviour changed.
+
 ## 22 November 2026 — PWA authentication and Web Push foundation
 
 - Preserve the originating internal route through password, OTP, Google OAuth, email confirmation, onboarding, MFA and password recovery.
