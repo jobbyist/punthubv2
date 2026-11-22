@@ -39,10 +39,14 @@ export const STANDINGS_COMPETITIONS: Partial<
       "LaLiga EA Sports standings 2026/27",
       "La Liga current table full standings",
       "site:skysports.com/football/competitions/la-liga/table La Liga table",
+      "La Liga current standings ESPN table",
+      "La Liga current standings Transfermarkt table",
     ],
     pages: [
       "https://www.laliga.com/en-US/laliga-easports/standing",
       "https://www.skysports.com/football/competitions/la-liga/table",
+      "https://www.espn.com/soccer/standings/_/league/esp.1",
+      "https://www.transfermarkt.com/laliga/tabelle/wettbewerb/ES1",
     ],
   },
   seriea: {
@@ -314,9 +318,10 @@ export function validateTables(
     const out: StandingRow[] = [];
     const names = new Set<string>();
     for (const r of rows) {
-      const resolved = knownTeams.length ? resolveTeam(r.team, knownTeams) : null;
-      const team = resolved && resolved !== "ambiguous" ? resolved : r.team.trim();
-      const teamVariants = [r.team, r.team.replace(/^[A-Z]{2,4}\s+/, ""), team].filter(Boolean);
+      const sourceName = r.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
+      const resolved = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
+      const team = resolved && resolved !== "ambiguous" ? resolved : sourceName;
+      const teamVariants = [r.team, sourceName, team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
       else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
       else if (!hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
