@@ -224,6 +224,7 @@ describe("standingsRequest", () => {
     expect(request.system).toContain("every row must use that exact source n value");
     expect(request.prompt).toContain("wdl_Aston Villa");
     expect(request.prompt).toContain("Copy exact values from this page only");
+    expect(request.system).toContain("extract only the Total/Overall league table");
   });
 });
 describe("parseStandings", () => {
