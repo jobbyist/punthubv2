@@ -7,8 +7,7 @@ import type { ReadinessSnapshot } from "@/lib/mvp-readiness";
 
 /** /dev uses the existing Puntr Supabase admin session; there is no second credential gate. */
 export type DevPageData =
-  | { status: "forbidden" }
-  | { status: "open"; readiness: ReadinessSnapshot };
+  { status: "forbidden" } | { status: "open"; readiness: ReadinessSnapshot };
 
 function privateHeaders() {
   setResponseHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
@@ -34,16 +33,4 @@ const taskSchema = z.object({
 export const setDevReadinessTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => taskSchema.parse(input))
-  .handler(
-    async ({
-      data,
-      context,
-    }): Promise<{ ok: boolean; reason?: "forbidden" | "failed" }> => {
-      privateHeaders();
-      const { data: isAdmin, error } = await context.supabase.rpc("is_admin");
-      if (error || isAdmin !== true) return { ok: false, reason: "forbidden" };
-      const { writeTask } = await import("@/lib/mvp-readiness.server");
-      const res = await writeTask(data.taskId, data.done);
-      return res.ok ? { ok: true } : { ok: false, reason: "failed" };
-    },
-  );
+  .handler(async ({ data, co¶»§q«^

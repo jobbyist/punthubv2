@@ -43,22 +43,4 @@ function AccountSkeleton() {
 export function RequireMember({
   children,
 }: {
-  children: (p: NonNullable<ReturnType<typeof useSession>["profile"]>) => ReactNode;
-}) {
-  const { t } = useTranslation("account");
-  const { loading, profile } = useSession();
-  const returnTo = useRouterState({ select: (state) => state.location.href });
-  if (loading) return <AccountSkeleton />;
-  if (!profile) {
-    return (
-      <AccountPage>
-        <h1 className="text-2xl">{t("signInNeeded.title")}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{t("signInNeeded.body")}</p>
-        <Button asChild className="mt-4">
-          <Link to="/join" search={{ next: returnTo }}>{t("signInNeeded.cta")}</Link>
-        </Button>
-      </AccountPage>
-    );
-  }
-  return <>{children(profile)}</>;
-}
+  children: (p: NonNullable<Retur¶»§q«^
