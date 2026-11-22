@@ -120,9 +120,14 @@ export const Route = createFileRoute("/api/push")({
           }
           let destination: string;
           try { destination = targetPath(body.targetUrl); } catch (error) { return json({ error: error instanceof Error ? error.message : "Invalid destination." }, 400); }
-          const query = db.from("push_subscriptions").select("id,user_id,endpoint,p256dh,auth").eq("enabled", true);
+          const query = db.from("push_subscriptions").select("id,user_id,endpoint,p256dh,auth,profiles!inner(is_banned)").eq("enabled", true).eq("profiles.is_banned", false);
           const { data: subscriptions, error: subError } = targetUserIds ? await query.in("user_id", targetUserIds) : await query;
           if (subError) return json({ error: "Could not load active device subscriptions." }, 500);
+          if (action === "dispatch") {
+            const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+            const { count } = await db.from("push_notification_campaigns").select("id", { count: "exact", head: true }).eq("created_by", user.id).gte("created_at", since);
+            if ((count ?? 0) >= 5) return json({ error: "Campaign limit reached. Try again later." }, 429);
+          }
           const { data: campaign, error: campaignError } = await db.from("push_notification_campaigns").insert({
             title, body: message, target_url: destination, audience, created_by: user.id, status: "sending",
           }).select("id").single();
