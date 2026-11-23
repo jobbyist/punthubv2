@@ -137,7 +137,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       await log(
         "schedule",
         "warn",
-        "models refused because they are not on the free list",
+        "models refused because they are not on the approved model list",
         env.refusedModels,
       );
 
@@ -164,7 +164,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     }
     checkBudget("writing");
 
-    // Writing, through the free-model router.
+    // Writing, through the Parallel-first editorial model router.
     const usage = await store.usageToday().catch(() => ({}) as Record<string, number>);
     const usedToday: Record<string, number> = {};
     for (const m of env.models) usedToday[m] = usage[m === "parallel-medium" ? "parallel-chat:medium" : `gemini:${m}`] ?? 0;
