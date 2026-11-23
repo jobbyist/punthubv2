@@ -83,7 +83,7 @@ Decisions are cached through Puntr's existing parallel_cache by request body (24
 
 ## 30-day orchestration
 
-GitHub Actions includes a five-times-daily browser QA schedule at 06:00, 09:00, 13:00, 17:00 and 20:00 SAST. Each run selects up to three least-recently-tested personas. The runner exits without activity unless the experiment is active and within its configured date window. The workflow only runs after it is merged to the default branch. Keep the experiment paused until:
+GitHub Actions runs at 06:00, 09:00, 13:00, 17:00 and 20:00 SAST. Each run processes due pre-match fixture decisions first (up to five fixture groups, two market questions per persona) and then selects up to three least-recently-tested browser personas. A persona receives at most one fixture batch per SAST day. Both routes skip unless the experiment is active and inside its configured date window. The workflow only runs after it is merged to the default branch. Keep the experiment paused until:
 1. the migration is reviewed and applied;
 2. the experiment row is explicitly changed from `paused` to `active`;
 3. the production hostname is confirmed;
