@@ -43,10 +43,11 @@ The production hostname is intentionally not hard-coded. Use the exact canonical
 
 ## Browser QA
 
-Run one to three concurrent browser contexts; the config clamps concurrency to 3:
+Run one to three concurrent browser contexts; the config clamps concurrency to 3. For a single staggered batch, the batch runner selects the least-recently-tested personas (round-robin) and records their last-run time:
 
 ```bash
 SYNTHETIC_WORKERS=1 npm test
+npm run batch -- --count=2
 SYNTHETIC_WORKERS=3 npm test
 PW_HEADLESS=false SYNTHETIC_WORKERS=1 npm test
 SYNTHETIC_PERSONA_IDS=puntr-synth-01,puntr-synth-02 npm test
