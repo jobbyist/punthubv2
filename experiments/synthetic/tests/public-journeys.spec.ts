@@ -44,7 +44,7 @@ test.describe("Puntr production read-only synthetic QA", () => {
           const response = await page.goto(path, { waitUntil: "domcontentloaded" });
           const status = response?.status() ?? 0;
           expect(status, `${path} returned HTTP ${status}`).toBeGreaterThanOrEqual(200);
-          expect(status, `${path} returned HTTP ${status}`).toBeLessThan(500);
+          expect(status, `${path} returned HTTP ${status}`).toBeLessThan(400);
           visited.push(path);
           // Small deterministic pauses make rendering and client-side navigation observable.
           // This is test pacing, not stealth or an attempt to imitate genuine customers.
