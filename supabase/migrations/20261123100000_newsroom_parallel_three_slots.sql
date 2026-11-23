@@ -66,4 +66,4 @@ select cron.schedule('content-editorial-retry-2', '10 11 * * *',
   $$select public.invoke_cron('/api/cron/content-daily?slot=editorial&trigger=cron')$$);
 -- 18:00 SAST Sports Intelligence; retries at 18:20 and 18:40.
 select cron.schedule('content-intelligence', '0,20,40 16 * * *',
-  $$$select public.invoke_cron('/api/cron/content-daily?slot=intelligence&trigger=cron')$$);
+  $$select public.invoke_cron('/api/cron/content-daily?slot=intelligence&trigger=cron')$$);
