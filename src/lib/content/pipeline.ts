@@ -200,7 +200,16 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     // The shadow is always saved as REVIEW and can never be auto-published.
     const benchmarkModel = options.benchmark ? env.models.find((m) => m.startsWith("gemini-")) : undefined;
     const benchmarkPromise = benchmarkModel && deps.llm
-      ? deps.llm.generate(benchmarkModel, request).then((result) => ({ result }), (error: unknown) => ({ error }))
+      ? deps.llm.generate(benchmarkModel, request).then(
+          async (result) => {
+            await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
+            return { result };
+          },
+          async (error: unknown) => {
+            await store.countUsage(`gemini:${benchmarkModel}`, "error").catch(() => undefined);
+            return { error };
+          },
+        )
       : Promise.resolve(null);
 
     let written = await router.generate(request);
