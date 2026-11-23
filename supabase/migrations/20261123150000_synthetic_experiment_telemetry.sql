@@ -27,6 +27,7 @@ create table if not exists public.synthetic_personas (
   persona jsonb not null check (jsonb_typeof(persona) = 'object'),
   active boolean not null default true,
   last_run_at timestamptz,
+  last_decision_at timestamptz,
   created_at timestamptz not null default now(),
   unique (experiment_id, persona_key)
 );
