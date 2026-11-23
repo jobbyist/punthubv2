@@ -167,7 +167,7 @@ function isFreshForSlot(hit: SearchHit, slot: ContentSlot | undefined, now: Date
   if (!maxAgeMs) return true;
   let publishedAt = hit.publishedAt ? Date.parse(hit.publishedAt) : Number.NaN;
   if (!Number.isFinite(publishedAt)) {
-    const dateInUrl = hit.url.match(/(20\\d{2})-(\\d{2})-(\\d{2})/);
+    const dateInUrl = hit.url.match(/(20[0-9]{2})-([0-9]{2})-([0-9]{2})/);
     if (dateInUrl) {
       publishedAt = Date.parse(`${dateInUrl[1]}-${dateInUrl[2]}-${dateInUrl[3]}T12:00:00Z`);
     }
