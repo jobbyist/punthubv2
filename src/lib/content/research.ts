@@ -131,14 +131,18 @@ export function canonicalUrl(url: string): string {
 function pageRank(hit: SearchHit, slot?: ContentSlot): number {
   let path = "/";
   try {
-    path = new URL(hit.url).pathname.toLowerCase().replace(/\\/+$/, "") || "/";
+    path = new URL(hit.url).pathname.toLowerCase();
+    while (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
   } catch {
     return 9;
   }
+  const segments = path.split("/").filter(Boolean);
+  const indexPages = ["news", "latest", "football", "sport", "fixtures", "results", "tournament", "data", "stats", "teams", "clubs", "competition", "league", "leagues"];
+  const dataPages = ["data", "stats", "standings", "table", "fixtures", "results", "teams", "clubs", "tournament", "competition"];
   let score = 0;
   if (path === "/") score += 8;
-  if (/^\\/(news|latest|football|sport|fixtures|results|tournament|data|stats|teams|clubs|competition|leagues?)$/.test(path)) score += 5;
-  if (/\\/(data|stats|standings|table|fixtures|results|teams|clubs|tournament|competition)(\\/|$)/.test(path)) {
+  if (segments.length === 1 && indexPages.includes(segments[0]!)) score += 5;
+  if (dataPages.some((segment) => segments.includes(segment))) {
     score += slot === "intelligence" ? -2 : 4;
   }
   if (!hit.publishedAt) score += 1;
