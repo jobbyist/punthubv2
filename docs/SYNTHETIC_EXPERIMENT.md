@@ -16,14 +16,17 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 - `experiments/synthetic/personas.schema.json`: JSON Schema for persona validation.
 - `experiments/synthetic/tests/public-journeys.spec.ts`: Playwright read-only public-page journeys.
 - `experiments/synthetic/run-batch.mjs`: round-robin selector for one-to-three persona batches, intended for an owner-controlled external scheduler.
-- `experiments/synthetic/research.mjs`: Parallel Responses API JSON Schema forecast research, cached per fixture.
+- `experiments/synthetic/decisions.mjs`: Parallel Decisions API, one typed choice question per persona (up to 100 questions per shared fixture evidence set), with citations and per-option probabilities.
+- `experiments/synthetic/research.mjs`: optional Parallel Responses API JSON Schema narrative research, cached per fixture.
 - `supabase/migrations/20261123150000_synthetic_experiment_telemetry.sql`: isolated service-role-only telemetry and hard budget reservation functions.
 
 ## Parallel API selection
 
-The legacy Chat API quickstart currently redirects to the Responses API documentation. The Responses API is synchronous and supports structured JSON outputs. Use `model: "parallel"`, `reasoning.effort: "low"`, and a JSON Schema in `text.format`.
+**Primary: Decisions API.** It supports up to 100 named questions per request over one shared evidence set, returning typed choice probabilities and citations. One request can therefore evaluate all 50 personas for the same fixture. This is the most economical fit for the experiment.
 
-Task API is not needed just to enforce a JSON schema. Use it only for deeper asynchronous research or larger batch research tasks. Forecasts are informational research artifacts for QA and accuracy evaluation, not betting instructions.
+**Optional: Responses API.** The legacy Chat API quickstart redirects to Responses. Responses supports JSON Schema structured output and is useful when a fixture needs a richer narrative explanation. It costs more per request than Decisions, so call it once per fixture only when needed.
+
+**Task API:** not required just to obtain structured JSON. Use it for asynchronous, deeper research or Task Groups. All outputs remain informational forecasts for QA and accuracy evaluation, not betting instructions.
 
 ## Cost and existing platform budget
 
