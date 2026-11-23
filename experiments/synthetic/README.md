@@ -55,9 +55,11 @@ SYNTHETIC_PERSONA_IDS=puntr-synth-01,puntr-synth-02 npm test
 
 The browser suite only visits the public allowlisted pages in each persona's journey. It does not submit forms. It records session metadata in the isolated experiment table when the service-role variables and experiment ID are provided.
 
-## Parallel structured research
+## Parallel structured decisions and research
 
-The current Parallel documentation redirects the legacy Chat API quickstart to the Responses API. Responses API supports JSON Schema structured outputs, so Task API is **not required merely to obtain schema-valid JSON**. Use Task API only when you need asynchronous, deeper, multi-step research or batch task groups.
+For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits one question per persona for a fixture and caches the shared result.
+
+The legacy Chat API quickstart now redirects to the Responses API. Responses supports JSON Schema structured outputs and is retained as an optional narrative-research path. Task API is **not required merely to obtain structured JSON**; use it only for deeper asynchronous research or batch task groups.
 
 Provide a fixture context JSON file (no personal data):
 
@@ -74,10 +76,12 @@ Provide a fixture context JSON file (no personal data):
 Then:
 
 ```bash
+node decisions.mjs ./fixture.json
+# Optional: richer narrative research for one fixture (higher per-request cost)
 node research.mjs ./fixture.json
 ```
 
-Research is cached by experiment + fixture ID, shared across personas, and never written to public picks. The output includes a forecast status, uncertainty, and source records. An actionable forecast must cite at least two distinct source domains. No odds, bookmaker or stake recommendations are generated.
+Decisions are cached by experiment + fixture ID + provider, shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, option probabilities and a confidence band derived from the selected probability. An actionable batch requires at least two independent source domains; otherwise all decisions become no_pick. No odds, bookmaker or stake recommendations are generated.
 
 ## 30-day orchestration
 
