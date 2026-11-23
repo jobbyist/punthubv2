@@ -1,7 +1,7 @@
 /**
  * Parallel-first editorial model router with allowlisted Gemini fallbacks.
  *
- * - A model outside FREE_MODEL_ALLOWLIST is never called, whatever the configuration says.
+ * - A model outside APPROVED_CONTENT_MODELS is never called, whatever the configuration says.
  * - A quota or auth error moves straight to the next model. A timeout or 5xx also moves on while another model is
  *   left to try (a busy model stays busy, and with five models retrying each one would outlast the run budget);
  *   only the last model in the chain gets one retry after a pause.
@@ -15,7 +15,7 @@ import type { LlmProvider, LlmRequest, LlmResult } from "./types";
 
 export interface ModelAttempt {
   model: string;
-  outcome: "ok" | "skipped_cap" | "refused_not_free" | ProviderError["kind"] | "error";
+  outcome: "ok" | "skipped_cap" | "refused_not_allowlisted" | ProviderError["kind"] | "error";
   detail?: string;
 }
 
@@ -58,10 +58,10 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
           : [...options.models];
       const attempts: ModelAttempt[] = [];
 
-      const lastUsable = [...order].reverse().find((m) => m === "parallel-medium" || APPROVED_CONTENT_MODELS.includes(m));
+      const lastUsable = [...order].reverse().find((m) => APPROVED_CONTENT_MODELS.includes(m));
 
       for (const model of order) {
-        if (model !== "parallel-medium" && !APPROVED_CONTENT_MODELS.includes(model)) {
+        if (!APPROVED_CONTENT_MODELS.includes(model)) {
           await note(attempts, { model, outcome: "refused_not_free" });
           continue;
         }
