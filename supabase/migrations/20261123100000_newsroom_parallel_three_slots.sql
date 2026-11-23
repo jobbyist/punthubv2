@@ -50,14 +50,20 @@ where family = 'parallel';
 select cron.unschedule('content-daily') where exists (select 1 from cron.job where jobname = 'content-daily');
 select cron.unschedule('content-breaking') where exists (select 1 from cron.job where jobname = 'content-breaking');
 select cron.unschedule('content-editorial') where exists (select 1 from cron.job where jobname = 'content-editorial');
+select cron.unschedule('content-editorial-retry-1') where exists (select 1 from cron.job where jobname = 'content-editorial-retry-1');
+select cron.unschedule('content-editorial-retry-2') where exists (select 1 from cron.job where jobname = 'content-editorial-retry-2');
 select cron.unschedule('content-intelligence') where exists (select 1 from cron.job where jobname = 'content-intelligence');
 
 -- 06:00 SAST Breaking News; retries at 06:20 and 06:40.
 select cron.schedule('content-breaking', '0,20,40 4 * * *',
   $$select public.invoke_cron('/api/cron/content-daily?slot=breaking&trigger=cron')$$);
 -- 12:30 SAST Editorial Analysis; retries at 12:50 and 13:10.
-select cron.schedule('content-editorial', '10,30,50 10 * * *',
-  $$select public.invoke_cron('/api/cron/content-daily?slot=editorial&trigger=cron')$$);
+select cron.schedule('content-editorial', '30 10 * * *',
+  $select public.invoke_cron('/api/cron/content-daily?slot=editorial&trigger=cron')$);
+select cron.schedule('content-editorial-retry-1', '50 10 * * *',
+  $select public.invoke_cron('/api/cron/content-daily?slot=editorial&trigger=cron')$);
+select cron.schedule('content-editorial-retry-2', '10 11 * * *',
+  $select public.invoke_cron('/api/cron/content-daily?slot=editorial&trigger=cron')$);
 -- 18:00 SAST Sports Intelligence; retries at 18:20 and 18:40.
 select cron.schedule('content-intelligence', '0,20,40 16 * * *',
   $$select public.invoke_cron('/api/cron/content-daily?slot=intelligence&trigger=cron')$$);
