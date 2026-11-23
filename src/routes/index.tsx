@@ -43,6 +43,7 @@ export const Route = createFileRoute("/")({
       meta: [
         { title: t("meta.title") },
         { name: "description", content: t("meta.description") },
+        { name: "track360-verify", content: "54fdec1c340705c8771b2ca846c4cf13" },
         { property: "og:title", content: t("meta.title") },
         { property: "og:description", content: t("meta.ogDescription") },
         { property: "og:url", content: "https://puntr.co.za/" },
