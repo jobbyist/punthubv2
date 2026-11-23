@@ -62,6 +62,7 @@ export interface RunOptions {
   dry?: boolean;
   /** Moves the sports beat on by this many places (several sports articles on one day). */
   beatOffset?: number;
+  slot?: "breaking" | "editorial" | "intelligence";
 }
 
 export type RunOutcome =
@@ -102,13 +103,15 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
   const updates = await store.pendingProjectUpdates(5);
   const choice = options.kind
     ? { kind: options.kind, reason: "chosen for this run" }
-    : kindForDay(settings, updates.length > 0, started);
+    : options.slot
+      ? { kind: "sports" as const, reason: `scheduled ${options.slot} editorial slot` }
+      : kindForDay(settings, updates.length > 0, started);
   const kind = choice.kind;
 
   // The schedule and a forced rerun share the day's key; any other manual run gets its own.
   const jobKey =
     options.trigger === "cron" || options.force
-      ? dailyJobKey(started)
+      ? options.slot ? `${dailyJobKey(started)}:${options.slot}` : dailyJobKey(started)
       : `manual:${started.toISOString()}`;
   const job = await store.claimJob({
     jobKey,
@@ -152,7 +155,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources = projectSources(updates);
       await log("research", "info", `${sources.length} approved project update(s)`);
     } else {
-      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started);
+      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started, options.slot);
       beat = brief.beat;
       await log("topic", "info", `beat: ${beat}`, brief.queries);
       sources = await research(deps, brief, log);
@@ -162,7 +165,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     // Writing, through the free-model router.
     const usage = await store.usageToday().catch(() => ({}) as Record<string, number>);
     const usedToday: Record<string, number> = {};
-    for (const m of env.models) usedToday[m] = usage[`gemini:${m}`] ?? 0;
+    for (const m of env.models) usedToday[m] = usage[m === "parallel-medium" ? "parallel-chat:medium" : `gemini:${m}`] ?? 0;
     const router = createModelRouter(deps.llm, {
       models: env.models,
       usedToday,
@@ -174,7 +177,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
           return;
         }
         await store
-          .countUsage(`gemini:${a.model}`, a.outcome === "ok" ? "ok" : "error")
+          .countUsage(a.model === "parallel-medium" ? "parallel-chat:medium" : `gemini:${a.model}`, a.outcome === "ok" ? "ok" : "error")
           .catch(() => undefined);
         if (a.outcome !== "ok")
           await log("model", "warn", `${a.model} failed: ${a.outcome}`, a.detail);
@@ -297,7 +300,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     const publish =
       settings.enabled &&
       settings.autoPublish &&
-      (passed || (options.trigger === "cron" && settings.publishOnSchedule));
+      passed;
 
     if (options.dry) {
       await store.finishJob(job.id, {
@@ -316,7 +319,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         title: draft.title,
         excerpt: draft.excerpt,
         body: draft.body,
-        category: kind === "sports" ? "sports" : "product",
+        category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : kind === "sports" ? "sports" : "product",
         tags: draft.tags.slice(0, 6).map((t) => t.toLowerCase()),
         seoTitle: draft.seoTitle.slice(0, 60),
         seoDescription: draft.seoDescription.slice(0, 160),
