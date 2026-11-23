@@ -15,6 +15,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 - `experiments/synthetic/personas.json`: 50 synthetic QA personas.
 - `experiments/synthetic/personas.schema.json`: JSON Schema for persona validation.
 - `experiments/synthetic/tests/public-journeys.spec.ts`: Playwright read-only public-page journeys.
+- `experiments/synthetic/run-batch.mjs`: round-robin selector for one-to-three persona batches, intended for an owner-controlled external scheduler.
 - `experiments/synthetic/research.mjs`: Parallel Responses API JSON Schema forecast research, cached per fixture.
 - `supabase/migrations/20261123150000_synthetic_experiment_telemetry.sql`: isolated service-role-only telemetry and hard budget reservation functions.
 
