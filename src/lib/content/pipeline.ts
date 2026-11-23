@@ -111,7 +111,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
   // The schedule and a forced rerun share the day's key; any other manual run gets its own.
   const jobKey =
     options.trigger === "cron" || options.force
-      ? options.slot ? `${dailyJobKey(started)}:${options.slot}` : dailyJobKey(started)
+      ? dailyJobKey(started, options.slot)
       : `manual:${started.toISOString()}`;
   const job = await store.claimJob({
     jobKey,
@@ -191,6 +191,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       today: sastDate(started),
       sources,
       recentTitles: recent.map((r) => r.title).slice(0, 10),
+      ...(options.slot ? { slot: options.slot } : {}),
     });
 
     let written = await router.generate(request);
