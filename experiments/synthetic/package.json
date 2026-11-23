@@ -1,0 +1,15 @@
+{
+  "name": "puntr-synthetic-qa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "PW_HEADLESS=false playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "research": "node research.mjs",
+    "seed": "node seed.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}
