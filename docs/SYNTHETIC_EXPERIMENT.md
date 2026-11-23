@@ -18,6 +18,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 - `experiments/synthetic/run-batch.mjs`: round-robin selector for one-to-three persona batches, intended for an owner-controlled external scheduler.
 - `experiments/synthetic/decisions.mjs`: Parallel Decisions API, up to two typed choice questions per persona (one per preferred market; 100 questions for all 50 personas), with citations and per-option probabilities.
 - `src/lib/parallel/decisions.ts` and `src/routes/api.cron.synthetic-decisions.ts`: server-side Decisions API provider and cron-authenticated route using Puntr's existing quota and cache layers.
+- `src/routes/api.cron.synthetic-decisions-daily.ts`: assigns each due persona one upcoming fixture in a followed competition and schedules one or two market decisions per SAST day.
 - `supabase/migrations/20261123150000_synthetic_experiment_telemetry.sql`: isolated service-role-only telemetry and hard budget reservation functions.
 
 ## Parallel API selection
