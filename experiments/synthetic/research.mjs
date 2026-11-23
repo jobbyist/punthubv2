@@ -153,7 +153,8 @@ if (existing?.[0]) {
   process.exit(0);
 }
 
-const requestKey = createHash("sha256").update(`${experiment.id}:${fixtureKey}:parallel-responses`).digest("hex");
+const retryWindow = new Date().toISOString().slice(0, 13); // permits a controlled retry in a later hour
+const requestKey = createHash("sha256").update(`${experiment.id}:${fixtureKey}:parallel-responses:${retryWindow}`).digest("hex");
 const reserve = await supabaseRest("rpc/reserve_synthetic_budget", {
   method: "POST",
   body: { p_experiment_id: experiment.id, p_request_key: requestKey, p_provider: "parallel-responses", p_operation: "fixture_forecast", p_estimated_usd: estimateUsd }
