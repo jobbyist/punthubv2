@@ -51,7 +51,7 @@ export interface ContentEnv {
   firecrawlKey: string | null;
   /** Ordered: primary first, then fallbacks. Already filtered to the free allowlist. */
   models: string[];
-  /** Models named in configuration that were refused because they are not on the free allowlist. */
+  /** Gemini models named in configuration that were refused because they are not on the approved model allowlist. */
   refusedModels: string[];
   /** Requests-per-day ceiling per model that the engine sets for itself (0 = no self-imposed ceiling). */
   dailyRequestCap: Record<string, number>;
