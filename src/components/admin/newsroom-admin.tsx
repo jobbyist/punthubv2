@@ -233,22 +233,7 @@ function EngineSettings({
           />
           {t("desk.autoPublish")}
         </label>
-        {/* The pipeline only honours this while automatic publishing is on, so the control says so. */}
-        <label className={`flex items-start gap-2 ${s.autoPublish ? "" : "text-muted-foreground"}`}>
-          <input
-            type="checkbox"
-            className="mt-1"
-            checked={s.publishOnSchedule && s.autoPublish}
-            disabled={!s.autoPublish}
-            onChange={(e) => setS({ ...s, publishOnSchedule: e.target.checked })}
-          />
-          <span>
-            {t("desk.publishOnSchedule")}
-            {!s.autoPublish && (
-              <span className="mt-0.5 block text-xs">{t("desk.publishOnScheduleNeedsAuto")}</span>
-            )}
-          </span>
-        </label>
+        <p className="text-xs text-muted-foreground">{t("desk.dailySlots")}</p>
         <label className="flex items-center gap-2">
           {t("desk.minQuality")}
           <Input
