@@ -147,7 +147,7 @@ for (const field of ["fixture_id", "home_team", "away_team", "competition", "kic
 }
 const fixtureKey = String(fixture.fixture_id);
 const experiment = await getExperimentId(slug);
-const existing = await supabaseRest(`synthetic_research?experiment_id=eq.${experiment.id}&fixture_key=eq.${encodeURIComponent(fixtureKey)}&select=response_json,source_urls`);
+const existing = await supabaseRest(`synthetic_research?experiment_id=eq.${experiment.id}&fixture_key=eq.${encodeURIComponent(fixtureKey)}&provider=eq.parallel-responses&select=response_json,source_urls`);
 if (existing?.[0]) {
   console.log(JSON.stringify({ cached: true, fixture_key: fixtureKey, result: existing[0].response_json }, null, 2));
   process.exit(0);
@@ -182,7 +182,7 @@ try {
         { role: "user", content: prompt }
       ],
       reasoning: { effort: "low" },
-      text: { format: { type: "json_schema", name: "puntr_fixture_forecast", strict: true, schema } }
+      text: { format: { type: "json_schema", name: "puntr_fixture_forecast", schema } }
     }),
     signal: AbortSignal.timeout(90_000)
   });
