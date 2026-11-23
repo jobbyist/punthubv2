@@ -122,6 +122,59 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
 }
 
 /**
+ * Parallel Responses API used for editorial drafting and independent review.
+ * Structured JSON output is normalised from the Gemini-compatible schema used by the content engine.
+ */
+function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
+  const visit = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(visit);
+    if (!isRecord(value)) return value;
+    const out: Record<string, unknown> = {};
+    for (const [key, child] of Object.entries(value)) {
+      if (key === "type" && typeof child === "string") {
+        out[key] = ({ OBJECT: "object", ARRAY: "array", STRING: "string", INTEGER: "integer", NUMBER: "number", BOOLEAN: "boolean" } as Record<string, string>)[child] ?? child;
+      } else out[key] = visit(child);
+    }
+    if (out["type"] === "object") {
+      out["additionalProperties"] = false;
+      if (isRecord(out["properties"])) out["required"] = Object.keys(out["properties"]);
+    }
+    return out;
+  };
+  return visit(schema) as Record<string, unknown>;
+}
+
+export function createParallelResponses(apiKey: string, overrides: Overrides = {}): LlmProvider {
+  return {
+    name: "parallel-responses",
+    async generate(_model: string, request: LlmRequest): Promise<LlmResult> {
+      const json = await postJson(
+        "https://api.parallel.ai/v1/responses",
+        { Authorization: `Bearer ${apiKey}` },
+        {
+          model: "parallel",
+          input: [
+            { role: "system", content: request.system },
+            { role: "user", content: request.prompt },
+          ],
+          reasoning: { effort: "medium" },
+          max_output_tokens: request.maxOutputTokens,
+          text: { format: { type: "json_schema", name: "puntr_newsroom_article", strict: true, schema: parallelJsonSchema(request.schema) } },
+        },
+        { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+      );
+      const direct = isRecord(json) ? str(json["output_text"]) : "";
+      const items = isRecord(json) && Array.isArray(json["output"]) ? json["output"] : [];
+      const nested = items.filter((item) => isRecord(item) && item["type"] === "message")
+        .flatMap((item) => isRecord(item) && Array.isArray(item["content"]) ? item["content"] : [])
+        .map((part) => isRecord(part) ? str(part["text"]) : "").join("");
+      const text = direct || nested;
+      if (!text.trim()) throw new ProviderError("parallel-chat", "bad_response", null, "empty response");
+      return { model: "parallel-medium", text: text.trim() };
+    },
+  };
+}
+/**
  * Parallel's Extract API: the second page reader, used when Firecrawl is out of credits or down. `maxAgeSeconds`
  * forces a live fetch when Parallel's cached copy is older (minimum 600) and refuses stale fallbacks: needed for
  * prices, which go stale in hours.
