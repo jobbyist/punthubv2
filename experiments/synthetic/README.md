@@ -18,7 +18,7 @@ Experiment window: 23 November 2026 through 22 December 2026 (SAST). The migrati
 
 **Important existing-budget constraint:** Puntr's Parallel architecture documentation says the current approximately US$50 prepaid balance expires on 7 December 2026 and is shared with production fixtures, results, standings, newsroom and other existing workloads. The 30-day experiment extends beyond that expiry. Do not assume the same prepaid balance funds the entire window; verify the live Parallel balance and reserve, and pause the experiment on 7 December unless a new budget is confirmed.
 
-The Responses API price varies by processor/effort and the current published range is materially higher than the former Chat API estimate. This harness reserves US$0.25 per Responses request, the configured upper bound for this experiment, and counts the reservation against the cap even when the provider does not return an exact charge. It therefore stops conservatively. Do not increase this reserve without checking the live pricing page.
+The Decisions API costs US$1 per 1,000 requests and supports up to 100 named questions per request. A 50-persona batch for one shared fixture is therefore one approximately US$0.001 provider request, before any retries. The experiment also claims against Puntr's existing monthly provider budget and daily/monthly quota guard, and uses Puntr's existing 24-hour parallel_cache. The separate experiment ledger adds a US$50 hard ceiling.
 
 ## Install
 
@@ -36,10 +36,10 @@ PUNTR_BASE_URL=https://your-confirmed-production-host
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=...
 SYNTHETIC_EXPERIMENT_ID=...
-PARALLEL_API_KEY=...
+CRON_SECRET=...
 ```
 
-The production hostname is intentionally not hard-coded. Use the exact canonical Puntr production URL. The Parallel key remains server-side in Vercel; the runner only calls the cron-authenticated Puntr endpoint.
+The production hostname is intentionally not hard-coded. Use the exact canonical Puntr production URL. The Parallel API key remains server-side in Vercel and is never sent to this runner. The decisions command calls the cron-authenticated Puntr endpoint.
 
 ## Browser QA
 
@@ -77,8 +77,6 @@ Then:
 
 ```bash
 node decisions.mjs ./fixture.json
-# Optional: richer narrative research for one fixture (higher per-request cost)
-node research.mjs ./fixture.json
 ```
 
 Decisions are cached through Puntr's existing parallel_cache by request body (24-hour research TTL), shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, option probabilities and a confidence band derived from the selected probability. An actionable batch requires at least two independent source domains; otherwise all decisions become no_pick. No odds, bookmaker or stake recommendations are generated.
@@ -104,6 +102,6 @@ The current app analytics helper only emits events after analytics consent. Keep
 
 - Stop on any 5xx response, unexpected redirect, missing page, budget reservation failure or database error.
 - Keep Playwright workers at 1 by default; maximum 3.
-- One Parallel research request per unique fixture, not per persona. Cache and reuse it.
+- One Parallel Decisions request per unique fixture and persona batch, not one request per persona. Cache and reuse it.
 - Keep the experiment paused if the remaining provider budget is uncertain.
 - No automatic wagering or real-money transactions.
