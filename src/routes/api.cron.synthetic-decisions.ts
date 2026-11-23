@@ -78,28 +78,33 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         if (personaError || !personaRows?.length) return Response.json({ ok: false, error: "no_active_personas" }, { status: 404 });
 
         const questions: Record<string, { type: "choice"; instructions: string; criteria: Record<string, string> }> = {};
+        const personaMarkets = new Map<string, string[]>();
         for (const row of personaRows) {
           const persona = row.persona as Record<string, unknown>;
           const interests = Array.isArray(persona["market_interests"]) ? persona["market_interests"] : [];
-          const market = typeof interests[0] === "string" ? interests[0] : "1X2";
-          const criteria = MARKET_OPTIONS[market];
-          if (!criteria) continue;
+          const markets = interests.filter((market): market is string => typeof market === "string" && Boolean(MARKET_OPTIONS[market])).slice(0, 2);
           const competitions = Array.isArray(persona["competitions"]) ? persona["competitions"].join(", ") : "football";
           const style = typeof persona["research_style"] === "string" ? persona["research_style"] : "recent form";
-          questions[row.persona_key] = {
-            type: "choice",
-            instructions: [
-              `Evaluate the pre-match ${market} forecast for ${String(fixture["home_team"])} vs ${String(fixture["away_team"])}.`,
-              `Use this analytical lens: ${style}.`,
-              `The persona follows ${competitions} and prefers ${interests.join(", ")}.`,
-              "Use current, credible, independent web evidence. Do not invent team news, lineups, statistics or results.",
-              "Choose no_pick if the fixture has started, finished, been postponed, evidence is insufficient, or sources materially disagree.",
-              "This is an informational forecast for QA and accuracy evaluation, not advice to place a bet.",
-            ].join(" "),
-            criteria,
-          };
+          personaMarkets.set(row.persona_key, markets);
+          for (const market of markets) {
+            const questionKey = `${row.persona_key}__${market}`;
+            questions[questionKey] = {
+              type: "choice",
+              instructions: [
+                `Evaluate the pre-match ${market} forecast for ${String(fixture["home_team"])} vs ${String(fixture["away_team"])}.`,
+                `Use this analytical lens: ${style}.`,
+                `The persona follows ${competitions} and prefers ${markets.join(", ")}.`,
+                "Use current, credible, independent web evidence. Do not invent team news, lineups, statistics or results.",
+                "Choose no_pick if the fixture has started, finished, been postponed, evidence is insufficient, or sources materially disagree.",
+                "This is an informational forecast for QA and accuracy evaluation, not advice to place a bet.",
+              ].join(" "),
+              criteria: MARKET_OPTIONS[market],
+            };
+          }
         }
-        if (!Object.keys(questions).length) return Response.json({ ok: false, error: "no_supported_persona_markets" }, { status: 400 });
+        if (!Object.keys(questions).length || Object.keys(questions).length > 100) {
+          return Response.json({ ok: false, error: "synthetic_batch_must_contain_1_to_100_questions" }, { status: 400 });
+        }
 
         const requestBody = {
           mode: "fast" as const,
@@ -117,6 +122,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         const store = await createCacheStore();
         const claim = await createQuotaClaim();
         const apiKey = process.env["PARALLEL_API_KEY"] || "";
+        if (!apiKey) return Response.json({ ok: false, error: "parallel_not_configured" }, { status: 503 });
         const { createParallelDecisions } = await import("@/lib/parallel/decisions");
 
         let requestKey = "";
@@ -164,14 +170,13 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
               }).filter(Boolean))];
               const enoughSources = domains.length >= 2;
               const answers = isRecord(rawResult["answers"]) ? rawResult["answers"] : {};
-              const decisions = personaRows.map(row => {
-                const persona = row.persona as Record<string, unknown>;
-                const interests = Array.isArray(persona["market_interests"]) ? persona["market_interests"] : [];
-                const market = typeof interests[0] === "string" ? interests[0] : "1X2";
-                const answer = answers[row.persona_key];
+              const decisions = personaRows.flatMap(row => (personaMarkets.get(row.persona_key) || []).map(market => {
+                const questionKey = `${row.persona_key}__${market}`;
+                const answer = answers[questionKey];
                 if (!enoughSources || !isRecord(answer) || answer["type"] !== "choice") {
                   return {
                     persona_id: row.persona_key,
+                    question_key: questionKey,
                     market,
                     selection: "no_pick",
                     status: enoughSources ? "refused_or_missing" : "insufficient_sources",
@@ -187,6 +192,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
                 const confidence = selectedProbability === null ? "none" : selectedProbability >= 0.7 ? "high" : selectedProbability >= 0.55 ? "medium" : "low";
                 return {
                   persona_id: row.persona_key,
+                  question_key: questionKey,
                   market,
                   selection: valid ? selection : "no_pick",
                   status: valid ? "evaluated" : "invalid_choice",
@@ -194,13 +200,14 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
                   selected_probability: selectedProbability,
                   confidence,
                 };
-              });
+              }));
               const result = {
                 fixture: String(fixture["fixture_id"]),
                 fixture_context: fixture,
                 provider: "parallel-decisions",
                 decision_id: rawResult["decision_id"] ?? null,
                 persona_count: personaRows.length,
+                decision_count: decisions.length,
                 source_domains: domains,
                 citations,
                 decisions,
