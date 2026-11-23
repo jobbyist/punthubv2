@@ -1,13 +1,14 @@
 /**
- * Live adapters for the three external services. Server only: the keys come from environment variables and are
+ * Live adapters for Parallel Search/Responses, Firecrawl extraction and Gemini fallback. Server only: the keys come from environment variables and are
  * passed in headers, never in URLs, logs or client code.
  *
  * Request and response shapes follow the providers' public references as read on 13 Nov 2026:
  *   Parallel Search  POST https://api.parallel.ai/v1/search            (header x-api-key)
- *   Firecrawl        POST https://api.firecrawl.dev/v2/scrape          (Authorization: Bearer)
+ *   Parallel Responses POST https://api.parallel.ai/v1/responses        (Authorization: Bearer)
+ *   Firecrawl          POST https://api.firecrawl.dev/v2/scrape          (Authorization: Bearer)
  *   Gemini           POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
  *                                                                      (header x-goog-api-key)
- * None of these has been called with a real key from this code yet; see docs/CONTENT_ENGINE.md, "Live checks".
+ * Credentials are server-only and quota-guarded before requests are sent.
  */
 import { postJson, ProviderError, type RetryOptions } from "./http";
 import type {
