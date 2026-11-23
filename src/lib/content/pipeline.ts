@@ -160,7 +160,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started, options.slot);
       beat = brief.beat;
       await log("topic", "info", `beat: ${beat}`, brief.queries);
-      sources = await research(deps, brief, log);
+      sources = await research(deps, brief, log, options.slot);
     }
     checkBudget("writing");
 
@@ -525,10 +525,11 @@ async function research(
     .filter((s) => s.text.length >= MIN_SOURCE_CHARS)
     .map((s, i) => ({ ...s, index: i + 1 }));
   const domains = new Set(sources.map((s) => s.domain));
-  if (sources.length < 2 || domains.size < 2)
+  const minimumDomains = slot === "editorial" || slot === "intelligence" ? 3 : 2;
+  if (sources.length < minimumDomains || domains.size < minimumDomains)
     throw new StageError(
       "insufficient_research",
-      `${sources.length} usable source(s) from ${domains.size} site(s); at least 2 from 2 sites are needed`,
+      `${sources.length} usable source(s) from ${domains.size} site(s); at least ${minimumDomains} independent sites are needed for ${slot ?? "this article"}`,
     );
   await log("consolidation", "info", `${sources.length} source(s) from ${domains.size} site(s)`);
   return sources;
