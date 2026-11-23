@@ -8,7 +8,8 @@
     "test:smoke": "playwright test --grep @smoke",
     "research": "node research.mjs",
     "seed": "node seed.mjs",
-    "batch": "node run-batch.mjs"
+    "batch": "node run-batch.mjs",
+    "decisions": "node decisions.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1"
