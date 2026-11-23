@@ -469,6 +469,7 @@ async function research(
     message: string,
     data?: unknown,
   ) => Promise<void>,
+  slot?: "breaking" | "editorial" | "intelligence",
 ): Promise<ResearchSource[]> {
   const { store, search, extract } = deps;
   if (!search) throw new StageError("pending_credentials", "search provider not configured");
