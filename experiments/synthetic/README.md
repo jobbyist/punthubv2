@@ -57,7 +57,7 @@ The browser suite only visits the public allowlisted pages in each persona's jou
 
 ## Parallel structured decisions and research
 
-For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits up to two questions per persona (one per preferred market) for a fixture, capped at 100 questions and caches the shared result.
+For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits one or two questions per persona according to its daily decision limit, using preferred markets and capped at 100 questions and caches the shared result.
 
 The legacy Chat API quickstart now redirects to the Responses API. Puntr's existing server-side Parallel integration already includes Responses and Task clients. The synthetic Decisions endpoint uses the existing Puntr quota guard and parallel_cache; it does not make direct client-side calls or expose the provider key. Task API is **not required merely to obtain structured choices**; use it only for deeper asynchronous research or batch task groups.
 
@@ -83,7 +83,7 @@ Decisions are cached through Puntr's existing parallel_cache by request body (24
 
 ## 30-day orchestration
 
-GitHub Actions runs at 06:00, 09:00, 13:00, 17:00 and 20:00 SAST. Each run processes due pre-match fixture decisions first (up to five fixture groups, two market questions per persona) and then selects up to three least-recently-tested browser personas. A persona receives at most one fixture batch per SAST day. Both routes skip unless the experiment is active and inside its configured date window. The workflow only runs after it is merged to the default branch. Keep the experiment paused until:
+GitHub Actions runs at 06:00, 09:00, 13:00, 17:00 and 20:00 SAST. Each run processes due pre-match fixture decisions first (up to five fixture groups, one or two market questions per persona according to the profile's daily limit) and then selects up to three least-recently-tested browser personas. A persona receives at most one fixture batch per SAST day. Both routes skip unless the experiment is active and inside its configured date window. The workflow only runs after it is merged to the default branch. Keep the experiment paused until:
 1. the migration is reviewed and applied;
 2. the experiment row is explicitly changed from `paused` to `active`;
 3. the production hostname is confirmed;
