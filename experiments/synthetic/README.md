@@ -18,7 +18,7 @@ Experiment window: 23 November 2026 through 22 December 2026 (SAST). The migrati
 
 **Important existing-budget constraint:** Puntr's Parallel architecture documentation says the current approximately US$50 prepaid balance expires on 7 December 2026 and is shared with production fixtures, results, standings, newsroom and other existing workloads. The 30-day experiment extends beyond that expiry. Do not assume the same prepaid balance funds the entire window; verify the live Parallel balance and reserve, and pause the experiment on 7 December unless a new budget is confirmed.
 
-The Decisions API costs US$1 per 1,000 requests and supports up to 100 named questions per request. A 50-persona batch for one shared fixture is therefore one approximately US$0.001 provider request, before any retries. The experiment also claims against Puntr's existing monthly provider budget and daily/monthly quota guard, and uses Puntr's existing 24-hour parallel_cache. The separate experiment ledger adds a US$50 hard ceiling.
+The Decisions API costs US$1 per 1,000 requests and supports up to 100 named questions per request. A 50-persona batch for one shared fixture is therefore one approximately US$0.001 provider request, before any retries. With two markets per persona, all 50 personas fit in the same 100-question request. The experiment also claims against Puntr's existing monthly provider budget and daily/monthly quota guard, and uses Puntr's existing 24-hour parallel_cache. The separate experiment ledger adds a US$50 hard ceiling.
 
 ## Install
 
@@ -57,7 +57,7 @@ The browser suite only visits the public allowlisted pages in each persona's jou
 
 ## Parallel structured decisions and research
 
-For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits one question per persona for a fixture and caches the shared result.
+For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits up to two questions per persona (one per preferred market) for a fixture, capped at 100 questions and caches the shared result.
 
 The legacy Chat API quickstart now redirects to the Responses API. Puntr's existing server-side Parallel integration already includes Responses and Task clients. The synthetic Decisions endpoint uses the existing Puntr quota guard and parallel_cache; it does not make direct client-side calls or expose the provider key. Task API is **not required merely to obtain structured choices**; use it only for deeper asynchronous research or batch task groups.
 
