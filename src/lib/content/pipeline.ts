@@ -91,7 +91,7 @@ class StageError extends Error {
 }
 
 const MIN_SOURCE_CHARS = 200;
-const SEARCH_RESULTS = 8;
+const SEARCH_RESULTS = 12;
 const PAGES_TO_READ = 4;
 
 export async function runContentJob(deps: PipelineDeps, options: RunOptions): Promise<RunOutcome> {
@@ -577,7 +577,7 @@ async function research(
     await store.countUsage(search.name, "error").catch(() => undefined);
     throw new StageError("research_failed", `search failed: ${describe(error)}`);
   }
-  const ranked = rankHits(hits, PAGES_TO_READ + 1);
+  const ranked = rankHits(hits, PAGES_TO_READ + 2, slot);
   await log(
     "research",
     "info",
