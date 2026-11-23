@@ -1,5 +1,5 @@
 /**
- * Gemini model router: primary first, then the fallbacks, free models only.
+ * Parallel-first editorial model router with allowlisted Gemini fallbacks.
  *
  * - A model outside FREE_MODEL_ALLOWLIST is never called, whatever the configuration says.
  * - A quota or auth error moves straight to the next model. A timeout or 5xx also moves on while another model is
@@ -9,7 +9,7 @@
  * - When every model fails the router throws AllModelsFailed; the pipeline then records the failure and publishes
  *   nothing.
  */
-import { FREE_MODEL_ALLOWLIST } from "./config";
+import { APPROVED_CONTENT_MODELS } from "./config";
 import { backoffDelay, ProviderError } from "./http";
 import type { LlmProvider, LlmRequest, LlmResult } from "./types";
 
@@ -58,10 +58,10 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
           : [...options.models];
       const attempts: ModelAttempt[] = [];
 
-      const lastUsable = [...order].reverse().find((m) => m === "parallel-medium" || FREE_MODEL_ALLOWLIST.includes(m));
+      const lastUsable = [...order].reverse().find((m) => m === "parallel-medium" || APPROVED_CONTENT_MODELS.includes(m));
 
       for (const model of order) {
-        if (model !== "parallel-medium" && !FREE_MODEL_ALLOWLIST.includes(model)) {
+        if (model !== "parallel-medium" && !APPROVED_CONTENT_MODELS.includes(model)) {
           await note(attempts, { model, outcome: "refused_not_free" });
           continue;
         }
