@@ -38,7 +38,7 @@ export function sportsBrief(
     breaking: {
       label: "Breaking News",
       objective: "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Use sources from the last seven days only for supporting context, never as the lead development. Prefer individual, dated article pages from official and established publishers; avoid generic homepages, index pages and team profiles. Return only genuinely current stories and distinguish confirmed facts from reports.",
-      queries: [`South African football confirmed news ${sastDate(now)}`, `site:psl.co.za/news football ${sastDate(now)}`, `site:supersport.com/football South African football news ${sastDate(now)}`, `Premier League official football news ${sastDate(now)}`],
+      queries: [`South African football confirmed news ${sastDate(now)}`, `site:psl.co.za/news football ${sastDate(now)}`, `site:sabcsport.com/soccer/news Betway Premiership ${sastDate(now)}`, `site:africasoccer.com South African football ${sastDate(now)}`, `site:soccerladuma.co.za/news South African football ${sastDate(now)}`, `site:kickoff.com/news South African football ${sastDate(now)}`, `site:supersport.com/football South African football news ${sastDate(now)}`, `Premier League official football news ${sastDate(now)}`],
     },
     editorial: {
       label: "Editorial Analysis",
