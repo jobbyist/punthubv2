@@ -41,20 +41,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: experiments/synthetic/package-lock.json
       - name: Check required secrets
+        id: secrets
         shell: bash
         run: |
           if [[ -z "$PUNTR_BASE_URL" || -z "$SUPABASE_URL" || -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "Skipped: configure PUNTR_BASE_URL, SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY repository secrets." >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Install browser test dependencies
+        if: steps.secrets.outputs.ready == 'true'
         run: npm install --no-audit --no-fund
       - name: Install Chromium
+        if: steps.secrets.outputs.ready == 'true'
         run: npx playwright install --with-deps chromium
       - name: Run one-to-three labelled personas
+        if: steps.secrets.outputs.ready == 'true'
         env:
           SYNTHETIC_WORKERS: ${{ github.event.inputs.batch_size || '3' }}
         run: npm run batch -- --count=${{ github.event.inputs.batch_size || '3' }}
