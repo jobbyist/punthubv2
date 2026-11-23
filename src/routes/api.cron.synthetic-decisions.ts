@@ -84,7 +84,8 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         for (const row of personaRows) {
           const persona = row.persona as Record<string, unknown>;
           const interests = Array.isArray(persona["market_interests"]) ? persona["market_interests"] : [];
-          const markets = interests.filter((market): market is string => typeof market === "string" && Boolean(MARKET_OPTIONS[market])).slice(0, 2);
+          const dailyLimit = typeof persona["daily_research_limit"] === "number" ? Math.max(0, Math.min(2, Math.floor(persona["daily_research_limit"]))) : 2;
+          const markets = interests.filter((market): market is string => typeof market === "string" && Boolean(MARKET_OPTIONS[market])).slice(0, dailyLimit);
           const competitions = Array.isArray(persona["competitions"]) ? persona["competitions"].join(", ") : "football";
           const style = typeof persona["research_style"] === "string" ? persona["research_style"] : "recent form";
           personaMarkets.set(row.persona_key, markets);
