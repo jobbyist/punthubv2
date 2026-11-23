@@ -7,7 +7,8 @@
     "test:headed": "PW_HEADLESS=false playwright test",
     "test:smoke": "playwright test --grep @smoke",
     "research": "node research.mjs",
-    "seed": "node seed.mjs"
+    "seed": "node seed.mjs",
+    "batch": "node run-batch.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1"
