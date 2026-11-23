@@ -65,6 +65,10 @@ export function sportsBrief(
 const PREFERRED_DOMAINS = [
   "psl.co.za",
   "safa.net",
+  "sabcnews.com",
+  "africasoccer.com",
+  "farpost.co.za",
+  "citizen.co.za",
   "premierleague.com",
   "uefa.com",
   "fifa.com",
@@ -155,16 +159,16 @@ function pageRank(hit: SearchHit, slot?: ContentSlot): number {
   return score;
 }
 
-function isFreshForSlot(hit: SearchHit, slot: ContentSlot | undefined, now: Date): boolean {
-  const maxAgeMs =
+function freshnessPenalty(hit: SearchHit, slot: ContentSlot | undefined, now: Date): number {
+  const thresholds =
     slot === "breaking"
-      ? 7 * 24 * 60 * 60 * 1000
+      ? { recent: 48 * 60 * 60 * 1000, stale: 7 * 24 * 60 * 60 * 1000 }
       : slot === "editorial"
-        ? 30 * 24 * 60 * 60 * 1000
+        ? { recent: 14 * 24 * 60 * 60 * 1000, stale: 30 * 24 * 60 * 60 * 1000 }
         : slot === "intelligence"
-          ? 60 * 24 * 60 * 60 * 1000
+          ? { recent: 30 * 24 * 60 * 60 * 1000, stale: 60 * 24 * 60 * 60 * 1000 }
           : null;
-  if (!maxAgeMs) return true;
+  if (!thresholds) return 0;
   let publishedAt = hit.publishedAt ? Date.parse(hit.publishedAt) : Number.NaN;
   if (!Number.isFinite(publishedAt)) {
     const dateInUrl = hit.url.match(/(20[0-9]{2})-([0-9]{2})-([0-9]{2})/);
@@ -172,7 +176,10 @@ function isFreshForSlot(hit: SearchHit, slot: ContentSlot | undefined, now: Date
       publishedAt = Date.parse(`${dateInUrl[1]}-${dateInUrl[2]}-${dateInUrl[3]}T12:00:00Z`);
     }
   }
-  return !Number.isFinite(publishedAt) || now.getTime() - publishedAt <= maxAgeMs;
+  if (!Number.isFinite(publishedAt)) return 0;
+  const age = now.getTime() - publishedAt;
+  if (age <= thresholds.recent) return 0;
+  return age > thresholds.stale ? 8 : 3;
 }
 
 export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot, now = new Date()): SearchHit[] {
@@ -182,10 +189,10 @@ export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot, n
   hits.forEach((hit, order) => {
     const url = canonicalUrl(hit.url);
     const domain = domainOf(url);
-    if (isBlockedDomain(domain) || seen.has(url) || !isFreshForSlot({ ...hit, url }, slot, now)) return;
+    if (isBlockedDomain(domain) || seen.has(url)) return;
     seen.add(url);
     // Prefer individual, dated articles; keep stats/fixture pages higher for intelligence work.
-    kept.push({ ...hit, url, rank: pageRank({ ...hit, url }, slot) * 100 + domainRank(domain), order });
+    kept.push({ ...hit, url, rank: (pageRank({ ...hit, url }, slot) + freshnessPenalty({ ...hit, url }, slot, now)) * 100 + domainRank(domain), order });
   });
   kept.sort((a, b) => a.rank - b.rank || a.order - b.order);
   const out: SearchHit[] = [];
