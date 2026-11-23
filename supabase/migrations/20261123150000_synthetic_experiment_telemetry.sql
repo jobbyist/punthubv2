@@ -49,7 +49,7 @@ create table if not exists public.synthetic_research (
   id uuid primary key default gen_random_uuid(),
   experiment_id uuid not null references public.synthetic_experiments(id) on delete cascade,
   fixture_key text not null,
-  provider text not null default 'parallel-responses',
+  provider text not null default 'parallel-decisions',
   response_json jsonb not null,
   source_urls text[] not null default '{}',
   created_at timestamptz not null default now(),
