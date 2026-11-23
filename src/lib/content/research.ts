@@ -1,7 +1,7 @@
 /** Research stage: the brief, source ranking and de-duplication. Pure functions, no network. */
 import { sastDate } from "@/lib/sast";
 
-import type { ProjectUpdate, ResearchSource, SearchHit } from "./types";
+import type { ContentSlot, ProjectUpdate, ResearchSource, SearchHit } from "./types";
 
 export interface ResearchBrief {
   objective: string;
@@ -31,15 +31,33 @@ const SPORTS_BEATS: { label: string; queries: string[] }[] = [
 export function sportsBrief(
   dayNumber: number,
   now: Date = new Date(),
+  slot?: ContentSlot,
 ): ResearchBrief & { beat: string } {
   const beat = SPORTS_BEATS[Math.abs(dayNumber) % SPORTS_BEATS.length] ?? SPORTS_BEATS[0]!;
+  const angles: Record<ContentSlot, { label: string; objective: string; queries: string[] }> = {
+    breaking: {
+      label: "Breaking News",
+      objective: "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Return only genuinely current stories and distinguish confirmed facts from reports.",
+      queries: ["latest football breaking news today official club league announcements", "South African football latest news today", "Premier League latest confirmed football news today"],
+    },
+    editorial: {
+      label: "Editorial Analysis",
+      objective: "Find a substantive football issue with enough recent evidence for an original editorial analysis for South African readers. Seek multiple credible perspectives, relevant match or season context, tactical evidence and data. Avoid recycled opinion columns and unsupported speculation.",
+      queries: ["football tactical analysis data trends this week", "South African football analysis league trends", "Premier League tactical analysis recent matches data"],
+    },
+    intelligence: {
+      label: "Sports Intelligence",
+      objective: "Research a data-led football intelligence angle for South African fans: form, tactical patterns, team performance, competition context and upcoming fixtures. Prioritise official competition statistics and established sports data reporting. Every statistic must be attributable to a source.",
+      queries: ["football team performance statistics form analysis latest", "Betway Premiership statistics team performance", "Premier League team stats form latest"],
+    },
+  };
+  const angle = slot ? angles[slot] : null;
   return {
-    beat: beat.label,
-    objective:
-      `Football news for South African fans about the ${beat.label}, as of ${sastDate(now)}: confirmed results, ` +
-      `upcoming fixtures with dates, league position and form. Prefer the league's and clubs' official sites and ` +
-      `established sports news desks. Ignore betting tips, odds and bookmaker promotions.`,
-    queries: beat.queries,
+    beat: angle ? `${angle.label}: ${beat.label}` : beat.label,
+    objective: angle
+      ? `${angle.objective} Focus on ${beat.label}. Current date: ${sastDate(now)}.`
+      : `Football news for South African fans about the ${beat.label}, as of ${sastDate(now)}: confirmed results, upcoming fixtures with dates, league position and form. Prefer the league's and clubs' official sites and established sports news desks. Ignore betting tips, odds and bookmaker promotions.`,
+    queries: angle ? [...angle.queries, ...beat.queries] : beat.queries,
   };
 }
 
