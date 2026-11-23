@@ -205,7 +205,7 @@ function EngineSettings({
   const changed = JSON.stringify(s) !== JSON.stringify(settings);
   async function save() {
     try {
-      const r = await adminNewsroomSettings({ data: s });
+      const r = await adminNewsroomSettings({ data: { ...s, publishOnSchedule: false } });
       if (!r.ok) throw new Error();
       toast.success(t("desk.saved"));
       onSaved();
