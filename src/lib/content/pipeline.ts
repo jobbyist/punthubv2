@@ -341,12 +341,29 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       passed;
 
     if (options.dry) {
+      const benchmarkQuality = geminiBenchmark
+        ? validateDraft({
+            draft: geminiBenchmark.draft,
+            kind,
+            sources,
+            recentTitles: recent.map((r) => r.title),
+            reviewerUnsupported: [],
+            ...(options.slot ? { slot: options.slot } : {}),
+          })
+        : null;
+      const benchmark = geminiBenchmark && benchmarkQuality
+        ? {
+            model: geminiBenchmark.model,
+            title: geminiBenchmark.draft.title,
+            quality: benchmarkQuality,
+          }
+        : null;
       await store.finishJob(job.id, {
         status: "succeeded",
         model: written.model,
-        report: { dry: true, quality },
+        report: { dry: true, quality, benchmark },
       });
-      return { ok: true, status: "dry_run", jobId: job.id, kind, model: written.model, quality };
+      return { ok: true, status: "dry_run", jobId: job.id, kind, model: written.model, quality, benchmark };
     }
 
     const cited = [...new Set(draft.claims.map((c) => c.source))];
