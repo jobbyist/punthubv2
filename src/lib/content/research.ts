@@ -37,7 +37,7 @@ export function sportsBrief(
   const angles: Record<ContentSlot, { label: string; objective: string; queries: string[] }> = {
     breaking: {
       label: "Breaking News",
-      objective: "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Prefer individual, dated article pages from official and established publishers; avoid generic homepages, index pages and team profiles. Return only genuinely current stories and distinguish confirmed facts from reports.",
+      objective: "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Use sources from the last seven days only for supporting context, never as the lead development. Prefer individual, dated article pages from official and established publishers; avoid generic homepages, index pages and team profiles. Return only genuinely current stories and distinguish confirmed facts from reports.",
       queries: [`South African football confirmed news ${sastDate(now)}`, `site:psl.co.za/news football ${sastDate(now)}`, `site:supersport.com/football South African football news ${sastDate(now)}`, `Premier League official football news ${sastDate(now)}`],
     },
     editorial: {
@@ -158,11 +158,11 @@ function pageRank(hit: SearchHit, slot?: ContentSlot): number {
 function isFreshForSlot(hit: SearchHit, slot: ContentSlot | undefined, now: Date): boolean {
   const maxAgeMs =
     slot === "breaking"
-      ? 48 * 60 * 60 * 1000
+      ? 7 * 24 * 60 * 60 * 1000
       : slot === "editorial"
-        ? 14 * 24 * 60 * 60 * 1000
+        ? 30 * 24 * 60 * 60 * 1000
         : slot === "intelligence"
-          ? 30 * 24 * 60 * 60 * 1000
+          ? 60 * 24 * 60 * 60 * 1000
           : null;
   if (!maxAgeMs) return true;
   let publishedAt = hit.publishedAt ? Date.parse(hit.publishedAt) : Number.NaN;
