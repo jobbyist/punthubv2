@@ -36,6 +36,7 @@ export const DEFAULT_PFIE_MODELS = [
  * so a paid model can never be selected automatically. Adding a model is a reviewed code change.
  */
 export const FREE_MODEL_ALLOWLIST: readonly string[] = [
+  "parallel-medium",
   "gemini-3.8-flash",
   "gemini-3.7-flash",
   "gemini-3.6-flash",
@@ -71,9 +72,10 @@ export function parseModelList(raw: string | undefined): { models: string[]; ref
     .map((m) => m.trim())
     .filter(Boolean);
   const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
+  const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
   const models: string[] = [];
   const refused: string[] = [];
-  for (const m of list) {
+  for (const m of ordered) {
     if (!FREE_MODEL_ALLOWLIST.includes(m)) refused.push(m);
     else if (!models.includes(m)) models.push(m);
   }
@@ -109,8 +111,9 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
 export function missingCredentials(env: ContentEnv, kind: "sports" | "development"): string[] {
   const missing: string[] = [];
   if (!env.geminiKey) missing.push("GEMINI_API_KEY");
+  if (!env.parallelKey) missing.push("PARALLEL_API_KEY");
   // Development news is written from the approved project-update feed and needs no web research.
-  if (kind === "sports" && !env.parallelKey) missing.push("PARALLEL_API_KEY");
+  
   return missing;
 }
 
