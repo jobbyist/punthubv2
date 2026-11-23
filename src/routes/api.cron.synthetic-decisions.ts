@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const MARKET_OPTIONS: Record<string, Record<string, string>> = {
   "1X2": {
@@ -55,7 +56,8 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
           return Response.json({ ok: false, error: "persona_ids_must_contain_1_to_100_ids" }, { status: 400 });
         }
 
-        const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const db = supabaseAdmin as unknown as SupabaseClient;
         const { data: experiment, error: experimentError } = await db
           .from("synthetic_experiments")
           .select("id,status,starts_at,ends_at")
