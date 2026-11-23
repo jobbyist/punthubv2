@@ -58,10 +58,10 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
           : [...options.models];
       const attempts: ModelAttempt[] = [];
 
-      const lastUsable = [...order].reverse().find((m) => FREE_MODEL_ALLOWLIST.includes(m));
+      const lastUsable = [...order].reverse().find((m) => m === "parallel-medium" || FREE_MODEL_ALLOWLIST.includes(m));
 
       for (const model of order) {
-        if (!FREE_MODEL_ALLOWLIST.includes(model)) {
+        if (model !== "parallel-medium" && !FREE_MODEL_ALLOWLIST.includes(model)) {
           await note(attempts, { model, outcome: "refused_not_free" });
           continue;
         }
