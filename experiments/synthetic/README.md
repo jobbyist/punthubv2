@@ -39,7 +39,7 @@ SYNTHETIC_EXPERIMENT_ID=...
 PARALLEL_API_KEY=...
 ```
 
-The production hostname is intentionally not hard-coded. Use the exact canonical Puntr production URL.
+The production hostname is intentionally not hard-coded. Use the exact canonical Puntr production URL. The Parallel key remains server-side in Vercel; the runner only calls the cron-authenticated Puntr endpoint.
 
 ## Browser QA
 
@@ -59,7 +59,7 @@ The browser suite only visits the public allowlisted pages in each persona's jou
 
 For the 50 persona forecasts, use the Parallel Decisions API first. One request supports up to 100 named questions against one shared evidence set and returns typed choice probabilities plus citations. This is substantially cheaper than one Responses request per persona. The harness submits one question per persona for a fixture and caches the shared result.
 
-The legacy Chat API quickstart now redirects to the Responses API. Responses supports JSON Schema structured outputs and is retained as an optional narrative-research path. Task API is **not required merely to obtain structured JSON**; use it only for deeper asynchronous research or batch task groups.
+The legacy Chat API quickstart now redirects to the Responses API. Puntr's existing server-side Parallel integration already includes Responses and Task clients. The synthetic Decisions endpoint uses the existing Puntr quota guard and parallel_cache; it does not make direct client-side calls or expose the provider key. Task API is **not required merely to obtain structured choices**; use it only for deeper asynchronous research or batch task groups.
 
 Provide a fixture context JSON file (no personal data):
 
@@ -81,7 +81,7 @@ node decisions.mjs ./fixture.json
 node research.mjs ./fixture.json
 ```
 
-Decisions are cached by experiment + fixture ID + provider, shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, option probabilities and a confidence band derived from the selected probability. An actionable batch requires at least two independent source domains; otherwise all decisions become no_pick. No odds, bookmaker or stake recommendations are generated.
+Decisions are cached through Puntr's existing parallel_cache by request body (24-hour research TTL), shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, option probabilities and a confidence band derived from the selected probability. An actionable batch requires at least two independent source domains; otherwise all decisions become no_pick. No odds, bookmaker or stake recommendations are generated.
 
 ## 30-day orchestration
 
