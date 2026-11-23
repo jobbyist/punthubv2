@@ -349,7 +349,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     const saved = await store.saveArticle({
       jobId: job.id,
       article: {
-        slug: slugFor(draft.title, sastDate(started)),
+        slug: `${slugFor(draft.title, sastDate(started))}${options.slot ? `-${options.slot}` : ""}`,
         title: draft.title,
         excerpt: draft.excerpt,
         body: draft.body,
@@ -385,7 +385,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
             ...(options.slot ? { slot: options.slot } : {}),
           });
           const benchmarkCited = [...new Set(geminiBenchmark.draft.claims.map((c) => c.source))];
-          const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-gemini-comparison`;
+          const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-${options.slot ?? "sports"}-gemini-comparison`;
           const benchmarkSaved = await store.saveArticle({
             jobId: benchmarkJob.id,
             article: {
