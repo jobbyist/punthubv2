@@ -139,9 +139,14 @@ function pageRank(hit: SearchHit, slot?: ContentSlot): number {
   const segments = path.split("/").filter(Boolean);
   const indexPages = ["news", "latest", "football", "sport", "fixtures", "results", "tournament", "data", "stats", "teams", "clubs", "competition", "league", "leagues"];
   const dataPages = ["data", "stats", "standings", "table", "fixtures", "results", "teams", "clubs", "tournament", "competition"];
+  const genericTail = ["football", "soccer", "sports", "news", "world", "africa", "south-africa", "south+africa", "latest", "index", "home", "all"];
+  const title = hit.title.toLowerCase();
   let score = 0;
   if (path === "/") score += 8;
   if (segments.length === 1 && indexPages.includes(segments[0]!)) score += 5;
+  if (segments.length === 1 && /^[a-z]{2}-[a-z]{2}$/i.test(segments[0]!)) score += 5;
+  if (segments.length >= 3 && genericTail.includes(segments[segments.length - 1]!)) score += 5;
+  if (title.length < 25 && /(news|football|soccer|sport|home|latest|afrik-foot|newsnow)/i.test(title)) score += 4;
   if (dataPages.some((segment) => segments.includes(segment))) {
     score += slot === "intelligence" ? -2 : 4;
   }
@@ -150,14 +155,34 @@ function pageRank(hit: SearchHit, slot?: ContentSlot): number {
   return score;
 }
 
-export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot): SearchHit[] {
+function isFreshForSlot(hit: SearchHit, slot: ContentSlot | undefined, now: Date): boolean {
+  const maxAgeMs =
+    slot === "breaking"
+      ? 48 * 60 * 60 * 1000
+      : slot === "editorial"
+        ? 14 * 24 * 60 * 60 * 1000
+        : slot === "intelligence"
+          ? 30 * 24 * 60 * 60 * 1000
+          : null;
+  if (!maxAgeMs) return true;
+  let publishedAt = hit.publishedAt ? Date.parse(hit.publishedAt) : Number.NaN;
+  if (!Number.isFinite(publishedAt)) {
+    const dateInUrl = hit.url.match(/(20\\d{2})-(\\d{2})-(\\d{2})/);
+    if (dateInUrl) {
+      publishedAt = Date.parse(`${dateInUrl[1]}-${dateInUrl[2]}-${dateInUrl[3]}T12:00:00Z`);
+    }
+  }
+  return !Number.isFinite(publishedAt) || now.getTime() - publishedAt <= maxAgeMs;
+}
+
+export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot, now = new Date()): SearchHit[] {
   const seen = new Set<string>();
   const perDomain = new Map<string, number>();
   const kept: (SearchHit & { rank: number; order: number })[] = [];
   hits.forEach((hit, order) => {
     const url = canonicalUrl(hit.url);
     const domain = domainOf(url);
-    if (isBlockedDomain(domain) || seen.has(url)) return;
+    if (isBlockedDomain(domain) || seen.has(url) || !isFreshForSlot({ ...hit, url }, slot, now)) return;
     seen.add(url);
     // Prefer individual, dated articles; keep stats/fixture pages higher for intelligence work.
     kept.push({ ...hit, url, rank: pageRank({ ...hit, url }, slot) * 100 + domainRank(domain), order });
