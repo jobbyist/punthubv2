@@ -198,7 +198,9 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
 
     // On the 06:00 slot only, create a Gemini shadow draft in parallel so the owner can compare both outputs.
     // The shadow is always saved as REVIEW and can never be auto-published.
-    const benchmarkModel = options.benchmark ? env.models.find((m) => m.startsWith("gemini-")) : undefined;
+    const benchmarkModel = options.benchmark
+      ? env.models.find((m) => m === "gemini-3.5-flash-lite") ?? env.models.find((m) => m.startsWith("gemini-"))
+      : undefined;
     const benchmarkPromise = benchmarkModel && deps.llm
       ? deps.llm.generate(benchmarkModel, request).then(
           async (result) => {
@@ -290,7 +292,9 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     let reviewRan = false;
     if (budgetLeft() > 12_000) {
       try {
-        const reviewer = env.models.find((m) => m !== written.model);
+        const reviewer = written.model === "parallel-medium"
+        ? env.models.find((m) => m === "gemini-3.5-flash") ?? env.models.find((m) => m.startsWith("gemini-"))
+        : "parallel-medium";
         const review = await router.generate(reviewRequest(draft, sources), reviewer);
         const parsed = parseReview(review.text);
         if (parsed) {
@@ -498,7 +502,7 @@ async function research(
     await store.countUsage(search.name, "error").catch(() => undefined);
     throw new StageError("research_failed", `search failed: ${describe(error)}`);
   }
-  const ranked = rankHits(hits, PAGES_TO_READ + 2);
+  const ranked = rankHits(hits, PAGES_TO_READ + 1);
   await log(
     "research",
     "info",
