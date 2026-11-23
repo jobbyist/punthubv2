@@ -32,6 +32,13 @@
 One entry per PR that changes the legal copy or should have. Newest first. "Review" lists what counsel should look
 at. Everything is a draft until approved; approvals are recorded here once given.
 
+## 2026-11-23, internal synthetic QA telemetry (no public legal text changed)
+
+- Added service-role-only experiment tables for synthetic persona definitions, read-only browser sessions, fixture research outputs and a capped API budget ledger. The 50 persona records contain no real names, email addresses, phone numbers or account identifiers. The production browser runner is guest/read-only and does not create Auth users, founding memberships, public picks, rewards, referral records or campaign conversion events. Parallel receives public fixture/team/competition context only; no member or customer personal data is sent.
+- No public Privacy or Terms wording changed because this is an internal QA-only dataset and does not collect real member activity. `[attorney review]`: confirm this internal operational telemetry and use of the existing Parallel processor do not require a public notice amendment under POPIA or the existing processor disclosure.
+- The experiment is seeded as paused. No migration has been applied to the live database and no scheduled production runs are enabled by this PR.
+
+
 ## 2026-11-15, Season archive import (PR: feat/season-archive-import), no page changed
 
 - **Product:** past and current league results (10 domestic leagues, seasons 2024/25 to 2026/27) are imported from
