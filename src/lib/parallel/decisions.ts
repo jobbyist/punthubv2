@@ -15,7 +15,7 @@ export type ParallelDecisionRequest = {
 function errorKind(status: number): "auth" | "quota" | "unavailable" | "bad_request" {
   if (status === 401 || status === 403) return "auth";
   if (status === 402 || status === 429) return "quota";
-  if (status >= 500) return "unavailable";
+  if (status === 408 || status >= 500) return "unavailable";
   return "bad_request";
 }
 
