@@ -25,7 +25,8 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const slot = slotParam === "breaking" || slotParam === "editorial" || slotParam === "intelligence" ? slotParam : undefined;
         const force = url.searchParams.get("force") === "1";
         const dry = url.searchParams.get("dry") === "1";
-        const manual = kind !== undefined || slot !== undefined || force || dry;
+        const scheduledSlot = slot !== undefined && url.searchParams.get("trigger") === "cron";
+        const manual = kind !== undefined || force || dry || (slot !== undefined && !scheduledSlot);
 
         const { readContentEnv } = await import("@/lib/content/config");
         const { createGemini, createParallelResponses, createPageReader, createParallelSearch } =
