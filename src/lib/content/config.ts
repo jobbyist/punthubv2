@@ -32,10 +32,9 @@ export const DEFAULT_PFIE_MODELS = [
 ] as const;
 
 /**
- * Models the router may ever call. A model outside this list is refused even if an environment variable names it,
- * so a paid model can never be selected automatically. Adding a model is a reviewed code change.
+ * Approved content models. Parallel Responses Medium is the paid primary; the Gemini Flash entries are the reviewed fallback set.
  */
-export const FREE_MODEL_ALLOWLIST: readonly string[] = [
+export const APPROVED_CONTENT_MODELS: readonly string[] = [
   "parallel-medium",
   "gemini-3.8-flash",
   "gemini-3.7-flash",
@@ -76,7 +75,7 @@ export function parseModelList(raw: string | undefined): { models: string[]; ref
   const models: string[] = [];
   const refused: string[] = [];
   for (const m of ordered) {
-    if (!FREE_MODEL_ALLOWLIST.includes(m)) refused.push(m);
+    if (!APPROVED_CONTENT_MODELS.includes(m)) refused.push(m);
     else if (!models.includes(m)) models.push(m);
   }
   return { models, refused };
