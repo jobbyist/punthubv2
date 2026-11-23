@@ -140,19 +140,20 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
               budgetReserved = true;
 
               if (!(await claim("parallel"))) {
-                await db.rpc("settle_synthetic_budget", {
+                const { error: releaseError } = await db.rpc("settle_synthetic_budget", {
                   p_request_key: requestKey,
                   p_settled_usd: 0,
                   p_provider_request_id: null,
                   p_failed: true,
                 });
-                budgetReserved = false;
+                if (!releaseError) budgetReserved = false;
                 throw new Error("Puntr's existing Parallel quota or monthly budget guard refused this request");
               }
 
               providerAttempted = true;
               const provider = createParallelDecisions(apiKey);
               const rawResult = await provider.decide(requestBody);
+              providerAttempted = false;
               const citations = Array.isArray(rawResult["citations"]) ? rawResult["citations"] as Record<string, unknown>[] : [];
               const domains = [...new Set(citations.map(item => {
                 try {
@@ -232,12 +233,16 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         } catch (error) {
           if (providerAttempted) await recordQuotaError("parallel").catch(() => {});
           if (budgetReserved && requestKey) {
-            await db.rpc("settle_synthetic_budget", {
-              p_request_key: requestKey,
-              p_settled_usd: null,
-              p_provider_request_id: null,
-              p_failed: true,
-            }).catch(() => {});
+            try {
+              await db.rpc("settle_synthetic_budget", {
+                p_request_key: requestKey,
+                p_settled_usd: null,
+                p_provider_request_id: null,
+                p_failed: true,
+              });
+            } catch {
+              // Leave the reservation visible for reconciliation rather than hiding the original failure.
+            }
           }
           console.error("synthetic-decisions failed", error);
           return Response.json({ ok: false, error: error instanceof Error ? error.message : "synthetic_decisions_failed" }, { status: 500 });
