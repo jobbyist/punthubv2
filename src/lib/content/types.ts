@@ -7,6 +7,7 @@
  */
 
 export type ContentKind = "sports" | "development";
+export type ContentSlot = "breaking" | "editorial" | "intelligence";
 
 export interface SearchHit {
   url: string;
