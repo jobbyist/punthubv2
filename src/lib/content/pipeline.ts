@@ -295,7 +295,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         const reviewer = written.model === "parallel-medium"
         ? env.models.find((m) => m === "gemini-3.5-flash") ?? env.models.find((m) => m.startsWith("gemini-"))
         : "parallel-medium";
-        const review = await router.generate(reviewRequest(draft, sources), reviewer);
+        const review = await router.generate(reviewRequest(draft, sources, options.slot), reviewer);
         const parsed = parseReview(review.text);
         if (parsed) {
           reviewerUnsupported = parsed;
@@ -356,7 +356,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         try {
           const revised = await deps.llm.generate(
             benchmarkModel,
-            revisionRequest(geminiBenchmark.draft, sources, benchmarkQuality.issues),
+            revisionRequest(request, geminiBenchmark.draft, benchmarkQuality.issues),
           );
           await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
           const revisedDraft = parseDraft(revised.text);
@@ -383,7 +383,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       if (budgetLeft() > 18_000) {
         try {
           const benchmarkReview = await router.generate(
-            reviewRequest(geminiBenchmark.draft, sources),
+            reviewRequest(geminiBenchmark.draft, sources, options.slot),
             "parallel-medium",
           );
           const unsupported = parseReview(benchmarkReview.text);
