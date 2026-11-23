@@ -4,8 +4,8 @@ import { sastDate } from "@/lib/sast";
 import type { ContentKind, ContentSettings } from "./types";
 
 /** One job per South African calendar day. A second cron call for the same day finds the key taken and stops. */
-export function dailyJobKey(now: Date = new Date()): string {
-  return `daily:${sastDate(now)}`;
+export function dailyJobKey(now: Date = new Date(), slot?: "breaking" | "editorial" | "intelligence"): string {
+  return `daily:${sastDate(now)}${slot ? `:${slot}` : ""}`;
 }
 
 /** Whole days since 1 Jan 1970 for the South African date, so the rotation never depends on the server clock zone. */
