@@ -365,7 +365,7 @@ describe("pipeline", () => {
     expect(out.status).toBe("published");
     expect(llm.calls).toEqual([
       { model: "parallel-medium", review: false },
-      { model: "gemini-3.8-flash", review: true },
+      { model: "gemini-3.5-flash", review: true },
     ]);
     expect(store.articles).toHaveLength(1);
     expect(store.articles[0]).toMatchObject({ status: "PUBLISHED", citedSources: 2 });
