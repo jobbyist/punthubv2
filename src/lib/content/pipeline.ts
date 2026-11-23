@@ -18,6 +18,7 @@ import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./p
 import { projectSources, rankHits, sportsBrief, toSource } from "./research";
 import { dailyJobKey, kindForDay, sastDayNumber } from "./schedule";
 import type {
+  ArticleDraft,
   ContentKind,
   ContentStore,
   ExtractProvider,
@@ -63,6 +64,7 @@ export interface RunOptions {
   /** Moves the sports beat on by this many places (several sports articles on one day). */
   beatOffset?: number;
   slot?: "breaking" | "editorial" | "intelligence";
+  benchmark?: boolean;
 }
 
 export type RunOutcome =
@@ -194,7 +196,27 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       ...(options.slot ? { slot: options.slot } : {}),
     });
 
+    // On the 06:00 slot only, create a Gemini shadow draft in parallel so the owner can compare both outputs.
+    // The shadow is always saved as REVIEW and can never be auto-published.
+    const benchmarkModel = options.benchmark ? env.models.find((m) => m.startsWith("gemini-")) : undefined;
+    const benchmarkPromise = benchmarkModel && deps.llm
+      ? deps.llm.generate(benchmarkModel, request).then((result) => ({ result }), (error: unknown) => ({ error }))
+      : Promise.resolve(null);
+
     let written = await router.generate(request);
+    let geminiBenchmark: { model: string; draft: ArticleDraft } | null = null;
+    const benchmarkOutcome = await benchmarkPromise;
+    if (benchmarkOutcome && "error" in benchmarkOutcome) {
+      await log("benchmark", "warn", "Gemini comparison draft failed", describe(benchmarkOutcome.error));
+    } else if (benchmarkOutcome && "result" in benchmarkOutcome) {
+      const parsed = parseDraft(benchmarkOutcome.result.text);
+      if (parsed) {
+        geminiBenchmark = { model: benchmarkOutcome.result.model, draft: parsed };
+        await log("benchmark", "info", `Gemini comparison draft created by ${parsed.title}`);
+      } else {
+        await log("benchmark", "warn", "Gemini comparison returned invalid article JSON");
+      }
+    }
     let draft = parseDraft(written.text);
     if (!draft) {
       await log(
@@ -334,6 +356,64 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       usedSourceIndexes: cited,
       projectUpdateIds: kind === "development" ? updates.map((u) => u.id) : [],
     });
+    if (geminiBenchmark && benchmarkModel) {
+      try {
+        const benchmarkJob = await store.claimJob({
+          jobKey: `${jobKey}:gemini-benchmark`,
+          kind,
+          trigger: "manual",
+          force: false,
+        });
+        if (benchmarkJob) {
+          const benchmarkQuality = validateDraft({
+            draft: geminiBenchmark.draft,
+            kind,
+            sources,
+            recentTitles: recent.map((r) => r.title),
+            reviewerUnsupported: [],
+          });
+          const benchmarkCited = [...new Set(geminiBenchmark.draft.claims.map((c) => c.source))];
+          const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-gemini-comparison`;
+          const benchmarkSaved = await store.saveArticle({
+            jobId: benchmarkJob.id,
+            article: {
+              slug: benchmarkSlug,
+              title: geminiBenchmark.draft.title,
+              excerpt: geminiBenchmark.draft.excerpt,
+              body: geminiBenchmark.draft.body,
+              category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : "sports",
+              tags: [...geminiBenchmark.draft.tags.slice(0, 4), "gemini-comparison"],
+              seoTitle: geminiBenchmark.draft.seoTitle.slice(0, 60),
+              seoDescription: geminiBenchmark.draft.seoDescription.slice(0, 160),
+              readingMinutes: readingMinutes(geminiBenchmark.draft.body),
+              status: "REVIEW",
+              aiModel: geminiBenchmark.model,
+              qualityScore: benchmarkQuality.score,
+              qualityIssues: benchmarkQuality.issues,
+            },
+            sources,
+            usedSourceIndexes: benchmarkCited,
+            projectUpdateIds: [],
+          });
+          await store.finishJob(benchmarkJob.id, {
+            status: "succeeded",
+            articleId: benchmarkSaved.id,
+            model: geminiBenchmark.model,
+            report: { benchmark: true, quality: benchmarkQuality, published: false },
+          });
+          await log("benchmark", "info", "Gemini comparison saved to editorial review; not published", {
+            articleId: benchmarkSaved.id,
+            title: geminiBenchmark.draft.title,
+            model: geminiBenchmark.model,
+            qualityScore: benchmarkQuality.score,
+            critical: benchmarkQuality.critical,
+          });
+        }
+      } catch (error) {
+        await log("benchmark", "warn", "Gemini comparison could not be saved", describe(error));
+      }
+    }
+
     if (settings.nextKindOverride) await store.clearKindOverride().catch(() => undefined);
 
     await log("publish", "info", publish ? "published" : "queued for editorial review", {
