@@ -17,7 +17,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 - `experiments/synthetic/tests/public-journeys.spec.ts`: Playwright read-only public-page journeys.
 - `experiments/synthetic/run-batch.mjs`: round-robin selector for one-to-three persona batches, intended for an owner-controlled external scheduler.
 - `experiments/synthetic/decisions.mjs`: Parallel Decisions API, one typed choice question per persona (up to 100 questions per shared fixture evidence set), with citations and per-option probabilities.
-- `experiments/synthetic/research.mjs`: optional Parallel Responses API JSON Schema narrative research, cached per fixture.
+- `src/lib/parallel/decisions.ts` and `src/routes/api.cron.synthetic-decisions.ts`: server-side Decisions API provider and cron-authenticated route using Puntr's existing quota and cache layers.
 - `supabase/migrations/20261123150000_synthetic_experiment_telemetry.sql`: isolated service-role-only telemetry and hard budget reservation functions.
 
 ## Parallel API selection
@@ -30,7 +30,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 
 ## Cost and existing platform budget
 
-The experiment hard cap is US$50, with a conservative US$0.25 reservation per Responses request. A unique fixture is researched once and reused by all personas. The experiment must not create 3,000 duplicate API requests.
+The experiment hard cap is US$50. Decisions API requests reserve US$0.001 each; optional Responses calls must reserve up to US$0.25 each. A unique fixture is researched once and reused by all personas. The experiment must not create 3,000 duplicate API requests.
 
 The existing `docs/PARALLEL_ARCHITECTURE.md` states that the current approximately US$50 prepaid balance expires on 7 Dec 2026 and also funds live Puntr data workloads. The experiment runs to 22 Dec. The owner must verify a separate or replenished balance before running beyond 7 Dec. Do not silently reduce the budget allocated to fixtures, results, standings or newsroom.
 
