@@ -1,5 +1,5 @@
 -- Newsroom expansion: Parallel-first editorial engine and three daily publishing slots.
--- Safe to deploy before the code: the additional categories are additive and the scheduled endpoints remain auth-protected.
+-- Apply alongside the matching application release so each new cron slot is handled by the updated route.
 
 alter table public.newsroom_articles drop constraint if exists newsroom_articles_category_check;
 alter table public.newsroom_articles add constraint newsroom_articles_category_check
