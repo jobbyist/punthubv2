@@ -244,6 +244,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources,
       recentTitles: recent.map((r) => r.title),
       reviewerUnsupported: [],
+      ...(options.slot ? { slot: options.slot } : {}),
     });
     if (precheck.critical && budgetLeft() > 35_000) {
       const problems = precheck.issues.filter((i) => i.critical).map((i) => i.detail);
@@ -309,6 +310,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources,
       recentTitles: recent.map((r) => r.title),
       reviewerUnsupported,
+      ...(options.slot ? { slot: options.slot } : {}),
     });
     await log(
       "quality",
