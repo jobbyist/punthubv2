@@ -49,7 +49,7 @@ export interface ContentEnv {
   geminiKey: string | null;
   parallelKey: string | null;
   firecrawlKey: string | null;
-  /** Ordered: primary first, then fallbacks. Already filtered to the free allowlist. */
+  /** Ordered: Parallel primary first, followed by allowlisted Gemini fallbacks. */
   models: string[];
   /** Gemini models named in configuration that were refused because they are not on the approved model allowlist. */
   refusedModels: string[];
@@ -108,12 +108,10 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
 }
 
 /** Names of the credentials a live run still needs. Used by the cron route and the admin status panel. */
-export function missingCredentials(env: ContentEnv, kind: "sports" | "development"): string[] {
+export function missingCredentials(env: ContentEnv, _kind: "sports" | "development"): string[] {
   const missing: string[] = [];
   if (!env.geminiKey) missing.push("GEMINI_API_KEY");
   if (!env.parallelKey) missing.push("PARALLEL_API_KEY");
-  // Development news is written from the approved project-update feed and needs no web research.
-  
   return missing;
 }
 
