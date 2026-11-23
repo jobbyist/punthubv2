@@ -32,10 +32,10 @@ export const DEFAULT_PFIE_MODELS = [
 ] as const;
 
 /**
- * Models the router may ever call. A model outside this list is refused even if an environment variable names it,
- * so a paid model can never be selected automatically. Adding a model is a reviewed code change.
+ * Approved content models. Parallel Responses Medium is the paid primary; the Gemini Flash entries are the reviewed fallback set.
  */
-export const FREE_MODEL_ALLOWLIST: readonly string[] = [
+export const APPROVED_CONTENT_MODELS: readonly string[] = [
+  "parallel-medium",
   "gemini-3.8-flash",
   "gemini-3.7-flash",
   "gemini-3.6-flash",
@@ -48,9 +48,9 @@ export interface ContentEnv {
   geminiKey: string | null;
   parallelKey: string | null;
   firecrawlKey: string | null;
-  /** Ordered: primary first, then fallbacks. Already filtered to the free allowlist. */
+  /** Ordered: Parallel primary first, followed by allowlisted Gemini fallbacks. */
   models: string[];
-  /** Models named in configuration that were refused because they are not on the free allowlist. */
+  /** Gemini models named in configuration that were refused because they are not on the approved model allowlist. */
   refusedModels: string[];
   /** Requests-per-day ceiling per model that the engine sets for itself (0 = no self-imposed ceiling). */
   dailyRequestCap: Record<string, number>;
@@ -71,10 +71,11 @@ export function parseModelList(raw: string | undefined): { models: string[]; ref
     .map((m) => m.trim())
     .filter(Boolean);
   const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
+  const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
   const models: string[] = [];
   const refused: string[] = [];
-  for (const m of list) {
-    if (!FREE_MODEL_ALLOWLIST.includes(m)) refused.push(m);
+  for (const m of ordered) {
+    if (!APPROVED_CONTENT_MODELS.includes(m)) refused.push(m);
     else if (!models.includes(m)) models.push(m);
   }
   return { models, refused };
@@ -106,11 +107,10 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
 }
 
 /** Names of the credentials a live run still needs. Used by the cron route and the admin status panel. */
-export function missingCredentials(env: ContentEnv, kind: "sports" | "development"): string[] {
+export function missingCredentials(env: ContentEnv, _kind: "sports" | "development"): string[] {
   const missing: string[] = [];
   if (!env.geminiKey) missing.push("GEMINI_API_KEY");
-  // Development news is written from the approved project-update feed and needs no web research.
-  if (kind === "sports" && !env.parallelKey) missing.push("PARALLEL_API_KEY");
+  if (!env.parallelKey) missing.push("PARALLEL_API_KEY");
   return missing;
 }
 

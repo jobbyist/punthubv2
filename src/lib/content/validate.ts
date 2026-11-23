@@ -10,6 +10,7 @@ import { z } from "zod";
 import type {
   ArticleDraft,
   ContentKind,
+  ContentSlot,
   QualityIssue,
   QualityReport,
   ResearchSource,
@@ -142,6 +143,7 @@ export interface ValidateInput {
   recentTitles: string[];
   /** Claims a second model could not find in the sources (independent review pass). Empty when not run. */
   reviewerUnsupported?: string[];
+  slot?: ContentSlot;
 }
 
 export function validateDraft(input: ValidateInput): QualityReport {
@@ -186,7 +188,7 @@ export function validateDraft(input: ValidateInput): QualityReport {
   }
 
   // Every claim must point at a real source and carry words that are really on that page.
-  const minClaims = kind === "sports" ? 4 : 2;
+  const minClaims = input.slot === "editorial" || input.slot === "intelligence" ? 6 : kind === "sports" ? 4 : 2;
   if (draft.claims.length < minClaims)
     critical("few_claims", `${draft.claims.length} sourced claims (at least ${minClaims} needed)`);
   const citedDomains = new Set<string>();
@@ -213,7 +215,7 @@ export function validateDraft(input: ValidateInput): QualityReport {
     }
     citedDomains.add(source.domain);
   }
-  const minDomains = kind === "sports" ? 2 : 1;
+  const minDomains = input.slot === "editorial" || input.slot === "intelligence" ? 3 : kind === "sports" ? 2 : 1;
   if (citedDomains.size < minDomains)
     critical(
       "thin_sourcing",

@@ -58,6 +58,7 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
 describe("config", () => {
   it("defaults to the five free models, primary first, lightest last", () => {
     expect(parseModelList(undefined).models).toEqual([
+      "parallel-medium",
       "gemini-3.8-flash",
       "gemini-3.6-flash",
       "gemini-3.5-flash",
@@ -67,7 +68,7 @@ describe("config", () => {
   });
   it("refuses a model that is not on the free list", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
-    expect(models).toEqual(["gemini-3.1-flash-lite"]);
+    expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
     expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
   it("reads daily caps and ignores bad entries", () => {
@@ -79,7 +80,7 @@ describe("config", () => {
   it("names the missing credentials per article kind", () => {
     const env = readContentEnv({});
     expect(missingCredentials(env, "sports")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
-    expect(missingCredentials(env, "development")).toEqual(["GEMINI_API_KEY"]);
+    expect(missingCredentials(env, "development")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
   });
   it("never shows a whole secret", () => {
     expect(redact("AIzaSyExampleExampleExample")).toBe("AI…le");
@@ -216,6 +217,7 @@ describe("schedule", () => {
   const base = { scheduleMode: "alternate" as const, nextKindOverride: null };
   it("keys the job on the South African date", () => {
     expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"))).toBe("daily:2026-11-14");
+    expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"), "breaking")).toBe("daily:2026-11-14:breaking");
   });
   it("alternates day by day", () => {
     const a = kindForDay(base, true, new Date("2026-11-14T04:00:00Z")).kind;
@@ -362,13 +364,13 @@ describe("pipeline", () => {
     const out = await runContentJob(d, { trigger: "cron" });
     expect(out.status).toBe("published");
     expect(llm.calls).toEqual([
-      { model: "gemini-3.8-flash", review: false },
-      { model: "gemini-3.6-flash", review: true },
+      { model: "parallel-medium", review: false },
+      { model: "gemini-3.8-flash", review: true },
     ]);
     expect(store.articles).toHaveLength(1);
     expect(store.articles[0]).toMatchObject({ status: "PUBLISHED", citedSources: 2 });
     expect([...store.jobs.values()][0]?.status).toBe("succeeded");
-    expect(store.usage).toMatchObject({ parallel: 1, firecrawl: 2, "gemini:gemini-3.8-flash": 1 });
+    expect(store.usage).toMatchObject({ parallel: 1, firecrawl: 2, "parallel-chat:medium": 1, "gemini:gemini-3.8-flash": 1 });
   });
   it("is idempotent: a second call for the same day does nothing", async () => {
     const d = deps();
@@ -392,7 +394,7 @@ describe("pipeline", () => {
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
     expect((d.store as ReturnType<typeof memoryStore>).articles[0]?.status).toBe("REVIEW");
   });
-  it("publishes on schedule despite a critical issue when publishOnSchedule is on, and tells the owner", async () => {
+  it("never publishes a scheduled article with a critical issue, even when publishOnSchedule is on", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const notices: unknown[] = [];
@@ -409,8 +411,8 @@ describe("pipeline", () => {
         notices.push(n);
       },
     };
-    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
-    expect(notices[0]).toMatchObject({ kind: "article", published: true, passed: false });
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
+    expect(notices[0]).toMatchObject({ kind: "article", published: false, passed: false });
     // A manual run still respects the checks.
     const m = { ...d, store: memoryStore({ publishOnSchedule: true }) };
     expect((await runContentJob(m, { trigger: "manual" })).status).toBe("queued_for_review");

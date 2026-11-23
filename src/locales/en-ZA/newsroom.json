@@ -15,7 +15,10 @@
     "features": "Features & Improvements",
     "community": "Community",
     "launch": "Launch Announcements",
-    "sports": "Sports Intelligence"
+    "sports": "Sports",
+    "breaking": "Breaking News",
+    "editorial": "Editorial Analysis",
+    "intelligence": "Sports Intelligence"
   },
   "featured": "Latest update",
   "empty": "No updates published yet. Check back soon.",

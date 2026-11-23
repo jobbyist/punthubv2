@@ -18,6 +18,7 @@ import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./p
 import { projectSources, rankHits, sportsBrief, toSource } from "./research";
 import { dailyJobKey, kindForDay, sastDayNumber } from "./schedule";
 import type {
+  ArticleDraft,
   ContentKind,
   ContentStore,
   ExtractProvider,
@@ -62,6 +63,8 @@ export interface RunOptions {
   dry?: boolean;
   /** Moves the sports beat on by this many places (several sports articles on one day). */
   beatOffset?: number;
+  slot?: "breaking" | "editorial" | "intelligence";
+  benchmark?: boolean;
 }
 
 export type RunOutcome =
@@ -102,13 +105,15 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
   const updates = await store.pendingProjectUpdates(5);
   const choice = options.kind
     ? { kind: options.kind, reason: "chosen for this run" }
-    : kindForDay(settings, updates.length > 0, started);
+    : options.slot
+      ? { kind: "sports" as const, reason: `scheduled ${options.slot} editorial slot` }
+      : kindForDay(settings, updates.length > 0, started);
   const kind = choice.kind;
 
   // The schedule and a forced rerun share the day's key; any other manual run gets its own.
   const jobKey =
     options.trigger === "cron" || options.force
-      ? dailyJobKey(started)
+      ? dailyJobKey(started, options.slot)
       : `manual:${started.toISOString()}`;
   const job = await store.claimJob({
     jobKey,
@@ -132,7 +137,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       await log(
         "schedule",
         "warn",
-        "models refused because they are not on the free list",
+        "models refused because they are not on the approved model list",
         env.refusedModels,
       );
 
@@ -152,17 +157,17 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources = projectSources(updates);
       await log("research", "info", `${sources.length} approved project update(s)`);
     } else {
-      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started);
+      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started, options.slot);
       beat = brief.beat;
       await log("topic", "info", `beat: ${beat}`, brief.queries);
-      sources = await research(deps, brief, log);
+      sources = await research(deps, brief, log, options.slot);
     }
     checkBudget("writing");
 
-    // Writing, through the free-model router.
+    // Writing, through the Parallel-first editorial model router.
     const usage = await store.usageToday().catch(() => ({}) as Record<string, number>);
     const usedToday: Record<string, number> = {};
-    for (const m of env.models) usedToday[m] = usage[`gemini:${m}`] ?? 0;
+    for (const m of env.models) usedToday[m] = usage[m === "parallel-medium" ? "parallel-chat:medium" : `gemini:${m}`] ?? 0;
     const router = createModelRouter(deps.llm, {
       models: env.models,
       usedToday,
@@ -174,7 +179,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
           return;
         }
         await store
-          .countUsage(`gemini:${a.model}`, a.outcome === "ok" ? "ok" : "error")
+          .countUsage(a.model === "parallel-medium" ? "parallel-chat:medium" : `gemini:${a.model}`, a.outcome === "ok" ? "ok" : "error")
           .catch(() => undefined);
         if (a.outcome !== "ok")
           await log("model", "warn", `${a.model} failed: ${a.outcome}`, a.detail);
@@ -188,9 +193,39 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       today: sastDate(started),
       sources,
       recentTitles: recent.map((r) => r.title).slice(0, 10),
+      ...(options.slot ? { slot: options.slot } : {}),
     });
 
+    // On the 06:00 slot only, create a Gemini shadow draft in parallel so the owner can compare both outputs.
+    // The shadow is always saved as REVIEW and can never be auto-published.
+    const benchmarkModel = options.benchmark ? env.models.find((m) => m.startsWith("gemini-")) : undefined;
+    const benchmarkPromise = benchmarkModel && deps.llm
+      ? deps.llm.generate(benchmarkModel, request).then(
+          async (result) => {
+            await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
+            return { result };
+          },
+          async (error: unknown) => {
+            await store.countUsage(`gemini:${benchmarkModel}`, "error").catch(() => undefined);
+            return { error };
+          },
+        )
+      : Promise.resolve(null);
+
     let written = await router.generate(request);
+    let geminiBenchmark: { model: string; draft: ArticleDraft } | null = null;
+    const benchmarkOutcome = await benchmarkPromise;
+    if (benchmarkOutcome && "error" in benchmarkOutcome) {
+      await log("benchmark", "warn", "Gemini comparison draft failed", describe(benchmarkOutcome.error));
+    } else if (benchmarkOutcome && "result" in benchmarkOutcome) {
+      const parsed = parseDraft(benchmarkOutcome.result.text);
+      if (parsed) {
+        geminiBenchmark = { model: benchmarkOutcome.result.model, draft: parsed };
+        await log("benchmark", "info", `Gemini comparison draft created by ${parsed.title}`);
+      } else {
+        await log("benchmark", "warn", "Gemini comparison returned invalid article JSON");
+      }
+    }
     let draft = parseDraft(written.text);
     if (!draft) {
       await log(
@@ -218,6 +253,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources,
       recentTitles: recent.map((r) => r.title),
       reviewerUnsupported: [],
+      ...(options.slot ? { slot: options.slot } : {}),
     });
     if (precheck.critical && budgetLeft() > 35_000) {
       const problems = precheck.issues.filter((i) => i.critical).map((i) => i.detail);
@@ -283,6 +319,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources,
       recentTitles: recent.map((r) => r.title),
       reviewerUnsupported,
+      ...(options.slot ? { slot: options.slot } : {}),
     });
     await log(
       "quality",
@@ -297,7 +334,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     const publish =
       settings.enabled &&
       settings.autoPublish &&
-      (passed || (options.trigger === "cron" && settings.publishOnSchedule));
+      passed;
 
     if (options.dry) {
       await store.finishJob(job.id, {
@@ -312,11 +349,11 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     const saved = await store.saveArticle({
       jobId: job.id,
       article: {
-        slug: slugFor(draft.title, sastDate(started)),
+        slug: `${slugFor(draft.title, sastDate(started))}${options.slot ? `-${options.slot}` : ""}`,
         title: draft.title,
         excerpt: draft.excerpt,
         body: draft.body,
-        category: kind === "sports" ? "sports" : "product",
+        category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : kind === "sports" ? "sports" : "product",
         tags: draft.tags.slice(0, 6).map((t) => t.toLowerCase()),
         seoTitle: draft.seoTitle.slice(0, 60),
         seoDescription: draft.seoDescription.slice(0, 160),
@@ -330,6 +367,65 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       usedSourceIndexes: cited,
       projectUpdateIds: kind === "development" ? updates.map((u) => u.id) : [],
     });
+    if (geminiBenchmark && benchmarkModel) {
+      try {
+        const benchmarkJob = await store.claimJob({
+          jobKey: `${jobKey}:gemini-benchmark`,
+          kind,
+          trigger: "manual",
+          force: false,
+        });
+        if (benchmarkJob) {
+          const benchmarkQuality = validateDraft({
+            draft: geminiBenchmark.draft,
+            kind,
+            sources,
+            recentTitles: recent.map((r) => r.title),
+            reviewerUnsupported: [],
+            ...(options.slot ? { slot: options.slot } : {}),
+          });
+          const benchmarkCited = [...new Set(geminiBenchmark.draft.claims.map((c) => c.source))];
+          const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-${options.slot ?? "sports"}-gemini-comparison`;
+          const benchmarkSaved = await store.saveArticle({
+            jobId: benchmarkJob.id,
+            article: {
+              slug: benchmarkSlug,
+              title: geminiBenchmark.draft.title,
+              excerpt: geminiBenchmark.draft.excerpt,
+              body: geminiBenchmark.draft.body,
+              category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : "sports",
+              tags: [...geminiBenchmark.draft.tags.slice(0, 4), "gemini-comparison"],
+              seoTitle: geminiBenchmark.draft.seoTitle.slice(0, 60),
+              seoDescription: geminiBenchmark.draft.seoDescription.slice(0, 160),
+              readingMinutes: readingMinutes(geminiBenchmark.draft.body),
+              status: "REVIEW",
+              aiModel: geminiBenchmark.model,
+              qualityScore: benchmarkQuality.score,
+              qualityIssues: benchmarkQuality.issues,
+            },
+            sources,
+            usedSourceIndexes: benchmarkCited,
+            projectUpdateIds: [],
+          });
+          await store.finishJob(benchmarkJob.id, {
+            status: "succeeded",
+            articleId: benchmarkSaved.id,
+            model: geminiBenchmark.model,
+            report: { benchmark: true, quality: benchmarkQuality, published: false },
+          });
+          await log("benchmark", "info", "Gemini comparison saved to editorial review; not published", {
+            articleId: benchmarkSaved.id,
+            title: geminiBenchmark.draft.title,
+            model: geminiBenchmark.model,
+            qualityScore: benchmarkQuality.score,
+            critical: benchmarkQuality.critical,
+          });
+        }
+      } catch (error) {
+        await log("benchmark", "warn", "Gemini comparison could not be saved", describe(error));
+      }
+    }
+
     if (settings.nextKindOverride) await store.clearKindOverride().catch(() => undefined);
 
     await log("publish", "info", publish ? "published" : "queued for editorial review", {
@@ -385,6 +481,7 @@ async function research(
     message: string,
     data?: unknown,
   ) => Promise<void>,
+  slot?: "breaking" | "editorial" | "intelligence",
 ): Promise<ResearchSource[]> {
   const { store, search, extract } = deps;
   if (!search) throw new StageError("pending_credentials", "search provider not configured");
@@ -441,10 +538,11 @@ async function research(
     .filter((s) => s.text.length >= MIN_SOURCE_CHARS)
     .map((s, i) => ({ ...s, index: i + 1 }));
   const domains = new Set(sources.map((s) => s.domain));
-  if (sources.length < 2 || domains.size < 2)
+  const minimumDomains = slot === "editorial" || slot === "intelligence" ? 3 : 2;
+  if (sources.length < minimumDomains || domains.size < minimumDomains)
     throw new StageError(
       "insufficient_research",
-      `${sources.length} usable source(s) from ${domains.size} site(s); at least 2 from 2 sites are needed`,
+      `${sources.length} usable source(s) from ${domains.size} site(s); at least ${minimumDomains} independent sites are needed for ${slot ?? "this article"}`,
     );
   await log("consolidation", "info", `${sources.length} source(s) from ${domains.size} site(s)`);
   return sources;

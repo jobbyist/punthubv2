@@ -7,6 +7,9 @@ export const NEWSROOM_CATEGORIES = [
   "features",
   "community",
   "launch",
+  "breaking",
+  "editorial",
+  "intelligence",
   "sports",
 ] as const;
 export type NewsroomCategory = (typeof NEWSROOM_CATEGORIES)[number];
@@ -26,13 +29,14 @@ export interface NewsroomArticle {
   seo_description: string | null;
   og_image_url: string | null;
   origin?: string | null;
+  ai_model?: string | null;
   tags?: string[] | null;
 }
 
 export type NewsroomSummary = Omit<NewsroomArticle, "body">;
 
 const SUMMARY_COLUMNS =
-  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, updated_at, seo_title, seo_description, og_image_url, origin, tags";
+  "id, slug, title, excerpt, cover_image_url, category, author_name, published_at, updated_at, seo_title, seo_description, og_image_url, origin, ai_model, tags";
 
 export function isCategory(value: unknown): value is NewsroomCategory {
   return typeof value === "string" && (NEWSROOM_CATEGORIES as readonly string[]).includes(value);

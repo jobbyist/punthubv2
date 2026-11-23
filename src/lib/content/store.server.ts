@@ -132,7 +132,7 @@ export function createContentStore(): ContentStore {
             excerpt: article.excerpt.slice(0, 300),
             body: article.body,
             category: article.category,
-            author_name: "The Puntr team",
+            author_name: "Michael C.",
             status: article.status,
             published_at: article.status === "PUBLISHED" ? now : null,
             seo_title: article.seoTitle || null,
