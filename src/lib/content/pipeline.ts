@@ -340,17 +340,75 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       settings.autoPublish &&
       passed;
 
+    // Give the Gemini comparison the same deterministic validation, one revision opportunity,
+    // and an independent Parallel review. The comparison remains review-only.
+    let benchmarkQuality: QualityReport | null = null;
+    if (geminiBenchmark) {
+      benchmarkQuality = validateDraft({
+        draft: geminiBenchmark.draft,
+        kind,
+        sources,
+        recentTitles: recent.map((r) => r.title),
+        reviewerUnsupported: [],
+        ...(options.slot ? { slot: options.slot } : {}),
+      });
+      if (benchmarkQuality.critical && benchmarkModel && deps.llm && budgetLeft() > 30_000) {
+        try {
+          const revised = await deps.llm.generate(
+            benchmarkModel,
+            revisionRequest(geminiBenchmark.draft, sources, benchmarkQuality.issues),
+          );
+          await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
+          const revisedDraft = parseDraft(revised.text);
+          if (revisedDraft) {
+            const revisedQuality = validateDraft({
+              draft: revisedDraft,
+              kind,
+              sources,
+              recentTitles: recent.map((r) => r.title),
+              reviewerUnsupported: [],
+              ...(options.slot ? { slot: options.slot } : {}),
+            });
+            if (revisedQuality.score >= benchmarkQuality.score) {
+              geminiBenchmark = { model: revised.model, draft: revisedDraft };
+              benchmarkQuality = revisedQuality;
+            }
+            await log("benchmark", "info", `Gemini comparison revision scored ${revisedQuality.score}`);
+          }
+        } catch (error) {
+          await store.countUsage(`gemini:${benchmarkModel}`, "error").catch(() => undefined);
+          await log("benchmark", "warn", "Gemini comparison revision failed", describe(error));
+        }
+      }
+      if (budgetLeft() > 18_000) {
+        try {
+          const benchmarkReview = await router.generate(
+            reviewRequest(geminiBenchmark.draft, sources),
+            "parallel-medium",
+          );
+          const unsupported = parseReview(benchmarkReview.text);
+          if (unsupported) {
+            benchmarkQuality = validateDraft({
+              draft: geminiBenchmark.draft,
+              kind,
+              sources,
+              recentTitles: recent.map((r) => r.title),
+              reviewerUnsupported: unsupported,
+              ...(options.slot ? { slot: options.slot } : {}),
+            });
+            await log("benchmark-review", "info", `Parallel review flagged ${unsupported.length} statement(s)`, unsupported);
+          } else {
+            await log("benchmark-review", "warn", "Parallel review answer could not be read");
+          }
+        } catch (error) {
+          await log("benchmark-review", "warn", "Parallel review did not run", describe(error));
+        }
+      } else {
+        await log("benchmark-review", "warn", "Parallel review skipped: not enough time left");
+      }
+    }
+
     if (options.dry) {
-      const benchmarkQuality = geminiBenchmark
-        ? validateDraft({
-            draft: geminiBenchmark.draft,
-            kind,
-            sources,
-            recentTitles: recent.map((r) => r.title),
-            reviewerUnsupported: [],
-            ...(options.slot ? { slot: options.slot } : {}),
-          })
-        : null;
       const benchmark = geminiBenchmark && benchmarkQuality
         ? {
             model: geminiBenchmark.model,
@@ -397,7 +455,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
           force: false,
         });
         if (benchmarkJob) {
-          const benchmarkQuality = validateDraft({
+          const finalBenchmarkQuality = benchmarkQuality ?? validateDraft({
             draft: geminiBenchmark.draft,
             kind,
             sources,
@@ -421,8 +479,8 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
               readingMinutes: readingMinutes(geminiBenchmark.draft.body),
               status: "REVIEW",
               aiModel: geminiBenchmark.model,
-              qualityScore: benchmarkQuality.score,
-              qualityIssues: benchmarkQuality.issues,
+              qualityScore: finalBenchmarkQuality.score,
+              qualityIssues: finalBenchmarkQuality.issues,
             },
             sources,
             usedSourceIndexes: benchmarkCited,
@@ -432,14 +490,14 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
             status: "succeeded",
             articleId: benchmarkSaved.id,
             model: geminiBenchmark.model,
-            report: { benchmark: true, quality: benchmarkQuality, published: false },
+            report: { benchmark: true, quality: finalBenchmarkQuality, published: false },
           });
           await log("benchmark", "info", "Gemini comparison saved to editorial review; not published", {
             articleId: benchmarkSaved.id,
             title: geminiBenchmark.draft.title,
             model: geminiBenchmark.model,
-            qualityScore: benchmarkQuality.score,
-            critical: benchmarkQuality.critical,
+            qualityScore: finalBenchmarkQuality.score,
+            critical: finalBenchmarkQuality.critical,
           });
         }
       } catch (error) {
