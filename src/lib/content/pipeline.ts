@@ -373,6 +373,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
             sources,
             recentTitles: recent.map((r) => r.title),
             reviewerUnsupported: [],
+            ...(options.slot ? { slot: options.slot } : {}),
           });
           const benchmarkCited = [...new Set(geminiBenchmark.draft.claims.map((c) => c.source))];
           const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-gemini-comparison`;
