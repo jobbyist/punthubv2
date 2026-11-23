@@ -19,7 +19,7 @@ begin
         when 'pfie' then 'PFIE & Technology'
         when 'features' then 'Features & Improvements'
         when 'community' then 'Community'
-        when 'sports' then 'Sports Intelligence'
+        when 'sports' then 'Sports'
         when 'breaking' then 'Breaking News'
         when 'editorial' then 'Editorial Analysis'
         when 'intelligence' then 'Sports Intelligence'
