@@ -177,7 +177,7 @@ function Article() {
             className="mt-10 border-t border-border pt-6 text-sm"
             aria-labelledby="sources-title"
           >
-            <p className="font-semibold">{t("ai.label")}</p>
+            {a.ai_model !== "parallel-medium" && <p className="font-semibold">{t("ai.label")}</p>}
             {(sources ?? []).length > 0 && (
               <>
                 <h2 id="sources-title" className="mt-3 text-base">
@@ -200,7 +200,7 @@ function Article() {
                 </ol>
               </>
             )}
-            <p className="mt-3 text-xs text-muted-foreground">{t("ai.note")}</p>
+            {a.ai_model !== "parallel-medium" && <p className="mt-3 text-xs text-muted-foreground">{t("ai.note")}</p>}
           </aside>
         )}
 
