@@ -68,7 +68,7 @@ describe("config", () => {
   });
   it("refuses a model that is not on the free list", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
-    expect(models).toEqual(["gemini-3.1-flash-lite"]);
+    expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
     expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
   it("reads daily caps and ignores bad entries", () => {
@@ -217,6 +217,7 @@ describe("schedule", () => {
   const base = { scheduleMode: "alternate" as const, nextKindOverride: null };
   it("keys the job on the South African date", () => {
     expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"))).toBe("daily:2026-11-14");
+    expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"), "breaking")).toBe("daily:2026-11-14:breaking");
   });
   it("alternates day by day", () => {
     const a = kindForDay(base, true, new Date("2026-11-14T04:00:00Z")).kind;
