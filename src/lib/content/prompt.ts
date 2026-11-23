@@ -72,9 +72,9 @@ export function articleRequest(input: {
   slot?: ContentSlot;
 }): LlmRequest {
   const slotTasks: Record<ContentSlot, string> = {
-    breaking: "Write a 500 to 700 word Breaking News report for South African football fans. Cover only a development that is genuinely current in the sources. Lead with what happened, when it happened and who is affected. Explain the verified context and what happens next. Do not inflate routine news into a major story.",
-    editorial: "Write an 800 to 1,000 word Editorial Analysis with a clear, defensible thesis. Build the argument from evidence across at least three independent sources. Include context, tactical or structural analysis, a credible counterpoint and a concise conclusion. Do not present opinion as fact or pad the article with generic football commentary.",
-    intelligence: "Write a 700 to 900 word Sports Intelligence feature. Analyse performance, form, tactics, competition context and relevant statistics. Explain what the evidence shows, what it does not show and why it matters to informed South African sports fans. Use at least three independent sources where available.",
+    breaking: "Write a 500 to 700 word Breaking News report for South African football fans. Cover only a development that is genuinely current in the sources. Lead with what happened, when it happened and who is affected. Explain the verified context and what happens next. Do not inflate routine news into a major story. Include at least four verifiable claims with verbatim supporting quotes across two source domains.",
+    editorial: "Write an 800 to 1,000 word Editorial Analysis with a clear, defensible thesis. Build the argument from evidence across at least three independent sources. Include context, tactical or structural analysis, a credible counterpoint and a concise conclusion. Do not present opinion as fact or pad the article with generic football commentary. Include at least six verifiable claims with verbatim supporting quotes spanning all three source domains.",
+    intelligence: "Write a 700 to 900 word Sports Intelligence feature. Analyse performance, form, tactics, competition context and relevant statistics. Explain what the evidence shows, what it does not show and why it matters to informed South African sports fans. Use at least three independent sources. Include at least six verifiable claims with verbatim supporting quotes spanning all three source domains.",
   };
   const task =
     input.kind === "sports"
