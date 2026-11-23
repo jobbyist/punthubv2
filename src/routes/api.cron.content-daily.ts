@@ -7,6 +7,7 @@ import type {} from "@tanstack/react-start";
  *
  *   ?dry=1               run everything except saving the article
  *   ?kind=sports|development   choose the kind for this run (a separate manual job)
+ *   ?slot=breaking|editorial|intelligence selects one of the three scheduled daily beats
  *   ?force=1             rerun today's job after a failure
  */
 export const Route = createFileRoute("/api/cron/content-daily")({
@@ -20,12 +21,14 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const url = new URL(request.url);
         const kindParam = url.searchParams.get("kind");
         const kind = kindParam === "sports" || kindParam === "development" ? kindParam : undefined;
+        const slotParam = url.searchParams.get("slot");
+        const slot = slotParam === "breaking" || slotParam === "editorial" || slotParam === "intelligence" ? slotParam : undefined;
         const force = url.searchParams.get("force") === "1";
         const dry = url.searchParams.get("dry") === "1";
-        const manual = kind !== undefined || force || dry;
+        const manual = kind !== undefined || slot !== undefined || force || dry;
 
         const { readContentEnv } = await import("@/lib/content/config");
-        const { createGemini, createPageReader, createParallelSearch } =
+        const { createGemini, createParallelResponses, createPageReader, createParallelSearch } =
           await import("@/lib/content/providers.server");
         const { createContentStore } = await import("@/lib/content/store.server");
         const { runContentJob } = await import("@/lib/content/pipeline");
@@ -34,6 +37,17 @@ export const Route = createFileRoute("/api/cron/content-daily")({
           await import("@/lib/quota.server");
         const claim = await createQuotaClaim();
         const env = readContentEnv();
+        const parallelLlm = env.parallelKey ? createParallelResponses(env.parallelKey) : null;
+        const geminiLlm = env.geminiKey ? createGemini(env.geminiKey) : null;
+        const editorialLlm = parallelLlm && geminiLlm
+          ? {
+              name: "newsroom-editorial",
+              generate: (model: string, request: import("@/lib/content/types").LlmRequest) =>
+                model === "parallel-medium"
+                  ? parallelLlm.generate(model, request)
+                  : geminiLlm.generate(model, request),
+            }
+          : null;
         try {
           const outcome = await runContentJob(
             {
@@ -46,7 +60,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
                 { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
                 (r) => guardExtract(r, claim),
               ),
-              llm: env.geminiKey ? guardLlm(createGemini(env.geminiKey), claim) : null,
+              llm: editorialLlm ? guardLlm(editorialLlm, claim) : null,
               notify: async (notice) => {
                 const { newsroomAlertEmail, NEWSROOM_ALERT_TO } =
                   await import("@/lib/email/newsroom-alert");
@@ -66,6 +80,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
             {
               trigger: manual ? "manual" : "cron",
               ...(kind ? { kind } : {}),
+              ...(slot ? { slot } : {}),
               force,
               dry,
             },
