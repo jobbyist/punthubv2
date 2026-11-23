@@ -46,6 +46,8 @@ set monthly_usd = 35.00,
     updated_at = now()
 where family = 'parallel';
 
+update public.content_settings set publish_on_schedule = false, updated_at = now() where id = true;
+
 -- Replace the one-article daily schedule with three independently idempotent editorial slots.
 select cron.unschedule('content-daily') where exists (select 1 from cron.job where jobname = 'content-daily');
 select cron.unschedule('content-breaking') where exists (select 1 from cron.job where jobname = 'content-breaking');
