@@ -53,7 +53,7 @@ create table if not exists public.synthetic_research (
   response_json jsonb not null,
   source_urls text[] not null default '{}',
   created_at timestamptz not null default now(),
-  unique (experiment_id, fixture_key)
+  unique (experiment_id, fixture_key, provider)
 );
 
 create table if not exists public.synthetic_budget_ledger (
