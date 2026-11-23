@@ -162,7 +162,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
           skipped_no_fixture: skippedNoFixture,
           successes,
           failures,
-        });
+        }, { status: failures.length === 0 ? 200 : 500 });
       },
     },
   },
