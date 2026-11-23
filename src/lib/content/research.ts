@@ -176,7 +176,7 @@ export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot): 
 }
 
 const MAX_SOURCE_CHARS = 6_000;
-const MAX_RESEARCH_SOURCE_CHARS = 1_800;
+const MAX_RESEARCH_SOURCE_CHARS = 1_500;
 
 /** Removes links, images and markup noise; keeps the words. The validator checks quotes against this exact text. */
 export function cleanText(markdown: string, maxChars = MAX_SOURCE_CHARS): string {
