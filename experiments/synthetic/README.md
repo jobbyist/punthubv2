@@ -79,7 +79,7 @@ Then:
 node decisions.mjs ./fixture.json
 ```
 
-Decisions are cached through Puntr's existing parallel_cache by request body (24-hour research TTL), shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, option probabilities and a confidence band derived from the selected probability. An actionable batch requires at least two independent source domains; otherwise all decisions become no_pick. No odds, bookmaker or stake recommendations are generated.
+Decisions are cached through Puntr's existing parallel_cache by request body (24-hour research TTL), shared across the persona batch, and never written to public picks. Each persona receives a typed market selection, model-estimated option probabilities and a confidence band derived from the selected probability. These probabilities are not statistically calibrated. An actionable batch requires citations from at least two distinct source hostnames; otherwise all decisions become no_pick. Distinct hostnames are a basic coverage check, not proof of editorial independence. No odds, bookmaker or stake recommendations are generated.
 
 ## 30-day orchestration
 
