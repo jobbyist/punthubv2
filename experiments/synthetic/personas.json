@@ -32,7 +32,7 @@
       "journey_paths": [
         "/",
         "/predictions",
-        "/match/overview",
+        "/fixtures",
         "/results"
       ],
       "return_visit_probability": 0.2,
@@ -385,7 +385,7 @@
       "journey_paths": [
         "/",
         "/predictions",
-        "/match/overview",
+        "/fixtures",
         "/results"
       ],
       "return_visit_probability": 0.2,
@@ -738,7 +738,7 @@
       "journey_paths": [
         "/",
         "/predictions",
-        "/match/overview",
+        "/fixtures",
         "/results"
       ],
       "return_visit_probability": 0.2,
@@ -1091,7 +1091,7 @@
       "journey_paths": [
         "/",
         "/predictions",
-        "/match/overview",
+        "/fixtures",
         "/results"
       ],
       "return_visit_probability": 0.2,
@@ -1444,7 +1444,7 @@
       "journey_paths": [
         "/",
         "/predictions",
-        "/match/overview",
+        "/fixtures",
         "/results"
       ],
       "return_visit_probability": 0.2,
