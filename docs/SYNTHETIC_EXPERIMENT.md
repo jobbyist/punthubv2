@@ -24,7 +24,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 
 **Primary: Decisions API.** It supports up to 100 named questions per request over one shared evidence set, returning typed choice probabilities and citations. One request can therefore evaluate two preferred markets for all 50 personas on the same fixture. This is the most economical fit for the experiment.
 
-**Existing Responses/Task clients:** Puntr already has server-side clients for conversational live-web answers and asynchronous JSON-schema research. If a future test needs narrative explanations, it must be routed through the existing cache and quota guard. Task is not required for the typed persona choices in this experiment. All outputs remain informational forecasts for QA and accuracy evaluation, not betting instructions.
+**Existing Responses/Task clients:** Puntr already has server-side clients for conversational live-web answers and asynchronous JSON-schema research. If a future test needs narrative explanations, it must be routed through the existing cache and quota guard. Task is not required for the typed persona choices in this experiment. All outputs remain informational forecasts for QA and accuracy evaluation, not betting instructions. The model's option probabilities are estimates, not calibrated probabilities or guaranteed outcomes.
 
 ## Cost and existing platform budget
 
