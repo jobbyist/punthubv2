@@ -33,7 +33,7 @@ test.describe("Puntr production read-only synthetic QA", () => {
   test.describe.configure({ mode: "parallel" });
 
   for (const persona of selected) {
-    test(`@smoke ${persona.persona_id} — ${persona.segment}`, async ({ page }) => {
+    test(`@smoke ${persona.persona_id} — ${persona.segment}`, async ({ page }) => {\n      const baseUrl = process.env.PUNTR_BASE_URL;\n      if (!baseUrl) throw new Error("PUNTR_BASE_URL is required");\n      await page.context().addCookies([{ name: "puntr_synthetic_qa", value: "1", url: baseUrl, secure: true, sameSite: "Lax" }]);
       const startedAt = new Date().toISOString();
       const visited = [];
       let outcome = "passed";
@@ -63,7 +63,7 @@ test.describe("Puntr production read-only synthetic QA", () => {
           outcome,
           page_paths: visited,
           error_code: errorCode,
-          metadata: { segment: persona.segment, marker: "synthetic_qa", account_mode: persona.account_mode }
+          metadata: { segment: persona.segment, marker: "synthetic_qa", analytics_excluded: true, account_mode: persona.account_mode }
         });
       }
     });
