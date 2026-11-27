@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount } from "@/lib/accounts.functions";
-import { hasConsent, openConsentBanner, writeConsent } from "@/lib/consent";
+import { CONSENT_NOTICE_VERSION, hasConsent, openConsentBanner, readConsent, writeConsent } from "@/lib/consent";
 import { setPfieLearningConsent } from "@/lib/pfie-learning.functions";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -208,9 +208,18 @@ function PfieLearningSection({ userId }: { userId: string }) {
 
   useEffect(() => {
     let active = true;
-    void supabase.from("current_consents").select("granted")
-      .eq("user_id", userId).eq("purpose", "pfie_learning").maybeSingle()
-      .then(({ data }) => { if (active) setEnabled(data?.granted === true); });
+    void (async () => {
+      const cookieChoice = readConsent();
+      const { data: current } = await supabase.from("current_consents").select("granted")
+        .eq("user_id", userId).eq("purpose", "pfie_learning").maybeSingle();
+      if (cookieChoice?.noticeVersion === CONSENT_NOTICE_VERSION && cookieChoice.pfie_learning !== (current?.granted === true)) {
+        await setPfieLearningConsent({ data: { granted: cookieChoice.pfie_learning } });
+        if (!active) return;
+        setEnabled(cookieChoice.pfie_learning);
+      } else if (active) {
+        setEnabled(current?.granted === true);
+      }
+    })();
     return () => { active = false; };
   }, [userId]);
 
