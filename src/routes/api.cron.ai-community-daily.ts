@@ -146,6 +146,12 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
             .select("persona_key,activity_date,activity_type,created_at")
             .gte("activity_date", since);
           if (activityError) throw new Error("Could not read AI activity rotation.");
+          const todayActivityRows = (activityRows ?? []).filter((row) => row.activity_date === today);
+          postsCreated = todayActivityRows.filter((row) => row.activity_type === "thread").length;
+          repliesCreated = todayActivityRows.filter((row) => row.activity_type === "reply").length;
+          duelsCreated = todayActivityRows.filter((row) => row.activity_type === "duel").length;
+          const remainingThreads = Math.max(0, MAX_THREADS - postsCreated);
+          const remainingReplies = Math.max(0, MAX_REPLIES - repliesCreated);
           const lastActivity = new Map<string, string>();
           const todayTypes = new Map<string, Set<string>>();
           for (const row of activityRows ?? []) {
@@ -162,7 +168,7 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
             a.persona_key.localeCompare(b.persona_key),
           );
           const used = new Set<string>();
-          const threadPersonas = rotation.filter((p) => !todayTypes.get(p.persona_key)?.has("thread")).slice(0, MAX_THREADS);
+          const threadPersonas = rotation.filter((p) => !todayTypes.get(p.persona_key)?.has("thread")).slice(0, remainingThreads);
           threadPersonas.forEach((p) => used.add(p.persona_key));
 
           const { data: humanRoots, error: rootsError } = await db
@@ -193,7 +199,7 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
           const aiRepliedTo = new Set((existingReplies ?? [])
             .filter((row) => replyAiMap.get(row.author_id) === true)
             .map((row) => row.parent_id));
-          const replyTargets = humanThreads.filter((row) => !aiRepliedTo.has(row.id)).slice(0, MAX_REPLIES);
+          const replyTargets = humanThreads.filter((row) => !aiRepliedTo.has(row.id)).slice(0, remainingReplies);
           const replyPersonas = rotation
             .filter((p) => !used.has(p.persona_key) && !todayTypes.get(p.persona_key)?.has("reply"))
             .slice(0, replyTargets.length);
@@ -348,15 +354,20 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
           const { data: duelsOpen } = await db.rpc("mvp_open");
           const { data: recentChallenges } = await db
             .from("ai_duel_challenges")
-            .select("persona_key")
+            .select("persona_key,created_at")
             .gte("created_at", new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString());
           const challengedRecently = new Set((recentChallenges ?? []).map((row) => row.persona_key));
+          const todayChallenges = (recentChallenges ?? []).filter((row) => sastDate(new Date(row.created_at)) === today);
+          const todayChallengePersonas = new Set(todayChallenges.map((row) => row.persona_key));
+          duelsCreated = Math.max(duelsCreated, todayChallenges.length);
+          const remainingDuels = Math.max(0, MAX_DUELS - todayChallenges.length);
           // Rotate AI H2H challengers so a persona does not open a new duel more than once per 14 days.
           const duelPersonas = rotation
             .filter((p) => !used.has(p.persona_key)
               && !todayTypes.get(p.persona_key)?.has("duel")
-              && !challengedRecently.has(p.persona_key))
-            .slice(0, MAX_DUELS);
+              && !challengedRecently.has(p.persona_key)
+              && !todayChallengePersonas.has(p.persona_key))
+            .slice(0, remainingDuels);
           const { data: upcoming, error: upcomingError } = await db
             .from("fixtures")
             .select("id,sport,competition,home,away,kickoff_at,status")
