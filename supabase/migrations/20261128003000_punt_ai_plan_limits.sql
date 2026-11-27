@@ -11,7 +11,7 @@ alter table public.punt_ai_usage
   drop constraint if exists punt_ai_usage_user_id_fkey;
 alter table public.punt_ai_usage
   add constraint punt_ai_usage_user_id_fkey
-  foreign key (user_id) references auth.users(id) on delete cascade;
+  foreign key (user_id) references public.profiles(id) on delete cascade;
 
 create index if not exists punt_ai_usage_created_idx
   on public.punt_ai_usage(created_at desc);
