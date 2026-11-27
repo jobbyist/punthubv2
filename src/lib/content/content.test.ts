@@ -353,9 +353,11 @@ describe("quality gate", () => {
     expect(report.critical).toBe(false);
     expect(report.score).toBe(85);
   });
-  it("caps the score of an article with a critical issue below any publishing threshold", () => {
+  it("uses a graduated score for critical issues instead of a fixed 49 floor", () => {
     const draft = sampleDraft({ title: "Short" });
-    expect(check(draft).score).toBeLessThan(50);
+    const report = check(draft);
+    expect(report.critical).toBe(true);
+    expect(report.score).toBe(85);
   });
   it("has working helpers", () => {
     expect(numberTokens("won 2–1 in 2026, 3 points")).toEqual(["2-1", "2026"]);
@@ -409,7 +411,7 @@ describe("pipeline", () => {
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
     expect((d.store as ReturnType<typeof memoryStore>).articles[0]?.status).toBe("REVIEW");
   });
-  it("never publishes a scheduled article with a critical issue, even when publishOnSchedule is on", async () => {
+  it("publishes a Parallel article with QA warnings and preserves its failed QA state", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const notices: unknown[] = [];
@@ -426,13 +428,13 @@ describe("pipeline", () => {
         notices.push(n);
       },
     };
-    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
-    expect(notices[0]).toMatchObject({ kind: "article", published: false, passed: false });
-    // A manual run still respects the checks.
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
+    expect(notices[0]).toMatchObject({ kind: "article", published: true, passed: false });
+    // Manual Parallel runs follow the same owner-review publishing policy.
     const m = { ...d, store: memoryStore({ publishOnSchedule: true }) };
-    expect((await runContentJob(m, { trigger: "manual" })).status).toBe("queued_for_review");
+    expect((await runContentJob(m, { trigger: "manual" })).status).toBe("published");
   });
-  it("queues for review when the quality gate finds a critical issue", async () => {
+  it("publishes Parallel output when the quality gate finds a critical issue", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const d = deps({
@@ -441,7 +443,7 @@ describe("pipeline", () => {
       ),
     });
     const out = await runContentJob(d, { trigger: "cron" });
-    expect(out.status).toBe("queued_for_review");
+    expect(out.status).toBe("published");
     expect(out.ok && "quality" in out && out.quality.critical).toBe(true);
   });
   it("asks for one revision when the first draft fails a critical check, and uses the fixed draft", async () => {
@@ -463,13 +465,13 @@ describe("pipeline", () => {
       store.logs.some((l) => l.stage === "revision" && l.message.startsWith("revised by")),
     ).toBe(true);
   });
-  it("queues for review when the independent review cannot run", async () => {
+  it("still publishes Parallel output when the independent review cannot run", async () => {
     const d = deps({
       llm: fakeLlm((_m, r) =>
         r.system.startsWith("You are a fact checker") ? quota() : JSON.stringify(sampleDraft()),
       ),
     });
-    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
   });
   it("falls back to the second model when the primary is out of quota", async () => {
     const d = deps({
