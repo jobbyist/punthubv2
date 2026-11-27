@@ -56,13 +56,15 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
 }
 
 describe("config", () => {
-  it("defaults to the five free models, primary first, lightest last", () => {
-    expect(parseModelList(undefined).models).toEqual(["parallel-medium"]);
+  it("keeps the shared router model list available to PFIE while Newsroom slots stay Parallel-only", () => {
+    expect(parseModelList(undefined).models[0]).toBe("parallel-medium");
+    expect(parseModelList(undefined).models).toContain("gemini-3.8-flash");
+    expect(modelsForContentSlot(parseModelList(undefined).models, "breaking")).toEqual(["parallel-medium"]);
   });
-  it("refuses a model that is not on the free list", () => {
+  it("refuses a model that is not on the shared allowlist", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
-    expect(models).toEqual(["parallel-medium"]);
-    expect(refused).toEqual([]);
+    expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
+    expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
   it("uses Parallel Medium for every Newsroom slot", () => {
     const models = ["parallel-medium"];
@@ -176,11 +178,10 @@ describe("model router", () => {
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
     expect(llm.calls).toHaveLength(0);
   });
-  it("never calls Gemini even if it is explicitly requested", async () => {
-    const llm = fakeLlm(() => "{}");
-    const router = createModelRouter(llm, { models: ["gemini-3.8-flash"], sleep: noSleep });
-    await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
-    expect(llm.calls).toHaveLength(0);
+  it("keeps Gemini out of every Newsroom slot even though PFIE can use it", () => {
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "breaking")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "editorial")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "intelligence")).toEqual(["parallel-medium"]);
   });
   it("throws AllModelsFailed when Parallel is out of quota", async () => {
     const router = createModelRouter(fakeLlm(() => quota()), { models, sleep: noSleep });
