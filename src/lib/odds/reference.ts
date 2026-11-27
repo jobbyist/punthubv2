@@ -64,6 +64,8 @@ export const ODDS_AFFILIATE_PRIORITY_DOMAINS = [
   "supabets.co.za",
   "yesplay.bet",
   "1xbet.com",
+  "easybet.co.za",
+  "playbet.co.za",
 ] as const;
 
 /** Hollywoodbets shows profit odds rather than decimal odds; conversion happens only after exact quote validation. */
