@@ -199,11 +199,11 @@ grant execute on function public.settle_synthetic_budget(text,numeric,text,boole
 insert into public.synthetic_experiments (
   slug, label, environment, starts_at, ends_at, budget_cap_usd, status
 ) values (
-  'puntr-30-day-synthetic-2026-11-23',
+  'puntr-30-day-synthetic-2026-11-27',
   'Puntr 30-day synthetic QA experiment',
   'production',
-  '2026-11-23 00:00:00+02',
-  '2026-12-23 00:00:00+02',
+  '2026-11-27 00:00:00+02',
+  '2026-12-27 00:00:00+02',
   50.00,
   'paused'
 )
