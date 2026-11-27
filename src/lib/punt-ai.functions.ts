@@ -109,16 +109,24 @@ function parseAnswer(text: string): string {
 async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextBundle> {
   const from = now.toISOString();
   const to = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-  const [fixturesResult, standingsResult, articlesResult] = await Promise.all([
+  const recentFrom = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const [fixturesResult, resultsResult, standingsResult, articlesResult] = await Promise.all([
     db
       .from("fixtures")
-      .select("competition, home, away, kickoff_at")
-      .eq("sport", "soccer")
+      .select("sport, competition, home, away, kickoff_at")
       .eq("status", "scheduled")
       .gte("kickoff_at", from)
       .lt("kickoff_at", to)
       .order("kickoff_at", { ascending: true })
       .limit(24),
+    db
+      .from("fixtures")
+      .select("sport, competition, home, away, kickoff_at, home_score, away_score")
+      .eq("status", "finished")
+      .gte("kickoff_at", recentFrom)
+      .lt("kickoff_at", from)
+      .order("kickoff_at", { ascending: false })
+      .limit(12),
     db
       .from("league_standings")
       .select("competition_key, competition, group_name, team, position, played, won, drawn, lost, goals_for, goals_against, points, synced_at")
@@ -136,10 +144,12 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
   ]);
 
   if (fixturesResult.error) throw new Error(`Puntr fixture context unavailable: ${fixturesResult.error.message}`);
+  if (resultsResult.error) throw new Error(`Puntr results context unavailable: ${resultsResult.error.message}`);
   if (standingsResult.error) throw new Error(`Puntr standings context unavailable: ${standingsResult.error.message}`);
   if (articlesResult.error) throw new Error(`Puntr newsroom context unavailable: ${articlesResult.error.message}`);
 
   const fixtures = (fixturesResult.data ?? []) as Record<string, unknown>[];
+  const results = (resultsResult.data ?? []) as Record<string, unknown>[];
   const standings = (standingsResult.data ?? []) as Record<string, unknown>[];
   const articles = (articlesResult.data ?? []) as Record<string, unknown>[];
 
@@ -147,8 +157,12 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
     `Context timestamp: ${now.toISOString()}.`,
     "UPCOMING VERIFIED FIXTURES (next seven days):",
     fixtures.length
-      ? fixtures.map((f) => `- ${f["competition"]}: ${f["home"]} vs ${f["away"]}, kick-off ${f["kickoff_at"]}.`).join("\n")
+      ? fixtures.map((f) => `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} vs ${f["away"]}, kick-off ${f["kickoff_at"]}.`).join("\n")
       : "No upcoming fixtures are currently available in Puntr's verified fixture store.",
+    "RECENT VERIFIED RESULTS (previous seven days):",
+    results.length
+      ? results.map((f) => `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} ${f["home_score"]}–${f["away_score"]} ${f["away"]}, played ${f["kickoff_at"]}.`).join("\n")
+      : "No recent completed results are currently available in Puntr's verified fixture store.",
     "LATEST STORED LEAGUE STANDINGS:",
     standings.length
       ? standings.map((r) => {
