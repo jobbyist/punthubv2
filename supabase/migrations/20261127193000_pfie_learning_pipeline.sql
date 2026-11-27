@@ -95,7 +95,7 @@ begin
     raise exception 'fixture_context_incomplete';
   end if;
 
-  select o.home_score, o.away_score, count(distinct lower(regexp_replace(o.domain, '^www\\.', '')))
+  select o.home_score, o.away_score, count(distinct lower(regexp_replace(o.domain, '^www\.', '')))
     into v_home_score, v_away_score, v_domains
   from public.pfie_observations o
   where o.accepted = true
@@ -106,7 +106,7 @@ begin
     and lower(trim(o.away)) = lower(trim(v_away))
     and abs(extract(epoch from (o.kickoff_utc - v_kickoff))) <= 86400
   group by o.home_score, o.away_score
-  order by count(distinct lower(regexp_replace(o.domain, '^www\\.', ''))) desc
+  order by count(distinct lower(regexp_replace(o.domain, '^www\.', ''))) desc
   limit 1;
 
   if v_domains is null or v_domains < 2 then
