@@ -463,6 +463,7 @@ describe("UEFA Champions League cross-publisher team aliases", () => {
 describe("Bundesliga cross-publisher team aliases", () => {
   it("reconciles Bayer 04 Leverkusen and Bayer Leverkusen", () => {
     expect(normaliseTeam("Bayer 04 Leverkusen")).toBe(normaliseTeam("Bayer Leverkusen"));
+    expect(normaliseTeam("Leverkusen")).toBe(normaliseTeam("Bayer Leverkusen"));
   });
 });
 
