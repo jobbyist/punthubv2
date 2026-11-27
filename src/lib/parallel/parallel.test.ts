@@ -82,7 +82,22 @@ describe("cachedCall", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
-  it("shares extracted page content across newsroom slots without another provider call", async () => {\n    const store = memoryStore();\n    const extract = vi.fn(async () => ({ markdown: "Full page content", title: "Article" }));\n    const cached = withExtractCache({ name: "firecrawl", extract }, store, "news");\n    expect(await cached.extract("https://example.com/story")).toEqual({ markdown: "Full page content", title: "Article" });\n    expect(await cached.extract("https://example.com/story")).toEqual({ markdown: "Full page content", title: "Article" });\n    expect(extract).toHaveBeenCalledTimes(1);\n  });\n\n  it("calls again once the entry has expired", async () => {
+  it("shares extracted page content across newsroom slots without another provider call", async () => {
+    const store = memoryStore();
+    const extract = vi.fn(async () => ({ markdown: "Full page content", title: "Article" }));
+    const cached = withExtractCache({ name: "firecrawl", extract }, store, "news");
+    expect(await cached.extract("https://example.com/story")).toEqual({
+      markdown: "Full page content",
+      title: "Article",
+    });
+    expect(await cached.extract("https://example.com/story")).toEqual({
+      markdown: "Full page content",
+      title: "Article",
+    });
+    expect(extract).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls again once the entry has expired", async () => {
     const store = memoryStore();
     const fetcher = vi.fn(async () => 1);
     const base = { endpoint: "s", body: {}, purpose: "results" as const };
