@@ -1,3 +1,10 @@
+## 2026-11-27, simpler sign-up flow (no notice version change)
+
+- **What changed:** the first sign-up screen no longer shows a separate "I am 18 or older" checkbox. The line under the form now reads "By continuing you confirm you're 18 or older, agree to the Terms and have read the Privacy notice." The binding age check is unchanged: the profile step still asks for year of birth and an unticked "I am 18 or older" box plus Terms acceptance before any profile is created, and under-18 sign-ins are still discarded. Marketing consent stays as two separate, unticked, optional boxes.
+- **Defaults:** new members are offered the passwordless email code first (a password is still one tap away); `/join` opens on Sign in on a device where someone has signed in before (a `puntr:has-account` flag in local storage, no personal data).
+- **Pages:** none changed; Terms and Privacy already describe the profile-step age confirmation.
+- **Review `[attorney review]`:** confirm that a continue-means-agree line at the email step plus the profile-step checkboxes is sufficient age attestation and Terms acceptance.
+
 ## 2026-11-23, PayFast payment disclosures and Brand Ambassador applications (Terms r24, Privacy r22)
 
 - **Payments:** Terms, Privacy and Refunds now describe PayFast by Network as the current payment processor, the transaction details Puntr receives, and the fact that Puntr does not receive or store full card or bank credentials. Ozow is identified as planned but not integrated or available at checkout.
