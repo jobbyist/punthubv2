@@ -5,7 +5,6 @@ import type { LlmProvider, SearchProvider } from "@/lib/content/types";
 import {
   DEFAULT_ODDS_SOURCE_DOMAINS,
   ODDS_AFFILIATE_PRIORITY_DOMAINS,
-  oddsQueries,
   type OddsSource,
   type RawPrice,
   type UpcomingFixture,
@@ -18,7 +17,7 @@ import {
   settleOdds,
   validatePrices,
 } from "./reference";
-import { type OddsStatus, type OddsStore, oddsDue, runOddsSync } from "./sync";
+import { type OddsStatus, type OddsStore, oddsDue, oddsQueries, runOddsSync } from "./sync";
 
 const fixtures: UpcomingFixture[] = [
   { id: "f1", home: "Orlando Pirates", away: "Kaizer Chiefs", kickoffAt: "2026-11-21T15:30:00Z" },
