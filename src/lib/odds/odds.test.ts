@@ -205,6 +205,7 @@ describe("runOddsSync", () => {
     const store: OddsStore = {
       upcoming: async () => fixtures.map((f) => ({ ...f, competition: "Betway Premiership" })),
       statuses: async () => overrides.statuses ?? [],
+      authorizedDomains: async () => allowed,
       insert: async (rows) => {
         inserted.push(...rows);
         return rows.length;
@@ -230,7 +231,7 @@ describe("runOddsSync", () => {
       extract: vi.fn(async () => ({ markdown: page, title: null })),
     };
     const llm: LlmProvider = {
-      name: "gemini",
+      name: "parallel-responses",
       generate: vi.fn(async (model: string) => ({
         model,
         text: overrides.llmText ?? JSON.stringify({ prices: x12() }),
@@ -256,6 +257,7 @@ describe("runOddsSync", () => {
     expect(d.inserted).toHaveLength(3);
     expect(d.records[0]).toMatchObject({ ok: true });
     expect(d.extract.extract).toHaveBeenCalledTimes(1); // oddschecker.com is never read
+    expect(d.llm.generate).toHaveBeenCalledWith("parallel-low", expect.any(Object));
   });
 
   it("skips a competition tried in this refresh window", async () => {
