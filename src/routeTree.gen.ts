@@ -19,8 +19,8 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DevRouteImport } from './routes/dev'
 import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as FantasyArenaRouteImport } from './routes/fantasy-arena'
+import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as FixturesRouteImport } from './routes/fixtures'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as FoundingRouteImport } from './routes/founding'
@@ -36,9 +36,9 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PuntpointsRouteImport } from './routes/puntpoints'
 import { Route as ReferralsRouteImport } from './routes/referrals'
-import { Route as ResponsiblePlayRouteImport } from './routes/responsible-play'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ResponsiblePlayRouteImport } from './routes/responsible-play'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
@@ -73,6 +73,7 @@ import { Route as TheGoodSportEpisode01RouteImport } from './routes/the-good-spo
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
 import { Route as ApiAuthSendEmailRouteImport } from './routes/api.auth.send-email'
+import { Route as ApiCronAiCommunityDailyRouteImport } from './routes/api.cron.ai-community-daily'
 import { Route as ApiCronAnnualPassExpiredRouteImport } from './routes/api.cron.annual-pass-expired'
 import { Route as ApiCronAnnualPassReminderRouteImport } from './routes/api.cron.annual-pass-reminder'
 import { Route as ApiCronChainHeadRouteImport } from './routes/api.cron.chain-head'
@@ -83,6 +84,7 @@ import { Route as ApiCronFoundingSequenceRouteImport } from './routes/api.cron.f
 import { Route as ApiCronFoundingWelcomeRouteImport } from './routes/api.cron.founding-welcome'
 import { Route as ApiCronIdentityRetentionRouteImport } from './routes/api.cron.identity-retention'
 import { Route as ApiCronLaunchNotifyRouteImport } from './routes/api.cron.launch-notify'
+import { Route as ApiCronPfieLearningIngestRouteImport } from './routes/api.cron.pfie-learning-ingest'
 import { Route as ApiCronPodcastPremiereRouteImport } from './routes/api.cron.podcast-premiere'
 import { Route as ApiCronPracticeTickRouteImport } from './routes/api.cron.practice-tick'
 import { Route as ApiCronSettleRouteImport } from './routes/api.cron.settle'
@@ -91,6 +93,9 @@ import { Route as ApiCronSyncFixturesRouteImport } from './routes/api.cron.sync-
 import { Route as ApiCronSyncOddsRouteImport } from './routes/api.cron.sync-odds'
 import { Route as ApiCronSyncResultsRouteImport } from './routes/api.cron.sync-results'
 import { Route as ApiCronSyncTablesRouteImport } from './routes/api.cron.sync-tables'
+import { Route as ApiCronSyntheticDecisionsRouteImport } from './routes/api.cron.synthetic-decisions'
+import { Route as ApiCronSyntheticDecisionsDailyRouteImport } from './routes/api.cron.synthetic-decisions-daily'
+import { Route as ApiCronSyntheticRunRouteImport } from './routes/api.cron.synthetic-run'
 import { Route as ApiCronTeamBadgesRouteImport } from './routes/api.cron.team-badges'
 import { Route as ApiNewsroomCoverSlugRouteImport } from './routes/api.newsroom-cover.$slug'
 import { Route as ApiPayfastItnRouteImport } from './routes/api.payfast.itn'
@@ -113,6 +118,11 @@ const AffiliateDisclosureRoute = AffiliateDisclosureRouteImport.update({
 const BookmakersRoute = BookmakersRouteImport.update({
   id: '/bookmakers',
   path: '/bookmakers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandAmbassadorsRoute = BrandAmbassadorsRouteImport.update({
+  id: '/brand-ambassadors',
+  path: '/brand-ambassadors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComingSoonRoute = ComingSoonRouteImport.update({
@@ -138,6 +148,11 @@ const DevRoute = DevRouteImport.update({
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasyArenaRoute = FantasyArenaRouteImport.update({
+  id: '/fantasy-arena',
+  path: '/fantasy-arena',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedbackRoute = FeedbackRouteImport.update({
@@ -220,21 +235,6 @@ const ReferralsRoute = ReferralsRouteImport.update({
   path: '/referrals',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResponsiblePlayRoute = ResponsiblePlayRouteImport.update({
-  id: '/responsible-play',
-  path: '/responsible-play',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrandAmbassadorsRoute = BrandAmbassadorsRouteImport.update({
-  id: '/brand-ambassadors',
-  path: '/brand-ambassadors',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FantasyArenaRoute = FantasyArenaRouteImport.update({
-  id: '/fantasy-arena',
-  path: '/fantasy-arena',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RefundsRoute = RefundsRouteImport.update({
   id: '/refunds',
   path: '/refunds',
@@ -243,6 +243,11 @@ const RefundsRoute = RefundsRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponsiblePlayRoute = ResponsiblePlayRouteImport.update({
+  id: '/responsible-play',
+  path: '/responsible-play',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResultsRoute = ResultsRouteImport.update({
@@ -415,6 +420,11 @@ const ApiAuthSendEmailRoute = ApiAuthSendEmailRouteImport.update({
   path: '/api/auth/send-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronAiCommunityDailyRoute = ApiCronAiCommunityDailyRouteImport.update({
+  id: '/api/cron/ai-community-daily',
+  path: '/api/cron/ai-community-daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronAnnualPassExpiredRoute =
   ApiCronAnnualPassExpiredRouteImport.update({
     id: '/api/cron/annual-pass-expired',
@@ -468,6 +478,12 @@ const ApiCronLaunchNotifyRoute = ApiCronLaunchNotifyRouteImport.update({
   path: '/api/cron/launch-notify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronPfieLearningIngestRoute =
+  ApiCronPfieLearningIngestRouteImport.update({
+    id: '/api/cron/pfie-learning-ingest',
+    path: '/api/cron/pfie-learning-ingest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiCronPodcastPremiereRoute = ApiCronPodcastPremiereRouteImport.update({
   id: '/api/cron/podcast-premiere',
   path: '/api/cron/podcast-premiere',
@@ -508,6 +524,23 @@ const ApiCronSyncTablesRoute = ApiCronSyncTablesRouteImport.update({
   path: '/api/cron/sync-tables',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronSyntheticDecisionsRoute =
+  ApiCronSyntheticDecisionsRouteImport.update({
+    id: '/api/cron/synthetic-decisions',
+    path: '/api/cron/synthetic-decisions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronSyntheticDecisionsDailyRoute =
+  ApiCronSyntheticDecisionsDailyRouteImport.update({
+    id: '/api/cron/synthetic-decisions-daily',
+    path: '/api/cron/synthetic-decisions-daily',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronSyntheticRunRoute = ApiCronSyntheticRunRouteImport.update({
+  id: '/api/cron/synthetic-run',
+  path: '/api/cron/synthetic-run',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronTeamBadgesRoute = ApiCronTeamBadgesRouteImport.update({
   id: '/api/cron/team-badges',
   path: '/api/cron/team-badges',
@@ -535,8 +568,8 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
-  '/feedback': typeof FeedbackRoute
   '/fantasy-arena': typeof FantasyArenaRoute
+  '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -552,9 +585,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
-  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -589,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -599,6 +633,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/pfie-learning-ingest': typeof ApiCronPfieLearningIngestRoute
   '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
@@ -607,6 +642,9 @@ export interface FileRoutesByFullPath {
   '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/synthetic-decisions': typeof ApiCronSyntheticDecisionsRoute
+  '/api/cron/synthetic-decisions-daily': typeof ApiCronSyntheticDecisionsDailyRoute
+  '/api/cron/synthetic-run': typeof ApiCronSyntheticRunRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
   '/api/payfast/itn': typeof ApiPayfastItnRoute
@@ -622,8 +660,8 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
-  '/feedback': typeof FeedbackRoute
   '/fantasy-arena': typeof FantasyArenaRoute
+  '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -639,9 +677,9 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
-  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -676,6 +714,7 @@ export interface FileRoutesByTo {
   '/newsroom': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -686,6 +725,7 @@ export interface FileRoutesByTo {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/pfie-learning-ingest': typeof ApiCronPfieLearningIngestRoute
   '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
@@ -694,6 +734,9 @@ export interface FileRoutesByTo {
   '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/synthetic-decisions': typeof ApiCronSyntheticDecisionsRoute
+  '/api/cron/synthetic-decisions-daily': typeof ApiCronSyntheticDecisionsDailyRoute
+  '/api/cron/synthetic-run': typeof ApiCronSyntheticRunRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
   '/api/payfast/itn': typeof ApiPayfastItnRoute
@@ -710,8 +753,8 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/dev': typeof DevRoute
   '/discover': typeof DiscoverRoute
-  '/feedback': typeof FeedbackRoute
   '/fantasy-arena': typeof FantasyArenaRoute
+  '/feedback': typeof FeedbackRoute
   '/fixtures': typeof FixturesRoute
   '/forum': typeof ForumRoute
   '/founding': typeof FoundingRoute
@@ -727,9 +770,9 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/puntpoints': typeof PuntpointsRoute
   '/referrals': typeof ReferralsRoute
-  '/responsible-play': typeof ResponsiblePlayRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsible-play': typeof ResponsiblePlayRoute
   '/results': typeof ResultsRoute
   '/rewards': typeof RewardsRoute
   '/roadmap': typeof RoadmapRoute
@@ -764,6 +807,7 @@ export interface FileRoutesById {
   '/newsroom/': typeof NewsroomIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
+  '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
   '/api/cron/annual-pass-expired': typeof ApiCronAnnualPassExpiredRoute
   '/api/cron/annual-pass-reminder': typeof ApiCronAnnualPassReminderRoute
   '/api/cron/chain-head': typeof ApiCronChainHeadRoute
@@ -774,6 +818,7 @@ export interface FileRoutesById {
   '/api/cron/founding-welcome': typeof ApiCronFoundingWelcomeRoute
   '/api/cron/identity-retention': typeof ApiCronIdentityRetentionRoute
   '/api/cron/launch-notify': typeof ApiCronLaunchNotifyRoute
+  '/api/cron/pfie-learning-ingest': typeof ApiCronPfieLearningIngestRoute
   '/api/cron/podcast-premiere': typeof ApiCronPodcastPremiereRoute
   '/api/cron/practice-tick': typeof ApiCronPracticeTickRoute
   '/api/cron/settle': typeof ApiCronSettleRoute
@@ -782,6 +827,9 @@ export interface FileRoutesById {
   '/api/cron/sync-odds': typeof ApiCronSyncOddsRoute
   '/api/cron/sync-results': typeof ApiCronSyncResultsRoute
   '/api/cron/sync-tables': typeof ApiCronSyncTablesRoute
+  '/api/cron/synthetic-decisions': typeof ApiCronSyntheticDecisionsRoute
+  '/api/cron/synthetic-decisions-daily': typeof ApiCronSyntheticDecisionsDailyRoute
+  '/api/cron/synthetic-run': typeof ApiCronSyntheticRunRoute
   '/api/cron/team-badges': typeof ApiCronTeamBadgesRoute
   '/api/newsroom-cover/$slug': typeof ApiNewsroomCoverSlugRoute
   '/api/payfast/itn': typeof ApiPayfastItnRoute
@@ -793,11 +841,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/affiliate-disclosure'
     | '/bookmakers'
+    | '/brand-ambassadors'
     | '/coming-soon'
     | '/community'
     | '/cookies'
     | '/dev'
     | '/discover'
+    | '/fantasy-arena'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -816,6 +866,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/refunds'
     | '/reset-password'
+    | '/responsible-play'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -850,6 +901,7 @@ export interface FileRouteTypes {
     | '/newsroom/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
+    | '/api/cron/ai-community-daily'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -860,6 +912,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/pfie-learning-ingest'
     | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
@@ -868,6 +921,9 @@ export interface FileRouteTypes {
     | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
+    | '/api/cron/synthetic-decisions'
+    | '/api/cron/synthetic-decisions-daily'
+    | '/api/cron/synthetic-run'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
     | '/api/payfast/itn'
@@ -877,11 +933,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/affiliate-disclosure'
     | '/bookmakers'
+    | '/brand-ambassadors'
     | '/coming-soon'
     | '/community'
     | '/cookies'
     | '/dev'
     | '/discover'
+    | '/fantasy-arena'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -900,6 +958,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/refunds'
     | '/reset-password'
+    | '/responsible-play'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -934,6 +993,7 @@ export interface FileRouteTypes {
     | '/newsroom'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
+    | '/api/cron/ai-community-daily'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -944,6 +1004,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/pfie-learning-ingest'
     | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
@@ -952,6 +1013,9 @@ export interface FileRouteTypes {
     | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
+    | '/api/cron/synthetic-decisions'
+    | '/api/cron/synthetic-decisions-daily'
+    | '/api/cron/synthetic-run'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
     | '/api/payfast/itn'
@@ -961,11 +1025,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/affiliate-disclosure'
     | '/bookmakers'
+    | '/brand-ambassadors'
     | '/coming-soon'
     | '/community'
     | '/cookies'
     | '/dev'
     | '/discover'
+    | '/fantasy-arena'
     | '/feedback'
     | '/fixtures'
     | '/forum'
@@ -984,6 +1050,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/refunds'
     | '/reset-password'
+    | '/responsible-play'
     | '/results'
     | '/rewards'
     | '/roadmap'
@@ -1018,6 +1085,7 @@ export interface FileRouteTypes {
     | '/newsroom/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
+    | '/api/cron/ai-community-daily'
     | '/api/cron/annual-pass-expired'
     | '/api/cron/annual-pass-reminder'
     | '/api/cron/chain-head'
@@ -1028,6 +1096,7 @@ export interface FileRouteTypes {
     | '/api/cron/founding-welcome'
     | '/api/cron/identity-retention'
     | '/api/cron/launch-notify'
+    | '/api/cron/pfie-learning-ingest'
     | '/api/cron/podcast-premiere'
     | '/api/cron/practice-tick'
     | '/api/cron/settle'
@@ -1036,6 +1105,9 @@ export interface FileRouteTypes {
     | '/api/cron/sync-odds'
     | '/api/cron/sync-results'
     | '/api/cron/sync-tables'
+    | '/api/cron/synthetic-decisions'
+    | '/api/cron/synthetic-decisions-daily'
+    | '/api/cron/synthetic-run'
     | '/api/cron/team-badges'
     | '/api/newsroom-cover/$slug'
     | '/api/payfast/itn'
@@ -1052,8 +1124,8 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   DevRoute: typeof DevRoute
   DiscoverRoute: typeof DiscoverRoute
-  FeedbackRoute: typeof FeedbackRoute
   FantasyArenaRoute: typeof FantasyArenaRoute
+  FeedbackRoute: typeof FeedbackRoute
   FixturesRoute: typeof FixturesRoute
   ForumRoute: typeof ForumRoute
   FoundingRoute: typeof FoundingRoute
@@ -1069,9 +1141,9 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PuntpointsRoute: typeof PuntpointsRoute
   ReferralsRoute: typeof ReferralsRoute
-  ResponsiblePlayRoute: typeof ResponsiblePlayRoute
   RefundsRoute: typeof RefundsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponsiblePlayRoute: typeof ResponsiblePlayRoute
   ResultsRoute: typeof ResultsRoute
   RewardsRoute: typeof RewardsRoute
   RoadmapRoute: typeof RoadmapRoute
@@ -1105,6 +1177,7 @@ export interface RootRouteChildren {
   NewsroomIndexRoute: typeof NewsroomIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiAuthSendEmailRoute: typeof ApiAuthSendEmailRoute
+  ApiCronAiCommunityDailyRoute: typeof ApiCronAiCommunityDailyRoute
   ApiCronAnnualPassExpiredRoute: typeof ApiCronAnnualPassExpiredRoute
   ApiCronAnnualPassReminderRoute: typeof ApiCronAnnualPassReminderRoute
   ApiCronChainHeadRoute: typeof ApiCronChainHeadRoute
@@ -1115,6 +1188,7 @@ export interface RootRouteChildren {
   ApiCronFoundingWelcomeRoute: typeof ApiCronFoundingWelcomeRoute
   ApiCronIdentityRetentionRoute: typeof ApiCronIdentityRetentionRoute
   ApiCronLaunchNotifyRoute: typeof ApiCronLaunchNotifyRoute
+  ApiCronPfieLearningIngestRoute: typeof ApiCronPfieLearningIngestRoute
   ApiCronPodcastPremiereRoute: typeof ApiCronPodcastPremiereRoute
   ApiCronPracticeTickRoute: typeof ApiCronPracticeTickRoute
   ApiCronSettleRoute: typeof ApiCronSettleRoute
@@ -1123,6 +1197,9 @@ export interface RootRouteChildren {
   ApiCronSyncOddsRoute: typeof ApiCronSyncOddsRoute
   ApiCronSyncResultsRoute: typeof ApiCronSyncResultsRoute
   ApiCronSyncTablesRoute: typeof ApiCronSyncTablesRoute
+  ApiCronSyntheticDecisionsRoute: typeof ApiCronSyntheticDecisionsRoute
+  ApiCronSyntheticDecisionsDailyRoute: typeof ApiCronSyntheticDecisionsDailyRoute
+  ApiCronSyntheticRunRoute: typeof ApiCronSyntheticRunRoute
   ApiCronTeamBadgesRoute: typeof ApiCronTeamBadgesRoute
   ApiNewsroomCoverSlugRoute: typeof ApiNewsroomCoverSlugRoute
   ApiPayfastItnRoute: typeof ApiPayfastItnRoute
@@ -1158,6 +1235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookmakersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brand-ambassadors': {
+      id: '/brand-ambassadors'
+      path: '/brand-ambassadors'
+      fullPath: '/brand-ambassadors'
+      preLoaderRoute: typeof BrandAmbassadorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coming-soon': {
       id: '/coming-soon'
       path: '/coming-soon'
@@ -1191,6 +1275,13 @@ declare module '@tanstack/react-router' {
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy-arena': {
+      id: '/fantasy-arena'
+      path: '/fantasy-arena'
+      fullPath: '/fantasy-arena'
+      preLoaderRoute: typeof FantasyArenaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feedback': {
@@ -1317,6 +1408,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responsible-play': {
+      id: '/responsible-play'
+      path: '/responsible-play'
+      fullPath: '/responsible-play'
+      preLoaderRoute: typeof ResponsiblePlayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/results': {
@@ -1557,6 +1655,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSendEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/ai-community-daily': {
+      id: '/api/cron/ai-community-daily'
+      path: '/api/cron/ai-community-daily'
+      fullPath: '/api/cron/ai-community-daily'
+      preLoaderRoute: typeof ApiCronAiCommunityDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/annual-pass-expired': {
       id: '/api/cron/annual-pass-expired'
       path: '/api/cron/annual-pass-expired'
@@ -1627,6 +1732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronLaunchNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/pfie-learning-ingest': {
+      id: '/api/cron/pfie-learning-ingest'
+      path: '/api/cron/pfie-learning-ingest'
+      fullPath: '/api/cron/pfie-learning-ingest'
+      preLoaderRoute: typeof ApiCronPfieLearningIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/podcast-premiere': {
       id: '/api/cron/podcast-premiere'
       path: '/api/cron/podcast-premiere'
@@ -1683,6 +1795,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSyncTablesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/synthetic-decisions': {
+      id: '/api/cron/synthetic-decisions'
+      path: '/api/cron/synthetic-decisions'
+      fullPath: '/api/cron/synthetic-decisions'
+      preLoaderRoute: typeof ApiCronSyntheticDecisionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/synthetic-decisions-daily': {
+      id: '/api/cron/synthetic-decisions-daily'
+      path: '/api/cron/synthetic-decisions-daily'
+      fullPath: '/api/cron/synthetic-decisions-daily'
+      preLoaderRoute: typeof ApiCronSyntheticDecisionsDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/synthetic-run': {
+      id: '/api/cron/synthetic-run'
+      path: '/api/cron/synthetic-run'
+      fullPath: '/api/cron/synthetic-run'
+      preLoaderRoute: typeof ApiCronSyntheticRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/team-badges': {
       id: '/api/cron/team-badges'
       path: '/api/cron/team-badges'
@@ -1730,8 +1863,8 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   DevRoute: DevRoute,
   DiscoverRoute: DiscoverRoute,
-  FeedbackRoute: FeedbackRoute,
   FantasyArenaRoute: FantasyArenaRoute,
+  FeedbackRoute: FeedbackRoute,
   FixturesRoute: FixturesRoute,
   ForumRoute: ForumRoute,
   FoundingRoute: FoundingRoute,
@@ -1747,9 +1880,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PuntpointsRoute: PuntpointsRoute,
   ReferralsRoute: ReferralsRoute,
-  ResponsiblePlayRoute: ResponsiblePlayRoute,
   RefundsRoute: RefundsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponsiblePlayRoute: ResponsiblePlayRoute,
   ResultsRoute: ResultsRoute,
   RewardsRoute: RewardsRoute,
   RoadmapRoute: RoadmapRoute,
@@ -1783,6 +1916,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsroomIndexRoute: NewsroomIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiAuthSendEmailRoute: ApiAuthSendEmailRoute,
+  ApiCronAiCommunityDailyRoute: ApiCronAiCommunityDailyRoute,
   ApiCronAnnualPassExpiredRoute: ApiCronAnnualPassExpiredRoute,
   ApiCronAnnualPassReminderRoute: ApiCronAnnualPassReminderRoute,
   ApiCronChainHeadRoute: ApiCronChainHeadRoute,
@@ -1793,6 +1927,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronFoundingWelcomeRoute: ApiCronFoundingWelcomeRoute,
   ApiCronIdentityRetentionRoute: ApiCronIdentityRetentionRoute,
   ApiCronLaunchNotifyRoute: ApiCronLaunchNotifyRoute,
+  ApiCronPfieLearningIngestRoute: ApiCronPfieLearningIngestRoute,
   ApiCronPodcastPremiereRoute: ApiCronPodcastPremiereRoute,
   ApiCronPracticeTickRoute: ApiCronPracticeTickRoute,
   ApiCronSettleRoute: ApiCronSettleRoute,
@@ -1801,6 +1936,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronSyncOddsRoute: ApiCronSyncOddsRoute,
   ApiCronSyncResultsRoute: ApiCronSyncResultsRoute,
   ApiCronSyncTablesRoute: ApiCronSyncTablesRoute,
+  ApiCronSyntheticDecisionsRoute: ApiCronSyntheticDecisionsRoute,
+  ApiCronSyntheticDecisionsDailyRoute: ApiCronSyntheticDecisionsDailyRoute,
+  ApiCronSyntheticRunRoute: ApiCronSyntheticRunRoute,
   ApiCronTeamBadgesRoute: ApiCronTeamBadgesRoute,
   ApiNewsroomCoverSlugRoute: ApiNewsroomCoverSlugRoute,
   ApiPayfastItnRoute: ApiPayfastItnRoute,
