@@ -7,7 +7,15 @@ export function normalizePuntAiQuestion(value: string): string {
 
 /** Live web is reserved for questions whose answer can materially change after Puntr's last data sync. */
 export function needsPuntAiLiveWeb(value: string): boolean {
-  return /\b(latest|today|right now|currently|current|live|tonight|tomorrow|this weekend|this week|breaking|news|injury|injured|suspension|transfer|line[- ]?up|starting eleven|weather|odds|price|kick[- ]?off time|has .* started|what happened)\b/i.test(value);
+  return /\b(latest|today|right now|currently|current|live|tonight|tomorrow|this weekend|this week|breaking|news|injury|injured|suspension|transfer|line[- ]?up|starting eleven|weather|kick[- ]?off time|has .* started|what happened)\b/i.test(value);
+}
+
+export function isPuntAiOddsQuestion(value: string): boolean {
+  return /\b(odds|bookmaker|betting line|price comparison|market price)\b/i.test(value);
+}
+
+export function containsPuntAiPrivateContext(value: string): boolean {
+  return /\b(my (?:name|email|phone|address|account|password|id|balance|profile)|i live at|my personal|my bank|my medical)\b/i.test(value);
 }
 
 /** Strip likely personal identifiers before sending a prompt to an external model or search provider. */
