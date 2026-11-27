@@ -50,7 +50,8 @@ begin
   if coalesce(auth.role(), '') <> 'service_role' then
     raise exception 'service_role_required' using errcode = '42501';
   end if;
-  if p_mode not in ('internal', 'live_web')
+  if p_mode is null
+     or p_mode not in ('internal', 'live_web')
      or p_cache_key is null
      or char_length(p_cache_key) not between 8 and 120 then
     raise exception 'invalid_punt_ai_request' using errcode = '22023';
