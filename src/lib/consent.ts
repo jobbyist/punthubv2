@@ -6,7 +6,7 @@
  * No IP address, user agent or fingerprint is stored.
  */
 
-export type ConsentPurpose = "analytics" | "affiliate_tracking";
+export type ConsentPurpose = "analytics" | "affiliate_tracking" | "pfie_learning";
 
 export interface ConsentState {
   /** Cookie format version. */
@@ -15,12 +15,14 @@ export interface ConsentState {
   id: string;
   analytics: boolean;
   affiliate_tracking: boolean;
+  pfie_learning: boolean;
+  noticeVersion: string;
   /** ISO time the choice was made. */
   ts: string;
 }
 
 export const CONSENT_COOKIE = "puntr_consent";
-export const CONSENT_NOTICE_VERSION = "2026-10-29";
+export const CONSENT_NOTICE_VERSION = "2026-11-27-pfie-learning";
 export const CONSENT_CHANGED_EVENT = "puntr:consent-changed";
 export const CONSENT_OPEN_EVENT = "puntr:open-consent";
 
@@ -41,6 +43,8 @@ export function parseConsent(raw: string | null | undefined): ConsentState | nul
       id: data.id,
       analytics: data.analytics === true,
       affiliate_tracking: data.affiliate_tracking === true,
+      pfie_learning: data.pfie_learning === true,
+      noticeVersion: typeof data.noticeVersion === "string" ? data.noticeVersion : "2026-10-29",
       ts: typeof data.ts === "string" ? data.ts : new Date(0).toISOString(),
     };
   } catch {
@@ -60,7 +64,7 @@ export function hasConsent(purpose: ConsentPurpose): boolean {
 }
 
 export function writeConsent(
-  choice: Pick<ConsentState, ConsentPurpose>,
+  choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> & Partial<Pick<ConsentState, "pfie_learning">>,
   source: "banner" | "account" = "banner",
 ): ConsentState {
   const previous = readConsent();
@@ -69,6 +73,8 @@ export function writeConsent(
     id: previous?.id ?? newId(),
     analytics: choice.analytics,
     affiliate_tracking: choice.affiliate_tracking,
+    pfie_learning: choice.pfie_learning === true,
+    noticeVersion: CONSENT_NOTICE_VERSION,
     ts: new Date().toISOString(),
   };
 
@@ -95,7 +101,7 @@ export async function syncConsentToAccount(
     const { supabase } = await import("@/integrations/supabase/client");
     const { data } = await supabase.auth.getSession();
     if (!data.session) return;
-    const purposes: ConsentPurpose[] = ["analytics", "affiliate_tracking"];
+    const purposes: ConsentPurpose[] = ["analytics", "affiliate_tracking", "pfie_learning"];
     for (const purpose of purposes) {
       await supabase.rpc("record_consent", {
         p_purpose: purpose,
