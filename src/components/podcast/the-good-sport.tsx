@@ -355,7 +355,7 @@ export function TheGoodSportPromo() {
             )}
           </div>
           <p className="mt-4 text-[10px] font-semibold uppercase tracking-[.16em] text-white/35">
-            Season one · Episode one · 1 December 2026
+            Season one · Episode one · 5 January 2027
           </p>
         </div>
         <div className="mx-auto w-full max-w-[340px]">
@@ -493,7 +493,7 @@ export function TheGoodSportPage() {
             )}
           </div>
           <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Episode 01 premieres Tuesday, 1 December 2026
+            Episode 01 premieres Tuesday, 5 January 2027
           </p>
         </div>
         <CoverArt />
@@ -550,7 +550,7 @@ export function TheGoodSportPage() {
             <h2 className="mt-2 font-display text-3xl font-black">Episode 01</h2>
           </div>
           <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-primary">
-            1 December 2026
+            5 January 2027
           </span>
         </div>
         <div className="card-surface mt-5 flex flex-col gap-5 p-6 sm:flex-row sm:items-center">
@@ -605,7 +605,7 @@ export function TheGoodSportEpisodePage() {
             conversation about what happens before the whistle — and why the game is always bigger
             than the score.
           </p>
-          <p className="mt-5 text-sm font-semibold">Premieres 1 December 2026</p>
+          <p className="mt-5 text-sm font-semibold">Premieres 5 January 2027</p>
           {premiereUpcoming() ? (
             <button
               type="button"
