@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
         const { createTablesStore } = await import("@/lib/pfie/tables-store.server");
         const { createPfieStore } = await import("@/lib/pfie/store.server");
         try {
-          const claim = await createQuotaClaim();
+          const claim = await createQuotaClaim("pfie:standings");
           const keys = readContentEnv(env);
           const pfieStore = createPfieStore();
           const report = await runTablesSync(
