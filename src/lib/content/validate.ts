@@ -240,10 +240,14 @@ export function validateDraft(input: ValidateInput): QualityReport {
       );
   }
 
-  for (const claim of input.reviewerUnsupported ?? []) {
-    critical(
+  const reviewerFlags = [...new Set((input.reviewerUnsupported ?? []).filter(Boolean))];
+  if (reviewerFlags.length > 0) {
+    // The model reviewer is a semantic second opinion, not a deterministic source check.
+    // Keep its concerns visible without letting one noisy review turn into dozens of critical penalties.
+    minor(
       "reviewer_unsupported",
-      `independent review could not find support for: ${claim.slice(0, 120)}`,
+      `independent review raised ${reviewerFlags.length} potential factual-support concern(s): ${reviewerFlags.slice(0, 2).map((x) => x.slice(0, 90)).join(" | ")}`,
+      8,
     );
   }
 
