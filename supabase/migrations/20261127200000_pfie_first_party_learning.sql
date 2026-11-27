@@ -4,7 +4,7 @@
 
 alter table public.consent_records drop constraint if exists consent_records_purpose_check;
 alter table public.consent_records add constraint consent_records_purpose_check
-  check (purpose in ('terms','privacy_notice','marketing_email','marketing_whatsapp','analytics','affiliate_tracking','pfie_learning'));
+  check (purpose in ('terms','privacy_notice','marketing_email','marketing_whatsapp','analytics','affiliate_tracking','push_notifications','pfie_learning'));
 
 alter table public.pfie_learning_ingest_runs add column if not exists activity_events_seen integer not null default 0;
 alter table public.pfie_learning_ingest_runs add column if not exists real_examples_inserted integer not null default 0;
