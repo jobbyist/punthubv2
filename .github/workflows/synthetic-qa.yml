@@ -1,0 +1,78 @@
+name: Puntr synthetic QA
+
+on:
+  schedule:
+    # 06:00, 09:00, 13:00, 17:00 and 20:00 SAST (UTC+2).
+    # Both daily decisions and browser journeys skip unless the experiment is active.
+    - cron: "0 4 * * *"
+    - cron: "0 7 * * *"
+    - cron: "0 11 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 18 * * *"
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: Number of synthetic personas to run (maximum 3)
+        required: true
+        type: choice
+        default: "3"
+        options:
+          - "1"
+          - "2"
+          - "3"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: puntr-synthetic-qa
+  cancel-in-progress: false
+
+jobs:
+  public-read-only-journey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: experiments/synthetic
+    env:
+      PUNTR_BASE_URL: ${{ secrets.PUNTR_BASE_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SYNTHETIC_EXPERIMENT_SLUG: puntr-30-day-synthetic-2026-11-27
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check required secrets
+        id: secrets
+        shell: bash
+        run: |
+          if [[ -z "$PUNTR_BASE_URL" || -z "$SUPABASE_URL" || -z "$SUPABASE_SERVICE_ROLE_KEY" || -z "$CRON_SECRET" ]]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Skipped: configure PUNTR_BASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and CRON_SECRET repository secrets." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install browser test dependencies
+        if: steps.secrets.outputs.ready == 'true'
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium
+        if: steps.secrets.outputs.ready == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Run one-to-three labelled personas
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SYNTHETIC_WORKERS: ${{ github.event.inputs.batch_size || '3' }}
+        run: npm run batch -- --count=${{ github.event.inputs.batch_size || '3' }}
+      - name: Run daily fixture decisions for due personas
+        if: steps.secrets.outputs.ready == 'true'
+        shell: bash
+        run: |
+          curl --fail-with-body --silent --show-error -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -H "Content-Type: application/json" \
+            --data '{}' \
+            "${PUNTR_BASE_URL%/}/api/cron/synthetic-decisions-daily"

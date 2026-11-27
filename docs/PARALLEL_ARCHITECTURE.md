@@ -14,21 +14,21 @@ Budget: about **$50 prepaid, expiring 7 Dec 2026**, plus **$5 of free credit a m
    existing PFIE rule and it applies to every new feed.
 2. **Cache before you call.** Every Parallel request goes through `parallelCache` keyed on endpoint + normalised
    body, with a TTL per purpose (below). A repeated question inside its TTL costs nothing.
-3. **Cheapest tool that answers.** Search `fast` ($1/1,000) and Extract ($1/1,000 URLs) do most of the work. Task
-   API, Chat and Monitor are used only where they replace many cheaper calls or add real quality.
+3. **Cheapest tool that answers.** Search `fast` ($1/1,000), Decisions ($1/1,000 requests, up to 100 questions per request) and Extract ($1/1,000 URLs) do most of the work. Task API, Responses/Chat and Monitor are used only where they replace many cheaper calls or add real quality.
 4. **Dollar caps, not just call caps.** Each call claims units against `api_quota_limits` (daily/monthly call caps,
    fail closed) and against a monthly USD budget per provider family (`api_budgets`), priced from `api_unit_prices`.
 5. **No personal data to Parallel.** Queries are about teams, fixtures and competitions only. Slip analysis sends
    scrubbed slip text through the existing scrubber, never a photo, name, username or balance.
 
-## Prices (docs.parallel.ai/getting-started/pricing, checked 15 Nov 2026)
+## Prices (docs.parallel.ai/getting-started/pricing, checked 23 Nov 2026)
 
 | API | Tier | USD per call | Puntr provider key |
 |---|---|---|---|
 | Search | fast | 0.001 | `parallel` |
 | Extract | per URL | 0.001 | `parallel-extract` |
+| Decisions | fast; up to 100 named questions per request | 0.001 | `parallel` |
 | Task | lite / base / core / pro | 0.005 / 0.01 / 0.025 / 0.10 | `parallel-task:<processor>` |
-| Chat (Responses) | low / medium | 0.01 / 0.05 | `parallel-chat:<effort>` |
+| Chat (Responses) | low / medium / high | 0.01 / 0.05 / 0.25 | `parallel-chat:<effort>` |
 | Monitor | lite / base, per execution | 0.003 / 0.01 | `parallel-monitor:<processor>` |
 
 Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Chat 300/min).
@@ -50,7 +50,10 @@ Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Ch
 | Slip analysis | none for parsing (on-device OCR + parser); odds check against stored odds | per slip | n/a | $0 |
 | Punt AI chatbot | Answers first from Puntr's own data via Gemini; **Chat low** only for questions needing the live web, and only for Pro or credit-paying members | per message | 1 h per normalised question | charged to the member's credits |
 | Newsroom research | Search fast + Extract (existing) | 1 article a day | 6 h | ~8, $0.008 |
+| Internal synthetic QA | Decisions fast; up to 100 persona-market questions per shared fixture request; cached through `parallelCache` and guarded by `api_budget_claim` | owner-controlled batch; paused by default | 24 h | ~$0.001 per uncached fixture batch |
 | Team badges | Parallel Search fast + Wikipedia summary verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
+
+**Synthetic QA note:** The 30-day experiment groups up to two preferred market questions for each of 50 synthetic personas into one Decisions request per fixture. It does not create 50–100 individual API requests. The experiment-specific $50 ledger is an additional cap; all actual provider calls still claim through the existing `api_budget_claim` / `api_quota_claim` guard and `parallelCache`.
 
 **Cost note:** The earlier steady-state estimate is not a current forecast: it assumed automated odds and Monitor-based team news that are not launch-enabled. Use api_spend_status() and the live quota/budget tables before increasing any provider cadence. At MVP, automated bookmaker odds and team-news Monitor jobs remain disabled.
 

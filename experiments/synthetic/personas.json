@@ -1,0 +1,1771 @@
+{
+  "experiment": "puntr-30-day-synthetic-2026-11-27",
+  "generated_for": "controlled QA only",
+  "personas": [
+    {
+      "persona_id": "puntr-synth-01",
+      "persona_label": "Synthetic QA Persona 01",
+      "segment": "matchday_follower",
+      "description": "Checks upcoming fixtures and match pages on matchdays",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "form_and_recent_results",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 7
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/fixtures",
+        "/results"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-02",
+      "persona_label": "Synthetic QA Persona 02",
+      "segment": "stats_reader",
+      "description": "Prefers historical form, head-to-head and league context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Premier League"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "form_h2h_and_table",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/results",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-03",
+      "persona_label": "Synthetic QA Persona 03",
+      "segment": "league_tracker",
+      "description": "Follows one or two competitions closely",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "UEFA Champions League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "competition_and_standings",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 9
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/newsroom",
+        "/predictions",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-04",
+      "persona_label": "Synthetic QA Persona 04",
+      "segment": "news_first",
+      "description": "Starts with team and competition news before opening fixtures",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Serie A",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "news_then_fixture_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/predictions",
+        "/results"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-05",
+      "persona_label": "Synthetic QA Persona 05",
+      "segment": "tactical_reader",
+      "description": "Looks for home-away patterns and matchup context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "home_away_and_tactics",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 11
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/founding",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-06",
+      "persona_label": "Synthetic QA Persona 06",
+      "segment": "casual_browser",
+      "description": "Browses a small selection of pages with low session frequency",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "overview_then_fixture",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/results",
+        "/newsroom",
+        "/predictions"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-07",
+      "persona_label": "Synthetic QA Persona 07",
+      "segment": "results_checker",
+      "description": "Returns to completed fixtures and results pages",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Bundesliga",
+        "Premier League"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "results_and_recent_form",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 7
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/newsroom",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-08",
+      "persona_label": "Synthetic QA Persona 08",
+      "segment": "fixture_planner",
+      "description": "Browses upcoming fixtures ahead of kickoff",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "La Liga",
+        "Serie A"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "fixture_calendar_and_form",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/results",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-09",
+      "persona_label": "Synthetic QA Persona 09",
+      "segment": "market_education",
+      "description": "Explores market definitions and prediction explanations",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "Serie A"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "market_rules_and_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 9
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/results",
+        "/newsroom"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-10",
+      "persona_label": "Synthetic QA Persona 10",
+      "segment": "returning_visitor",
+      "description": "Revisits a previously viewed fixture or results page",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "return_visit_and_change_check",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/newsroom",
+        "/predictions",
+        "/fixtures"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-11",
+      "persona_label": "Synthetic QA Persona 11",
+      "segment": "matchday_follower",
+      "description": "Checks upcoming fixtures and match pages on matchdays",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "form_and_recent_results",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 11
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/fixtures",
+        "/results"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-12",
+      "persona_label": "Synthetic QA Persona 12",
+      "segment": "stats_reader",
+      "description": "Prefers historical form, head-to-head and league context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Premier League"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "form_h2h_and_table",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/results",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-13",
+      "persona_label": "Synthetic QA Persona 13",
+      "segment": "league_tracker",
+      "description": "Follows one or two competitions closely",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "UEFA Champions League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "competition_and_standings",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 7
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/newsroom",
+        "/predictions",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-14",
+      "persona_label": "Synthetic QA Persona 14",
+      "segment": "news_first",
+      "description": "Starts with team and competition news before opening fixtures",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Serie A",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "news_then_fixture_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/predictions",
+        "/results"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-15",
+      "persona_label": "Synthetic QA Persona 15",
+      "segment": "tactical_reader",
+      "description": "Looks for home-away patterns and matchup context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "home_away_and_tactics",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 9
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/founding",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-16",
+      "persona_label": "Synthetic QA Persona 16",
+      "segment": "casual_browser",
+      "description": "Browses a small selection of pages with low session frequency",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "overview_then_fixture",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/results",
+        "/newsroom",
+        "/predictions"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-17",
+      "persona_label": "Synthetic QA Persona 17",
+      "segment": "results_checker",
+      "description": "Returns to completed fixtures and results pages",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Bundesliga",
+        "Premier League"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "results_and_recent_form",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 11
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/predictions",
+        "/newsroom",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-18",
+      "persona_label": "Synthetic QA Persona 18",
+      "segment": "fixture_planner",
+      "description": "Browses upcoming fixtures ahead of kickoff",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "La Liga",
+        "Serie A"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "fixture_calendar_and_form",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/results",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-19",
+      "persona_label": "Synthetic QA Persona 19",
+      "segment": "market_education",
+      "description": "Explores market definitions and prediction explanations",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "Serie A"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "market_rules_and_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 7
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/results",
+        "/newsroom"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-20",
+      "persona_label": "Synthetic QA Persona 20",
+      "segment": "returning_visitor",
+      "description": "Revisits a previously viewed fixture or results page",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "return_visit_and_change_check",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/newsroom",
+        "/predictions",
+        "/fixtures"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-21",
+      "persona_label": "Synthetic QA Persona 21",
+      "segment": "matchday_follower",
+      "description": "Checks upcoming fixtures and match pages on matchdays",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "form_and_recent_results",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 9
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/fixtures",
+        "/results"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-22",
+      "persona_label": "Synthetic QA Persona 22",
+      "segment": "stats_reader",
+      "description": "Prefers historical form, head-to-head and league context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Premier League"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "form_h2h_and_table",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/results",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-23",
+      "persona_label": "Synthetic QA Persona 23",
+      "segment": "league_tracker",
+      "description": "Follows one or two competitions closely",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "UEFA Champions League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "competition_and_standings",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 11
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/newsroom",
+        "/predictions",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-24",
+      "persona_label": "Synthetic QA Persona 24",
+      "segment": "news_first",
+      "description": "Starts with team and competition news before opening fixtures",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Serie A",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "news_then_fixture_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/predictions",
+        "/results"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-25",
+      "persona_label": "Synthetic QA Persona 25",
+      "segment": "tactical_reader",
+      "description": "Looks for home-away patterns and matchup context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "home_away_and_tactics",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 7
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/founding",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-26",
+      "persona_label": "Synthetic QA Persona 26",
+      "segment": "casual_browser",
+      "description": "Browses a small selection of pages with low session frequency",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "overview_then_fixture",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/results",
+        "/newsroom",
+        "/predictions"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-27",
+      "persona_label": "Synthetic QA Persona 27",
+      "segment": "results_checker",
+      "description": "Returns to completed fixtures and results pages",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Bundesliga",
+        "Premier League"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "results_and_recent_form",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 9
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/newsroom",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-28",
+      "persona_label": "Synthetic QA Persona 28",
+      "segment": "fixture_planner",
+      "description": "Browses upcoming fixtures ahead of kickoff",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "La Liga",
+        "Serie A"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "fixture_calendar_and_form",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/results",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-29",
+      "persona_label": "Synthetic QA Persona 29",
+      "segment": "market_education",
+      "description": "Explores market definitions and prediction explanations",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "Serie A"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "market_rules_and_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 11
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/results",
+        "/newsroom"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-30",
+      "persona_label": "Synthetic QA Persona 30",
+      "segment": "returning_visitor",
+      "description": "Revisits a previously viewed fixture or results page",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "return_visit_and_change_check",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/newsroom",
+        "/predictions",
+        "/fixtures"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-31",
+      "persona_label": "Synthetic QA Persona 31",
+      "segment": "matchday_follower",
+      "description": "Checks upcoming fixtures and match pages on matchdays",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "form_and_recent_results",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 7
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/fixtures",
+        "/results"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-32",
+      "persona_label": "Synthetic QA Persona 32",
+      "segment": "stats_reader",
+      "description": "Prefers historical form, head-to-head and league context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Premier League"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "form_h2h_and_table",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/results",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-33",
+      "persona_label": "Synthetic QA Persona 33",
+      "segment": "league_tracker",
+      "description": "Follows one or two competitions closely",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "UEFA Champions League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "competition_and_standings",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 9
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/newsroom",
+        "/predictions",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-34",
+      "persona_label": "Synthetic QA Persona 34",
+      "segment": "news_first",
+      "description": "Starts with team and competition news before opening fixtures",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Serie A",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "news_then_fixture_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/predictions",
+        "/results"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-35",
+      "persona_label": "Synthetic QA Persona 35",
+      "segment": "tactical_reader",
+      "description": "Looks for home-away patterns and matchup context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "home_away_and_tactics",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 11
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/founding",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-36",
+      "persona_label": "Synthetic QA Persona 36",
+      "segment": "casual_browser",
+      "description": "Browses a small selection of pages with low session frequency",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "overview_then_fixture",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/results",
+        "/newsroom",
+        "/predictions"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-37",
+      "persona_label": "Synthetic QA Persona 37",
+      "segment": "results_checker",
+      "description": "Returns to completed fixtures and results pages",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Bundesliga",
+        "Premier League"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "results_and_recent_form",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 7
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/predictions",
+        "/newsroom",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-38",
+      "persona_label": "Synthetic QA Persona 38",
+      "segment": "fixture_planner",
+      "description": "Browses upcoming fixtures ahead of kickoff",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "La Liga",
+        "Serie A"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "fixture_calendar_and_form",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/results",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-39",
+      "persona_label": "Synthetic QA Persona 39",
+      "segment": "market_education",
+      "description": "Explores market definitions and prediction explanations",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "Serie A"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "market_rules_and_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 9
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/results",
+        "/newsroom"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-40",
+      "persona_label": "Synthetic QA Persona 40",
+      "segment": "returning_visitor",
+      "description": "Revisits a previously viewed fixture or results page",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "return_visit_and_change_check",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/newsroom",
+        "/predictions",
+        "/fixtures"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-41",
+      "persona_label": "Synthetic QA Persona 41",
+      "segment": "matchday_follower",
+      "description": "Checks upcoming fixtures and match pages on matchdays",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "form_and_recent_results",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 11
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/fixtures",
+        "/results"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-42",
+      "persona_label": "Synthetic QA Persona 42",
+      "segment": "stats_reader",
+      "description": "Prefers historical form, head-to-head and league context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Premier League"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "form_h2h_and_table",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/results",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-43",
+      "persona_label": "Synthetic QA Persona 43",
+      "segment": "league_tracker",
+      "description": "Follows one or two competitions closely",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "UEFA Champions League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "competition_and_standings",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 7
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/",
+        "/newsroom",
+        "/predictions",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-44",
+      "persona_label": "Synthetic QA Persona 44",
+      "segment": "news_first",
+      "description": "Starts with team and competition news before opening fixtures",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Serie A",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "news_then_fixture_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/predictions",
+        "/results"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-45",
+      "persona_label": "Synthetic QA Persona 45",
+      "segment": "tactical_reader",
+      "description": "Looks for home-away patterns and matchup context",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "La Liga"
+      ],
+      "market_interests": [
+        "1X2",
+        "OU25"
+      ],
+      "research_style": "home_away_and_tactics",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 9
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/founding",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-46",
+      "persona_label": "Synthetic QA Persona 46",
+      "segment": "casual_browser",
+      "description": "Browses a small selection of pages with low session frequency",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "UEFA Champions League"
+      ],
+      "market_interests": [
+        "OU25",
+        "BTTS"
+      ],
+      "research_style": "overview_then_fixture",
+      "activity_windows_sast": [
+        "06:30-08:00 SAST",
+        "18:00-20:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 10
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/results",
+        "/newsroom",
+        "/predictions"
+      ],
+      "return_visit_probability": 0.2,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-47",
+      "persona_label": "Synthetic QA Persona 47",
+      "segment": "results_checker",
+      "description": "Returns to completed fixtures and results pages",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Bundesliga",
+        "Premier League"
+      ],
+      "market_interests": [
+        "1X2",
+        "1X2"
+      ],
+      "research_style": "results_and_recent_form",
+      "activity_windows_sast": [
+        "07:00-09:00 SAST",
+        "20:00-22:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 5,
+        "max": 11
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/predictions",
+        "/newsroom",
+        "/roadmap"
+      ],
+      "return_visit_probability": 0.35,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-48",
+      "persona_label": "Synthetic QA Persona 48",
+      "segment": "fixture_planner",
+      "description": "Browses upcoming fixtures ahead of kickoff",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "La Liga",
+        "Serie A"
+      ],
+      "market_interests": [
+        "OU25",
+        "OU25"
+      ],
+      "research_style": "fixture_calendar_and_form",
+      "activity_windows_sast": [
+        "12:00-14:00 SAST",
+        "19:00-21:00 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 6,
+        "max": 12
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/fixtures",
+        "/results",
+        "/founding"
+      ],
+      "return_visit_probability": 0.5,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-49",
+      "persona_label": "Synthetic QA Persona 49",
+      "segment": "market_education",
+      "description": "Explores market definitions and prediction explanations",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Premier League",
+        "Serie A"
+      ],
+      "market_interests": [
+        "1X2",
+        "BTTS"
+      ],
+      "research_style": "market_rules_and_context",
+      "activity_windows_sast": [
+        "08:00-10:00 SAST",
+        "17:30-19:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 3,
+        "max": 7
+      },
+      "daily_research_limit": 1,
+      "journey_paths": [
+        "/",
+        "/predictions",
+        "/results",
+        "/newsroom"
+      ],
+      "return_visit_probability": 0.65,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    },
+    {
+      "persona_id": "puntr-synth-50",
+      "persona_label": "Synthetic QA Persona 50",
+      "segment": "returning_visitor",
+      "description": "Revisits a previously viewed fixture or results page",
+      "account_mode": "guest_read_only",
+      "sports_interests": [
+        "soccer"
+      ],
+      "competitions": [
+        "Betway Premiership",
+        "Bundesliga"
+      ],
+      "market_interests": [
+        "OU25",
+        "1X2"
+      ],
+      "research_style": "return_visit_and_change_check",
+      "activity_windows_sast": [
+        "10:00-12:00 SAST",
+        "20:30-22:30 SAST"
+      ],
+      "session_duration_minutes": {
+        "min": 4,
+        "max": 8
+      },
+      "daily_research_limit": 2,
+      "journey_paths": [
+        "/newsroom",
+        "/predictions",
+        "/fixtures"
+      ],
+      "return_visit_probability": 0.8,
+      "notes": "Synthetic test profile only. Never create a real account, submit a public pick, earn rewards, or generate acquisition/conversion events."
+    }
+  ]
+}

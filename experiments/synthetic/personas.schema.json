@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://puntr.co.za/schemas/synthetic-persona.schema.json",
+  "title": "Puntr Synthetic QA Persona",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "persona_id",
+    "persona_label",
+    "segment",
+    "description",
+    "account_mode",
+    "sports_interests",
+    "competitions",
+    "market_interests",
+    "research_style",
+    "activity_windows_sast",
+    "session_duration_minutes",
+    "daily_research_limit",
+    "journey_paths",
+    "return_visit_probability",
+    "notes"
+  ],
+  "properties": {
+    "persona_id": {
+      "type": "string",
+      "pattern": "^puntr-synth-[0-9]{2}$"
+    },
+    "persona_label": {
+      "type": "string",
+      "pattern": "^Synthetic QA Persona [0-9]{2}$"
+    },
+    "segment": {
+      "type": "string",
+      "enum": [
+        "matchday_follower",
+        "stats_reader",
+        "league_tracker",
+        "news_first",
+        "tactical_reader",
+        "casual_browser",
+        "results_checker",
+        "fixture_planner",
+        "market_education",
+        "returning_visitor"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "account_mode": {
+      "type": "string",
+      "const": "guest_read_only"
+    },
+    "sports_interests": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "const": "soccer"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "competitions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "market_interests": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "1X2",
+          "OU25",
+          "BTTS"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "research_style": {
+      "type": "string"
+    },
+    "activity_windows_sast": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9] SAST$"
+      },
+      "minItems": 1
+    },
+    "session_duration_minutes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 45
+        }
+      }
+    },
+    "daily_research_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "journey_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^/"
+      },
+      "minItems": 1
+    },
+    "return_visit_probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

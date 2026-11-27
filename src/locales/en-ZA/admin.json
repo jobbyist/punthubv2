@@ -54,7 +54,8 @@
     "logos": "Logos/Branding",
     "endorsements": "Endorsements",
     "translations": "Translations",
-    "push": "Push notifications"
+    "push": "Push notifications",
+    "synthetic": "Synthetic QA"
   },
   "settle": {
     "title": "Settlement",
