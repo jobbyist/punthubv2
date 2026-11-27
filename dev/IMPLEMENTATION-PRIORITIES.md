@@ -323,3 +323,27 @@ Tracker progress is an operational summary, not a GitHub CI result or merge auth
 - The metric is still read live by `/dev`; the target is a minimum threshold, not a cap or a hard-coded achievement.
 - The readiness task now reads **“Historical results imported (2,500 minimum)”** and automatically completes when `completedResults >= 2500`. The UI explicitly displays the amount above target.
 - No manual tick or production data change was required. The live metric remains the source of truth.
+
+
+## Post-launch checklist — bookmaker permissions and odds-data rights
+
+- [ ] Reconcile every operator in the Admin → Bookmakers register against the latest National Gambling Board Verified Operators directory and the relevant provincial regulator's licence-holder directory.
+- [ ] Resolve trading-name, legal-entity, website-domain and licence-reference discrepancies; retain source URLs, checked date and reviewer.
+- [ ] Contact each bookmaker/affiliate manager for written permission or an authorized odds API/feed. Hollywoodbets is first priority, followed by SupaBets and YesPlay.
+- [ ] Obtain explicit written scope for automated collection, storage/cache, member-facing display, attribution, refresh frequency, retention period, historical use and redistribution/comparison.
+- [ ] Record each permission and evidence document in Admin → Bookmakers; do not infer rights from affiliate approval, public accessibility or a working extraction test.
+- [ ] Keep automated odds disabled per bookmaker until the licence and every required data-use permission are verified and approved. Never bypass access controls, rate limits, login walls or robots restrictions.
+- [ ] If no written rights are obtained, continue manual/member-entered odds only and evaluate a commercial odds-data provider with explicit South African rights.
+- [ ] Once a source is approved, run a controlled end-to-end test for provenance, freshness, market/selection matching, suspension handling, stale-price rejection, attribution and audit logs before enabling production collection.
+- [ ] Re-review permissions on contract renewal, terms changes, licence changes or at least quarterly.
+
+## Post-launch checklist — PUNT AI review and release
+
+- [ ] Review PUNT AI's internal-data answers against live verified fixtures, results, ten launch standings and published Newsroom content; confirm stale/missing data is disclosed.
+- [ ] Verify live-web routing only triggers for time-sensitive questions and bookmaker/odds questions never trigger external bookmaker-price collection.
+- [ ] Verify trusted-source allowlist, source deduplication, visible citations, prompt redaction and private-context refusal.
+- [ ] Verify per-user daily/monthly caps, SAST reset boundaries, one-hour cache, concurrency/rate limits and service-role-only cache/usage tables.
+- [ ] Verify Free/Pro entitlements, two-credit live-web charging, failed-request no-charge behaviour and credit-ledger reconciliation.
+- [ ] Confirm AI participant accounts cannot access PUNT AI and synthetic activity is excluded from PFIE real-user learning.
+- [ ] Test provider quota/budget exhaustion, Gemini fallback, Parallel failure, cache hit, retry and timeout paths; reconcile actual spend against the $50 monthly Parallel cap and $200 cumulative Q1 ceiling.
+- [ ] Complete responsible-gambling copy, 18+ and account-standing checks, privacy review and production feature-flag sign-off before enabling member access.
