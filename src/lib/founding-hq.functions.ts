@@ -102,6 +102,9 @@ export interface FoundingHqActivity {
 
 export interface FoundingHqOverview {
   foundingMembers: number;
+  humanMembers: number;
+  aiMembers: number;
+  reservedSpots: number;
   target: number;
   leads: FoundingHqLead[];
   activities: FoundingHqActivity[];
@@ -113,9 +116,11 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
     const db = await adminDb(context as Ctx);
     if (!db) return null;
 
-    const [leadResult, memberResult, activityResult] = await Promise.all([
+    const [leadResult, memberResult, humanResult, aiResult, activityResult] = await Promise.all([
       db.from("founding_hq_leads").select("*").order("created_at", { ascending: false }).limit(500),
-      db.from("profiles").select("id", { count: "exact", head: true }).not("founding_number", "is", null),
+      db.rpc("founding_spots_taken"),
+      db.from("profiles").select("id", { count: "exact", head: true }).not("founding_number", "is", null).eq("is_ai_participant", false),
+      db.from("profiles").select("id", { count: "exact", head: true }).not("founding_number", "is", null).eq("is_ai_participant", true),
       db
         .from("founding_hq_activities")
         .select("id, lead_id, kind, body, created_at")
@@ -125,6 +130,8 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
 
     if (leadResult.error) throw new Error(leadResult.error.message);
     if (memberResult.error) throw new Error(memberResult.error.message);
+    if (humanResult.error) throw new Error(humanResult.error.message);
+    if (aiResult.error) throw new Error(aiResult.error.message);
     if (activityResult.error) throw new Error(activityResult.error.message);
 
     const leads = (leadResult.data ?? []).map((row): FoundingHqLead => ({
@@ -148,7 +155,10 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
     }));
 
     return {
-      foundingMembers: memberResult.count ?? 0,
+      foundingMembers: typeof memberResult.data === "number" ? memberResult.data : 0,
+      humanMembers: humanResult.count ?? 0,
+      aiMembers: aiResult.count ?? 0,
+      reservedSpots: Math.max(0, Number(memberResult.data ?? 0) - (humanResult.count ?? 0) - (aiResult.count ?? 0)),
       target: 100,
       leads,
       activities: (activityResult.data ?? []).map((row) => ({

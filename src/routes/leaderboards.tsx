@@ -154,7 +154,7 @@ function Leaderboards() {
             entries={ranked.slice(0, 3).map((r) => ({
               name: r.username,
               value: formatUnits(r.units),
-              sub: pct(r.roi, 1),
+              sub: r.is_ai_participant ? `AI participant · ${pct(r.roi, 1)}` : pct(r.roi, 1),
             }))}
           />
         )}
@@ -164,6 +164,7 @@ function Leaderboards() {
               <RankRow
                 key={r.user_id}
                 rank={r.rank}
+                isAi={r.is_ai_participant}
                 index={i}
                 name={r.username}
                 highlight={r.user_id === profile?.id}
@@ -213,6 +214,7 @@ function Leaderboards() {
                   >
                     {r.username}
                   </Link>
+                  {r.is_ai_participant && <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">AI</span>}
                   <Blurred gated={gated(ranked.length + j)}>
                     <span className="tnum text-muted-foreground">{formatUnits(r.units)}</span>{" "}
                     <span className="tnum text-muted-foreground">{r.picks_settled}</span>

@@ -53,6 +53,11 @@ export function PickCard({
                 {t("picks.founding", { number: pick.founding_number })}
               </span>
             )}
+            {pick.is_ai_participant && (
+              <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">
+                AI participant
+              </span>
+            )}
           </p>
           <p className="text-xs text-muted-foreground">
             {t("picks.submittedAt", { date: formatDate(pick.created_at), time: formatTime(pick.created_at) })}

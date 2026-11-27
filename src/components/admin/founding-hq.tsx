@@ -12,12 +12,14 @@ import {
   Trash2,
   Users,
   X,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { adminProvisionAiFoundingMembers } from "@/lib/ai-community.functions";
 import {
   adminAddFoundingHqActivity,
   adminDeleteFoundingHqLead,
@@ -157,6 +159,31 @@ export function FoundingHqPage() {
   const [draft, setDraft] = useState<Draft>(emptyDraft());
   const [activityBody, setActivityBody] = useState("");
   const [saving, setSaving] = useState(false);
+  const [provisioningAi, setProvisioningAi] = useState(false);
+
+  async function provisionAiMembers() {
+    if (overview?.aiMembers === 50) {
+      toast.info("All 50 AI participants are already provisioned.");
+      return;
+    }
+    if (!window.confirm("Provision the 50 labelled AI community accounts and assign each an individual Founding number? These accounts will be publicly identified as AI participants.")) return;
+    setProvisioningAi(true);
+    try {
+      const result = await adminProvisionAiFoundingMembers();
+      if (result.ok) {
+        toast.success(`Provisioned ${result.created} AI accounts; ${result.alreadyProvisioned} were already linked.`);
+      } else {
+        toast.error(`AI provisioning finished with ${result.failed} errors. Review the details in the console and retry after resolving them.`);
+        console.error("AI founding member provisioning report", result);
+      }
+      await refresh(true);
+    } catch (error) {
+      console.error("AI founding member provisioning failed", error);
+      toast.error("Could not provision AI founding members.");
+    } finally {
+      setProvisioningAi(false);
+    }
+  }
 
   async function refresh(showSpinner = false) {
     if (showSpinner) setRefreshing(true);
@@ -317,8 +344,12 @@ export function FoundingHqPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => void refresh(true)} disabled={refreshing}>
+          <Button variant="outline" onClick={() => void refresh(true)} disabled={refreshing || provisioningAi}>
             <RefreshCw className={`mr-2 size-4 ${refreshing ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+          <Button variant="outline" onClick={() => void provisionAiMembers()} disabled={provisioningAi || overview.aiMembers >= 50}>
+            <Sparkles className={`mr-2 size-4 ${provisioningAi ? "animate-pulse" : ""}`} />
+            {provisioningAi ? "Provisioning…" : `Provision AI members (${overview.aiMembers}/50)`}
           </Button>
           <Button onClick={openNew}>
             <Plus className="mr-2 size-4" /> Add prospect
@@ -326,8 +357,9 @@ export function FoundingHqPage() {
         </div>
       </div>
 
-      <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Founding members" value={`${members} / ${target}`} detail={`${Math.max(0, target - members)} still to go`} icon={Users} />
+      <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <StatCard label="Founding places" value={`${members} / ${target}`} detail={`${overview.humanMembers} human · ${overview.aiMembers} AI · ${overview.reservedSpots} reserved`} icon={Users} />
+        <StatCard label="AI participants" value={`${overview.aiMembers} / 50`} detail="Public profiles labelled as AI" icon={Sparkles} />
         <StatCard label="Prospects tracked" value={leads.length} detail="Across all acquisition channels" icon={ClipboardList} />
         <StatCard label="Warm conversations" value={warmLeads} detail="Interested, link sent or follow-up" icon={Activity} />
         <StatCard label="Ambassador pipeline" value={ambassadors} detail="Identified through active" icon={Handshake} />
@@ -337,7 +369,7 @@ export function FoundingHqPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Campaign progress</p>
-            <p className="mt-1 text-sm font-semibold">{members} verified founding members <span className="font-normal text-muted-foreground">of 100</span></p>
+            <p className="mt-1 text-sm font-semibold">{members} founding places counted <span className="font-normal text-muted-foreground">of 100, including reserved places</span></p>
           </div>
           <p className="text-2xl font-extrabold text-primary tnum">{progress.toFixed(0)}%</p>
         </div>

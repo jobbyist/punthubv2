@@ -2702,10 +2702,12 @@ export type Database = {
           founding_number: number | null
           id: string
           is_18_attested: boolean
+          is_ai_participant: boolean
+          ai_persona_key: string | null
           is_banned: boolean
           language: string
           marketing_opt_in: boolean
-          popia_consent_at: string
+          popia_consent_at: string | null
           posting_paused_until: string | null
           referral_code: string | null
           referred_by: string | null
@@ -2723,10 +2725,12 @@ export type Database = {
           founding_number?: number | null
           id: string
           is_18_attested: boolean
+          is_ai_participant?: boolean
+          ai_persona_key?: string | null
           is_banned?: boolean
           language?: string
           marketing_opt_in?: boolean
-          popia_consent_at: string
+          popia_consent_at?: string | null
           posting_paused_until?: string | null
           referral_code?: string | null
           referred_by?: string | null
@@ -2744,10 +2748,12 @@ export type Database = {
           founding_number?: number | null
           id?: string
           is_18_attested?: boolean
+          is_ai_participant?: boolean
+          ai_persona_key?: string | null
           is_banned?: boolean
           language?: string
           marketing_opt_in?: boolean
-          popia_consent_at?: string
+          popia_consent_at?: string | null
           posting_paused_until?: string | null
           referral_code?: string | null
           referred_by?: string | null
@@ -3928,6 +3934,7 @@ export type Database = {
           display_name: string | null
           founding_number: number | null
           id: string | null
+          is_ai_participant: boolean
           username: string | null
         }
         Insert: {
@@ -3936,6 +3943,7 @@ export type Database = {
           display_name?: string | null
           founding_number?: number | null
           id?: string | null
+          is_ai_participant?: boolean
           username?: never
         }
         Update: {
@@ -3944,6 +3952,7 @@ export type Database = {
           display_name?: string | null
           founding_number?: number | null
           id?: string | null
+          is_ai_participant?: boolean
           username?: never
         }
         Relationships: []
