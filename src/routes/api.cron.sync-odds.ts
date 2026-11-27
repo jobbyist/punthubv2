@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
         const { createOddsStore } = await import("@/lib/odds/store.server");
         const { createPfieStore } = await import("@/lib/pfie/store.server");
         try {
-          const claim = await createQuotaClaim();
+          const claim = await createQuotaClaim("pfie:odds");
           const keys = readContentEnv(env);
           const pfieStore = createPfieStore();
           const report = await runOddsSync(

@@ -21,29 +21,48 @@ const isMissingFunction = (error: { code?: string; message: string }) =>
  * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
  * code first changes nothing.
  */
-export async function createQuotaClaim(): Promise<Claim> {
+export async function createQuotaClaim(feature = "unattributed"): Promise<Claim> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
   let budgetAvailable = true;
+
+  const recordClaim = async (provider: string) => {
+    try {
+      const { error } = await db.from("api_call_events").insert({ provider, feature });
+      if (error) {
+        console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
+      }
+    } catch {
+      console.warn("quota: call attribution unavailable", provider, feature);
+    }
+  };
+
   return async (provider) => {
     if (budgetAvailable) {
       const { data, error } = await db.rpc("api_budget_claim", {
         p_provider: provider,
         p_units: 1,
       });
-      if (!error) return data === true;
+      if (!error) {
+        const granted = data === true;
+        if (granted) await recordClaim(provider);
+        return granted;
+      }
       if (!isMissingFunction(error)) {
         console.error("quota: budget claim failed, refusing the call", provider, error.message);
         return false;
       }
       budgetAvailable = false;
     }
+
     const { data, error } = await db.rpc("api_quota_claim", { p_provider: provider, p_units: 1 });
     if (error) {
       console.error("quota: claim failed, refusing the call", provider, error.message);
       return false;
     }
-    return data === true;
+    const granted = data === true;
+    if (granted) await recordClaim(provider);
+    return granted;
   };
 }
 

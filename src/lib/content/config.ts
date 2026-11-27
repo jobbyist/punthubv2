@@ -120,3 +120,14 @@ export function redact(secret: string | null): string {
   if (secret.length <= 8) return "****";
   return `${secret.slice(0, 2)}…${secret.slice(-2)}`;
 }
+
+
+/** Paid Parallel Medium is reserved for the highest-priority breaking-news slot. */
+export function modelsForContentSlot(models: readonly string[], slot?: "breaking" | "editorial" | "intelligence"): string[] {
+  return slot === "breaking" ? [...models] : models.filter((model) => model !== "parallel-medium");
+}
+
+/** Select a different Gemini model for revision/review, avoiding a second paid Parallel call. */
+export function alternativeGeminiModel(models: readonly string[], current: string): string | null {
+  return models.find((model) => model.startsWith("gemini-") && model !== current) ?? null;
+}

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 
 import { CACHE_TTL_SECONDS, cacheKey, expiresAt, isFresh, stableStringify } from "./cache";
-import { type CacheStore, cachedCall, withSearchCache } from "./cached";
+import { type CacheStore, cachedCall, withExtractCache, withSearchCache } from "./cached";
 import { PARALLEL_UNIT_PRICES_USD, budgetFamily, costUsd } from "./pricing";
 import { createParallelChat, createParallelTask, extractOutputText, parseBasis } from "./task";
 import { createParallelDecisions } from "./decisions";
@@ -80,6 +80,21 @@ describe("cachedCall", () => {
     const second = await cachedCall(store, input, fetcher);
     expect(second).toEqual({ value: { ok: 1 }, cached: true });
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("shares extracted page content across newsroom slots without another provider call", async () => {
+    const store = memoryStore();
+    const extract = vi.fn(async () => ({ markdown: "Full page content", title: "Article" }));
+    const cached = withExtractCache({ name: "firecrawl", extract }, store, "news");
+    expect(await cached.extract("https://example.com/story")).toEqual({
+      markdown: "Full page content",
+      title: "Article",
+    });
+    expect(await cached.extract("https://example.com/story")).toEqual({
+      markdown: "Full page content",
+      title: "Article",
+    });
+    expect(extract).toHaveBeenCalledTimes(1);
   });
 
   it("calls again once the entry has expired", async () => {

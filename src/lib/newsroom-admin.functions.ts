@@ -318,25 +318,33 @@ export const adminNewsroomGenerate = createServerFn({ method: "POST" })
       const ctx = context as Ctx;
       const db = await adminDb(ctx);
       if (!db) return { ok: false, code: "forbidden" };
-      const { readContentEnv } = await import("@/lib/content/config");
+      const { readContentEnv, modelsForContentSlot } = await import("@/lib/content/config");
       const { createGemini, createPageReader, createParallelSearch } =
         await import("@/lib/content/providers.server");
       const { createContentStore } = await import("@/lib/content/store.server");
+      const { createCacheStore } = await import("@/lib/parallel/cache.server");
+      const { withExtractCache, withSearchCache } = await import("@/lib/parallel/cached");
       const { runContentJob } = await import("@/lib/content/pipeline");
       const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
         await import("@/lib/quota.server");
-      const claim = await createQuotaClaim();
-      const env = readContentEnv();
+      const claim = await createQuotaClaim("newsroom:admin");
+      const baseEnv = readContentEnv();
+      const env = { ...baseEnv, models: modelsForContentSlot(baseEnv.models) };
+      const cache = await createCacheStore();
       const outcome = await runContentJob(
         {
           store: createContentStore(),
           env,
           search: env.parallelKey
-            ? guardSearch(createParallelSearch(env.parallelKey), claim)
+            ? withSearchCache(guardSearch(createParallelSearch(env.parallelKey), claim), cache, "news")
             : null,
-          extract: createPageReader(
-            { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
-            (r) => guardExtract(r, claim),
+          extract: withExtractCache(
+            createPageReader(
+              { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
+              (r) => guardExtract(r, claim),
+            ),
+            cache,
+            "news",
           ),
           llm: env.geminiKey ? guardLlm(createGemini(env.geminiKey), claim) : null,
         },

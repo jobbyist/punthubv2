@@ -6,7 +6,7 @@
  * answer is never cached, so a bad moment at the provider does not stick for hours.
  */
 import { type CachePurpose, cacheKey, expiresAt, isFresh } from "./cache";
-import type { SearchProvider } from "@/lib/content/types";
+import type { ExtractProvider, SearchProvider } from "@/lib/content/types";
 
 export interface CacheStore {
   get(key: string): Promise<{ response: unknown; expiresAt: string } | null>;
@@ -69,6 +69,28 @@ export function withSearchCache(
         { endpoint: `search:${inner.name}`, body: input, purpose },
         () => inner.search(input),
         (hits) => hits.length > 0,
+      );
+      return value;
+    },
+  };
+}
+
+
+/** Cache full-page reads by canonical URL so the three daily newsroom slots share extracted source text. */
+export function withExtractCache(
+  inner: ExtractProvider | null,
+  store: CacheStore | null,
+  purpose: CachePurpose,
+): ExtractProvider | null {
+  if (!inner) return null;
+  return {
+    name: inner.name,
+    async extract(url) {
+      const { value } = await cachedCall(
+        store,
+        { endpoint: `extract:${inner.name}`, body: { url }, purpose },
+        () => inner.extract(url),
+        (page) => Boolean(page?.markdown),
       );
       return value;
     },
