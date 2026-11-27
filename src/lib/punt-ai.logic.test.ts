@@ -16,6 +16,7 @@ describe("PUNT AI request safety", () => {
   it("routes time-sensitive questions to live web but not bookmaker odds", () => {
     expect(needsPuntAiLiveWeb("Any latest injury news for Sundowns?")).toBe(true);
     expect(needsPuntAiLiveWeb("What is ROI?")).toBe(false);
+    expect(needsPuntAiLiveWeb("What is the current Premier League table?")).toBe(false);
     expect(needsPuntAiLiveWeb("What are the current bookmaker odds?")).toBe(false);
     expect(isPuntAiOddsQuestion("What are the current bookmaker odds?")).toBe(true);
   });
