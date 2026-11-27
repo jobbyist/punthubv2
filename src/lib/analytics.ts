@@ -3,6 +3,7 @@
  * Pushes events to any installed analytics layer (GA4 / GTM), stores them first-party in Supabase
  * (campaign_events, with the ad's UTM tags) for the admin Campaigns tab, and logs in dev.
  * Nothing is sent or queued until the visitor has said yes to the Analytics purpose (POPIA).
+ * Synthetic QA is excluded independently of consent as a second, explicit guardrail.
  */
 import { currentUtm } from "@/lib/campaign";
 import { hasConsent, readConsent } from "@/lib/consent";
@@ -16,13 +17,17 @@ declare global {
   }
 }
 
+function isSyntheticQaBrowser(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.cookie.split(";").some((part) => part.trim() === "puntr_synthetic_qa=1");
+}
+
 export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || isSyntheticQaBrowser()) return;
   if (!hasConsent("analytics")) return;
 
   const data = { event, ...payload, timestamp: new Date().toISOString() };
 
-  // Keep consented, session-scoped activity signals available for contextual in-app CTAs.
   try {
     window.sessionStorage.setItem(`puntr:analytics:event:${event}`, data.timestamp);
   } catch {
@@ -42,8 +47,9 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
   if (import.meta.env.DEV) console.info("[analytics]", event, payload);
 }
 
-/** First-party copy for the admin dashboard. Only the consent cookie's random id identifies the browser. */
+/** First-party campaign analytics. Synthetic QA browsers are rejected before any write. */
 async function storeEvent(event: string, payload: AnalyticsPayload) {
+  if (isSyntheticQaBrowser()) return;
   const visitor = readConsent()?.id;
   if (!visitor) return;
   const utm = currentUtm();

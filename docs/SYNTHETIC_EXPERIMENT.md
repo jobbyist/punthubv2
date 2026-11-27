@@ -2,48 +2,44 @@
 
 ## Scope
 
-A controlled production QA experiment from 27 Nov to 26 Dec 2026, using 50 synthetic persona profiles. The implementation is explicitly labelled and read-only on the public application.
+A controlled, explicitly labelled QA experiment for 27 November–26 December 2026 (SAST), using 50 synthetic persona profiles. The production scheduler is Vercel Cron. The scheduled runner performs server-side, read-only HTTP/HTML checks against the public application and calls the daily research allocator. It does not run a headless browser inside a Vercel Function.
 
-## Why it is not 50 founding-member signups
+The Playwright suite remains available for manual/local browser testing, but is no longer scheduled by GitHub Actions.
 
-Production signups create genuine customer records, trigger support notifications, can affect founding-member counts, consent records, onboarding rewards, retention metrics and customer communications. Creating fictitious founding members would contaminate those records and misrepresent acquisition. Therefore the personas are not provisioned as Auth users and cannot claim founding status.
+## Vercel orchestration
 
-The browser suite tests public pages as guest visitors. Any authenticated-path testing must use separately provisioned, clearly labelled QA accounts with owner-approved credentials and must remain excluded from customer metrics. That is not enabled by this first implementation.
+`vercel.json` invokes `/api/cron/synthetic-run` at 06:00, 09:00, 13:00, 17:00 and 20:00 SAST (04:00, 07:00, 11:00, 15:00 and 18:00 UTC). Vercel Cron sends GET requests and includes the configured `CRON_SECRET` as a Bearer token. The route validates the secret, reads the paused/active experiment state, selects one least-recently-tested persona, and visits only its allowlisted public paths using GET requests. A short database lease prevents duplicate cron deliveries from testing the same persona concurrently.
 
-## Components
+After a successful route check, the runner invokes the existing daily fixture allocator. That allocator is idempotent per persona/SAST day and uses the existing Parallel quota, cache and US$50 experiment budget guard. Failed route checks are recorded in the synthetic session table and do not trigger research for that invocation.
 
-- `experiments/synthetic/personas.json`: 50 synthetic QA personas.
-- `experiments/synthetic/personas.schema.json`: JSON Schema for persona validation.
-- `experiments/synthetic/tests/public-journeys.spec.ts`: Playwright read-only public-page journeys.
-- `experiments/synthetic/run-batch.mjs`: round-robin selector for one-to-three persona batches, intended for an owner-controlled external scheduler.
-- `experiments/synthetic/decisions.mjs`: Parallel Decisions API, up to two typed choice questions per persona (one per preferred market; 100 questions for all 50 personas), with citations and per-option probabilities.
-- `src/lib/parallel/decisions.ts` and `src/routes/api.cron.synthetic-decisions.ts`: server-side Decisions API provider and cron-authenticated route using Puntr's existing quota and cache layers.
-- `src/routes/api.cron.synthetic-decisions-daily.ts`: assigns each due persona one upcoming fixture in a followed competition and schedules one or two market decisions per SAST day.
-- `supabase/migrations/20261123150000_synthetic_experiment_telemetry.sql`: isolated service-role-only telemetry and hard budget reservation functions.
+Vercel Cron is best-effort scheduling; runs can be delayed, duplicated or missed. The runner is idempotent and records session timestamps so later invocations can continue round-robin coverage.
 
-## Parallel API selection
+## QA method and limitations
 
-**Primary: Decisions API.** It supports up to 100 named questions per request over one shared evidence set, returning typed choice probabilities and citations. One request can therefore evaluate two preferred markets for all 50 personas on the same fixture. This is the most economical fit for the experiment.
+The scheduled Vercel runner checks that each allowlisted public route returns same-origin HTML with a successful HTTP status. It does not execute client-side JavaScript, render interactions, submit forms, or behave like a full browser. This is intentionally lighter and more reliable within serverless function limits. Use the retained Playwright suite for manual browser-level regression checks.
 
-**Existing Responses/Task clients:** Puntr already has server-side clients for conversational live-web answers and asynchronous JSON-schema research. If a future test needs narrative explanations, it must be routed through the existing cache and quota guard. Task is not required for the typed persona choices in this experiment. All outputs remain informational forecasts for QA and accuracy evaluation, not betting instructions. The model's option probabilities are estimates, not calibrated probabilities or guaranteed outcomes.
+The allowed paths are `/`, `/founding`, `/predictions`, `/fixtures`, `/results`, `/newsroom` and `/roadmap`. No writes, registration submissions, public picks, PuntPoints, referrals, rewards, payments or wagering actions are performed.
 
-## Cost and existing platform budget
+## Isolated telemetry and analytics exclusion
 
-The experiment hard cap is US$50. Decisions API requests reserve US$0.001 each and can contain up to 100 persona questions over one shared fixture evidence set. A 50-persona batch with two preferred markets each is 100 questions in one provider request, not 100 separate calls. Each call also passes Puntr's existing provider-family budget and quota checks and is cached for 24 hours. Do not create duplicate requests for the same fixture/persona batch.
+- All synthetic records are written to `synthetic_experiments`, `synthetic_personas`, `synthetic_sessions`, `synthetic_research` and `synthetic_budget_ledger`.
+- These tables have RLS enabled and no anon/authenticated table privileges; only trusted server-side service-role code can access them.
+- Scheduled route checks send `x-puntr-synthetic-test: true`, `x-puntr-experiment` and the `puntr_synthetic_qa=1` cookie.
+- The client analytics helper rejects the synthetic cookie before writing to GA4/GTM, session analytics storage or `campaign_events`, even if an analytics consent cookie is present.
+- The retained Playwright suite sets the same synthetic cookie before navigation.
+- Synthetic QA never grants analytics consent and never creates fake Auth users or Founding Members.
+- The admin-only Synthetic QA tab reads only the isolated experiment tables. It does not combine synthetic activity with member analytics or campaign conversion metrics.
 
-The owner has confirmed sufficient Parallel funding beyond 7 Dec 2026. All experiment requests remain subject to the existing provider-family budget and quota checks, plus the experiment-specific US$50 hard cap. Do not silently reduce the budget allocated to fixtures, results, standings or newsroom.
+## Personas and research
 
-## Production data protections
+`experiments/synthetic/personas.json` contains 50 distinct data-only profiles. The daily allocator assigns due personas an upcoming fixture in a followed competition and creates one or two preferred-market Decisions API questions per persona, capped at 100 named questions per shared-evidence request. Forecasts are informational QA outputs, not betting advice, and are never published as picks.
 
-- Synthetic personas have no email address, real name, phone number or personal identifiers.
-- No auth user or profile creation.
-- No founding-member registration submission.
-- No public prediction, public pick, community post, PuntPoints, referral, reward, redemption or payment action.
-- No analytics consent; no synthetic campaign conversion events.
-- No synthetic research is written to public predictions.
-- Service-role access is restricted to server/CI scripts. Never expose the key to the browser.
-- Tables have RLS enabled and no anon/authenticated policies.
+The Decisions API route uses Puntr's existing Parallel cache and provider-family quota/budget guard, plus the separate US$50 experiment hard ceiling. The owner has confirmed sufficient Parallel funding beyond 7 December 2026; requests still remain subject to those controls.
 
-## Activation checklist
+## Admin monitoring
 
-The migration seeds the experiment as `paused`. Apply only after review. Before setting it active, verify the production host, migration, RLS, service-role secret, Parallel balance, budget reserve, and exclusion of the `x-puntr-synthetic-test` header from any customer analytics pipeline.
+Open `/admin` → Overview → Synthetic QA. The read-only panel reports experiment state and dates, active persona coverage, route-check sessions and failures, forecast batches, source counts, and the budget ledger. No synthetic data is displayed in public/member analytics.
+
+## Activation requirements
+
+The production Supabase telemetry migration and 50-persona seed are already applied. The production Vercel project already has `CRON_SECRET`, `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` configured. Keep the experiment paused until the Vercel deployment registers the Cron schedule and the production route-check plus analytics-exclusion tests have been verified.

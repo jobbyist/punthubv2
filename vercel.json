@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/cron/synthetic-run",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/synthetic-run",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/synthetic-run",
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/cron/synthetic-run",
+      "schedule": "0 15 * * *"
+    },
+    {
+      "path": "/api/cron/synthetic-run",
+      "schedule": "0 18 * * *"
+    }
+  ]
+}
