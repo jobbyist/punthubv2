@@ -1,8 +1,8 @@
 /**
  * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each call refreshes the next due competitions that
- * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per refresh window (every
- * 4 hours at most), so two windows a day (07:00 and 14:00 SAST) cost about one search and two page reads per
- * competition each. Nothing is collected after kick-off (pre-match only, no in-play).
+ * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per four-hour window.
+ * Each run reads up to five permitted bookmaker pages and uses one Parallel Chat low extraction. Nothing is
+ * collected after kick-off (pre-match only, no in-play).
  */
 import { canonicalUrl, cleanText, domainOf } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, LlmRequest, SearchProvider } from "@/lib/content/types";
@@ -71,9 +71,14 @@ export function oddsDue(status: OddsStatus | undefined, now: Date): boolean {
 
 export function oddsQueries(competition: string, fixtures: UpcomingFixture[]): string[] {
   const first = fixtures[0];
+  const match = first ? `${first.home} vs ${first.away}` : competition;
+  const affiliateQueries = ODDS_AFFILIATE_PRIORITY_DOMAINS.map(
+    (domain) => `site:${domain} ${match} odds`,
+  );
   return [
+    ...affiliateQueries,
     `${competition} odds`,
-    ...(first ? [`${first.home} vs ${first.away} odds`] : []),
+    ...(first ? [`${match} odds`] : []),
     `${competition} betting odds 1X2 over under both teams to score`,
   ];
 }
