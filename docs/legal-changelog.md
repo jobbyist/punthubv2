@@ -1,3 +1,11 @@
+## 2026-11-28, Team directory follows (Privacy 2026-11-28-team-follows)
+
+- **What changed:** members can follow teams in the new team directory (`/teams`). Puntr stores the teams a member follows (`team_follows`) and an append-only follow/unfollow log (`team_follow_events`). Followed football teams are mirrored into the existing favourites (`member_preferences.teams`, max 10) to order the member's Matchday card.
+- **Who sees what:** the member sees their own follows on `/account` and can unfollow there or in the directory. The public sees only an anonymous follower count per team (shown from 3 followers). Admins see totals and the most-followed teams in Admin > Analytics, never a list of who follows whom.
+- **PFIE learning:** only for members with separate PFIE-learning consent, a follow or unfollow is recorded as a pseudonymous learning event (`team_followed` / `team_unfollowed`: sport, team name, source). No consent, no event.
+- **Export:** the account data export now includes team follows and the follow log.
+- **Pages:** Privacy (Favourites row renamed "Favourites and followed teams", PFIE learning row), English and Afrikaans; notice version `2026-11-28-team-follows` in migration `20261128030000_team_follows.sql`.
+- **Review `[attorney review]`:** confirm consent as the lawful basis for follows, the public anonymous follower count, admin aggregate analytics, retention of the follow log while the account is open, and the Afrikaans wording.
 ## 2026-11-27, simpler sign-up flow (no notice version change)
 
 - **What changed:** the first sign-up screen no longer shows a separate "I am 18 or older" checkbox. The line under the form now reads "By continuing you confirm you're 18 or older, agree to the Terms and have read the Privacy notice." The binding age check is unchanged: the profile step still asks for year of birth and an unticked "I am 18 or older" box plus Terms acceptance before any profile is created, and under-18 sign-ins are still discarded. Marketing consent stays as two separate, unticked, optional boxes.

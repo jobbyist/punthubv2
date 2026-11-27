@@ -20,7 +20,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount } from "@/lib/accounts.functions";
-import { CONSENT_NOTICE_VERSION, hasConsent, openConsentBanner, readConsent, writeConsent } from "@/lib/consent";
+import {
+  CONSENT_NOTICE_VERSION,
+  hasConsent,
+  openConsentBanner,
+  readConsent,
+  writeConsent,
+} from "@/lib/consent";
 import { setPfieLearningConsent } from "@/lib/pfie-learning.functions";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -93,13 +99,22 @@ function ExportSection() {
   const download = async () => {
     setBusy(true);
     const db = supabase as unknown as import("@supabase/supabase-js").SupabaseClient;
-    const [{ data, error }, { data: pfieData, error: pfieError }] = await Promise.all([
-      db.rpc("export_my_data"),
-      db.rpc("export_my_pfie_learning_data"),
-    ]);
+    const [{ data, error }, { data: pfieData, error: pfieError }, follows, followEvents] =
+      await Promise.all([
+        db.rpc("export_my_data"),
+        db.rpc("export_my_pfie_learning_data"),
+        // Team follows (own rows through RLS); optional, so a failure never blocks the export.
+        db.from("team_follows").select("sport, team_name, created_at"),
+        db.from("team_follow_events").select("sport, team_name, action, source, created_at"),
+      ]);
     setBusy(false);
     if (error || pfieError || !data) return void toast.error(t("privacy.export.error"));
-    const exportData = { ...(data as Record<string, unknown>), ...(pfieData && typeof pfieData === "object" ? pfieData as Record<string, unknown> : {}) };
+    const exportData = {
+      ...(data as Record<string, unknown>),
+      ...(pfieData && typeof pfieData === "object" ? (pfieData as Record<string, unknown>) : {}),
+      ...(follows.error ? {} : { team_follows: follows.data ?? [] }),
+      ...(followEvents.error ? {} : { team_follow_events: followEvents.data ?? [] }),
+    };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -205,7 +220,6 @@ function MarketingSection({ userId }: { userId: string }) {
   );
 }
 
-
 function PfieLearningSection({ userId }: { userId: string }) {
   const { t } = useTranslation("account");
   const [enabled, setEnabled] = useState(false);
@@ -215,8 +229,12 @@ function PfieLearningSection({ userId }: { userId: string }) {
     let active = true;
     void (async () => {
       const cookieChoice = readConsent();
-      const { data: current } = await supabase.from("current_consents").select("granted")
-        .eq("user_id", userId).eq("purpose", "pfie_learning").maybeSingle();
+      const { data: current } = await supabase
+        .from("current_consents")
+        .select("granted")
+        .eq("user_id", userId)
+        .eq("purpose", "pfie_learning")
+        .maybeSingle();
       // Account consent wins across devices. A browser choice is copied only when no account
       // record exists; explicit changes in this panel always update both records.
       if (!current && cookieChoice?.noticeVersion === CONSENT_NOTICE_VERSION) {
@@ -227,11 +245,21 @@ function PfieLearningSection({ userId }: { userId: string }) {
         const accountChoice = current?.granted === true;
         setEnabled(accountChoice);
         if (!cookieChoice || cookieChoice.pfie_learning !== accountChoice) {
-          writeConsent({ analytics: cookieChoice?.analytics ?? false, affiliate_tracking: cookieChoice?.affiliate_tracking ?? false, pfie_learning: accountChoice }, "account", false);
+          writeConsent(
+            {
+              analytics: cookieChoice?.analytics ?? false,
+              affiliate_tracking: cookieChoice?.affiliate_tracking ?? false,
+              pfie_learning: accountChoice,
+            },
+            "account",
+            false,
+          );
         }
       }
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [userId]);
 
   const change = async (granted: boolean) => {
@@ -240,11 +268,15 @@ function PfieLearningSection({ userId }: { userId: string }) {
     setBusy(true);
     try {
       await setPfieLearningConsent({ data: { granted } });
-      writeConsent({
-        analytics: hasConsent("analytics"),
-        affiliate_tracking: hasConsent("affiliate_tracking"),
-        pfie_learning: granted,
-      }, "account", false);
+      writeConsent(
+        {
+          analytics: hasConsent("analytics"),
+          affiliate_tracking: hasConsent("affiliate_tracking"),
+          pfie_learning: granted,
+        },
+        "account",
+        false,
+      );
       toast.success(t("privacy.pfieLearning.saved"));
     } catch {
       setEnabled(previous);
@@ -257,8 +289,12 @@ function PfieLearningSection({ userId }: { userId: string }) {
   return (
     <Section title={t("privacy.pfieLearning.title")} body={t("privacy.pfieLearning.body")}>
       <div className="flex items-start gap-3">
-        <Checkbox id="pfie-learning-consent" checked={enabled} disabled={busy}
-          onCheckedChange={(value) => void change(value === true)} />
+        <Checkbox
+          id="pfie-learning-consent"
+          checked={enabled}
+          disabled={busy}
+          onCheckedChange={(value) => void change(value === true)}
+        />
         <Label htmlFor="pfie-learning-consent" className="text-sm font-normal leading-snug">
           {t("privacy.pfieLearning.toggle")}
         </Label>
