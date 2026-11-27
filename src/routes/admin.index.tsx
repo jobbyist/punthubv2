@@ -28,6 +28,7 @@ import { LogosTab } from "@/components/admin/logos-admin";
 import { QuestsTab } from "@/components/admin/quests-admin";
 import { RewardsTab } from "@/components/admin/rewards-admin";
 import { TranslationsTab } from "@/components/admin/translations-admin";
+import { BookmakerComplianceTab } from "@/components/admin/bookmaker-compliance-admin";
 import { useSession } from "@/components/session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -229,7 +230,7 @@ function Admin() {
                   <TabsContent value="translations" className="mt-0">
                     <TranslationsTab />
                   </TabsContent>
-                  <TabsContent value="draw" className="mt-0">
+                  <TabsContent value="bookmakers" className="mt-0">\n                    <BookmakerComplianceTab />\n                  </TabsContent>\n                  <TabsContent value="draw" className="mt-0">
                     <PracticeDrawTab />
                   </TabsContent>
                 </main>
