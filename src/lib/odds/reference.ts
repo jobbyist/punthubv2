@@ -1,7 +1,6 @@
 /**
- * Pre-match reference odds (owner decisions, 15 Nov 2026; docs/PARALLEL_ARCHITECTURE.md, "Odds rules").
- *
- * Gemini copies prices off bookmaker pages with a word-for-word quote. Plain code decides what is kept:
+ * Pre-match reference odds. Parallel Search discovers candidate bookmaker pages, Parallel Extract reads permitted
+ * live pages, and Parallel Chat low copies prices into a structured schema. Plain code decides what is kept:
  *  - only licensed South African bookmaker domains (ODDS_SOURCE_DOMAINS, `[attorney review]` on each site's terms);
  *  - both team names must resolve to the same known fixture;
  *  - the price must appear in the quote and the quote on the page;
@@ -59,6 +58,14 @@ export const DEFAULT_ODDS_SOURCE_DOMAINS = [
  * Bookmakers that show "profit" odds: the winnings per R1 staked, without the stake (decimal minus 1). Hollywoodbets
  * lists a 1.60 favourite as "0.6" (seen 15 Nov 2026). Their prices are copied as shown and converted here (+1).
  */
+/** Approved affiliate partners are searched first; the source-rights registry still decides what may be read. */
+export const ODDS_AFFILIATE_PRIORITY_DOMAINS = [
+  "hollywoodbets.net",
+  "supabets.co.za",
+  "yesplay.bet",
+] as const;
+
+/** Hollywoodbets shows profit odds rather than decimal odds; conversion happens only after exact quote validation. */
 export const PROFIT_ODDS_DOMAINS = ["hollywoodbets.net"] as const;
 
 export function toDecimalOdds(shown: number, domain: string): number {
