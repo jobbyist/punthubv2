@@ -292,6 +292,19 @@ describe("validateTables", () => {
       ).rejected[0]!.reason,
     ).toMatch(/row_evidence_not_on_page/);
   });
+  it("rejects placeholder clubs instead of inventing a missing group entrant", () => {
+    const placeholder = raw(1, (row) =>
+      row.team === "Delta Rovers"
+        ? { ...row, team: "TBC", quote: "4 TBC 10 0 0 0 0 0 0" }
+        : row,
+    );
+    const source = page("league.com", "official", 1, [
+      ...lines.slice(0, 3),
+      "4 TBC 10 0 0 0 0 0 0",
+    ]);
+    const result = validateTables(placeholder, [source], 4);
+    expect(result.rejected.some((item) => item.reason === "placeholder_team_not_allowed")).toBe(true);
+  });
   it("matches accentless source rows when the model includes a three-letter team code", () => {
     const sourceLines = [...lines];
     sourceLines[0] = "1 Atletico de Madrid 10 7 2 1 20 8 23";
