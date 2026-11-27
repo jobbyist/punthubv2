@@ -7,6 +7,19 @@ export async function createOddsStore(): Promise<OddsStore> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
   return {
+    async authorizedDomains() {
+      const { data, error } = await db
+        .from("bookmaker_odds_permissions")
+        .select("domain")
+        .eq("enabled", true)
+        .eq("licence_status", "verified")
+        .eq("data_rights_status", "approved")
+        .eq("automated_access_allowed", true)
+        .order("affiliate_priority", { ascending: true })
+        .order("bookmaker_name", { ascending: true });
+      if (error) throw new Error(`bookmaker_odds_permissions: ${error.message}`);
+      return [...new Set((data ?? []).map((row) => String(row.domain)))];
+    },
     async upcoming(fromIso, toIso) {
       const { data, error } = await db
         .from("fixtures")
