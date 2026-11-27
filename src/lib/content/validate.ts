@@ -150,7 +150,12 @@ export function validateDraft(input: ValidateInput): QualityReport {
   const { draft, kind, sources } = input;
   const issues: QualityIssue[] = [];
   let score = 100;
-  const critical = (code: string, detail: string) => issues.push({ code, critical: true, detail });
+  // Critical issues remain explicit flags, but the score now reflects their count instead of collapsing
+  // every failing article to the same hard-coded 49.
+  const critical = (code: string, detail: string) => {
+    issues.push({ code, critical: true, detail });
+    score -= 15;
+  };
   const minor = (code: string, detail: string, cost: number) => {
     issues.push({ code, critical: false, detail });
     score -= cost;
@@ -264,7 +269,7 @@ export function validateDraft(input: ValidateInput): QualityReport {
 
   const isCritical = issues.some((i) => i.critical);
   return {
-    score: Math.max(0, isCritical ? Math.min(score, 49) : score),
+    score: Math.max(0, Math.min(100, score)),
     issues,
     critical: isCritical,
   };
