@@ -14,7 +14,7 @@ This harness is deliberately **not** a fake-customer acquisition system. It prov
 
 ## Dates and budget
 
-Experiment window: 23 November 2026 through 22 December 2026 (SAST). The migration creates a paused experiment with a hard ceiling of US$50.
+Experiment window: 27 November 2026 through 26 December 2026 (SAST). The migration creates a paused experiment with a hard ceiling of US$50.
 
 **Important existing-budget constraint:** Puntr's Parallel architecture documentation says the current approximately US$50 prepaid balance expires on 7 December 2026 and is shared with production fixtures, results, standings, newsroom and other existing workloads. The 30-day experiment extends beyond that expiry. Do not assume the same prepaid balance funds the entire window; verify the live Parallel balance and reserve, and pause the experiment on 7 December unless a new budget is confirmed.
 
@@ -94,9 +94,9 @@ The current app analytics helper only emits events after analytics consent. Keep
 
 ## Suggested phases
 
-- 23–30 Nov: public routes, founding page rendering, fixture/results navigation and smoke QA.
+- 27–30 Nov: public routes, founding page rendering, fixture/results navigation and smoke QA.
 - 1 Dec: launch-day regression smoke tests, one to three personas per batch.
-- 2–22 Dec: repeat public-route checks and forecast evaluation; no public engagement writes.
+- 2–26 Dec: repeat public-route checks and forecast evaluation; no public engagement writes.
 
 ## Operational controls
 
