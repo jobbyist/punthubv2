@@ -85,6 +85,8 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("vi.nl", [])).toBe("trusted");
     expect(tierOf("skysports.com", [])).toBe("trusted");
+    expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
+    expect(tierOf("foxsports.com", [])).toBe("trusted");
     expect(tierOf("espn.com", [])).toBe("trusted");
     expect(tierOf("transfermarkt.com", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
@@ -431,6 +433,10 @@ describe("UEFA Conference League participant aliases", () => {
     expect(normaliseTeam("L. Red Imps")).toBe(normaliseTeam("Lincoln Red Imps"));
     expect(normaliseTeam("Univ. Craiova")).toBe(normaliseTeam("Universitatea Craiova"));
     expect(normaliseTeam("Inter Club d Escaldes")).toBe(normaliseTeam("Inter Escaldes"));
+    expect(normaliseTeam("FC Iberia 1999 Tiflis")).toBe(normaliseTeam("Iberia Tbilisi"));
+    expect(normaliseTeam("FK Kairat")).toBe(normaliseTeam("Kairat Almaty"));
+    expect(normaliseTeam("Borac Banja Luka")).toBe(normaliseTeam("Borac"));
+    expect(normaliseTeam("Roter Stern Belgrad")).toBe(normaliseTeam("Crvena Zvezda"));
     expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
