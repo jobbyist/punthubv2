@@ -99,9 +99,12 @@ describe("trusted standings publisher domains", () => {
 describe("launch standings coverage", () => {
   it("keeps the eight competitions with existing validated tables and temporarily hides empty ones", () => {
     expect(STANDINGS_LAUNCH_KEYS).toEqual([
-      "psl",
       "epl",
       "laliga",
+      "ucl",
+      "uecl",
+      "sa-championship",
+      "psl",
       "seriea",
       "bundesliga",
       "primeira",
@@ -110,8 +113,6 @@ describe("launch standings coverage", () => {
     ]);
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("eredivisie");
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("ligue1");
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("ucl");
   });
 });
 describe("configured direct standings sources", () => {
@@ -178,6 +179,21 @@ describe("configured direct standings sources", () => {
     expect(new Set(publisherKeys).size).toBe(5);
   });
 });
+  it("configures official and independent Conference League standings sources", () => {
+    expect(STANDINGS_COMPETITIONS.uecl?.teams).toBe(36);
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.uefa.com/uefaconferenceleague/standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.tntsports.co.uk/football/conference-league/2026-2027/standings.shtml",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.cbssports.com/soccer/uefa-conference-league/standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.foxsports.com/soccer/uefa-conference-league/standings",
+    );
+  });
 describe("La Liga live source configuration", () => {
   it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
@@ -404,6 +420,13 @@ describe("ambiguous Paris team shorthand", () => {
   it("does not silently map Paris to PSG when Paris FC is also a known club", () => {
     expect(resolveTeam("Paris", ["Paris Saint-Germain", "Paris FC"])).toBeNull();
     expect(resolveTeam("Paris FC", ["Paris Saint-Germain", "Paris FC"])).toBe("Paris FC");
+  });
+});
+describe("UEFA Conference League participant aliases", () => {
+  it("reconciles known duplicate fixture labels without broad ambiguous matching", () => {
+    expect(normaliseTeam("Hearts")).toBe(normaliseTeam("Heart of Midlothian"));
+    expect(normaliseTeam("AGF")).toBe(normaliseTeam("Aarhus"));
+    expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
 describe("La Liga cross-publisher team aliases", () => {
