@@ -1,6 +1,6 @@
 /**
- * Live Newsroom adapters for Parallel Search/Responses and Firecrawl extraction.
- * Server-only credentials are passed in headers, never URLs, logs or client code.
+ * Server-side adapters for Parallel, Firecrawl and Gemini. Gemini is retained for PFIE/odds extraction only;
+ * the Newsroom route deliberately never instantiates or calls it.
  */
 import { postJson, ProviderError, type RetryOptions } from "./http";
 import type {
@@ -71,8 +71,41 @@ export function createFirecrawlExtract(apiKey: string, overrides: Overrides = {}
   };
 }
 
+export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProvider {
+  return {
+    name: "gemini",
+    async generate(model: string, request: LlmRequest): Promise<LlmResult> {
+      const json = await postJson(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+        { "x-goog-api-key": apiKey },
+        {
+          systemInstruction: { parts: [{ text: request.system }] },
+          contents: [{ role: "user", parts: [{ text: request.prompt }] }],
+          generationConfig: {
+            temperature: request.temperature,
+            maxOutputTokens: request.maxOutputTokens,
+            responseMimeType: "application/json",
+            responseSchema: request.schema,
+          },
+        },
+        { provider: "gemini", timeoutMs: 30_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+      );
+      const candidates = isRecord(json) && Array.isArray(json["candidates"]) ? json["candidates"] : [];
+      const first = candidates[0];
+      const content = isRecord(first) && isRecord(first["content"]) ? first["content"] : null;
+      const parts = content && Array.isArray(content["parts"]) ? content["parts"] : [];
+      const text = parts.map((part) => (isRecord(part) && part["thought"] !== true ? str(part["text"]) : "")).join("").trim();
+      if (!text) {
+        const reason = isRecord(first) ? str(first["finishReason"]) : "";
+        throw new ProviderError("gemini", "bad_response", null, `empty answer${reason ? ` (${reason})` : ""}`);
+      }
+      return { model, text };
+    },
+  };
+}
+
 /**
- * Parallel Responses API used for editorial drafting and independent review.
+ * Parallel Responses API used for Newsroom drafting, revision and review.
  * Structured JSON output is normalised from the shared content-engine schema.
  */
 function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
