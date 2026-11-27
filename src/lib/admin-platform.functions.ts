@@ -63,6 +63,7 @@ export interface AdminMember {
   accountType: string;
   foundingNumber: number | null;
   isBanned: boolean;
+  isAiParticipant: boolean;
   suspendedUntil: string | null;
   limitedUntil: string | null;
   createdAt: string;
@@ -124,7 +125,7 @@ export const adminListMembers = createServerFn({ method: "POST" })
     let q = db
       .from("profiles")
       .select(
-        "id, username, display_name, role, account_type, founding_number, is_banned, suspended_until, posting_paused_until, created_at, marketing_opt_in, birth_year, is_18_attested, popia_consent_at, language, avatar_url",
+        "id, username, display_name, role, account_type, founding_number, is_banned, is_ai_participant, suspended_until, posting_paused_until, created_at, marketing_opt_in, birth_year, is_18_attested, popia_consent_at, language, avatar_url",
       )
       .not("username", "like", "deleted-%")
       .order("created_at", { ascending: false })

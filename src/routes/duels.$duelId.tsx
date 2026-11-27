@@ -149,6 +149,7 @@ function DuelRoom() {
         <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-3 border-t border-border bg-muted/30 p-5">
           <PlayerColumn
             name={`@${duel.challenger.username}`}
+            isAi={duel.challenger.is_ai_participant}
             you={duel.me === "challenger"}
             won={winnerSide === "challenger"}
             correct={duel.challenger_correct}
@@ -166,6 +167,7 @@ function DuelRoom() {
           {duel.opponent ? (
             <PlayerColumn
               name={`@${duel.opponent.username}`}
+              isAi={duel.opponent.is_ai_participant}
               you={duel.me === "opponent"}
               won={winnerSide === "opponent"}
               correct={duel.opponent_correct}
@@ -248,6 +250,7 @@ function DuelRoom() {
 
 function PlayerColumn({
   name,
+  isAi,
   you,
   won,
   correct,
@@ -258,6 +261,7 @@ function PlayerColumn({
   align = "left",
 }: {
   name: string;
+  isAi: boolean;
   you: boolean;
   won: boolean;
   correct: number | null;
@@ -272,6 +276,7 @@ function PlayerColumn({
     <div className={cn("min-w-0", align === "right" && "text-right")}>
       <p className={cn("truncate font-display text-base font-extrabold", won && "text-primary")}>
         {name}
+        {isAi && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">AI participant</span>}
         {you && (
           <span className="ml-1.5 text-[10px] font-bold uppercase text-muted-foreground">
             {t("you")}

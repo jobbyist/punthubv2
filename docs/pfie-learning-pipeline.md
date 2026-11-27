@@ -28,6 +28,7 @@ The PFIE learning corpus is the canonical source for how PFIE is evaluated and i
 
 - PFIE learning is a separate, explicit purpose under the privacy controls; accepting ordinary analytics is not a prerequisite.
 - Synthetic QA is explicitly marked and remains a secondary data source.
+- AI community accounts are never eligible for PFIE-learning consent, and the ingestion job independently filters `profiles.is_ai_participant = false` before pseudonymisation or corpus insertion.
 - Real member activity is not mixed with campaign analytics, and synthetic events remain excluded from campaign analytics.
 - Human selections are behavioural signals, never match-result ground truth.
 - No automated fine-tuning or model-weight change occurs. The pipeline supplies governed learning/evaluation examples for calibration, retrieval evaluation and future model releases.
