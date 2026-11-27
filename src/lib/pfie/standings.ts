@@ -14,23 +14,36 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
 
-/** Competitions with a single league table, with the number of teams it must have. */
+/** Ten competition tables in the agreed MVP launch priority order. */
 export const STANDINGS_LAUNCH_KEYS = [
-  // Pre-launch standings priority: the EFL Championship replaces Motsepe for this release.
-  "epl", "laliga", "ucl", "uecl", "championship", "bundesliga",
-  // Existing domestic tables remain available after the launch restoration priorities.
-  "psl", "seriea", "primeira", "saudi-pro",
+  "psl",
+  "epl",
+  "championship",
+  "laliga",
+  "ucl",
+  "uecl",
+  "bundesliga",
+  "seriea",
+  "ligue1",
+  "caf-cc",
 ] as const satisfies readonly CompetitionKey[];
 
-/** Deferred until post-launch: the Motsepe Foundation Championship. */
+/** Other table-based competitions are explicitly deferred beyond the ten-competition launch scope. */
 export const STANDINGS_POST_LAUNCH_KEYS = [
+  "uel",
+  "eredivisie",
+  "primeira",
+  "saudi-pro",
   "sa-championship",
+  "caf-cl",
+  "afcon",
+  "wcq-caf",
 ] as const satisfies readonly CompetitionKey[];
 
 export const STANDINGS_COMPETITIONS: Partial<
   Record<
     CompetitionKey,
-    { teams: number; refreshHours: number; queries: string[]; pages?: string[] }
+    { teams: number; refreshHours: number; queries: string[]; pages?: string[]; groups?: string[]; teamsPerGroup?: number }
   >
 > = {
   psl: {
@@ -156,6 +169,23 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.tntsports.co.uk/football/primeira-liga/standings.shtml",
     ],
   },
+  "caf-cc": {
+    teams: 16,
+    groups: ["A", "B", "C", "D"],
+    teamsPerGroup: 4,
+    refreshHours: 24,
+    queries: [
+      "CAF Confederation Cup 2026/27 Group A standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group B standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group C standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group D standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 all four group tables",
+    ],
+    pages: [
+      "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
+      "https://globalsportsarchive.com/en/soccer/competition/totalenergies-caf-confederation-cup-2026-2027/81259",
+    ],
+  },
   championship: {
     teams: 24,
     refreshHours: 12,
@@ -246,12 +276,16 @@ export interface RawStandingRow {
   goalsAgainst: number;
   points: number;
   quote: string;
+  /** Group label for competitions with multiple parallel tables, e.g. CAF Confederation Cup Group A. */
+  group?: string | null;
   /** Explicit table "as of" date, when the source states one. */
   tableDate?: string | null;
   tableDateQuote?: string | null;
 }
 
 export interface StandingRow {
+  /** Empty for a single-table league; A-D for CAF Confederation Cup group tables. */
+  group?: string;
   position: number;
   team: string;
   played: number;
@@ -265,6 +299,7 @@ export interface StandingRow {
 
 export interface SourceTable {
   source: PfieSource;
+  group?: string;
   rows: StandingRow[];
   /** Optional explicit table date found on the page. */
   tableDate?: string | null;
@@ -289,6 +324,7 @@ const SCHEMA = {
           goalsAgainst: { type: "INTEGER" },
           points: { type: "INTEGER" },
           quote: { type: "STRING" },
+          group: { type: "STRING" },
           tableDate: { type: "STRING" },
           tableDateQuote: { type: "STRING" },
         },
@@ -316,6 +352,7 @@ export function standingsRequest(input: {
   season: string;
   sources: PfieSource[];
   retryHint?: string;
+  groups?: readonly string[];
 }): LlmRequest {
   const sources = input.sources
     .map((s) => `<source n="${s.index}" site="${s.domain}">\n${s.text}\n</source>`)
@@ -332,7 +369,8 @@ export function standingsRequest(input: {
       "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
-      "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table.",
+      "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
+      (input.groups?.length ? "\\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : ""),
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
     schema: SCHEMA,
     temperature: 0,
@@ -355,6 +393,7 @@ const rawSchema = z.object({
       goalsAgainst: int,
       points: z.number().int().min(-50).max(500),
       quote: z.string().trim().min(1),
+      group: z.string().trim().min(1).max(20).nullable().optional(),
       tableDate: z
         .string()
         .trim()
