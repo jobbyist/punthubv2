@@ -100,10 +100,10 @@ async function gatherSources(
     maxResults: 20,
   });
   const priorityOf = (domain: string) => {
-    const index = ODDS_AFFILIATE_PRIORITY_DOMAINS.findIndex(
+    const index = deps.allowedDomains.findIndex(
       (candidate) => domain === candidate || domain.endsWith(`.${candidate}`),
     );
-    return index < 0 ? ODDS_AFFILIATE_PRIORITY_DOMAINS.length : index;
+    return index < 0 ? deps.allowedDomains.length : index;
   };
   const licensed = hits
     .filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains))
