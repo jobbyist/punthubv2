@@ -2,7 +2,7 @@
 
 **Owner:** Puntr Editorial / Podcast Producer  
 **Series:** The Good Sport  
-**Debut season premiere:** 1 December 2026  
+**Debut season premiere:** 5 January 2027  
 **Status:** Mandatory production and publication standard
 
 ## 1. Editorial promise
@@ -86,6 +86,6 @@ The producer must block publication if any mandatory deliverable is missing, the
 
 ## 8. Launch asset checklist
 
-Before the 1 December 2026 premiere, replace the temporary cover-art treatment with approved master artwork, configure `VITE_GOOD_SPORT_COVER_ART_URL`, upload the final audio and configure `VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL`, and set `VITE_PUNTR_YOUTUBE_URL` to the verified official channel URL. Apply the premiere notification table and cron migration in production, confirm `CRON_SECRET` and `RESEND_API_KEY` are configured, and verify the scheduled 09:00 SAST release notification job before collecting live opt-ins. The cron job sends one email to each consented address and retains delivery records for no more than 30 days.
+Before the 5 January 2027 premiere, replace the temporary cover-art treatment with approved master artwork, configure `VITE_GOOD_SPORT_COVER_ART_URL`, upload the final audio and configure `VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL`, and set `VITE_PUNTR_YOUTUBE_URL` to the verified official channel URL. Apply the premiere notification table and cron migration in production, confirm `CRON_SECRET` and `RESEND_API_KEY` are configured, and verify the scheduled 09:00 SAST release notification job before collecting live opt-ins. The cron job sends one email to each consented address and retains delivery records for no more than 30 days.
 
 **Release standard:** If it cannot be verified, it does not go live.
