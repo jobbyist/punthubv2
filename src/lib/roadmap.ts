@@ -8,15 +8,16 @@ import { addDays } from "./launch";
 export type RoadmapSport =
   "soccer" | "basketball" | "rugby" | "racing" | "combat" | "athletics" | "cricket" | "tennis";
 
+/** Launch windows: football Dec 2026; rugby + basketball Jan 2027; then one category every two months. */
 export const SPORT_ROADMAP: readonly { sport: RoadmapSport; weeks: readonly [number, number] }[] = [
   { sport: "soccer", weeks: [1, 1] },
-  { sport: "basketball", weeks: [2, 2] },
-  { sport: "rugby", weeks: [2, 2] },
-  { sport: "racing", weeks: [4, 4] },
-  { sport: "combat", weeks: [6, 8] },
-  { sport: "athletics", weeks: [6, 8] },
-  { sport: "cricket", weeks: [10, 10] },
-  { sport: "tennis", weeks: [12, 12] },
+  { sport: "basketball", weeks: [6, 9] },
+  { sport: "rugby", weeks: [6, 9] },
+  { sport: "racing", weeks: [14, 17] },
+  { sport: "combat", weeks: [23, 26] },
+  { sport: "athletics", weeks: [32, 35] },
+  { sport: "cricket", weeks: [41, 44] },
+  { sport: "tennis", weeks: [50, 53] },
 ] as const;
 
 /** live: on Puntr now. launching: soccer before launch day. inProgress: target window reached, not live yet. next: the next planned window. planned: later. */
