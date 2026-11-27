@@ -123,7 +123,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         const { cacheKey } = await import("@/lib/parallel/cache");
         const { createQuotaClaim, recordQuotaError } = await import("@/lib/quota.server");
         const store = await createCacheStore();
-        const claim = await createQuotaClaim();
+        const claim = await createQuotaClaim("synthetic:decisions");
         const apiKey = process.env["PARALLEL_API_KEY"] || "";
         if (!apiKey) return Response.json({ ok: false, error: "parallel_not_configured" }, { status: 503 });
         const { createParallelDecisions } = await import("@/lib/parallel/decisions");
