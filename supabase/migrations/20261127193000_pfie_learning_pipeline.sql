@@ -56,7 +56,7 @@ grant select on public.pfie_training_dataset to service_role;
 
 -- A forecast label is approved only when PFIE has accepted two independent official/trusted
 -- source observations for the same fixture and score. Synthetic model output is never its own label.
-create or replace function public.admin_approve_pfie_learning_example(p_example_id uuid)
+create or replace function public.admin_approve_pfie_learning_example(p_example_id uuid, p_admin_id uuid)
 returns boolean
 language plpgsql
 security definer
@@ -71,7 +71,7 @@ declare
   v_away_score integer;
   v_domains integer;
 begin
-  if not public.is_admin() then
+  if not exists (select 1 from public.profiles where id = p_admin_id and role = 'admin') then
     raise exception 'admin_required' using errcode = '42501';
   end if;
 
@@ -123,12 +123,12 @@ begin
       label_status = 'verified',
       training_status = 'approved',
       reviewed_at = now(),
-      reviewed_by = auth.uid()
+      reviewed_by = p_admin_id
   where id = p_example_id;
 
   return true;
 end;
 $$;
 
-revoke all on function public.admin_approve_pfie_learning_example(uuid) from public, anon;
-grant execute on function public.admin_approve_pfie_learning_example(uuid) to authenticated;
+revoke all on function public.admin_approve_pfie_learning_example(uuid, uuid) from public, anon;
+grant execute on function public.admin_approve_pfie_learning_example(uuid, uuid) to authenticated, service_role;
