@@ -24,6 +24,13 @@ function isSyntheticQaBrowser(): boolean {
 
 export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
   if (typeof window === "undefined" || isSyntheticQaBrowser()) return;
+
+  // PFIE learning is a separate, explicit purpose and can be enabled independently of analytics.
+  if (hasConsent("pfie_learning")) {
+    void import("@/lib/pfie-learning.functions")
+      .then(({ recordPfieActivity }) => recordPfieActivity({ data: { event, payload } }))
+      .catch(() => { /* optional learning telemetry must never affect product UX */ });
+  }
   if (!hasConsent("analytics")) return;
 
   const data = { event, ...payload, timestamp: new Date().toISOString() };
