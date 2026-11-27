@@ -99,6 +99,7 @@ export function RankRow({
   primary,
   stats,
   highlight,
+  isAi = false,
   index = 0,
 }: {
   rank: number | null;
@@ -109,6 +110,7 @@ export function RankRow({
   primary: ReactNode;
   stats?: { label: string; value: ReactNode }[];
   highlight?: boolean;
+  isAi?: boolean;
   index?: number;
 }) {
   return (
@@ -130,7 +132,10 @@ export function RankRow({
       <Monogram name={name} className="hidden min-[380px]:grid" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="min-w-0 truncate text-sm font-semibold">{nameSlot ?? name}</span>
+          <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+            <span className="min-w-0 truncate text-sm font-semibold">{nameSlot ?? name}</span>
+            {isAi && <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">AI</span>}
+          </span>
           <span className="shrink-0 text-sm font-extrabold text-primary tnum">{primary}</span>
         </div>
         {typeof share === "number" && (
