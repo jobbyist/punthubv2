@@ -55,7 +55,8 @@
     "endorsements": "Endorsements",
     "translations": "Translations",
     "push": "Push notifications",
-    "synthetic": "Synthetic QA"
+    "synthetic": "Synthetic QA",
+    "pfieLearning": "PFIE Learning"
   },
   "settle": {
     "title": "Settlement",
