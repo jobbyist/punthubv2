@@ -20,7 +20,7 @@ export function isPuntAiOddsQuestion(value: string): boolean {
 }
 
 export function containsPuntAiPrivateContext(value: string): boolean {
-  return /\b(my (?:name|email|phone|address|account|password|id|balance|profile|health|symptoms|diagnosis|medication|condition)|i live at|my personal|my bank|my medical)\b/i.test(value);
+  return /\b(my (?:name|email|phone|address|account|password|id|balance|profile|health|symptoms|diagnosis|medication|condition|subscription|credits|transactions|wallet|picks|bets|slips|record)|i live at|my personal|my bank|my medical)\b/i.test(value);
 }
 
 /** Strip likely personal identifiers before sending a prompt to an external model or search provider. */
