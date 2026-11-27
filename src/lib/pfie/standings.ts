@@ -370,9 +370,23 @@ export function standingsRequest(input: {
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
       "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
-      (input.groups?.length ? "\\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : ""),
+      (input.groups?.length ? "\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : ""),
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
-    schema: SCHEMA,
+    schema: input.groups?.length
+      ? {
+          ...SCHEMA,
+          properties: {
+            ...SCHEMA.properties,
+            rows: {
+              ...SCHEMA.properties.rows,
+              items: {
+                ...SCHEMA.properties.rows.items,
+                required: [...SCHEMA.properties.rows.items.required, "group"],
+              },
+            },
+          },
+        }
+      : SCHEMA,
     temperature: 0,
     maxOutputTokens: 8_192,
   };
