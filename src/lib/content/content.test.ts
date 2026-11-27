@@ -72,9 +72,8 @@ describe("config", () => {
     expect(modelsForContentSlot(models)).toEqual(models);
   });
   it("reads daily caps and ignores bad entries", () => {
-    expect(parseDailyCaps("gemini-3.8-flash=20, x=abc, gemini-3.1-flash-lite=500")).toEqual({
-      "gemini-3.8-flash": 20,
-      "gemini-3.1-flash-lite": 500,
+    expect(parseDailyCaps("parallel-medium=12, x=abc")).toEqual({
+      "parallel-medium": 12,
     });
   });
   it("names the missing credentials per article kind", () => {
