@@ -78,10 +78,11 @@ export function withSearchCache(
 
 /** Cache full-page reads by canonical URL so the three daily newsroom slots share extracted source text. */
 export function withExtractCache(
-  inner: ExtractProvider,
+  inner: ExtractProvider | null,
   store: CacheStore | null,
   purpose: CachePurpose,
-): ExtractProvider {
+): ExtractProvider | null {
+  if (!inner) return null;
   return {
     name: inner.name,
     async extract(url) {
