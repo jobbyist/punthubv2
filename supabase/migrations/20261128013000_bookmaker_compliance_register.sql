@@ -10,6 +10,18 @@ alter table public.bookmaker_odds_permissions
   add column if not exists attribution_approved boolean not null default false,
   add column if not exists retention_approved boolean not null default false,
   add column if not exists redistribution_approved boolean not null default false;
+alter table public.bookmaker_odds_permissions drop constraint if exists bookmaker_odds_enable_requires_approval;
+alter table public.bookmaker_odds_permissions add constraint bookmaker_odds_enable_requires_approval check (
+  not enabled or (
+    licence_status = 'verified' and data_rights_status = 'approved'
+    and licence_evidence_url is not null and licence_verified_at is not null and licence_verified_by is not null
+    and rights_evidence_url is not null and rights_reviewed_at is not null and rights_reviewed_by is not null
+    and collection_approved and storage_approved and display_approved
+    and attribution_approved and retention_approved and redistribution_approved
+    and automated_access_allowed
+  )
+);
+
 create unique index if not exists bookmaker_odds_permissions_name_lower_uidx
   on public.bookmaker_odds_permissions (lower(bookmaker_name));
 
