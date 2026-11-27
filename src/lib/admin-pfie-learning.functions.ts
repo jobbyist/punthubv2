@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-type AdminContext = { supabase: { rpc: (fn: "is_admin") => PromiseLike<{ data: boolean | null }> } };
-
 export const adminPfieLearning = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<{
@@ -41,7 +39,7 @@ export const approvePfieLearningExample = createServerFn({ method: "POST" })
     if (isAdmin !== true) throw new Error("Admin access required");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as unknown as import("@supabase/supabase-js").SupabaseClient;
-    const { data: approved, error } = await db.rpc("admin_approve_pfie_learning_example", { p_example_id: data.id });
+    const { data: approved, error } = await db.rpc("admin_approve_pfie_learning_example", { p_example_id: data.id, p_admin_id: context.userId });
     if (error) throw error;
     return approved === true;
   });
