@@ -378,9 +378,16 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
 
           // H2H challenges open only when the main platform/duel launch gate is active.
           const { data: duelsOpen } = await db.rpc("mvp_open");
-          // Create a small number of source-backed, zero-stake AI H2H challenges.
+          const { data: recentChallenges } = await db
+            .from("ai_duel_challenges")
+            .select("persona_key")
+            .gte("created_at", new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString());
+          const challengedRecently = new Set((recentChallenges ?? []).map((row) => row.persona_key));
+          // Rotate AI H2H challengers so a persona does not open a new duel more than once per 14 days.
           const duelPersonas = rotation
-            .filter((p) => !used.has(p.persona_key) && !todayTypes.get(p.persona_key)?.has("duel"))
+            .filter((p) => !used.has(p.persona_key)
+              && !todayTypes.get(p.persona_key)?.has("duel")
+              && !challengedRecently.has(p.persona_key))
             .slice(0, MAX_DUELS);
           const { data: upcoming, error: upcomingError } = await db
             .from("fixtures")
