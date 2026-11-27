@@ -92,9 +92,10 @@ function ExportSection() {
 
   const download = async () => {
     setBusy(true);
+    const db = supabase as unknown as import("@supabase/supabase-js").SupabaseClient;
     const [{ data, error }, { data: pfieData, error: pfieError }] = await Promise.all([
-      supabase.rpc("export_my_data"),
-      supabase.rpc("export_my_pfie_learning_data"),
+      db.rpc("export_my_data"),
+      db.rpc("export_my_pfie_learning_data"),
     ]);
     setBusy(false);
     if (error || pfieError || !data) return void toast.error(t("privacy.export.error"));
