@@ -22,7 +22,7 @@ export async function supabaseRest(path, { method = "GET", body, prefer } = {}) 
   return text ? JSON.parse(text) : null;
 }
 
-export async function getExperimentId(slug = "puntr-30-day-synthetic-2026-11-23") {
+export async function getExperimentId(slug = "puntr-30-day-synthetic-2026-11-27") {
   const rows = await supabaseRest(`synthetic_experiments?slug=eq.${encodeURIComponent(slug)}&select=id,status,budget_cap_usd,spent_usd,reserved_usd`);
   if (!rows?.[0]) throw new Error("Experiment row missing. Apply the synthetic experiment migration first.");
   if (rows[0].status !== "active") throw new Error(`Experiment is ${rows[0].status}; an admin must explicitly activate it before any run.`);
