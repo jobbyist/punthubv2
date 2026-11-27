@@ -77,11 +77,15 @@ Controls:
 
 ## PUNT AI production controls (28 Nov 2026)
 
-PUNT AI's application path uses Gemini for internal Puntr-data answers and Parallel Search + Extract + Chat low only for questions that materially need current web research. Live web is limited to Pro members or members spending **2 credits per successful live-web answer**. A failed live-web request falls back to stored Puntr data and does not charge the live-web credits.
+PUNT AI answers from Puntr's own verified data first: upcoming fixtures across enabled sports, recent completed results, the ten launch standings (including CAF group tables), and published Newsroom items. Gemini handles internal-data answers. Current external reporting (injuries, suspensions, transfers, breaking news, live updates and weather) uses Parallel Search + Extract + Chat low with up to three trusted sources and visible source links. Current tables, fixtures, schedules and results remain on the Puntr-data path.
 
-Production storage consists of a one-hour answer cache and an auditable per-user usage ledger. The database claim function enforces **20 requests/day and 300/month for Free**, and **40/day and 600/month for Pro**, using South African calendar boundaries. It rejects AI participant accounts, banned/suspended/limited accounts and accounts without age attestation. Cache and usage tables are service-role only; users cannot query or edit the ledger directly.
+Live web is limited to Pro members or members spending **2 credits per successful live-web answer**. Pro's included live-web allowance is 15/day and 90 per rolling 30 days; after that, the normal credit charge applies. Failed live-web requests fall back to stored Puntr data and do not charge live-web credits. Internal-data answers are free.
 
-The existing provider-family controls also apply to every uncached provider call: Parallel Search, Extract and Chat low use the shared $50 monthly Parallel budget and the $200 cumulative Q1 ceiling; Gemini internal answers use the existing per-model daily/monthly quota rows. The public chat button remains behind `SHOW_PUNT_AI_CHAT` until the production migration, preview build and launch-readiness checks are complete.
+The one-hour answer cache and per-user usage ledger are service-role only. The database claim function enforces **20 requests/day and 300/month for Free**, and **40/day and 600/month for Pro**, using South African calendar boundaries. It rejects AI participant accounts and any account that fails `member_can_transact` (including banned, suspended, limited or not age-attested accounts). Raw prompts are not stored; private account/activity/financial/health questions are short-circuited, and contact details, handles, names, ages, long numeric identifiers and URLs are redacted before external calls.
+
+PUNT AI does not fetch or quote bookmaker prices while the bookmaker rights registry remains unapproved. Member-entered prices remain user-submitted. The public chat button remains behind `SHOW_PUNT_AI_CHAT` until launch approval; the server also checks `mvp_open()`.
+
+The existing provider-family controls apply to every uncached provider call: Parallel Search, Extract and Chat low use the shared $50 monthly Parallel budget and the $200 cumulative Q1 ceiling; Gemini internal answers use the existing per-model daily/monthly quota rows.
 
 ## Odds rules (owner decision, 22 Nov 2026)
 
