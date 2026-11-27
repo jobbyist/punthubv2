@@ -7,7 +7,7 @@ if (!Number.isInteger(count) || count < 1 || count > 3) {
   throw new Error("Use --count=1, --count=2 or --count=3. Maximum concurrency is three.");
 }
 
-const slug = process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-23";
+const slug = process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-27";
 const experiments = await supabaseRest(`synthetic_experiments?slug=eq.${encodeURIComponent(slug)}&select=id,status,starts_at,ends_at`);
 const experiment = experiments?.[0];
 if (!experiment) {
