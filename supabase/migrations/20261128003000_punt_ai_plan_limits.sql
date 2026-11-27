@@ -1,4 +1,5 @@
--- Apply plan-based PUNT AI limits and account eligibility to the service-role claim RPC.
+-- Replace the temporary usage guard with plan-aware limits and member eligibility checks.
+-- The server function calls this RPC with the service role after authenticating the member.
 
 alter table public.punt_ai_cache
   add column if not exists updated_at timestamptz not null default now();
