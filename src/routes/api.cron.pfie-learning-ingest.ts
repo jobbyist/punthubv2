@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
       const [sr, rr, previous] = await Promise.all([
         db.from("synthetic_sessions").select("id,experiment_id,persona_key,session_type,started_at,finished_at,outcome,page_paths,error_code,metadata").not("finished_at", "is", null).order("finished_at", { ascending: false }).limit(1000),
         db.from("synthetic_research").select("id,experiment_id,fixture_key,provider,response_json,source_urls,created_at").order("created_at", { ascending: false }).limit(1000),
-        db.from("pfie_learning_ingest_runs").select("metadata").not("finished_at", "is", null).neq("id", run.id).order("finished_at", { ascending: false }).limit(1).maybeSingle(),
+        db.from("pfie_learning_ingest_runs").select("metadata").not("finished_at", "is", null).not("metadata->>user_activity_cursor_at", "is", null).neq("id", run.id).order("finished_at", { ascending: false }).limit(1).maybeSingle(),
       ]);
       if (sr.error) throw sr.error;
       if (rr.error) throw rr.error;
@@ -140,6 +140,8 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
       ]);
       if (rawPrune.error) throw rawPrune.error;
       if (examplePrune.error) throw examplePrune.error;
+      const { error: subjectPruneError } = await db.rpc("pfie_prune_learning_subject_maps");
+      if (subjectPruneError) throw subjectPruneError;
 
       const lastActivity = activities.at(-1);
       const previousCursorAt = cursorAt;
