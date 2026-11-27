@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  containsPuntAiPrivateContext,
+  isPuntAiOddsQuestion,
   needsPuntAiLiveWeb,
   normalizePuntAiQuestion,
   scrubPuntAiMessage,
@@ -11,9 +13,15 @@ describe("PUNT AI request safety", () => {
     expect(normalizePuntAiQuestion("  Premier   League TABLE? ")).toBe("premier league table?");
   });
 
-  it("routes time-sensitive questions to the live-web path", () => {
+  it("routes time-sensitive questions to live web but not bookmaker odds", () => {
     expect(needsPuntAiLiveWeb("Any latest injury news for Sundowns?")).toBe(true);
     expect(needsPuntAiLiveWeb("What is ROI?")).toBe(false);
+    expect(needsPuntAiLiveWeb("What are the current bookmaker odds?")).toBe(false);
+    expect(isPuntAiOddsQuestion("What are the current bookmaker odds?")).toBe(true);
+  });
+
+  it("keeps private account questions out of live web", () => {
+    expect(containsPuntAiPrivateContext("What is my account balance?")).toBe(true);
   });
 
   it("redacts personal contact details and links before external calls", () => {
