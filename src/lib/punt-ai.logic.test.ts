@@ -30,5 +30,6 @@ describe("PUNT AI request safety", () => {
     expect(scrubPuntAiMessage("Email me at test@example.com or call 082 123 4567 @michael https://example.com"))
       .toBe("Email me at [redacted email] or call [redacted phone] [redacted handle] [link omitted]");
     expect(scrubPuntAiMessage("I am Michael, age 17")).toBe("[redacted name], [redacted age]");
+    expect(scrubPuntAiMessage("I am interested in the Premier League")).toBe("I am interested in the Premier League");
   });
 });
