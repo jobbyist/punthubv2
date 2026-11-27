@@ -19,11 +19,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { adminProvisionAiFoundingMembers } from "@/lib/ai-community.functions";
 import {
   adminAddFoundingHqActivity,
   adminDeleteFoundingHqLead,
   adminFoundingHqOverview,
-  adminProvisionAiFoundingMembers,
   adminSaveFoundingHqLead,
   type FoundingHqLead,
 } from "@/lib/founding-hq.functions";
