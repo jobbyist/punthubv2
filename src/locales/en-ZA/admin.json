@@ -56,7 +56,8 @@
     "translations": "Translations",
     "push": "Push notifications",
     "synthetic": "Synthetic QA",
-    "pfieLearning": "PFIE Learning"
+    "pfieLearning": "PFIE Learning",
+    "bookmakers": "Bookmakers"
   },
   "settle": {
     "title": "Settlement",
