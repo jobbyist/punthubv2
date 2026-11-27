@@ -297,6 +297,12 @@ $function$;
 revoke all on function public.publish_ai_community_post(text, date, text, text, text, text, uuid, uuid) from public, anon, authenticated;
 grant execute on function public.publish_ai_community_post(text, date, text, text, text, text, uuid, uuid) to service_role;
 
+insert into public.app_settings (key, value)
+values
+  ('ai_community_enabled', 'true'),
+  ('community_member_daily_post_cap', '10')
+on conflict (key) do nothing;
+
 -- Reclassify the 50 seeded research personas as labelled AI community participants.
 update public.synthetic_personas
 set persona = persona || jsonb_build_object(
