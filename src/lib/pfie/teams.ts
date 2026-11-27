@@ -29,6 +29,13 @@ const ALIASES: Record<string, string> = {
   "atletico de madrid": "atletico madrid",
   barca: "barcelona",
   "deportivo alaves": "alaves",
+  // UEFA Conference League participant labels reconciled from the existing fixture corpus.
+  hearts: "heart of midlothian",
+  agf: "aarhus",
+  "fc iberia 1999": "iberia tbilisi",
+  "iberia 1999": "iberia tbilisi",
+  "borac banja luka": "borac",
+
   // LaLiga publishers abbreviate these clubs differently; signatures must resolve to one canonical identity.
   athletic: "athletic bilbao",
   "espanyol barcelona": "espanyol",
