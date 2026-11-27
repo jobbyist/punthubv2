@@ -95,6 +95,8 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("sportmetrics.org", [])).toBe("trusted");
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
+    expect(tierOf("swissfootballdata.com", [])).toBe("trusted");
+    expect(tierOf("keepstandings.com", [])).toBe("trusted");
     expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
   });
 });
@@ -160,6 +162,9 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain(
       "https://www.uefa.com/uefachampionsleague/standings/",
     );
+    expect(STANDINGS_COMPETITIONS.ucl?.pages?.indexOf(
+      "https://www.cbssports.com/soccer/champions-league/standings/",
+    )).toBe(1);
   });
   it("keeps La Liga direct tables within the five-source cap using independent publishers", () => {
     const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
@@ -187,13 +192,13 @@ describe("configured direct standings sources", () => {
       "https://www.uefa.com/uefaconferenceleague/standings/",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://swissfootballdata.com/conference-league-standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.keepstandings.com/conference-league/table",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).not.toContain(
       "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
-    );
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.skysports.com/europa-conference-league-table",
-    );
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.foxsports.com/soccer/europa-conference-league/standings",
     );
   });
 describe("La Liga live source configuration", () => {

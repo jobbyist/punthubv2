@@ -190,9 +190,9 @@ export const STANDINGS_COMPETITIONS: Partial<
     ],
     pages: [
       "https://www.uefa.com/uefachampionsleague/standings/",
-      "https://www.tntsports.co.uk/football/champions-league/2026-2027/standings.shtml",
       "https://www.cbssports.com/soccer/champions-league/standings/",
       "https://www.foxsports.com/soccer/champions-league/standings",
+      "https://www.tntsports.co.uk/football/champions-league/2026-2027/standings.shtml",
     ],
   },
   uecl: {
@@ -204,12 +204,13 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:tntsports.co.uk/football/conference-league/2026-2027/standings.shtml UEFA Conference League table",
       "site:skysports.com/europa-conference-league-table UEFA Conference League standings",
       "site:foxsports.com/soccer/europa-conference-league/standings Conference League table",
+      "site:swissfootballdata.com/conference-league-standings 2026/27 full table",
+      "site:keepstandings.com/conference-league/table 2026/27 full table",
     ],
     pages: [
       "https://www.uefa.com/uefaconferenceleague/standings/",
-      "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
-      "https://www.skysports.com/europa-conference-league-table",
-      "https://www.foxsports.com/soccer/europa-conference-league/standings",
+      "https://swissfootballdata.com/conference-league-standings/",
+      "https://www.keepstandings.com/conference-league/table",
     ],
   },
 };
