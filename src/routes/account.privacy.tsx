@@ -226,8 +226,8 @@ function PfieLearningSection({ userId }: { userId: string }) {
       } else if (active) {
         const accountChoice = current?.granted === true;
         setEnabled(accountChoice);
-        if (cookieChoice && cookieChoice.pfie_learning !== accountChoice) {
-          writeConsent({ analytics: cookieChoice.analytics, affiliate_tracking: cookieChoice.affiliate_tracking, pfie_learning: accountChoice }, "account", false);
+        if (!cookieChoice || cookieChoice.pfie_learning !== accountChoice) {
+          writeConsent({ analytics: cookieChoice?.analytics ?? false, affiliate_tracking: cookieChoice?.affiliate_tracking ?? false, pfie_learning: accountChoice }, "account", false);
         }
       }
     })();
