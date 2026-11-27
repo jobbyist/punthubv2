@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 
 import { CACHE_TTL_SECONDS, cacheKey, expiresAt, isFresh, stableStringify } from "./cache";
-import { type CacheStore, cachedCall, withSearchCache } from "./cached";
+import { type CacheStore, cachedCall, withExtractCache, withSearchCache } from "./cached";
 import { PARALLEL_UNIT_PRICES_USD, budgetFamily, costUsd } from "./pricing";
 import { createParallelChat, createParallelTask, extractOutputText, parseBasis } from "./task";
 import { createParallelDecisions } from "./decisions";
@@ -82,7 +82,7 @@ describe("cachedCall", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
-  it("calls again once the entry has expired", async () => {
+  it("shares extracted page content across newsroom slots without another provider call", async () => {\n    const store = memoryStore();\n    const extract = vi.fn(async () => ({ markdown: "Full page content", title: "Article" }));\n    const cached = withExtractCache({ name: "firecrawl", extract }, store, "news");\n    expect(await cached.extract("https://example.com/story")).toEqual({ markdown: "Full page content", title: "Article" });\n    expect(await cached.extract("https://example.com/story")).toEqual({ markdown: "Full page content", title: "Article" });\n    expect(extract).toHaveBeenCalledTimes(1);\n  });\n\n  it("calls again once the entry has expired", async () => {
     const store = memoryStore();
     const fetcher = vi.fn(async () => 1);
     const base = { endpoint: "s", body: {}, purpose: "results" as const };
