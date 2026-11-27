@@ -19,7 +19,7 @@ const response = await fetch(url, {
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    experiment_slug: process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-23",
+    experiment_slug: process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-27",
     fixture,
     ...(personaIds?.length ? { persona_ids: personaIds } : {})
   }),
