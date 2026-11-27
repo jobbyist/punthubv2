@@ -16,7 +16,7 @@ This harness is deliberately **not** a fake-customer acquisition system. It prov
 
 Experiment window: 27 November 2026 through 26 December 2026 (SAST). The migration creates a paused experiment with a hard ceiling of US$50.
 
-**Important existing-budget constraint:** Puntr's Parallel architecture documentation says the current approximately US$50 prepaid balance expires on 7 December 2026 and is shared with production fixtures, results, standings, newsroom and other existing workloads. The 30-day experiment extends beyond that expiry. Do not assume the same prepaid balance funds the entire window; verify the live Parallel balance and reserve, and pause the experiment on 7 December unless a new budget is confirmed.
+**Funding confirmation:** The owner has confirmed sufficient Parallel funding is available beyond 7 December 2026. All requests remain subject to the existing provider quota/budget guard and the experiment's separate US$50 hard cap; do not treat the experiment cap as additional production spend.
 
 The Decisions API costs US$1 per 1,000 requests and supports up to 100 named questions per request. A 50-persona batch for one shared fixture is therefore one approximately US$0.001 provider request, before any retries. With two markets per persona, all 50 personas fit in the same 100-question request. The experiment also claims against Puntr's existing monthly provider budget and daily/monthly quota guard, and uses Puntr's existing 24-hour parallel_cache. The separate experiment ledger adds a US$50 hard ceiling.
 
