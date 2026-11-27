@@ -4,6 +4,8 @@ import type { LlmProvider, SearchProvider } from "@/lib/content/types";
 
 import {
   DEFAULT_ODDS_SOURCE_DOMAINS,
+  ODDS_AFFILIATE_PRIORITY_DOMAINS,
+  oddsQueries,
   type OddsSource,
   type RawPrice,
   type UpcomingFixture,
@@ -64,6 +66,14 @@ describe("member-odds rule", () => {
 });
 
 describe("sources", () => {
+  it("prioritises approved affiliate partners, led by Hollywoodbets", () => {
+    expect(ODDS_AFFILIATE_PRIORITY_DOMAINS.slice(0, 4)).toEqual([
+      "hollywoodbets.net", "supabets.co.za", "yesplay.bet", "1xbet.com",
+    ]);
+    expect(oddsQueries("Premier League", fixtures)[0]).toContain("site:hollywoodbets.net");
+    expect(oddsQueries("Premier League", fixtures)[1]).toContain("site:supabets.co.za");
+  });
+
   it("accepts listed bookmakers and their subdomains only", () => {
     expect(isOddsSource("sport.hollywoodbets.net", allowed)).toBe(true);
     expect(isOddsSource("www.betway.co.za", allowed)).toBe(true);
