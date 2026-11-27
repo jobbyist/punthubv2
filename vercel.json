@@ -20,6 +20,10 @@
     {
       "path": "/api/cron/synthetic-run",
       "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/cron/pfie-learning-ingest",
+      "schedule": "30 4 * * *"
     }
   ]
 }
