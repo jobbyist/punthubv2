@@ -160,6 +160,7 @@ export function FoundingHqPage() {
   const [activityBody, setActivityBody] = useState("");
   const [saving, setSaving] = useState(false);
   const [provisioningAi, setProvisioningAi] = useState(false);
+  const [aiNumberSummary, setAiNumberSummary] = useState<string | null>(null);
 
   async function provisionAiMembers() {
     if (overview?.aiMembers === 50) {
@@ -171,6 +172,16 @@ export function FoundingHqPage() {
     try {
       const result = await adminProvisionAiFoundingMembers();
       if (result.ok) {
+      const numbers = result.members
+        .map((member) => member.foundingNumber)
+        .filter((number): number is number => number !== null)
+        .sort((a, b) => a - b);
+      if (numbers.length > 0) {
+        const contiguous = numbers.every((number, index) => index === 0 || number === numbers[index - 1] + 1);
+        setAiNumberSummary(contiguous
+          ? `#${numbers[0]}–#${numbers[numbers.length - 1]}`
+          : numbers.map((number) => `#${number}`).join(", "));
+      }
         toast.success(`Provisioned ${result.created} AI accounts; ${result.alreadyProvisioned} were already linked.`);
       } else {
         toast.error(`AI provisioning finished with ${result.failed} errors. Review the details in the console and retry after resolving them.`);
@@ -356,6 +367,12 @@ export function FoundingHqPage() {
           </Button>
         </div>
       </div>
+
+      {aiNumberSummary && (
+        <p className="mt-3 text-xs text-muted-foreground" role="status">
+          Last AI provisioning run assigned founding numbers {aiNumberSummary}. Every number is stored on its public AI profile.
+        </p>
+      )}
 
       <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Founding places" value={`${members} / ${target}`} detail={`${overview.humanMembers} human · ${overview.aiMembers} AI · ${overview.reservedSpots} reserved`} icon={Users} />
