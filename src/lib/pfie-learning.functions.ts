@@ -38,7 +38,7 @@ function cleanEventData(value: unknown): Record<string, string> {
 
 export const recordPfieActivity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((data: { event: string; payload?: Record<string, unknown> }) => data)
+  .validator((data: { event: string; payload?: Record<string, unknown>; fixtureId?: string }) => data)
   .handler(async ({ context, data }): Promise<boolean> => {
     if (!ALLOWED_EVENTS.has(data.event)) return false;
     const db = context.supabase as unknown as SupabaseClient;
@@ -52,6 +52,7 @@ export const recordPfieActivity = createServerFn({ method: "POST" })
     const { error } = await db.from("pfie_user_activity_events").insert({
       user_id: context.userId,
       event_type: data.event,
+      fixture_id: typeof data.fixtureId === "string" && /^[0-9a-f-]{36}$/i.test(data.fixtureId) ? data.fixtureId : null,
       event_data: cleanEventData(data.payload),
       source: "client",
     });
