@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
         const fixture = body["fixture"];
         const slug = typeof body["experiment_slug"] === "string"
           ? body["experiment_slug"]
-          : "puntr-30-day-synthetic-2026-11-23";
+          : "puntr-30-day-synthetic-2026-11-27";
         const requestedIds = Array.isArray(body["persona_ids"])
           ? body["persona_ids"].filter((value): value is string => typeof value === "string")
           : null;
