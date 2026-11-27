@@ -108,7 +108,7 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
           label: { action_observed: true, event_type: a.event_type },
           label_status: "verified",
           training_status: "approved",
-          provenance: { source_table: "pfie_user_activity_events", source_id: a.id, subject_key: subjectByUser.get(a.user_id), synthetic: false, consent_purpose: "pfie_learning", label_origin: "consented_first_party_activity", observed_at: a.created_at },
+          provenance: { source_table: "pfie_user_activity_events", source_id: a.id, synthetic: false, consent_purpose: "pfie_learning", label_origin: "consented_first_party_activity", observed_at: a.created_at },
         }));
         if (rows.length) {
           const { error } = await db.from("pfie_learning_examples").upsert(rows, { onConflict: "source_kind,source_id,task_type", ignoreDuplicates: true });
