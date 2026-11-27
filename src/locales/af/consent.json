@@ -1,9 +1,9 @@
 {
   "banner": {
     "aria": "Privaatheidskeuses",
-    "body": "Ons gebruik noodsaaklike koekies om Puntr te laat werk. Met jou toestemming gebruik ons ook ontledings- en geaffilieerde opsporing. Albei bly af tensy jy dit aanvaar. Jy kan dit enige tyd onder <1>Privaatheidskeuses</1> verander. Lees ons <2>privaatheidsbeleid</2>.",
-    "reject": "Weier alles",
+    "body": "Noodsaaklike koekies laat Puntr werk. Met jou toestemming gebruik ons ook ontledings, geaffilieerde opsporing en opsionele PFIE-leerdata. PFIE-leerdata gebruik gepseudonimiseerde aktiwiteit en keuse-seine om Puntr se sportintelligensie te verbeter; dit is nie nodig om die platform te gebruik nie en jy kan dit enige tyd onder Rekeningprivaatheid terugtrek. Ontledings en PFIE-leerdata bly af tensy jy dit aanvaar. Lees ons <2>privaatheidsbeleid</2> en <1>koekiekennisgewing</1>.",
+    "reject": "Verwerp alles",
     "accept": "Aanvaar alles",
-    "choose": "Kies self"
+    "choose": "Kies"
   }
 }
