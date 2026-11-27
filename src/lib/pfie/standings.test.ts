@@ -85,6 +85,8 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("45min.co.za", ["psl.co.za"])).toBe("trusted");
     expect(tierOf("vi.nl", [])).toBe("trusted");
     expect(tierOf("skysports.com", [])).toBe("trusted");
+    expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
+    expect(tierOf("foxsports.com", [])).toBe("trusted");
     expect(tierOf("espn.com", [])).toBe("trusted");
     expect(tierOf("transfermarkt.com", [])).toBe("trusted");
     expect(tierOf("cbssports.com", [])).toBe("trusted");
@@ -99,9 +101,12 @@ describe("trusted standings publisher domains", () => {
 describe("launch standings coverage", () => {
   it("keeps the eight competitions with existing validated tables and temporarily hides empty ones", () => {
     expect(STANDINGS_LAUNCH_KEYS).toEqual([
-      "psl",
       "epl",
       "laliga",
+      "ucl",
+      "uecl",
+      "sa-championship",
+      "psl",
       "seriea",
       "bundesliga",
       "primeira",
@@ -110,8 +115,6 @@ describe("launch standings coverage", () => {
     ]);
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("eredivisie");
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("ligue1");
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("ucl");
   });
 });
 describe("configured direct standings sources", () => {
@@ -178,6 +181,21 @@ describe("configured direct standings sources", () => {
     expect(new Set(publisherKeys).size).toBe(5);
   });
 });
+  it("configures official and independent Conference League standings sources", () => {
+    expect(STANDINGS_COMPETITIONS.uecl?.teams).toBe(36);
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.uefa.com/uefaconferenceleague/standings/",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.skysports.com/europa-conference-league-table",
+    );
+    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+      "https://www.foxsports.com/soccer/europa-conference-league/standings",
+    );
+  });
 describe("La Liga live source configuration", () => {
   it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
@@ -404,6 +422,25 @@ describe("ambiguous Paris team shorthand", () => {
   it("does not silently map Paris to PSG when Paris FC is also a known club", () => {
     expect(resolveTeam("Paris", ["Paris Saint-Germain", "Paris FC"])).toBeNull();
     expect(resolveTeam("Paris FC", ["Paris Saint-Germain", "Paris FC"])).toBe("Paris FC");
+  });
+});
+describe("UEFA Conference League participant aliases", () => {
+  it("reconciles known duplicate fixture labels without broad ambiguous matching", () => {
+    expect(normaliseTeam("Hearts")).toBe(normaliseTeam("Heart of Midlothian"));
+    expect(normaliseTeam("AGF")).toBe(normaliseTeam("Aarhus"));
+    expect(normaliseTeam("AGF Aarhus")).toBe(normaliseTeam("Aarhus"));
+    expect(normaliseTeam("ST St.Truiden")).toBe(normaliseTeam("Sint-Truidense"));
+    expect(normaliseTeam("L. Red Imps")).toBe(normaliseTeam("Lincoln Red Imps"));
+    expect(normaliseTeam("Univ. Craiova")).toBe(normaliseTeam("Universitatea Craiova"));
+    expect(normaliseTeam("Inter Club d Escaldes")).toBe(normaliseTeam("Inter Escaldes"));
+    expect(normaliseTeam("FC Iberia 1999 Tiflis")).toBe(normaliseTeam("Iberia Tbilisi"));
+    expect(normaliseTeam("FK Kairat")).toBe(normaliseTeam("Kairat Almaty"));
+    expect(normaliseTeam("Borac Banja Luka")).toBe(normaliseTeam("Borac"));
+    expect(normaliseTeam("Roter Stern Belgrad")).toBe(normaliseTeam("Crvena Zvezda"));
+    expect(normaliseTeam("FC Kopenhagen")).toBe(normaliseTeam("Copenhagen"));
+    expect(normaliseTeam("ZSKA Sofia")).toBe(normaliseTeam("CSKA Sofia"));
+    expect(normaliseTeam("Paphos FC")).toBe(normaliseTeam("Pafos"));
+    expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
 describe("La Liga cross-publisher team aliases", () => {
