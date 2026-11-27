@@ -122,7 +122,6 @@ export const STANDINGS_COMPETITIONS: Partial<
     pages: [
       "https://en.legaseriea.it/serie-a/standings",
       "https://www.skysports.com/football/competitions/serie-a/table",
-      "https://sportnewsafrica.com/en/fixtures/serie-a/table/",
     ],
     allowVerifiedPlayedCorrections: ["Milan"],
   },
