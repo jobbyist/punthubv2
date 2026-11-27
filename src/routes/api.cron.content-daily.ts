@@ -29,7 +29,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const manual = kind !== undefined || force || dry || (slot !== undefined && !scheduledSlot);
 
         const { readContentEnv, modelsForContentSlot } = await import("@/lib/content/config");
-        const { createGemini, createParallelResponses, createPageReader, createParallelSearch } =
+        const { createParallelResponses, createPageReader, createParallelSearch } =
           await import("@/lib/content/providers.server");
         const { createContentStore } = await import("@/lib/content/store.server");
         const { createCacheStore } = await import("@/lib/parallel/cache.server");
@@ -43,16 +43,6 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const env = { ...baseEnv, models: modelsForContentSlot(baseEnv.models, slot) };
         const cache = await createCacheStore();
         const parallelLlm = env.parallelKey ? createParallelResponses(env.parallelKey) : null;
-        const geminiLlm = env.geminiKey ? createGemini(env.geminiKey) : null;
-        const editorialLlm = parallelLlm && geminiLlm
-          ? {
-              name: "newsroom-editorial",
-              generate: (model: string, request: import("@/lib/content/types").LlmRequest) =>
-                model === "parallel-medium"
-                  ? parallelLlm.generate(model, request)
-                  : geminiLlm.generate(model, request),
-            }
-          : null;
         try {
           const outcome = await runContentJob(
             {
@@ -69,7 +59,7 @@ export const Route = createFileRoute("/api/cron/content-daily")({
                 cache,
                 "news",
               ),
-              llm: editorialLlm ? guardLlm(editorialLlm, claim) : null,
+              llm: parallelLlm ? guardLlm(parallelLlm, claim) : null,
               notify: async (notice) => {
                 const { newsroomAlertEmail, NEWSROOM_ALERT_TO } =
                   await import("@/lib/email/newsroom-alert");
