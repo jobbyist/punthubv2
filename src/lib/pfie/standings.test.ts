@@ -437,6 +437,9 @@ describe("UEFA Conference League participant aliases", () => {
     expect(normaliseTeam("FK Kairat")).toBe(normaliseTeam("Kairat Almaty"));
     expect(normaliseTeam("Borac Banja Luka")).toBe(normaliseTeam("Borac"));
     expect(normaliseTeam("Roter Stern Belgrad")).toBe(normaliseTeam("Crvena Zvezda"));
+    expect(normaliseTeam("FC Kopenhagen")).toBe(normaliseTeam("Copenhagen"));
+    expect(normaliseTeam("ZSKA Sofia")).toBe(normaliseTeam("CSKA Sofia"));
+    expect(normaliseTeam("Paphos FC")).toBe(normaliseTeam("Pafos"));
     expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
