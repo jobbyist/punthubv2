@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { EmptyState } from "@/components/empty-state";
@@ -102,6 +102,14 @@ function Standings() {
   }, [selectedLeague, statuses]);
 
   const teams = useMemo(() => (rows ?? []).map((r) => r.team), [rows]);
+  const groupedRows = useMemo(() => {
+    const groups = new Map<string, StandingRow[]>();
+    for (const row of rows ?? []) {
+      const group = row.group_name ?? "";
+      groups.set(group, [...(groups.get(group) ?? []), row]);
+    }
+    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [rows]);
   const { forms } = useTeamForms(teams);
   const status = statuses?.find((s) => s.job === "standings" && s.scope === selectedLeague);
   const stale = rows !== null && rows.length > 0 && isStale(status);
@@ -212,8 +220,17 @@ function Standings() {
                 </tr>
               </thead>
               <tbody className="tnum">
-                {rows.map((r) => (
-                  <tr key={r.team} className="border-t border-border">
+                {groupedRows.map(([group, groupRows]) => (
+                  <Fragment key={group || "overall"}>
+                    {group && (
+                      <tr className="border-t-2 border-border bg-muted/50">
+                        <td colSpan={11} className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground">
+                          Group {group}
+                        </td>
+                      </tr>
+                    )}
+                    {groupRows.map((r) => (
+                  <tr key={`${group}-${r.team}`} className="border-t border-border">
                     <td className="px-3 py-2.5">
                       <span
                         className={cn(
@@ -253,6 +270,8 @@ function Standings() {
                       <FormGuide team={r.team} entries={forms[r.team]?.entries} align="end" />
                     </td>
                   </tr>
+                    ))}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

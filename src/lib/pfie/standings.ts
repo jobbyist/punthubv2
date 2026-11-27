@@ -14,23 +14,36 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
 
-/** Competitions with a single league table, with the number of teams it must have. */
+/** Ten competition tables in the agreed MVP launch priority order. */
 export const STANDINGS_LAUNCH_KEYS = [
-  // Pre-launch standings priority: the EFL Championship replaces Motsepe for this release.
-  "epl", "laliga", "ucl", "uecl", "championship", "bundesliga",
-  // Existing domestic tables remain available after the launch restoration priorities.
-  "psl", "seriea", "primeira", "saudi-pro",
+  "psl",
+  "epl",
+  "championship",
+  "laliga",
+  "ucl",
+  "uecl",
+  "bundesliga",
+  "seriea",
+  "ligue1",
+  "caf-cc",
 ] as const satisfies readonly CompetitionKey[];
 
-/** Deferred until post-launch: the Motsepe Foundation Championship. */
+/** Other table-based competitions are explicitly deferred beyond the ten-competition launch scope. */
 export const STANDINGS_POST_LAUNCH_KEYS = [
+  "uel",
+  "eredivisie",
+  "primeira",
+  "saudi-pro",
   "sa-championship",
+  "caf-cl",
+  "afcon",
+  "wcq-caf",
 ] as const satisfies readonly CompetitionKey[];
 
 export const STANDINGS_COMPETITIONS: Partial<
   Record<
     CompetitionKey,
-    { teams: number; refreshHours: number; queries: string[]; pages?: string[] }
+    { teams: number; refreshHours: number; queries: string[]; pages?: string[]; groups?: string[]; teamsPerGroup?: number }
   >
 > = {
   psl: {
@@ -156,6 +169,23 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.tntsports.co.uk/football/primeira-liga/standings.shtml",
     ],
   },
+  "caf-cc": {
+    teams: 16,
+    groups: ["A", "B", "C", "D"],
+    teamsPerGroup: 4,
+    refreshHours: 24,
+    queries: [
+      "CAF Confederation Cup 2026/27 Group A standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group B standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group C standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 Group D standings P W D L GF GA points",
+      "CAF Confederation Cup 2026/27 all four group tables",
+    ],
+    pages: [
+      "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
+      "https://globalsportsarchive.com/en/soccer/competition/totalenergies-caf-confederation-cup-2026-2027/81259",
+    ],
+  },
   championship: {
     teams: 24,
     refreshHours: 12,
@@ -246,12 +276,16 @@ export interface RawStandingRow {
   goalsAgainst: number;
   points: number;
   quote: string;
+  /** Group label for competitions with multiple parallel tables, e.g. CAF Confederation Cup Group A. */
+  group?: string | null;
   /** Explicit table "as of" date, when the source states one. */
   tableDate?: string | null;
   tableDateQuote?: string | null;
 }
 
 export interface StandingRow {
+  /** Empty for a single-table league; A-D for CAF Confederation Cup group tables. */
+  group?: string;
   position: number;
   team: string;
   played: number;
@@ -265,6 +299,7 @@ export interface StandingRow {
 
 export interface SourceTable {
   source: PfieSource;
+  group?: string;
   rows: StandingRow[];
   /** Optional explicit table date found on the page. */
   tableDate?: string | null;
@@ -289,6 +324,7 @@ const SCHEMA = {
           goalsAgainst: { type: "INTEGER" },
           points: { type: "INTEGER" },
           quote: { type: "STRING" },
+          group: { type: "STRING" },
           tableDate: { type: "STRING" },
           tableDateQuote: { type: "STRING" },
         },
@@ -316,6 +352,7 @@ export function standingsRequest(input: {
   season: string;
   sources: PfieSource[];
   retryHint?: string;
+  groups?: readonly string[];
 }): LlmRequest {
   const sources = input.sources
     .map((s) => `<source n="${s.index}" site="${s.domain}">\n${s.text}\n</source>`)
@@ -329,12 +366,27 @@ export function standingsRequest(input: {
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
       "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
-      "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
+      "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
-      "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table.",
+      "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
+      (input.groups?.length ? "\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : ""),
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
-    schema: SCHEMA,
+    schema: input.groups?.length
+      ? {
+          ...SCHEMA,
+          properties: {
+            ...SCHEMA.properties,
+            rows: {
+              ...SCHEMA.properties.rows,
+              items: {
+                ...SCHEMA.properties.rows.items,
+                required: [...SCHEMA.properties.rows.items.required, "group"],
+              },
+            },
+          },
+        }
+      : SCHEMA,
     temperature: 0,
     maxOutputTokens: 8_192,
   };
@@ -355,6 +407,7 @@ const rawSchema = z.object({
       goalsAgainst: int,
       points: z.number().int().min(-50).max(500),
       quote: z.string().trim().min(1),
+      group: z.string().trim().min(1).max(20).nullable().optional(),
       tableDate: z
         .string()
         .trim()
@@ -409,14 +462,31 @@ export function validateTables(
   knownTeams: readonly string[] = [],
   now: Date = new Date(),
   allowTiedPositions = false,
+  groupNames?: readonly string[],
+  teamsPerGroup = expectedTeams,
 ): { tables: SourceTable[]; rejected: TableRejection[] } {
-  const bySource = new Map<number, RawStandingRow[]>();
-  for (const r of raw) bySource.set(r.source, [...(bySource.get(r.source) ?? []), r]);
+  const bySourceGroup = new Map<string, RawStandingRow[]>();
+  for (const r of raw) {
+    const group = (r.group ?? "").trim();
+    const key = `${r.source}::${group}`;
+    bySourceGroup.set(key, [...(bySourceGroup.get(key) ?? []), r]);
+  }
   const tables: SourceTable[] = [];
   const rejected: TableRejection[] = [];
 
-  for (const [index, extractedRows] of bySource) {
+  for (const [sourceGroup, extractedRows] of bySourceGroup) {
+    const [sourceIndex, groupName = ""] = sourceGroup.split("::", 2);
+    const index = Number(sourceIndex);
     const source = sources.find((s) => s.index === index);
+    const expectedForTable = groupNames?.length ? teamsPerGroup : expectedTeams;
+    if (groupNames?.length && !groupName) {
+      rejected.push({ source: index, reason: "group_missing" });
+      continue;
+    }
+    if (groupNames?.length && !groupNames.includes(groupName)) {
+      rejected.push({ source: index, reason: `unexpected_group_${groupName}` });
+      continue;
+    }
     const fail = (reason: string) => rejected.push({ source: index, reason });
     if (!source) {
       fail("unknown_source");
@@ -484,17 +554,17 @@ export function validateTables(
       fail(duplicateConflict);
       continue;
     }
-    if (rows.length !== expectedTeams) {
-      fail(`team_count_${rows.length}_expected_${expectedTeams}`);
+    if (rows.length !== expectedForTable) {
+      fail(`team_count_${rows.length}_expected_${expectedForTable}`);
       continue;
     }
     const orderedPositions = rows.map((r) => r.position);
     const validUniquePositions =
-      new Set(orderedPositions).size === expectedTeams &&
-      orderedPositions.every((p) => p >= 1 && p <= expectedTeams);
+      new Set(orderedPositions).size === expectedForTable &&
+      orderedPositions.every((p) => p >= 1 && p <= expectedForTable);
     const validTiedPositions = (() => {
       if (!allowTiedPositions) return false;
-      if (orderedPositions.some((p) => p < 1 || p > expectedTeams)) return false;
+      if (orderedPositions.some((p) => p < 1 || p > expectedForTable)) return false;
       const groups = new Map<number, number>();
       for (const position of orderedPositions)
         groups.set(position, (groups.get(position) ?? 0) + 1);
@@ -603,6 +673,7 @@ export function validateTables(
           // Team aliases can resolve to one canonical club only after known-team matching. Apply the same
           // cumulative overall-row preference after resolution as before it.
           out[duplicateIndex] = {
+            ...(groupName ? { group: groupName } : {}),
             position: r.position,
             team,
             played: r.played,
@@ -621,6 +692,7 @@ export function validateTables(
       }
       names.add(key);
       out.push({
+        ...(groupName ? { group: groupName } : {}),
         position: r.position,
         team,
         played: r.played,
@@ -642,7 +714,21 @@ export function validateTables(
       fail("points_out_of_order");
       continue;
     }
-    tables.push({ source, rows: ordered, tableDate });
+    tables.push({ source, ...(groupName ? { group: groupName } : {}), rows: ordered, tableDate });
+  }
+  if (groupNames?.length) {
+    const sourceIndexes = new Set(raw.map((row) => row.source));
+    for (const sourceIndex of sourceIndexes) {
+      const sourceTables = tables.filter((table) => table.source.index === sourceIndex);
+      const foundGroups = new Set(sourceTables.map((table) => table.group ?? ""));
+      const missingGroups = groupNames.filter((group) => !foundGroups.has(group));
+      if (missingGroups.length) {
+        for (let i = tables.length - 1; i >= 0; i--) {
+          if (tables[i]!.source.index === sourceIndex) tables.splice(i, 1);
+        }
+        rejected.push({ source: sourceIndex, reason: `missing_groups_${missingGroups.join("_")}` });
+      }
+    }
   }
   return { tables, rejected };
 }
@@ -682,9 +768,10 @@ export function tableRegression(
 ): string | null {
   if (previous.length === 0) return null;
   if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
-  const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
+  const rowKey = (row: StandingRow) => `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
+  const nextByTeam = new Map(candidate.map((r) => [rowKey(r), r]));
   for (const old of previous) {
-    const next = nextByTeam.get(normaliseTeam(old.team));
+    const next = nextByTeam.get(rowKey(old));
     if (!next) return `team_missing_from_new_snapshot_${old.team}`;
     if (next.played < old.played) return `played_regressed_${old.team}`;
     const resultRecordUnchanged =
@@ -715,6 +802,7 @@ const signature = (t: SourceTable) =>
   t.rows
     .map((r) =>
       [
+        t.group ?? "",
         normaliseTeam(r.team),
         r.played,
         r.won,
@@ -734,7 +822,6 @@ const signature = (t: SourceTable) =>
  * never bypasses corroboration. The strongest table from the largest agreeing group is published.
  */
 export function standingsDisagreementHint(tables: SourceTable[]): string | null {
-  if (tables.length < 2) return null;
   const fields = [
     ["played", "played"],
     ["won", "won"],
@@ -744,34 +831,52 @@ export function standingsDisagreementHint(tables: SourceTable[]): string | null 
     ["goalsAgainst", "goals against"],
     ["points", "points"],
   ] as const;
-  const baseline = tables[0]!;
+  const byGroup = new Map<string, SourceTable[]>();
+  for (const table of tables) {
+    const key = table.group ?? "";
+    byGroup.set(key, [...(byGroup.get(key) ?? []), table]);
+  }
   const issues = new Set<string>();
-  for (const other of tables.slice(1)) {
-    const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
-    for (const row of baseline.rows) {
-      const peer = byTeam.get(normaliseTeam(row.team));
-      if (!peer) {
-        issues.add(row.team + ": team missing");
-        continue;
+  for (const groupTables of byGroup.values()) {
+    if (groupTables.length < 2) continue;
+    const baseline = groupTables[0]!;
+    for (const other of groupTables.slice(1)) {
+      const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
+      for (const row of baseline.rows) {
+        const peer = byTeam.get(normaliseTeam(row.team));
+        const label = `${baseline.group ? `Group ${baseline.group} · ` : ""}${row.team}`;
+        if (!peer) {
+          issues.add(label + ": team missing");
+          continue;
+        }
+        const differing = fields
+          .filter(([field]) => row[field] !== peer[field])
+          .map(([, name]) => name);
+        if (differing.length) issues.add(label + ": " + differing.join(", "));
       }
-      const differing = fields
-        .filter(([field]) => row[field] !== peer[field])
-        .map(([, label]) => label);
-      if (differing.length) issues.add(row.team + ": " + differing.join(", "));
     }
   }
   if (issues.size === 0) return null;
   return (
     "The first extraction passed local checks but did not agree with another independent table. " +
-    "Re-read the overall/Total table in this source only; do not use Home or Away views. " +
+    "Re-read each affected overall group table in this source only; do not use Home or Away views. " +
     "Re-check these team rows and columns carefully: " +
     [...issues].slice(0, 12).join("; ") +
     ". Copy only values visibly printed in this source."
   );
 }
-export function chooseTable(
+
+export interface ChosenStandingsTable {
+  table: SourceTable;
+  verdict: "two_sources";
+  supportingDomains: string[];
+}
+
+/** Select an independently corroborated table for every required group; all groups must pass. */
+export function chooseTables(
   tables: SourceTable[],
-): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {
+  requiredGroups?: readonly string[],
+): ChosenStandingsTable[] | null {
   const eligible = tables.filter(
     (t) =>
       !(
@@ -780,31 +885,45 @@ export function chooseTable(
       ) &&
       (t.source.tier === "official" || t.source.tier === "trusted"),
   );
-  const groups = new Map<string, SourceTable[]>();
-  for (const table of eligible) {
-    const key = signature(table);
-    groups.set(key, [...(groups.get(key) ?? []), table]);
-  }
-  const ranked = [...groups.values()]
-    .map((group) => {
-      const byPublisher = new Map<string, SourceTable>();
-      for (const table of group) {
-        const key = independentSourceKey(table.source.domain);
-        const prior = byPublisher.get(key);
-        if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
-          byPublisher.set(key, table);
-      }
-      return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
-    })
-    .filter((g) => g.publishers.length >= 2)
-    .sort((a, b) => b.publishers.length - a.publishers.length);
-  const best = ranked[0];
-  if (!best) return null;
+  const groups = requiredGroups ?? [...new Set(eligible.map((table) => table.group ?? ""))];
+  if (groups.length === 0) return null;
   const quality = (t: SourceTable) => (t.source.tier === "official" ? 0 : 1);
-  const table = [...best.group].sort((a, b) => quality(a) - quality(b))[0]!;
-  return {
-    table,
-    verdict: "two_sources",
-    supportingDomains: best.group.map((t) => t.source.domain).sort(),
-  };
+  const chosen: ChosenStandingsTable[] = [];
+  for (const groupName of groups) {
+    const groupTables = eligible.filter((table) => (table.group ?? "") === groupName);
+    const bySignature = new Map<string, SourceTable[]>();
+    for (const table of groupTables) {
+      const key = signature(table);
+      bySignature.set(key, [...(bySignature.get(key) ?? []), table]);
+    }
+    const ranked = [...bySignature.values()]
+      .map((sameTable) => {
+        const byPublisher = new Map<string, SourceTable>();
+        for (const table of sameTable) {
+          const key = independentSourceKey(table.source.domain);
+          const prior = byPublisher.get(key);
+          if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
+            byPublisher.set(key, table);
+        }
+        return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
+      })
+      .filter((item) => item.publishers.length >= 2)
+      .sort((a, b) => b.publishers.length - a.publishers.length);
+    const best = ranked[0];
+    if (!best) return null;
+    const table = [...best.group].sort((a, b) => quality(a) - quality(b))[0]!;
+    chosen.push({
+      table,
+      verdict: "two_sources",
+      supportingDomains: best.group.map((item) => item.source.domain).sort(),
+    });
+  }
+  return chosen;
+}
+
+/** Backwards-compatible single-table selector for existing callers and tests. */
+export function chooseTable(
+  tables: SourceTable[],
+): ChosenStandingsTable | null {
+  return chooseTables(tables)?.[0] ?? null;
 }

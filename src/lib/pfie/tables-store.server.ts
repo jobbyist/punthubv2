@@ -65,12 +65,13 @@ export function createTablesStore(): TablesStore {
     async currentStandings(key, season): Promise<StandingRow[]> {
       const { data, error } = await db
         .from("league_standings")
-        .select("position, team, played, won, drawn, lost, goals_for, goals_against, points")
+        .select("group_name, position, team, played, won, drawn, lost, goals_for, goals_against, points")
         .eq("competition_key", key)
         .eq("season", season)
         .order("position");
       if (error) throw new Error(`league_standings: ${error.message}`);
       return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+        ...(typeof r["group_name"] === "string" && r["group_name"] ? { group: r["group_name"] as string } : {}),
         position: r["position"] as number,
         team: r["team"] as string,
         played: r["played"] as number,

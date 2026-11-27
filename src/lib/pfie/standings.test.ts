@@ -8,6 +8,7 @@ import {
   STANDINGS_LAUNCH_KEYS,
   STANDINGS_POST_LAUNCH_KEYS,
   chooseTable,
+  chooseTables,
   independentSourceKey,
   parseStandings,
   standingsRequest,
@@ -98,26 +99,27 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
     expect(tierOf("swissfootballdata.com", [])).toBe("trusted");
     expect(tierOf("keepstandings.com", [])).toBe("trusted");
+    expect(tierOf("365scores.com", [])).toBe("trusted");
     expect(tierOf("tntsports.co.uk", [])).toBe("trusted");
   });
 });
 describe("launch standings coverage", () => {
   it("keeps the restoration competitions in the agreed launch order", () => {
     expect(STANDINGS_LAUNCH_KEYS).toEqual([
+      "psl",
       "epl",
+      "championship",
       "laliga",
       "ucl",
       "uecl",
-      "sa-championship",
       "bundesliga",
-      "psl",
       "seriea",
-      "primeira",
-      "championship",
-      "saudi-pro",
+      "ligue1",
+      "caf-cc",
     ]);
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("eredivisie");
-    expect(STANDINGS_LAUNCH_KEYS).not.toContain("ligue1");
+    expect(STANDINGS_LAUNCH_KEYS).toHaveLength(10);
+    expect(STANDINGS_POST_LAUNCH_KEYS).toContain("sa-championship");
+    expect(STANDINGS_POST_LAUNCH_KEYS).toContain("caf-cl");
   });
 });
 describe("configured direct standings sources", () => {
@@ -427,13 +429,81 @@ describe("validateTables", () => {
 });
 
 describe("pre-launch standings selection", () => {
-  it("prioritises the EFL Championship and defers Motsepe", () => {
-    expect(STANDINGS_LAUNCH_KEYS.slice(0, 6)).toEqual([
-      "epl", "laliga", "ucl", "uecl", "championship", "bundesliga",
+  it("prioritises the ten agreed competitions and defers Motsepe", () => {
+    expect(STANDINGS_LAUNCH_KEYS).toEqual([
+      "psl", "epl", "championship", "laliga", "ucl", "uecl", "bundesliga", "seriea", "ligue1", "caf-cc",
     ]);
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
     expect(STANDINGS_POST_LAUNCH_KEYS).toContain("sa-championship");
     expect(STANDINGS_COMPETITIONS.championship?.teams).toBe(24);
+  });
+});
+
+describe("CAF Confederation Cup group standings", () => {
+  const groups = ["A", "B", "C", "D"] as const;
+  const groupedRaw = (source: number) =>
+    groups.flatMap((group) =>
+      teams.map((team, i) => ({
+        source,
+        group,
+        position: i + 1,
+        team: `${group} ${team}`,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+        quote: `${i + 1} ${group} ${team} 0 0 0 0 0 0 0`,
+      })),
+    );
+  const groupedPage = (domain: string, index: number) =>
+    page(
+      domain,
+      "trusted",
+      index,
+      groups.flatMap((group) => [
+        `Group ${group}`,
+        ...teams.map((team, i) => `${i + 1} ${group} ${team} 0 0 0 0 0 0 0`),
+      ]),
+    );
+
+  it("configures four independent four-team group tables for launch", () => {
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.teams).toBe(16);
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.groups).toEqual(groups);
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.teamsPerGroup).toBe(4);
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.pages).toEqual(
+      expect.arrayContaining([
+        "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
+        "https://globalsportsarchive.com/en/soccer/competition/totalenergies-caf-confederation-cup-2026-2027/81259",
+      ]),
+    );
+  });
+
+  it("validates and corroborates each group independently", () => {
+    const first = validateTables(groupedRaw(1), [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
+    const second = validateTables(groupedRaw(2), [groupedPage("globalsportsarchive.com", 2)], 16, [], new Date(), false, groups, 4);
+    expect(first.rejected).toEqual([]);
+    expect(first.tables).toHaveLength(4);
+    expect(first.tables.map((table) => table.group)).toEqual(groups);
+    expect(first.tables.every((table) => table.rows.length === 4)).toBe(true);
+    const chosen = chooseTables([...first.tables, ...second.tables], groups);
+    expect(chosen).toHaveLength(4);
+    expect(chosen?.map((selection) => selection.table.group)).toEqual(groups);
+  });
+
+  it("rejects a source that omits any one of the four groups", () => {
+    const incomplete = groupedRaw(1).filter((row) => row.group !== "D");
+    const result = validateTables(incomplete, [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
+    expect(result.tables).toEqual([]);
+    expect(result.rejected).toContainEqual({ source: 1, reason: "missing_groups_D" });
+  });
+
+  it("requires every group to have two independent publishers", () => {
+    const first = validateTables(groupedRaw(1), [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
+    const incompleteSecond = validateTables(groupedRaw(2).filter((row) => row.group !== "C"), [groupedPage("globalsportsarchive.com", 2)], 16, [], new Date(), false, groups, 4);
+    expect(chooseTables([...first.tables, ...incompleteSecond.tables], groups)).toBeNull();
   });
 });
 
