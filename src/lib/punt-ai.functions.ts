@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { DEFAULT_PFIE_MODELS, parseModelList, readContentEnv } from "@/lib/content/config";
+import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { createGemini, createParallelExtract, createParallelResponses, createParallelSearch } from "@/lib/content/providers.server";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf } from "@/lib/content/research";
@@ -407,7 +407,12 @@ export const askPuntAi = createServerFn({ method: "POST" })
       const contextBundle = await loadPuntrContext(db, now);
       let generated: { answer: string; model: string; sources: AiSource[] };
       if (mode === "live_web" && env["PARALLEL_API_KEY"]?.trim()) {
-        const live = await generateLiveAnswer(safeMessage, contextBundle, env["PARALLEL_API_KEY"]!.trim());
+        let live: Awaited<ReturnType<typeof generateLiveAnswer>> = null;
+        try {
+          live = await generateLiveAnswer(safeMessage, contextBundle, env["PARALLEL_API_KEY"]!.trim());
+        } catch (error) {
+          console.warn("PUNT AI live-web path unavailable; falling back to Puntr data", error);
+        }
         if (live) {
           const charged = await spendLiveCredit();
           if (charged) {
