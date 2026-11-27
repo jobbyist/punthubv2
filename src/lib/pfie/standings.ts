@@ -773,6 +773,7 @@ const signature = (t: SourceTable) =>
   t.rows
     .map((r) =>
       [
+        t.group ?? "",
         normaliseTeam(r.team),
         r.played,
         r.won,
@@ -792,7 +793,6 @@ const signature = (t: SourceTable) =>
  * never bypasses corroboration. The strongest table from the largest agreeing group is published.
  */
 export function standingsDisagreementHint(tables: SourceTable[]): string | null {
-  if (tables.length < 2) return null;
   const fields = [
     ["played", "played"],
     ["won", "won"],
@@ -802,34 +802,52 @@ export function standingsDisagreementHint(tables: SourceTable[]): string | null 
     ["goalsAgainst", "goals against"],
     ["points", "points"],
   ] as const;
-  const baseline = tables[0]!;
+  const byGroup = new Map<string, SourceTable[]>();
+  for (const table of tables) {
+    const key = table.group ?? "";
+    byGroup.set(key, [...(byGroup.get(key) ?? []), table]);
+  }
   const issues = new Set<string>();
-  for (const other of tables.slice(1)) {
-    const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
-    for (const row of baseline.rows) {
-      const peer = byTeam.get(normaliseTeam(row.team));
-      if (!peer) {
-        issues.add(row.team + ": team missing");
-        continue;
+  for (const groupTables of byGroup.values()) {
+    if (groupTables.length < 2) continue;
+    const baseline = groupTables[0]!;
+    for (const other of groupTables.slice(1)) {
+      const byTeam = new Map(other.rows.map((row) => [normaliseTeam(row.team), row]));
+      for (const row of baseline.rows) {
+        const peer = byTeam.get(normaliseTeam(row.team));
+        const label = `${baseline.group ? `Group ${baseline.group} · ` : ""}${row.team}`;
+        if (!peer) {
+          issues.add(label + ": team missing");
+          continue;
+        }
+        const differing = fields
+          .filter(([field]) => row[field] !== peer[field])
+          .map(([, name]) => name);
+        if (differing.length) issues.add(label + ": " + differing.join(", "));
       }
-      const differing = fields
-        .filter(([field]) => row[field] !== peer[field])
-        .map(([, label]) => label);
-      if (differing.length) issues.add(row.team + ": " + differing.join(", "));
     }
   }
   if (issues.size === 0) return null;
   return (
     "The first extraction passed local checks but did not agree with another independent table. " +
-    "Re-read the overall/Total table in this source only; do not use Home or Away views. " +
+    "Re-read each affected overall group table in this source only; do not use Home or Away views. " +
     "Re-check these team rows and columns carefully: " +
     [...issues].slice(0, 12).join("; ") +
     ". Copy only values visibly printed in this source."
   );
 }
-export function chooseTable(
+
+export interface ChosenStandingsTable {
+  table: SourceTable;
+  verdict: "two_sources";
+  supportingDomains: string[];
+}
+
+/** Select an independently corroborated table for every required group; all groups must pass. */
+export function chooseTables(
   tables: SourceTable[],
-): { table: SourceTable; verdict: "two_sources"; supportingDomains: string[] } | null {
+  requiredGroups?: readonly string[],
+): ChosenStandingsTable[] | null {
   const eligible = tables.filter(
     (t) =>
       !(
@@ -838,11 +856,48 @@ export function chooseTable(
       ) &&
       (t.source.tier === "official" || t.source.tier === "trusted"),
   );
-  const groups = new Map<string, SourceTable[]>();
-  for (const table of eligible) {
-    const key = signature(table);
-    groups.set(key, [...(groups.get(key) ?? []), table]);
+  const groups = requiredGroups ?? [...new Set(eligible.map((table) => table.group ?? ""))];
+  if (groups.length === 0) return null;
+  const quality = (t: SourceTable) => (t.source.tier === "official" ? 0 : 1);
+  const chosen: ChosenStandingsTable[] = [];
+  for (const groupName of groups) {
+    const groupTables = eligible.filter((table) => (table.group ?? "") === groupName);
+    const bySignature = new Map<string, SourceTable[]>();
+    for (const table of groupTables) {
+      const key = signature(table);
+      bySignature.set(key, [...(bySignature.get(key) ?? []), table]);
+    }
+    const ranked = [...bySignature.values()]
+      .map((sameTable) => {
+        const byPublisher = new Map<string, SourceTable>();
+        for (const table of sameTable) {
+          const key = independentSourceKey(table.source.domain);
+          const prior = byPublisher.get(key);
+          if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
+            byPublisher.set(key, table);
+        }
+        return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
+      })
+      .filter((item) => item.publishers.length >= 2)
+      .sort((a, b) => b.publishers.length - a.publishers.length);
+    const best = ranked[0];
+    if (!best) return null;
+    const table = [...best.group].sort((a, b) => quality(a) - quality(b))[0]!;
+    chosen.push({
+      table,
+      verdict: "two_sources",
+      supportingDomains: best.group.map((item) => item.source.domain).sort(),
+    });
   }
+  return chosen;
+}
+
+/** Backwards-compatible single-table selector for existing callers and tests. */
+export function chooseTable(
+  tables: SourceTable[],
+): ChosenStandingsTable | null {
+  return chooseTables(tables)?.[0] ?? null;
+}
   const ranked = [...groups.values()]
     .map((group) => {
       const byPublisher = new Map<string, SourceTable>();
