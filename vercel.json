@@ -24,6 +24,10 @@
     {
       "path": "/api/cron/pfie-learning-ingest",
       "schedule": "30 4 * * *"
+    },
+    {
+      "path": "/api/cron/ai-community-daily",
+      "schedule": "0 8 * * *"
     }
   ]
 }
