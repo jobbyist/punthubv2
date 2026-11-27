@@ -171,6 +171,7 @@ export function FoundingHqPage() {
     setProvisioningAi(true);
     try {
       const result = await adminProvisionAiFoundingMembers();
+      if (result.ok) {
       const numbers = result.members
         .map((member) => member.foundingNumber)
         .filter((number): number is number => number !== null)
@@ -181,7 +182,6 @@ export function FoundingHqPage() {
           ? `#${numbers[0]}–#${numbers[numbers.length - 1]}`
           : numbers.map((number) => `#${number}`).join(", "));
       }
-      if (result.ok) {
         toast.success(`Provisioned ${result.created} AI accounts; ${result.alreadyProvisioned} were already linked.`);
       } else {
         toast.error(`AI provisioning finished with ${result.failed} errors. Review the details in the console and retry after resolving them.`);
