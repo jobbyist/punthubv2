@@ -21,7 +21,7 @@ export const GOOD_SPORT_EPISODES = [
     title: "The game before the game",
     description:
       "A season opener on the culture, the numbers and the decisions that shape how we watch sport.",
-    date: "1 December 2026",
+    date: "5 January 2027",
     status: "Premiere",
   },
   {
@@ -58,7 +58,7 @@ const YOUTUBE_URL =
   "https://youtube.com/@puntr_za?si=URxhuKhi1Yl82gqh";
 const AUDIO_URL = import.meta.env["VITE_GOOD_SPORT_EPISODE_01_AUDIO_URL"] as string | undefined;
 const COVER_URL = import.meta.env["VITE_GOOD_SPORT_COVER_ART_URL"] as string | undefined;
-const PREMIERE_AT = Date.parse("2026-12-01T07:00:00Z");
+const PREMIERE_AT = Date.parse("2027-01-05T07:00:00Z");
 const premiereUpcoming = () => Date.now() < PREMIERE_AT;
 
 function CoverArt({ compact = false }: { compact?: boolean }) {
