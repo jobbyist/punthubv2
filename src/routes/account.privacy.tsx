@@ -217,7 +217,9 @@ function PfieLearningSection({ userId }: { userId: string }) {
       const cookieChoice = readConsent();
       const { data: current } = await supabase.from("current_consents").select("granted")
         .eq("user_id", userId).eq("purpose", "pfie_learning").maybeSingle();
-      if (cookieChoice?.noticeVersion === CONSENT_NOTICE_VERSION && cookieChoice.pfie_learning !== (current?.granted === true)) {
+      // Account consent wins across devices. A browser choice is copied only when no account
+      // record exists; explicit changes in this panel always update both records.
+      if (!current && cookieChoice?.noticeVersion === CONSENT_NOTICE_VERSION) {
         await setPfieLearningConsent({ data: { granted: cookieChoice.pfie_learning } });
         if (!active) return;
         setEnabled(cookieChoice.pfie_learning);
