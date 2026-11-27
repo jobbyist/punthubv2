@@ -209,7 +209,6 @@ export const STANDINGS_COMPETITIONS: Partial<
     ],
     pages: [
       "https://www.uefa.com/uefaconferenceleague/standings/",
-      "https://www.rotascore.com/en/league/uefa-europa-conference-league/standings",
       "https://swissfootballdata.com/conference-league-standings/",
       "https://www.keepstandings.com/conference-league/table",
     ],
