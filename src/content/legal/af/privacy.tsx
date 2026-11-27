@@ -1,6 +1,6 @@
 /**
  * Afrikaans translation of /privacy. The English route file is the version that applies; keep this in step with
- * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-23-r22.
+ * it (Admin > Translations marks the review stale when either file changes). Version shown: 2026-11-27-r23.
  */
 import { Link } from "@tanstack/react-router";
 
