@@ -157,7 +157,7 @@ describe("configured direct standings sources", () => {
       "https://www.ligaportugal.pt/competition/618/liga-portugal-betclic/round/20262027?tab=standings",
     );
     expect(STANDINGS_COMPETITIONS["sa-championship"]?.pages).toContain(
-      "https://treble.co.za/motsepe-championship/log/",
+      "https://globalsportsarchive.com/en/soccer/competition/motsepe-foundation-championship-2026-2027/80295",
     );
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain(
       "https://www.uefa.com/uefachampionsleague/standings/",
@@ -192,11 +192,13 @@ describe("configured direct standings sources", () => {
       "https://www.uefa.com/uefaconferenceleague/standings/",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://swissfootballdata.com/conference-league-standings/",
+      "https://standings.nz/conference-league/",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
       "https://www.keepstandings.com/conference-league/table",
     );
+    expect(tierOf("standings.nz", ["uefa.com"])).toBe("trusted");
+    expect(tierOf("globalsportsarchive.com", ["psl.co.za"])).toBe("trusted");
     expect(STANDINGS_COMPETITIONS.uecl?.pages).not.toContain(
       "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
     );
@@ -458,6 +460,12 @@ describe("UEFA Champions League cross-publisher team aliases", () => {
     expect(normaliseTeam("Slovan Bratislava")).toBe(normaliseTeam("Slovan Bratisl."));
   });
 });
+describe("Bundesliga cross-publisher team aliases", () => {
+  it("reconciles Bayer 04 Leverkusen and Bayer Leverkusen", () => {
+    expect(normaliseTeam("Bayer 04 Leverkusen")).toBe(normaliseTeam("Bayer Leverkusen"));
+  });
+});
+
 describe("La Liga cross-publisher team aliases", () => {
   it("normalizes official LaLiga names to independent publisher names", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
