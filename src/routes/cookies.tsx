@@ -6,6 +6,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { readConsent, writeConsent } from "@/lib/consent";
+import { supabase } from "@/integrations/supabase/client";
+import { setPfieLearningConsent } from "@/lib/pfie-learning.functions";
 import { toast } from "sonner";
 
 import { CookiesAf } from "@/content/legal/af/cookies";
@@ -35,19 +37,24 @@ function Cookies() {
   const { locale } = useLocale();
   const [analytics, setAnalytics] = useState(false);
   const [affiliate, setAffiliate] = useState(false);
+  const [pfieLearning, setPfieLearning] = useState(false);
 
   useEffect(() => {
     const c = readConsent();
     if (c) {
       setAnalytics(c.analytics);
       setAffiliate(c.affiliate_tracking);
+      setPfieLearning(c.pfie_learning);
     }
   }, []);
 
-  const save = (a: boolean, f: boolean) => {
+  const save = async (a: boolean, f: boolean, p: boolean) => {
     setAnalytics(a);
     setAffiliate(f);
-    writeConsent({ analytics: a, affiliate_tracking: f });
+    setPfieLearning(p);
+    const { data: session } = await supabase.auth.getSession();
+    if (session.session) await setPfieLearningConsent({ data: { granted: p } }).catch(() => undefined);
+    writeConsent({ analytics: a, affiliate_tracking: f, pfie_learning: p });
     toast.success(locale === "af" ? "Privaatheidskeuses gestoor" : "Privacy choices saved");
   };
 
@@ -56,8 +63,10 @@ function Cookies() {
       <CookiesAf
         analytics={analytics}
         affiliate={affiliate}
+        pfieLearning={pfieLearning}
         setAnalytics={setAnalytics}
         setAffiliate={setAffiliate}
+        setPfieLearning={setPfieLearning}
         save={save}
       />
     );
@@ -134,14 +143,21 @@ function Cookies() {
           </div>
           <Switch id="affiliate" checked={affiliate} onCheckedChange={setAffiliate} />
         </section>
+        <section className="flex items-start justify-between gap-4">
+          <div>
+            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">PFIE learning (optional)</Label>
+            <p className="mt-1 text-sm text-muted-foreground">Lets Puntr use pseudonymous feature engagement and published pick actions to improve PFIE sporting intelligence. Separate from analytics; off unless you opt in. You can withdraw in Account privacy.</p>
+          </div>
+          <Switch id="pfie-learning" checked={pfieLearning} onCheckedChange={setPfieLearning} />
+        </section>
         <div className="flex flex-wrap gap-3">
-          <Button variant="outline" onClick={() => save(false, false)}>
+          <Button variant="outline" onClick={() => void save(false, false, false)}>
             Reject all
           </Button>
-          <Button variant="outline" onClick={() => save(true, true)}>
+          <Button variant="outline" onClick={() => void save(true, true, true)}>
             Accept all
           </Button>
-          <Button onClick={() => save(analytics, affiliate)}>Save choices</Button>
+          <Button onClick={() => void save(analytics, affiliate, pfieLearning)}>Save choices</Button>
         </div>
         <p className="text-xs text-muted-foreground">
           You must be 18+ to use Puntr. Gambling helpline: 0800 006 008.
