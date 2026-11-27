@@ -23,6 +23,7 @@ describe("PUNT AI request safety", () => {
 
   it("keeps private account questions out of live web", () => {
     expect(containsPuntAiPrivateContext("What is my account balance?")).toBe(true);
+    expect(containsPuntAiPrivateContext("Show me my picks and slips")).toBe(true);
   });
 
   it("redacts personal contact details and links before external calls", () => {
