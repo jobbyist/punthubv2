@@ -27,6 +27,8 @@ export interface DuelSummary {
   markets: DuelMarket[];
   challenger: string;
   opponent: string | null;
+  challenger_is_ai: boolean;
+  opponent_is_ai: boolean;
   winner: string | null;
   challenger_correct: number | null;
   opponent_correct: number | null;
@@ -39,6 +41,7 @@ export interface DuelPlayer {
   username: string;
   founding_number: number | null;
   avatar_url: string | null;
+  is_ai_participant: boolean;
 }
 
 export interface DuelDetail extends Omit<DuelSummary, "challenger" | "opponent"> {
@@ -72,6 +75,7 @@ export interface DuelConfig {
 export interface DuelBoardRow {
   username: string;
   founding_number: number | null;
+  is_ai_participant: boolean;
   played: number;
   wins: number;
   draws: number;
