@@ -25,7 +25,6 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const slot = slotParam === "breaking" || slotParam === "editorial" || slotParam === "intelligence" ? slotParam : undefined;
         const force = url.searchParams.get("force") === "1";
         const dry = url.searchParams.get("dry") === "1";
-        const benchmark = url.searchParams.get("benchmark") === "1";
         const scheduledSlot = slot !== undefined && url.searchParams.get("trigger") === "cron";
         const manual = kind !== undefined || force || dry || (slot !== undefined && !scheduledSlot);
 
@@ -91,7 +90,6 @@ export const Route = createFileRoute("/api/cron/content-daily")({
               trigger: manual ? "manual" : "cron",
               ...(kind ? { kind } : {}),
               ...(slot ? { slot } : {}),
-              benchmark,
               force,
               dry,
             },
