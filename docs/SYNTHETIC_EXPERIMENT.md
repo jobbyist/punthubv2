@@ -2,7 +2,7 @@
 
 ## Scope
 
-A controlled production QA experiment from 23 Nov to 22 Dec 2026, using 50 synthetic persona profiles. The implementation is explicitly labelled and read-only on the public application.
+A controlled production QA experiment from 27 Nov to 26 Dec 2026, using 50 synthetic persona profiles. The implementation is explicitly labelled and read-only on the public application.
 
 ## Why it is not 50 founding-member signups
 
@@ -31,7 +31,7 @@ The browser suite tests public pages as guest visitors. Any authenticated-path t
 
 The experiment hard cap is US$50. Decisions API requests reserve US$0.001 each and can contain up to 100 persona questions over one shared fixture evidence set. A 50-persona batch with two preferred markets each is 100 questions in one provider request, not 100 separate calls. Each call also passes Puntr's existing provider-family budget and quota checks and is cached for 24 hours. Do not create duplicate requests for the same fixture/persona batch.
 
-The existing `docs/PARALLEL_ARCHITECTURE.md` states that the current approximately US$50 prepaid balance expires on 7 Dec 2026 and also funds live Puntr data workloads. The experiment runs to 22 Dec. The owner must verify a separate or replenished balance before running beyond 7 Dec. Do not silently reduce the budget allocated to fixtures, results, standings or newsroom.
+The existing `docs/PARALLEL_ARCHITECTURE.md` states that the current approximately US$50 prepaid balance expires on 7 Dec 2026 and also funds live Puntr data workloads. The experiment runs through 26 Dec. The owner must verify a separate or replenished balance before running beyond 7 Dec. Do not silently reduce the budget allocated to fixtures, results, standings or newsroom.
 
 ## Production data protections
 
