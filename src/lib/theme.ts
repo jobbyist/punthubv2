@@ -35,8 +35,27 @@ export function applyTheme(choice: ThemeChoice, animate = true): void {
   }
 }
 
+export const SPLASH_KEY = "puntr-splash";
+
+/** Marketing pages that open with the branded preloader on the first visit of a browser session. */
+export const MARKETING_PATHS = [
+  "/",
+  "/about",
+  "/founding",
+  "/how-it-works",
+  "/pricing",
+  "/roadmap",
+  "/rewards",
+  "/newsroom",
+] as const;
+
+export function isMarketingPath(path: string): boolean {
+  return path.startsWith("/sports/") || (MARKETING_PATHS as readonly string[]).includes(path);
+}
+
 /**
- * Runs in <head> before the page paints, so there is no flash of the wrong theme, and hides the preloader for the
- * rest of the session once it has been shown. Kept tiny and dependency-free.
+ * Runs in <head> before the page paints, so there is no flash of the wrong theme, and decides whether the branded
+ * splash covers this page load: `data-splash="app"` on every launch of the installed app (any page), and
+ * `data-splash="web"` on the first marketing page of a browser session. Kept tiny and dependency-free.
  */
-export const THEME_BOOT_SCRIPT = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_KEY}");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))d.classList.add("dark");if(sessionStorage.getItem("${PRELOADED_KEY}"))d.setAttribute("data-preloaded","1");}catch(e){}})();`;
+export const THEME_BOOT_SCRIPT = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_KEY}");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))d.classList.add("dark");var sa=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true,p=location.pathname,s=sessionStorage;if(sa){d.setAttribute("data-standalone","1");if(!s.getItem("${SPLASH_KEY}"))d.setAttribute("data-splash","app");}else if((p.indexOf("/sports/")===0||${JSON.stringify(MARKETING_PATHS)}.indexOf(p)>-1)&&!s.getItem("${PRELOADED_KEY}")&&!matchMedia("(prefers-reduced-motion: reduce)").matches)d.setAttribute("data-splash","web");}catch(e){}})();`;
