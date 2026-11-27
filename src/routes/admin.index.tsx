@@ -113,7 +113,7 @@ function Admin() {
                       <optgroup key={group.label} label={group.label}>
                         {group.items.map((key) => (
                           <option key={key} value={key}>
-                            {t(`tabs.${key}`)}
+                            {key === "pfieLearning" ? "PFIE Learning" : t(`tabs.${key}`)}
                           </option>
                         ))}
                       </optgroup>
@@ -152,7 +152,7 @@ function Admin() {
                         Current section
                       </p>
                       <h2 className="mt-0.5 text-xl font-semibold tracking-tight">
-                        {activeTab ? t(`tabs.${activeTab}`) : t("title")}
+                        {activeTab === "pfieLearning" ? "PFIE Learning" : activeTab ? t(`tabs.${activeTab}`) : t("title")}
                       </h2>
                     </div>
                     <span className="hidden rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] font-medium text-muted-foreground sm:inline-flex">
