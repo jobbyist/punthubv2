@@ -333,7 +333,7 @@ html.theme-transition * {
     opacity: 0;
   }
 }
-@keyframes puntr-sheen {
+@keyframes puntr-splash-sheen {
   from {
     background-position: 130% 0;
   }
@@ -452,7 +452,7 @@ html[data-splash] .puntr-preloader[data-done="true"] {
   background-position: 130% 0;
   -webkit-mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
   mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
-  animation: puntr-sheen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.35s both;
+  animation: puntr-splash-sheen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.35s both;
 }
 .dark .puntr-preloader .sheen {
   background-image: linear-gradient(
