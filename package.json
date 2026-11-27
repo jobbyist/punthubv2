@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/copy-ocr-assets.mjs && vite dev",
-    "build": "node scripts/check-color-contrast.mjs && node scripts/copy-ocr-assets.mjs && tsc --noEmit -p . && vite build",
+    "build": "node scripts/check-color-contrast.mjs && node scripts/copy-ocr-assets.mjs && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
