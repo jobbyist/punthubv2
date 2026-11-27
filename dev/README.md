@@ -22,7 +22,7 @@ This folder is the operational workspace for launch readiness. The checklist is 
 - Launch sport is football/soccer. Other sports remain gated by feed and grading readiness.
 - Keep event-level stats, full player/roster intelligence and automated odds outside the 1 December launch-critical path.
 
-## Readiness dashboard
+## Post-launch workstreams\n\n- Bookmaker licensing and data-use approvals are tracked in Admin → Bookmakers. Automated odds remain disabled until licence verification and written permissions for collection, storage, display, attribution, retention and redistribution are recorded.\n- PUNT AI requires a post-launch product, safety, quota, cost and data-quality review before broad rollout.\n\n## Readiness dashboard
 
 | Priority | Workstream | Status |
 |---|---|---|
