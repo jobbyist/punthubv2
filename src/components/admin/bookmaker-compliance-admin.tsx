@@ -15,7 +15,13 @@ type PermissionRow = {
   redistribution_approved: boolean; automated_access_allowed: boolean; enabled: boolean; notes: string | null;
 };
 
-const additionalCandidates = [\n  { name: "1xBet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No NGB licence reference confirmed", verificationNote: "Affiliate approval does not establish a South African bookmaker licence. Verify with the relevant regulator before treating this operator as licensed." },\n  { name: "Playbet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate/affiliate record only. Confirm the legal operator, province and current licence before approval." },\n  { name: "LottoStar", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate record only. Confirm the legal operator, province and current licence before approval." },\n] as const;\n\nconst rights = [
+const additionalCandidates = [
+  { name: "1xBet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No NGB licence reference confirmed", verificationNote: "Affiliate approval does not establish a South African bookmaker licence. Verify with the relevant regulator before treating this operator as licensed." },
+  { name: "Playbet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate/affiliate record only. Confirm the legal operator, province and current licence before approval." },
+  { name: "LottoStar", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate record only. Confirm the legal operator, province and current licence before approval." },
+] as const;
+
+const rights = [
   ["collection_approved", "Collection"],
   ["storage_approved", "Storage/cache"],
   ["display_approved", "Display"],
