@@ -4,6 +4,7 @@ import type { LlmProvider, SearchProvider } from "@/lib/content/types";
 
 import {
   DEFAULT_ODDS_SOURCE_DOMAINS,
+  ODDS_AFFILIATE_PRIORITY_DOMAINS,
   type OddsSource,
   type RawPrice,
   type UpcomingFixture,
@@ -16,7 +17,7 @@ import {
   settleOdds,
   validatePrices,
 } from "./reference";
-import { type OddsStatus, type OddsStore, oddsDue, runOddsSync } from "./sync";
+import { type OddsStatus, type OddsStore, oddsDue, oddsQueries, runOddsSync } from "./sync";
 
 const fixtures: UpcomingFixture[] = [
   { id: "f1", home: "Orlando Pirates", away: "Kaizer Chiefs", kickoffAt: "2026-11-21T15:30:00Z" },
@@ -64,6 +65,14 @@ describe("member-odds rule", () => {
 });
 
 describe("sources", () => {
+  it("prioritises approved affiliate partners, led by Hollywoodbets", () => {
+    expect(ODDS_AFFILIATE_PRIORITY_DOMAINS.slice(0, 4)).toEqual([
+      "hollywoodbets.net", "supabets.co.za", "yesplay.bet", "1xbet.com",
+    ]);
+    expect(oddsQueries("Premier League", fixtures)[0]).toContain("site:hollywoodbets.net");
+    expect(oddsQueries("Premier League", fixtures)[1]).toContain("site:supabets.co.za");
+  });
+
   it("accepts listed bookmakers and their subdomains only", () => {
     expect(isOddsSource("sport.hollywoodbets.net", allowed)).toBe(true);
     expect(isOddsSource("www.betway.co.za", allowed)).toBe(true);
@@ -205,6 +214,7 @@ describe("runOddsSync", () => {
     const store: OddsStore = {
       upcoming: async () => fixtures.map((f) => ({ ...f, competition: "Betway Premiership" })),
       statuses: async () => overrides.statuses ?? [],
+      authorizedDomains: async () => allowed,
       insert: async (rows) => {
         inserted.push(...rows);
         return rows.length;
@@ -230,7 +240,7 @@ describe("runOddsSync", () => {
       extract: vi.fn(async () => ({ markdown: page, title: null })),
     };
     const llm: LlmProvider = {
-      name: "gemini",
+      name: "parallel-responses",
       generate: vi.fn(async (model: string) => ({
         model,
         text: overrides.llmText ?? JSON.stringify({ prices: x12() }),
@@ -256,6 +266,7 @@ describe("runOddsSync", () => {
     expect(d.inserted).toHaveLength(3);
     expect(d.records[0]).toMatchObject({ ok: true });
     expect(d.extract.extract).toHaveBeenCalledTimes(1); // oddschecker.com is never read
+    expect(d.llm.generate).toHaveBeenCalledWith("parallel-low", expect.any(Object));
   });
 
   it("skips a competition tried in this refresh window", async () => {

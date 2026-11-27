@@ -106,7 +106,8 @@ export function guardLlm(inner: LlmProvider, claim: Claim): LlmProvider {
   return {
     name: inner.name,
     async generate(model, request) {
-      const key = model === "parallel-medium" ? "parallel-chat:medium" : `gemini:${model}`;
+      const parallelEffort = /^parallel-(low|medium|high)$/.exec(model)?.[1];
+      const key = parallelEffort ? `parallel-chat:${parallelEffort}` : `gemini:${model}`;
       if (!(await claim(key))) throw refused(key);
       return inner.generate(model, request);
     },

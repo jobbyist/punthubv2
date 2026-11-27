@@ -1,11 +1,9 @@
 /**
  * Pre-match reference odds sync (docs/PARALLEL_ARCHITECTURE.md). Each call refreshes the next due competitions that
- * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per refresh window (every
- * 4 hours at most), so two windows a day (07:00 and 14:00 SAST) cost about one search and two page reads per
- * competition each. Nothing is collected after kick-off (pre-match only, no in-play).
+ * have scheduled fixtures kicking off in the next 72 hours. A competition is due once per four-hour window.
+ * Each run reads up to five permitted bookmaker pages and uses one Parallel Chat low extraction. Nothing is
+ * collected after kick-off (pre-match only, no in-play).
  */
-import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
-import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, LlmRequest, SearchProvider } from "@/lib/content/types";
 
@@ -14,6 +12,7 @@ import {
   type ReferencePrice,
   type UpcomingFixture,
   isOddsSource,
+  ODDS_AFFILIATE_PRIORITY_DOMAINS,
   oddsRequest,
   parsePrices,
   validatePrices,
@@ -29,6 +28,7 @@ export interface OddsStatus {
 export interface OddsStore {
   upcoming(fromIso: string, toIso: string): Promise<(UpcomingFixture & { competition: string })[]>;
   statuses(): Promise<OddsStatus[]>;
+  authorizedDomains(): Promise<string[]>;
   insert(rows: ReferencePrice[], capturedAt: string): Promise<number>;
   record(
     scope: string,
@@ -44,8 +44,6 @@ export interface OddsDeps {
   llm: LlmProvider;
   store: OddsStore;
   allowedDomains: readonly string[];
-  models?: string[];
-  usageToday?: () => Promise<Record<string, number>>;
   now?: () => Date;
 }
 
@@ -55,8 +53,8 @@ export const ODDS_HORIZON_HOURS = 72;
 const MIN_LEAD_MINUTES = 30;
 const REFRESH_EVERY_HOURS = 4;
 const MAX_FIXTURES_PER_PROMPT = 12;
-const MAX_PAGES = 2;
-const MAX_SOURCES = 4;
+const MAX_PAGES = 5;
+const MAX_SOURCES = 8;
 const MAX_CHARS = 14_000;
 
 /**
@@ -73,9 +71,14 @@ export function oddsDue(status: OddsStatus | undefined, now: Date): boolean {
 
 export function oddsQueries(competition: string, fixtures: UpcomingFixture[]): string[] {
   const first = fixtures[0];
+  const match = first ? `${first.home} vs ${first.away}` : competition;
+  const affiliateQueries = ODDS_AFFILIATE_PRIORITY_DOMAINS.map(
+    (domain) => `site:${domain} ${match} odds`,
+  );
   return [
+    ...affiliateQueries,
     `${competition} odds`,
-    ...(first ? [`${first.home} vs ${first.away} odds`] : []),
+    ...(first ? [`${match} odds`] : []),
     `${competition} betting odds 1X2 over under both teams to score`,
   ];
 }
@@ -94,9 +97,17 @@ async function gatherSources(
       `Current pre-match decimal odds (match result 1X2, over/under 2.5 goals, both teams to score) for ` +
       `${competition} matches: ${list}. Pages of South African licensed bookmakers only.`,
     queries: oddsQueries(competition, fixtures),
-    maxResults: 10,
+    maxResults: 20,
   });
-  const licensed = hits.filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains));
+  const priorityOf = (domain: string) => {
+    const index = deps.allowedDomains.findIndex(
+      (candidate) => domain === candidate || domain.endsWith(`.${candidate}`),
+    );
+    return index < 0 ? deps.allowedDomains.length : index;
+  };
+  const licensed = hits
+    .filter((h) => isOddsSource(domainOf(h.url), deps.allowedDomains))
+    .sort((a, b) => priorityOf(domainOf(a.url)) - priorityOf(domainOf(b.url)));
   const sources: OddsSource[] = [];
   const seen = new Set<string>();
   const add = (url: string, text: string) => {
@@ -121,15 +132,11 @@ async function gatherSources(
 }
 
 async function generate(deps: OddsDeps, request: LlmRequest) {
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
-  const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
-  const usedToday: Record<string, number> = {};
-  for (const m of models) usedToday[m] = (usage as Record<string, number>)[`gemini:${m}`] ?? 0;
-  return createModelRouter(deps.llm, { models, usedToday }).generate(request);
+  // Parallel Chat low is the structured extraction model for odds; Gemini is not called by this pipeline.
+  return deps.llm.generate("parallel-low", request);
 }
 
-const message = (e: unknown) =>
-  e instanceof AllModelsFailed || e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
+const message = (e: unknown) => e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
 
 export interface OddsReport {
   competitions: {

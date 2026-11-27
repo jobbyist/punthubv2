@@ -8,9 +8,9 @@ Budget (owner update, 27 Nov 2026): approximately **$200 of Parallel balance rem
 
 ## Ground rules
 
-1. **Code decides truth, AI does not.** Parallel finds and reads sources; Gemini extracts into a fixed schema;
-   deterministic code validates and corroborates (official site, or two independent domains agreeing). This is the
-   existing PFIE rule and it applies to every new feed.
+1. **Code decides truth, AI does not.** Parallel finds and reads sources. Gemini extracts PFIE standings/results;
+   odds use Parallel Chat low for structured extraction after source-rights approval. Deterministic code validates
+   and corroborates every output (official source or two independent domains agreeing).
 2. **Cache before you call.** Every Parallel request goes through `parallelCache` keyed on endpoint + normalised
    body, with a TTL per purpose (below). A repeated question inside its TTL costs nothing.
 3. **Cheapest tool that answers.** Search `fast` ($1/1,000), Decisions ($1/1,000 requests, up to 100 questions per request) and Extract ($1/1,000 URLs) do most of the work. Task API, Responses/Chat and Monitor are used only where they replace many cheaper calls or add real quality.
@@ -77,15 +77,22 @@ Controls:
 
 ## Odds rules (owner decision, 22 Nov 2026)
 
-**MVP decision: member-entered odds only. Automated bookmaker odds are deferred.**
+**MVP decision: member-entered odds only. Automated bookmaker odds remain deferred until written source rights are approved.**
+
+Owner implementation update (27 Nov 2026): the automated reference-odds pipeline now uses Parallel Search, Parallel Extract
+and Parallel Chat low. It is protected by a default-off `ODDS_AUTOMATION_ENABLED` feature flag and a database rights
+registry. A bookmaker is eligible only after its current South African licence is verified, written collection/storage/
+display/attribution/retention/redistribution rights are recorded, automated access is permitted, and an evidence URL
+and review timestamp are stored. All candidate rows are seeded disabled. Hollywoodbets is first in discovery priority,
+followed by approved affiliate partners SupaBets and YesPlay. This is prioritisation only, not permission.
 
 Puntr has not received an authorized odds API, affiliate odds feed or other odds-data integration from any South African bookmaker. Affiliate approval (including Hollywoodbets) does not by itself grant odds-feed rights.
 
 - **Member-entered odds:** the member enters the bookmaker and price for a pick or slip leg. Preserve the submitted price, bookmaker attribution and timestamp as the member's record and in the pick verification hash (src/lib/verify.ts). Never overwrite it with a later market price.
 - Label these values **User-submitted**. Do not imply that Puntr independently verified the price or that it is live/current.
 - Do not block pick submission because no automated reference price exists.
-- Do not enable automated odds, comparison tables, bookmaker logos or odds links unless the relevant data rights and branding permissions are documented and approved.
-- Parallel Search can discover potential sources; Extract can retrieve pages only where automated access and reuse are permitted; Monitor can detect scheduled changes. None is a substitute for a licensed data feed or permission to store/display/redistribute prices.
+- Do not enable automated odds, comparison tables, bookmaker logos or odds links unless the relevant data rights and branding permissions are documented and approved. The production cron remains disabled unless both the environment feature flag and the source registry permit it.
+- Parallel Search can discover potential sources; Parallel Extract can retrieve pages only where automated access and reuse are permitted; Parallel Chat low performs structured extraction. Monitor can detect scheduled changes. None is a substitute for a licensed data feed or permission to store/display/redistribute prices.
 - Do not bypass logins, bot protections, geofencing, CAPTCHAs, rate limits or other access controls.
 - A future automated reference-price product needs written rights for South African coverage, collection, storage, display, attribution, refresh frequency, retention and redistribution. Prefer an authorized bookmaker API/affiliate feed or a commercial data provider with those rights.
 - If enabled later, keep bookmaker prices separate by operator, fixture, market, selection and capture time. Do not treat differing prices as conflicting facts. Only calculate a benchmark when at least two independent, permitted bookmakers cover the same selection; otherwise show no benchmark.

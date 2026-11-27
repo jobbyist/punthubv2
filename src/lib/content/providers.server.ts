@@ -127,7 +127,12 @@ function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unk
   return visit(schema) as Record<string, unknown>;
 }
 
-export function createParallelResponses(apiKey: string, overrides: Overrides = {}): LlmProvider {
+export function createParallelResponses(
+  apiKey: string,
+  overrides: Overrides = {},
+  options: { effort?: "low" | "medium" | "high" } = {},
+): LlmProvider {
+  const effort = options.effort ?? "medium";
   return {
     name: "parallel-responses",
     async generate(_model: string, request: LlmRequest): Promise<LlmResult> {
@@ -140,9 +145,9 @@ export function createParallelResponses(apiKey: string, overrides: Overrides = {
             { role: "system", content: request.system },
             { role: "user", content: request.prompt },
           ],
-          reasoning: { effort: "medium" },
+          reasoning: { effort },
           max_output_tokens: request.maxOutputTokens,
-          text: { format: { type: "json_schema", name: "puntr_newsroom_article", strict: true, schema: parallelJsonSchema(request.schema) } },
+          text: { format: { type: "json_schema", name: "puntr_structured_output", strict: true, schema: parallelJsonSchema(request.schema) } },
         },
         { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
       );
@@ -153,7 +158,7 @@ export function createParallelResponses(apiKey: string, overrides: Overrides = {
         .map((part) => isRecord(part) ? str(part["text"]) : "").join("");
       const text = direct || nested;
       if (!text.trim()) throw new ProviderError("parallel-chat", "bad_response", null, "empty response");
-      return { model: "parallel-medium", text: text.trim() };
+      return { model: `parallel-${effort}`, text: text.trim() };
     },
   };
 }

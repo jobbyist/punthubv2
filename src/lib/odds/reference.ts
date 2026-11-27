@@ -1,7 +1,6 @@
 /**
- * Pre-match reference odds (owner decisions, 15 Nov 2026; docs/PARALLEL_ARCHITECTURE.md, "Odds rules").
- *
- * Gemini copies prices off bookmaker pages with a word-for-word quote. Plain code decides what is kept:
+ * Pre-match reference odds. Parallel Search discovers candidate bookmaker pages, Parallel Extract reads permitted
+ * live pages, and Parallel Chat low copies prices into a structured schema. Plain code decides what is kept:
  *  - only licensed South African bookmaker domains (ODDS_SOURCE_DOMAINS, `[attorney review]` on each site's terms);
  *  - both team names must resolve to the same known fixture;
  *  - the price must appear in the quote and the quote on the page;
@@ -35,9 +34,9 @@ const MARGIN: Readonly<Record<OddsMarket, [number, number]>> = {
 export const ODDS_UNVERIFIED_RATIO = 1.25;
 
 /**
- * Licensed South African bookmakers whose public pages may be read for reference prices. Each needs a recorded
- * provincial licence check and a check that its terms allow automated reading before launch `[attorney review]`.
- * `ODDS_SOURCE_DOMAINS` (comma separated) replaces this list without a code change.
+ * Candidate South African bookmaker domains. Their presence here does not authorise collection: production reads
+ * only domains returned by bookmaker_odds_permissions after licence, written data rights and automated access
+ * are approved. The environment cannot bypass that registry.
  */
 export const DEFAULT_ODDS_SOURCE_DOMAINS = [
   "hollywoodbets.net",
@@ -59,6 +58,17 @@ export const DEFAULT_ODDS_SOURCE_DOMAINS = [
  * Bookmakers that show "profit" odds: the winnings per R1 staked, without the stake (decimal minus 1). Hollywoodbets
  * lists a 1.60 favourite as "0.6" (seen 15 Nov 2026). Their prices are copied as shown and converted here (+1).
  */
+/** Approved affiliate partners are searched first; the source-rights registry still decides what may be read. */
+export const ODDS_AFFILIATE_PRIORITY_DOMAINS = [
+  "hollywoodbets.net",
+  "supabets.co.za",
+  "yesplay.bet",
+  "1xbet.com",
+  "easybet.co.za",
+  "playbet.co.za",
+] as const;
+
+/** Hollywoodbets shows profit odds rather than decimal odds; conversion happens only after exact quote validation. */
 export const PROFIT_ODDS_DOMAINS = ["hollywoodbets.net"] as const;
 
 export function toDecimalOdds(shown: number, domain: string): number {
