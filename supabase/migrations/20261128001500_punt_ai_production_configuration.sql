@@ -33,6 +33,27 @@ create index if not exists punt_ai_usage_user_created_idx
 create index if not exists punt_ai_usage_created_idx
   on public.punt_ai_usage (created_at desc);
 
+create or replace function public.punt_ai_touch_updated_at()
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $function$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$function$;
+
+drop trigger if exists punt_ai_cache_touch_updated_at on public.punt_ai_cache;
+create trigger punt_ai_cache_touch_updated_at
+  before update on public.punt_ai_cache
+  for each row execute function public.punt_ai_touch_updated_at();
+
+drop trigger if exists punt_ai_usage_touch_updated_at on public.punt_ai_usage;
+create trigger punt_ai_usage_touch_updated_at
+  before update on public.punt_ai_usage
+  for each row execute function public.punt_ai_touch_updated_at();
+
 alter table public.punt_ai_cache enable row level security;
 alter table public.punt_ai_usage enable row level security;
 revoke all on public.punt_ai_cache, public.punt_ai_usage from anon, authenticated;
@@ -95,14 +116,26 @@ begin
     where key = case when v_is_pro then 'punt_ai_pro_monthly_cap' else 'punt_ai_free_monthly_cap' end
   ), case when v_is_pro then 600 else 300 end);
 
-  perform pg_advisory_xact_lock(hashtext('punt_ai:' || v_uid::text));
+  -- Separate advisory-lock namespace avoids collisions with other feature-level locks.
+  perform pg_advisory_xact_lock(7002001, hashtext(v_uid::text));
+
+  -- Recover abandoned in-flight claims so a crashed request cannot consume quota indefinitely.
+  update public.punt_ai_usage
+  set status = 'failed'
+  where user_id = v_uid
+    and status = 'started'
+    and created_at < now() - interval '15 minutes';
 
   select count(*) filter (
            where created_at >= date_trunc('day', now() at time zone 'Africa/Johannesburg')
              at time zone 'Africa/Johannesburg'
+             and status in ('started', 'completed')
          )::integer,
-         count(*) filter (where created_at >= date_trunc('month', now() at time zone 'Africa/Johannesburg')
-             at time zone 'Africa/Johannesburg')::integer
+         count(*) filter (
+           where created_at >= date_trunc('month', now() at time zone 'Africa/Johannesburg')
+             at time zone 'Africa/Johannesburg'
+             and status in ('started', 'completed')
+         )::integer
     into v_daily_count, v_monthly_count
   from public.punt_ai_usage
   where user_id = v_uid;
