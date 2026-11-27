@@ -230,7 +230,10 @@ function Admin() {
                   <TabsContent value="translations" className="mt-0">
                     <TranslationsTab />
                   </TabsContent>
-                  <TabsContent value="bookmakers" className="mt-0">\n                    <BookmakerComplianceTab />\n                  </TabsContent>\n                  <TabsContent value="draw" className="mt-0">
+                  <TabsContent value="bookmakers" className="mt-0">
+                    <BookmakerComplianceTab />
+                  </TabsContent>
+                  <TabsContent value="draw" className="mt-0">
                     <PracticeDrawTab />
                   </TabsContent>
                 </main>
