@@ -4,8 +4,7 @@ Owner direction (15 Nov 2026): Parallel's APIs power fixtures, results, tables, 
 analysis, Confidence Scores, Deep Analysis, the Punt AI chatbot, Newsroom research and **pre-match odds** (no
 in-play). "Manually added odds" means the odds members enter when they submit a pick or a slip (owner, 15 Nov). Credits are spent as sparingly as possible without hurting quality.
 
-Budget: about **$50 prepaid, expiring 7 Dec 2026**, plus **$5 of free credit a month**. Spend so far (13-15 Nov):
-181 searches and 5 extracts, about $0.19.
+Budget (owner update, 27 Nov 2026): approximately **$200 of Parallel balance remains** to carry Puntr through 31 March 2027. The internal monthly family ceiling is **$50**, with a separate cumulative **$200 ceiling from 28 Nov 2026 through 31 Mar 2027**. These are spend guards, not a statement of the provider wallet balance. Reconcile the provider dashboard monthly.
 
 ## Ground rules
 
@@ -16,7 +15,8 @@ Budget: about **$50 prepaid, expiring 7 Dec 2026**, plus **$5 of free credit a m
    body, with a TTL per purpose (below). A repeated question inside its TTL costs nothing.
 3. **Cheapest tool that answers.** Search `fast` ($1/1,000), Decisions ($1/1,000 requests, up to 100 questions per request) and Extract ($1/1,000 URLs) do most of the work. Task API, Responses/Chat and Monitor are used only where they replace many cheaper calls or add real quality.
 4. **Dollar caps, not just call caps.** Each call claims units against `api_quota_limits` (daily/monthly call caps,
-   fail closed) and against a monthly USD budget per provider family (`api_budgets`), priced from `api_unit_prices`.
+   fail closed), the monthly USD family budget (`api_budgets`) and the active cumulative period limit
+   (`api_spend_period_limits`), priced from `api_unit_prices`.
 5. **No personal data to Parallel.** Queries are about teams, fixtures and competitions only. Slip analysis sends
    scrubbed slip text through the existing scrubber, never a photo, name, username or balance.
 
@@ -32,6 +32,24 @@ Budget: about **$50 prepaid, expiring 7 Dec 2026**, plus **$5 of free credit a m
 | Monitor | lite / base, per execution | 0.003 / 0.01 | `parallel-monitor:<processor>` |
 
 Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Chat 300/min).
+
+
+
+## Production usage review and Q1 controls (27 Nov 2026)
+
+The production ledger recorded **4,438 Parallel calls costing $33.838** so far in November:
+- Search: 2,182 calls, approximately $2.182.
+- Extract: 1,655 calls, approximately $1.655.
+- Responses Medium: 600 calls, approximately $30.00.
+
+Responses Medium accounted for about **89%** of the recorded spend. The newsroom runs three daily editorial slots and can make separate writer, revision and reviewer calls. The live quota row had drifted to **300 Medium calls/day**, even though its note still described the earlier 45-call limit. That mismatch allowed much more paid usage than the intended operating envelope.
+
+Controls:
+- Raise the monthly Parallel family ceiling to $50, while enforcing a cumulative $200 cap from 28 Nov 2026 through 31 Mar 2027.
+- Limit Responses Medium to **15 calls/day and 450/month** (maximum $22.50/month at the current $0.05 unit price).
+- When the Medium quota is exhausted, the existing model router falls back to the approved Gemini models rather than continuing paid calls.
+- Keep Search and Extract under the shared dollar guard; do not expand their per-call caps simply because their unit prices are low.
+- Review the provider wallet and `api_spend_period_status()` at least weekly. Do not treat the internal caps as a substitute for reconciling the Parallel dashboard.
 
 ## Feature map
 
