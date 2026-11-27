@@ -159,6 +159,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.ninetyminutesplus.com/league/ligue-1/standings",
       "https://www.ligue1schedule.com/table/2026-27",
       "https://www.espn.com/soccer/standings/_/league/fra.1",
+      "https://zeanball.online/en/table/ligue-1/",
     ],
   },
   eredivisie: {
@@ -207,7 +208,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       "CAF Confederation Cup 2026/27 all four group tables",
     ],
     groupTeamRanges: { C: { min: 3, max: 4 } },
-    groupNotes: "Group C currently has three confirmed teams. The fourth place is pending the delayed preliminary-round tie between CR Belouizdad and AS Douanes. Extract the three confirmed Group C teams only; do not invent a placeholder or omit Group C. Accept four teams once the qualifier is completed.",
+    groupNotes: "Group C currently has three confirmed teams. The fourth place is pending the postponed preliminary-round tie involving CR Belouizdad, AS Douanes and Hafia. Extract the three confirmed Group C teams only; do not invent a placeholder or omit Group C. Accept four teams once the qualifier is completed.",
     allowTeamCountIncrease: true,
     pages: [
       "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
