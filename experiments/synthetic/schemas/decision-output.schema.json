@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://puntr.co.za/schemas/synthetic-decision-output.schema.json",
+  "title": "Puntr Synthetic Decision Output",
+  "description": "Canonical normalized output persisted to synthetic_research. This is an informational QA forecast contract, not a public pick or wagering instruction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fixture",
+    "fixture_context",
+    "provider",
+    "decision_id",
+    "persona_count",
+    "decision_count",
+    "source_domains",
+    "citations",
+    "decisions"
+  ],
+  "properties": {
+    "fixture": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fixture_context": {
+      "type": "object",
+      "required": [
+        "fixture_id",
+        "home_team",
+        "away_team",
+        "competition",
+        "kickoff_utc"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "home_team": {
+          "type": "string",
+          "minLength": 1
+        },
+        "away_team": {
+          "type": "string",
+          "minLength": 1
+        },
+        "competition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kickoff_utc": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true
+    },
+    "provider": {
+      "const": "parallel-decisions"
+    },
+    "decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "persona_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "decision_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "source_domains": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "persona_id",
+          "question_key",
+          "market",
+          "selection",
+          "status",
+          "probabilities",
+          "selected_probability",
+          "confidence"
+        ],
+        "properties": {
+          "persona_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "market": {
+            "enum": [
+              "1X2",
+              "OU25",
+              "BTTS"
+            ]
+          },
+          "selection": {
+            "enum": [
+              "home",
+              "draw",
+              "away",
+              "over",
+              "under",
+              "yes",
+              "no",
+              "no_pick"
+            ]
+          },
+          "status": {
+            "enum": [
+              "evaluated",
+              "invalid_choice",
+              "refused_or_missing",
+              "insufficient_sources"
+            ]
+          },
+          "probabilities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "selected_probability": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "confidence": {
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
