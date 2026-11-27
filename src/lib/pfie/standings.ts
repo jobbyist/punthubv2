@@ -740,9 +740,10 @@ export function tableRegression(
 ): string | null {
   if (previous.length === 0) return null;
   if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
-  const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
+  const rowKey = (row: StandingRow) => `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
+  const nextByTeam = new Map(candidate.map((r) => [rowKey(r), r]));
   for (const old of previous) {
-    const next = nextByTeam.get(normaliseTeam(old.team));
+    const next = nextByTeam.get(rowKey(old));
     if (!next) return `team_missing_from_new_snapshot_${old.team}`;
     if (next.played < old.played) return `played_regressed_${old.team}`;
     const resultRecordUnchanged =
@@ -897,27 +898,4 @@ export function chooseTable(
   tables: SourceTable[],
 ): ChosenStandingsTable | null {
   return chooseTables(tables)?.[0] ?? null;
-}
-  const ranked = [...groups.values()]
-    .map((group) => {
-      const byPublisher = new Map<string, SourceTable>();
-      for (const table of group) {
-        const key = independentSourceKey(table.source.domain);
-        const prior = byPublisher.get(key);
-        if (!prior || (table.source.tier === "official" && prior.source.tier !== "official"))
-          byPublisher.set(key, table);
-      }
-      return { group: [...byPublisher.values()], publishers: [...byPublisher.keys()] };
-    })
-    .filter((g) => g.publishers.length >= 2)
-    .sort((a, b) => b.publishers.length - a.publishers.length);
-  const best = ranked[0];
-  if (!best) return null;
-  const quality = (t: SourceTable) => (t.source.tier === "official" ? 0 : 1);
-  const table = [...best.group].sort((a, b) => quality(a) - quality(b))[0]!;
-  return {
-    table,
-    verdict: "two_sources",
-    supportingDomains: best.group.map((t) => t.source.domain).sort(),
-  };
 }
