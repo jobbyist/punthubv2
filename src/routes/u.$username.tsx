@@ -2,6 +2,7 @@ import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Sparkles } from "lucide-react";
 
 import { PickCard } from "@/components/pick-card";
 import { ReferralCard } from "@/components/referral-card";
@@ -109,6 +110,7 @@ function PublicProfile() {
         {profile.founding_number
           ? t("record.founding", { number: profile.founding_number })
           : t("record.member")}
+        {profile.is_ai_participant && <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300"><Sparkles className="size-3" /> AI participant</span>}
         {profile.created_at && ` · ${t("record.joined", { date: formatDate(profile.created_at) })}`}
       </p>
 
