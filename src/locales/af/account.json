@@ -66,6 +66,12 @@
       "working": "Skrap tans…",
       "error": "Ons kon nie jou rekening skrap nie. Probeer asseblief weer of stuur 'n privaatheidsversoek.",
       "done": "Jou rekening is geskrap."
+    },
+    "pfieLearning": {
+      "title": "PFIE-leerdata (opsioneel)",
+      "body": "Laat Puntr toe om gepseudonimiseerde aktiwiteitseine en jou gepubliseerde keuses te gebruik om PFIE, sportdatagehalte en produkrelevansie te verbeter. Dit is apart van ontledings en is nie nodig om Puntr te gebruik nie.",
+      "toggle": "Laat my aktiwiteit en keuseseine toe om tot PFIE-leerdata by te dra.",
+      "withdrawal": "Jy kan dit enige tyd terugtrek. Terugtrekking stop toekomstige insameling en skrap jou rou aktiwiteit en afgeleide leerdata wat aan jou gepseudonimiseerde leerrekord gekoppel is. Jou openbare keuserekord bly onder die afsonderlike openbare-keuseterme."
     }
   },
   "record": {
