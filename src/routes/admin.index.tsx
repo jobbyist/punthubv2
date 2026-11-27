@@ -22,6 +22,7 @@ import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { SyntheticExperimentTab } from "@/components/admin/synthetic-experiment-admin";
+import { PfieLearningTab } from "@/components/admin/pfie-learning-admin";
 import { EndorsementsTab } from "@/components/admin/endorsements-admin";
 import { LogosTab } from "@/components/admin/logos-admin";
 import { QuestsTab } from "@/components/admin/quests-admin";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/admin/")({
 });
 
 const TAB_GROUPS = [
-  { label: "Overview", items: ["system", "analytics", "synthetic", "log"] },
+  { label: "Overview", items: ["system", "analytics", "synthetic", "pfieLearning", "log"] },
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
@@ -176,6 +177,9 @@ function Admin() {
                   </TabsContent>
                   <TabsContent value="synthetic" className="mt-0">
                     <SyntheticExperimentTab />
+                  </TabsContent>
+                  <TabsContent value="pfieLearning" className="mt-0">
+                    <PfieLearningTab />
                   </TabsContent>
                   <TabsContent value="log" className="mt-0">
                     <ActionLogTab />
