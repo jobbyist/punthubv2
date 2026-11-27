@@ -366,7 +366,7 @@ export function standingsRequest(input: {
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
       "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
-      "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons, groups or form-only tables.\n" +
+      "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
       "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
