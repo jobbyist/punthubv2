@@ -16,10 +16,15 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_LAUNCH_KEYS = [
-  // Explicit pre-launch restoration order agreed with the product owner.
-  "epl", "laliga", "ucl", "uecl", "sa-championship", "bundesliga",
-  // Existing domestic tables remain in scope after the launch restoration priorities.
-  "psl", "seriea", "primeira", "championship", "saudi-pro",
+  // Pre-launch standings priority: the EFL Championship replaces Motsepe for this release.
+  "epl", "laliga", "ucl", "uecl", "championship", "bundesliga",
+  // Existing domestic tables remain available after the launch restoration priorities.
+  "psl", "seriea", "primeira", "saudi-pro",
+] as const satisfies readonly CompetitionKey[];
+
+/** Deferred until post-launch: the Motsepe Foundation Championship. */
+export const STANDINGS_POST_LAUNCH_KEYS = [
+  "sa-championship",
 ] as const satisfies readonly CompetitionKey[];
 
 export const STANDINGS_COMPETITIONS: Partial<
@@ -153,8 +158,20 @@ export const STANDINGS_COMPETITIONS: Partial<
   },
   championship: {
     teams: 24,
-    refreshHours: 24,
-    queries: ["EFL Championship table standings", "Championship table"],
+    refreshHours: 12,
+    queries: [
+      "EFL Championship full overall league table played won drawn lost goals for goals against points",
+      "site:efl.com/competitions/efl-championship EFL Championship league table",
+      "site:bbc.com/sport/football/championship/table EFL Championship table",
+      "site:skysports.com/football/competitions/championship/table Championship standings",
+      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship standings",
+    ],
+    pages: [
+      "https://www.efl.com/competitions/efl-championship/",
+      "https://www.bbc.com/sport/football/championship/table",
+      "https://www.skysports.com/football/competitions/championship/table",
+      "https://www.espn.com/soccer/standings/_/league/eng.2",
+    ],
   },
   "saudi-pro": {
     teams: 18,
@@ -635,6 +652,7 @@ export function independentSourceKey(domain: string): string {
   const value = domain.toLowerCase().replace(/^www\./, "");
   const publisherRoots: Array<[string, string[]]> = [
     ["bbc", ["bbc.com", "bbc.co.uk"]],
+    ["efl", ["efl.com"]],
     ["dfb", ["dfb.de"]],
     ["bundesliga", ["bundesliga.com"]],
     ["espn", ["espn.com", "espn.co.uk"]],

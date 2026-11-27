@@ -31,7 +31,7 @@ export interface ExtractProvider {
 export interface LlmRequest {
   system: string;
   prompt: string;
-  /** JSON schema (Gemini `responseSchema` subset) the answer must follow. */
+  /** JSON schema the answer must follow (Gemini responseSchema-compatible subset). */
   schema: Record<string, unknown>;
   temperature: number;
   maxOutputTokens: number;
@@ -167,7 +167,7 @@ export interface ContentStore {
     projectUpdateIds: string[];
   }): Promise<{ id: string }>;
   countUsage(provider: string, outcome: "ok" | "error"): Promise<void>;
-  /** Calls made so far today (UTC day) per provider key, e.g. `gemini:gemini-3.8-flash`. */
+  /** Calls made so far today (UTC day) per provider key, e.g. `parallel-chat:medium`. */
   usageToday(): Promise<Record<string, number>>;
   clearKindOverride(): Promise<void>;
 }

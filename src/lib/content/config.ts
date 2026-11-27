@@ -1,16 +1,11 @@
-/**
- * Content engine configuration, read from server environment variables only. Nothing here is ever sent to the client.
- *
- * Model IDs are configuration, not assumptions. The defaults were checked against Google's pricing page and current
- * free-tier write-ups on 13 and 14 Nov 2026 and are listed as free of charge, but the limits that apply are the ones
- * shown for the project in Google AI Studio: put those in CONTENT_GEMINI_RPD.
- */
+/** Content engine configuration. The Newsroom uses Parallel Medium exclusively. */
 
 /**
  * Primary first, then the fallbacks, strongest to lightest (14 Nov 2026): two more Flash models and one more
  * Flash-Lite, so a busy or capped model no longer drops straight to the lightest one. Every entry is on the free
  * tier; a model the project cannot reach answers 404 and the router simply moves on.
  */
+/** Default Gemini models used by the PFIE fixture and odds research pipelines. */
 export const DEFAULT_GEMINI_MODELS = [
   "gemini-3.8-flash",
   "gemini-3.6-flash",
@@ -19,10 +14,7 @@ export const DEFAULT_GEMINI_MODELS = [
   "gemini-3.1-flash-lite",
 ] as const;
 
-/**
- * PFIE standings require exact row-level extraction and cross-publisher reconciliation. Prefer the strongest
- * available free Flash models first; use Flash-Lite as quota-aware fallbacks for high-volume runs.
- */
+/** Strongest approved free Gemini models for PFIE structured extraction. */
 export const DEFAULT_PFIE_MODELS = [
   "gemini-3.8-flash",
   "gemini-3.6-flash",
@@ -31,9 +23,7 @@ export const DEFAULT_PFIE_MODELS = [
   "gemini-3.1-flash-lite",
 ] as const;
 
-/**
- * Approved content models. Parallel Responses Medium is the paid primary; the Gemini Flash entries are the reviewed fallback set.
- */
+/** Shared router allowlist for PFIE/odds. The Newsroom slot selector below pins Newsroom to Parallel only. */
 export const APPROVED_CONTENT_MODELS: readonly string[] = [
   "parallel-medium",
   "gemini-3.8-flash",
@@ -48,9 +38,9 @@ export interface ContentEnv {
   geminiKey: string | null;
   parallelKey: string | null;
   firecrawlKey: string | null;
-  /** Ordered: Parallel primary first, followed by allowlisted Gemini fallbacks. */
+  /** Newsroom model allowlist; currently Parallel Medium only. */
   models: string[];
-  /** Gemini models named in configuration that were refused because they are not on the approved model allowlist. */
+  /** Model IDs refused because they are not on the approved Newsroom allowlist. */
   refusedModels: string[];
   /** Requests-per-day ceiling per model that the engine sets for itself (0 = no self-imposed ceiling). */
   dailyRequestCap: Record<string, number>;
@@ -66,22 +56,19 @@ function clean(value: string | undefined): string | null {
 }
 
 export function parseModelList(raw: string | undefined): { models: string[]; refused: string[] } {
-  const wanted = (raw ?? "")
-    .split(",")
-    .map((m) => m.trim())
-    .filter(Boolean);
+  const wanted = (raw ?? "").split(",").map((m) => m.trim()).filter(Boolean);
   const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
   const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
   const models: string[] = [];
   const refused: string[] = [];
-  for (const m of ordered) {
-    if (!APPROVED_CONTENT_MODELS.includes(m)) refused.push(m);
-    else if (!models.includes(m)) models.push(m);
+  for (const model of ordered) {
+    if (!APPROVED_CONTENT_MODELS.includes(model)) refused.push(model);
+    else if (!models.includes(model)) models.push(model);
   }
   return { models, refused };
 }
 
-/** `CONTENT_GEMINI_RPD` looks like `gemini-3.8-flash=20,gemini-3.1-flash-lite=500`. Bad entries are ignored. */
+/** Per-model request caps, e.g. `gemini-3.8-flash=20`. Bad entries are ignored. */
 export function parseDailyCaps(raw: string | undefined): Record<string, number> {
   const caps: Record<string, number> = {};
   for (const part of (raw ?? "").split(",")) {
@@ -93,7 +80,7 @@ export function parseDailyCaps(raw: string | undefined): Record<string, number> 
 }
 
 export function readContentEnv(env: Env = process.env): ContentEnv {
-  const { models, refused } = parseModelList(env["CONTENT_GEMINI_MODELS"]);
+  const { models, refused } = parseModelList();
   const budget = Number(env["CONTENT_RUN_BUDGET_MS"]);
   return {
     geminiKey: clean(env["GEMINI_API_KEY"]),
@@ -109,7 +96,6 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
 /** Names of the credentials a live run still needs. Used by the cron route and the admin status panel. */
 export function missingCredentials(env: ContentEnv, _kind: "sports" | "development"): string[] {
   const missing: string[] = [];
-  if (!env.geminiKey) missing.push("GEMINI_API_KEY");
   if (!env.parallelKey) missing.push("PARALLEL_API_KEY");
   return missing;
 }
@@ -122,12 +108,7 @@ export function redact(secret: string | null): string {
 }
 
 
-/** Paid Parallel Medium is reserved for the highest-priority breaking-news slot. */
-export function modelsForContentSlot(models: readonly string[], slot?: "breaking" | "editorial" | "intelligence"): string[] {
-  return slot === "breaking" ? [...models] : models.filter((model) => model !== "parallel-medium");
-}
-
-/** Select a different Gemini model for revision/review, avoiding a second paid Parallel call. */
-export function alternativeGeminiModel(models: readonly string[], current: string): string | null {
-  return models.find((model) => model.startsWith("gemini-") && model !== current) ?? null;
+/** Every Newsroom slot uses Parallel Medium; Gemini remains available only to the separate PFIE/odds pipelines. */
+export function modelsForContentSlot(_models: readonly string[], _slot?: "breaking" | "editorial" | "intelligence"): string[] {
+  return ["parallel-medium"];
 }

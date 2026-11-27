@@ -1,5 +1,5 @@
 /**
- * Parallel-first editorial model router with allowlisted Gemini fallbacks.
+ * Allowlisted Newsroom model router. Production is configured for Parallel Medium only.
  *
  * - A model outside APPROVED_CONTENT_MODELS is never called, whatever the configuration says.
  * - A quota or auth error moves straight to the next model. A timeout or 5xx also moves on while another model is

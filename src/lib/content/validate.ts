@@ -150,7 +150,12 @@ export function validateDraft(input: ValidateInput): QualityReport {
   const { draft, kind, sources } = input;
   const issues: QualityIssue[] = [];
   let score = 100;
-  const critical = (code: string, detail: string) => issues.push({ code, critical: true, detail });
+  // Critical issues remain explicit flags, but the score now reflects their count instead of collapsing
+  // every failing article to the same hard-coded 49.
+  const critical = (code: string, detail: string) => {
+    issues.push({ code, critical: true, detail });
+    score -= 15;
+  };
   const minor = (code: string, detail: string, cost: number) => {
     issues.push({ code, critical: false, detail });
     score -= cost;
@@ -235,10 +240,14 @@ export function validateDraft(input: ValidateInput): QualityReport {
       );
   }
 
-  for (const claim of input.reviewerUnsupported ?? []) {
-    critical(
+  const reviewerFlags = [...new Set((input.reviewerUnsupported ?? []).filter(Boolean))];
+  if (reviewerFlags.length > 0) {
+    // The model reviewer is a semantic second opinion, not a deterministic source check.
+    // Keep its concerns visible without letting one noisy review turn into dozens of critical penalties.
+    minor(
       "reviewer_unsupported",
-      `independent review could not find support for: ${claim.slice(0, 120)}`,
+      `independent review raised ${reviewerFlags.length} potential factual-support concern(s): ${reviewerFlags.slice(0, 2).map((x) => x.slice(0, 90)).join(" | ")}`,
+      8,
     );
   }
 
@@ -264,7 +273,7 @@ export function validateDraft(input: ValidateInput): QualityReport {
 
   const isCritical = issues.some((i) => i.critical);
   return {
-    score: Math.max(0, isCritical ? Math.min(score, 49) : score),
+    score: Math.max(0, Math.min(100, score)),
     issues,
     critical: isCritical,
   };

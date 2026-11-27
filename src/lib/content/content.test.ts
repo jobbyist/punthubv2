@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  alternativeGeminiModel,
   missingCredentials,
   modelsForContentSlot,
   parseDailyCaps,
@@ -34,7 +33,7 @@ const REQUEST: LlmRequest = {
   temperature: 0,
   maxOutputTokens: 10,
 };
-const quota = () => new ProviderError("gemini", "quota", 429, "quota exhausted");
+const quota = () => new ProviderError("parallel", "quota", 429, "quota exhausted");
 
 function sources(): ResearchSource[] {
   return rankHits(SAMPLE_HITS, 6).map((hit, i) => toSource(i + 1, hit, null));
@@ -44,7 +43,6 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
   return {
     store: memoryStore(),
     env: readContentEnv({
-      GEMINI_API_KEY: "g-key-123456",
       PARALLEL_API_KEY: "p-key-123456",
       FIRECRAWL_API_KEY: "f",
     }),
@@ -58,44 +56,32 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
 }
 
 describe("config", () => {
-  it("defaults to the five free models, primary first, lightest last", () => {
-    expect(parseModelList(undefined).models).toEqual([
-      "parallel-medium",
-      "gemini-3.8-flash",
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
-      "gemini-3.5-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
+  it("keeps the shared router model list available to PFIE while Newsroom slots stay Parallel-only", () => {
+    expect(parseModelList(undefined).models[0]).toBe("parallel-medium");
+    expect(parseModelList(undefined).models).toContain("gemini-3.8-flash");
+    expect(modelsForContentSlot(parseModelList(undefined).models, "breaking")).toEqual(["parallel-medium"]);
   });
-  it("refuses a model that is not on the free list", () => {
+  it("refuses a model that is not on the shared allowlist", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
     expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
     expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
-  it("uses paid Parallel Medium only for the breaking slot", () => {
-    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
+  it("uses Parallel Medium for every Newsroom slot", () => {
+    const models = ["parallel-medium"];
     expect(modelsForContentSlot(models, "breaking")).toEqual(models);
-    expect(modelsForContentSlot(models, "editorial")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-    expect(modelsForContentSlot(models, "intelligence")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-    expect(modelsForContentSlot(models)).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-  });
-  it("chooses a different Gemini model for independent review", () => {
-    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
-    expect(alternativeGeminiModel(models, "parallel-medium")).toBe("gemini-3.8-flash");
-    expect(alternativeGeminiModel(models, "gemini-3.8-flash")).toBe("gemini-3.6-flash");
-    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBeNull();
+    expect(modelsForContentSlot(models, "editorial")).toEqual(models);
+    expect(modelsForContentSlot(models, "intelligence")).toEqual(models);
+    expect(modelsForContentSlot(models)).toEqual(models);
   });
   it("reads daily caps and ignores bad entries", () => {
-    expect(parseDailyCaps("gemini-3.8-flash=20, x=abc, gemini-3.1-flash-lite=500")).toEqual({
-      "gemini-3.8-flash": 20,
-      "gemini-3.1-flash-lite": 500,
+    expect(parseDailyCaps("parallel-medium=12, x=abc")).toEqual({
+      "parallel-medium": 12,
     });
   });
   it("names the missing credentials per article kind", () => {
     const env = readContentEnv({});
-    expect(missingCredentials(env, "sports")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
-    expect(missingCredentials(env, "development")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
+    expect(missingCredentials(env, "sports")).toEqual(["PARALLEL_API_KEY"]);
+    expect(missingCredentials(env, "development")).toEqual(["PARALLEL_API_KEY"]);
   });
   it("never shows a whole secret", () => {
     expect(redact("AIzaSyExampleExampleExample")).toBe("AI…le");
@@ -165,65 +151,40 @@ describe("http", () => {
 });
 
 describe("model router", () => {
-  const models = ["gemini-3.8-flash", "gemini-3.1-flash-lite"];
-  it("uses the primary model when it works", async () => {
+  const models = ["parallel-medium"];
+  it("uses Parallel Medium when it works", async () => {
     const llm = fakeLlm(() => "{}");
     const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(out.model).toBe("gemini-3.8-flash");
+    expect(out.model).toBe("parallel-medium");
   });
-  it("falls back when the primary is out of quota", async () => {
-    const llm = fakeLlm((model) => (model === "gemini-3.8-flash" ? quota() : "{}"));
-    const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
-    expect(out.attempts.map((a) => a.outcome)).toEqual(["quota", "ok"]);
-  });
-  it("moves straight to the fallback on a timeout while another model is left", async () => {
-    const llm = fakeLlm((model) =>
-      model === "gemini-3.8-flash" ? new ProviderError("gemini", "timeout", null, "slow") : "{}",
-    );
-    const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual(["gemini-3.8-flash", "gemini-3.1-flash-lite"]);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
-  });
-  it("retries a timeout once on the last model in the chain", async () => {
-    let lite = 0;
-    const llm = fakeLlm((model) => {
-      if (model === "gemini-3.8-flash")
-        return new ProviderError("gemini", "unavailable", 503, "busy");
-      lite += 1;
-      return lite === 1 ? new ProviderError("gemini", "timeout", null, "slow") : "{}";
+  it("retries a transient timeout once on the only approved model", async () => {
+    let calls = 0;
+    const llm = fakeLlm(() => {
+      calls += 1;
+      return calls === 1 ? new ProviderError("parallel", "timeout", null, "slow") : "{}";
     });
     const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual([
-      "gemini-3.8-flash",
-      "gemini-3.1-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
+    expect(llm.calls.map((c) => c.model)).toEqual(["parallel-medium", "parallel-medium"]);
+    expect(out.model).toBe("parallel-medium");
   });
-  it("skips a model that has reached its own daily ceiling without calling it", async () => {
+  it("skips Parallel when its daily ceiling is reached", async () => {
     const llm = fakeLlm(() => "{}");
     const router = createModelRouter(llm, {
       models,
-      usedToday: { "gemini-3.8-flash": 20 },
-      dailyCap: { "gemini-3.8-flash": 20 },
+      usedToday: { "parallel-medium": 12 },
+      dailyCap: { "parallel-medium": 12 },
       sleep: noSleep,
     });
-    const out = await router.generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual(["gemini-3.1-flash-lite"]);
-    expect(out.attempts[0]?.outcome).toBe("skipped_cap");
-  });
-  it("never calls a model outside the free list", async () => {
-    const llm = fakeLlm(() => "{}");
-    const router = createModelRouter(llm, { models: ["gemini-3.1-pro-preview"], sleep: noSleep });
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
     expect(llm.calls).toHaveLength(0);
   });
-  it("throws AllModelsFailed when both models fail", async () => {
-    const router = createModelRouter(
-      fakeLlm(() => quota()),
-      { models, sleep: noSleep },
-    );
+  it("keeps Gemini out of every Newsroom slot even though PFIE can use it", () => {
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "breaking")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "editorial")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "intelligence")).toEqual(["parallel-medium"]);
+  });
+  it("throws AllModelsFailed when Parallel is out of quota", async () => {
+    const router = createModelRouter(fakeLlm(() => quota()), { models, sleep: noSleep });
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
   });
 });
@@ -340,10 +301,13 @@ describe("quality gate", () => {
     });
     expect(codes(report)).toContain("duplicate_title");
   });
-  it("blocks anything the independent reviewer could not support", () => {
-    expect(check(sampleDraft(), { reviewerUnsupported: ["Pirates have 30 points"] }).critical).toBe(
-      true,
-    );
+  it("records independent-review concerns as advisory QA warnings", () => {
+    const report = check(sampleDraft(), {
+      reviewerUnsupported: ["Pirates have 30 points"],
+    });
+    expect(report.critical).toBe(false);
+    expect(report.score).toBe(92);
+    expect(codes(report)).toContain("reviewer_unsupported");
   });
   it("marks a prediction stated as fact and lowers the score", () => {
     const draft = sampleDraft();
@@ -353,9 +317,11 @@ describe("quality gate", () => {
     expect(report.critical).toBe(false);
     expect(report.score).toBe(85);
   });
-  it("caps the score of an article with a critical issue below any publishing threshold", () => {
+  it("uses a graduated score for critical issues instead of a fixed 49 floor", () => {
     const draft = sampleDraft({ title: "Short" });
-    expect(check(draft).score).toBeLessThan(50);
+    const report = check(draft);
+    expect(report.critical).toBe(true);
+    expect(report.score).toBe(85);
   });
   it("has working helpers", () => {
     expect(numberTokens("won 2–1 in 2026, 3 points")).toEqual(["2-1", "2026"]);
@@ -409,7 +375,7 @@ describe("pipeline", () => {
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
     expect((d.store as ReturnType<typeof memoryStore>).articles[0]?.status).toBe("REVIEW");
   });
-  it("never publishes a scheduled article with a critical issue, even when publishOnSchedule is on", async () => {
+  it("publishes a Parallel article with QA warnings and preserves its failed QA state", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const notices: unknown[] = [];
@@ -426,13 +392,13 @@ describe("pipeline", () => {
         notices.push(n);
       },
     };
-    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
-    expect(notices[0]).toMatchObject({ kind: "article", published: false, passed: false });
-    // A manual run still respects the checks.
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
+    expect(notices[0]).toMatchObject({ kind: "article", published: true, passed: false });
+    // Manual Parallel runs follow the same owner-review publishing policy.
     const m = { ...d, store: memoryStore({ publishOnSchedule: true }) };
-    expect((await runContentJob(m, { trigger: "manual" })).status).toBe("queued_for_review");
+    expect((await runContentJob(m, { trigger: "manual" })).status).toBe("published");
   });
-  it("queues for review when the quality gate finds a critical issue", async () => {
+  it("publishes Parallel output when the quality gate finds a critical issue", async () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const d = deps({
@@ -441,7 +407,7 @@ describe("pipeline", () => {
       ),
     });
     const out = await runContentJob(d, { trigger: "cron" });
-    expect(out.status).toBe("queued_for_review");
+    expect(out.status).toBe("published");
     expect(out.ok && "quality" in out && out.quality.critical).toBe(true);
   });
   it("asks for one revision when the first draft fails a critical check, and uses the fixed draft", async () => {
@@ -463,13 +429,13 @@ describe("pipeline", () => {
       store.logs.some((l) => l.stage === "revision" && l.message.startsWith("revised by")),
     ).toBe(true);
   });
-  it("queues for review when the independent review cannot run", async () => {
+  it("still publishes Parallel output when the independent review cannot run", async () => {
     const d = deps({
       llm: fakeLlm((_m, r) =>
         r.system.startsWith("You are a fact checker") ? quota() : JSON.stringify(sampleDraft()),
       ),
     });
-    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
+    expect((await runContentJob(d, { trigger: "cron" })).status).toBe("published");
   });
   it("falls back to the second model when the primary is out of quota", async () => {
     const d = deps({
