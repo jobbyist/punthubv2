@@ -42,6 +42,12 @@ export const recordPfieActivity = createServerFn({ method: "POST" })
   .handler(async ({ context, data }): Promise<boolean> => {
     if (!ALLOWED_EVENTS.has(data.event)) return false;
     const db = context.supabase as unknown as SupabaseClient;
+    const { data: memberProfile, error: profileError } = await db
+      .from("profiles")
+      .select("is_ai_participant")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (profileError || memberProfile?.is_ai_participant === true) return false;
     const { data: consent, error: consentError } = await db
       .from("current_consents")
       .select("granted")
@@ -68,6 +74,12 @@ export const setPfieLearningConsent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data: { granted: boolean }) => data)
   .handler(async ({ context, data }): Promise<boolean> => {
+    const { data: memberProfile, error: profileError } = await context.supabase
+      .from("profiles")
+      .select("is_ai_participant")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (profileError || memberProfile?.is_ai_participant === true) return false;
     const { error: consentError } = await context.supabase.rpc("record_consent", {
       p_purpose: "pfie_learning",
       p_granted: data.granted,
