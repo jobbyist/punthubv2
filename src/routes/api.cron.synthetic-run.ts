@@ -96,8 +96,8 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         let errorCode: string | null = null;
         const origin = new URL(request.url).origin;
 
-        try {
-          for (const path of journey) {
+        const checks = await Promise.all(journey.map(async (path) => {
+          try {
             const target = new URL(path, origin);
             const response = await fetch(target, {
               method: "GET",
@@ -106,10 +106,10 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
               headers: {
                 "x-puntr-synthetic-test": "true",
                 "x-puntr-experiment": EXPERIMENT_SLUG,
-                "cookie": "puntr_synthetic_qa=1",
+                cookie: "puntr_synthetic_qa=1",
                 "user-agent": "PuntrSyntheticQA/1.0 (+read-only route check)",
               },
-              signal: AbortSignal.timeout(4_500),
+              signal: AbortSignal.timeout(5_000),
             });
             const finalUrl = new URL(response.url || target.href);
             const contentType = response.headers.get("content-type") ?? "";
@@ -118,12 +118,19 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
             if (!contentType.includes("text/html")) throw new Error(`${path}: expected HTML, received ${contentType || "unknown content type"}`);
             const html = await response.text();
             if (!html.trim() || !/<html[\s>]/i.test(html)) throw new Error(`${path}: empty or invalid HTML response`);
-            visited.push(path);
+            return { path, error: null as string | null };
+          } catch (error) {
+            return { path, error: error instanceof Error ? error.message.slice(0, 200) : "unknown_route_check_error" };
           }
-        } catch (error) {
-          outcome = "failed";
-          errorCode = error instanceof Error ? error.message.slice(0, 240) : "unknown_route_check_error";
+        }));
+        for (const check of checks) {
+          if (check.error) throw new Error(check.error);
+          visited.push(check.path);
         }
+      } catch (error) {
+        outcome = "failed";
+        errorCode = error instanceof Error ? error.message.slice(0, 240) : "unknown_route_check_error";
+      }
 
         const finishedAt = new Date().toISOString();
         const { error: finishError } = await db
