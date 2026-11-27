@@ -365,8 +365,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl")
-          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
+          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
         return { source: result.source, parsed, validation };
       }),
     );
@@ -379,10 +379,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+    let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams);
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
+      group: table.group ?? null,
       tableDate: table.tableDate ?? null,
       rowCount: table.rows.length,
       rows: table.rows.map((row) => ({
@@ -427,7 +428,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           }
         }
         raw = [...bySource.values()].flat();
-        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl");
+        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams);
         sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
