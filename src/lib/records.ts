@@ -16,6 +16,7 @@ export interface BoardRow {
   roi: number;
   eligible: boolean;
   rank: number | null;
+  is_ai_participant: boolean;
 }
 
 export interface TipsterStats {
@@ -68,7 +69,18 @@ export async function fetchWeeklyBoard(weekStart: string, limit = 50): Promise<B
     roi: num(r.roi),
     eligible: r.eligible === true,
     rank: r.rank ?? null,
+    is_ai_participant: false,
   }));
+  const ids = rows.map((r) => r.user_id).filter(Boolean);
+  if (ids.length) {
+    const { data: profiles, error: profileError } = await supabase
+      .from("public_profiles")
+      .select("id, is_ai_participant")
+      .in("id", ids);
+    if (profileError) throw profileError;
+    const aiIds = new Set((profiles ?? []).filter((p) => p.is_ai_participant).map((p) => p.id));
+    for (const row of rows) row.is_ai_participant = aiIds.has(row.user_id);
+  }
   return rows.sort((a, b) => {
     if (a.eligible !== b.eligible) return a.eligible ? -1 : 1;
     if (a.eligible && b.eligible) return (a.rank ?? 1e9) - (b.rank ?? 1e9);
