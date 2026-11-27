@@ -27,6 +27,7 @@ create table if not exists public.bookmaker_odds_permissions (
       and data_rights_status = 'approved'
       and rights_evidence_url is not null
       and rights_reviewed_at is not null
+      and rights_reviewed_by is not null
       and automated_access_allowed
     )
   )
@@ -72,6 +73,9 @@ insert into public.bookmaker_odds_permissions (
   ('Playbet', 'playbet.co.za', 'playbet', 'applied', 5, null,
    'pending_review', 'pending', false, false,
    'Affiliate application in progress. Domain and licence-holder match require verification; no automated collection until written rights are documented.'),
+  ('1xBet', '1xbet.com', '1xbet', 'approved', 6, null,
+   'pending_review', 'pending', false, false,
+   'Affiliate partner approval does not establish a South African licence or odds-data rights. Verify local legal status, domain rights and written data permissions before enabling.'),
   ('Betway', 'betway.co.za', null, 'none', 10, '10181496-012',
    'pending_review', 'pending', false, false,
    'Candidate NGB register reference only; verify current licence, domain mapping, written odds-feed rights and reuse terms before enabling.'),
