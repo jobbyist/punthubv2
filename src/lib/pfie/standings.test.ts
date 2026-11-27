@@ -6,6 +6,7 @@ import { normaliseTeam, resolveTeam } from "./teams";
 import {
   STANDINGS_COMPETITIONS,
   STANDINGS_LAUNCH_KEYS,
+  STANDINGS_POST_LAUNCH_KEYS,
   chooseTable,
   independentSourceKey,
   parseStandings,
@@ -422,6 +423,25 @@ describe("validateTables", () => {
         4,
       ).rejected[0]!.reason,
     ).toBe("positions_not_1_to_n");
+  });
+});
+
+describe("pre-launch standings selection", () => {
+  it("prioritises the EFL Championship and defers Motsepe", () => {
+    expect(STANDINGS_LAUNCH_KEYS.slice(0, 6)).toEqual([
+      "epl", "laliga", "ucl", "uecl", "championship", "bundesliga",
+    ]);
+    expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
+    expect(STANDINGS_POST_LAUNCH_KEYS).toContain("sa-championship");
+    expect(STANDINGS_COMPETITIONS.championship?.teams).toBe(24);
+  });
+});
+
+describe("EFL Championship team aliases", () => {
+  it("reconciles common EFL table abbreviations", () => {
+    expect(normaliseTeam("QPR")).toBe(normaliseTeam("Queens Park Rangers"));
+    expect(normaliseTeam("Sheffield Utd")).toBe(normaliseTeam("Sheffield United"));
+    expect(normaliseTeam("Sheffield Wed")).toBe(normaliseTeam("Sheffield Wednesday"));
   });
 });
 
