@@ -484,6 +484,27 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         currentGoalsAgainst: next.goalsAgainst,
       }];
     });
+    const playedCorrections = previous.flatMap((old) => {
+      const next = candidateRows.find(
+        (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
+      );
+      if (
+        !next ||
+        old.played - next.played !== 1 ||
+        !cfg.allowVerifiedPlayedCorrections?.some((name) => normaliseTeam(name) === normaliseTeam(old.team))
+      ) return [];
+      return [{
+        team: next.team,
+        previousPlayed: old.played,
+        currentPlayed: next.played,
+        previousRecord: `${old.won}-${old.drawn}-${old.lost}`,
+        currentRecord: `${next.won}-${next.drawn}-${next.lost}`,
+        previousGoals: `${old.goalsFor}-${old.goalsAgainst}`,
+        currentGoals: `${next.goalsFor}-${next.goalsAgainst}`,
+        previousPoints: old.points,
+        currentPoints: next.points,
+      }];
+    });
     const regression = tableRegression(
       candidateRows,
       previous,
@@ -513,6 +534,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       models: [...modelsUsed],
       goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
       playedCorrectionPolicy: cfg.allowVerifiedPlayedCorrections ?? [],
+      playedCorrections,
       teamCountExpansionPolicy: cfg.allowTeamCountIncrease ? "one-new-team-when-group-range-allows" : "strict",
       goalCorrections,
     });
