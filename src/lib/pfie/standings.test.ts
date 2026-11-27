@@ -570,6 +570,23 @@ describe("tableRegression", () => {
     );
     expect(tableRegression(stale, previous)).toBe("played_regressed_Alpha FC");
   });
+  it("allows goals-only corrections when two independent tables corroborate them", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const corrected = previous.map((r) =>
+      r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 2 } : r,
+    );
+    expect(tableRegression(corrected, previous)).toBe("goalsFor_changed_without_new_matches_Alpha FC");
+    expect(tableRegression(corrected, previous, true)).toBeNull();
+  });
+  it("still rejects points and win/draw/loss changes without additional matches", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const changedPoints = previous.map((r) =>
+      r.team === "Alpha FC" ? { ...r, points: r.points + 3 } : r,
+    );
+    expect(tableRegression(changedPoints, previous, true)).toBe("points_changed_without_new_matches_Alpha FC");
+  });
   it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
