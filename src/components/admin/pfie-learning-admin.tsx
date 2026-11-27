@@ -34,19 +34,35 @@ export function PfieLearningTab() {
     <section className={panel}>
       <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">PFIE / PUNT AI · learning pipeline</p>
       <h2 className="mt-1 font-display text-xl font-bold">Learning corpus & training readiness</h2>
-      <p className="mt-2 max-w-3xl text-sm text-muted-foreground">Synthetic QA is converted into versionable learning examples. Deterministic route-check outcomes can train operational QA tasks. Forecast research stays quarantined until independent PFIE observations verify the final score. Synthetic predictions are never used as their own ground truth.</p>
+      <p className="mt-2 max-w-3xl text-sm text-muted-foreground">Real, consented member activity is the primary PFIE learning source. Published pick actions and feature interactions become pseudonymous preference signals. Synthetic QA is secondary and diagnoses operational quality. Forecast research stays quarantined until independent PFIE observations verify the final score; synthetic predictions are never their own ground truth.</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Metric label="Ingest runs" value={data.runs} detail="Scheduled corpus syncs" />
         <Metric label="Total examples" value={data.total} detail="Across current and future experiments" />
         <Metric label="Approved" value={data.approved} detail="Verified and dataset-eligible" />
         <Metric label="Quarantined" value={data.quarantined} detail="Awaiting independent verification" />
       </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Metric label="Real member activity" value={data.realActivity} detail="Primary, consented learning source" />
+        <Metric label="Synthetic QA" value={data.syntheticExamples} detail="Secondary diagnostics and evaluation" />
         <Metric label="Route QA" value={data.routeQuality} detail="Deterministic labels approved" />
         <Metric label="Forecast pending" value={data.forecastPending} detail="Needs two independent PFIE sources" />
         <Metric label="Excluded" value={data.excluded} detail="Non-training session types" />
       </div>
       <Button className="mt-4" size="sm" variant="outline" onClick={() => setNonce(n => n + 1)}>Refresh learning data</Button>
+    </section>
+    <section className={panel}>
+      <h3 className="font-display text-lg font-bold">What members are engaging with</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Aggregated, pseudonymous signals from members who opted into PFIE learning. These guide coverage and relevance; they are not sporting facts or prediction labels.</p>
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[42rem] text-sm">
+          <thead className="text-left text-xs uppercase text-muted-foreground"><tr><th className="py-2">Event</th><th>Sport</th><th>Competition</th><th>Market / category</th><th>Interactions</th><th>Participants</th></tr></thead>
+          <tbody className="divide-y divide-border">{data.signals.map((signal, i) => <tr key={`${signal.event_type}-${signal.sport}-${signal.competition}-${i}`}>
+            <td className="py-2 pr-2">{signal.event_type ?? "—"}</td><td>{signal.sport ?? "—"}</td><td>{signal.competition ?? "—"}</td><td>{signal.market ?? signal.category ?? "—"}</td>
+            <td className="tnum">{signal.interactions}</td><td className="tnum">{signal.pseudonymous_participants}</td>
+          </tr>)}</tbody>
+        </table>
+        {data.signals.length === 0 && <p className="py-4 text-sm text-muted-foreground">No opted-in member activity yet. Real-user signals will begin accumulating after launch.</p>}
+      </div>
     </section>
     <section className={panel}>
       <h3 className="font-display text-lg font-bold">Recent learning examples</h3>

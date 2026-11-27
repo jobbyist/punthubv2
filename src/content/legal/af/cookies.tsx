@@ -12,15 +12,19 @@ import { Switch } from "@/components/ui/switch";
 export function CookiesAf({
   analytics,
   affiliate,
+  pfieLearning,
   setAnalytics,
   setAffiliate,
+  setPfieLearning,
   save,
 }: {
   analytics: boolean;
   affiliate: boolean;
+  pfieLearning: boolean;
   setAnalytics: (v: boolean) => void;
   setAffiliate: (v: boolean) => void;
-  save: (analytics: boolean, affiliate: boolean) => void;
+  setPfieLearning: (v: boolean) => void;
+  save: (analytics: boolean, affiliate: boolean, pfieLearning: boolean) => void;
 }) {
   return (
     <AppShell>
@@ -96,14 +100,21 @@ export function CookiesAf({
           </div>
           <Switch id="affiliate" checked={affiliate} onCheckedChange={setAffiliate} />
         </section>
+        <section className="flex items-start justify-between gap-4">
+          <div>
+            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">PFIE-leerdata (opsioneel)</Label>
+            <p className="mt-1 text-sm text-muted-foreground">Laat Puntr toe om gepseudonimiseerde funksie-interaksies en gepubliseerde keuses te gebruik om PFIE se sportintelligensie te verbeter. Apart van ontledings; af tensy jy inteken. Jy kan dit onder Rekeningprivaatheid terugtrek.</p>
+          </div>
+          <Switch id="pfie-learning" checked={pfieLearning} onCheckedChange={setPfieLearning} />
+        </section>
         <div className="flex flex-wrap gap-3">
-          <Button variant="outline" onClick={() => save(false, false)}>
+          <Button variant="outline" onClick={() => save(false, false, false)}>
             Weier alles
           </Button>
-          <Button variant="outline" onClick={() => save(true, true)}>
+          <Button variant="outline" onClick={() => save(true, true, true)}>
             Aanvaar alles
           </Button>
-          <Button onClick={() => save(analytics, affiliate)}>Stoor keuses</Button>
+          <Button onClick={() => save(analytics, affiliate, pfieLearning)}>Stoor keuses</Button>
         </div>
         <p className="text-xs text-muted-foreground">
           Jy moet 18+ wees om Puntr te gebruik. Dobbelhulplyn: 0800 006 008.

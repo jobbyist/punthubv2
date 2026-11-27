@@ -20,6 +20,7 @@ import { useTeamForms } from "@/hooks/use-team-forms";
 import { rememberRef } from "@/lib/ref-store";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
+import { trackEvent } from "@/lib/analytics";
 import { fetchFixture, fetchPicksForFixture, type PickRow } from "@/lib/pick-data";
 import { countdownTo, formatSpan } from "@/lib/picks";
 
@@ -78,6 +79,9 @@ function Match() {
   const { ref } = Route.useSearch();
   // A shared pick link carries the sharer's invite code, kept until the visitor joins.
   useEffect(() => rememberRef(ref), [ref]);
+  useEffect(() => {
+    trackEvent("fixture_viewed", { fixture_id: fixture.id, sport: fixture.sport, competition: fixture.competition });
+  }, [fixture.id, fixture.sport, fixture.competition]);
 
   const [picks, setPicks] = useState<PickRow[] | null>(null);
 
@@ -181,7 +185,10 @@ function Match() {
         <div className="mt-5 flex justify-center">
           <button
             type="button"
-            onClick={() => setDrawer(true)}
+            onClick={() => {
+              setDrawer(true);
+              trackEvent("pfie_insight_opened", { fixture_id: fixture.id, sport: fixture.sport, competition: fixture.competition });
+            }}
             aria-haspopup="dialog"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
           >

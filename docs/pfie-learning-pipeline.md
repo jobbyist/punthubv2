@@ -4,7 +4,7 @@
 
 PFIE remains the canonical source of sporting facts: fixtures, kickoff times, standings, accepted source observations and independently corroborated results live in the existing PFIE tables and audit trail.
 
-The PFIE learning corpus is the canonical source for how PFIE is evaluated and improved. It is not a replacement for the sports-fact store. PUNT AI should consume approved PFIE facts and versioned learning outputs through server-side services; it must not treat raw activity or unverified predictions as facts.
+The PFIE learning corpus is the canonical source for how PFIE is evaluated and improved. It is not a replacement for the sports-fact store. PFIE uses aggregated, opted-in member interest to reorder competition refresh priority; it never skips coverage or relaxes factual validation. PUNT AI should consume approved PFIE facts and versioned learning outputs through server-side services; it must not treat raw activity or unverified predictions as facts.
 
 ## Learning-source priority
 

@@ -628,11 +628,33 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     );
   }
 
+
+  async function prioritizeByMemberInterest(items: Competition[]): Promise<Competition[]> {
+    try {
+      const { getPfieLearningSignals } = await import("./learning.server");
+      const signals = await getPfieLearningSignals(100);
+      const score = new Map<string, number>();
+      for (const signal of signals) {
+        if (!signal.competition) continue;
+        const key = signal.competition.trim().toLocaleLowerCase();
+        const value = signal.pseudonymous_participants * 1000 + signal.interactions;
+        score.set(key, Math.max(score.get(key) ?? 0, value));
+      }
+      // Reorder only: every selected competition is still processed and validation rules are unchanged.
+      return [...items].sort((a, b) =>
+        (score.get(b.name.trim().toLocaleLowerCase()) ?? 0) -
+        (score.get(a.name.trim().toLocaleLowerCase()) ?? 0)
+      );
+    } catch {
+      // Learning data is an optional prioritisation signal, never a dependency for PFIE facts.
+      return items;
+    }
+  }
   return {
     name: PFIE_PROVIDER,
     async listFixtures(from, to, opts): Promise<ListResult> {
       const out: ListResult = { fixtures: [], calls: 0, skipped: [] };
-      for (const c of selected(opts)) {
+      for (const c of await prioritizeByMemberInterest(selected(opts))) {
         const r = await run(c, "fixtures", from, to);
         out.fixtures.push(...r.fixtures);
         out.calls += r.calls;
@@ -647,7 +669,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           out.skipped.push({ key: c.key, reason: "too early for a final score" });
         return out;
       }
-      for (const c of selected(opts)) {
+      for (const c of await prioritizeByMemberInterest(selected(opts))) {
         const last = await deps.store.lastRunAt(c.key, "results").catch(() => null);
         const gap = resultsGapMs(now().getTime() - from.getTime());
         if (last && now().getTime() - last.getTime() < gap) {

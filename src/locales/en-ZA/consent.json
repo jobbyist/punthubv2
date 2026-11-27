@@ -1,7 +1,7 @@
 {
   "banner": {
     "aria": "Privacy choices",
-    "body": "We use essential cookies to run Puntr. With your permission we also use analytics and affiliate tracking. Both stay off unless you accept. You can change this at any time under <1>Privacy choices</1>. Read our <2>privacy policy</2>.",
+    "body": "Essential cookies run Puntr. With your permission, we also use analytics, affiliate tracking and optional PFIE learning. PFIE learning uses pseudonymous activity and pick signals to improve Puntr's sporting intelligence; it is not required to use the platform and you can withdraw at any time in Account privacy. Both analytics and PFIE learning stay off unless you accept. Read our <2>privacy policy</2> and <1>cookie notice</1>.",
     "reject": "Reject all",
     "accept": "Accept all",
     "choose": "Choose"
