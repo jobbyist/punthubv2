@@ -59,7 +59,7 @@ export function BookmakerComplianceTab() {
     const draft = drafts[row.id];
     if (!draft) return;
     setSaving(row.id);
-    const payload = { ...draft };
+    const payload = { ...draft };\n    const { data: authData } = await supabase.auth.getUser();\n    if (!authData.user) { toast.error("Administrator session expired."); setSaving(null); return; }
     const hasRights = rights.every(([key]) => Boolean(payload[key] ?? row[key]));
     if (payload.enabled === true && (
       (payload.licence_status ?? row.licence_status) !== "verified" ||
@@ -101,7 +101,7 @@ export function BookmakerComplianceTab() {
         <p className="text-sm text-muted-foreground">The National Gambling Board directory is the starting reference, not final legal sign-off. Confirm the current licence, exact legal entity and domain with the relevant provincial regulator. Affiliate approval does not grant odds-data rights.</p>
         <div className="flex flex-wrap gap-3 text-sm">
           <a className="font-medium text-primary underline" href={NGB_REGISTER_URL} target="_blank" rel="noreferrer">NGB verified operators register ↗</a>
-          <a className="font-medium text-primary underline" href="https://www.wcgrb.co.za/gambling-devices-2/" target="_blank" rel="noreferrer">Western Cape licence holders ↗</a>
+          <a className="font-medium text-primary underline" href="https://www.wcgrb.co.za/gambling-devices-2/" target="_blank" rel="noreferrer">Western Cape licence holders ↗</a>\n          <a className="font-medium text-primary underline" href="https://mer.org.za/" target="_blank" rel="noreferrer">Mpumalanga Economic Regulator ↗</a>
         </div>
         <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter bookmaker directory…" />
       </section>
