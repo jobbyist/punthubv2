@@ -133,6 +133,14 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
         }
       }
 
+      const retentionCutoff = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+      const [rawPrune, examplePrune] = await Promise.all([
+        db.from("pfie_user_activity_events").delete().lt("created_at", retentionCutoff),
+        db.from("pfie_learning_examples").delete().eq("source_kind", "real_activity_event").lt("created_at", retentionCutoff),
+      ]);
+      if (rawPrune.error) throw rawPrune.error;
+      if (examplePrune.error) throw examplePrune.error;
+
       const lastActivity = activities.at(-1);
       const previousCursorAt = cursorAt;
       const previousCursorId = cursorId;
@@ -145,7 +153,8 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
       };
       const { error } = await db.from("pfie_learning_ingest_runs").update({
         finished_at: new Date().toISOString(), sessions_seen: sessionsSeen, research_seen: researchSeen,
-        examples_inserted: syntheticExamples + realExamples, metadata,
+        examples_inserted: syntheticExamples + realExamples, activity_events_seen: activitySeen,
+        real_examples_inserted: realExamples, metadata,
       }).eq("id", run.id);
       if (error) throw error;
 
@@ -160,7 +169,8 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
       const message = e instanceof Error ? e.message.slice(0, 500) : "unknown_learning_ingest_error";
       await db.from("pfie_learning_ingest_runs").update({
         finished_at: new Date().toISOString(), sessions_seen: sessionsSeen, research_seen: researchSeen,
-        examples_inserted: syntheticExamples + realExamples, error: message,
+        examples_inserted: syntheticExamples + realExamples, activity_events_seen: activitySeen,
+        real_examples_inserted: realExamples, error: message,
       }).eq("id", run.id);
       console.error("pfie-learning-ingest failed", e);
       return Response.json({ ok: false, ingest_run_id: run.id, error: message }, { status: 500 });
