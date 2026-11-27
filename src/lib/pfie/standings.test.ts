@@ -255,6 +255,9 @@ describe("restored standings source coverage", () => {
       "https://zeanball.online/en/table/ligue-1/",
     );
     expect(STANDINGS_COMPETITIONS.seriea?.allowVerifiedPlayedCorrections).toEqual(["Milan"]);
+    expect(STANDINGS_COMPETITIONS.psl?.pages?.length).toBeLessThanOrEqual(6);
+    expect(STANDINGS_COMPETITIONS.championship?.pages?.length).toBeLessThanOrEqual(6);
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages?.length).toBeLessThanOrEqual(6);
   });
 
   it("allows only the pending CAF Group C qualifier slot to expand from three to four teams", () => {
