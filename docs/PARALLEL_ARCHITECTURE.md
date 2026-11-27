@@ -75,18 +75,6 @@ Controls:
 
 **Cost note:** The earlier steady-state estimate is not a current forecast: it assumed automated odds and Monitor-based team news that are not launch-enabled. Use api_spend_status() and the live quota/budget tables before increasing any provider cadence. At MVP, automated bookmaker odds and team-news Monitor jobs remain disabled.
 
-## PUNT AI production controls (28 Nov 2026)
-
-PUNT AI answers from Puntr's own verified data first: upcoming fixtures across enabled sports, recent completed results, the ten launch standings (including CAF group tables), and published Newsroom items. Gemini handles internal-data answers. Current external reporting (injuries, suspensions, transfers, breaking news, live updates and weather) uses Parallel Search + Extract + Chat low with up to three trusted sources and visible source links. Current tables, fixtures, schedules and results remain on the Puntr-data path.
-
-Live web is limited to Pro members or members spending **2 credits per successful live-web answer**. Pro's included live-web allowance is 15/day and 90 per rolling 30 days; after that, the normal credit charge applies. Failed live-web requests fall back to stored Puntr data and do not charge live-web credits. Internal-data answers are free.
-
-The one-hour answer cache and per-user usage ledger are service-role only. The database claim function enforces **20 requests/day and 300/month for Free**, and **40/day and 600/month for Pro**, using South African calendar boundaries. It rejects AI participant accounts and any account that fails `member_can_transact` (including banned, suspended, limited or not age-attested accounts). Raw prompts are not stored; private account/activity/financial/health questions are short-circuited, and contact details, handles, names, ages, long numeric identifiers and URLs are redacted before external calls.
-
-PUNT AI does not fetch or quote bookmaker prices while the bookmaker rights registry remains unapproved. Member-entered prices remain user-submitted. The public chat button remains behind `SHOW_PUNT_AI_CHAT` until launch approval; the server also checks `mvp_open()`.
-
-The existing provider-family controls apply to every uncached provider call: Parallel Search, Extract and Chat low use the shared $50 monthly Parallel budget and the $200 cumulative Q1 ceiling; Gemini internal answers use the existing per-model daily/monthly quota rows.
-
 ## Odds rules (owner decision, 22 Nov 2026)
 
 **MVP decision: member-entered odds only. Automated bookmaker odds remain deferred until written source rights are approved.**
@@ -110,6 +98,15 @@ Puntr has not received an authorized odds API, affiliate odds feed or other odds
 - If enabled later, keep bookmaker prices separate by operator, fixture, market, selection and capture time. Do not treat differing prices as conflicting facts. Only calculate a benchmark when at least two independent, permitted bookmakers cover the same selection; otherwise show no benchmark.
 - Reject stale, suspended, in-play, mismatched or post-kick-off prices from a pre-match reference product. Never use stale prices as current.
 - Member-entered odds remain immutable and separate from any future reference price.
+
+## PUNT AI request policy (owner implementation update, 27 Nov 2026)
+
+- Answer from Puntr's own verified fixtures, recent results, ten launch standings and published Newsroom items first, using the Gemini model router. Internal-data answers are free and cached for one hour.
+- Only questions that need current external reporting (injuries, suspensions, transfers, breaking news, live updates or weather) may use Parallel Search + Extract + Chat low. Use at most three trusted sources and include their links in the response.
+- Pro members use the existing fair-use allowance (15 live answers per day and 90 per rolling 30 days); other members pay 2 credits per live-web answer. If access is unavailable, answer from Puntr data only.
+- Per-user request limits: 12 per hour and 60 per South African calendar day. Cache keys use normalized questions; raw prompts are not stored.
+- Private account/contact/financial/health requests are short-circuited. Contact details, handles, long numeric identifiers and URLs are redacted before any external call.
+- PUNT AI does not fetch or quote bookmaker prices while the bookmaker rights registry remains unapproved. Member-entered prices remain clearly user-submitted.
 
 ## One-off work to fund from the expiring balance (before 7 Dec)
 
