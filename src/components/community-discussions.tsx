@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -55,7 +55,7 @@ function timestamp(value: string): string {
   });
 }
 
-function Author({ profile, generated }: { profile: PublicProfile | null; generated: boolean }) {
+function Author({ profile, generated, createdAt }: { profile: PublicProfile | null; generated: boolean; createdAt: string }) {
   const username = profile?.username;
   return (
     <div className="flex min-w-0 items-center gap-2">
@@ -78,7 +78,7 @@ function Author({ profile, generated }: { profile: PublicProfile | null; generat
             <span className="text-[10px] text-muted-foreground">Founding #{profile.founding_number}</span>
           )}
         </div>
-        <p className="text-[10px] text-muted-foreground">{timestamp(profile ? (profile as PublicProfile & { created_at?: string }).created_at ?? "" : "")}</p>
+        <p className="text-[10px] text-muted-foreground">{timestamp(createdAt)}</p>
       </div>
     </div>
   );
@@ -161,7 +161,7 @@ export function CommunityDiscussions() {
   const canPost = Boolean(isSignedIn && profile?.id);
   const threadCount = useMemo(() => threads.length, [threads]);
 
-  async function createThread(event: React.FormEvent<HTMLFormElement>) {
+  async function createThread(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!profile?.id || posting) return;
     const cleanTitle = title.trim();
@@ -300,12 +300,12 @@ export function CommunityDiscussions() {
           {threads.map((thread) => (
             <article key={thread.id} className="card-surface p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <Author profile={thread.author} generated={thread.is_ai_generated} />
+                <Author profile={thread.author} generated={thread.is_ai_generated} createdAt={thread.created_at} />
                 <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">
                   {CATEGORIES.find((item) => item.value === thread.category)?.label ?? thread.category}
                 </span>
               </div>
-              <p className="mt-1 text-[10px] text-muted-foreground">{timestamp(thread.created_at)}</p>
+              
               <h3 className="mt-3 text-base font-bold leading-snug sm:text-lg">{thread.title}</h3>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{thread.body}</p>
 
@@ -328,9 +328,9 @@ export function CommunityDiscussions() {
                 <ul className="mt-4 space-y-3 border-l-2 border-border pl-3 sm:pl-4">
                   {thread.replies.map((reply) => (
                     <li key={reply.id} className="min-w-0">
-                      <Author profile={reply.author} generated={reply.is_ai_generated} />
+                      <Author profile={reply.author} generated={reply.is_ai_generated} createdAt={reply.created_at} />
                       <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{reply.body}</p>
-                      <p className="mt-1 text-[10px] text-muted-foreground">{timestamp(reply.created_at)}</p>
+                      
                     </li>
                   ))}
                 </ul>
