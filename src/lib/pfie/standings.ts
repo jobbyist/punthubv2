@@ -539,7 +539,7 @@ export function validateTables(
     let duplicateConflict: string | null = null;
     for (const row of extractedRows) {
       const rawTeam = row.team.trim();
-      if (/^(?:tbd|tbc|to be confirmed|qualifier|winner of\b)/i.test(rawTeam)) {
+      if (/^(?:tbd|tbc|tba|to be confirmed|qualifier|winner(?:\s+of)?\b)/i.test(rawTeam)) {
         fail("placeholder_team_not_allowed");
         continue;
       }
