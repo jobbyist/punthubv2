@@ -16,6 +16,7 @@ import {
   tableRegression,
   validateTables,
   type RawStandingRow,
+  type StandingRow,
 } from "./standings";
 import { DEFAULT_PFIE_MODELS } from "@/lib/content/config";
 import {
@@ -656,6 +657,57 @@ describe("chooseTable", () => {
   });
 });
 
+describe("CAF Confederation Cup group validation", () => {
+  const groups = ["A", "B", "C", "D"];
+  const groupMembers: Record<string, string[]> = {
+    A: ["Alpha A", "Bravo A", "Charlie A", "Delta A"],
+    B: ["Alpha B", "Bravo B", "Charlie B", "Delta B"],
+    C: ["Alpha C", "Bravo C", "Charlie C"],
+    D: ["Alpha D", "Bravo D", "Charlie D", "Delta D"],
+  };
+  const rows: RawStandingRow[] = [];
+  const sourceLines: string[] = [];
+  for (const group of groups) {
+    groupMembers[group]!.forEach((team, index) => {
+      const quote = `${index + 1} ${team} 0 0 0 0 0 0 0`;
+      sourceLines.push(quote);
+      rows.push({
+        source: 1,
+        group,
+        position: index + 1,
+        team,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+        quote,
+      });
+    });
+  }
+  const source = page("cafonline.com", "official", 1, sourceLines);
+  const known = Object.values(groupMembers).flat();
+
+  it("accepts all four groups while Group C has three confirmed teams", () => {
+    const result = validateTables(rows, [source], 16, known, new Date("2026-11-27T12:00:00Z"), false, groups, 4, {
+      C: { min: 3, max: 4 },
+    });
+    expect(result.rejected).toEqual([]);
+    expect(result.tables.map((table) => table.group).sort()).toEqual(groups);
+    expect(result.tables.find((table) => table.group === "C")?.rows).toHaveLength(3);
+  });
+
+  it("rejects Group C if it falls below three confirmed teams", () => {
+    const incomplete = rows.filter((row) => !(row.group === "C" && row.position === 3));
+    const result = validateTables(incomplete, [source], 16, known, new Date("2026-11-27T12:00:00Z"), false, groups, 4, {
+      C: { min: 3, max: 4 },
+    });
+    expect(result.rejected.some((item) => item.reason.includes("team_count_2_expected_3-4"))).toBe(true);
+  });
+});
+
 describe("tableRegression", () => {
   it("rejects a table that moves played matches or statistics backwards", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
@@ -682,6 +734,32 @@ describe("tableRegression", () => {
     );
     expect(tableRegression(changedPoints, previous, true)).toBe("points_changed_without_new_matches_Alpha FC");
   });
+  it("allows one verified new team when a pending group qualifier is confirmed", () => {
+    const previous: StandingRow[] = [
+      { group: "C", position: 1, team: "Alpha C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
+      { group: "C", position: 2, team: "Bravo C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
+      { group: "C", position: 3, team: "Charlie C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
+    ];
+    const candidate = [...previous, {
+      group: "C", position: 4, team: "Delta C", played: 0, won: 0, drawn: 0, lost: 0,
+      goalsFor: 0, goalsAgainst: 0, points: 0,
+    }];
+    expect(tableRegression(candidate, previous)).toBe("team_count_changed_from_previous_snapshot");
+    expect(tableRegression(candidate, previous, false, [], true)).toBeNull();
+  });
+
+  it("allows a corroborated one-match correction for the configured Serie A team only", () => {
+    const previous: StandingRow[] = [
+      { position: 1, team: "Milan", played: 13, won: 8, drawn: 4, lost: 1, goalsFor: 32, goalsAgainst: 18, points: 28 },
+    ];
+    const corrected: StandingRow[] = [
+      { position: 1, team: "Milan", played: 12, won: 8, drawn: 3, lost: 1, goalsFor: 28, goalsAgainst: 14, points: 27 },
+    ];
+    expect(tableRegression(corrected, previous)).toBe("played_regressed_Milan");
+    expect(tableRegression(corrected, previous, false, ["Milan"])).toBeNull();
+    expect(tableRegression(corrected, previous, false, ["Inter"])).toBe("played_regressed_Milan");
+  });
+
   it("accepts a snapshot that includes additional completed matches without reducing existing totals", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
@@ -692,6 +770,16 @@ describe("tableRegression", () => {
   });
 });
 describe("standingsRequest", () => {
+  it("includes group-specific notes so a pending qualifier is not invented or omitted", () => {
+    const request = standingsRequest({
+      competition: "CAF Confederation Cup",
+      season: "2026/27",
+      sources: [page("365scores.com", "trusted", 1, lines)],
+      groups: ["A", "B", "C", "D"],
+      groupNotes: "Group C currently has three confirmed teams; the fourth place is pending.",
+    });
+    expect(request.system).toContain("Group C currently has three confirmed teams");
+  });
   it("pins extraction to one source and includes targeted retry guidance", () => {
     const request = standingsRequest({
       competition: "Premier League",
