@@ -17,9 +17,9 @@ import type { PfieSource } from "./types";
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_LAUNCH_KEYS = [
   // Explicit pre-launch restoration order agreed with the product owner.
-  "epl", "laliga", "ucl", "uecl", "sa-championship",
-  // Existing validated domestic tables remain in scope after the restoration priorities.
-  "psl", "seriea", "bundesliga", "primeira", "championship", "saudi-pro",
+  "epl", "laliga", "ucl", "uecl", "sa-championship", "bundesliga",
+  // Existing domestic tables remain in scope after the launch restoration priorities.
+  "psl", "seriea", "primeira", "championship", "saudi-pro",
 ] as const satisfies readonly CompetitionKey[];
 
 export const STANDINGS_COMPETITIONS: Partial<
