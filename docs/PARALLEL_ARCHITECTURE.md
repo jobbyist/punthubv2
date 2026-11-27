@@ -99,6 +99,15 @@ Puntr has not received an authorized odds API, affiliate odds feed or other odds
 - Reject stale, suspended, in-play, mismatched or post-kick-off prices from a pre-match reference product. Never use stale prices as current.
 - Member-entered odds remain immutable and separate from any future reference price.
 
+## PUNT AI request policy (owner implementation update, 27 Nov 2026)
+
+- Answer from Puntr's own verified fixtures, recent results, ten launch standings and published Newsroom items first, using the Gemini model router. Internal-data answers are free and cached for one hour.
+- Only questions that need current external reporting (injuries, suspensions, transfers, breaking news, live updates or weather) may use Parallel Search + Extract + Chat low. Use at most three trusted sources and include their links in the response.
+- Pro members use the existing fair-use allowance (15 live answers per day and 90 per rolling 30 days); other members pay 2 credits per live-web answer. If access is unavailable, answer from Puntr data only.
+- Per-user request limits: 12 per hour and 60 per South African calendar day. Cache keys use normalized questions; raw prompts are not stored.
+- Private account/contact/financial/health requests are short-circuited. Contact details, handles, long numeric identifiers and URLs are redacted before any external call.
+- PUNT AI does not fetch or quote bookmaker prices while the bookmaker rights registry remains unapproved. Member-entered prices remain clearly user-submitted.
+
 ## One-off work to fund from the expiring balance (before 7 Dec)
 
 The ~$50 does not roll over, so spend it on lasting data while it exists. Estimates are deliberately generous.
