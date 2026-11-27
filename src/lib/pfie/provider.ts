@@ -403,6 +403,7 @@ const TRUSTED = [
   "ninetyminutesplus.com",
   "swissfootballdata.com",
   "keepstandings.com",
+  "365scores.com",
   "standings.nz",
   "globalsportsarchive.com",
 ];
