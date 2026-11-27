@@ -21,10 +21,5 @@
       "path": "/api/cron/synthetic-run",
       "schedule": "0 18 * * *"
     }
-  ],
-  "functions": {
-    "src/routes/api.cron.synthetic-run.ts": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
