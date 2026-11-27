@@ -165,3 +165,24 @@ drop trigger if exists pfie_purge_learning_on_account_anonymise on public.profil
 create trigger pfie_purge_learning_on_account_anonymise
   after update of username on public.profiles
   for each row execute function public.pfie_purge_learning_on_account_anonymise();
+
+-- Aggregated, identifier-free preference signals for PFIE coverage and PUNT AI context.
+create or replace view public.pfie_learning_signals
+with (security_invoker = true) as
+select
+  payload ->> 'event_type' as event_type,
+  payload -> 'event_data' ->> 'sport' as sport,
+  payload -> 'event_data' ->> 'competition' as competition,
+  payload -> 'event_data' ->> 'market' as market,
+  payload -> 'event_data' ->> 'category' as category,
+  count(*)::bigint as interactions,
+  count(distinct subject_key)::bigint as pseudonymous_participants,
+  max(created_at) as last_seen_at
+from public.pfie_learning_examples
+where source_kind = 'real_activity_event'
+  and task_type = 'behavioral_preference'
+  and training_status = 'approved'
+  and label_status = 'verified'
+group by 1,2,3,4,5;
+revoke all on public.pfie_learning_signals from anon, authenticated;
+grant select on public.pfie_learning_signals to service_role;
