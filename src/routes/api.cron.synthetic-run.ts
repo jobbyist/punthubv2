@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { SYNTHETIC_QA_ORIGIN, syntheticQaUrl, syntheticResearchUrl } from "@/lib/synthetic/route-origin";
 
 const EXPERIMENT_SLUG = "puntr-30-day-synthetic-2026-11-27";
 const ALLOWED_PATHS = new Set(["/", "/founding", "/predictions", "/fixtures", "/results", "/newsroom", "/roadmap"]);
@@ -94,12 +95,15 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         const visited: string[] = [];
         let outcome: "passed" | "failed" = "passed";
         let errorCode: string | null = null;
-        const origin = new URL(request.url).origin;
+        // Vercel Cron can invoke the deployment hostname, which redirects to the canonical
+        // Puntr domain. Start checks at the canonical origin so that redirect is not
+        // misclassified as an external-origin security failure.
+        const origin = SYNTHETIC_QA_ORIGIN;
 
         try {
           const checks = await Promise.all(journey.map(async (path) => {
           try {
-            const target = new URL(path, origin);
+            const target = syntheticQaUrl(path);
             const response = await fetch(target, {
               method: "GET",
               redirect: "follow",
@@ -165,7 +169,7 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         if (outcome === "passed") {
           const secret = process.env["CRON_SECRET"];
           if (!secret) return Response.json({ ok: false, error: "cron_not_configured" }, { status: 503 });
-          const endpoint = new URL("/api/cron/synthetic-decisions-daily", origin);
+          const endpoint = syntheticResearchUrl();
           const response = await fetch(endpoint, {
             method: "POST",
             headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" },
