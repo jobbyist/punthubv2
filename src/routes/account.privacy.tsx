@@ -224,7 +224,11 @@ function PfieLearningSection({ userId }: { userId: string }) {
         if (!active) return;
         setEnabled(cookieChoice.pfie_learning);
       } else if (active) {
-        setEnabled(current?.granted === true);
+        const accountChoice = current?.granted === true;
+        setEnabled(accountChoice);
+        if (cookieChoice && cookieChoice.pfie_learning !== accountChoice) {
+          writeConsent({ analytics: cookieChoice.analytics, affiliate_tracking: cookieChoice.affiliate_tracking, pfie_learning: accountChoice }, "account", false);
+        }
       }
     })();
     return () => { active = false; };
@@ -240,7 +244,7 @@ function PfieLearningSection({ userId }: { userId: string }) {
         analytics: hasConsent("analytics"),
         affiliate_tracking: hasConsent("affiliate_tracking"),
         pfie_learning: granted,
-      }, "account");
+      }, "account", false);
       toast.success(t("privacy.pfieLearning.saved"));
     } catch {
       setEnabled(previous);
