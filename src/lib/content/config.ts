@@ -129,7 +129,5 @@ export function modelsForContentSlot(models: readonly string[], slot?: "breaking
 
 /** Select a different Gemini model for revision/review, avoiding a second paid Parallel call. */
 export function alternativeGeminiModel(models: readonly string[], current: string): string | null {
-  return models.find((model) => model.startsWith("gemini-") && model !== current)
-    ?? models.find((model) => model.startsWith("gemini-"))
-    ?? null;
+  return models.find((model) => model.startsWith("gemini-") && model !== current) ?? null;
 }
