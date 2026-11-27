@@ -79,7 +79,7 @@ export const setPfieLearningConsent = createServerFn({ method: "POST" })
       .select("is_ai_participant")
       .eq("id", context.userId)
       .maybeSingle();
-    if (profileError || memberProfile?.is_ai_participant === true) return false;
+    if (profileError || memberProfile?.is_ai_participant !== false) return false;
     const { error: consentError } = await context.supabase.rpc("record_consent", {
       p_purpose: "pfie_learning",
       p_granted: data.granted,
