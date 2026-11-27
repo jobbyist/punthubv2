@@ -150,65 +150,41 @@ describe("http", () => {
 });
 
 describe("model router", () => {
-  const models = ["gemini-3.8-flash", "gemini-3.1-flash-lite"];
-  it("uses the primary model when it works", async () => {
+  const models = ["parallel-medium"];
+  it("uses Parallel Medium when it works", async () => {
     const llm = fakeLlm(() => "{}");
     const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(out.model).toBe("gemini-3.8-flash");
+    expect(out.model).toBe("parallel-medium");
   });
-  it("falls back when the primary is out of quota", async () => {
-    const llm = fakeLlm((model) => (model === "gemini-3.8-flash" ? quota() : "{}"));
-    const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
-    expect(out.attempts.map((a) => a.outcome)).toEqual(["quota", "ok"]);
-  });
-  it("moves straight to the fallback on a timeout while another model is left", async () => {
-    const llm = fakeLlm((model) =>
-      model === "gemini-3.8-flash" ? new ProviderError("gemini", "timeout", null, "slow") : "{}",
-    );
-    const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual(["gemini-3.8-flash", "gemini-3.1-flash-lite"]);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
-  });
-  it("retries a timeout once on the last model in the chain", async () => {
-    let lite = 0;
-    const llm = fakeLlm((model) => {
-      if (model === "gemini-3.8-flash")
-        return new ProviderError("gemini", "unavailable", 503, "busy");
-      lite += 1;
-      return lite === 1 ? new ProviderError("gemini", "timeout", null, "slow") : "{}";
+  it("retries a transient timeout once on the only approved model", async () => {
+    let calls = 0;
+    const llm = fakeLlm(() => {
+      calls += 1;
+      return calls === 1 ? new ProviderError("parallel", "timeout", null, "slow") : "{}";
     });
     const out = await createModelRouter(llm, { models, sleep: noSleep }).generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual([
-      "gemini-3.8-flash",
-      "gemini-3.1-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
-    expect(out.model).toBe("gemini-3.1-flash-lite");
+    expect(llm.calls.map((c) => c.model)).toEqual(["parallel-medium", "parallel-medium"]);
+    expect(out.model).toBe("parallel-medium");
   });
-  it("skips a model that has reached its own daily ceiling without calling it", async () => {
+  it("skips Parallel when its daily ceiling is reached", async () => {
     const llm = fakeLlm(() => "{}");
     const router = createModelRouter(llm, {
       models,
-      usedToday: { "gemini-3.8-flash": 20 },
-      dailyCap: { "gemini-3.8-flash": 20 },
+      usedToday: { "parallel-medium": 12 },
+      dailyCap: { "parallel-medium": 12 },
       sleep: noSleep,
     });
-    const out = await router.generate(REQUEST);
-    expect(llm.calls.map((c) => c.model)).toEqual(["gemini-3.1-flash-lite"]);
-    expect(out.attempts[0]?.outcome).toBe("skipped_cap");
-  });
-  it("never calls a model outside the free list", async () => {
-    const llm = fakeLlm(() => "{}");
-    const router = createModelRouter(llm, { models: ["gemini-3.1-pro-preview"], sleep: noSleep });
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
     expect(llm.calls).toHaveLength(0);
   });
-  it("throws AllModelsFailed when both models fail", async () => {
-    const router = createModelRouter(
-      fakeLlm(() => quota()),
-      { models, sleep: noSleep },
-    );
+  it("never calls Gemini even if it is explicitly requested", async () => {
+    const llm = fakeLlm(() => "{}");
+    const router = createModelRouter(llm, { models: ["gemini-3.8-flash"], sleep: noSleep });
+    await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
+    expect(llm.calls).toHaveLength(0);
+  });
+  it("throws AllModelsFailed when Parallel is out of quota", async () => {
+    const router = createModelRouter(fakeLlm(() => quota()), { models, sleep: noSleep });
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
   });
 });
