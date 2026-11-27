@@ -52,6 +52,7 @@ export const DEFAULT_ODDS_SOURCE_DOMAINS = [
   "playbet.co.za",
   "lottostar.co.za",
   "easybet.co.za",
+  "1xbet.com",
 ] as const;
 
 /**
