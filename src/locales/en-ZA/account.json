@@ -66,6 +66,12 @@
       "working": "Deleting…",
       "error": "We couldn't delete your account. Please try again or send a privacy request.",
       "done": "Your account has been deleted."
+    },
+    "pfieLearning": {
+      "title": "PFIE learning (optional)",
+      "body": "Allow Puntr to use pseudonymous activity signals and your published pick actions to improve PFIE, its sporting data quality and product relevance. This is separate from analytics and is not required to use Puntr.",
+      "toggle": "Allow my activity and pick signals to contribute to PFIE learning.",
+      "withdrawal": "You can withdraw at any time. Withdrawal stops future collection and deletes your raw activity and derived learning examples associated with your pseudonymous learning record. Your public pick record remains governed by the separate public-pick terms."
     }
   },
   "record": {
