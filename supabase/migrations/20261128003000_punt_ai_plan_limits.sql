@@ -1,4 +1,5 @@
--- Apply plan-based PUNT AI limits and account eligibility to the service-role claim RPC.
+-- Replace the temporary usage guard with plan-aware limits and member eligibility checks.
+-- The server function calls this RPC with the service role after authenticating the member.
 
 alter table public.punt_ai_cache
   add column if not exists updated_at timestamptz not null default now();
@@ -10,7 +11,7 @@ alter table public.punt_ai_usage
   drop constraint if exists punt_ai_usage_user_id_fkey;
 alter table public.punt_ai_usage
   add constraint punt_ai_usage_user_id_fkey
-  foreign key (user_id) references auth.users(id) on delete cascade;
+  foreign key (user_id) references public.profiles(id) on delete cascade;
 
 create index if not exists punt_ai_usage_created_idx
   on public.punt_ai_usage(created_at desc);
