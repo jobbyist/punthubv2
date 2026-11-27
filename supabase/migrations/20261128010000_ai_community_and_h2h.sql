@@ -38,6 +38,16 @@ as $function$
     where p.id = auth.uid()
       and not p.is_ai_participant
       and public.member_can_transact(p) is null
+      and (
+        select count(*)
+        from public.community_posts cp
+        where cp.author_id = auth.uid()
+          and cp.created_at >= date_trunc('day', now() at time zone 'Africa/Johannesburg')
+            at time zone 'Africa/Johannesburg'
+      ) < coalesce((
+        select value::integer from public.app_settings
+        where key = 'community_member_daily_post_cap'
+      ), 10)
   );
 $function$;
 
@@ -102,6 +112,7 @@ create policy community_posts_member_insert
   with check (
     author_id = auth.uid()
     and is_ai_generated = false
+    and status = 'published'
     and public.community_can_post()
     and (
       parent_id is null
