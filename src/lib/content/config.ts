@@ -5,10 +5,37 @@
  * Flash-Lite, so a busy or capped model no longer drops straight to the lightest one. Every entry is on the free
  * tier; a model the project cannot reach answers 404 and the router simply moves on.
  */
-/** Parallel is the only approved model for Newsroom writing, revision and review. */
-export const APPROVED_CONTENT_MODELS: readonly string[] = ["parallel-medium"];
+/** Default Gemini models used by the PFIE fixture and odds research pipelines. */
+export const DEFAULT_GEMINI_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+] as const;
+
+/** Strongest approved free Gemini models for PFIE structured extraction. */
+export const DEFAULT_PFIE_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+] as const;
+
+/** Shared router allowlist for PFIE/odds. The Newsroom slot selector below pins Newsroom to Parallel only. */
+export const APPROVED_CONTENT_MODELS: readonly string[] = [
+  "parallel-medium",
+  "gemini-3.8-flash",
+  "gemini-3.7-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+];
 
 export interface ContentEnv {
+  geminiKey: string | null;
   parallelKey: string | null;
   firecrawlKey: string | null;
   /** Newsroom model allowlist; currently Parallel Medium only. */
@@ -28,11 +55,20 @@ function clean(value: string | undefined): string | null {
   return v ? v : null;
 }
 
-export function parseModelList(_raw?: string): { models: string[]; refused: string[] } {
-  return { models: ["parallel-medium"], refused: [] };
+export function parseModelList(raw: string | undefined): { models: string[]; refused: string[] } {
+  const wanted = (raw ?? "").split(",").map((m) => m.trim()).filter(Boolean);
+  const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
+  const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
+  const models: string[] = [];
+  const refused: string[] = [];
+  for (const model of ordered) {
+    if (!APPROVED_CONTENT_MODELS.includes(model)) refused.push(model);
+    else if (!models.includes(model)) models.push(model);
+  }
+  return { models, refused };
 }
 
-/** `CONTENT_MODEL_RPD` looks like `parallel-medium=12`. Bad entries are ignored. */
+/** Per-model request caps, e.g. `gemini-3.8-flash=20`. Bad entries are ignored. */
 export function parseDailyCaps(raw: string | undefined): Record<string, number> {
   const caps: Record<string, number> = {};
   for (const part of (raw ?? "").split(",")) {
@@ -47,11 +83,12 @@ export function readContentEnv(env: Env = process.env): ContentEnv {
   const { models, refused } = parseModelList();
   const budget = Number(env["CONTENT_RUN_BUDGET_MS"]);
   return {
+    geminiKey: clean(env["GEMINI_API_KEY"]),
     parallelKey: clean(env["PARALLEL_API_KEY"]),
     firecrawlKey: clean(env["FIRECRAWL_API_KEY"]),
     models,
     refusedModels: refused,
-    dailyRequestCap: parseDailyCaps(env["CONTENT_MODEL_RPD"]),
+    dailyRequestCap: parseDailyCaps(env["CONTENT_GEMINI_RPD"]),
     runBudgetMs: Number.isFinite(budget) && budget >= 10_000 ? budget : 120_000,
   };
 }
@@ -71,7 +108,7 @@ export function redact(secret: string | null): string {
 }
 
 
-/** Every Newsroom slot uses the same approved Parallel Medium model. */
+/** Every Newsroom slot uses Parallel Medium; Gemini remains available only to the separate PFIE/odds pipelines. */
 export function modelsForContentSlot(_models: readonly string[], _slot?: "breaking" | "editorial" | "intelligence"): string[] {
   return ["parallel-medium"];
 }
