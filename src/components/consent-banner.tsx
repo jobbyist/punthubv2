@@ -10,7 +10,7 @@ export function ConsentBanner() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!readConsent()) setOpen(true);
+    if (!readConsent() || readConsent()?.noticeVersion !== "2026-11-27-pfie-learning") setOpen(true);
     const reopen = () => setOpen(true);
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen);
@@ -19,7 +19,7 @@ export function ConsentBanner() {
   if (!open) return null;
 
   const choose = (on: boolean) => {
-    writeConsent({ analytics: on, affiliate_tracking: on });
+    writeConsent({ analytics: on, affiliate_tracking: on, pfie_learning: on });
     setOpen(false);
   };
 
