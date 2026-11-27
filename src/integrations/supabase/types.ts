@@ -13,7 +13,40 @@ export type Database = {
     PostgrestVersion: "14.18"
   }
   public: {
-    Tables: {
+    Tables: {\n      bookmaker_odds_permissions: {
+        Row: {
+          id: string; bookmaker_name: string; domain: string | null; affiliate_partner_slug: string | null;
+          affiliate_status: string; affiliate_priority: number; licence_reference_candidate: string | null;
+          licence_status: string; data_rights_status: string; rights_evidence_url: string | null;
+          rights_reviewed_at: string | null; rights_reviewed_by: string | null; automated_access_allowed: boolean;
+          enabled: boolean; notes: string | null; licence_evidence_url: string | null; licence_verified_at: string | null;
+          licence_verified_by: string | null; collection_approved: boolean; storage_approved: boolean;
+          display_approved: boolean; attribution_approved: boolean; retention_approved: boolean;
+          redistribution_approved: boolean; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; bookmaker_name: string; domain?: string | null; affiliate_partner_slug?: string | null;
+          affiliate_status?: string; affiliate_priority?: number; licence_reference_candidate?: string | null;
+          licence_status?: string; data_rights_status?: string; rights_evidence_url?: string | null;
+          rights_reviewed_at?: string | null; rights_reviewed_by?: string | null; automated_access_allowed?: boolean;
+          enabled?: boolean; notes?: string | null; licence_evidence_url?: string | null; licence_verified_at?: string | null;
+          licence_verified_by?: string | null; collection_approved?: boolean; storage_approved?: boolean;
+          display_approved?: boolean; attribution_approved?: boolean; retention_approved?: boolean;
+          redistribution_approved?: boolean; created_at?: string; updated_at?: string;
+        };
+        Update: {
+          id?: string; bookmaker_name?: string; domain?: string | null; affiliate_partner_slug?: string | null;
+          affiliate_status?: string; affiliate_priority?: number; licence_reference_candidate?: string | null;
+          licence_status?: string; data_rights_status?: string; rights_evidence_url?: string | null;
+          rights_reviewed_at?: string | null; rights_reviewed_by?: string | null; automated_access_allowed?: boolean;
+          enabled?: boolean; notes?: string | null; licence_evidence_url?: string | null; licence_verified_at?: string | null;
+          licence_verified_by?: string | null; collection_approved?: boolean; storage_approved?: boolean;
+          display_approved?: boolean; attribution_approved?: boolean; retention_approved?: boolean;
+          redistribution_approved?: boolean; created_at?: string; updated_at?: string;
+        };
+        Relationships: [];
+      };
+
       account_warnings: {
         Row: {
           acknowledged_at: string | null
