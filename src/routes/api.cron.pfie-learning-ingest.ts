@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
           label_status: "verified",
           training_status: routeCheck && ["passed", "failed"].includes(s.outcome) ? "approved" : "excluded",
           provenance: { source_table: "synthetic_sessions", source_id: s.id, experiment_id: s.experiment_id, synthetic: true, label_origin: "deterministic_http_route_check" },
-        }, { onConflict: "source_kind,source_id,task_type" });
+        }, { onConflict: "source_kind,source_id,task_type", ignoreDuplicates: true });
         if (error) throw error;
         examplesUpserted++;
       }
