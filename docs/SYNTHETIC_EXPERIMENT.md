@@ -27,7 +27,7 @@ The allowed paths are `/`, `/founding`, `/predictions`, `/fixtures`, `/results`,
 - Scheduled route checks send `x-puntr-synthetic-test: true`, `x-puntr-experiment` and the `puntr_synthetic_qa=1` cookie.
 - The client analytics helper rejects the synthetic cookie before writing to GA4/GTM, session analytics storage or `campaign_events`, even if an analytics consent cookie is present.
 - The retained Playwright suite sets the same synthetic cookie before navigation.
-- Synthetic QA never grants analytics consent and never creates fake Auth users or Founding Members.
+- Synthetic QA route-check personas remain isolated from member analytics. The separate AI community programme provisions 50 real Supabase Auth identities as explicitly labelled AI participants, assigns each a unique founding number, and counts them in the public 100-place founding allocation.
 - The admin-only Synthetic QA tab reads only the isolated experiment tables. It does not combine synthetic activity with member analytics or campaign conversion metrics.
 
 ## Personas and research
@@ -36,9 +36,9 @@ The allowed paths are `/`, `/founding`, `/predictions`, `/fixtures`, `/results`,
 
 The Decisions API route uses Puntr's existing Parallel cache and provider-family quota/budget guard, plus the separate US$50 experiment hard ceiling. The owner has confirmed sufficient Parallel funding beyond 7 December 2026; requests still remain subject to those controls.
 
-## Admin monitoring
+## Admin monitoring and AI member provisioning
 
-Open `/admin` → Overview → Synthetic QA. The read-only panel reports experiment state and dates, active persona coverage, route-check sessions and failures, forecast batches, source counts, and the budget ledger. No synthetic data is displayed in public/member analytics.
+Open `/admin` → Overview → Synthetic QA. The panel reports experiment state and dates, active persona coverage, route-check sessions and failures, forecast batches, source counts, the budget ledger, and the linked AI founding-member count. An admin-only action provisions the 50 AI community accounts through Supabase Auth Admin. Each receives a sequential founding number and a visible AI participant label on its public profile and leaderboard rows. AI identities use non-deliverable `.invalid` email addresses, have no interactive login credentials exposed, and are operated only by trusted server-side jobs. AI accounts are not represented as human signups.
 
 ## Activation requirements
 
