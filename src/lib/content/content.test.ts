@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  alternativeGeminiModel,
   missingCredentials,
+  modelsForContentSlot,
   parseDailyCaps,
   parseModelList,
   readContentEnv,
@@ -71,7 +73,20 @@ describe("config", () => {
     expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
     expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
-  it("uses paid Parallel Medium only for the breaking slot", () => {\n    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];\n    expect(modelsForContentSlot(models, "breaking")).toEqual(models);\n    expect(modelsForContentSlot(models, "editorial")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);\n    expect(modelsForContentSlot(models, "intelligence")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);\n    expect(modelsForContentSlot(models)).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);\n  });\n  it("chooses a different Gemini model for independent review", () => {\n    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];\n    expect(alternativeGeminiModel(models, "parallel-medium")).toBe("gemini-3.8-flash");\n    expect(alternativeGeminiModel(models, "gemini-3.8-flash")).toBe("gemini-3.6-flash");\n    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBe("gemini-3.8-flash");\n  });\n  it("reads daily caps and ignores bad entries", () => {
+  it("uses paid Parallel Medium only for the breaking slot", () => {
+    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
+    expect(modelsForContentSlot(models, "breaking")).toEqual(models);
+    expect(modelsForContentSlot(models, "editorial")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
+    expect(modelsForContentSlot(models, "intelligence")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
+    expect(modelsForContentSlot(models)).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
+  });
+  it("chooses a different Gemini model for independent review", () => {
+    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
+    expect(alternativeGeminiModel(models, "parallel-medium")).toBe("gemini-3.8-flash");
+    expect(alternativeGeminiModel(models, "gemini-3.8-flash")).toBe("gemini-3.6-flash");
+    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBe("gemini-3.8-flash");
+  });
+  it("reads daily caps and ignores bad entries", () => {
     expect(parseDailyCaps("gemini-3.8-flash=20, x=abc, gemini-3.1-flash-lite=500")).toEqual({
       "gemini-3.8-flash": 20,
       "gemini-3.1-flash-lite": 500,
