@@ -22,9 +22,10 @@ const suggestions = [
   "What is the current Premier League table?",
 ];
 
-function errorMessage(code: "not_launched" | "rate_limited" | "unavailable"): string {
+function errorMessage(code: "not_launched" | "rate_limited" | "account_restricted" | "unavailable"): string {
   if (code === "not_launched") return "PUNT AI will be available when your Puntr launch access is active.";
   if (code === "rate_limited") return "You've reached the current PUNT AI usage limit. Try again later.";
+  if (code === "account_restricted") return "PUNT AI requires an age-verified account in good standing. Complete your account verification or contact support.";
   return "PUNT AI is temporarily unavailable. Please try again shortly.";
 }
 
