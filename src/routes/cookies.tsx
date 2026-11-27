@@ -53,7 +53,10 @@ function Cookies() {
     setAffiliate(f);
     setPfieLearning(p);
     const { data: session } = await supabase.auth.getSession();
-    if (session.session) await setPfieLearningConsent({ data: { granted: p } }).catch(() => undefined);
+    if (session.session) {
+      try { await setPfieLearningConsent({ data: { granted: p } }); }
+      catch { toast.error(locale === "af" ? "Kon nie PFIE-leertoestemming stoor nie" : "Could not save the PFIE learning choice"); return; }
+    }
     writeConsent({ analytics: a, affiliate_tracking: f, pfie_learning: p });
     toast.success(locale === "af" ? "Privaatheidskeuses gestoor" : "Privacy choices saved");
   };
