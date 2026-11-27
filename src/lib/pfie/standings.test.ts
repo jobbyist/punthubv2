@@ -139,7 +139,7 @@ describe("configured direct standings sources", () => {
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.sportsmole.co.uk/football/ligue-1/table.html",
+      "https://www.ligue1schedule.com/table/2026-27",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
@@ -148,7 +148,7 @@ describe("configured direct standings sources", () => {
       "https://www.cbssports.com/soccer/ligue-1/standings/",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
+      "https://zeanball.online/en/table/ligue-1/",
     );
     expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
       "https://www.vi.nl/competities/eredivisie/stand",
