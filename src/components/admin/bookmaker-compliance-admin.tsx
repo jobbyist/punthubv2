@@ -15,6 +15,12 @@ type PermissionRow = {
   redistribution_approved: boolean; automated_access_allowed: boolean; enabled: boolean; notes: string | null;
 };
 
+const additionalCandidates = [
+  { name: "1xBet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No NGB licence reference confirmed", verificationNote: "Affiliate approval does not establish a South African bookmaker licence. Verify with the relevant regulator before treating this operator as licensed." },
+  { name: "Playbet", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate/affiliate record only. Confirm the legal operator, province and current licence before approval." },
+  { name: "LottoStar", licenceHolder: "Not confirmed", regulator: "Not confirmed", province: "Not confirmed", licenceReference: "No matching NGB directory entry confirmed", verificationNote: "Candidate record only. Confirm the legal operator, province and current licence before approval." },
+] as const;
+
 const rights = [
   ["collection_approved", "Collection"],
   ["storage_approved", "Storage/cache"],
@@ -157,7 +163,7 @@ export function BookmakerComplianceTab() {
           )}
         </section>
       ))}
-      <p className="text-xs text-muted-foreground">Only 42 operators listed in the curated NGB cross-reference are shown here. The live regulator directory can change; refresh this register after each regulator update. Additional affiliate or candidate operators not in the NGB snapshot remain separately tracked in the odds permissions registry.</p>
+      <p className="text-xs text-muted-foreground">The tab shows 43 operators from Puntr’s curated NGB cross-reference plus 3 additional affiliate/candidate operators requiring separate licence confirmation. The live regulator directory can change; refresh this register after each regulator update.</p>
     </div>
   );
 }
