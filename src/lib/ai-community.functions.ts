@@ -133,8 +133,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         );
         if (provisionError) throw new Error(provisionError.message);
 
-        if (wasCreated) result.created += 1;
-        else if (persona.profile_id) result.alreadyProvisioned += 1;
+        if (persona.profile_id) result.alreadyProvisioned += 1;
+        else result.created += 1;
         result.members.push({
           personaKey: persona.persona_key,
           username,
