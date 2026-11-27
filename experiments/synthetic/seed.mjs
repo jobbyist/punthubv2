@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { supabaseRest } from "./lib/db.mjs";
 
-const slug = process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-23";
+const slug = process.env.SYNTHETIC_EXPERIMENT_SLUG || "puntr-30-day-synthetic-2026-11-27";
 const file = JSON.parse(await readFile(new URL("./personas.json", import.meta.url), "utf8"));
 const rows = await supabaseRest(`synthetic_experiments?slug=eq.${encodeURIComponent(slug)}&select=id,status,starts_at,ends_at,budget_cap_usd,spent_usd,reserved_usd`);
 const experiment = rows?.[0];
