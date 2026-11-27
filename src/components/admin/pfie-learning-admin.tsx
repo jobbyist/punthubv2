@@ -51,6 +51,20 @@ export function PfieLearningTab() {
       <Button className="mt-4" size="sm" variant="outline" onClick={() => setNonce(n => n + 1)}>Refresh learning data</Button>
     </section>
     <section className={panel}>
+      <h3 className="font-display text-lg font-bold">What members are engaging with</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Aggregated, pseudonymous signals from members who opted into PFIE learning. These guide coverage and relevance; they are not sporting facts or prediction labels.</p>
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[42rem] text-sm">
+          <thead className="text-left text-xs uppercase text-muted-foreground"><tr><th className="py-2">Event</th><th>Sport</th><th>Competition</th><th>Market / category</th><th>Interactions</th><th>Participants</th></tr></thead>
+          <tbody className="divide-y divide-border">{data.signals.map((signal, i) => <tr key={`${signal.event_type}-${signal.sport}-${signal.competition}-${i}`}>
+            <td className="py-2 pr-2">{signal.event_type ?? "—"}</td><td>{signal.sport ?? "—"}</td><td>{signal.competition ?? "—"}</td><td>{signal.market ?? signal.category ?? "—"}</td>
+            <td className="tnum">{signal.interactions}</td><td className="tnum">{signal.pseudonymous_participants}</td>
+          </tr>)}</tbody>
+        </table>
+        {data.signals.length === 0 && <p className="py-4 text-sm text-muted-foreground">No opted-in member activity yet. Real-user signals will begin accumulating after launch.</p>}
+      </div>
+    </section>
+    <section className={panel}>
       <h3 className="font-display text-lg font-bold">Recent learning examples</h3>
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[48rem] text-sm">
