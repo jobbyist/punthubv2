@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 const db = supabase as unknown as SupabaseClient;
 
 export interface StandingRow {
+  group_name: string;
   team: string;
   position: number;
   played: number;
@@ -35,7 +36,7 @@ export async function fetchStandings(competitionKey: string): Promise<StandingRo
   const { data, error } = await db
     .from("league_standings")
     .select(
-      "team, position, played, won, drawn, lost, goals_for, goals_against, goal_diff, points, source_domain, synced_at, updated_at",
+      "group_name, team, position, played, won, drawn, lost, goals_for, goals_against, goal_diff, points, source_domain, synced_at, updated_at",
     )
     .eq("competition_key", competitionKey)
     .order("position");
