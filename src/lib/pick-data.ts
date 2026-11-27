@@ -24,6 +24,7 @@ export interface PickRow {
   hash: string;
   username: string | null;
   founding_number: number | null;
+  is_ai_participant: boolean;
   result: "won" | "lost" | "void" | null;
   units: number | null;
 }
@@ -45,13 +46,13 @@ export async function fetchFixture(id: string): Promise<FixtureRow | null> {
 
 /** Adds usernames, Founding numbers and results to raw picks. Everything read here is public. */
 async function decorate(
-  rows: Omit<PickRow, "username" | "founding_number" | "result" | "units">[],
+  rows: Omit<PickRow, "username" | "founding_number" | "is_ai_participant" | "result" | "units">[],
 ): Promise<PickRow[]> {
   if (rows.length === 0) return [];
   const userIds = [...new Set(rows.map((r) => r.user_id))];
   const ids = rows.map((r) => r.id);
   const [{ data: profiles }, { data: results }] = await Promise.all([
-    supabase.from("public_profiles").select("id, username, founding_number").in("id", userIds),
+    supabase.from("public_profiles").select("id, username, founding_number, is_ai_participant").in("id", userIds),
     supabase
       .from("prediction_results")
       .select("prediction_id, result, units")
@@ -66,13 +67,14 @@ async function decorate(
       ...r,
       username: p?.username ?? null,
       founding_number: p?.founding_number ?? null,
+      is_ai_participant: p?.is_ai_participant === true,
       result: (res?.result as PickRow["result"]) ?? null,
       units: res?.units ?? null,
     };
   });
 }
 
-type RawPick = Omit<PickRow, "username" | "founding_number" | "result" | "units">;
+type RawPick = Omit<PickRow, "username" | "founding_number" | "is_ai_participant" | "result" | "units">;
 
 /** Every visible (not hidden by moderation) pick on one match, oldest first. */
 export async function fetchPicksForFixture(fixtureId: string): Promise<PickRow[]> {
