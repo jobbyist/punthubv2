@@ -117,3 +117,51 @@ $$;
 drop trigger if exists pfie_validate_user_activity_event on public.pfie_user_activity_events;
 create trigger pfie_validate_user_activity_event before insert on public.pfie_user_activity_events
 for each row when (new.source = 'client') execute function public.pfie_validate_user_activity_event();
+
+-- Include the member's raw PFIE learning events in their data-access export.
+create or replace function public.export_my_pfie_learning_data()
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then raise exception 'not_authenticated' using errcode = '28000'; end if;
+  return jsonb_build_object(
+    'pfie_learning_events',
+    coalesce((select jsonb_agg(jsonb_build_object(
+      'event_type', e.event_type, 'fixture_id', e.fixture_id,
+      'event_data', e.event_data, 'source', e.source, 'created_at', e.created_at
+    ) order by e.created_at) from public.pfie_user_activity_events e where e.user_id = v_uid), '[]'::jsonb)
+  );
+end;
+$$;
+revoke execute on function public.export_my_pfie_learning_data() from public, anon;
+grant execute on function public.export_my_pfie_learning_data() to authenticated, service_role;
+
+-- Account anonymisation also removes this optional learning purpose's raw and derived records.
+create or replace function public.pfie_purge_learning_on_account_anonymise()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare v_subject_key text;
+begin
+  if new.username::text like 'deleted-%' and old.username::text not like 'deleted-%' then
+    select subject_key into v_subject_key from public.pfie_learning_subject_map where user_id = new.id;
+    if v_subject_key is not null then
+      delete from public.pfie_learning_examples where subject_key = v_subject_key;
+    end if;
+    delete from public.pfie_user_activity_events where user_id = new.id;
+    delete from public.pfie_learning_subject_map where user_id = new.id;
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists pfie_purge_learning_on_account_anonymise on public.profiles;
+create trigger pfie_purge_learning_on_account_anonymise
+  after update of username on public.profiles
+  for each row execute function public.pfie_purge_learning_on_account_anonymise();
