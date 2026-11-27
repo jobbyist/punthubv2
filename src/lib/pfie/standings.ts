@@ -448,14 +448,31 @@ export function validateTables(
   knownTeams: readonly string[] = [],
   now: Date = new Date(),
   allowTiedPositions = false,
+  groupNames?: readonly string[],
+  teamsPerGroup = expectedTeams,
 ): { tables: SourceTable[]; rejected: TableRejection[] } {
-  const bySource = new Map<number, RawStandingRow[]>();
-  for (const r of raw) bySource.set(r.source, [...(bySource.get(r.source) ?? []), r]);
+  const bySourceGroup = new Map<string, RawStandingRow[]>();
+  for (const r of raw) {
+    const group = (r.group ?? "").trim();
+    const key = `${r.source}::${group}`;
+    bySourceGroup.set(key, [...(bySourceGroup.get(key) ?? []), r]);
+  }
   const tables: SourceTable[] = [];
   const rejected: TableRejection[] = [];
 
-  for (const [index, extractedRows] of bySource) {
+  for (const [sourceGroup, extractedRows] of bySourceGroup) {
+    const [sourceIndex, groupName = ""] = sourceGroup.split("::", 2);
+    const index = Number(sourceIndex);
     const source = sources.find((s) => s.index === index);
+    const expectedForTable = groupNames?.length ? teamsPerGroup : expectedTeams;
+    if (groupNames?.length && !groupName) {
+      rejected.push({ source: index, reason: "group_missing" });
+      continue;
+    }
+    if (groupNames?.length && !groupNames.includes(groupName)) {
+      rejected.push({ source: index, reason: `unexpected_group_${groupName}` });
+      continue;
+    }
     const fail = (reason: string) => rejected.push({ source: index, reason });
     if (!source) {
       fail("unknown_source");
@@ -523,17 +540,17 @@ export function validateTables(
       fail(duplicateConflict);
       continue;
     }
-    if (rows.length !== expectedTeams) {
-      fail(`team_count_${rows.length}_expected_${expectedTeams}`);
+    if (rows.length !== expectedForTable) {
+      fail(`team_count_${rows.length}_expected_${expectedForTable}`);
       continue;
     }
     const orderedPositions = rows.map((r) => r.position);
     const validUniquePositions =
-      new Set(orderedPositions).size === expectedTeams &&
-      orderedPositions.every((p) => p >= 1 && p <= expectedTeams);
+      new Set(orderedPositions).size === expectedForTable &&
+      orderedPositions.every((p) => p >= 1 && p <= expectedForTable);
     const validTiedPositions = (() => {
       if (!allowTiedPositions) return false;
-      if (orderedPositions.some((p) => p < 1 || p > expectedTeams)) return false;
+      if (orderedPositions.some((p) => p < 1 || p > expectedForTable)) return false;
       const groups = new Map<number, number>();
       for (const position of orderedPositions)
         groups.set(position, (groups.get(position) ?? 0) + 1);
@@ -642,6 +659,7 @@ export function validateTables(
           // Team aliases can resolve to one canonical club only after known-team matching. Apply the same
           // cumulative overall-row preference after resolution as before it.
           out[duplicateIndex] = {
+            ...(groupName ? { group: groupName } : {}),
             position: r.position,
             team,
             played: r.played,
@@ -660,6 +678,7 @@ export function validateTables(
       }
       names.add(key);
       out.push({
+        ...(groupName ? { group: groupName } : {}),
         position: r.position,
         team,
         played: r.played,
@@ -681,7 +700,7 @@ export function validateTables(
       fail("points_out_of_order");
       continue;
     }
-    tables.push({ source, rows: ordered, tableDate });
+    tables.push({ source, ...(groupName ? { group: groupName } : {}), rows: ordered, tableDate });
   }
   return { tables, rejected };
 }
