@@ -16,7 +16,10 @@ import type { PfieSource } from "./types";
 
 /** Competitions with a single league table, with the number of teams it must have. */
 export const STANDINGS_LAUNCH_KEYS = [
-  "psl", "epl", "laliga", "seriea", "bundesliga", "primeira", "championship", "saudi-pro",
+  // Explicit pre-launch restoration order agreed with the product owner.
+  "epl", "laliga", "ucl", "uecl", "sa-championship",
+  // Existing validated domestic tables remain in scope after the restoration priorities.
+  "psl", "seriea", "bundesliga", "primeira", "championship", "saudi-pro",
 ] as const satisfies readonly CompetitionKey[];
 
 export const STANDINGS_COMPETITIONS: Partial<
@@ -190,6 +193,23 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.tntsports.co.uk/football/champions-league/2026-2027/standings.shtml",
       "https://www.cbssports.com/soccer/champions-league/standings/",
       "https://www.foxsports.com/soccer/champions-league/standings",
+    ],
+  },
+  uecl: {
+    teams: 36,
+    refreshHours: 24,
+    queries: [
+      "UEFA Conference League 2026/27 league phase standings full table",
+      "Conference League 36 team standings played wins draws losses goals for goals against points",
+      "site:tntsports.co.uk/football/conference-league/2026-2027/standings.shtml UEFA Conference League table",
+      "site:cbssports.com/soccer/uefa-conference-league/standings Conference League standings",
+      "site:foxsports.com/soccer/uefa-conference-league/standings Conference League table",
+    ],
+    pages: [
+      "https://www.uefa.com/uefaconferenceleague/standings/",
+      "https://www.tntsports.co.uk/football/conference-league/2026-2027/standings.shtml",
+      "https://www.cbssports.com/soccer/uefa-conference-league/standings/",
+      "https://www.foxsports.com/soccer/uefa-conference-league/standings",
     ],
   },
 };
