@@ -75,6 +75,14 @@ Controls:
 
 **Cost note:** The earlier steady-state estimate is not a current forecast: it assumed automated odds and Monitor-based team news that are not launch-enabled. Use api_spend_status() and the live quota/budget tables before increasing any provider cadence. At MVP, automated bookmaker odds and team-news Monitor jobs remain disabled.
 
+## PUNT AI production controls (28 Nov 2026)
+
+PUNT AI's application path uses Gemini for internal Puntr-data answers and Parallel Search + Extract + Chat low only for questions that materially need current web research. Live web is limited to Pro members or members spending **2 credits per successful live-web answer**. A failed live-web request falls back to stored Puntr data and does not charge the live-web credits.
+
+Production storage consists of a one-hour answer cache and an auditable per-user usage ledger. The database claim function enforces **20 requests/day and 300/month for Free**, and **40/day and 600/month for Pro**, using South African calendar boundaries. It rejects AI participant accounts, banned/suspended/limited accounts and accounts without age attestation. Cache and usage tables are service-role only; users cannot query or edit the ledger directly.
+
+The existing provider-family controls also apply to every uncached provider call: Parallel Search, Extract and Chat low use the shared $50 monthly Parallel budget and the $200 cumulative Q1 ceiling; Gemini internal answers use the existing per-model daily/monthly quota rows. The public chat button remains behind `SHOW_PUNT_AI_CHAT` until the production migration, preview build and launch-readiness checks are complete.
+
 ## Odds rules (owner decision, 22 Nov 2026)
 
 **MVP decision: member-entered odds only. Automated bookmaker odds remain deferred until written source rights are approved.**
