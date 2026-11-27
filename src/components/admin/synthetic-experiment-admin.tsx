@@ -42,11 +42,11 @@ export function SyntheticExperimentTab() {
         </div>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Personas" value={`${data.personas.active}/${data.personas.total}`} detail="Active synthetic profiles" />
-          <Metric label="Browser sessions" value={data.sessions.total} detail={`${latestFailures} failures in latest 30`} />
+          <Metric label="Route-check sessions" value={data.sessions.total} detail={`${latestFailures} failures in latest 30`} />
           <Metric label="Research batches" value={data.research.total} detail={`${data.research.recent.length} recent batches loaded`} />
           <Metric label="Budget remaining" value={money(remaining)} detail={`${money(e.spentUsd)} spent · ${money(e.reservedUsd)} reserved · ${money(e.budgetCapUsd)} cap`} />
         </div>
-        <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => setNonce((n) => n + 1)}>Refresh telemetry</Button><span className="self-center text-xs text-muted-foreground">Latest browser run: {stamp(data.personas.lastRunAt)} · Latest forecast: {stamp(data.personas.lastDecisionAt)}</span></div>
+        <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => setNonce((n) => n + 1)}>Refresh telemetry</Button><span className="self-center text-xs text-muted-foreground">Latest route check: {stamp(data.personas.lastRunAt)} · Latest forecast: {stamp(data.personas.lastDecisionAt)}</span></div>
       </section>
 
       <section className={panel}>
@@ -56,15 +56,15 @@ export function SyntheticExperimentTab() {
       </section>
 
       <section className={panel}>
-        <h3 className="font-display text-lg font-bold">Browser QA activity</h3>
-        <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[38rem] text-sm"><thead className="text-left text-xs uppercase text-muted-foreground"><tr><th className="py-2">Persona</th><th>Type</th><th>Outcome</th><th>Pages visited</th><th>Started</th></tr></thead><tbody className="divide-y divide-border">{data.sessions.recent.map((s) => <tr key={s.id}><td className="py-2 pr-2 font-mono text-xs">{s.personaKey}</td><td>{s.type}</td><td className={s.outcome === "failed" ? "text-destructive" : ""}>{s.outcome}{s.error ? <p className="max-w-xs break-words text-xs text-destructive">{s.error}</p> : null}</td><td className="max-w-xs break-words text-xs">{s.paths.join(" → ") || "—"}</td><td className="text-xs text-muted-foreground">{stamp(s.startedAt)}</td></tr>)}</tbody></table>{data.sessions.recent.length === 0 && <p className="py-4 text-sm text-muted-foreground">No browser sessions recorded.</p>}</div>
+        <h3 className="font-display text-lg font-bold">Public-route QA activity</h3>
+        <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[38rem] text-sm"><thead className="text-left text-xs uppercase text-muted-foreground"><tr><th className="py-2">Persona</th><th>Type</th><th>Outcome</th><th>Pages visited</th><th>Started</th></tr></thead><tbody className="divide-y divide-border">{data.sessions.recent.map((s) => <tr key={s.id}><td className="py-2 pr-2 font-mono text-xs">{s.personaKey}</td><td>{s.type}</td><td className={s.outcome === "failed" ? "text-destructive" : ""}>{s.outcome}{s.error ? <p className="max-w-xs break-words text-xs text-destructive">{s.error}</p> : null}</td><td className="max-w-xs break-words text-xs">{s.paths.join(" → ") || "—"}</td><td className="text-xs text-muted-foreground">{stamp(s.startedAt)}</td></tr>)}</tbody></table>{data.sessions.recent.length === 0 && <p className="py-4 text-sm text-muted-foreground">No route-check sessions recorded.</p>}</div>
       </section>
 
       <section className={panel}>
         <h3 className="font-display text-lg font-bold">Forecast research</h3>
         <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[32rem] text-sm"><thead className="text-left text-xs uppercase text-muted-foreground"><tr><th className="py-2">Fixture key</th><th>Decisions</th><th>No-pick</th><th>Sources</th><th>Created</th></tr></thead><tbody className="divide-y divide-border">{data.research.recent.map((r) => <tr key={`${r.fixtureKey}-${r.createdAt}`}><td className="py-2 pr-2 font-mono text-xs">{r.fixtureKey}</td><td>{r.decisionCount}</td><td>{r.noPickCount}</td><td>{r.sourceCount}</td><td className="text-xs text-muted-foreground">{stamp(r.createdAt)}</td></tr>)}</tbody></table>{data.research.recent.length === 0 && <p className="py-4 text-sm text-muted-foreground">No research batches recorded.</p>}</div>
       </section>
-      <p className="text-xs text-muted-foreground">Synthetic telemetry is isolated from member analytics, public picks and founding-member conversion metrics. This panel is read-only; pause or activation controls remain in the deployment/operations runbook.</p>
+      <p className="text-xs text-muted-foreground">Synthetic route checks and research are recorded only in the isolated QA tables. The synthetic cookie also blocks analytics delivery, even if analytics consent is present. Member analytics, public picks and founding-member conversion metrics are not used for QA. This panel is read-only; pause or activation controls remain in the deployment/operations runbook.</p>
     </div>
   );
 }
