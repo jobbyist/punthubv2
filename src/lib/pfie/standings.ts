@@ -657,7 +657,7 @@ export function independentSourceKey(domain: string): string {
 }
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
-export function tableRegression(candidate: StandingRow[], previous: StandingRow[]): string | null {
+export function tableRegression(\n  candidate: StandingRow[],\n  previous: StandingRow[],\n  allowVerifiedGoalCorrections = false,\n): string | null {
   if (previous.length === 0) return null;
   if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
   const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
@@ -665,11 +665,23 @@ export function tableRegression(candidate: StandingRow[], previous: StandingRow[
     const next = nextByTeam.get(normaliseTeam(old.team));
     if (!next) return `team_missing_from_new_snapshot_${old.team}`;
     if (next.played < old.played) return `played_regressed_${old.team}`;
+    const resultRecordUnchanged =
+      next.played === old.played &&
+      next.won === old.won &&
+      next.drawn === old.drawn &&
+      next.lost === old.lost &&
+      next.points === old.points;
     const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
     for (const field of fields) {
-      if (next[field] < old[field]) return `${field}_regressed_${old.team}`;
-      if (next.played === old.played && next[field] !== old[field])
+      if (next.played === old.played && next[field] !== old[field]) {
+        const verifiedGoalCorrection =
+          allowVerifiedGoalCorrections &&
+          resultRecordUnchanged &&
+          (field === "goalsFor" || field === "goalsAgainst");
+        if (verifiedGoalCorrection) continue;
         return `${field}_changed_without_new_matches_${old.team}`;
+      }
+      if (next[field] < old[field]) return `${field}_regressed_${old.team}`;
     }
   }
   return null;
