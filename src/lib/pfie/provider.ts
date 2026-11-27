@@ -401,6 +401,8 @@ const TRUSTED = [
   "sportmetrics.org",
   "tribuna.com",
   "ninetyminutesplus.com",
+  "swissfootballdata.com",
+  "keepstandings.com",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {
