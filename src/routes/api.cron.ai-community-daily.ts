@@ -129,24 +129,10 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
           return Response.json({ ok: true, skipped: true, reason: "ai_members_not_provisioned" });
         }
 
-        const { data: existingRun } = await db
-          .from("ai_community_runs")
-          .select("status,started_at")
-          .eq("activity_date", today)
-          .maybeSingle();
-        if (existingRun?.status === "completed") {
-          return Response.json({ ok: true, skipped: true, reason: "already_completed_today" });
-        }
-        if (existingRun?.status === "started" && Date.now() - Date.parse(existingRun.started_at) < 15 * 60 * 1000) {
-          return Response.json({ ok: true, skipped: true, reason: "daily_run_in_progress" });
-        }
-        const runWrite = existingRun
-          ? await db.from("ai_community_runs").update({
-              status: "started", started_at: now.toISOString(), completed_at: null, error: null,
-              posts_created: 0, replies_created: 0, duels_created: 0, updated_at: now.toISOString(),
-            }).eq("activity_date", today)
-          : await db.from("ai_community_runs").insert({ activity_date: today, status: "started" });
-        if (runWrite.error) {
+        const { data: claimed, error: claimError } = await db.rpc("claim_ai_community_run", {
+          p_activity_date: today,
+        });
+        if (claimError || claimed !== true) {
           return Response.json({ ok: true, skipped: true, reason: "daily_run_already_claimed" });
         }
 
@@ -207,12 +193,9 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
           const aiRepliedTo = new Set((existingReplies ?? [])
             .filter((row) => replyAiMap.get(row.author_id) === true)
             .map((row) => row.parent_id));
-          const repliedRecently = new Set((activityRows ?? [])
-            .filter((row) => row.activity_type === "reply")
-            .map((row) => row.persona_key));
           const replyTargets = humanThreads.filter((row) => !aiRepliedTo.has(row.id)).slice(0, MAX_REPLIES);
           const replyPersonas = rotation
-            .filter((p) => !used.has(p.persona_key) && !todayTypes.get(p.persona_key)?.has("reply") && !repliedRecently.has(p.persona_key))
+            .filter((p) => !used.has(p.persona_key) && !todayTypes.get(p.persona_key)?.has("reply"))
             .slice(0, replyTargets.length);
           replyPersonas.forEach((p) => used.add(p.persona_key));
 
@@ -319,26 +302,19 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
               const postBody = safeForumText(value["body"], 30, 700);
               const postCategory = textValue(value["category"]);
               if (!title || !postBody || !ALLOWED_CATEGORIES.has(postCategory)) continue;
-              const { data: inserted, error: insertError } = await db.from("community_posts").insert({
-                author_id: persona.profile_id,
-                parent_id: null,
-                title,
-                body: postBody,
-                category: postCategory,
-                status: "published",
-                is_ai_generated: true,
-              }).select("id").single();
-              if (insertError || !inserted) continue;
-              const { error: activityWriteError } = await db.from("ai_community_activity").insert({
-                persona_key: personaKey,
-                activity_date: today,
-                activity_type: "thread",
-                post_id: inserted.id,
+              const { data: postId, error: publishError } = await db.rpc("publish_ai_community_post", {
+                p_persona_key: personaKey,
+                p_activity_date: today,
+                p_activity_type: "thread",
+                p_title: title,
+                p_body: postBody,
+                p_category: postCategory,
+                p_parent_id: null,
+                p_target_post_id: null,
               });
-              if (!activityWriteError) {
-                usedThreadKeys.add(personaKey);
-                postsCreated += 1;
-              }
+              if (publishError || !postId) continue;
+              usedThreadKeys.add(personaKey);
+              postsCreated += 1;
             }
 
             const replyRows = Array.isArray(content["replies"]) ? content["replies"] : [];
@@ -352,27 +328,19 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
               const target = replyTargets.find((row) => row.id === targetId);
               const replyBody = safeForumText(value["body"], 20, 500);
               if (!persona || !allowedReplyKeys.has(personaKey) || usedReplyKeys.has(personaKey) || !target || !replyBody) continue;
-              const { data: inserted, error: insertError } = await db.from("community_posts").insert({
-                author_id: persona.profile_id,
-                parent_id: target.id,
-                title: null,
-                body: replyBody,
-                category: target.category,
-                status: "published",
-                is_ai_generated: true,
-              }).select("id").single();
-              if (insertError || !inserted) continue;
-              const { error: activityWriteError } = await db.from("ai_community_activity").insert({
-                persona_key: personaKey,
-                activity_date: today,
-                activity_type: "reply",
-                post_id: inserted.id,
-                target_post_id: target.id,
+              const { data: postId, error: publishError } = await db.rpc("publish_ai_community_post", {
+                p_persona_key: personaKey,
+                p_activity_date: today,
+                p_activity_type: "reply",
+                p_title: null,
+                p_body: replyBody,
+                p_category: target.category,
+                p_parent_id: target.id,
+                p_target_post_id: target.id,
               });
-              if (!activityWriteError) {
-                usedReplyKeys.add(personaKey);
-                repliesCreated += 1;
-              }
+              if (publishError || !postId) continue;
+              usedReplyKeys.add(personaKey);
+              repliesCreated += 1;
             }
           }
 
@@ -408,8 +376,13 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
             return fixture ? [{ persona, fixture, markets: marketsFor(persona.persona) }] : [];
           });
           if (duelsOpen === true && selected.length > 0 && parallelKey) {
-            const questions: Record<string, { type: "choice"; instructions: string; criteria: Record<string, string> }> = {};
+            const { createQuotaClaim } = await import("@/lib/quota.server");
+            const { createParallelDecisions } = await import("@/lib/parallel/decisions");
+            const claim = await createQuotaClaim("ai-community:h2h");
+            const decisions = createParallelDecisions(parallelKey);
             for (const item of selected) {
+              if (!(await claim("parallel"))) break;
+              const questions: Record<string, { type: "choice"; instructions: string; criteria: Record<string, string> }> = {};
               for (const market of item.markets) {
                 const key = `${item.persona.persona_key}__${item.fixture.id}__${market}`;
                 questions[key] = {
@@ -423,57 +396,48 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
                   criteria: { ...MARKET_OPTIONS[market], no_pick: "Evidence is insufficient, stale, contradictory, or the fixture is not eligible for a pre-match forecast." },
                 };
               }
-            }
-            if (Object.keys(questions).length > 0 && Object.keys(questions).length <= 100) {
-              const { createQuotaClaim } = await import("@/lib/quota.server");
-              const { createParallelDecisions } = await import("@/lib/parallel/decisions");
-              const claim = await createQuotaClaim("ai-community:h2h");
-              if (await claim("parallel")) {
-                const result = await createParallelDecisions(parallelKey).decide({
-                  mode: "fast",
-                  state: {
-                    fixtures: selected.map((item) => ({
-                      fixture_id: item.fixture.id,
-                      competition: item.fixture.competition,
-                      home: item.fixture.home,
-                      away: item.fixture.away,
-                      kickoff_utc: item.fixture.kickoff_at,
-                    })),
-                    rule: "Pre-match only. Use independent current sources. Never advise on stakes or wagering.",
+              const result = await decisions.decide({
+                mode: "fast",
+                state: {
+                  fixture: {
+                    fixture_id: item.fixture.id,
+                    competition: item.fixture.competition,
+                    home: item.fixture.home,
+                    away: item.fixture.away,
+                    kickoff_utc: item.fixture.kickoff_at,
                   },
-                  questions,
-                });
-                const domains = domainsFromCitations(result["citations"]);
-                const answers = isRecord(result["answers"]) ? result["answers"] : {};
-                if (domains.length >= 2) {
-                  for (const item of selected) {
-                    const picks: { market: string; selection: string }[] = [];
-                    for (const market of item.markets) {
-                      const answer = answers[`${item.persona.persona_key}__${item.fixture.id}__${market}`];
-                      if (!isRecord(answer) || answer["type"] !== "choice") continue;
-                      const selection = textValue(answer["choice"]);
-                      const probabilities = isRecord(answer["probabilities"]) ? answer["probabilities"] : {};
-                      const probability = typeof probabilities[selection] === "number" ? probabilities[selection] as number : 0;
-                      if (MARKET_OPTIONS[market]?.[selection] && probability >= 0.55) picks.push({ market, selection });
-                    }
-                    if (picks.length !== 2) continue;
-                    const { data: duelId, error: duelError } = await db.rpc("create_ai_open_duel", {
-                      p_persona_key: item.persona.persona_key,
-                      p_fixture_id: item.fixture.id,
-                      p_picks: picks,
-                      p_message: "AI participant challenge · free-to-play",
-                    });
-                    if (duelError || !duelId) continue;
-                    const { error: activityWriteError } = await db.from("ai_community_activity").insert({
-                      persona_key: item.persona.persona_key,
-                      activity_date: today,
-                      activity_type: "duel",
-                      duel_id: duelId,
-                    });
-                    if (!activityWriteError) duelsCreated += 1;
-                  }
-                }
+                  rule: "Pre-match only. Use at least two independent current source domains for this fixture. Never advise on stakes or wagering.",
+                },
+                questions,
+              });
+              // Citations are checked per fixture, not pooled across multiple challenges.
+              const domains = domainsFromCitations(result["citations"]);
+              if (domains.length < 2) continue;
+              const answers = isRecord(result["answers"]) ? result["answers"] : {};
+              const picks: { market: string; selection: string }[] = [];
+              for (const market of item.markets) {
+                const answer = answers[`${item.persona.persona_key}__${item.fixture.id}__${market}`];
+                if (!isRecord(answer) || answer["type"] !== "choice") continue;
+                const selection = textValue(answer["choice"]);
+                const probabilities = isRecord(answer["probabilities"]) ? answer["probabilities"] : {};
+                const probability = typeof probabilities[selection] === "number" ? probabilities[selection] as number : 0;
+                if (MARKET_OPTIONS[market]?.[selection] && probability >= 0.55) picks.push({ market, selection });
               }
+              if (picks.length !== 2) continue;
+              const { data: duelId, error: duelError } = await db.rpc("create_ai_open_duel", {
+                p_persona_key: item.persona.persona_key,
+                p_fixture_id: item.fixture.id,
+                p_picks: picks,
+                p_message: "AI participant challenge · free-to-play",
+              });
+              if (duelError || !duelId) continue;
+              const { error: activityWriteError } = await db.from("ai_community_activity").insert({
+                persona_key: item.persona.persona_key,
+                activity_date: today,
+                activity_type: "duel",
+                duel_id: duelId,
+              });
+              if (!activityWriteError) duelsCreated += 1;
             }
           }
 
