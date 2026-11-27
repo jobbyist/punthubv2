@@ -96,7 +96,8 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         let errorCode: string | null = null;
         const origin = new URL(request.url).origin;
 
-        try {\n          const checks = await Promise.all(journey.map(async (path) => {
+        try {
+          const checks = await Promise.all(journey.map(async (path) => {
           try {
             const target = new URL(path, origin);
             const response = await fetch(target, {
