@@ -657,7 +657,11 @@ export function independentSourceKey(domain: string): string {
 }
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
-export function tableRegression(\n  candidate: StandingRow[],\n  previous: StandingRow[],\n  allowVerifiedGoalCorrections = false,\n): string | null {
+export function tableRegression(
+  candidate: StandingRow[],
+  previous: StandingRow[],
+  allowVerifiedGoalCorrections = false,
+): string | null {
   if (previous.length === 0) return null;
   if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
   const nextByTeam = new Map(candidate.map((r) => [normaliseTeam(r.team), r]));
