@@ -34,9 +34,9 @@ const MARGIN: Readonly<Record<OddsMarket, [number, number]>> = {
 export const ODDS_UNVERIFIED_RATIO = 1.25;
 
 /**
- * Licensed South African bookmakers whose public pages may be read for reference prices. Each needs a recorded
- * provincial licence check and a check that its terms allow automated reading before launch `[attorney review]`.
- * `ODDS_SOURCE_DOMAINS` (comma separated) replaces this list without a code change.
+ * Candidate South African bookmaker domains. Their presence here does not authorise collection: production reads
+ * only domains returned by bookmaker_odds_permissions after licence, written data rights and automated access
+ * are approved. The environment cannot bypass that registry.
  */
 export const DEFAULT_ODDS_SOURCE_DOMAINS = [
   "hollywoodbets.net",
