@@ -58,6 +58,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SearchTrigger } from "@/components/search/search-trigger";
+import { SiteSearch } from "@/components/search/site-search";
 import { FoundingCounter } from "@/components/founding-counter";
 import { copyInviteLink } from "@/lib/invite";
 import { toast } from "sonner";
@@ -236,10 +238,15 @@ export function SiteHeader() {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2.5">
-                <Link to="/fantasy-arena" className={isActive(path, "/fantasy-arena") ? "text-primary" : ""}>
+                <Link
+                  to="/fantasy-arena"
+                  className={isActive(path, "/fantasy-arena") ? "text-primary" : ""}
+                >
                   <Target className="size-4 text-muted-foreground" />
                   <span className="flex-1">{t("desktop.items.fantasyArena")}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wide text-primary">In development</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+                    In development
+                  </span>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -290,6 +297,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex min-w-0 items-center justify-end gap-2">
+          <SearchTrigger />
+          <SiteSearch />
           <ThemeToggle />
           {isSignedIn && profile && <NotificationBell />}
           {isSignedIn && profile ? (
