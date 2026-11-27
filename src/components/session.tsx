@@ -15,6 +15,7 @@ import { claimFoundingSpot } from "@/lib/accounts.functions";
 import { notifyPointsChanged } from "@/lib/rewards-data";
 import { useLocale } from "@/lib/i18n/provider";
 import { isEnabledLocale } from "@/locales/config";
+import { CONSENT_NOTICE_VERSION, readConsent, syncMissingConsentToAccount } from "@/lib/consent";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type Profile = Pick<
@@ -112,6 +113,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const userId = session?.user.id ?? null;
+  useEffect(() => {
+    if (!userId) return;
+    const choice = readConsent();
+    if (choice?.noticeVersion === CONSENT_NOTICE_VERSION) void syncMissingConsentToAccount(choice);
+  }, [userId]);
   useEffect(() => {
     if (!userId) return setHasMfa(null);
     void loadFactors();
