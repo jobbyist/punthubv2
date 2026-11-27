@@ -32,7 +32,7 @@ export function parseModelList(_raw?: string): { models: string[]; refused: stri
   return { models: ["parallel-medium"], refused: [] };
 }
 
-/** `CONTENT_GEMINI_RPD` looks like `gemini-3.8-flash=20,gemini-3.1-flash-lite=500`. Bad entries are ignored. */
+/** `CONTENT_MODEL_RPD` looks like `parallel-medium=12`. Bad entries are ignored. */
 export function parseDailyCaps(raw: string | undefined): Record<string, number> {
   const caps: Record<string, number> = {};
   for (const part of (raw ?? "").split(",")) {
@@ -44,14 +44,14 @@ export function parseDailyCaps(raw: string | undefined): Record<string, number> 
 }
 
 export function readContentEnv(env: Env = process.env): ContentEnv {
-  const { models, refused } = parseModelList(env["CONTENT_GEMINI_MODELS"]);
+  const { models, refused } = parseModelList();
   const budget = Number(env["CONTENT_RUN_BUDGET_MS"]);
   return {
     parallelKey: clean(env["PARALLEL_API_KEY"]),
     firecrawlKey: clean(env["FIRECRAWL_API_KEY"]),
     models,
     refusedModels: refused,
-    dailyRequestCap: parseDailyCaps(env["CONTENT_GEMINI_RPD"]),
+    dailyRequestCap: parseDailyCaps(env["CONTENT_MODEL_RPD"]),
     runBudgetMs: Number.isFinite(budget) && budget >= 10_000 ? budget : 120_000,
   };
 }
