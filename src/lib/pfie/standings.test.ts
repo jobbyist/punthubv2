@@ -185,13 +185,13 @@ describe("configured direct standings sources", () => {
       "https://www.uefa.com/uefaconferenceleague/standings/",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.tntsports.co.uk/football/conference-league/2026-2027/standings.shtml",
+      "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.cbssports.com/soccer/uefa-conference-league/standings/",
+      "https://www.skysports.com/europa-conference-league-table",
     );
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.foxsports.com/soccer/uefa-conference-league/standings",
+      "https://www.foxsports.com/soccer/europa-conference-league/standings",
     );
   });
 describe("La Liga live source configuration", () => {
@@ -426,6 +426,11 @@ describe("UEFA Conference League participant aliases", () => {
   it("reconciles known duplicate fixture labels without broad ambiguous matching", () => {
     expect(normaliseTeam("Hearts")).toBe(normaliseTeam("Heart of Midlothian"));
     expect(normaliseTeam("AGF")).toBe(normaliseTeam("Aarhus"));
+    expect(normaliseTeam("AGF Aarhus")).toBe(normaliseTeam("Aarhus"));
+    expect(normaliseTeam("ST St.Truiden")).toBe(normaliseTeam("Sint-Truidense"));
+    expect(normaliseTeam("L. Red Imps")).toBe(normaliseTeam("Lincoln Red Imps"));
+    expect(normaliseTeam("Univ. Craiova")).toBe(normaliseTeam("Universitatea Craiova"));
+    expect(normaliseTeam("Inter Club d Escaldes")).toBe(normaliseTeam("Inter Escaldes"));
     expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
