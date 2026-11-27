@@ -1,3 +1,10 @@
+## 2026-11-28, context-aware Discover and homepage (Privacy choices r3)
+
+- **What changed:** Puntr now adapts Discover (the PWA start page) and other pages to the person using it: first-time and returning guests, new members with no pick yet, and active members see different headlines, primary buttons and tiles; members with favourites see their teams' matches first. Signals: (a) on-device only, in browser storage `puntr:context:v1` (visit count, first/last visit time, last eight Puntr paths without query strings, last match opened, tips hidden); (b) the member's own favourites and whether they have posted a pick (already stored; predictions are public).
+- **Also listed:** `puntr:has-account` (sign-in form opens first on a device that has signed in) and `puntr:search:recent` (last six searches, from the header search shipped on 27 Nov).
+- **Pages:** `/cookies` English and Afrikaans, Essential section. Notice version `tracking 2026-11-28-r3` (migration `20261128040000_tracking_notice_r3.sql`).
+- **Review `[attorney review]`:** confirm on-device personalisation storage can sit under Essential (it is not sent anywhere and is not used for analytics or advertising) rather than behind a consent toggle.
+
 ## 2026-11-27, simpler sign-up flow (no notice version change)
 
 - **What changed:** the first sign-up screen no longer shows a separate "I am 18 or older" checkbox. The line under the form now reads "By continuing you confirm you're 18 or older, agree to the Terms and have read the Privacy notice." The binding age check is unchanged: the profile step still asks for year of birth and an unticked "I am 18 or older" box plus Terms acceptance before any profile is created, and under-18 sign-ins are still discarded. Marketing consent stays as two separate, unticked, optional boxes.

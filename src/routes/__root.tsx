@@ -11,6 +11,7 @@ import { type ReactNode, useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { SessionProvider } from "@/components/session";
+import { UserContextProvider } from "@/components/user-context";
 import { ContextAwareTopStrip } from "@/components/layout/context-aware-top-strip";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdminNotch } from "@/components/admin-notch";
@@ -281,6 +282,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
+        <UserContextProvider>
         <Preloader />
         <PwaExperience />
         <PushNotificationPrompt />
@@ -302,6 +304,7 @@ function RootComponent() {
         {SHOW_PUNT_AI_CHAT && <PuntAI />}
         <ConsentBanner />
         <Toaster />
+        </UserContextProvider>
       </SessionProvider>
     </QueryClientProvider>
   );

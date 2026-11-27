@@ -70,6 +70,20 @@ export function CookiesAf({
               rekeningsekuriteit weggewys het (3 dae).
             </li>
             <li>
+              Blaaierberging <code>puntr:context:v1</code>: onthou op hierdie toestel hoeveel keer jy
+              al besoek het, die laaste paar Puntr-bladsye en wedstryd wat jy oopgemaak het, en wenke
+              wat jy versteek het, sodat Ontdek en die tuisblad die volgende stap kan wys wat by jou
+              pas. Dit verlaat nooit jou blaaier nie.
+            </li>
+            <li>
+              Blaaierberging <code>puntr:has-account</code>: onthou dat iemand al op hierdie toestel
+              aangemeld het, sodat die aanmeldvorm eerste oopmaak.
+            </li>
+            <li>
+              Blaaierberging <code>puntr:search:recent</code>: jou laaste ses soektogte op hierdie
+              toestel, gewys wanneer jy soek oopmaak. Maak dit skoon in die soekvenster.
+            </li>
+            <li>
               Blaaier-sessieberging <code>puntr:claim:…</code>: keer dat dieselfde eenmalige
               kontrole vir 'n stigtersplek twee keer in een besoek loop.
             </li>

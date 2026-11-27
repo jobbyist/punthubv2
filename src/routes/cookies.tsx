@@ -117,6 +117,20 @@ function Cookies() {
               account security reminder (3 days).
             </li>
             <li>
+              Browser storage <code>puntr:context:v1</code>: remembers on this device how many times
+              you have visited, the last few Puntr pages and match you opened, and tips you hid, so
+              Discover and the homepage can show the next step that fits you. It never leaves your
+              browser.
+            </li>
+            <li>
+              Browser storage <code>puntr:has-account</code>: remembers that someone has signed in
+              on this device, so the sign-in form opens first.
+            </li>
+            <li>
+              Browser storage <code>puntr:search:recent</code>: your last six searches on this
+              device, shown when you open search. Clear them from the search window.
+            </li>
+            <li>
               Browser session storage <code>puntr:claim:…</code>: stops the same one-off
               Founding-spot check from running twice in a visit.
             </li>

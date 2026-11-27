@@ -4,19 +4,25 @@ import { AnimatePresence, LayoutGroup, MotionConfig, motion } from "motion/react
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
-import { AppShell, PageHeading } from "@/components/layout/app-shell";
+import { AppShell } from "@/components/layout/app-shell";
+import { DiscoverHero } from "@/components/discover/discover-hero";
+import { ForYou } from "@/components/discover/for-you";
+import { LeagueRail } from "@/components/discover/league-rail";
+import { QuickActions } from "@/components/discover/quick-actions";
 import { Blurred, FoundingGateCard, FREE_ITEMS, useGated } from "@/components/intel/guest-gate";
 import { IntelPanel } from "@/components/intel/intel-panel";
 import { EmptyState } from "@/components/empty-state";
 import {
   DuelsTeaser,
-  HubNav,
   LatestResults,
   LeadersTeaser,
   NewsroomTeaser,
   TableSnapshot,
 } from "@/components/predictions/hub";
-import { FantasyArenaPromo, SlipConverterPromo } from "@/components/predictions/slip-converter-promo";
+import {
+  FantasyArenaPromo,
+  SlipConverterPromo,
+} from "@/components/predictions/slip-converter-promo";
 import { FilterChips, type FilterChip } from "@/components/match/filter-chips";
 import { LiveMatchCard } from "@/components/match/live-match-card";
 import { useNow } from "@/hooks/use-now";
@@ -26,7 +32,7 @@ import { saDayKey } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 import type { Sport } from "@/lib/sports/types";
 
-type Search = { sport?: Sport; competition?: string; when?: "today" };
+type Search = { sport?: Sport; competition?: string; when?: "today"; source?: "pwa" };
 
 export const Route = createFileRoute("/discover")({
   validateSearch: (search: Record<string, unknown>): Search => {
@@ -35,6 +41,7 @@ export const Route = createFileRoute("/discover")({
     if (typeof search["competition"] === "string" && search["competition"])
       out.competition = search["competition"].slice(0, 80);
     if (search["when"] === "today") out.when = "today";
+    if (search["source"] === "pwa") out.source = "pwa";
     return out;
   },
   loaderDeps: ({ search }) => ({ sport: search.sport }),
@@ -125,13 +132,10 @@ function Predictions() {
 
   return (
     <AppShell>
-      <PageHeading art="pitch" title={t("title")} subtitle={t("subtitle")} />
-
-      <HubNav fixtureCount={fixtures.length} />
-
-      <SlipConverterPromo />
-      <FantasyArenaPromo />
-
+      {/* PWA start page: greeting, one clear next step and a live snapshot, then every destination one tap away. */}
+      <DiscoverHero fixtures={fixtures} now={now} />
+      <QuickActions liveCount={fixtures.filter((f) => f.status === "live").length} />
+      <ForYou fixtures={fixtures} />
       <div className="mb-3 flex items-end justify-between gap-3">
         <h2 className="text-xl sm:text-2xl">{t("hub.next.title")}</h2>
         <Link
@@ -228,7 +232,16 @@ function Predictions() {
         </div>
       )}
 
-      <div className="mt-12 grid gap-4 lg:grid-cols-2">
+      <div className="mt-12">
+        <LeagueRail fixtures={fixtures} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <SlipConverterPromo />
+        <FantasyArenaPromo />
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <LatestResults />
         <TableSnapshot />
         <DuelsTeaser />
