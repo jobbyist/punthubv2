@@ -27,6 +27,7 @@ import { Preloader } from "@/components/motion/preloader";
 import { PwaExperience } from "@/components/pwa-experience";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { RouteProgress } from "@/components/motion/route-progress";
+import { RoutePrefetcher } from "@/components/motion/route-prefetcher";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { LocaleProvider } from "@/lib/i18n/provider";
 import { detectLocale, detectLocaleOnClient } from "@/lib/i18n/locale";
@@ -281,8 +282,9 @@ function RootComponent() {
         <PwaExperience />
         <PushNotificationPrompt />
         <RouteProgress />
+        <RoutePrefetcher />
         <MfaGate />
-        <div className="flex min-h-dvh flex-col">
+        <div className="puntr-app-frame flex min-h-dvh flex-col">
           <ContextAwareTopStrip />
           <SiteHeader />
           <SecurityPrompt />
