@@ -22,6 +22,7 @@ import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { SyntheticExperimentTab } from "@/components/admin/synthetic-experiment-admin";
+import { PfieLearningTab } from "@/components/admin/pfie-learning-admin";
 import { EndorsementsTab } from "@/components/admin/endorsements-admin";
 import { LogosTab } from "@/components/admin/logos-admin";
 import { QuestsTab } from "@/components/admin/quests-admin";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/admin/")({
 });
 
 const TAB_GROUPS = [
-  { label: "Overview", items: ["system", "analytics", "synthetic", "log"] },
+  { label: "Overview", items: ["system", "analytics", "synthetic", "pfieLearning", "log"] },
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
@@ -112,7 +113,7 @@ function Admin() {
                       <optgroup key={group.label} label={group.label}>
                         {group.items.map((key) => (
                           <option key={key} value={key}>
-                            {t(`tabs.${key}`)}
+                            {key === "pfieLearning" ? "PFIE Learning" : t(`tabs.${key}`)}
                           </option>
                         ))}
                       </optgroup>
@@ -151,7 +152,7 @@ function Admin() {
                         Current section
                       </p>
                       <h2 className="mt-0.5 text-xl font-semibold tracking-tight">
-                        {activeTab ? t(`tabs.${activeTab}`) : t("title")}
+                        {activeTab === "pfieLearning" ? "PFIE Learning" : activeTab ? t(`tabs.${activeTab}`) : t("title")}
                       </h2>
                     </div>
                     <span className="hidden rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] font-medium text-muted-foreground sm:inline-flex">
@@ -176,6 +177,9 @@ function Admin() {
                   </TabsContent>
                   <TabsContent value="synthetic" className="mt-0">
                     <SyntheticExperimentTab />
+                  </TabsContent>
+                  <TabsContent value="pfieLearning" className="mt-0">
+                    <PfieLearningTab />
                   </TabsContent>
                   <TabsContent value="log" className="mt-0">
                     <ActionLogTab />
