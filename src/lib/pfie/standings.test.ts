@@ -234,6 +234,38 @@ describe("La Liga live source configuration", () => {
   });
 });
 
+describe("restored standings source coverage", () => {
+  it("adds current independent sources for the previously failing launch competitions", () => {
+    expect(STANDINGS_COMPETITIONS.psl?.pages).toContain(
+      "https://nasiscore.co.za/south-africa/psl/table",
+    );
+    expect(STANDINGS_COMPETITIONS.psl?.pages).toContain(
+      "https://scoremondo.com/en/competition/south-africa-premier-league-2983/standings",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://zeanball.online/en/table/championship/",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://statsfera.com.tr/en/standings/ingiltere-championship",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.ligue1schedule.com/table/2026-27",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://zeanball.online/en/table/ligue-1/",
+    );
+    expect(STANDINGS_COMPETITIONS.seriea?.allowVerifiedPlayedCorrections).toEqual(["Milan"]);
+  });
+
+  it("allows only the pending CAF Group C qualifier slot to expand from three to four teams", () => {
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.groupTeamRanges).toEqual({
+      C: { min: 3, max: 4 },
+    });
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.allowTeamCountIncrease).toBe(true);
+    expect(STANDINGS_COMPETITIONS["caf-cc"]?.groups).toEqual(["A", "B", "C", "D"]);
+  });
+});
+
 describe("validateTables", () => {
   const official = page("league.com", "official", 1, lines);
   it("accepts a complete, consistent table", () => {
