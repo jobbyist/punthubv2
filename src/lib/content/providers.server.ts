@@ -1,14 +1,6 @@
 /**
- * Live adapters for Parallel Search/Responses, Firecrawl extraction and Gemini fallback. Server only: the keys come from environment variables and are
- * passed in headers, never in URLs, logs or client code.
- *
- * Request and response shapes follow the providers' public references as read on 13 Nov 2026:
- *   Parallel Search  POST https://api.parallel.ai/v1/search            (header x-api-key)
- *   Parallel Responses POST https://api.parallel.ai/v1/responses        (Authorization: Bearer)
- *   Firecrawl          POST https://api.firecrawl.dev/v2/scrape          (Authorization: Bearer)
- *   Gemini           POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
- *                                                                      (header x-goog-api-key)
- * Credentials are server-only and quota-guarded before requests are sent.
+ * Live Newsroom adapters for Parallel Search/Responses and Firecrawl extraction.
+ * Server-only credentials are passed in headers, never URLs, logs or client code.
  */
 import { postJson, ProviderError, type RetryOptions } from "./http";
 import type {
@@ -79,52 +71,9 @@ export function createFirecrawlExtract(apiKey: string, overrides: Overrides = {}
   };
 }
 
-export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProvider {
-  return {
-    name: "gemini",
-    async generate(model: string, request: LlmRequest): Promise<LlmResult> {
-      const json = await postJson(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-        { "x-goog-api-key": apiKey },
-        {
-          systemInstruction: { parts: [{ text: request.system }] },
-          contents: [{ role: "user", parts: [{ text: request.prompt }] }],
-          generationConfig: {
-            temperature: request.temperature,
-            maxOutputTokens: request.maxOutputTokens,
-            responseMimeType: "application/json",
-            responseSchema: request.schema,
-          },
-        },
-        // One attempt per model: the router decides whether to retry or move to the fallback.
-        { provider: "gemini", timeoutMs: 30_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
-      );
-      const candidates =
-        isRecord(json) && Array.isArray(json["candidates"]) ? json["candidates"] : [];
-      const first = candidates[0];
-      const content = isRecord(first) && isRecord(first["content"]) ? first["content"] : null;
-      const parts = content && Array.isArray(content["parts"]) ? content["parts"] : [];
-      const text = parts
-        .map((p) => (isRecord(p) && p["thought"] !== true ? str(p["text"]) : ""))
-        .join("")
-        .trim();
-      if (!text) {
-        const reason = isRecord(first) ? str(first["finishReason"]) : "";
-        throw new ProviderError(
-          "gemini",
-          "bad_response",
-          null,
-          `empty answer${reason ? ` (${reason})` : ""}`,
-        );
-      }
-      return { model, text };
-    },
-  };
-}
-
 /**
  * Parallel Responses API used for editorial drafting and independent review.
- * Structured JSON output is normalised from the Gemini-compatible schema used by the content engine.
+ * Structured JSON output is normalised from the shared content-engine schema.
  */
 function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
   const visit = (value: unknown): unknown => {
