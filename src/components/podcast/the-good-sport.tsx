@@ -399,7 +399,7 @@ export function TheGoodSportPromo() {
                   />
                 </div>
                 <div className="mt-2 flex justify-between text-[9px] font-semibold uppercase tracking-wider text-white/35">
-                  <span>{AUDIO_URL ? (isSignedIn ? "Episode preview" : "Sign in to listen") : "Premieres 1 Dec"}</span>
+                  <span>{AUDIO_URL ? (isSignedIn ? "Episode preview" : "Sign in to listen") : "Premieres 5 Jan"}</span>
                   <span>—:—</span>
                 </div>
               </div>
