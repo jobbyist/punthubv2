@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { adminSyntheticExperiment } from "@/lib/admin-synthetic.functions";
-import { adminProvisionAiFoundingMembers } from "@/lib/ai-community.functions";
 import { formatDateTime } from "@/lib/format";
 
 const panel = "card-surface p-5";
@@ -17,8 +16,6 @@ function Metric({ label, value, detail }: { label: string; value: string | numbe
 
 export function SyntheticExperimentTab() {
   const [nonce, setNonce] = useState(0);
-  const [provisioning, setProvisioning] = useState(false);
-  const [provisionSummary, setProvisionSummary] = useState<{ created: number; alreadyProvisioned: number; failed: number; members: { username: string; foundingNumber: number | null }[] } | null>(null);
   const query = useAsync(() => adminSyntheticExperiment(), [nonce]);
   const data = query.data;
 
@@ -35,26 +32,7 @@ export function SyntheticExperimentTab() {
   const e = data.experiment;
   const budgetRemaining = Math.max(0, e.budgetCapUsd - e.spentUsd - e.reservedUsd);
   const latestFailures = data.sessions.recent.filter((s) => s.outcome === "failed").length;
-  const foundingRemaining = Math.max(0, data.founding.cap - data.founding.taken);
-  async function provisionAiMembers() {
-    if (provisioning || data.founding.aiMembers >= 50) return;
-    if (!window.confirm("Create the 50 labelled AI community accounts? They will receive sequential founding numbers and count towards the 100-place campaign.")) return;
-    setProvisioning(true);
-    try {
-      const result = await adminProvisionAiFoundingMembers();
-      setProvisionSummary(result);
-      if (result.ok) {
-        toast.success(`AI founding members provisioned: ${result.created} created, ${result.alreadyProvisioned} already linked.`);
-      } else {
-        toast.error(`AI member provisioning completed with ${result.failed} failures.`);
-      }
-      setNonce((n) => n + 1);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "AI member provisioning failed.");
-    } finally {
-      setProvisioning(false);
-    }
-  }
+
 
   return (
     <div className="space-y-5">
@@ -77,15 +55,11 @@ export function SyntheticExperimentTab() {
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Founding campaign / AI community participants</p>
             <h3 className="mt-1 font-display text-lg font-bold">{data.founding.taken}/{data.founding.cap} places counted</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{data.founding.aiMembers}/50 AI accounts linked to member profiles. All AI accounts receive visible AI labels and distinct founding numbers.</p>
+            <p className="mt-1 text-sm text-muted-foreground">{data.founding.aiMembers}/50 AI accounts linked to member profiles. Each account has its own founding number and a visible AI participant label.</p>
           </div>
-          <Button size="sm" disabled={provisioning || data.founding.aiMembers >= 50 || foundingRemaining < 50} onClick={() => void provisionAiMembers()}>
-            {provisioning ? "Provisioning…" : data.founding.aiMembers >= 50 ? "All 50 linked" : "Provision 50 AI members"}
-          </Button>
+          <Link to="/admin/founding-hq" className="text-xs font-semibold text-primary hover:underline">Manage in Founding HQ</Link>
         </div>
-        {foundingRemaining < 50 && data.founding.aiMembers < 50 && <p className="mt-2 text-xs text-destructive">There are not enough founding places for all 50 accounts. No partial run will be started.</p>}
-        {provisionSummary && <p className="mt-3 text-xs text-muted-foreground">{provisionSummary.created} created · {provisionSummary.alreadyProvisioned} already linked · {provisionSummary.failed} failed. {provisionSummary.members.length ? `Assigned founding numbers: ${provisionSummary.members.map((m) => m.foundingNumber).filter((n): n is number => n !== null).join(", ")}.` : ""}</p>}
-        <p className="mt-3 text-xs text-muted-foreground">Synthetic accounts are disclosed as AI participants on public profiles and H2H leaderboards. Their activity is excluded from genuine-member acquisition and PFIE learning metrics.</p>
+        <p className="mt-3 text-xs text-muted-foreground">AI activity is excluded from genuine-member acquisition and PFIE human-learning metrics. All AI profiles, forum posts and H2H leaderboard entries are disclosed as AI participants.</p>
       </section>
 
       <section className={panel}>
