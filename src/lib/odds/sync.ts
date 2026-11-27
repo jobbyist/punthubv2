@@ -53,8 +53,8 @@ export const ODDS_HORIZON_HOURS = 72;
 const MIN_LEAD_MINUTES = 30;
 const REFRESH_EVERY_HOURS = 4;
 const MAX_FIXTURES_PER_PROMPT = 12;
-const MAX_PAGES = 3;
-const MAX_SOURCES = 6;
+const MAX_PAGES = 5;
+const MAX_SOURCES = 8;
 const MAX_CHARS = 14_000;
 
 /**
