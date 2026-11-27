@@ -97,6 +97,11 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("sportmetrics.org", [])).toBe("trusted");
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
+    expect(tierOf("scoremondo.com", [])).toBe("trusted");
+    expect(tierOf("zeanball.online", [])).toBe("trusted");
+    expect(tierOf("statsfera.com.tr", [])).toBe("trusted");
+    expect(tierOf("ligue1schedule.com", [])).toBe("trusted");
+    expect(tierOf("sportnewsafrica.com", [])).toBe("trusted");
     expect(tierOf("swissfootballdata.com", [])).toBe("trusted");
     expect(tierOf("keepstandings.com", [])).toBe("trusted");
     expect(tierOf("365scores.com", [])).toBe("trusted");
