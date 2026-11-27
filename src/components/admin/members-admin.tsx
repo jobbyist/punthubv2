@@ -162,6 +162,7 @@ function MemberCard({
         aria-expanded={open}
       >
         <span className="font-semibold">@{m.username}</span>
+        {m.isAiParticipant && <Badge tone="muted">AI participant</Badge>}
         {m.foundingNumber !== null && (
           <Badge tone="green">{t("members.founding", { number: m.foundingNumber })}</Badge>
         )}
