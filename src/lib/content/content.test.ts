@@ -33,7 +33,7 @@ const REQUEST: LlmRequest = {
   temperature: 0,
   maxOutputTokens: 10,
 };
-const quota = () => new ProviderError("gemini", "quota", 429, "quota exhausted");
+const quota = () => new ProviderError("parallel", "quota", 429, "quota exhausted");
 
 function sources(): ResearchSource[] {
   return rankHits(SAMPLE_HITS, 6).map((hit, i) => toSource(i + 1, hit, null));
