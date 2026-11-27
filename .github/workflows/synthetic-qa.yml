@@ -39,7 +39,7 @@ jobs:
       PUNTR_BASE_URL: ${{ secrets.PUNTR_BASE_URL }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      SYNTHETIC_EXPERIMENT_SLUG: puntr-30-day-synthetic-2026-11-23
+      SYNTHETIC_EXPERIMENT_SLUG: puntr-30-day-synthetic-2026-11-27
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
       - uses: actions/checkout@v4
