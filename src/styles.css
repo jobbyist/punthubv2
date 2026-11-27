@@ -907,7 +907,8 @@ button,
     1.009, 0.996, 0.988, 0.985, 0.984, 0.986, 0.988, 0.991, 0.994, 0.997, 0.999, 1.001, 1.002, 1.002, 1
   );
 }
-@keyframes puntr-pop {
+/* Spring pop for things the member just changed. Named apart from the entrance .puntr-pop (which also fades in). */
+@keyframes puntr-spring-pop {
   0% {
     transform: scale(0.6);
   }
@@ -915,8 +916,8 @@ button,
     transform: scale(1);
   }
 }
-@utility puntr-pop {
-  animation: puntr-pop 380ms var(--ease-spring) both;
+@utility puntr-spring-pop {
+  animation: puntr-spring-pop 380ms var(--ease-spring) both;
 }
 /* Checkbox tick draws itself. */
 @keyframes puntr-check-draw {
@@ -929,23 +930,6 @@ button,
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
   animation: puntr-check-draw 280ms var(--ease-out-expo) 40ms forwards;
-}
-/* Skeleton: a soft sweep instead of a blink, so loading reads as progress. */
-@keyframes puntr-shimmer {
-  to {
-    background-position: -200% 0;
-  }
-}
-.puntr-shimmer {
-  background-image: linear-gradient(
-    100deg,
-    transparent 30%,
-    color-mix(in oklch, var(--background) 55%, transparent) 50%,
-    transparent 70%
-  );
-  background-size: 200% 100%;
-  background-position: 100% 0;
-  animation: puntr-shimmer 1.4s ease-in-out infinite;
 }
 /* Bell rings once when a new update arrives. */
 @keyframes puntr-bell-ring {
@@ -982,7 +966,7 @@ button,
 }
 [aria-current="page"] > .puntr-dock-icon,
 [aria-expanded="true"] > .puntr-dock-icon {
-  animation: puntr-pop 420ms var(--ease-spring);
+  animation: puntr-spring-pop 420ms var(--ease-spring);
 }
 /* Theme switch: the circular reveal is driven from ThemeToggle; header and dock join the page snapshot. */
 html.theme-vt::view-transition-old(root),
@@ -996,8 +980,8 @@ html.theme-vt .puntr-dock {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .puntr-pop,
-  .puntr-shimmer,
+  .puntr-spring-pop,
+  .puntr-page-skeleton,
   .puntr-bell-ring,
   .puntr-check-draw path,
   .puntr-check-draw polyline,
