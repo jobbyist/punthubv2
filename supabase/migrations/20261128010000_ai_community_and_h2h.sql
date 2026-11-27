@@ -191,6 +191,8 @@ declare
   v_persona public.synthetic_personas%rowtype;
   v_user auth.users%rowtype;
   v_number integer;
+  v_next integer;
+  v_taken integer;
 begin
   if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' then
     raise exception 'service_role_required' using errcode = '42501';
@@ -226,6 +228,18 @@ begin
       where id = p_user_id and is_ai_participant and ai_persona_key = p_persona_key
     ) then
       raise exception 'profile_exists_with_different_identity' using errcode = '23505';
+    end if;
+    if v_number is null then
+      perform pg_advisory_xact_lock(7001001);
+      v_next := public.next_founding_number();
+      select count(founding_number) into v_taken from public.profiles;
+      if v_next > 100 or (100 - v_taken) <= public.founding_spots_held() then
+        raise exception 'founding_capacity_full' using errcode = 'P0001';
+      end if;
+      update public.profiles
+      set founding_number = v_next
+      where id = p_user_id and founding_number is null
+      returning founding_number into v_number;
     end if;
     update public.synthetic_personas
     set profile_id = p_user_id,
