@@ -64,7 +64,6 @@ export interface RunOptions {
   /** Moves the sports beat on by this many places (several sports articles on one day). */
   beatOffset?: number;
   slot?: "breaking" | "editorial" | "intelligence";
-  benchmark?: boolean;
 }
 
 export type RunOutcome =
@@ -196,38 +195,6 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       ...(options.slot ? { slot: options.slot } : {}),
     });
 
-    // On the 06:00 slot only, create a Gemini shadow draft in parallel so the owner can compare both outputs.
-    // The shadow is always saved as REVIEW and can never be auto-published.
-    const benchmarkModel = options.benchmark
-      ? env.models.find((m) => m === "gemini-3.5-flash-lite") ?? env.models.find((m) => m.startsWith("gemini-"))
-      : undefined;
-    const benchmarkPromise = benchmarkModel && deps.llm
-      ? deps.llm.generate(benchmarkModel, request).then(
-          async (result) => {
-            await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
-            return { result };
-          },
-          async (error: unknown) => {
-            await store.countUsage(`gemini:${benchmarkModel}`, "error").catch(() => undefined);
-            return { error };
-          },
-        )
-      : Promise.resolve(null);
-
-    let written = await router.generate(request);
-    let geminiBenchmark: { model: string; draft: ArticleDraft } | null = null;
-    const benchmarkOutcome = await benchmarkPromise;
-    if (benchmarkOutcome && "error" in benchmarkOutcome) {
-      await log("benchmark", "warn", "Gemini comparison draft failed", describe(benchmarkOutcome.error));
-    } else if (benchmarkOutcome && "result" in benchmarkOutcome) {
-      const parsed = parseDraft(benchmarkOutcome.result.text);
-      if (parsed) {
-        geminiBenchmark = { model: benchmarkOutcome.result.model, draft: parsed };
-        await log("benchmark", "info", `Gemini comparison draft created by ${parsed.title}`);
-      } else {
-        await log("benchmark", "warn", "Gemini comparison returned invalid article JSON");
-      }
-    }
     let draft = parseDraft(written.text);
     if (!draft) {
       await log(
@@ -337,95 +304,20 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     // `enabled` guards publishing for every trigger: a manual run while the engine is off (the validation
     // workflow) can only ever produce a review-queue article.
     const passed = reviewRan && !quality.critical && quality.score >= settings.minQuality;
+    // Parallel-authored articles publish for owner review even when QA is below the configured threshold.
+    // QA flags and score remain attached to the article and the alert; this is not recorded as a QA pass.
     const publish =
       settings.enabled &&
       settings.autoPublish &&
-      passed;
-
-    // Give the Gemini comparison deterministic validation, one revision opportunity,
-    // and an independent Gemini-model review. The comparison remains review-only.
-    let benchmarkQuality: QualityReport | null = null;
-    if (geminiBenchmark) {
-      benchmarkQuality = validateDraft({
-        draft: geminiBenchmark.draft,
-        kind,
-        sources,
-        recentTitles: recent.map((r) => r.title),
-        reviewerUnsupported: [],
-        ...(options.slot ? { slot: options.slot } : {}),
-      });
-      if (benchmarkQuality.critical && benchmarkModel && deps.llm && budgetLeft() > 30_000) {
-        try {
-          const revised = await deps.llm.generate(
-            benchmarkModel,
-            revisionRequest(request, geminiBenchmark.draft, benchmarkQuality.issues),
-          );
-          await store.countUsage(`gemini:${benchmarkModel}`, "ok").catch(() => undefined);
-          const revisedDraft = parseDraft(revised.text);
-          if (revisedDraft) {
-            const revisedQuality = validateDraft({
-              draft: revisedDraft,
-              kind,
-              sources,
-              recentTitles: recent.map((r) => r.title),
-              reviewerUnsupported: [],
-              ...(options.slot ? { slot: options.slot } : {}),
-            });
-            if (revisedQuality.score >= benchmarkQuality.score) {
-              geminiBenchmark = { model: revised.model, draft: revisedDraft };
-              benchmarkQuality = revisedQuality;
-            }
-            await log("benchmark", "info", `Gemini comparison revision scored ${revisedQuality.score}`);
-          }
-        } catch (error) {
-          await store.countUsage(`gemini:${benchmarkModel}`, "error").catch(() => undefined);
-          await log("benchmark", "warn", "Gemini comparison revision failed", describe(error));
-        }
-      }
-      if (budgetLeft() > 18_000) {
-        try {
-          const benchmarkReviewer = alternativeGeminiModel(env.models, geminiBenchmark.model);
-          if (!benchmarkReviewer) throw new Error("No independent Gemini benchmark reviewer is available");
-          const benchmarkReview = await router.generate(
-            reviewRequest(geminiBenchmark.draft, sources, options.slot),
-            benchmarkReviewer,
-          );
-          const unsupported = parseReview(benchmarkReview.text);
-          if (unsupported) {
-            benchmarkQuality = validateDraft({
-              draft: geminiBenchmark.draft,
-              kind,
-              sources,
-              recentTitles: recent.map((r) => r.title),
-              reviewerUnsupported: unsupported,
-              ...(options.slot ? { slot: options.slot } : {}),
-            });
-            await log("benchmark-review", "info", `${benchmarkReview.model} review flagged ${unsupported.length} statement(s)`, unsupported);
-          } else {
-            await log("benchmark-review", "warn", "Gemini review answer could not be read");
-          }
-        } catch (error) {
-          await log("benchmark-review", "warn", "Gemini review did not run", describe(error));
-        }
-      } else {
-        await log("benchmark-review", "warn", "Parallel review skipped: not enough time left");
-      }
-    }
+      (passed || written.model === "parallel-medium");
 
     if (options.dry) {
-      const benchmark = geminiBenchmark && benchmarkQuality
-        ? {
-            model: geminiBenchmark.model,
-            title: geminiBenchmark.draft.title,
-            quality: benchmarkQuality,
-          }
-        : null;
       await store.finishJob(job.id, {
         status: "succeeded",
         model: written.model,
-        report: { dry: true, quality, benchmark },
+        report: { dry: true, quality, reviewRan, published: false },
       });
-      return { ok: true, status: "dry_run", jobId: job.id, kind, model: written.model, quality, benchmark };
+      return { ok: true, status: "dry_run", jobId: job.id, kind, model: written.model, quality };
     }
 
     const cited = [...new Set(draft.claims.map((c) => c.source))];
@@ -450,69 +342,14 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       usedSourceIndexes: cited,
       projectUpdateIds: kind === "development" ? updates.map((u) => u.id) : [],
     });
-    if (geminiBenchmark && benchmarkModel) {
-      try {
-        const benchmarkJob = await store.claimJob({
-          jobKey: `${jobKey}:gemini-benchmark`,
-          kind,
-          trigger: "manual",
-          force: false,
-        });
-        if (benchmarkJob) {
-          const finalBenchmarkQuality = benchmarkQuality ?? validateDraft({
-            draft: geminiBenchmark.draft,
-            kind,
-            sources,
-            recentTitles: recent.map((r) => r.title),
-            reviewerUnsupported: [],
-            ...(options.slot ? { slot: options.slot } : {}),
-          });
-          const benchmarkCited = [...new Set(geminiBenchmark.draft.claims.map((c) => c.source))];
-          const benchmarkSlug = `${slugFor(geminiBenchmark.draft.title, sastDate(started))}-${options.slot ?? "sports"}-gemini-comparison`;
-          const benchmarkSaved = await store.saveArticle({
-            jobId: benchmarkJob.id,
-            article: {
-              slug: benchmarkSlug,
-              title: geminiBenchmark.draft.title,
-              excerpt: geminiBenchmark.draft.excerpt,
-              body: geminiBenchmark.draft.body,
-              category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : "sports",
-              tags: [...geminiBenchmark.draft.tags.slice(0, 4), "gemini-comparison"],
-              seoTitle: geminiBenchmark.draft.seoTitle.slice(0, 60),
-              seoDescription: geminiBenchmark.draft.seoDescription.slice(0, 160),
-              readingMinutes: readingMinutes(geminiBenchmark.draft.body),
-              status: "REVIEW",
-              aiModel: geminiBenchmark.model,
-              qualityScore: finalBenchmarkQuality.score,
-              qualityIssues: finalBenchmarkQuality.issues,
-            },
-            sources,
-            usedSourceIndexes: benchmarkCited,
-            projectUpdateIds: [],
-          });
-          await store.finishJob(benchmarkJob.id, {
-            status: "succeeded",
-            articleId: benchmarkSaved.id,
-            model: geminiBenchmark.model,
-            report: { benchmark: true, quality: finalBenchmarkQuality, published: false },
-          });
-          await log("benchmark", "info", "Gemini comparison saved to editorial review; not published", {
-            articleId: benchmarkSaved.id,
-            title: geminiBenchmark.draft.title,
-            model: geminiBenchmark.model,
-            qualityScore: finalBenchmarkQuality.score,
-            critical: finalBenchmarkQuality.critical,
-          });
-        }
-      } catch (error) {
-        await log("benchmark", "warn", "Gemini comparison could not be saved", describe(error));
-      }
-    }
-
     if (settings.nextKindOverride) await store.clearKindOverride().catch(() => undefined);
 
     await log("publish", "info", publish ? "published" : "queued for editorial review", {
       reviewRan,
+      passed,
+      qualityScore: quality.score,
+      publishedWithQaWarnings: publish && !passed,
+      model: written.model,
     });
     await store.finishJob(job.id, {
       status: "succeeded",
