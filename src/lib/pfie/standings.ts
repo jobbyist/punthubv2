@@ -538,6 +538,11 @@ export function validateTables(
     const byTeam = new Map<string, RawStandingRow>();
     let duplicateConflict: string | null = null;
     for (const row of extractedRows) {
+      const rawTeam = row.team.trim();
+      if (/^(?:tbd|tbc|to be confirmed|qualifier|winner of\b)/i.test(rawTeam)) {
+        fail("placeholder_team_not_allowed");
+        continue;
+      }
       const sourceName = row.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolvedName = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
       const canonicalName =
