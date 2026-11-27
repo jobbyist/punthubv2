@@ -340,10 +340,13 @@ describe("quality gate", () => {
     });
     expect(codes(report)).toContain("duplicate_title");
   });
-  it("blocks anything the independent reviewer could not support", () => {
-    expect(check(sampleDraft(), { reviewerUnsupported: ["Pirates have 30 points"] }).critical).toBe(
-      true,
-    );
+  it("records independent-review concerns as advisory QA warnings", () => {
+    const report = check(sampleDraft(), {
+      reviewerUnsupported: ["Pirates have 30 points"],
+    });
+    expect(report.critical).toBe(false);
+    expect(report.score).toBe(92);
+    expect(codes(report)).toContain("reviewer_unsupported");
   });
   it("marks a prediction stated as fact and lowers the score", () => {
     const draft = sampleDraft();
