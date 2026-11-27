@@ -1,9 +1,9 @@
 /* Puntr service worker. Cache static assets only; never cache private or live data. */
 const CACHE_PREFIX = "puntr-pwa";
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/puntr-icon-192.png", "/puntr-icon-512.png"];
+const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/brand/icon-192.png", "/brand/icon-512.png", "/brand/puntr-wordmark.png", "/brand/puntr-wordmark-dark.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
@@ -56,7 +56,7 @@ self.addEventListener("push", (event) => {
   }
   event.waitUntil(self.registration.showNotification(title, {
     body,
-    icon: "/puntr-icon-192.png",
+    icon: "/brand/icon-192.png",
     badge: "/puntr-icon-192.png",
     tag: typeof payload.tag === "string" ? payload.tag.slice(0, 100) : "puntr-update",
     data: { url: targetUrl },

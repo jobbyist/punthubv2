@@ -34,6 +34,7 @@ import { detectLocale, detectLocaleOnClient } from "@/lib/i18n/locale";
 import { DEFAULT_LOCALE, type LocaleCode } from "@/locales/config";
 import { useTranslation } from "react-i18next";
 import { headT } from "@/lib/i18n/head";
+import { APPLE_SPLASH_LINKS } from "@/lib/pwa-splash";
 
 function NotFoundComponent() {
   const { t } = useTranslation("errors");
@@ -117,7 +118,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "geo.region", content: "ZA" },
         { name: "geo.placename", content: "South Africa" },
         { name: "language", content: match.context.locale },
-        { name: "theme-color", content: "#000000" },
+        { name: "theme-color", content: "#FFFFFF", media: "(prefers-color-scheme: light)" },
+        { name: "theme-color", content: "#0D0D0D", media: "(prefers-color-scheme: dark)" },
         { name: "mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-status-bar-style", content: "default" },
@@ -149,13 +151,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           rel: "icon",
           type: "image/png",
           sizes: "32x32",
-          href: "https://puntr.co.za/puntrgreen.png",
+          href: "/brand/favicon-32.png",
         },
         {
           rel: "apple-touch-icon",
           sizes: "180x180",
-          href: "https://puntr.co.za/puntrgreen.png",
+          href: "/brand/apple-touch-icon.png",
         },
+        ...APPLE_SPLASH_LINKS,
         {
           rel: "stylesheet",
           href: appCss,

@@ -107,6 +107,10 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
             email,
             password,
             email_confirm: true,
+            app_metadata: {
+              is_ai_participant: true,
+              synthetic_persona_key: persona.persona_key,
+            },
             user_metadata: {
               is_ai_participant: true,
               synthetic_persona_key: persona.persona_key,
@@ -116,7 +120,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
           if (createError || !created.user) throw new Error(createError?.message ?? "Auth user creation failed.");
           user = created.user;
           byEmail.set(email, user);
-        } else if (user.user_metadata?.["is_ai_participant"] !== true) {
+        } else if (user.app_metadata?.["is_ai_participant"] !== true
+          || user.app_metadata?.["synthetic_persona_key"] !== persona.persona_key) {
           throw new Error("The reserved synthetic email already belongs to a non-AI account.");
         }
 
