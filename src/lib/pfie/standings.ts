@@ -702,6 +702,20 @@ export function validateTables(
     }
     tables.push({ source, ...(groupName ? { group: groupName } : {}), rows: ordered, tableDate });
   }
+  if (groupNames?.length) {
+    const sourceIndexes = new Set(raw.map((row) => row.source));
+    for (const sourceIndex of sourceIndexes) {
+      const sourceTables = tables.filter((table) => table.source.index === sourceIndex);
+      const foundGroups = new Set(sourceTables.map((table) => table.group ?? ""));
+      const missingGroups = groupNames.filter((group) => !foundGroups.has(group));
+      if (missingGroups.length) {
+        for (let i = tables.length - 1; i >= 0; i--) {
+          if (tables[i]!.source.index === sourceIndex) tables.splice(i, 1);
+        }
+        rejected.push({ source: sourceIndex, reason: `missing_groups_${missingGroups.join("_")}` });
+      }
+    }
+  }
   return { tables, rejected };
 }
 
