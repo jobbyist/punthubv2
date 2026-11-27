@@ -6,6 +6,9 @@ alter table public.consent_records drop constraint if exists consent_records_pur
 alter table public.consent_records add constraint consent_records_purpose_check
   check (purpose in ('terms','privacy_notice','marketing_email','marketing_whatsapp','analytics','affiliate_tracking','pfie_learning'));
 
+alter table public.pfie_learning_ingest_runs add column if not exists activity_events_seen integer not null default 0;
+alter table public.pfie_learning_ingest_runs add column if not exists real_examples_inserted integer not null default 0;
+
 insert into public.notice_versions (kind, version, effective_at, url)
 values ('privacy','2026-11-27-pfie-learning','2026-11-27 00:00:00+02','/privacy#pfie-learning')
 on conflict (kind, version) do nothing;
