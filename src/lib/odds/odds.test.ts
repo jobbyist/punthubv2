@@ -266,7 +266,7 @@ describe("runOddsSync", () => {
     expect(d.inserted).toHaveLength(3);
     expect(d.records[0]).toMatchObject({ ok: true });
     expect(d.extract.extract).toHaveBeenCalledTimes(1); // oddschecker.com is never read
-    expect(d.llm.generate).toHaveBeenCalledWith("parallel-low", expect.any(Object));
+    expect(d.deps.llm.generate).toHaveBeenCalledWith("parallel-low", expect.any(Object));
   });
 
   it("skips a competition tried in this refresh window", async () => {
