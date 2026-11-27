@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 const EPISODE_SLUG = "the-good-sport-episode-01";
-const PREMIERE_AT = Date.parse("2026-12-01T06:55:00Z"); // Five-minute guard before the 09:00 SAST cron run
-const PREMIERE_WINDOW_END = Date.parse("2026-12-01T11:05:00Z"); // Retry window closes at 13:05 SAST
+const PREMIERE_AT = Date.parse("2027-01-05T06:55:00Z"); // 09:00 SAST premiere on 5 January 2027
+const PREMIERE_WINDOW_END = Date.parse("2027-01-05T11:05:00Z"); // Retry window closes at 13:05 SAST
 
 export const Route = createFileRoute("/api/cron/podcast-premiere")({
   server: {
