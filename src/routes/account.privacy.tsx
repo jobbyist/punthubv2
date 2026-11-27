@@ -20,7 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount } from "@/lib/accounts.functions";
-import { openConsentBanner } from "@/lib/consent";
+import { hasConsent, openConsentBanner, writeConsent } from "@/lib/consent";
+import { setPfieLearningConsent } from "@/lib/pfie-learning.functions";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 
@@ -57,6 +58,7 @@ function AccountPrivacy() {
           </p>
           <ExportSection />
           <MarketingSection userId={profile.id} />
+          <PfieLearningSection userId={profile.id} />
           <TrackingSection />
           <RequestSection />
           <DeleteSection />
@@ -194,6 +196,54 @@ function MarketingSection({ userId }: { userId: string }) {
           </div>
         ))}
       </div>
+    </Section>
+  );
+}
+
+
+function PfieLearningSection({ userId }: { userId: string }) {
+  const { t } = useTranslation("account");
+  const [enabled, setEnabled] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    void supabase.from("current_consents").select("granted")
+      .eq("user_id", userId).eq("purpose", "pfie_learning").maybeSingle()
+      .then(({ data }) => { if (active) setEnabled(data?.granted === true); });
+    return () => { active = false; };
+  }, [userId]);
+
+  const change = async (granted: boolean) => {
+    const previous = enabled;
+    setEnabled(granted);
+    setBusy(true);
+    try {
+      await setPfieLearningConsent({ data: { granted } });
+      writeConsent({
+        analytics: hasConsent("analytics"),
+        affiliate_tracking: hasConsent("affiliate_tracking"),
+        pfie_learning: granted,
+      }, "account");
+      toast.success(t("privacy.pfieLearning.saved"));
+    } catch {
+      setEnabled(previous);
+      toast.error(t("privacy.pfieLearning.error"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Section title={t("privacy.pfieLearning.title")} body={t("privacy.pfieLearning.body")}>
+      <div className="flex items-start gap-3">
+        <Checkbox id="pfie-learning-consent" checked={enabled} disabled={busy}
+          onCheckedChange={(value) => void change(value === true)} />
+        <Label htmlFor="pfie-learning-consent" className="text-sm font-normal leading-snug">
+          {t("privacy.pfieLearning.toggle")}
+        </Label>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">{t("privacy.pfieLearning.withdrawal")}</p>
     </Section>
   );
 }
