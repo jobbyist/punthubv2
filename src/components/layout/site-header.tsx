@@ -454,6 +454,7 @@ export function SiteHeader() {
               </div>
               <Link
                 to="/join"
+                search={{ mode: "signin" }}
                 className="hidden whitespace-nowrap rounded-md px-2 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
               >
                 {t("header.signIn")}

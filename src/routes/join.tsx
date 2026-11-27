@@ -1,3 +1,4 @@
+import { ArrowRight, Sparkles, Star, Target } from "lucide-react";
 import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -18,10 +19,11 @@ import {
   discardUnderageSignup,
   signInWithUsername,
 } from "@/lib/accounts.functions";
-import { analytics } from "@/lib/analytics";
+import { analytics, trackEvent } from "@/lib/analytics";
 import { parseIdentifier } from "@/lib/identifier";
 import { mfaRequired } from "@/lib/mfa";
 import { validatePassword } from "@/lib/password";
+import { usernameIdeas } from "@/lib/username-ideas";
 import { FoundingCounter } from "@/components/founding-counter";
 import { QuestsChecklist } from "@/components/quests-checklist";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
@@ -32,9 +34,14 @@ import { useLocale } from "@/lib/i18n/provider";
 import { enabledLocales, locales, type LocaleCode } from "@/locales/config";
 
 export const Route = createFileRoute("/join")({
-  validateSearch: (search: Record<string, unknown>): { ref?: string; next?: string } => ({
-    ...(typeof search["ref"] === "string" && search["ref"] ? { ref: search["ref"].slice(0, 32) } : {}),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { ref?: string; next?: string; mode?: "signin" | "create" } => ({
+    ...(typeof search["ref"] === "string" && search["ref"]
+      ? { ref: search["ref"].slice(0, 32) }
+      : {}),
     ...(typeof search["next"] === "string" ? { next: search["next"].slice(0, 200) } : {}),
+    ...(search["mode"] === "signin" || search["mode"] === "create" ? { mode: search["mode"] } : {}),
   }),
   head: ({ match }) => {
     const t = headT(match.context.locale, "auth");
@@ -59,9 +66,10 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Join() {
   const { t } = useTranslation("auth");
-  const { ref, next } = Route.useSearch();
+  const { ref, next, mode } = Route.useSearch();
   const navigate = useNavigate();
-  const returnTo = safeNext(next, "/predictions");
+  // Discover is the home base after signing in (and the PWA start page), unless a page sent the member here.
+  const returnTo = safeNext(next, "/discover");
   const { user, profile, loading, refreshProfile } = useSession();
 
   const [step, setStep] = useState<Step>("email");
@@ -69,7 +77,8 @@ function Join() {
   const [codeKind, setCodeKind] = useState<CodeKind>("email");
   const [mfaTick, setMfaTick] = useState(0);
   const [foundingNumber, setFoundingNumber] = useState<number | null>(null);
-
+  // A brand-new member sees the welcome screen with their first moves; a returning member goes straight back.
+  const [justJoined, setJustJoined] = useState(false);
   useEffect(() => rememberRef(ref), [ref]);
 
   // Follow the session: a member with two-factor on must pass it first; then a profile means done, and no
@@ -86,7 +95,8 @@ function Join() {
       if (profile) {
         setFoundingNumber((n) => n ?? profile.founding_number);
         setStep("done");
-        void navigate({ to: returnTo as never });
+        rememberAccount();
+        if (!justJoined) void navigate({ to: returnTo as never });
       } else if (user) {
         setEmail((e) => e || user.email || "");
         setStep((s) => (s === "email" || s === "code" || s === "mfa" ? "onboarding" : s));
@@ -95,7 +105,12 @@ function Join() {
     return () => {
       active = false;
     };
-  }, [loading, profile, user, mfaTick, navigate, returnTo]);
+  }, [loading, profile, user, mfaTick, navigate, returnTo, justJoined]);
+
+  const stepIndex =
+    step === "email" ? 0 : step === "code" || step === "mfa" ? 1 : step === "onboarding" ? 2 : 3;
+  const showProgress =
+    step === "code" || step === "onboarding" || (step === "email" && mode !== "signin");
 
   return (
     <div className="relative mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
@@ -103,13 +118,20 @@ function Join() {
         kind="podium"
         className="absolute right-4 top-6 hidden h-20 w-32 opacity-80 sm:right-6 sm:block"
       />
-      <h1 className="puntr-rise text-3xl">{t("join.title")}</h1>
-      <p className="puntr-rise mt-1 text-sm text-muted-foreground">{t("join.subtitle")}</p>
-      <FoundingCounter className="mt-3" />
+      <h1 className="puntr-rise text-3xl">
+        {step === "done" && justJoined ? t("join.done.title") : t("join.title")}
+      </h1>
+      <p className="puntr-rise mt-1 text-sm text-muted-foreground">
+        {step === "done" && justJoined ? t("join.done.subtitle") : t("join.subtitle")}
+      </p>
+      {step === "email" && <FoundingCounter className="mt-3" />}
+
+      {showProgress && <JoinProgress current={stepIndex} />}
 
       <div className="card-surface mt-6 p-6">
         {step === "email" && (
           <AuthStep
+            initialMode={mode ?? (hasAccountOnDevice() ? "signin" : "create")}
             redirectTo={returnTo}
             onNeedsCode={(e, kind) => {
               setEmail(e);
@@ -148,16 +170,17 @@ function Join() {
         )}
         {step === "onboarding" && (
           <OnboardingStep
+            email={email}
             onBlocked={() => setStep("blocked")}
             onDone={async (n) => {
+              setJustJoined(true);
               setFoundingNumber(n);
               await refreshProfile();
               setStep("done");
-              void navigate({ to: returnTo as never });
             }}
           />
         )}
-        {step === "done" && <DoneStep foundingNumber={foundingNumber} />}
+        {step === "done" && <DoneStep foundingNumber={foundingNumber} returnTo={returnTo} />}
       </div>
 
       <RgNotice variant="compact" className="mt-6" />
@@ -176,6 +199,48 @@ function LegalLinks({ i18nKey }: { i18nKey: string }) {
         2: <Link to="/privacy" className="underline" target="_blank" />,
       }}
     />
+  );
+}
+
+/** Remembers (on this device only) that someone has signed in here, so /join opens on Sign in next time. */
+const ACCOUNT_KEY = "puntr:has-account";
+function rememberAccount() {
+  try {
+    window.localStorage.setItem(ACCOUNT_KEY, "1");
+  } catch {
+    // Storage blocked: the form just opens on Create account.
+  }
+}
+function hasAccountOnDevice() {
+  try {
+    return typeof window !== "undefined" && window.localStorage.getItem(ACCOUNT_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** Three short steps, so new members always know how far along they are. */
+function JoinProgress({ current }: { current: number }) {
+  const { t } = useTranslation("auth");
+  const steps = ["account", "confirm", "profile"] as const;
+  return (
+    <ol className="mt-6 grid grid-cols-3 gap-2" aria-label={t("join.progress.label")}>
+      {steps.map((key, i) => {
+        const state = i < current ? "done" : i === current ? "current" : "todo";
+        return (
+          <li key={key} aria-current={state === "current" ? "step" : undefined} className="min-w-0">
+            <span
+              className={`block h-1.5 rounded-full transition-colors duration-500 ${state === "todo" ? "bg-muted" : "bg-primary"}`}
+            />
+            <span
+              className={`mt-1.5 block truncate text-[11px] font-semibold ${state === "current" ? "text-foreground" : "text-muted-foreground"}`}
+            >
+              {i + 1}. {t(`join.progress.${key}`)}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
@@ -209,29 +274,37 @@ const NO_ACCOUNT_CODES = new Set(["otp_disabled", "signup_disabled", "user_not_f
 function AuthStep({
   onNeedsCode,
   redirectTo,
+  initialMode,
 }: {
   onNeedsCode: (email: string, kind: CodeKind) => void;
   redirectTo: string;
+  initialMode: "create" | "signin";
 }) {
   const { t } = useTranslation("auth");
-  const [mode, setMode] = useState<"create" | "signin">("create");
-  const [method, setMethod] = useState<"password" | "code">("password");
+  const [mode, setMode] = useState<"create" | "signin">(initialMode);
+  // New members get the shortest path (no password to invent); returning members usually have a password.
+  const [method, setMethod] = useState<"password" | "code">(
+    initialMode === "create" ? "code" : "password",
+  );
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [adult, setAdult] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const create = mode === "create";
   const usesPassword = method === "password";
   const redirectOption =
-    typeof window === "undefined" ? {} : { emailRedirectTo: `${window.location.origin}${redirectTo}` };
+    typeof window === "undefined"
+      ? {}
+      : { emailRedirectTo: `${window.location.origin}${redirectTo}` };
 
   const google = async () => {
     setError(null);
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+      },
     });
     if (err) setError(t("join.error.oauth"));
   };
@@ -250,7 +323,6 @@ function AuthStep({
         const problem = validatePassword(password, email);
         if (problem) return setError(t(`join.error.password.${problem}`));
       }
-      if (!adult) return setError(t("join.error.ageRequired"));
     } else if (id.kind === "invalid") {
       return setError(t(usesPassword ? "join.error.identifier" : "join.error.email"));
     } else if (!usesPassword && id.kind !== "email") {
@@ -334,7 +406,11 @@ function AuthStep({
 
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
-      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.mode.label")}>
+      <div
+        className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1"
+        role="group"
+        aria-label={t("join.mode.label")}
+      >
         {(["create", "signin"] as const).map((m) => (
           <button
             key={m}
@@ -342,10 +418,13 @@ function AuthStep({
             aria-pressed={mode === m}
             onClick={() => {
               setMode(m);
+              setMethod(m === "create" ? "code" : "password");
               setError(null);
             }}
-            className={`px-4 py-2 text-sm font-medium ${
-              mode === m ? "bg-ink text-ink-foreground" : "border border-border hover:bg-muted"
+            className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+              mode === m
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t(`join.mode.${m}`)}
@@ -356,31 +435,12 @@ function AuthStep({
       <Button
         type="button"
         variant="outline"
-        className="w-full gap-2"
+        className="h-11 w-full gap-2"
         onClick={() => void google()}
       >
         <GoogleLogo /> {t("join.google")}
       </Button>
       <p className="text-center text-xs text-muted-foreground">{t("join.or")}</p>
-
-      <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("join.method.label")}>
-        {(["password", "code"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            aria-pressed={method === m}
-            onClick={() => {
-              setMethod(m);
-              setError(null);
-            }}
-            className={`px-3 py-2 text-xs font-medium ${
-              method === m ? "bg-primary-soft text-primary" : "border border-border hover:bg-muted"
-            }`}
-          >
-            {t(`join.method.${m}`)}
-          </button>
-        ))}
-      </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="j-email">
@@ -416,7 +476,11 @@ function AuthStep({
             <p className="text-xs text-muted-foreground">{t("join.passwordStep.hint")}</p>
           ) : (
             <p className="text-xs">
-              <Link to="/reset-password" search={{ next: redirectTo }} className="font-semibold text-primary hover:underline">
+              <Link
+                to="/reset-password"
+                search={{ next: redirectTo }}
+                className="font-semibold text-primary hover:underline"
+              >
                 {t("join.forgot")}
               </Link>
             </p>
@@ -425,26 +489,27 @@ function AuthStep({
       ) : (
         <p className="text-xs text-muted-foreground">{t("join.method.codeHint")}</p>
       )}
-
+      <button
+        type="button"
+        onClick={() => {
+          setMethod(usesPassword ? "code" : "password");
+          setError(null);
+        }}
+        className="text-xs font-semibold text-primary hover:underline"
+      >
+        {usesPassword ? t("join.method.switchToCode") : t("join.method.switchToPassword")}
+      </button>
       {create && (
-        <>
-          <div className="flex items-start gap-3">
-            <Checkbox id="j-age" checked={adult} onCheckedChange={(v) => setAdult(v === true)} />
-            <Label htmlFor="j-age" className="text-sm font-normal leading-snug">
-              {t("join.emailStep.age")}
-            </Label>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            <LegalLinks i18nKey="join.emailStep.terms" />
-          </p>
-        </>
+        <p className="text-xs text-muted-foreground">
+          <LegalLinks i18nKey="join.emailStep.terms" />
+        </p>
       )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
-      <Button type="submit" disabled={busy} className="w-full">
+      <Button type="submit" disabled={busy} className="h-11 w-full">
         {busy
           ? t("join.emailStep.sending")
           : !usesPassword
@@ -501,8 +566,18 @@ function CodeStep({
     setError(null);
     const { error: err } =
       kind === "signup"
-        ? await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${window.location.origin}${redirectTo}` } })
-        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}${redirectTo}` } });
+        ? await supabase.auth.resend({
+            type: "signup",
+            email,
+            options: { emailRedirectTo: `${window.location.origin}${redirectTo}` },
+          })
+        : await supabase.auth.signInWithOtp({
+            email,
+            options: {
+              shouldCreateUser: false,
+              emailRedirectTo: `${window.location.origin}${redirectTo}`,
+            },
+          });
     if (err) return setError(err.status === 429 ? t("join.error.rate") : t("join.error.generic"));
     setCooldown(RESEND_SECONDS);
   };
@@ -565,9 +640,11 @@ function CodeStep({
 type Availability = "idle" | "checking" | "available" | "taken" | "invalid";
 
 function OnboardingStep({
+  email,
   onDone,
   onBlocked,
 }: {
+  email: string;
   onDone: (founding: number | null) => void | Promise<void>;
   onBlocked: () => void;
 }) {
@@ -577,7 +654,9 @@ function OnboardingStep({
   const languages = enabledLocales();
 
   const [language, setLanguage] = useState<LocaleCode>(locale);
-  const [username, setUsername] = useState("");
+  const ideas = usernameIdeas(email);
+  // Start from a suggestion so most people only have to confirm it.
+  const [username, setUsername] = useState(ideas[0] ?? "");
   const [availability, setAvailability] = useState<Availability>("idle");
   const [birthYear, setBirthYear] = useState("");
   const [adult, setAdult] = useState(false);
@@ -722,6 +801,24 @@ function OnboardingStep({
         >
           {hint[availability] || t("join.onboarding.usernameHint")}
         </p>
+        {(availability === "taken" || availability === "invalid") && ideas.length > 1 && (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-xs text-muted-foreground">{t("join.onboarding.tryOne")}</span>
+            {ideas
+              .filter((idea) => idea !== username.trim().toLowerCase())
+              .slice(0, 3)
+              .map((idea) => (
+                <button
+                  key={idea}
+                  type="button"
+                  onClick={() => setUsername(idea)}
+                  className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold transition-colors hover:border-primary hover:text-primary"
+                >
+                  {idea}
+                </button>
+              ))}
+          </div>
+        )}
       </div>
 
       <div className="space-y-1.5">
@@ -756,6 +853,9 @@ function OnboardingStep({
           </Label>
         </div>
         {/* Two separate, unticked boxes. Marketing is never a condition of joining. */}
+        <p className="pt-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          {t("join.onboarding.optional")}
+        </p>
         <div className="flex items-start gap-3">
           <Checkbox
             id="o-mail"
@@ -787,22 +887,34 @@ function OnboardingStep({
           {error}
         </p>
       )}
-      <Button type="submit" disabled={busy} className="w-full">
+      <Button type="submit" disabled={busy} className="h-11 w-full">
         {busy ? t("join.onboarding.submitting") : t("join.onboarding.submit")}
       </Button>
     </form>
   );
 }
 
-function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
+function DoneStep({
+  foundingNumber,
+  returnTo,
+}: {
+  foundingNumber: number | null;
+  returnTo: string;
+}) {
   const { t } = useTranslation("auth");
   const { profile, emailConfirmed } = useSession();
   const number = foundingNumber ?? profile?.founding_number ?? null;
+  // Three clear first moves instead of a wall of options. Each is one tap from here.
+  const moves = [
+    { key: "predict", to: "/discover", icon: Target },
+    { key: "teams", to: "/account", hash: "favourites", icon: Star },
+    { key: "practice", to: "/practice", icon: Sparkles },
+  ] as const;
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
+    <div className="space-y-5">
+      <div className="puntr-pop rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
-          {t("join.done.celebrationEyebrow")}
+          {number ? t("join.done.celebrationEyebrow") : t("join.done.welcomeEyebrow")}
         </p>
         <h2 className="mt-2 text-2xl">
           {number
@@ -813,7 +925,6 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
       </div>
-      {emailConfirmed && <AnnualPassClaim onboarding />}
       {!emailConfirmed && (
         <p className="border border-border bg-muted/40 p-3 text-sm">
           {t("join.done.confirmPrompt")}{" "}
@@ -822,24 +933,39 @@ function DoneStep({ foundingNumber }: { foundingNumber: number | null }) {
           </Link>
         </p>
       )}
-      <QuestsChecklist compact />
-      <div className="flex flex-wrap gap-3">
-        <Button asChild>
-          <Link to="/account" hash="get-started">
-            {t("join.done.accountCta")}
-          </Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link to="/roadmap">{t("join.done.cta")}</Link>
-        </Button>
-        {profile && (
-          <Button asChild variant="outline">
-            <Link to="/u/$username" params={{ username: profile.username }}>
-              {t("join.done.record")}
-            </Link>
-          </Button>
-        )}
+      <div>
+        <h3 className="text-sm font-bold">{t("join.done.movesTitle")}</h3>
+        <ul className="mt-3 grid gap-2">
+          {moves.map(({ key, to, icon: Icon, ...rest }, i) => (
+            <li key={key} className="puntr-rise" style={{ ["--i" as string]: i + 1 }}>
+              <Link
+                to={to}
+                hash={"hash" in rest ? rest.hash : undefined}
+                onClick={() => trackEvent("onboarding_move_clicked", { move: key })}
+                className="group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/50 hover:bg-muted/40"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary transition-transform group-hover:scale-105">
+                  <Icon className="size-5" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold">
+                    {t(`join.done.moves.${key}.title`)}
+                  </span>
+                  <span className="block text-xs text-muted-foreground">
+                    {t(`join.done.moves.${key}.body`)}
+                  </span>
+                </span>
+                <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
+      {emailConfirmed && <AnnualPassClaim onboarding />}
+      <QuestsChecklist compact />
+      <Button asChild className="h-11 w-full">
+        <Link to={returnTo as never}>{t("join.done.continue")}</Link>
+      </Button>
     </div>
   );
 }
