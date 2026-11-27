@@ -126,7 +126,9 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
         const { data: consentAfter, error: consentAfterError } = await db.from("current_consents")
           .select("user_id,granted").eq("purpose", "pfie_learning").in("user_id", userIds);
         if (consentAfterError) throw consentAfterError;
-        const stillOptedIn = new Set((consentAfter ?? []).filter(c => c.granted === true).map(c => c.user_id));
+        const stillOptedIn = new Set((consentAfter ?? [])
+          .filter(c => c.granted === true && genuineMemberIds.has(c.user_id))
+          .map(c => c.user_id));
         for (const id of userIds.filter(id => !stillOptedIn.has(id))) {
           const subjectKey = subjectByUser.get(id);
           if (subjectKey) {
