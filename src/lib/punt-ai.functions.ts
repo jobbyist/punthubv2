@@ -12,6 +12,8 @@ import { createCacheStore } from "@/lib/parallel/cache.server";
 import { withExtractCache, withSearchCache } from "@/lib/parallel/cached";
 import { STANDINGS_LAUNCH_KEYS } from "@/lib/pfie/standings";
 import {
+  containsPuntAiPrivateContext,
+  isPuntAiOddsQuestion,
   needsPuntAiLiveWeb,
   normalizePuntAiQuestion,
   PUNT_AI_LIVE_CREDIT_COST,
@@ -163,7 +165,7 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
   const sources: AiSource[] = [];
   if (fixtures.length) sources.push({ title: "Puntr fixtures", url: "/fixtures" });
   if (standings.length) sources.push({ title: "Puntr league tables", url: "/tables" });
-  if (articles.length) sources.push({ title: "Puntr Newsroom", url: "/news" });
+  if (articles.length) sources.push({ title: "Puntr Newsroom", url: "/newsroom" });
   return { text: sections.join("\n\n").slice(0, 14_000), sources };
 }
 
@@ -292,11 +294,18 @@ export const askPuntAi = createServerFn({ method: "POST" })
 
     const normalized = normalizePuntAiQuestion(data.message);
     const safeMessage = scrubPuntAiMessage(data.message);
-    const liveRequested = needsPuntAiLiveWeb(data.message);
+    const oddsQuestion = isPuntAiOddsQuestion(data.message);
+    const privateContext = containsPuntAiPrivateContext(data.message);
+    const liveRequested = needsPuntAiLiveWeb(data.message) && !oddsQuestion && !privateContext;
 
     let mode: AiMode = "internal";
     let notice: string | undefined;
     let balance: number | null = null;
+    if (oddsQuestion) {
+      notice = "Automated bookmaker prices are not available in PUNT AI while data-use permissions are being finalised. I can explain the market or discuss odds you enter yourself.";
+    } else if (privateContext) {
+      notice = "Personal account or contact details are not sent to live web providers. This answer uses Puntr's stored data only.";
+    }
     if (liveRequested) {
       const [entitlement, balanceResult] = await Promise.all([
         context.supabase.rpc("has_entitlement", { p_user: context.userId, p_entitlement: "pro" }),
