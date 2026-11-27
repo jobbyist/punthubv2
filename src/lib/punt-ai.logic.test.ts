@@ -13,16 +13,23 @@ describe("PUNT AI request safety", () => {
     expect(normalizePuntAiQuestion("  Premier   League TABLE? ")).toBe("premier league table?");
   });
 
-  it("routes time-sensitive questions to the live-web path", () => {
+  it("routes time-sensitive questions to live web but not bookmaker odds", () => {
     expect(needsPuntAiLiveWeb("Any latest injury news for Sundowns?")).toBe(true);
     expect(needsPuntAiLiveWeb("What is ROI?")).toBe(false);
+    expect(needsPuntAiLiveWeb("What is the current Premier League table?")).toBe(false);
     expect(needsPuntAiLiveWeb("What are the current bookmaker odds?")).toBe(false);
     expect(isPuntAiOddsQuestion("What are the current bookmaker odds?")).toBe(true);
+  });
+
+  it("keeps private account questions out of live web", () => {
     expect(containsPuntAiPrivateContext("What is my account balance?")).toBe(true);
+    expect(containsPuntAiPrivateContext("Show me my picks and slips")).toBe(true);
   });
 
   it("redacts personal contact details and links before external calls", () => {
     expect(scrubPuntAiMessage("Email me at test@example.com or call 082 123 4567 @michael https://example.com"))
       .toBe("Email me at [redacted email] or call [redacted phone] [redacted handle] [link omitted]");
+    expect(scrubPuntAiMessage("I am Michael, age 17")).toBe("[redacted name], [redacted age]");
+    expect(scrubPuntAiMessage("I am interested in the Premier League")).toBe("I am interested in the Premier League");
   });
 });
