@@ -44,7 +44,7 @@ const TAB_GROUPS = [
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
-    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw"],
+    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw", "bookmakers"],
   },
   {
     label: "Platform",

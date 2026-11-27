@@ -7,7 +7,7 @@ import { bookmakerDirectory, NGB_REGISTER_URL } from "@/lib/bookmaker-directory"
 import { supabase } from "@/integrations/supabase/client";
 
 type PermissionRow = {
-  id: string; bookmaker_name: string; domain: string | null; affiliate_status: string;
+  id: string; affiliate_priority: number; bookmaker_name: string; domain: string | null; affiliate_status: string;
   licence_reference_candidate: string | null; licence_status: "pending_review" | "verified" | "rejected";
   data_rights_status: "pending" | "approved" | "denied"; licence_evidence_url: string | null;
   rights_evidence_url: string | null; collection_approved: boolean; storage_approved: boolean;
@@ -49,8 +49,14 @@ export function BookmakerComplianceTab() {
 
   const directoryRows = useMemo(() => {
     const byName = new Map(rows.map((r) => [r.bookmaker_name.toLowerCase(), r]));
-    return bookmakerDirectory.map((entry) => ({ entry, row: byName.get(entry.name.toLowerCase()) }))
-      .filter(({ entry }) => entry.name.toLowerCase().includes(filter.toLowerCase()));
+    return [...bookmakerDirectory, ...additionalCandidates]
+      .map((entry) => ({ entry, row: byName.get(entry.name.toLowerCase()) }))
+      .filter(({ entry }) => entry.name.toLowerCase().includes(filter.toLowerCase()))
+      .sort((a, b) => {
+        const priorityA = a.row?.affiliate_priority ?? 30;
+        const priorityB = b.row?.affiliate_priority ?? 30;
+        return priorityA - priorityB || a.entry.name.localeCompare(b.entry.name);
+      });
   }, [rows, filter]);
 
   function value(row: PermissionRow, key: keyof PermissionRow) {
@@ -163,7 +169,7 @@ export function BookmakerComplianceTab() {
           )}
         </section>
       ))}
-      <p className="text-xs text-muted-foreground">The tab shows 43 operators from Puntr’s curated NGB cross-reference plus 3 additional affiliate/candidate operators requiring separate licence confirmation. The live regulator directory can change; refresh this register after each regulator update.</p>
+      <p className="text-xs text-muted-foreground">The tab includes all 43 public directory entries plus 3 additional affiliate/candidate records. Affiliate-priority records appear first; all remaining entries follow in alphabetical order. The live regulator directory can change; refresh this register after each regulator update.</p>
     </div>
   );
 }
