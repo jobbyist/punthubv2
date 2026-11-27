@@ -117,7 +117,7 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
             if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
             if (!contentType.includes("text/html")) throw new Error(`${path}: expected HTML, received ${contentType || "unknown content type"}`);
             const html = await response.text();
-            if (!html.trim() || !/<html[\\s>]/i.test(html)) throw new Error(`${path}: empty or invalid HTML response`);
+            if (!html.trim() || !/<html[\s>]/i.test(html)) throw new Error(`${path}: empty or invalid HTML response`);
             visited.push(path);
           }
         } catch (error) {
