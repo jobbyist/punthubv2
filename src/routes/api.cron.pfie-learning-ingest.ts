@@ -49,7 +49,7 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
           payload: { fixture_context: record(response.fixture_context) ? response.fixture_context : {}, provider: r.provider, decisions, citations, source_domains: response.source_domains ?? [], source_urls: r.source_urls ?? [], decision_id: response.decision_id ?? null },
           label: null, label_status: "pending_verification", training_status: "quarantined",
           provenance: { source_table: "synthetic_research", source_id: r.id, experiment_id: r.experiment_id, provider: r.provider, source_urls: r.source_urls ?? [], synthetic: true, label_origin: "awaiting_independent_pfie_result_corroboration" },
-        }, { onConflict: "source_kind,source_id,task_type" });
+        }, { onConflict: "source_kind,source_id,task_type", ignoreDuplicates: true });
         if (error) throw error;
         examplesUpserted++;
       }
