@@ -99,16 +99,16 @@ describe("trusted standings publisher domains", () => {
   });
 });
 describe("launch standings coverage", () => {
-  it("keeps the eight competitions with existing validated tables and temporarily hides empty ones", () => {
+  it("keeps the restoration competitions in the agreed launch order", () => {
     expect(STANDINGS_LAUNCH_KEYS).toEqual([
       "epl",
       "laliga",
       "ucl",
       "uecl",
       "sa-championship",
+      "bundesliga",
       "psl",
       "seriea",
-      "bundesliga",
       "primeira",
       "championship",
       "saudi-pro",
