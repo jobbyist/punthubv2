@@ -78,13 +78,18 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
 
       if (activities.length > 0) {
         const userIds = [...new Set(activities.map(a => a.user_id))];
-        const [consents, mappings] = await Promise.all([
+        const [consents, mappings, profiles] = await Promise.all([
           db.from("current_consents").select("user_id,granted").eq("purpose", "pfie_learning").in("user_id", userIds),
           db.from("pfie_learning_subject_map").select("user_id,subject_key").in("user_id", userIds),
+          db.from("profiles").select("id,is_ai_participant").in("id", userIds),
         ]);
         if (consents.error) throw consents.error;
         if (mappings.error) throw mappings.error;
-        const optedIn = new Set((consents.data ?? []).filter(c => c.granted === true).map(c => c.user_id));
+        if (profiles.error) throw profiles.error;
+        const genuineMemberIds = new Set((profiles.data ?? []).filter(p => p.is_ai_participant === false).map(p => p.id));
+        const optedIn = new Set((consents.data ?? [])
+          .filter(c => c.granted === true && genuineMemberIds.has(c.user_id))
+          .map(c => c.user_id));
         const subjectByUser = new Map((mappings.data ?? []).map(m => [m.user_id, m.subject_key]));
         const secret = process.env["SUPABASE_SERVICE_ROLE_KEY"];
         if (!secret) throw new Error("missing_service_role_key_for_subject_pseudonymisation");
@@ -121,7 +126,9 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
         const { data: consentAfter, error: consentAfterError } = await db.from("current_consents")
           .select("user_id,granted").eq("purpose", "pfie_learning").in("user_id", userIds);
         if (consentAfterError) throw consentAfterError;
-        const stillOptedIn = new Set((consentAfter ?? []).filter(c => c.granted === true).map(c => c.user_id));
+        const stillOptedIn = new Set((consentAfter ?? [])
+          .filter(c => c.granted === true && genuineMemberIds.has(c.user_id))
+          .map(c => c.user_id));
         for (const id of userIds.filter(id => !stillOptedIn.has(id))) {
           const subjectKey = subjectByUser.get(id);
           if (subjectKey) {
