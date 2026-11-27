@@ -73,7 +73,12 @@ function Landing() {
   const [hasPostedPick, setHasPostedPick] = useState(false);
   const [postLaunch, setPostLaunch] = useState(false);
   useEffect(() => {
-    const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    const today = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Africa/Johannesburg",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
     setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
   }, []);
   useEffect(() => {
@@ -109,19 +114,30 @@ function Landing() {
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
             {headlineVariant === "A" ? (
-              <>Predict smarter.<br /><span className="text-primary">Prove it.</span></>
+              <>
+                Predict smarter.
+                <br />
+                <span className="text-primary">Prove it.</span>
+              </>
             ) : (
-              <>Know your sport?<br /><span className="text-primary">Back your call.</span></>
+              <>
+                Know your sport?
+                <br />
+                <span className="text-primary">Back your call.</span>
+              </>
             )}
           </h1>
           <p className="mt-4 text-base font-semibold sm:text-lg">
             100% free to join. No card required. Sign up for early access.
           </p>
           <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr is a sports prediction and community platform where South African fans publish timestamped picks, follow transparent grading and build a public performance record. Compete with the community and collect non-cash PuntPoints through eligible activity.
+            Puntr is a sports prediction and community platform where South African fans publish
+            timestamped picks, follow transparent grading and build a public performance record.
+            Compete with the community and collect non-cash PuntPoints through eligible activity.
           </p>
           <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
-            Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading, and a public record that speaks for itself.
+            Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading,
+            and a public record that speaks for itself.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
@@ -132,10 +148,16 @@ function Landing() {
                   authenticated: isSignedIn,
                   destination: !isSignedIn ? "join" : hasPostedPick ? "leaderboards" : "discover",
                 });
-                navigate({ to: !isSignedIn ? "/join" : hasPostedPick ? "/leaderboards" : "/discover" });
+                navigate({
+                  to: !isSignedIn ? "/join" : hasPostedPick ? "/leaderboards" : "/discover",
+                });
               }}
             >
-              {!isSignedIn ? "Become a Founding Member" : hasPostedPick ? "View your leaderboard position" : "Make your first prediction"}
+              {!isSignedIn
+                ? "Become a Founding Member"
+                : hasPostedPick
+                  ? "View your leaderboard position"
+                  : "Make your first prediction"}
             </Button>
             <Button
               size="lg"
@@ -154,7 +176,13 @@ function Landing() {
                 }
               }}
             >
-              {isSignedIn ? "Explore predictions" : <><Play className="mr-2 size-4" /> Watch the video</>}
+              {isSignedIn ? (
+                "Explore predictions"
+              ) : (
+                <>
+                  <Play className="mr-2 size-4" /> Watch the video
+                </>
+              )}
             </Button>
           </div>
           <FoundingCounter className="mt-4" />
@@ -188,41 +216,55 @@ function Landing() {
         </div>
       </section>
 
-      <div className="section-y pt-4 sm:pt-6 lg:pt-8">
-        <HomePreview />
-      </div>
-      <BadgeMarquee label={t("marquee")} />
-
       {!isSignedIn && (
         <motion.section
           {...fade}
-          className="card-surface relative isolate mb-4 mt-8 overflow-hidden p-6 sm:p-8"
+          className="card-surface relative isolate mt-4 overflow-hidden p-6 sm:mt-6 sm:p-8"
           aria-labelledby="home-steps-title"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Three steps. One public record.</p>
-          <h2 id="home-steps-title" className="mt-2 text-2xl sm:text-3xl">{t("join.title")}</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
+            Three steps. One public record.
+          </p>
+          <h2 id="home-steps-title" className="mt-2 text-2xl sm:text-3xl">
+            {t("join.title")}
+          </h2>
           <ol className="mt-6 grid gap-4 md:grid-cols-3">
             <li className="rounded-xl border border-border p-4">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 1</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                Step 1
+              </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.one.title")}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.one.body")}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t("join.steps.one.body")}
+              </p>
             </li>
             <li className="rounded-xl border border-border p-4">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 2</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                Step 2
+              </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.two.title")}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.two.body")}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t("join.steps.two.body")}
+              </p>
             </li>
             <li className="rounded-xl border border-border p-4">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Step 3</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                Step 3
+              </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.three.title")}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("join.steps.three.body")}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t("join.steps.three.body")}
+              </p>
             </li>
           </ol>
           <Button
             size="lg"
             className="puntr-sheen mt-6 h-12 px-6"
             onClick={() => {
-              trackEvent("home_how_it_works_clicked", { authenticated: false, destination: "how-it-works" });
+              trackEvent("home_how_it_works_clicked", {
+                authenticated: false,
+                destination: "how-it-works",
+              });
               navigate({ to: "/how-it-works" });
             }}
           >
@@ -232,87 +274,9 @@ function Landing() {
         </motion.section>
       )}
 
-      {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
-      <motion.section
-        {...fade}
-        className="card-surface mt-4 p-5 sm:p-8"
-        aria-labelledby="proof-demo-title"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
-              {t("proof.eyebrow")}
-            </p>
-            <h2 id="proof-demo-title" className="mt-2 text-2xl">
-              {t("proof.title")}
-            </h2>
-            <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("proof.body")}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("proof.choose")}>
-            <button
-              type="button"
-              aria-pressed={!showVerified}
-              onClick={() => setShowVerified(false)}
-              className={
-                "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
-                (!showVerified
-                  ? "border-foreground bg-muted"
-                  : "border-border text-muted-foreground")
-              }
-            >
-              {t("proof.traditional")}
-            </button>
-            <button
-              type="button"
-              aria-pressed={showVerified}
-              onClick={() => setShowVerified(true)}
-              className={
-                "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
-                (showVerified
-                  ? "border-primary bg-primary-soft text-primary"
-                  : "border-border text-muted-foreground")
-              }
-            >
-              {t("proof.verified")}
-            </button>
-          </div>
-        </div>
-        <div className="mt-5 rounded-xl border p-5" aria-live="polite">
-          <p className="text-sm font-bold">
-            {showVerified ? t("proof.verifiedTitle") : t("proof.traditionalTitle")}
-          </p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-            {(showVerified
-              ? (["v.locked", "v.graded", "v.public"] as const)
-              : (["t.editable", "t.deleted", "t.roi"] as const)
-            ).map((k) => (
-              <li key={k} className="text-sm">
-                <strong className="block">{t(`proof.${k}.title`)}</strong>
-                <span className="text-xs text-muted-foreground">{t(`proof.${k}.body`)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground">{t("proof.fine")}</p>
-      </motion.section>
-
-      {/* Why a locked record matters */}
-      <motion.section {...fade} className="mt-6 grid gap-4 md:grid-cols-3">
-        {(["stamped", "noEdits", "public"] as const).map((k) => (
-          <div key={k} className="card-surface card-interactive flex gap-3 p-5">
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-              <Check className="size-4" aria-hidden="true" />
-            </span>
-            <span>
-              <span className="block text-sm font-semibold">{t(`why.${k}.title`)}</span>
-              <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
-                {t(`why.${k}.body`)}
-              </span>
-            </span>
-          </div>
-        ))}
-      </motion.section>
-
+      <div className="pt-8 sm:pt-10">
+        <HomePreview />
+      </div>
       {/* Next fixtures: real data from the daily sync. Hidden when there are none. */}
       {next.length > 0 && (
         <motion.section {...fade} className="mt-12 sm:mt-16">
@@ -348,6 +312,100 @@ function Landing() {
         </motion.section>
       )}
 
+      <div className="mt-12">
+        <BadgeMarquee label={t("marquee")} />
+      </div>
+      {/* Guests only: members already know why a locked record matters. */}
+      {!isSignedIn && (
+        <>
+          {/* Five-second proof: compare unverified claims with Puntr’s locked record. */}
+          <motion.section
+            {...fade}
+            className="card-surface mt-4 p-5 sm:p-8"
+            aria-labelledby="proof-demo-title"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                  {t("proof.eyebrow")}
+                </p>
+                <h2 id="proof-demo-title" className="mt-2 text-2xl">
+                  {t("proof.title")}
+                </h2>
+                <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("proof.body")}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("proof.choose")}>
+                <button
+                  type="button"
+                  aria-pressed={!showVerified}
+                  onClick={() => setShowVerified(false)}
+                  className={
+                    "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
+                    (!showVerified
+                      ? "border-foreground bg-muted"
+                      : "border-border text-muted-foreground")
+                  }
+                >
+                  {t("proof.traditional")}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={showVerified}
+                  onClick={() => setShowVerified(true)}
+                  className={
+                    "min-h-10 rounded-lg border px-3 text-xs font-semibold " +
+                    (showVerified
+                      ? "border-primary bg-primary-soft text-primary"
+                      : "border-border text-muted-foreground")
+                  }
+                >
+                  {t("proof.verified")}
+                </button>
+              </div>
+            </div>
+            <div className="mt-5 rounded-xl border p-5" aria-live="polite">
+              <p className="text-sm font-bold">
+                {showVerified ? t("proof.verifiedTitle") : t("proof.traditionalTitle")}
+              </p>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+                {(showVerified
+                  ? (["v.locked", "v.graded", "v.public"] as const)
+                  : (["t.editable", "t.deleted", "t.roi"] as const)
+                ).map((k) => (
+                  <li key={k} className="text-sm">
+                    <strong className="block">{t(`proof.${k}.title`)}</strong>
+                    <span className="text-xs text-muted-foreground">{t(`proof.${k}.body`)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">{t("proof.fine")}</p>
+          </motion.section>
+
+          {/* Why a locked record matters */}
+          <motion.section {...fade} className="mt-6 grid gap-4 md:grid-cols-3">
+            {(["stamped", "noEdits", "public"] as const).map((k) => (
+              <div key={k} className="card-surface card-interactive flex gap-3 p-5">
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+                  <Check className="size-4" aria-hidden="true" />
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold">{t(`why.${k}.title`)}</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                    {t(`why.${k}.body`)}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </motion.section>
+        </>
+      )}
+
+      <TheGoodSportPromo />
+
+      {/* Newsroom, then the bookmaker logo wall below it (owner, 27 Nov 2026). */}
+      <LatestFromPuntr />
+
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (
         <motion.section {...fade} className="section-y text-center">
@@ -365,10 +423,6 @@ function Landing() {
           <RgNotice variant="compact" className="mt-1" />
         </motion.section>
       )}
-
-      <TheGoodSportPromo />
-
-      <LatestFromPuntr />
 
       {isVideoModalOpen && (
         <div

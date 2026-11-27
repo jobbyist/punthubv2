@@ -123,9 +123,9 @@
       }
     },
     "experience": {
-      "title": "A look at the fixture experience",
+      "title": "A look at the Puntr experience",
       "body": "Explore how fixtures, settled results and the community leaderboard come together.",
-      "tabsLabel": "Preview the fixture experience",
+      "tabsLabel": "Preview the Puntr experience",
       "tab": {
         "fixtures": "Fixtures",
         "results": "Results",
