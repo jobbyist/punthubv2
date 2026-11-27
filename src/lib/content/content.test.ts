@@ -84,7 +84,7 @@ describe("config", () => {
     const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
     expect(alternativeGeminiModel(models, "parallel-medium")).toBe("gemini-3.8-flash");
     expect(alternativeGeminiModel(models, "gemini-3.8-flash")).toBe("gemini-3.6-flash");
-    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBe("gemini-3.8-flash");
+    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBeNull();
   });
   it("reads daily caps and ignores bad entries", () => {
     expect(parseDailyCaps("gemini-3.8-flash=20, x=abc, gemini-3.1-flash-lite=500")).toEqual({
