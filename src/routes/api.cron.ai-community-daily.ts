@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { signupOpenDate } from "@/lib/launch";
 
 const MARKET_OPTIONS: Record<string, Record<string, string>> = {
   "1X2": {
@@ -101,9 +102,10 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as unknown as SupabaseClient;
-        const { data: launched, error: launchError } = await db.rpc("mvp_open");
-        if (launchError || launched !== true) {
-          return Response.json({ ok: true, skipped: true, reason: "platform_not_launched" });
+        const now = new Date();
+        const today = sastDate(now);
+        if (today < signupOpenDate(process.env["FOUNDING_OPEN_DATE"])) {
+          return Response.json({ ok: true, skipped: true, reason: "founding_signups_not_open" });
         }
         const { data: enabledSetting } = await db
           .from("app_settings")
@@ -114,8 +116,6 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
           return Response.json({ ok: true, skipped: true, reason: "ai_community_disabled" });
         }
 
-        const now = new Date();
-        const today = sastDate(now);
         const { data: personaData, error: personaError } = await db
           .from("synthetic_personas")
           .select("persona_key,persona,profile_id")
@@ -376,6 +376,8 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
             }
           }
 
+          // H2H challenges open only when the main platform/duel launch gate is active.
+          const { data: duelsOpen } = await db.rpc("mvp_open");
           // Create a small number of source-backed, zero-stake AI H2H challenges.
           const duelPersonas = rotation
             .filter((p) => !used.has(p.persona_key) && !todayTypes.get(p.persona_key)?.has("duel"))
@@ -398,7 +400,7 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
             const fixture = (upcoming as Fixture[] | null ?? []).find((f) => followed.includes(f.competition)) ?? (upcoming as Fixture[] | null ?? [])[index];
             return fixture ? [{ persona, fixture, markets: marketsFor(persona.persona) }] : [];
           });
-          if (selected.length > 0 && parallelKey) {
+          if (duelsOpen === true && selected.length > 0 && parallelKey) {
             const questions: Record<string, { type: "choice"; instructions: string; criteria: Record<string, string> }> = {};
             for (const item of selected) {
               for (const market of item.markets) {
