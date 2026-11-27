@@ -86,12 +86,13 @@ export interface PublicProfile {
   founding_number: number | null;
   created_at: string | null;
   avatar_url: string | null;
+  is_ai_participant: boolean;
 }
 
 export async function fetchPublicProfile(username: string): Promise<PublicProfile | null> {
   const { data, error } = await supabase
     .from("public_profiles")
-    .select("id, username, founding_number, created_at, avatar_url")
+    .select("id, username, founding_number, created_at, avatar_url, is_ai_participant")
     .eq("username", username.toLowerCase())
     .maybeSingle<{
       id: string | null;
@@ -99,6 +100,7 @@ export async function fetchPublicProfile(username: string): Promise<PublicProfil
       founding_number: number | null;
       created_at: string | null;
       avatar_url: string | null;
+      is_ai_participant: boolean;
     }>();
   if (error) throw error;
   if (!data?.id || !data.username) return null;
@@ -108,6 +110,7 @@ export async function fetchPublicProfile(username: string): Promise<PublicProfil
     founding_number: data.founding_number,
     created_at: data.created_at,
     avatar_url: data.avatar_url ?? null,
+    is_ai_participant: data.is_ai_participant === true,
   };
 }
 
