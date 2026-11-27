@@ -833,3 +833,64 @@ html[data-splash="web"] .puntr-preloader .logo-wrap {
   html { min-height: 100%; }
   body { padding-top: env(safe-area-inset-top, 0px); }
 }
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Instant, app-like navigation (src/router.tsx). Page changes crossfade with a short lift while the header and the
+ * mobile dock keep their place; browsers without view transitions simply swap. Off for prefers-reduced-motion.
+ * ------------------------------------------------------------------------------------------------------------- */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+a,
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+.puntr-app-frame > header {
+  view-transition-name: puntr-header;
+}
+.puntr-dock {
+  view-transition-name: puntr-dock;
+}
+@keyframes puntr-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes puntr-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: puntr-vt-out 110ms ease-out both;
+  }
+  ::view-transition-new(root) {
+    animation: puntr-vt-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  ::view-transition-group(puntr-header),
+  ::view-transition-group(puntr-dock),
+  ::view-transition-old(puntr-header),
+  ::view-transition-new(puntr-header),
+  ::view-transition-old(puntr-dock),
+  ::view-transition-new(puntr-dock) {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+.puntr-page-skeleton {
+  animation: puntr-fade-in-soft 200ms ease both;
+}
+@keyframes puntr-fade-in-soft {
+  from {
+    opacity: 0;
+  }
+}
