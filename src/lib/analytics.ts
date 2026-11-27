@@ -28,7 +28,7 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
   // PFIE learning is a separate, explicit purpose and can be enabled independently of analytics.
   if (hasConsent("pfie_learning")) {
     void import("@/lib/pfie-learning.functions")
-      .then(({ recordPfieActivity }) => recordPfieActivity({ data: { event, payload } }))
+      .then(({ recordPfieActivity }) => recordPfieActivity({ data: { event, payload, fixtureId: typeof payload["fixture_id"] === "string" ? payload["fixture_id"] : undefined } }))
       .catch(() => { /* optional learning telemetry must never affect product UX */ });
   }
   if (!hasConsent("analytics")) return;
