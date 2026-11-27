@@ -195,6 +195,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       ...(options.slot ? { slot: options.slot } : {}),
     });
 
+    let written = await router.generate(request);
     let draft = parseDraft(written.text);
     if (!draft) {
       await log(
