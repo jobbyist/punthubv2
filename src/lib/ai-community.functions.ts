@@ -101,7 +101,6 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
       const email = `${persona.persona_key}@ai.puntr.invalid`;
       try {
         let user = byEmail.get(email);
-        let wasCreated = false;
         if (!user) {
           const password = `AiMember!${crypto.randomUUID()}`;
           const { data: created, error: createError } = await db.auth.admin.createUser({
@@ -117,7 +116,6 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
           if (createError || !created.user) throw new Error(createError?.message ?? "Auth user creation failed.");
           user = created.user;
           byEmail.set(email, user);
-          wasCreated = true;
         } else if (user.user_metadata?.["is_ai_participant"] !== true) {
           throw new Error("The reserved synthetic email already belongs to a non-AI account.");
         }
@@ -133,8 +131,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         );
         if (provisionError) throw new Error(provisionError.message);
 
-        if (wasCreated) result.created += 1;
-        else if (persona.profile_id) result.alreadyProvisioned += 1;
+        if (persona.profile_id) result.alreadyProvisioned += 1;
+        else result.created += 1;
         result.members.push({
           personaKey: persona.persona_key,
           username,
