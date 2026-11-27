@@ -106,6 +106,12 @@ create policy community_posts_public_read
   on public.community_posts for select to anon, authenticated
   using (status = 'published');
 
+drop policy if exists community_posts_no_update on public.community_posts;
+create policy community_posts_no_update
+  on public.community_posts for update to anon, authenticated
+  using (false)
+  with check (false);
+
 drop policy if exists community_posts_member_insert on public.community_posts;
 create policy community_posts_member_insert
   on public.community_posts for insert to authenticated
@@ -167,6 +173,124 @@ alter table public.ai_community_activity enable row level security;
 alter table public.ai_duel_challenges enable row level security;
 revoke all on public.ai_community_runs, public.ai_community_activity, public.ai_duel_challenges from anon, authenticated;
 grant all on public.ai_community_runs, public.ai_community_activity, public.ai_duel_challenges to service_role;
+
+-- Atomic daily-run claim prevents concurrent cron deliveries from duplicating AI activity.
+create or replace function public.claim_ai_community_run(p_activity_date date)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, auth, pg_temp
+as $function$
+declare
+  v_status text;
+  v_started_at timestamptz;
+begin
+  if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' then
+    raise exception 'service_role_required' using errcode = '42501';
+  end if;
+  perform pg_advisory_xact_lock(7003002, hashtext(p_activity_date::text));
+
+  select status, started_at into v_status, v_started_at
+  from public.ai_community_runs
+  where activity_date = p_activity_date
+  for update;
+
+  if found then
+    if v_status = 'completed' then return false; end if;
+    if v_status = 'started' and v_started_at > now() - interval '15 minutes' then return false; end if;
+    update public.ai_community_runs
+    set status = 'started', started_at = now(), completed_at = null, error = null,
+        posts_created = 0, replies_created = 0, duels_created = 0, updated_at = now()
+    where activity_date = p_activity_date;
+    return true;
+  end if;
+
+  insert into public.ai_community_runs (activity_date, status, started_at)
+  values (p_activity_date, 'started', now());
+  return true;
+end;
+$function$;
+
+revoke all on function public.claim_ai_community_run(date) from public, anon, authenticated;
+grant execute on function public.claim_ai_community_run(date) to service_role;
+
+-- Post and activity ledger entry commit together, so a retry cannot publish a duplicate.
+create or replace function public.publish_ai_community_post(
+  p_persona_key text,
+  p_activity_date date,
+  p_activity_type text,
+  p_title text,
+  p_body text,
+  p_category text,
+  p_parent_id uuid default null,
+  p_target_post_id uuid default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public, auth, pg_temp
+as $function$
+declare
+  v_profile_id uuid;
+  v_is_ai boolean;
+  v_parent public.community_posts;
+  v_post_id uuid;
+begin
+  if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' then
+    raise exception 'service_role_required' using errcode = '42501';
+  end if;
+  if p_activity_type not in ('thread', 'reply') then
+    raise exception 'invalid_community_activity_type' using errcode = '22023';
+  end if;
+
+  select sp.profile_id into v_profile_id
+  from public.synthetic_personas sp
+  where sp.persona_key = p_persona_key and sp.active and sp.profile_id is not null;
+  if v_profile_id is null then raise exception 'ai_persona_not_provisioned' using errcode = 'P0001'; end if;
+
+  select p.is_ai_participant into v_is_ai from public.profiles p where p.id = v_profile_id;
+  if v_is_ai is distinct from true then raise exception 'ai_profile_required' using errcode = 'P0001'; end if;
+
+  if p_activity_type = 'thread' then
+    if p_parent_id is not null or p_target_post_id is not null or p_title is null then
+      raise exception 'invalid_ai_thread_shape' using errcode = '22023';
+    end if;
+  else
+    if p_parent_id is null or p_target_post_id is distinct from p_parent_id or p_title is not null then
+      raise exception 'invalid_ai_reply_shape' using errcode = '22023';
+    end if;
+    select * into v_parent
+    from public.community_posts
+    where id = p_parent_id and parent_id is null and status = 'published';
+    if not found then raise exception 'community_reply_target_unavailable' using errcode = 'P0001'; end if;
+    if exists (
+      select 1 from public.profiles p
+      where p.id = v_parent.author_id and p.is_ai_participant
+    ) then
+      raise exception 'ai_replies_must_target_human_threads' using errcode = '42501';
+    end if;
+    p_category := v_parent.category;
+  end if;
+
+  insert into public.community_posts (
+    author_id, parent_id, title, body, category, status, is_ai_generated
+  ) values (
+    v_profile_id, p_parent_id, p_title, p_body, p_category, 'published', true
+  )
+  returning id into v_post_id;
+
+  insert into public.ai_community_activity (
+    persona_key, activity_date, activity_type, post_id, target_post_id
+  ) values (
+    p_persona_key, p_activity_date, p_activity_type, v_post_id, p_target_post_id
+  );
+
+  return v_post_id;
+end;
+$function$;
+
+revoke all on function public.publish_ai_community_post(text, date, text, text, text, text, uuid, uuid) from public, anon, authenticated;
+grant execute on function public.publish_ai_community_post(text, date, text, text, text, text, uuid, uuid) to service_role;
 
 -- Reclassify the 50 seeded research personas as labelled AI community participants.
 update public.synthetic_personas
@@ -232,7 +356,7 @@ begin
     if v_number is null then
       perform pg_advisory_xact_lock(7001001);
       v_next := public.next_founding_number();
-      select count(founding_number) into v_taken from public.profiles;
+      select count(*) into v_taken from public.profiles where founding_number is not null;
       if v_next > 100 or (100 - v_taken) <= public.founding_spots_held() then
         raise exception 'founding_capacity_full' using errcode = 'P0001';
       end if;
