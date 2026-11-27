@@ -66,6 +66,7 @@ export function hasConsent(purpose: ConsentPurpose): boolean {
 export function writeConsent(
   choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> & Partial<Pick<ConsentState, "pfie_learning">>,
   source: "banner" | "account" = "banner",
+  syncToAccount = true,
 ): ConsentState {
   const previous = readConsent();
   const state: ConsentState = {
@@ -88,7 +89,7 @@ export function writeConsent(
   }
 
   // Never block the UI on this.
-  void syncConsentToAccount(state, source);
+  if (syncToAccount) void syncConsentToAccount(state, source);
   return state;
 }
 
