@@ -406,6 +406,11 @@ const TRUSTED = [
   "365scores.com",
   "standings.nz",
   "globalsportsarchive.com",
+  "scoremondo.com",
+  "zeanball.online",
+  "statsfera.com.tr",
+  "ligue1schedule.com",
+  "sportnewsafrica.com",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {

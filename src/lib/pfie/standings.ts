@@ -43,7 +43,19 @@ export const STANDINGS_POST_LAUNCH_KEYS = [
 export const STANDINGS_COMPETITIONS: Partial<
   Record<
     CompetitionKey,
-    { teams: number; refreshHours: number; queries: string[]; pages?: string[]; groups?: string[]; teamsPerGroup?: number }
+    {
+      teams: number;
+      refreshHours: number;
+      queries: string[];
+      pages?: string[];
+      groups?: string[];
+      teamsPerGroup?: number;
+      groupTeamRanges?: Record<string, { min: number; max: number }>;
+      groupNotes?: string;
+      allowTeamCountIncrease?: boolean;
+      allowVerifiedGoalCorrections?: boolean;
+      allowVerifiedPlayedCorrections?: string[];
+    }
   >
 > = {
   psl: {
@@ -54,8 +66,15 @@ export const STANDINGS_COMPETITIONS: Partial<
       "PSL standings table current season",
       "site:stats.ladumaanalytics.co.za/log Betway Premiership",
       "site:45min.co.za/tables Betway Premiership",
+      "site:nasiscore.co.za/south-africa/psl/table Betway Premiership 2026/27 standings",
+      "site:scoremondo.com/en/competition/south-africa-premier-league-2983/standings Betway Premiership table",
     ],
-    pages: ["https://stats.ladumaanalytics.co.za/log", "https://45min.co.za/tables"],
+    pages: [
+      "https://stats.ladumaanalytics.co.za/log",
+      "https://45min.co.za/tables",
+      "https://nasiscore.co.za/south-africa/psl/table",
+      "https://scoremondo.com/en/competition/south-africa-premier-league-2983/standings",
+    ],
   },
   epl: {
     teams: 20,
@@ -104,6 +123,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://en.legaseriea.it/serie-a/standings",
       "https://www.skysports.com/football/competitions/serie-a/table",
     ],
+    allowVerifiedPlayedCorrections: ["Milan"],
   },
   bundesliga: {
     teams: 18,
@@ -127,13 +147,16 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:tntsports.co.uk/football/ligue-1/standings.shtml Ligue 1 table",
       "site:cbssports.com/soccer/ligue-1/standings Ligue 1 standings",
       "site:ninetyminutesplus.com/league/ligue-1/standings",
+      "site:ligue1schedule.com/table/2026-27 Ligue 1 2026/27 table",
+      "site:espn.com/soccer/standings/_/league/fra.1 Ligue 1 standings",
     ],
     pages: [
       "https://ligue1.com/fr",
-      "https://www.sportsmole.co.uk/football/ligue-1/table.html",
       "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
       "https://www.cbssports.com/soccer/ligue-1/standings/",
-      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
+      "https://www.ligue1schedule.com/table/2026-27",
+      "https://www.espn.com/soccer/standings/_/league/fra.1",
+      "https://zeanball.online/en/table/ligue-1/",
     ],
   },
   eredivisie: {
@@ -181,6 +204,9 @@ export const STANDINGS_COMPETITIONS: Partial<
       "CAF Confederation Cup 2026/27 Group D standings P W D L GF GA points",
       "CAF Confederation Cup 2026/27 all four group tables",
     ],
+    groupTeamRanges: { C: { min: 3, max: 4 } },
+    groupNotes: "Group C currently has three confirmed teams. The fourth place is pending the postponed preliminary-round tie involving CR Belouizdad, AS Douanes and Hafia. Extract the three confirmed Group C teams only; do not invent a placeholder or omit Group C. Accept four teams once the qualifier is completed.",
+    allowTeamCountIncrease: true,
     pages: [
       "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
       "https://globalsportsarchive.com/en/soccer/competition/totalenergies-caf-confederation-cup-2026-2027/81259",
@@ -195,12 +221,16 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:bbc.com/sport/football/championship/table EFL Championship table",
       "site:skysports.com/football/competitions/championship/table Championship standings",
       "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship standings",
+      "site:zeanball.online/en/table/championship Championship 2026/27 table",
+      "site:statsfera.com.tr/en/standings/ingiltere-championship EFL Championship 2026/27",
     ],
     pages: [
       "https://www.efl.com/competitions/efl-championship/",
       "https://www.bbc.com/sport/football/championship/table",
       "https://www.skysports.com/football/competitions/championship/table",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
+      "https://zeanball.online/en/table/championship/",
+      "https://statsfera.com.tr/en/standings/ingiltere-championship",
     ],
   },
   "saudi-pro": {
@@ -353,6 +383,7 @@ export function standingsRequest(input: {
   sources: PfieSource[];
   retryHint?: string;
   groups?: readonly string[];
+  groupNotes?: string;
 }): LlmRequest {
   const sources = input.sources
     .map((s) => `<source n="${s.index}" site="${s.domain}">\n${s.text}\n</source>`)
@@ -370,7 +401,8 @@ export function standingsRequest(input: {
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
       "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
-      (input.groups?.length ? "\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : ""),
+      (input.groups?.length ? "\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : "") +
+      (input.groupNotes ? "\n9. Group-specific context: " + input.groupNotes : ""),
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
     schema: input.groups?.length
       ? {
@@ -464,6 +496,7 @@ export function validateTables(
   allowTiedPositions = false,
   groupNames?: readonly string[],
   teamsPerGroup = expectedTeams,
+  groupTeamRanges?: Record<string, { min: number; max: number }>,
 ): { tables: SourceTable[]; rejected: TableRejection[] } {
   const bySourceGroup = new Map<string, RawStandingRow[]>();
   for (const r of raw) {
@@ -478,7 +511,9 @@ export function validateTables(
     const [sourceIndex, groupName = ""] = sourceGroup.split("::", 2);
     const index = Number(sourceIndex);
     const source = sources.find((s) => s.index === index);
-    const expectedForTable = groupNames?.length ? teamsPerGroup : expectedTeams;
+    const groupRange = groupNames?.length
+      ? groupTeamRanges?.[groupName] ?? { min: teamsPerGroup, max: teamsPerGroup }
+      : { min: expectedTeams, max: expectedTeams };
     if (groupNames?.length && !groupName) {
       rejected.push({ source: index, reason: "group_missing" });
       continue;
@@ -503,6 +538,11 @@ export function validateTables(
     const byTeam = new Map<string, RawStandingRow>();
     let duplicateConflict: string | null = null;
     for (const row of extractedRows) {
+      const rawTeam = row.team.trim();
+      if (/^(?:tbd|tbc|tba|to be confirmed|qualifier|winner(?:\s+of)?\b)/i.test(rawTeam)) {
+        fail("placeholder_team_not_allowed");
+        continue;
+      }
       const sourceName = row.team.replace(/^[A-Z]{2,4}\s+/, "").trim();
       const resolvedName = knownTeams.length ? resolveTeam(sourceName, knownTeams) : null;
       const canonicalName =
@@ -554,10 +594,14 @@ export function validateTables(
       fail(duplicateConflict);
       continue;
     }
-    if (rows.length !== expectedForTable) {
-      fail(`team_count_${rows.length}_expected_${expectedForTable}`);
+    if (rows.length < groupRange.min || rows.length > groupRange.max) {
+      const expectedLabel = groupRange.min === groupRange.max
+        ? String(groupRange.min)
+        : `${groupRange.min}-${groupRange.max}`;
+      fail(`team_count_${rows.length}_expected_${expectedLabel}`);
       continue;
     }
+    const expectedForTable = rows.length;
     const orderedPositions = rows.map((r) => r.position);
     const validUniquePositions =
       new Set(orderedPositions).size === expectedForTable &&
@@ -765,14 +809,31 @@ export function tableRegression(
   candidate: StandingRow[],
   previous: StandingRow[],
   allowVerifiedGoalCorrections = false,
+  allowVerifiedPlayedCorrections: readonly string[] = [],
+  allowTeamCountIncrease = false,
 ): string | null {
   if (previous.length === 0) return null;
-  if (candidate.length !== previous.length) return "team_count_changed_from_previous_snapshot";
+  const addedTeams = candidate.length - previous.length;
+  if (
+    addedTeams < 0 ||
+    (!allowTeamCountIncrease && addedTeams !== 0) ||
+    (allowTeamCountIncrease && addedTeams > 1)
+  ) return "team_count_changed_from_previous_snapshot";
   const rowKey = (row: StandingRow) => `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
   const nextByTeam = new Map(candidate.map((r) => [rowKey(r), r]));
   for (const old of previous) {
     const next = nextByTeam.get(rowKey(old));
     if (!next) return `team_missing_from_new_snapshot_${old.team}`;
+    const verifiedPlayedCorrection =
+      allowVerifiedPlayedCorrections.some((name) => normaliseTeam(name) === normaliseTeam(old.team)) &&
+      old.played - next.played === 1 &&
+      old.won - next.won + old.drawn - next.drawn + old.lost - next.lost === 1 &&
+      next.won + next.drawn + next.lost === next.played &&
+      next.points === 3 * next.won + next.drawn &&
+      next.goalsFor <= old.goalsFor &&
+      next.goalsAgainst <= old.goalsAgainst &&
+      next.points <= old.points;
+    if (next.played < old.played && verifiedPlayedCorrection) continue;
     if (next.played < old.played) return `played_regressed_${old.team}`;
     const resultRecordUnchanged =
       next.played === old.played &&

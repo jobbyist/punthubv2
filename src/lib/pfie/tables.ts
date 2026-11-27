@@ -345,12 +345,12 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
-        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups }));
+        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
-          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: source.index, reason: "invalid_json" }] };
+          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json" }] };
         return { source, parsed, validation };
       }),
     );
@@ -360,13 +360,13 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
         const answer = await generate(
           deps,
-          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups }),
+          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }),
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
-          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
         return { source: result.source, parsed, validation };
       }),
     );
@@ -379,7 +379,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
     }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams);
+    let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
@@ -407,12 +407,12 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           [...new Set(validation.tables.map((table) => table.source.index))].map(async (sourceIndex) => {
             const source = sources.find((candidate) => candidate.index === sourceIndex);
             if (!source) return null;
-            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, groups: cfg.groups }));
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }));
             modelsUsed.add(answer.model);
             const parsed = parseStandings(answer.text);
             const result = parsed
-              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
-              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
+              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
             return { source, parsed, result };
           }),
         );
@@ -428,7 +428,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           }
         }
         raw = [...bySource.values()].flat();
-        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams);
+        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
         sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
@@ -484,7 +484,34 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         currentGoalsAgainst: next.goalsAgainst,
       }];
     });
-    const regression = tableRegression(candidateRows, previous, allowVerifiedGoalCorrections);
+    const playedCorrections = previous.flatMap((old) => {
+      const next = candidateRows.find(
+        (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
+      );
+      if (
+        !next ||
+        old.played - next.played !== 1 ||
+        !cfg.allowVerifiedPlayedCorrections?.some((name) => normaliseTeam(name) === normaliseTeam(old.team))
+      ) return [];
+      return [{
+        team: next.team,
+        previousPlayed: old.played,
+        currentPlayed: next.played,
+        previousRecord: `${old.won}-${old.drawn}-${old.lost}`,
+        currentRecord: `${next.won}-${next.drawn}-${next.lost}`,
+        previousGoals: `${old.goalsFor}-${old.goalsAgainst}`,
+        currentGoals: `${next.goalsFor}-${next.goalsAgainst}`,
+        previousPoints: old.points,
+        currentPoints: next.points,
+      }];
+    });
+    const regression = tableRegression(
+      candidateRows,
+      previous,
+      allowVerifiedGoalCorrections,
+      cfg.allowVerifiedPlayedCorrections,
+      cfg.allowTeamCountIncrease,
+    );
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
       key,
@@ -506,6 +533,9 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       teams: n,
       models: [...modelsUsed],
       goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
+      playedCorrectionPolicy: cfg.allowVerifiedPlayedCorrections ?? [],
+      playedCorrections,
+      teamCountExpansionPolicy: cfg.allowTeamCountIncrease ? "one-new-team-when-group-range-allows" : "strict",
       goalCorrections,
     });
     return {
