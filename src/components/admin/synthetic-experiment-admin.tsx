@@ -33,9 +33,9 @@ export function SyntheticExperimentTab() {
   );
 
   const e = data.experiment;
-  const remaining = Math.max(0, e.budgetCapUsd - e.spentUsd - e.reservedUsd);
+  const budgetRemaining = Math.max(0, e.budgetCapUsd - e.spentUsd - e.reservedUsd);
   const latestFailures = data.sessions.recent.filter((s) => s.outcome === "failed").length;
-  const remaining = Math.max(0, data.founding.cap - data.founding.taken);
+  const foundingRemaining = Math.max(0, data.founding.cap - data.founding.taken);
   async function provisionAiMembers() {
     if (provisioning || data.founding.aiMembers >= 50) return;
     if (!window.confirm("Create the 50 labelled AI community accounts? They will receive sequential founding numbers and count towards the 100-place campaign.")) return;
@@ -67,7 +67,7 @@ export function SyntheticExperimentTab() {
           <Metric label="Personas" value={`${data.personas.active}/${data.personas.total}`} detail="Active synthetic profiles" />
           <Metric label="Route-check sessions" value={data.sessions.total} detail={`${latestFailures} failures in latest 30`} />
           <Metric label="Research batches" value={data.research.total} detail={`${data.research.recent.length} recent batches loaded`} />
-          <Metric label="Budget remaining" value={money(remaining)} detail={`${money(e.spentUsd)} spent · ${money(e.reservedUsd)} reserved · ${money(e.budgetCapUsd)} cap`} />
+          <Metric label="Budget remaining" value={money(budgetRemaining)} detail={`${money(e.spentUsd)} spent · ${money(e.reservedUsd)} reserved · ${money(e.budgetCapUsd)} cap`} />
         </div>
         <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => setNonce((n) => n + 1)}>Refresh telemetry</Button><span className="self-center text-xs text-muted-foreground">Latest route check: {stamp(data.personas.lastRunAt)} · Latest forecast: {stamp(data.personas.lastDecisionAt)}</span></div>
       </section>
@@ -79,11 +79,11 @@ export function SyntheticExperimentTab() {
             <h3 className="mt-1 font-display text-lg font-bold">{data.founding.taken}/{data.founding.cap} places counted</h3>
             <p className="mt-1 text-sm text-muted-foreground">{data.founding.aiMembers}/50 AI accounts linked to member profiles. All AI accounts receive visible AI labels and distinct founding numbers.</p>
           </div>
-          <Button size="sm" disabled={provisioning || data.founding.aiMembers >= 50 || remaining < 50} onClick={() => void provisionAiMembers()}>
+          <Button size="sm" disabled={provisioning || data.founding.aiMembers >= 50 || foundingRemaining < 50} onClick={() => void provisionAiMembers()}>
             {provisioning ? "Provisioning…" : data.founding.aiMembers >= 50 ? "All 50 linked" : "Provision 50 AI members"}
           </Button>
         </div>
-        {remaining < 50 && data.founding.aiMembers < 50 && <p className="mt-2 text-xs text-destructive">There are not enough founding places for all 50 accounts. No partial run will be started.</p>}
+        {foundingRemaining < 50 && data.founding.aiMembers < 50 && <p className="mt-2 text-xs text-destructive">There are not enough founding places for all 50 accounts. No partial run will be started.</p>}
         {provisionSummary && <p className="mt-3 text-xs text-muted-foreground">{provisionSummary.created} created · {provisionSummary.alreadyProvisioned} already linked · {provisionSummary.failed} failed. {provisionSummary.members.length ? `Assigned founding numbers: ${provisionSummary.members.map((m) => m.foundingNumber).filter((n): n is number => n !== null).join(", ")}.` : ""}</p>}
         <p className="mt-3 text-xs text-muted-foreground">Synthetic accounts are disclosed as AI participants on public profiles and H2H leaderboards. Their activity is excluded from genuine-member acquisition and PFIE learning metrics.</p>
       </section>
