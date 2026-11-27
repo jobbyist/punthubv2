@@ -31,7 +31,7 @@ export interface ExtractProvider {
 export interface LlmRequest {
   system: string;
   prompt: string;
-  /** JSON schema the answer must follow. */
+  /** JSON schema the answer must follow (Gemini responseSchema-compatible subset). */
   schema: Record<string, unknown>;
   temperature: number;
   maxOutputTokens: number;
