@@ -381,29 +381,23 @@ export const askPuntAi = createServerFn({ method: "POST" })
       };
     };
 
-    if (cached) {
-      let charged = { charged: 0, balance };
-      if (mode === "live_web") {
-        const result = await spendLiveCredit();
-        if (!result) {
-          await markUsage({ mode: "internal", status: "failed", cache_hit: true });
-          mode = "internal";
-          notice = "Live web access could not be charged to your account, so I couldn't return a live-web answer.";
-        } else charged = result;
-      } else {
-        await markUsage({ status: "completed", cache_hit: true });
-        return {
-          ok: true,
-          answer: String(cached.answer),
-          sources: (cached.sources ?? []) as AiSource[],
-          mode,
-          model: String(cached.model),
-          ...(notice ? { notice } : {}),
-          creditsCharged: 0,
-          balance,
-        };
-      }
-      if (mode === "live_web") {
+    if (cached && mode === "internal") {
+      await markUsage({ status: "completed", cache_hit: true });
+      return {
+        ok: true,
+        answer: String(cached.answer),
+        sources: (cached.sources ?? []) as AiSource[],
+        mode,
+        model: String(cached.model),
+        ...(notice ? { notice } : {}),
+        creditsCharged: 0,
+        balance,
+      };
+    }
+
+    if (cached && mode === "live_web") {
+      const charged = await spendLiveCredit();
+      if (charged) {
         await markUsage({ status: "completed", cache_hit: true, credits_charged: charged.charged });
         return {
           ok: true,
@@ -415,6 +409,12 @@ export const askPuntAi = createServerFn({ method: "POST" })
           balance: charged.balance,
         };
       }
+
+      // Never serve a cached live answer without a successful credit debit.
+      // Fall through to the internal cache/generation path instead.
+      await markUsage({ mode: "internal", status: "started", cache_hit: false, credits_charged: 0 });
+      mode = "internal";
+      notice = "Live web access could not be charged to your account, so this answer uses Puntr's stored data only.";
     }
 
     try {
