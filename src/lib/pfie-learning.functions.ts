@@ -47,7 +47,7 @@ export const recordPfieActivity = createServerFn({ method: "POST" })
       .select("is_ai_participant")
       .eq("id", context.userId)
       .maybeSingle();
-    if (profileError || memberProfile?.is_ai_participant === true) return false;
+    if (profileError || memberProfile?.is_ai_participant !== false) return false;
     const { data: consent, error: consentError } = await db
       .from("current_consents")
       .select("granted")
