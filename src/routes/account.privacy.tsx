@@ -98,7 +98,7 @@ function ExportSection() {
     ]);
     setBusy(false);
     if (error || pfieError || !data) return void toast.error(t("privacy.export.error"));
-    const exportData = { ...(data as Record<string, unknown>), ...(pfieData as Record<string, unknown> ?? {}) };
+    const exportData = { ...(data as Record<string, unknown>), ...(pfieData && typeof pfieData === "object" ? pfieData as Record<string, unknown> : {}) };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
