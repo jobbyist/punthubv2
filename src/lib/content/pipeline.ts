@@ -1,17 +1,15 @@
 /**
- * The daily content run: schedule -> topic -> research -> extraction -> consolidation -> writing -> independent
- * review -> quality gate -> publish or queue -> audit log.
+ * The daily content run: schedule -> topic -> research -> extraction -> consolidation -> Parallel writing/revision/review -> quality gate -> publish or queue -> audit log.
  *
  * Guarantees:
  * - One job per key (idempotent). A second call for the same day stops at the lock.
  * - Every run that starts ends with a job row in `succeeded`, `failed` or `skipped`, and a log trail. No silent exits.
- * - Nothing is published unless the engine is on, automatic publishing is on, the independent review ran, there is no critical issue
- *   and the score reaches the minimum. Otherwise the article waits in the editorial review queue.
+ * - Parallel-authored drafts may publish with QA warnings when automatic publishing is enabled; warnings remain attached for owner review.
  * - If research or every model fails, nothing is written to the newsroom and what is already published stays.
  */
 import { sastDate } from "@/lib/sast";
 
-import { alternativeGeminiModel, missingCredentials, type ContentEnv } from "./config";
+import { missingCredentials, type ContentEnv } from "./config";
 import { ProviderError } from "./http";
 import { AllModelsFailed, createModelRouter } from "./model-router";
 import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./prompt";
@@ -166,7 +164,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     // Writing, through the Parallel-first editorial model router.
     const usage = await store.usageToday().catch(() => ({}) as Record<string, number>);
     const usedToday: Record<string, number> = {};
-    for (const m of env.models) usedToday[m] = usage[m === "parallel-medium" ? "parallel-chat:medium" : `gemini:${m}`] ?? 0;
+    for (const m of env.models) usedToday[m] = usage["parallel-chat:medium"] ?? 0;
     const router = createModelRouter(deps.llm, {
       models: env.models,
       usedToday,
@@ -178,7 +176,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
           return;
         }
         await store
-          .countUsage(a.model === "parallel-medium" ? "parallel-chat:medium" : `gemini:${a.model}`, a.outcome === "ok" ? "ok" : "error")
+          .countUsage("parallel-chat:medium", a.outcome === "ok" ? "ok" : "error")
           .catch(() => undefined);
         if (a.outcome !== "ok")
           await log("model", "warn", `${a.model} failed: ${a.outcome}`, a.detail);
@@ -234,9 +232,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         problems,
       );
       try {
-        const revisionModel = written.model === "parallel-medium"
-          ? alternativeGeminiModel(env.models, written.model) ?? written.model
-          : written.model;
+        const revisionModel = written.model;
         const revised = await router.generate(
           revisionRequest(request, draft, problems),
           revisionModel,
@@ -258,14 +254,12 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       }
     }
 
-    // Independent review by the other model where there is one. Not run = not eligible for automatic publishing.
+    // A separate Parallel review pass checks the draft against the supplied sources.
     let reviewerUnsupported: string[] = [];
     let reviewRan = false;
     if (budgetLeft() > 12_000) {
       try {
-        const reviewer = alternativeGeminiModel(env.models, written.model);
-        if (!reviewer) throw new Error("No independent Gemini reviewer is available");
-        const review = await router.generate(reviewRequest(draft, sources, options.slot), reviewer);
+        const review = await router.generate(reviewRequest(draft, sources, options.slot), written.model);
         const parsed = parseReview(review.text);
         if (parsed) {
           reviewerUnsupported = parsed;
@@ -302,8 +296,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       quality.issues,
     );
 
-    // `enabled` guards publishing for every trigger: a manual run while the engine is off (the validation
-    // workflow) can only ever produce a review-queue article.
+    // `enabled` guards publishing for every trigger: a manual run while the engine is off can only ever produce a review-queue article.
     const passed = reviewRan && !quality.critical && quality.score >= settings.minQuality;
     // Parallel-authored articles publish for owner review even when QA is below the configured threshold.
     // QA flags and score remain attached to the article and the alert; this is not recorded as a QA pass.
