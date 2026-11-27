@@ -9,9 +9,12 @@ const stage = (items: ReturnType<typeof buildRoadmap>, sport: string) =>
 describe("roadmap", () => {
   it("counts weeks from launch week", () => {
     expect(weekWindow(launch, [1, 1])).toEqual({ from: "2026-12-01", to: "2026-12-07" });
-    expect(weekWindow(launch, [2, 2])).toEqual({ from: "2026-12-08", to: "2026-12-14" });
-    expect(weekWindow(launch, [6, 8])).toEqual({ from: "2027-01-05", to: "2027-01-25" });
-    expect(weekWindow(launch, [12, 12])).toEqual({ from: "2027-02-16", to: "2027-02-22" });
+    expect(weekWindow(launch, [6, 9])).toEqual({ from: "2027-01-05", to: "2027-02-01" });
+    expect(weekWindow(launch, [14, 17])).toEqual({ from: "2027-03-02", to: "2027-03-29" });
+    expect(weekWindow(launch, [23, 26])).toEqual({ from: "2027-05-04", to: "2027-05-31" });
+    expect(weekWindow(launch, [32, 35])).toEqual({ from: "2027-07-06", to: "2027-08-02" });
+    expect(weekWindow(launch, [41, 44])).toEqual({ from: "2027-09-07", to: "2027-10-04" });
+    expect(weekWindow(launch, [50, 53])).toEqual({ from: "2027-11-09", to: "2027-12-06" });
   });
 
   it("shows soccer as launching before launch day, and basketball and rugby as next", () => {
@@ -22,12 +25,18 @@ describe("roadmap", () => {
     expect(stage(items, "racing")).toBe("planned");
   });
 
-  it("plans athletics alongside combat sports in weeks 6 to 8", () => {
+  it("spaces each post-January category by at least one full month", () => {
     const items = buildRoadmap({ today: "2026-11-05", launch, enabled: ["soccer"] });
-    const a = items.find((i) => i.sport === "athletics");
-    const c = items.find((i) => i.sport === "combat");
-    expect(a?.weeks).toEqual([6, 8]);
-    expect([a?.from, a?.to]).toEqual([c?.from, c?.to]);
+    const windows = ["racing", "combat", "athletics", "cricket", "tennis"].map((sport) =>
+      items.find((i) => i.sport === sport)!.from,
+    );
+    expect(windows).toEqual([
+      "2027-03-02",
+      "2027-05-04",
+      "2027-07-06",
+      "2027-09-07",
+      "2027-11-09",
+    ]);
   });
 
   it("only shows a sport as live when it is switched on", () => {
