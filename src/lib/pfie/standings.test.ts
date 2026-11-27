@@ -448,6 +448,16 @@ describe("UEFA Conference League participant aliases", () => {
     expect(normaliseTeam("FC Iberia 1999")).toBe(normaliseTeam("Iberia Tbilisi"));
   });
 });
+describe("UEFA Champions League cross-publisher team aliases", () => {
+  it("reconciles CBS and FOX Sports abbreviations for the same UCL participants", () => {
+    expect(normaliseTeam("LASK")).toBe(normaliseTeam("Linz"));
+    expect(normaliseTeam("LASK Linz")).toBe(normaliseTeam("Linz"));
+    expect(normaliseTeam("Manchester United")).toBe(normaliseTeam("Manchester Utd"));
+    expect(normaliseTeam("PSV")).toBe(normaliseTeam("PSV Eindhoven"));
+    expect(normaliseTeam("Slavia Praha")).toBe(normaliseTeam("Slavia Prague"));
+    expect(normaliseTeam("Slovan Bratislava")).toBe(normaliseTeam("Slovan Bratisl."));
+  });
+});
 describe("La Liga cross-publisher team aliases", () => {
   it("normalizes official LaLiga names to independent publisher names", () => {
     expect(normaliseTeam("Atlético de Madrid")).toBe(normaliseTeam("Atletico Madrid"));
