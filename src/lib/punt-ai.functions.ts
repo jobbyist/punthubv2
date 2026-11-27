@@ -307,18 +307,26 @@ export const askPuntAi = createServerFn({ method: "POST" })
     }
 
     const normalized = normalizePuntAiQuestion(data.message);
+    if (containsPuntAiPrivateContext(data.message)) {
+      return {
+        ok: true,
+        answer: "I can't access or disclose personal account, contact, financial or health information. Please use your account settings or contact Puntr support for account-specific help.",
+        sources: [],
+        mode: "internal",
+        model: "policy",
+        creditsCharged: 0,
+        balance: null,
+      };
+    }
     const safeMessage = scrubPuntAiMessage(data.message);
     const oddsQuestion = isPuntAiOddsQuestion(data.message);
-    const privateContext = containsPuntAiPrivateContext(data.message);
-    const liveRequested = needsPuntAiLiveWeb(data.message) && !oddsQuestion && !privateContext;
+    const liveRequested = needsPuntAiLiveWeb(data.message) && !oddsQuestion;
 
     let mode: AiMode = "internal";
     let notice: string | undefined;
     let balance: number | null = null;
     if (oddsQuestion) {
       notice = "Automated bookmaker prices are not available in PUNT AI while data-use permissions are being finalised. I can explain the market or discuss odds you enter yourself.";
-    } else if (privateContext) {
-      notice = "Personal account or contact details are not sent to live web providers. This answer uses Puntr's stored data only.";
     }
     if (liveRequested) {
       const [entitlement, balanceResult] = await Promise.all([
