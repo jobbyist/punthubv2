@@ -16,6 +16,7 @@ import { ARCHIVE_SOURCES } from "./archive";
 import { archiveJobsDue, runArchiveJob } from "./archive-run";
 import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
+import { normaliseTeam } from "./teams";
 import {
   STANDINGS_COMPETITIONS,
   STANDINGS_LAUNCH_KEYS,
@@ -455,7 +456,28 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       throw new Error("no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")");
     }
     const previous = await deps.store.currentStandings(key, season);
-    const regression = tableRegression(chosen.table.rows, previous);
+    const allowVerifiedGoalCorrections =
+      chosen.verdict === "two_sources" && chosen.supportingDomains.length >= 2;
+    const goalCorrections = previous.flatMap((old) => {
+      const next = chosen!.table.rows.find((row) => normaliseTeam(row.team) === normaliseTeam(old.team));
+      if (
+        !next ||
+        next.played !== old.played ||
+        next.won !== old.won ||
+        next.drawn !== old.drawn ||
+        next.lost !== old.lost ||
+        next.points !== old.points ||
+        (next.goalsFor === old.goalsFor && next.goalsAgainst === old.goalsAgainst)
+      ) return [];
+      return [{
+        team: next.team,
+        previousGoalsFor: old.goalsFor,
+        currentGoalsFor: next.goalsFor,
+        previousGoalsAgainst: old.goalsAgainst,
+        currentGoalsAgainst: next.goalsAgainst,
+      }];
+    });
+    const regression = tableRegression(chosen.table.rows, previous, allowVerifiedGoalCorrections);
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
       key,
@@ -475,6 +497,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       tableDate: chosen.table.tableDate ?? null,
       teams: n,
       models: [...modelsUsed],
+      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
+      goalCorrections,
     });
     return {
       ok: true,
