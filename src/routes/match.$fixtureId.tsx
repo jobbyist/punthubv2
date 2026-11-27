@@ -20,6 +20,7 @@ import { useTeamForms } from "@/hooks/use-team-forms";
 import { rememberRef } from "@/lib/ref-store";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
+import { trackEvent } from "@/lib/analytics";
 import { fetchFixture, fetchPicksForFixture, type PickRow } from "@/lib/pick-data";
 import { countdownTo, formatSpan } from "@/lib/picks";
 
@@ -78,6 +79,9 @@ function Match() {
   const { ref } = Route.useSearch();
   // A shared pick link carries the sharer's invite code, kept until the visitor joins.
   useEffect(() => rememberRef(ref), [ref]);
+  useEffect(() => {
+    trackEvent("fixture_viewed", { fixture_id: fixture.id, sport: fixture.sport, competition: fixture.competition });
+  }, [fixture.id, fixture.sport, fixture.competition]);
 
   const [picks, setPicks] = useState<PickRow[] | null>(null);
 
