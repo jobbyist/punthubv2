@@ -223,5 +223,142 @@
   "theme": {
     "toLight": "Switch to light mode",
     "toDark": "Switch to dark mode"
+  },
+  "search": {
+    "open": "Search Puntr",
+    "trigger": "Search teams and matches",
+    "title": "Search Puntr",
+    "description": "Find a team, a match, a league or a page. Suggestions appear as you type.",
+    "placeholder": "Search Chiefs, Pirates, Premier League…",
+    "clear": "Clear search",
+    "cancel": "Cancel",
+    "recent": "Recent searches",
+    "clearRecent": "Clear",
+    "popular": "Jump to",
+    "upNext": "Up next",
+    "hint": "Tip: try a nickname like Bucs or Amakhosi, or a page like log or duels.",
+    "loading": "Loading matches and teams…",
+    "empty": "Nothing found for “{{query}}”",
+    "emptyHint": "Check the spelling, or try a team, a league or a page name.",
+    "competitionSub": "League · see its fixtures",
+    "nextMatch": "Next: {{home}} vs {{away}}, {{date}}",
+    "position": "{{position}} on the log",
+    "kind": {
+      "team": "Teams",
+      "fixture": "Matches",
+      "competition": "Leagues",
+      "page": "Pages"
+    },
+    "keys": {
+      "move": "to move",
+      "open": "to open",
+      "shortcut": "Press ⌘K or / anywhere to search"
+    },
+    "pages": {
+      "discover": {
+        "title": "Discover",
+        "sub": "Your starting point: matches, results and the community"
+      },
+      "fixtures": {
+        "title": "Fixtures",
+        "sub": "Every upcoming match we cover"
+      },
+      "results": {
+        "title": "Results",
+        "sub": "Final scores and graded predictions"
+      },
+      "tables": {
+        "title": "League tables",
+        "sub": "Live standings for every league we cover"
+      },
+      "liveScores": {
+        "title": "Live scores",
+        "sub": "Matches in play right now"
+      },
+      "soccer": {
+        "title": "Soccer on Puntr",
+        "sub": "Leagues, odds, duels and Practice Mode"
+      },
+      "leaderboards": {
+        "title": "Leaderboards",
+        "sub": "Who is calling it right this week"
+      },
+      "duels": {
+        "title": "Head-to-head duels",
+        "sub": "Challenge another member on a match"
+      },
+      "practice": {
+        "title": "Practice Mode",
+        "sub": "Try picks with virtual points"
+      },
+      "slips": {
+        "title": "Betting slips",
+        "sub": "Turn a slip into tracked predictions"
+      },
+      "community": {
+        "title": "Community",
+        "sub": "Talk matches with other fans"
+      },
+      "newsroom": {
+        "title": "Newsroom",
+        "sub": "Previews, analysis and Puntr news"
+      },
+      "rewards": {
+        "title": "Rewards",
+        "sub": "Swap PuntPoints for vouchers and perks"
+      },
+      "puntpoints": {
+        "title": "How PuntPoints work",
+        "sub": "Earn loyalty points for taking part"
+      },
+      "tools": {
+        "title": "Tools",
+        "sub": "Odds converter and handy calculators"
+      },
+      "howItWorks": {
+        "title": "How Puntr works",
+        "sub": "The two-minute guide"
+      },
+      "roadmap": {
+        "title": "Roadmap",
+        "sub": "Which sports and features are coming next"
+      },
+      "founding": {
+        "title": "Become a Founding Member",
+        "sub": "Free early access for the first members"
+      },
+      "join": {
+        "title": "Join or sign in",
+        "sub": "Free account, no card needed"
+      },
+      "profile": {
+        "title": "My account",
+        "sub": "Profile, favourites and settings"
+      },
+      "wallet": {
+        "title": "Wallet",
+        "sub": "Credits, Puntr Pro and PuntPoints"
+      },
+      "referrals": {
+        "title": "Invite friends",
+        "sub": "Share Puntr and earn bonus PuntPoints"
+      },
+      "support": {
+        "title": "Help and support",
+        "sub": "Answers and how to reach us"
+      },
+      "responsiblePlay": {
+        "title": "Responsible play",
+        "sub": "Limits, breaks and the free helpline"
+      },
+      "bookmakers": {
+        "title": "Licensed bookmakers",
+        "sub": "South African operators and their licences"
+      },
+      "about": {
+        "title": "About Puntr",
+        "sub": "Who we are and why we built it"
+      }
+    }
   }
 }
