@@ -20,7 +20,7 @@ export function isPuntAiOddsQuestion(value: string): boolean {
 }
 
 export function containsPuntAiPrivateContext(value: string): boolean {
-  return /\b(my (?:name|email|phone|address|account|password|id|balance|profile|health|symptoms|diagnosis|medication|condition|subscription|credits|transactions|wallet|picks|bets|slips|record)|i live at|my personal|my bank|my medical)\b/i.test(value);
+  return /\b(my (?:name|age|email|phone|address|account|password|id|balance|profile|health|symptoms|diagnosis|medication|condition|subscription|credits|transactions|wallet|picks|bets|slips|record)|i live at|my personal|my bank|my medical)\b/i.test(value);
 }
 
 /** Strip likely personal identifiers before sending a prompt to an external model or search provider. */
@@ -30,6 +30,8 @@ export function scrubPuntAiMessage(value: string): string {
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted email]")
     .replace(/(?:\+?27|0)\s?\d{2}[\s-]?\d{3}[\s-]?\d{4}\b/g, "[redacted phone]")
     .replace(/@[a-z0-9_]{2,30}\b/gi, "[redacted handle]")
+    .replace(/\b(?:my name is|i am|i'm)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?/g, "[redacted name]")
+    .replace(/\b(?:i am|i'm|my age is)\s+\d{1,2}\b/gi, "[redacted age]")
     .replace(/\b\d{10,}\b/g, "[redacted number]")
     .replace(/https?:\/\/\S+/gi, "[link omitted]")
     .trim();
