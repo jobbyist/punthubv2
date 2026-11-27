@@ -13,6 +13,9 @@ alter table public.bookmaker_odds_permissions
 create unique index if not exists bookmaker_odds_permissions_name_lower_uidx
   on public.bookmaker_odds_permissions (lower(bookmaker_name));
 
+update public.bookmaker_odds_permissions
+set licence_evidence_url = coalesce(licence_evidence_url, 'https://www.ngb.org.za/verified-operators/');
+
 -- NGB Verified Operators directory cross-reference (snapshot: 20 November 2026).
 -- Website domains remain NULL where the register or source review did not establish an exact domain.
 insert into public.bookmaker_odds_permissions
