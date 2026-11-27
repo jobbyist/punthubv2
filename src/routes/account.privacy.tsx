@@ -92,10 +92,14 @@ function ExportSection() {
 
   const download = async () => {
     setBusy(true);
-    const { data, error } = await supabase.rpc("export_my_data");
+    const [{ data, error }, { data: pfieData, error: pfieError }] = await Promise.all([
+      supabase.rpc("export_my_data"),
+      supabase.rpc("export_my_pfie_learning_data"),
+    ]);
     setBusy(false);
-    if (error || !data) return void toast.error(t("privacy.export.error"));
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    if (error || pfieError || !data) return void toast.error(t("privacy.export.error"));
+    const exportData = { ...(data as Record<string, unknown>), ...(pfieData as Record<string, unknown> ?? {}) };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
