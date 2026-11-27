@@ -21,6 +21,7 @@ import { PushNotificationsAdmin } from "@/components/admin/push-notifications-ad
 import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
+import { SyntheticExperimentTab } from "@/components/admin/synthetic-experiment-admin";
 import { EndorsementsTab } from "@/components/admin/endorsements-admin";
 import { LogosTab } from "@/components/admin/logos-admin";
 import { QuestsTab } from "@/components/admin/quests-admin";
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/admin/")({
 });
 
 const TAB_GROUPS = [
-  { label: "Overview", items: ["system", "analytics", "log"] },
+  { label: "Overview", items: ["system", "analytics", "synthetic", "log"] },
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
