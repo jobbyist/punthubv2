@@ -223,5 +223,142 @@
   "theme": {
     "toLight": "Skakel oor na ligte modus",
     "toDark": "Skakel oor na donker modus"
+  },
+  "search": {
+    "open": "Soek op Puntr",
+    "trigger": "Soek spanne en wedstryde",
+    "title": "Soek op Puntr",
+    "description": "Vind 'n span, 'n wedstryd, 'n liga of 'n bladsy. Voorstelle verskyn terwyl jy tik.",
+    "placeholder": "Soek Chiefs, Pirates, Premier League…",
+    "clear": "Maak soektog skoon",
+    "cancel": "Kanselleer",
+    "recent": "Onlangse soektogte",
+    "clearRecent": "Maak skoon",
+    "popular": "Spring na",
+    "upNext": "Volgende",
+    "hint": "Wenk: probeer 'n bynaam soos Bucs of Amakhosi, of 'n bladsy soos log of duels.",
+    "loading": "Laai wedstryde en spanne…",
+    "empty": "Niks gevind vir “{{query}}” nie",
+    "emptyHint": "Kontroleer die spelling, of probeer 'n span, liga of bladsy.",
+    "competitionSub": "Liga · sien sy wedstryde",
+    "nextMatch": "Volgende: {{home}} teen {{away}}, {{date}}",
+    "position": "{{position}} op die log",
+    "kind": {
+      "team": "Spanne",
+      "fixture": "Wedstryde",
+      "competition": "Ligas",
+      "page": "Bladsye"
+    },
+    "keys": {
+      "move": "om te beweeg",
+      "open": "om oop te maak",
+      "shortcut": "Druk ⌘K of / enige plek om te soek"
+    },
+    "pages": {
+      "discover": {
+        "title": "Ontdek",
+        "sub": "Jou beginpunt: wedstryde, uitslae en die gemeenskap"
+      },
+      "fixtures": {
+        "title": "Wedstryde",
+        "sub": "Elke komende wedstryd wat ons dek"
+      },
+      "results": {
+        "title": "Uitslae",
+        "sub": "Eindtellings en gegradeerde voorspellings"
+      },
+      "tables": {
+        "title": "Ligatabelle",
+        "sub": "Puntestande vir elke liga wat ons dek"
+      },
+      "liveScores": {
+        "title": "Regstreekse tellings",
+        "sub": "Wedstryde wat nou gespeel word"
+      },
+      "soccer": {
+        "title": "Sokker op Puntr",
+        "sub": "Ligas, pryse, tweestryde en Oefenmodus"
+      },
+      "leaderboards": {
+        "title": "Ranglyste",
+        "sub": "Wie dit hierdie week reg het"
+      },
+      "duels": {
+        "title": "Kop-aan-kop-tweestryde",
+        "sub": "Daag 'n ander lid uit oor 'n wedstryd"
+      },
+      "practice": {
+        "title": "Oefenmodus",
+        "sub": "Probeer keuses met virtuele punte"
+      },
+      "slips": {
+        "title": "Weddenskapstrokies",
+        "sub": "Maak van 'n strokie nagevolgde voorspellings"
+      },
+      "community": {
+        "title": "Gemeenskap",
+        "sub": "Gesels oor wedstryde met ander aanhangers"
+      },
+      "newsroom": {
+        "title": "Nuuskamer",
+        "sub": "Voorskoue, ontleding en Puntr-nuus"
+      },
+      "rewards": {
+        "title": "Belonings",
+        "sub": "Ruil PuntPoints vir koopbewyse en voordele"
+      },
+      "puntpoints": {
+        "title": "Hoe PuntPoints werk",
+        "sub": "Verdien lojaliteitspunte vir deelname"
+      },
+      "tools": {
+        "title": "Hulpmiddels",
+        "sub": "Pryse-omskakelaar en sakrekenaars"
+      },
+      "howItWorks": {
+        "title": "Hoe Puntr werk",
+        "sub": "Die twee-minuut-gids"
+      },
+      "roadmap": {
+        "title": "Padkaart",
+        "sub": "Watter sportsoorte en funksies volgende kom"
+      },
+      "founding": {
+        "title": "Word 'n Stigterslid",
+        "sub": "Gratis vroeë toegang vir die eerste lede"
+      },
+      "join": {
+        "title": "Sluit aan of meld aan",
+        "sub": "Gratis rekening, geen kaart nodig nie"
+      },
+      "profile": {
+        "title": "My rekening",
+        "sub": "Profiel, gunstelinge en instellings"
+      },
+      "wallet": {
+        "title": "Beursie",
+        "sub": "Krediete, Puntr Pro en PuntPoints"
+      },
+      "referrals": {
+        "title": "Nooi vriende",
+        "sub": "Deel Puntr en verdien bonus-PuntPoints"
+      },
+      "support": {
+        "title": "Hulp en ondersteuning",
+        "sub": "Antwoorde en hoe om ons te bereik"
+      },
+      "responsiblePlay": {
+        "title": "Verantwoordelike spel",
+        "sub": "Perke, pouses en die gratis hulplyn"
+      },
+      "bookmakers": {
+        "title": "Gelisensieerde boekmakers",
+        "sub": "Suid-Afrikaanse operateurs en hul lisensies"
+      },
+      "about": {
+        "title": "Oor Puntr",
+        "sub": "Wie ons is en hoekom ons dit gebou het"
+      }
+    }
   }
 }

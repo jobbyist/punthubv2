@@ -1,66 +1,52 @@
-import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { PRELOADED_KEY } from "@/lib/theme";
+import { PRELOADED_KEY, SPLASH_KEY } from "@/lib/theme";
 
-/** Marketing pages that open with the branded preloader on the first visit of a session. */
-export function isMarketingPath(path: string): boolean {
-  return (
-    path === "/" ||
-    path.startsWith("/sports/") ||
-    [
-      "/about",
-      "/founding",
-      "/how-it-works",
-      "/pricing",
-      "/roadmap",
-      "/rewards",
-      "/newsroom",
-    ].includes(path)
-  );
-}
-
-const MIN_MS = 900;
-const MAX_MS = 2400;
+const MIN_MS = { app: 1100, web: 1000 } as const;
+const MAX_MS = 2600;
+const EXIT_MS = 420;
 
 /**
- * Full-screen preloader: Puntr logo, animated slogan and a loading bar. Rendered in the server HTML so it covers the
- * first paint, shown once per browser session, removed when the page has loaded (between 0.9 and 2.4 seconds).
- * A CSS fallback fades it out even without JavaScript; prefers-reduced-motion hides it entirely.
+ * Branded splash and preloader. It is rendered in the server HTML on every page and stays hidden unless the head boot
+ * script (THEME_BOOT_SCRIPT) set `data-splash` on <html> before the first paint:
+ *  - "app": every launch of the installed PWA, on any page. The logo sits exactly where the iOS launch image and the
+ *    Android system splash put it, so the hand-over is seamless; the slogan and loading bar then animate in.
+ *  - "web": the first marketing page of a browser session, with a logo reveal.
+ * Removed once the page has loaded (between MIN_MS and 2.6 seconds). A CSS fallback fades it out even if JavaScript
+ * fails; prefers-reduced-motion keeps it still and short.
  */
 export function Preloader() {
   const { t } = useTranslation("common");
-  const path = useRouterState({ select: (s) => s.location.pathname });
   const [state, setState] = useState<"show" | "leaving" | "gone">("show");
-  const [standalone, setStandalone] = useState(false);
 
   useEffect(() => {
-    const standaloneMode = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-    setStandalone(standaloneMode);
-    // Only a marketing page shows (and uses up) the preloader for this session.
-    if (!isMarketingPath(window.location.pathname)) {
+    const root = document.documentElement;
+    const mode = root.getAttribute("data-splash") as "app" | "web" | null;
+    if (!mode) {
       setState("gone");
       return;
     }
-    if (!standaloneMode && document.documentElement.hasAttribute("data-preloaded")) {
-      setState("gone");
-      return;
-    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const minMs = reduced ? 350 : MIN_MS[mode];
     const started = performance.now();
     let done = false;
+    let exitTimer = 0;
     const finish = () => {
       if (done) return;
       done = true;
-      const wait = Math.max(0, MIN_MS - (performance.now() - started));
-      window.setTimeout(() => {
+      const wait = Math.max(0, minMs - (performance.now() - started));
+      exitTimer = window.setTimeout(() => {
         setState("leaving");
         try {
-          sessionStorage.setItem(PRELOADED_KEY, "1");
+          sessionStorage.setItem(mode === "app" ? SPLASH_KEY : PRELOADED_KEY, "1");
         } catch {
-          /* ignore */
+          /* private mode: shown again next load */
         }
-        window.setTimeout(() => setState("gone"), 380);
+        exitTimer = window.setTimeout(() => {
+          root.removeAttribute("data-splash");
+          setState("gone");
+        }, EXIT_MS);
       }, wait);
     };
     if (document.readyState === "complete") finish();
@@ -69,39 +55,61 @@ export function Preloader() {
     return () => {
       window.removeEventListener("load", finish);
       window.clearTimeout(cap);
+      window.clearTimeout(exitTimer);
     };
   }, []);
 
-  if (state === "gone" || !isMarketingPath(path)) return null;
+  if (state === "gone") return null;
   const words = t("preloader.slogan").split(" ");
 
   return (
     <div
-      className="puntr-preloader fixed inset-0 z-[100] grid place-items-center bg-background"
+      className="puntr-preloader fixed inset-0 z-[100] bg-background"
       data-done={state === "leaving" ? "true" : undefined}
       role="status"
       aria-label={t("preloader.label")}
     >
-      {standalone ? <div className="absolute inset-0 flex flex-col items-center justify-center bg-black px-8 text-center text-white"><img src="/puntr-icon-512.png" alt="" className="w-full max-w-[260px]" /><p className="mt-8 font-display text-sm font-extrabold uppercase tracking-[0.18em]">{t("preloader.slogan")}</p><div className="mt-6 h-1 w-56 max-w-full overflow-hidden rounded-full bg-white/15"><div className="h-full w-2/3 rounded-full bg-[#16A34A]" /></div><p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-white/45">{t("preloader.tag")}</p></div> : <div className="flex w-64 flex-col items-center text-center">
-        <img src="/puntrlogorounded.png" alt="" className="logo size-20" width={80} height={80} />
-        <p className="mt-5 font-display text-lg font-extrabold tracking-tight">
+      <div className="glow" aria-hidden="true" />
+      <div className="logo-wrap">
+        <img
+          src="/brand/puntr-wordmark.png"
+          alt=""
+          width={652}
+          height={206}
+          className="logo dark:hidden"
+          fetchPriority="high"
+          decoding="sync"
+        />
+        <img
+          src="/brand/puntr-wordmark-dark.png"
+          alt=""
+          width={652}
+          height={206}
+          className="logo hidden dark:block"
+          fetchPriority="high"
+          decoding="sync"
+        />
+        <span className="sheen" aria-hidden="true" />
+      </div>
+      <div className="below">
+        <p className="font-display text-base font-extrabold tracking-tight sm:text-lg">
           {words.map((w, i) => (
             <span
               key={`${w}-${i}`}
               className={`word ${i >= words.length - 2 ? "text-primary" : ""}`}
-              style={{ animationDelay: `${250 + i * 110}ms` }}
+              style={{ animationDelay: `${180 + i * 90}ms` }}
             >
               {w}&nbsp;
             </span>
           ))}
         </p>
-        <div className="mt-5 h-1 w-full overflow-hidden bg-muted">
+        <div className="track mt-5 h-[3px] w-40 overflow-hidden bg-muted">
           <div className="bar h-full bg-primary" />
         </div>
-        <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+        <p className="tag mt-4 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
           {t("preloader.tag")}
         </p>
-      </div>}
+      </div>
     </div>
   );
 }

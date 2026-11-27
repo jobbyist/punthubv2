@@ -314,6 +314,53 @@ html.theme-transition * {
     transform: scale(1);
   }
 }
+@keyframes puntr-logo-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(6px);
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes puntr-logo-exit {
+  to {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: blur(4px);
+    opacity: 0;
+  }
+}
+@keyframes puntr-sheen {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -30% 0;
+  }
+}
+@keyframes puntr-glow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes puntr-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes puntr-fade-out {
+  to {
+    opacity: 0;
+  }
+}
 @keyframes puntr-preloader-out {
   to {
     opacity: 0;
@@ -365,27 +412,103 @@ html.theme-transition * {
   }
 }
 
+/* Splash / preloader (see src/components/motion/preloader.tsx). Hidden unless the head boot script set data-splash. */
 .puntr-preloader {
-  /* Safety net: even without JavaScript the overlay fades out by itself. */
-  animation: puntr-preloader-out 400ms ease 2.6s forwards;
-}
-.puntr-preloader[data-done="true"] {
-  animation: puntr-preloader-out 350ms ease forwards;
-}
-html[data-preloaded] .puntr-preloader {
+  --logo-w: min(64vw, 340px);
   display: none;
+  overflow: hidden;
+}
+html[data-splash] .puntr-preloader {
+  display: block;
+  /* Safety net: even if JavaScript fails the overlay fades out by itself. */
+  animation: puntr-preloader-out 400ms ease 3s forwards;
+}
+html[data-splash] .puntr-preloader[data-done="true"] {
+  animation: puntr-preloader-out 420ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.puntr-preloader .logo-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--logo-w);
+  aspect-ratio: 652 / 206;
+  transform: translate(-50%, -50%);
 }
 .puntr-preloader .logo {
-  animation: puntr-logo 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  width: 100%;
+  height: auto;
+}
+.puntr-preloader .sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    oklch(1 0 0 / 55%) 50%,
+    transparent 65%
+  );
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  -webkit-mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
+  mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
+  animation: puntr-sheen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.35s both;
+}
+.dark .puntr-preloader .sheen {
+  background-image: linear-gradient(
+    105deg,
+    transparent 35%,
+    oklch(0.596 0.145 152.5 / 70%) 50%,
+    transparent 65%
+  );
+}
+.puntr-preloader .glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--logo-w) * 1.9);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, oklch(0.596 0.145 152.5 / 16%), transparent);
+  animation: puntr-glow 1.6s ease-out both;
+}
+.puntr-preloader .below {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(50% + var(--logo-w) * 0.158 + 1.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 1.5rem;
+  text-align: center;
 }
 .puntr-preloader .word {
   display: inline-block;
   opacity: 0;
-  animation: puntr-word 500ms ease forwards;
+  animation: puntr-word 480ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.puntr-preloader .track {
+  opacity: 0;
+  animation: puntr-fade-in 300ms ease 0.45s forwards;
 }
 .puntr-preloader .bar {
   transform-origin: left;
-  animation: puntr-bar 1.6s cubic-bezier(0.3, 0.7, 0.2, 1) forwards;
+  animation: puntr-bar 1.6s cubic-bezier(0.3, 0.7, 0.2, 1) 0.45s both;
+}
+.puntr-preloader .tag {
+  opacity: 0;
+  animation: puntr-fade-in 400ms ease 0.7s forwards;
+}
+/* Browser visit: the wordmark wipes in. The installed app keeps it still, matching the system launch image. */
+html[data-splash="web"] .puntr-preloader .logo-wrap {
+  animation: puntr-logo-wipe 760ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.puntr-preloader[data-done="true"] .logo-wrap {
+  animation: puntr-logo-exit 420ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+.puntr-preloader[data-done="true"] .below {
+  animation: puntr-fade-out 220ms ease forwards;
 }
 .puntr-float {
   animation: puntr-float 9s ease-in-out infinite;
@@ -409,8 +532,18 @@ html[data-preloaded] .puntr-preloader {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .puntr-preloader {
-    display: none !important;
+  .puntr-preloader .logo-wrap,
+  .puntr-preloader .sheen,
+  .puntr-preloader .glow,
+  .puntr-preloader .word,
+  .puntr-preloader .track,
+  .puntr-preloader .bar,
+  .puntr-preloader .tag {
+    animation: none !important;
+    opacity: 1;
+  }
+  .puntr-preloader .sheen {
+    display: none;
   }
   .puntr-float,
   .puntr-draw,
@@ -699,4 +832,65 @@ html[data-preloaded] .puntr-preloader {
 @media (display-mode: standalone) {
   html { min-height: 100%; }
   body { padding-top: env(safe-area-inset-top, 0px); }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Instant, app-like navigation (src/router.tsx). Page changes crossfade with a short lift while the header and the
+ * mobile dock keep their place; browsers without view transitions simply swap. Off for prefers-reduced-motion.
+ * ------------------------------------------------------------------------------------------------------------- */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+a,
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+.puntr-app-frame > header {
+  view-transition-name: puntr-header;
+}
+.puntr-dock {
+  view-transition-name: puntr-dock;
+}
+@keyframes puntr-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes puntr-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: puntr-vt-out 110ms ease-out both;
+  }
+  ::view-transition-new(root) {
+    animation: puntr-vt-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  ::view-transition-group(puntr-header),
+  ::view-transition-group(puntr-dock),
+  ::view-transition-old(puntr-header),
+  ::view-transition-new(puntr-header),
+  ::view-transition-old(puntr-dock),
+  ::view-transition-new(puntr-dock) {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+.puntr-page-skeleton {
+  animation: puntr-fade-in-soft 200ms ease both;
+}
+@keyframes puntr-fade-in-soft {
+  from {
+    opacity: 0;
+  }
 }

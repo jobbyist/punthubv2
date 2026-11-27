@@ -173,7 +173,7 @@ export function PwaExperience() {
         >
           <div className="flex items-start gap-3">
             <img
-              src="/puntr-icon-512.png"
+              src="/brand/icon-192.png"
               alt=""
               width={52}
               height={52}
@@ -235,7 +235,7 @@ export function PwaExperience() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img
-                  src="/puntr-icon-512.png"
+                  src="/brand/icon-192.png"
                   alt=""
                   width={44}
                   height={44}

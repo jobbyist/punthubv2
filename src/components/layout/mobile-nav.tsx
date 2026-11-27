@@ -664,7 +664,7 @@ export function MobileNav() {
             </ul>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl">
+          <div className="puntr-dock overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg shadow-black/10 backdrop-blur-xl">
             {guestStripVisible && (
               <div className="flex items-center gap-3 border-b border-border bg-primary-soft px-3 py-2">
                 <div className="min-w-0 flex-1">
