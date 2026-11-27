@@ -21,7 +21,7 @@ const isMissingFunction = (error: { code?: string; message: string }) =>
  * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
  * code first changes nothing.
  */
-export async function createQuotaClaim(): Promise<Claim> {
+export async function createQuotaClaim(feature = "unattributed"): Promise<Claim> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
   let budgetAvailable = true;
@@ -31,7 +31,7 @@ export async function createQuotaClaim(): Promise<Claim> {
         p_provider: provider,
         p_units: 1,
       });
-      if (!error) return data === true;
+      if (!error) {\n        const granted = data === true;\n        if (granted) await recordClaim(provider);\n        return granted;\n      }
       if (!isMissingFunction(error)) {
         console.error("quota: budget claim failed, refusing the call", provider, error.message);
         return false;
