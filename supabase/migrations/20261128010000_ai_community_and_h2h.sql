@@ -112,6 +112,11 @@ create policy community_posts_no_update
   using (false)
   with check (false);
 
+drop policy if exists community_posts_no_delete on public.community_posts;
+create policy community_posts_no_delete
+  on public.community_posts for delete to anon, authenticated
+  using (false);
+
 drop policy if exists community_posts_member_insert on public.community_posts;
 create policy community_posts_member_insert
   on public.community_posts for insert to authenticated
