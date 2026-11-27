@@ -20,7 +20,7 @@ import { normaliseTeam } from "./teams";
 import {
   STANDINGS_COMPETITIONS,
   STANDINGS_LAUNCH_KEYS,
-  chooseTable,
+  chooseTables,
   independentSourceKey,
   parseStandings,
   tableRegression,
@@ -345,12 +345,12 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
-        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source] }));
+        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups }));
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl")
-          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: source.index, reason: "invalid_json" }] };
+          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
+          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: source.index, reason: "invalid_json" }] };
         return { source, parsed, validation };
       }),
     );
@@ -360,7 +360,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
         const answer = await generate(
           deps,
-          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint }),
+          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups }),
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
@@ -397,21 +397,21 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         points: row.points,
       })),
     }));
-    let chosen = chooseTable(validation.tables);
-    if (!chosen && validation.tables.length >= 2) {
+    let chosenTables = chooseTables(validation.tables, cfg.groups);
+    if (!chosenTables && validation.tables.length >= 2) {
       const hint = standingsDisagreementHint(validation.tables);
       if (hint) {
         // Re-read each valid source independently once when full tables disagree; never share peer values.
         const consensusRetries = await Promise.all(
-          validation.tables.map(async (table) => {
-            const source = sources.find((candidate) => candidate.index === table.source.index);
+          [...new Set(validation.tables.map((table) => table.source.index))].map(async (sourceIndex) => {
+            const source = sources.find((candidate) => candidate.index === sourceIndex);
             if (!source) return null;
-            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint }));
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, groups: cfg.groups }));
             modelsUsed.add(answer.model);
             const parsed = parseStandings(answer.text);
             const result = parsed
-              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl")
-              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl"), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
+              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams)
+              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
             return { source, parsed, result };
           }),
         );
@@ -445,10 +445,10 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         points: row.points,
       })),
     }));
-        chosen = chooseTable(validation.tables);
+        chosenTables = chooseTables(validation.tables, cfg.groups);
       }
     }
-    if (!chosen) {
+    if (!chosenTables) {
       const domains = validation.tables.map((table) => table.source.domain).join(", ");
       const why = [...sourceFailures, ...validation.rejected.map((r) => sourceLabel(r.source) + ":" + r.reason)].join(", ") ||
         String(validation.tables.length) + " unconfirmed tables" + (domains ? " from " + domains : "");
@@ -456,10 +456,15 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       throw new Error("no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")");
     }
     const previous = await deps.store.currentStandings(key, season);
-    const allowVerifiedGoalCorrections =
-      chosen.verdict === "two_sources" && chosen.supportingDomains.length >= 2;
+    const candidateRows = chosenTables.flatMap((selection) => selection.table.rows);
+    const supportingDomains = [...new Set(chosenTables.flatMap((selection) => selection.supportingDomains))].sort();
+    const allowVerifiedGoalCorrections = chosenTables.every(
+      (selection) => selection.verdict === "two_sources" && selection.supportingDomains.length >= 2,
+    );
     const goalCorrections = previous.flatMap((old) => {
-      const next = chosen!.table.rows.find((row) => normaliseTeam(row.team) === normaliseTeam(old.team));
+      const next = candidateRows.find(
+        (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
+      );
       if (
         !next ||
         next.played !== old.played ||
@@ -477,24 +482,25 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         currentGoalsAgainst: next.goalsAgainst,
       }];
     });
-    const regression = tableRegression(chosen.table.rows, previous, allowVerifiedGoalCorrections);
+    const regression = tableRegression(candidateRows, previous, allowVerifiedGoalCorrections);
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
       key,
       competition: c.name,
       season,
-      rows: chosen.table.rows,
-      domain: chosen.supportingDomains.join(" + "),
-      url: chosen.table.source.url,
+      rows: candidateRows,
+      domain: supportingDomains.join(" + "),
+      url: chosenTables[0]!.table.source.url,
     });
     await deps.store.record("standings", key, true, null, {
-      verdict: chosen.verdict,
-      domain: chosen.supportingDomains.join(" + "),
-      sourceCount: chosen.supportingDomains.length,
-      sources: chosen.supportingDomains,
+      verdict: "two_sources",
+      domain: supportingDomains.join(" + "),
+      sourceCount: supportingDomains.length,
+      sources: supportingDomains,
       sourceFailures,
-      primarySource: chosen.table.source.url,
-      tableDate: chosen.table.tableDate ?? null,
+      groups: chosenTables.map((selection) => selection.table.group ?? null),
+      primarySource: chosenTables[0]!.table.source.url,
+      tableDate: chosenTables[0]!.table.tableDate ?? null,
       teams: n,
       models: [...modelsUsed],
       goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
@@ -502,7 +508,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     });
     return {
       ok: true,
-      detail: `${n} teams verified by ${chosen.supportingDomains.length} sources (${chosen.supportingDomains.join(", ")})`,
+      detail: `${n} teams across ${chosenTables.length} table(s) verified by ${supportingDomains.length} sources (${supportingDomains.join(", ")})`,
     };
   } catch (e) {
     await deps.store.record("standings", key, false, message(e), {
