@@ -160,7 +160,7 @@ export const STANDINGS_COMPETITIONS: Partial<
     teams: 24,
     refreshHours: 12,
     queries: [
-      "EFL Championship 2026/27 full overall league table played won drawn lost goals for goals against points",
+      "EFL Championship full overall league table played won drawn lost goals for goals against points",
       "site:efl.com/competitions/efl-championship EFL Championship league table",
       "site:bbc.com/sport/football/championship/table EFL Championship table",
       "site:skysports.com/football/competitions/championship/table Championship standings",
