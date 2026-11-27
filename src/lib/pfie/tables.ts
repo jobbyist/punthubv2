@@ -432,6 +432,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
+      group: table.group ?? null,
       tableDate: table.tableDate ?? null,
       rowCount: table.rows.length,
       rows: table.rows.map((row) => ({
