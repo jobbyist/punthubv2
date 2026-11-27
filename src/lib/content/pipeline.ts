@@ -11,7 +11,7 @@
  */
 import { sastDate } from "@/lib/sast";
 
-import { missingCredentials, type ContentEnv } from "./config";
+import { alternativeGeminiModel, missingCredentials, type ContentEnv } from "./config";
 import { ProviderError } from "./http";
 import { AllModelsFailed, createModelRouter } from "./model-router";
 import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./prompt";
@@ -266,9 +266,12 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         problems,
       );
       try {
+        const revisionModel = written.model === "parallel-medium"
+          ? alternativeGeminiModel(env.models, written.model) ?? written.model
+          : written.model;
         const revised = await router.generate(
           revisionRequest(request, draft, problems),
-          written.model,
+          revisionModel,
         );
         const revisedDraft = parseDraft(revised.text);
         if (revisedDraft) {
@@ -292,9 +295,8 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     let reviewRan = false;
     if (budgetLeft() > 12_000) {
       try {
-        const reviewer = written.model === "parallel-medium"
-        ? env.models.find((m) => m === "gemini-3.5-flash") ?? env.models.find((m) => m.startsWith("gemini-"))
-        : "parallel-medium";
+        const reviewer = alternativeGeminiModel(env.models, written.model);
+        if (!reviewer) throw new Error("No independent Gemini reviewer is available");
         const review = await router.generate(reviewRequest(draft, sources, options.slot), reviewer);
         const parsed = parseReview(review.text);
         if (parsed) {
@@ -340,8 +342,8 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       settings.autoPublish &&
       passed;
 
-    // Give the Gemini comparison the same deterministic validation, one revision opportunity,
-    // and an independent Parallel review. The comparison remains review-only.
+    // Give the Gemini comparison deterministic validation, one revision opportunity,
+    // and an independent Gemini-model review. The comparison remains review-only.
     let benchmarkQuality: QualityReport | null = null;
     if (geminiBenchmark) {
       benchmarkQuality = validateDraft({
@@ -382,9 +384,11 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       }
       if (budgetLeft() > 18_000) {
         try {
+          const benchmarkReviewer = alternativeGeminiModel(env.models, geminiBenchmark.model);
+          if (!benchmarkReviewer) throw new Error("No independent Gemini benchmark reviewer is available");
           const benchmarkReview = await router.generate(
             reviewRequest(geminiBenchmark.draft, sources, options.slot),
-            "parallel-medium",
+            benchmarkReviewer,
           );
           const unsupported = parseReview(benchmarkReview.text);
           if (unsupported) {
@@ -396,12 +400,12 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
               reviewerUnsupported: unsupported,
               ...(options.slot ? { slot: options.slot } : {}),
             });
-            await log("benchmark-review", "info", `Parallel review flagged ${unsupported.length} statement(s)`, unsupported);
+            await log("benchmark-review", "info", `${benchmarkReview.model} review flagged ${unsupported.length} statement(s)`, unsupported);
           } else {
-            await log("benchmark-review", "warn", "Parallel review answer could not be read");
+            await log("benchmark-review", "warn", "Gemini review answer could not be read");
           }
         } catch (error) {
-          await log("benchmark-review", "warn", "Parallel review did not run", describe(error));
+          await log("benchmark-review", "warn", "Gemini review did not run", describe(error));
         }
       } else {
         await log("benchmark-review", "warn", "Parallel review skipped: not enough time left");
