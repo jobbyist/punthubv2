@@ -174,6 +174,9 @@ function Admin() {
                   <TabsContent value="analytics" className="mt-0">
                     <AnalyticsTab />
                   </TabsContent>
+                  <TabsContent value="synthetic" className="mt-0">
+                    <SyntheticExperimentTab />
+                  </TabsContent>
                   <TabsContent value="log" className="mt-0">
                     <ActionLogTab />
                   </TabsContent>
