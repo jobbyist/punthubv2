@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  alternativeGeminiModel,
   missingCredentials,
   modelsForContentSlot,
   parseDailyCaps,
@@ -44,7 +43,6 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
   return {
     store: memoryStore(),
     env: readContentEnv({
-      GEMINI_API_KEY: "g-key-123456",
       PARALLEL_API_KEY: "p-key-123456",
       FIRECRAWL_API_KEY: "f",
     }),
@@ -59,32 +57,19 @@ function deps(overrides: Partial<PipelineDeps> = {}): PipelineDeps {
 
 describe("config", () => {
   it("defaults to the five free models, primary first, lightest last", () => {
-    expect(parseModelList(undefined).models).toEqual([
-      "parallel-medium",
-      "gemini-3.8-flash",
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
-      "gemini-3.5-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
+    expect(parseModelList(undefined).models).toEqual(["parallel-medium"]);
   });
   it("refuses a model that is not on the free list", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
-    expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
-    expect(refused).toEqual(["gemini-3.1-pro-preview"]);
+    expect(models).toEqual(["parallel-medium"]);
+    expect(refused).toEqual([]);
   });
-  it("uses paid Parallel Medium only for the breaking slot", () => {
-    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
+  it("uses Parallel Medium for every Newsroom slot", () => {
+    const models = ["parallel-medium"];
     expect(modelsForContentSlot(models, "breaking")).toEqual(models);
-    expect(modelsForContentSlot(models, "editorial")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-    expect(modelsForContentSlot(models, "intelligence")).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-    expect(modelsForContentSlot(models)).toEqual(["gemini-3.8-flash", "gemini-3.6-flash"]);
-  });
-  it("chooses a different Gemini model for independent review", () => {
-    const models = ["parallel-medium", "gemini-3.8-flash", "gemini-3.6-flash"];
-    expect(alternativeGeminiModel(models, "parallel-medium")).toBe("gemini-3.8-flash");
-    expect(alternativeGeminiModel(models, "gemini-3.8-flash")).toBe("gemini-3.6-flash");
-    expect(alternativeGeminiModel(["gemini-3.8-flash"], "gemini-3.8-flash")).toBeNull();
+    expect(modelsForContentSlot(models, "editorial")).toEqual(models);
+    expect(modelsForContentSlot(models, "intelligence")).toEqual(models);
+    expect(modelsForContentSlot(models)).toEqual(models);
   });
   it("reads daily caps and ignores bad entries", () => {
     expect(parseDailyCaps("gemini-3.8-flash=20, x=abc, gemini-3.1-flash-lite=500")).toEqual({
@@ -94,8 +79,8 @@ describe("config", () => {
   });
   it("names the missing credentials per article kind", () => {
     const env = readContentEnv({});
-    expect(missingCredentials(env, "sports")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
-    expect(missingCredentials(env, "development")).toEqual(["GEMINI_API_KEY", "PARALLEL_API_KEY"]);
+    expect(missingCredentials(env, "sports")).toEqual(["PARALLEL_API_KEY"]);
+    expect(missingCredentials(env, "development")).toEqual(["PARALLEL_API_KEY"]);
   });
   it("never shows a whole secret", () => {
     expect(redact("AIzaSyExampleExampleExample")).toBe("AI…le");
