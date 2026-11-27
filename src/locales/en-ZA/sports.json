@@ -24,24 +24,28 @@
   "items": {
     "soccer": {
       "name": "Football",
-      "metaTitle": "Football predictions South Africa: Betway Premiership, EPL, UCL | Puntr",
-      "metaDescription": "Football is Puntr's launch sport: Betway Premiership, EPL, Champions League and more. Lock in picks before kick-off, get graded automatically and build a verified record.",
-      "intro": "Football is South Africa's most-watched sport and Puntr's launch sport. Every pick is locked at kick-off, graded automatically from the final score, and added to a public track record.",
+      "metaTitle": "Football coverage on Puntr: Betway Premiership, EPL, UCL and more | Puntr",
+      "metaDescription": "Every league Puntr covers, live: fixtures, verified results and tables for the Betway Premiership, EPL, Champions League and more. Predict, duel and practise on real football.",
+      "intro": "Football is Puntr's launch sport. Here is exactly what we cover today, what comes next, and how every fixture, result and table is checked before you see it.",
       "sa": "From Soweto derbies between Kaizer Chiefs and Orlando Pirates to Mamelodi Sundowns' dominance in the Betway Premiership and Bafana Bafana's qualifiers, football fills weekends across the country. South African fans follow the Premier League and the Champions League just as closely as the local game.",
-      "engine": "Puntr pulls fixtures and results from a licensed sports-data provider, so every match is real and every pick is graded the same way. On top of community picks, Puntr's sports intelligence engine will add an Algorithmic Read for each match: form, head-to-head records and a Confidence Score, explained in plain language.",
+      "engine": "Fixtures, results and tables come from PFIE, Puntr's own football engine. It reads official competition sites and reputable publishers, and plain code publishes a fact only when an official source or two independent sources agree. AI never decides a score.",
       "competitions": [
         "Betway Premiership (PSL)",
         "English Premier League",
+        "EFL Championship",
         "UEFA Champions League",
-        "Nedbank Cup and MTN8",
-        "CAF Champions League",
-        "Bafana Bafana fixtures"
+        "UEFA Conference League",
+        "La Liga",
+        "Bundesliga",
+        "Serie A",
+        "Ligue 1",
+        "CAF Confederation Cup"
       ],
       "markets": [
-        "Match result (home, draw, away)",
-        "Both teams to score",
-        "Over and under goals",
-        "Correct score (for the record)"
+        "Match result (1X2)",
+        "Double chance",
+        "Over/Under 2.5",
+        "Both teams to score"
       ]
     },
     "basketball": {
@@ -181,5 +185,135 @@
     "week": "Launch week"
   },
   "marquee": "Clubs on Puntr",
-  "breadcrumbLabel": "Breadcrumb"
+  "breadcrumbLabel": "Breadcrumb",
+  "soccer": {
+    "eyebrow": "Football coverage",
+    "updated": "Live from PFIE · checked {{time}}",
+    "stats": {
+      "launch": "Launch leagues",
+      "upcoming": "Fixtures in the next 14 days",
+      "results": "Verified results",
+      "teams": "Teams covered"
+    },
+    "coverage": {
+      "title": "Leagues and cups we cover",
+      "lead": "Coverage is a registry, not a promise. A competition moves up only once its sources pass PFIE's checks.",
+      "phase": {
+        "launch": "At launch",
+        "post-launch": "Coming after launch",
+        "planned": "On the radar"
+      },
+      "phaseLead": {
+        "launch": "The ten launch competitions: fixtures, verified results and, for league formats, a verified table.",
+        "post-launch": "PFIE already reads these. They join the launch set once their data holds up week after week.",
+        "planned": "On our list, with no data sources switched on yet."
+      },
+      "fixtures_other": "{{count}} fixtures in 14 days",
+      "noFixtures": "No fixtures in the next 14 days",
+      "table": "Table: {{count}} teams",
+      "tablePending": "Table being verified",
+      "cupFormat": "Knockout or group format",
+      "notYet": "Not fetched yet",
+      "viewFixtures": "Fixtures",
+      "viewTable": "Table",
+      "region": {
+        "sa": "South Africa",
+        "england": "England",
+        "europe": "Europe",
+        "africa": "Africa",
+        "world": "International"
+      },
+      "fixtures_one": "{{count}} fixture in 14 days"
+    },
+    "features": {
+      "title": "What you can do with football on Puntr",
+      "predict": {
+        "title": "Predict",
+        "body": "Lock a pick on any covered fixture before kick-off. Puntr grades it from the verified final score and adds it to your public record.",
+        "cta": "See fixtures"
+      },
+      "duels": {
+        "title": "Head-to-head Duels",
+        "body": "Challenge another member on a match with 2 or 3 calls. Calls stay hidden until kick-off, the community votes, and Puntr settles it at full time.",
+        "cta": "Open Duels"
+      },
+      "practice": {
+        "title": "Practice Mode",
+        "body": "A fictional league that plays out in minutes. Try picks, results and points with no real teams or prices involved.",
+        "cta": "Try Practice Mode"
+      },
+      "tables": {
+        "title": "Tables and results",
+        "body": "Verified league tables and a results archive with form and head-to-head history for every covered team.",
+        "cta": "See tables"
+      },
+      "teams": {
+        "title": "Team directory",
+        "body": "Every club and national side we cover, with badges, current table position and next fixture. Follow the teams you care about.",
+        "cta": "Browse teams"
+      }
+    },
+    "markets": {
+      "title": "What you can predict",
+      "lead": "Four football markets at launch. The database accepts nothing else, so every pick is graded the same way."
+    },
+    "odds": {
+      "title": "How odds work",
+      "items": [
+        "Pre-match only. Picks lock at kick-off, so there are no in-play prices.",
+        "You enter the price you took. Puntr never sells or places bets.",
+        "Where Puntr holds a pre-match reference price for Match result, Over/Under 2.5 or Both teams to score, a pick priced more than 25% above it is marked \"odds unverified\" and counts at the reference price.",
+        "Reference prices come only from licensed South African bookmakers that have approved automated access."
+      ]
+    },
+    "engine": {
+      "title": "How PFIE checks every fixture",
+      "steps": [
+        {
+          "title": "Find",
+          "body": "PFIE reads official competition sites first, then reputable football publishers."
+        },
+        {
+          "title": "Extract",
+          "body": "Each page's fixtures and scores are copied with a quote, so every value can be traced to its source."
+        },
+        {
+          "title": "Validate",
+          "body": "Plain code checks teams, dates, kick-off times and scores. A fact is published only when an official source or two independent sources agree."
+        },
+        {
+          "title": "Grade",
+          "body": "Picks are graded only on verified results. Tables are rebuilt from verified results and cross-checked."
+        }
+      ],
+      "cadence": "Fixtures refresh daily. A result usually appears within an hour or two of full time. Puntr is not a live-score feed."
+    },
+    "faq": {
+      "title": "Football on Puntr: questions",
+      "items": [
+        {
+          "q": "Which football leagues does Puntr cover?",
+          "a": "At launch: {{launch}}. More competitions are read by PFIE and join once their data holds up."
+        },
+        {
+          "q": "Where do Puntr's fixtures and results come from?",
+          "a": "From PFIE, Puntr's own engine. It reads official competition sites and reputable publishers and publishes a fact only when an official source or two independent sources agree."
+        },
+        {
+          "q": "Does Puntr show live scores or odds comparison?",
+          "a": "No. Picks lock at kick-off and are graded once the final score is verified. Puntr does not compare bookmaker odds."
+        },
+        {
+          "q": "Can I try Puntr without risking anything?",
+          "a": "Yes. Puntr never takes bets, and Practice Mode uses a fictional league, so you can learn how picks, grading and points work first."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Put your football knowledge on the record",
+      "body": "Join free, lock in picks before kick-off and build a verified track record.",
+      "join": "Join free",
+      "predictions": "Make a prediction"
+    }
+  }
 }

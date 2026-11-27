@@ -13,7 +13,8 @@ export type Database = {
     PostgrestVersion: "14.18"
   }
   public: {
-    Tables: {\n      bookmaker_odds_permissions: {
+    Tables: {
+      bookmaker_odds_permissions: {
         Row: {
           id: string; bookmaker_name: string; domain: string | null; affiliate_partner_slug: string | null;
           affiliate_status: string; affiliate_priority: number; licence_reference_candidate: string | null;

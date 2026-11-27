@@ -1,3 +1,10 @@
+## 27 November 2026 — Football coverage page driven by the PFIE registry
+
+- Add `src/lib/sports/coverage.ts`: one football coverage registry with a phase per competition (launch 10, post-launch, planned), matching the owner's 27 Nov split and PFIE v2.1 (Nedbank Cup and CAF Champions League labelled post-launch, recommendation D9). A test keeps it equal to `PFIE_SOURCES` and the launch standings set.
+- Rebuild `/sports/soccer` from that registry and live public data (fixtures in the next 14 days, verified results, stored tables, teams covered): phase tabs, per-competition fixture and table status, markets, odds rules, Duels, Practice Mode, the PFIE checking pipeline and an FAQ with FAQPage JSON-LD. New leagues appear automatically once given a phase.
+- Fix a stray `\n` in `src/integrations/supabase/types.ts` that stopped the file parsing.
+- No legal copy or data-collection behaviour changed.
+
 ## 22 November 2026 — Discover hub, responsive previews and PWA safe-area fixes
 
 - Move the Predictions hub to the canonical `/discover` route; preserve `/predictions` bookmarks with a redirect and update PWA launch, notification fallback, canonical metadata and sitemap destinations.
