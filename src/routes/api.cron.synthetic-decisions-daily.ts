@@ -16,7 +16,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as unknown as SupabaseClient;
-        const slug = "puntr-30-day-synthetic-2026-11-23";
+        const slug = "puntr-30-day-synthetic-2026-11-27";
         const { data: experiment, error: experimentError } = await db
           .from("synthetic_experiments")
           .select("id,status,starts_at,ends_at")
