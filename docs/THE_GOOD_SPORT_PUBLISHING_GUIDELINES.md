@@ -2,7 +2,7 @@
 
 **Owner:** Puntr Editorial / Podcast Producer  
 **Series:** The Good Sport  
-**Debut season premiere:** 1 December 2026  
+**Debut season premiere:** 5 January 2027  
 **Status:** Mandatory production and publication standard
 
 ## 1. Editorial promise
