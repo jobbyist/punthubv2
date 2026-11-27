@@ -225,7 +225,12 @@ function Standings() {
                     {group && (
                       <tr className="border-t-2 border-border bg-muted/50">
                         <td colSpan={11} className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground">
-                          Group {group}
+                          <div>Group {group}</div>
+                          {selectedLeague === "caf-cc" && group === "C" && groupRows.length === 3 && (
+                            <p className="mt-1 text-[10px] font-medium normal-case tracking-normal text-muted-foreground">
+                              One Group C place is pending completion of the preliminary-round tie.
+                            </p>
+                          )}
                         </td>
                       </tr>
                     )}
