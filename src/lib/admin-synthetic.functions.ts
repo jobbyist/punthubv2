@@ -17,7 +17,8 @@ export interface SyntheticAdminSnapshot {
     spentUsd: number;
     updatedAt: string;
   } | null;
-  personas: { total: number; active: number; lastRunAt: string | null; lastDecisionAt: string | null } ;
+  personas: { total: number; active: number; linkedMembers: number; lastRunAt: string | null; lastDecisionAt: string | null };
+  founding: { taken: number; cap: number; aiMembers: number };
   sessions: {
     total: number;
     recent: { id: string; personaKey: string; type: string; startedAt: string; finishedAt: string | null; outcome: string; paths: string[]; error: string | null }[];
@@ -54,7 +55,8 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
     if (experimentError?.code === "42P01" || experimentError?.code === "PGRST205") {
       return {
         configured: false, experiment: null,
-        personas: { total: 0, active: 0, lastRunAt: null, lastDecisionAt: null },
+        personas: { total: 0, active: 0, linkedMembers: 0, lastRunAt: null, lastDecisionAt: null },
+        founding: { taken: 0, cap: 100, aiMembers: 0 },
         sessions: { total: 0, recent: [] }, research: { total: 0, recent: [] },
         budget: { reserved: 0, settled: 0, failed: 0, recent: [] },
       };
@@ -63,21 +65,25 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
     if (!experiment) {
       return {
         configured: false, experiment: null,
-        personas: { total: 0, active: 0, lastRunAt: null, lastDecisionAt: null },
+        personas: { total: 0, active: 0, linkedMembers: 0, lastRunAt: null, lastDecisionAt: null },
+        founding: { taken: 0, cap: 100, aiMembers: 0 },
         sessions: { total: 0, recent: [] }, research: { total: 0, recent: [] },
         budget: { reserved: 0, settled: 0, failed: 0, recent: [] },
       };
     }
 
-    const [personaResult, sessionCount, sessionResult, researchCount, researchResult, budgetResult] = await Promise.all([
+    const [personaResult, sessionCount, sessionResult, researchCount, researchResult, budgetResult, foundingCount, aiCount, foundingSpots] = await Promise.all([
       db.from("synthetic_personas").select("persona_key,active,last_run_at,last_decision_at").eq("experiment_id", experiment.id).order("persona_key"),
       db.from("synthetic_sessions").select("id", { count: "exact", head: true }).eq("experiment_id", experiment.id),
       db.from("synthetic_sessions").select("id,persona_key,session_type,started_at,finished_at,outcome,page_paths,error_code").eq("experiment_id", experiment.id).order("started_at", { ascending: false }).limit(30),
       db.from("synthetic_research").select("id", { count: "exact", head: true }).eq("experiment_id", experiment.id),
       db.from("synthetic_research").select("fixture_key,created_at,response_json,source_urls").eq("experiment_id", experiment.id).order("created_at", { ascending: false }).limit(20),
       db.from("synthetic_budget_ledger").select("provider,operation,estimated_usd,settled_usd,status,created_at").eq("experiment_id", experiment.id).order("created_at", { ascending: false }).limit(30),
+      db.from("synthetic_personas").select("profile_id", { count: "exact", head: true }).eq("experiment_id", experiment.id).not("profile_id", "is", null),
+      db.from("profiles").select("id", { count: "exact", head: true }).eq("is_ai_participant", true).not("founding_number", "is", null),
+      db.rpc("founding_spots_taken"),
     ]);
-    for (const result of [personaResult, sessionResult, researchResult, budgetResult]) {
+    for (const result of [personaResult, sessionResult, researchResult, budgetResult, foundingCount, aiCount, foundingSpots]) {
       if (result.error) throw result.error;
     }
 
@@ -109,8 +115,14 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
       personas: {
         total: personas.length,
         active: personas.filter((p) => p.active).length,
+        linkedMembers: foundingCount.count ?? 0,
         lastRunAt: personas.reduce<string | null>((latest, p) => !p.last_run_at ? latest : !latest || p.last_run_at > latest ? p.last_run_at : latest, null),
         lastDecisionAt: personas.reduce<string | null>((latest, p) => !p.last_decision_at ? latest : !latest || p.last_decision_at > latest ? p.last_decision_at : latest, null),
+      },
+      founding: {
+        taken: typeof foundingSpots.data === "number" ? foundingSpots.data : 0,
+        cap: 100,
+        aiMembers: aiCount.count ?? 0,
       },
       sessions: {
         total: sessionCount.count ?? 0,

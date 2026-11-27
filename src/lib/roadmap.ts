@@ -8,7 +8,7 @@ import { addDays } from "./launch";
 export type RoadmapSport =
   "soccer" | "basketball" | "rugby" | "racing" | "combat" | "athletics" | "cricket" | "tennis";
 
-/** Launch windows: football Dec 2026; rugby + basketball Jan 2027; then one category every two months. */
+/** Launch windows: football Dec 2026; rugby + basketball Jan 2027; then one category every two months (at least one full month between releases). */
 export const SPORT_ROADMAP: readonly { sport: RoadmapSport; weeks: readonly [number, number] }[] = [
   { sport: "soccer", weeks: [1, 1] },
   { sport: "basketball", weeks: [6, 9] },
