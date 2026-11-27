@@ -186,3 +186,22 @@ where source_kind = 'real_activity_event'
 group by 1,2,3,4,5;
 revoke all on public.pfie_learning_signals from anon, authenticated;
 grant select on public.pfie_learning_signals to service_role;
+
+-- Drop the pseudonym mapping once both raw events and derived learning rows have expired.
+create or replace function public.pfie_prune_learning_subject_maps()
+returns integer
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare v_deleted integer;
+begin
+  delete from public.pfie_learning_subject_map m
+  where not exists (select 1 from public.pfie_user_activity_events e where e.user_id = m.user_id)
+    and not exists (select 1 from public.pfie_learning_examples x where x.subject_key = m.subject_key);
+  get diagnostics v_deleted = row_count;
+  return v_deleted;
+end;
+$$;
+revoke all on function public.pfie_prune_learning_subject_maps() from public, anon, authenticated;
+grant execute on function public.pfie_prune_learning_subject_maps() to service_role;
