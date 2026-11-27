@@ -131,8 +131,7 @@ async function generate(deps: OddsDeps, request: LlmRequest) {
   return deps.llm.generate("parallel-low", request);
 }
 
-const message = (e: unknown) =>
-  e instanceof AllModelsFailed || e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
+const message = (e: unknown) => e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
 
 export interface OddsReport {
   competitions: {
