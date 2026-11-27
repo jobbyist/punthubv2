@@ -164,6 +164,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open",
   ],
   [
+    "PFIE learning (optional)",
+    "If you opt in: pseudonymous feature and fixture engagement, selected sports, competitions and markets, and your published pick actions (market, selection, odds and confidence). We exclude email, display name, private messages, payment details, stake amounts, IP addresses and device fingerprints. Data is stored separately from campaign analytics and used to evaluate user preferences, feature usefulness and PFIE data quality; user selections are never treated as verified match outcomes.",
+    "Your separate, explicit consent. Off by default for this purpose; withdrawing stops new collection and deletes raw events and derived learning examples linked to your pseudonymous learning record.",
+    "Up to 12 months for event-level learning records, followed by deletion or irreversible aggregation. Your public pick record remains subject to its separate retention rules.",
+  ],
+  [
     "Analytics",
     "Page views and button use, with the campaign tags of the ad or link that brought you (for example utm_source=x). Stored on our own database with a random browser ID, never with your name, email or account",
     "Your consent",
@@ -202,7 +208,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 23 November 2026 (version 2026-11-23-r22). Draft pending
+          <strong>Last updated:</strong> 27 November 2026 (version 2026-11-27-r23). Draft pending
           attorney review.
         </p>
 
