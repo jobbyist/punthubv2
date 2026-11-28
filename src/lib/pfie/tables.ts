@@ -1306,6 +1306,21 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         })),
         sourceFailures,
         sourceDiagnostics,
+        ...(key === "championship"
+          ? {
+              sourceTextDiagnostics: sources.map((source) => {
+                const text = source.text ?? "";
+                const marker = /middlesbrough|wolverhampton|\bgoals\b|\bpts\b/i.exec(text);
+                const center = marker?.index ?? 0;
+                return {
+                  domain: source.domain,
+                  length: text.length,
+                  format: /^\s*</.test(text) ? "html" : text.includes("|") ? "markdown-or-pipes" : "plain-text",
+                  excerpt: text.slice(Math.max(0, center - 350), Math.min(text.length, center + 1_200)),
+                };
+              }),
+            }
+          : {}),
         fallbackFromOfficial: usedSecondaryFallback,
         primarySources: primarySources.map((source) => ({
           domain: source.domain,
