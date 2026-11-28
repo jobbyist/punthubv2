@@ -16,6 +16,7 @@ import {
   reconcileSeason,
 } from "./archive";
 import { retryDue, type SyncStatusRow, type TablesDeps } from "./tables";
+import { isPfieLaunchCompetition } from "./launch-scope";
 
 const HOUR = 3_600_000;
 
@@ -30,7 +31,7 @@ export function archiveJobsDue(
   // Newest season first, so the current season and last season fill before the one before.
   for (const year of archiveSeasons(now)) {
     for (const key of Object.keys(ARCHIVE_SOURCES) as CompetitionKey[]) {
-      if (only && !only.includes(key)) continue;
+      if (!isPfieLaunchCompetition(key) || (only && !only.includes(key))) continue;
       const s = statuses.find((x) => x.job === "archive" && x.scope === `${key}:${year}`);
       if (s && s.consecutiveFailures >= 5) continue;
       if (s?.lastSuccessAt) {
@@ -48,6 +49,9 @@ export async function runArchiveJob(
   key: CompetitionKey,
   year: number,
 ): Promise<{ ok: boolean; detail: string }> {
+  if (!isPfieLaunchCompetition(key)) {
+    return { ok: false, detail: "competition is outside the ten-competition PFIE launch scope" };
+  }
   const scope = `${key}:${year}`;
   const c = archiveCompetition(key);
   const now = (deps.now ?? (() => new Date()))();
