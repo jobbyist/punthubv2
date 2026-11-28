@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   archiveUrls,
+  archiveSeasonCompleteness,
   ARCHIVE_SOURCES,
   corroborateTable,
   parseFbrefSchedule,
@@ -184,6 +185,25 @@ describe("corroborateTable", () => {
         rows,
       ),
     ).toHaveProperty("reason");
+  });
+});
+
+describe("full-season archive completeness", () => {
+  const matrix = { teams: Array.from({ length: 20 }, (_, i) => `Club ${i + 1}`), scores: new Map() };
+
+  it("rejects two agreeing but materially truncated completed-season archives", () => {
+    const result = archiveSeasonCompleteness(250, matrix, 2025, 2026);
+    expect(result.expectedMatches).toBe(380);
+    expect(result.requiredMatches).toBe(342);
+    expect(result.complete).toBe(false);
+  });
+
+  it("accepts a sufficiently complete completed-season archive", () => {
+    expect(archiveSeasonCompleteness(342, matrix, 2025, 2026).complete).toBe(true);
+  });
+
+  it("does not require an unfinished current season to be complete", () => {
+    expect(archiveSeasonCompleteness(40, matrix, 2026, 2026).complete).toBe(true);
   });
 });
 
