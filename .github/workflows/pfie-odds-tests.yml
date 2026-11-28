@@ -38,4 +38,4 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
       - name: Test PFIE, odds and API attribution
-        run: bunx vitest run src/lib/pfie/standings.test.ts src/lib/pfie/pfie.test.ts src/lib/odds/sync.test.ts
+        run: bunx vitest run src/lib/pfie/standings.test.ts src/lib/pfie/pfie.test.ts src/lib/content/providers.test.ts src/lib/odds/sync.test.ts
