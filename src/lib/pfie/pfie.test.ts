@@ -597,9 +597,9 @@ describe("corroboration", () => {
 
 function memory(
   known: KnownFixture[] = [],
-): PfieStore & { runs: { ok: boolean; kind: string; error?: string }[]; last: Date | null } {
+): PfieStore & { runs: { ok: boolean; kind: string; error?: string; model?: string }[]; last: Date | null } {
   const store = {
-    runs: [] as { ok: boolean; kind: string; error?: string }[],
+    runs: [] as { ok: boolean; kind: string; error?: string; model?: string }[],
     last: null as Date | null,
     async knownFixtures() {
       return known;
@@ -607,8 +607,13 @@ function memory(
     async lastRunAt() {
       return store.last;
     },
-    async recordRun(run: { ok: boolean; kind: string; error?: string }) {
-      store.runs.push({ ok: run.ok, kind: run.kind, ...(run.error ? { error: run.error } : {}) });
+    async recordRun(run: { ok: boolean; kind: string; error?: string; model?: string }) {
+      store.runs.push({
+        ok: run.ok,
+        kind: run.kind,
+        ...(run.error ? { error: run.error } : {}),
+        ...(run.model ? { model: run.model } : {}),
+      });
     },
     async countUsage() {},
     async usageToday() {
@@ -667,10 +672,12 @@ describe("provider", () => {
         status: "scheduled",
       },
     ];
-    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store: memory(known) });
+    const store = memory(known);
+    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store });
     const out = await provider.listResults(new Date("2026-11-12T17:30:00Z"), NOW, {
       only: ["psl"],
     });
+    expect(store.runs[0]).toMatchObject({ ok: true, kind: "results", model: DEFAULT_PFIE_MODELS[0] });
     expect(out.fixtures).toHaveLength(1);
     expect(out.fixtures[0]).toMatchObject({
       providerRef: "r1",
