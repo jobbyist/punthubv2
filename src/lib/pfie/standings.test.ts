@@ -1919,7 +1919,7 @@ describe("deterministic standings parser with combined goal totals", () => {
       "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27:19 | +8 | 35 |",
       "| 3 | Wolves | 17 | 10 | 4 | 3 | 31:19 | +12 | 34 |",
       "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30:15 | +15 | 32 |",
-    ].join("\\n");
+    ].join("\n");
     const rows = parseStandingsMarkdown(markdown, 1);
     expect(rows).toHaveLength(4);
     expect(rows?.[0]).toMatchObject({
@@ -1939,7 +1939,7 @@ describe("plain-text standings source parsing", () => {
       "2 Stoke City 17 11 2 4 27:19 +8 35",
       "3 Wolves 17 10 4 3 31:19 +12 34",
       "4 Birmingham City 17 9 5 3 30:15 +15 32",
-    ].join("\\n");
+    ].join("\n");
     const rows = parseStandingsMarkdown(plain, 3);
     expect(rows).toHaveLength(4);
     expect(rows?.[0]).toMatchObject({
