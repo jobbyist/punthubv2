@@ -520,6 +520,68 @@ describe("corroboration", () => {
       providerRef: known[0]!.providerRef,
     });
   });
+  it("does not let two other-tier sources verify a final score", () => {
+    const base: Observation = {
+      home: "Lille OSC",
+      away: "Olympique Lyon",
+      date: "2026-11-21",
+      time: "19:45",
+      tz: "UTC",
+      kickoffUtc: "2026-11-21T19:45:00.000Z",
+      status: "finished",
+      homeScore: 0,
+      awayScore: 1,
+      quote: "Lille OSC 0-1 Olympique Lyon",
+      source: 1,
+      domain: "unverified-site-one.example",
+      tier: "other",
+    };
+    const second: Observation = {
+      ...base,
+      source: 2,
+      domain: "unverified-site-two.example",
+    };
+
+    const result = by(decide([base, second]).decisions, "Lille OSC");
+    expect(result).toMatchObject({
+      status: "scheduled",
+      statusVerdict: "single_source",
+      publish: false,
+    });
+  });
+
+  it("requires two trusted domains when no official source is present", () => {
+    const base: Observation = {
+      home: "Lille OSC",
+      away: "Olympique Lyon",
+      date: "2026-11-21",
+      time: "19:45",
+      tz: "UTC",
+      kickoffUtc: "2026-11-21T19:45:00.000Z",
+      status: "finished",
+      homeScore: 0,
+      awayScore: 1,
+      quote: "Lille OSC 0-1 Olympique Lyon",
+      source: 1,
+      domain: "publisher-one.example",
+      tier: "trusted",
+    };
+    const second: Observation = {
+      ...base,
+      source: 2,
+      domain: "publisher-two.example",
+    };
+
+    const result = by(decide([base, second]).decisions, "Lille OSC");
+    expect(result).toMatchObject({
+      status: "finished",
+      statusVerdict: "verified",
+      publish: true,
+      homeScore: 0,
+      awayScore: 1,
+    });
+  });
+
   it("without the official site, one source is not enough", () => {
     const fanOnly = accepted.filter((o) => o.domain === "durbancityfcnews.co.za");
     const d = by(decide(fanOnly).decisions, "Durban City");
