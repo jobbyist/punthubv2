@@ -13,6 +13,7 @@ import {
   independentSourceKey,
   parseStandings,
   parseStandingsMarkdown,
+  extractStandingsTableDate,
   standingsRequest,
   standingsDisagreementHint,
   tableRegression,
