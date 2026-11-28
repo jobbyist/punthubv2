@@ -477,7 +477,11 @@ export interface PfieDeps {
   /** Persistent Parallel cache; cache wrappers are applied outside quota guards. */
   cache?: CacheStore | null;
   /** Set before each competition run so API claim events share the same competition/run context. */
-  setUsageContext?: (context: { competition: string; jobRunId: string }) => void;
+  setUsageContext?: (context: {
+    competition: string;
+    jobRunId: string;
+    feature?: string;
+  }) => void;
   /** Ordered model list; extraction prefers the high-allowance lite model. */
   models?: string[];
   dailyCap?: Record<string, number>;
@@ -520,9 +524,14 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     from: Date,
     to: Date,
     targetFixtures: NonNullable<ListOptions["fixtures"]> = [],
+    priority = false,
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
     const jobRunId = randomUUID();
-    deps.setUsageContext?.({ competition: competition.key, jobRunId });
+    deps.setUsageContext?.({
+      competition: competition.key,
+      jobRunId,
+      feature: priority && kind === "results" ? "pfie:settlement-priority" : "pfie:fixtures-results",
+    });
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
     let calls = 0;
@@ -803,7 +812,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           });
           continue;
         }
-        const r = await run(c, "results", from, to, opts?.fixtures ?? []);
+        const r = await run(c, "results", from, to, opts?.fixtures ?? [], opts?.priority ?? false);
         // Only results: a results run never creates or moves a fixture.
         out.fixtures.push(...r.fixtures.filter((f) => f.status !== "scheduled"));
         out.calls += r.calls;
