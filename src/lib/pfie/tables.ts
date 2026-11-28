@@ -378,14 +378,14 @@ export async function runTablesSync(
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
   const season: { key: CompetitionKey; start: string; end: string }[] = [];
   if (!opts.job || opts.job === "season") {
-    for (const key of keys) {
-      // Leagues covered by the archive import no longer need the search-based backfill.
-      if (ARCHIVE_SOURCES[key]) continue;
-      for (const w of seasonWindows(now(), key)) {
-        const s = status("season", `${key}:${w.start}`);
-        if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
-        if (retryDue(s, now())) season.push({ key, ...w });
-      }
+    const windows = keys
+      .filter((key) => !ARCHIVE_SOURCES[key])
+      .flatMap((key) => seasonWindows(now(), key).map((window) => ({ key, ...window })))
+      .sort((a, b) => b.start.localeCompare(a.start));
+    for (const window of windows) {
+      const s = status("season", `${window.key}:${window.start}`);
+      if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
+      if (retryDue(s, now())) season.push(window);
     }
   }
 
