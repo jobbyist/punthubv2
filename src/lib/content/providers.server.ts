@@ -108,7 +108,7 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
  * Parallel Responses API used for Newsroom drafting, revision and review.
  * Structured JSON output is normalised from the shared content-engine schema.
  */
-function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
+export function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
   const visit = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(visit);
     if (!isRecord(value)) return value;
