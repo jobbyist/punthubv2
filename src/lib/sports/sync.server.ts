@@ -102,6 +102,7 @@ export async function syncResults(
   provider: SportsProvider,
   store: FixtureStore,
   now = new Date(),
+  options: { force?: boolean; only?: CompetitionKey[] } = {},
 ): Promise<SyncReport> {
   const since = new Date(now.getTime() - RESULTS_LOOKBACK_DAYS * DAY);
   const open = await store.openSince(since, now);
@@ -109,7 +110,7 @@ export async function syncResults(
 
   const names = new Set(open.map((o) => o.competition));
   const only = activeCompetitions()
-    .filter((c) => names.has(c.name))
+    .filter((c) => names.has(c.name) && (!options.only || options.only.includes(c.key)))
     .map((c) => c.key) as CompetitionKey[];
   if (only.length === 0)
     return {
@@ -137,6 +138,7 @@ export async function syncResults(
         away: fixture.away,
         kickoffAt: fixture.kickoffAt,
       })),
+      ...(options.force ? { force: true } : {}),
     });
     fixtures.push(...r.fixtures);
     skipped.push(...r.skipped);
