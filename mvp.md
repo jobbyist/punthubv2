@@ -163,29 +163,30 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 
 ## PFIE Phase 2 — final production evidence (28 November 2026)
 
-**Phase 2 acceptance review: all six workstreams passed against the ten-competition launch scope.**
+**Phase 2 close-out: Tasks 1, 3 and 5 are complete; Tasks 2, 4 and 6 are in final re-audit after residual publisher-alias gaps were found in production history.**
 
-| Launch competition | Historical results | Stored history range | Latest standings snapshot | Current teams | Finished fixtures in the last 42 days with scores |
-|---|---:|---|---|---:|---:|
-| Betway Premiership | 526 | 14 Sep 2024–27 Nov 2026 | 28 Nov 2026 | 16 | 3 |
-| Premier League | 862 | 16 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 20 | 11 |
-| EFL Championship | 1,223 | 9 Aug 2024–7 Nov 2026 | 28 Nov 2026 | 24 | 26 |
-| La Liga | 915 | 15 Aug 2024–21 Nov 2026 | 28 Nov 2026 | 20 | 4 |
-| UEFA Champions League | 486 | 17 Sep 2024–25 Nov 2026 | 27 Nov 2026 | 36 | 7 |
-| UEFA Conference League | 378 | 2 Oct 2024–26 Nov 2026 | 27 Nov 2026 | 36 | 21 |
-| Bundesliga | 703 | 23 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 18 | 9 |
-| Serie A | 870 | 17 Aug 2024–8 Nov 2026 | 28 Nov 2026 | 20 | 11 |
-| Ligue 1 | 729 | 16 Aug 2024–22 Nov 2026 | 28 Nov 2026 | 18 | 10 |
-| CAF Confederation Cup | 29 | 16 Oct 2026–27 Nov 2026 | 28 Nov 2026 | 15 | 1 |
+| Launch competition | Raw stored results | Canonical usable matches | Stored history range | Latest standings snapshot | Current teams | Finished fixtures in the last 42 days with scores |
+|---|---:|---:|---|---|---:|---:|
+| Betway Premiership | 526 | 526 | 14 Sep 2024–27 Nov 2026 | 28 Nov 2026 | 16 | 3 |
+| Premier League | 862 | 862 | 16 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 20 | 11 |
+| EFL Championship | 1,223 | 1,223 | 9 Aug 2024–7 Nov 2026 | 28 Nov 2026 | 24 | 26 |
+| La Liga | 915 | 880 | 15 Aug 2024–21 Nov 2026 | 28 Nov 2026 | 20 | 4 |
+| UEFA Champions League | 486 | 486 | 17 Sep 2024–25 Nov 2026 | 27 Nov 2026 | 36 | 7 |
+| UEFA Conference League | 378 | 378 | 2 Oct 2024–26 Nov 2026 | 27 Nov 2026 | 36 | 21 |
+| Bundesliga | 703 | 703 | 23 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 18 | 9 |
+| Serie A | 870 | 870 | 17 Aug 2024–8 Nov 2026 | 28 Nov 2026 | 20 | 11 |
+| Ligue 1 | 729 | 719 | 16 Aug 2024–22 Nov 2026 | 28 Nov 2026 | 18 | 10 |
+| CAF Confederation Cup | 29 | 27 | 16 Oct 2026–27 Nov 2026 | 28 Nov 2026 | 15 | 1 |
+
 
 ### Acceptance evidence
 
 1. **Standings integrity and corrected-result reconciliation — complete.** Championship (24 teams) and Bundesliga (18 teams) have validated snapshots. The 10 launch-scope legacy standings ledger rows are reconciled; no launch-scope `needs_refresh` rows remain. The 22 November 2026 Werder Bremen 4–0 Hamburger SV score is consistent in fixtures, team_results and the verified standings baseline. The 27 November 2026 Werder Bremen 3–3 Borussia Mönchengladbach correction is also aligned in fixtures and team_results and verified against DFB/Bundesliga reporting. The correction migration ensures a match already included in a snapshot is flagged for a full snapshot reconciliation rather than an unsafe second delta. Saudi Pro League and Liga Portugal remain excluded.
-2. **Historical reuse and provenance — complete.** The existing 8,000+ row history store is reused; no bulk refetch was performed. The ten launch competitions contain 6,721 canonical unique historical rows, and the canonical natural-key duplicate audit returned zero duplicates.
+2. **Historical reuse and provenance — final alias verification in progress.** The ten launch competitions contain 6,721 raw stored rows. Re-running canonical matching against the latest standings rosters exposed 45 residual alias-duplicate copies (35 La Liga, 10 Ligue 1). The final alias mappings produce 6,674 canonical usable matches after excluding two CAF rows with unresolved team identity. Existing records are reused; no bulk refetch or raw-history deletion was performed.
 3. **UEFA Conference League recovery — complete.** The archive now contains 378 historical UECL results from October 2024 through 26 November 2026.
-4. **Ten-competition validation — complete.** All ten competitions have current standings snapshots. The 42-day fixture audit found zero finished fixtures without scores and zero fixture/history score mismatches after the Bundesliga correction. Some recent completed fixtures are present in `fixtures` before being copied to `team_results`; PFIE now merges both evidence sets using the latest standings roster, SAST match date and canonical team identity. Exact duplicates count once; conflicting scores and ambiguous team labels are quarantined.
+4. **Ten-competition validation — final identity/roster checks in progress.** All ten competitions have current standings snapshots. The rolling 42-day audit found 103 finished fixtures with scores, zero finished fixtures missing scores and zero canonical fixture/history score mismatches. Six fixture/history alias copies are collapsed in the combined evidence set. CAF remains provisional at 15 confirmed teams, with one Group C slot awaiting confirmation; unresolved CAF history rows remain excluded from backfill counts. Exact duplicates count once; conflicting scores and ambiguous team labels are quarantined.
 5. **Archive completeness and idempotency — complete.** Completed double-round-robin archives must corroborate at least 90% of expected season matches. The active season is exempt. Incomplete archives are rejected before partial writes.
-6. **Production verification and release evidence — complete.** PRs #425–#430 were merged only after the exact PR-head Vercel Preview was READY. Migrations for Platform Updates Realtime, standings reconciliation and snapshot-included score corrections are applied. Production is READY on commit `5c266f514d302036bc2228b39c0e78f67134d465` (deployment `dpl_FxVxf5u7WjTbVcErStWVi2NRN3U4`); the 30-minute production error/fatal log check returned no entries.
+6. **Production verification and release evidence — pending final alias-fix release.** PRs #425–#431 were merged only after exact PR-head Vercel Previews were READY. Migrations for Platform Updates Realtime, standings reconciliation and snapshot-included score corrections are applied. The production baseline before the final alias fix is READY on commit `5c266f514d302036bc2228b39c0e78f67134d465` (deployment `dpl_FxVxf5u7WjTbVcErStWVi2NRN3U4`). Final sign-off requires the alias-fix PR to pass an exact-head Preview and its merge deployment to be verified.
 
 ### Operational note
 
@@ -199,7 +200,7 @@ The final history audit added only missing or weakly represented records; it did
 - **La Liga:** added the 76 missing Athletic Club league results from 2024/25 and 2025/26 (38 per season), using the official Athletic Club match logs and an independent fixture export. The archive now contains 380 results in each completed season and 155 in 2026/27, for 915 total.
 - **UEFA Champions League:** the archive now contains 189 results for 2024/25, 189 for 2025/26 and 108 for 2026/27 (18 qualifying results plus 90 completed league-phase matches through 25 November). The three-season backfill uses UEFA's official results archives.
 - **CAF Confederation Cup:** rebuilt the current-season history as 14 verified second-preliminary-round first legs, 14 second legs and the 27 November group-stage opener (29 results total). The current standings contain 15 confirmed teams across four groups; one Group C qualifier remains pending. The available store has no 2024/25 or 2025/26 CAF archive rows, so prior-season CAF depth remains an explicit gap rather than being represented as complete.
-- **Canonical deduplication:** consolidated 200 alias-duplicate rows across the ten launch competitions, merging source-domain evidence and preserving verified scores. The final launch scope has 6,721 unique results: 5,929 multi-domain, 792 official-single-domain and zero without provenance. The final canonical duplicate audit returned zero duplicates and zero score-conflict groups.
+- **Canonical deduplication:** the earlier audit consolidated 200 alias-duplicate rows and merged their source-domain evidence. A second production re-audit found 45 residual alias copies still present in La Liga (35) and Ligue 1 (10), plus two CAF history rows with unresolved team identity. The latest roster-aware logic with the two missing aliases produces 6,674 canonical usable matches from 6,721 raw rows; no score-conflict groups were found. PR #433 adds regression tests for the two missing aliases. These residual rows are deduplicated at read/count time and are not deleted from the provenance store.
 - **PSL season note:** the 2024/25 archive contains 210 played results; cancelled Royal AM fixtures are not counted as played results. The 2025/26 archive contains 240 results.
 
 The ten-competition launch scope remains unchanged. Saudi Pro League and Liga Portugal remain deferred. The production implementation continues to use the existing completed_matches evidence path and roster-aware canonicalization; no duplicate archive store was introduced.
