@@ -1189,6 +1189,15 @@ export interface ChosenStandingsTable {
 }
 
 /** Select an independently corroborated table for every required group; all groups must pass. */
+/** Canonicalise source-specific labels for competitions that have one table rather than named groups. */
+export function normaliseStandingsGroup(
+  sourceGroup: string | undefined,
+  competitionName: string,
+  hasNamedGroups: boolean,
+): string | undefined {
+  return hasNamedGroups ? sourceGroup : competitionName;
+}
+
 export function chooseTables(
   tables: SourceTable[],
   requiredGroups?: readonly string[],
