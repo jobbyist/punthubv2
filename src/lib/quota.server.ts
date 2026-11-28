@@ -1,103 +1,76 @@
 /**
- * Hard caps on every external API (migration 20261113170000). Each call claims one unit in Postgres first; a claim
- * over the provider's daily or monthly cap is refused and the call is never made. Fail closed: if the claim itself
- * cannot be checked, the call is not made either.
+ * Hard caps on every external API. Each actual provider attempt is attributed before it is made.
+ * A denied provider is memoized for the rest of the job, and the database applies cross-job cooldowns.
+ * Fail closed: if the claim cannot be checked, the provider call is not made.
  *
  * Server only. Limits are edited in /admin > System.
  */
+import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { ProviderError } from "@/lib/content/http";
-import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
+import type { ExtractProvider, LlmProvider, SearchProvider, UsageContext } from "@/lib/content/types";
 
-export type Claim = (provider: string) => Promise<boolean>;
+export type Claim = (provider: string, context?: UsageContext) => Promise<boolean>;
 
 /** A denied provider stays denied for the remainder of one job; do not hammer the quota ledger per URL/retry. */
 export function memoizeQuotaClaim(claim: Claim): Claim {
   const denied = new Set<string>();
-  return async (provider) => {
+  return async (provider, context) => {
     if (denied.has(provider)) return false;
-    const granted = await claim(provider);
+    const granted = await claim(provider, context);
     if (!granted) denied.add(provider);
     return granted;
   };
 }
 
-/** PostgREST "function not found": the budget migration (20261115010000) is not applied yet. */
-const isMissingFunction = (error: { code?: string; message: string }) =>
-  error.code === "PGRST202" || /could not find the function/i.test(error.message);
-
-/**
- * Claims one unit. `api_budget_claim` checks the provider family's monthly USD budget (docs/PARALLEL_ARCHITECTURE.md)
- * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
- * code first changes nothing.
- */
+/** Claims one unit and atomically writes context, cost estimate and refusal state to the usage ledger. */
 export async function createQuotaClaim(feature: string): Promise<Claim> {
   if (!feature.trim() || feature === "unattributed") {
     throw new Error("createQuotaClaim requires a named feature for usage attribution");
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
-  let budgetAvailable = true;
 
-  const recordClaim = async (provider: string) => {
-    try {
-      const [consumer, ...operationParts] = feature.split(":");
-      const { error } = await db.from("api_call_events").insert({
-        provider,
-        feature,
-        consumer: consumer || "unknown",
-        operation: operationParts.join(":") || "request",
-        status: "claimed",
-        metadata: { attribution_source: "quota_guard", budget_checked: true },
-      });
-      if (error) {
-        console.warn(
-          "quota: call attribution could not be recorded",
-          provider,
-          feature,
-          error.message,
-        );
-      }
-    } catch {
-      console.warn("quota: call attribution unavailable", provider, feature);
-    }
-  };
-
-  return memoizeQuotaClaim(async (provider) => {
-    if (budgetAvailable) {
-      const { data, error } = await db.rpc("api_budget_claim", {
-        p_provider: provider,
-        p_units: 1,
-        p_feature: feature,
-      });
-      if (!error) {
-        // api_budget_claim writes the attribution event in the same transaction as the quota debit.
-        return data === true;
-      }
-      if (!isMissingFunction(error)) {
-        console.error("quota: budget claim failed, refusing the call", provider, error.message);
-        return false;
-      }
-      budgetAvailable = false;
-    }
-
-    const { data, error } = await db.rpc("api_quota_claim", { p_provider: provider, p_units: 1 });
+  return memoizeQuotaClaim(async (provider, context) => {
+    const requestId = context?.requestId ?? randomUUID();
+    const p_context = {
+      request_id: requestId,
+      competition: context?.competition ?? null,
+      job_run_id: context?.jobRunId ?? null,
+      job_kind: context?.jobKind ?? null,
+    };
+    const { data, error } = await db.rpc("api_budget_claim_with_context", {
+      p_provider: provider,
+      p_units: 1,
+      p_feature: feature,
+      p_context,
+    });
     if (error) {
-      console.error("quota: claim failed, refusing the call", provider, error.message);
+      console.error("quota: contextual budget claim failed; refusing the call", provider, feature, error.message);
       return false;
     }
-    const granted = data === true;
-    if (granted) await recordClaim(provider);
-    return granted;
+    return data === true;
   });
 }
 
-export async function recordQuotaError(provider: string): Promise<void> {
+async function finishQuotaEvent(
+  provider: string,
+  requestId: string,
+  status: "success" | "error",
+  errorMessage?: string,
+): Promise<void> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
-  const { error } = await db.rpc("api_quota_error", { p_provider: provider });
-  if (error) console.error("quota: could not record an error", provider, error.message);
+  const { data, error } = await db.rpc("api_call_event_finish", {
+    p_provider: provider,
+    p_request_id: requestId,
+    p_status: status,
+    p_error: errorMessage ?? null,
+  });
+  if (error || data !== true) {
+    console.error("quota: provider attempt outcome could not be recorded", provider, status, error?.message ?? "event not found");
+  }
 }
 
 const refused = (provider: string) =>
@@ -105,18 +78,29 @@ const refused = (provider: string) =>
     provider,
     "quota",
     null,
-    "Puntr's own daily or monthly cap for this service is reached",
+    "Puntr's provider budget or quota is exhausted; this request has been deferred",
   );
+
+const attemptContext = (context?: UsageContext): UsageContext => ({
+  ...context,
+  requestId: randomUUID(),
+});
+
+const errorMessage = (error: unknown) =>
+  error instanceof Error ? error.message.slice(0, 280) : "provider request failed";
 
 export function guardSearch(inner: SearchProvider, claim: Claim): SearchProvider {
   return {
     name: inner.name,
-    async search(input) {
-      if (!(await claim(inner.name))) throw refused(inner.name);
+    async search(input, context) {
+      const attempt = attemptContext(context);
+      if (!(await claim(inner.name, attempt))) throw refused(inner.name);
       try {
-        return await inner.search(input);
+        const result = await inner.search(input, context);
+        await finishQuotaEvent(inner.name, attempt.requestId!, "success");
+        return result;
       } catch (error) {
-        await recordQuotaError(inner.name);
+        await finishQuotaEvent(inner.name, attempt.requestId!, "error", errorMessage(error));
         throw error;
       }
     },
@@ -126,30 +110,36 @@ export function guardSearch(inner: SearchProvider, claim: Claim): SearchProvider
 export function guardExtract(inner: ExtractProvider, claim: Claim): ExtractProvider {
   return {
     name: inner.name,
-    async extract(url) {
-      if (!(await claim(inner.name))) throw refused(inner.name);
+    async extract(url, context) {
+      const attempt = attemptContext(context);
+      if (!(await claim(inner.name, attempt))) throw refused(inner.name);
       try {
-        return await inner.extract(url);
+        const result = await inner.extract(url, context);
+        await finishQuotaEvent(inner.name, attempt.requestId!, "success");
+        return result;
       } catch (error) {
-        await recordQuotaError(inner.name);
+        await finishQuotaEvent(inner.name, attempt.requestId!, "error", errorMessage(error));
         throw error;
       }
     },
   };
 }
 
-/** Gemini quotas are per model: `gemini:<model id>`. A refused claim moves the router to the next model. */
+/** Responses quotas are per effort: parallel-chat:<effort>. */
 export function guardLlm(inner: LlmProvider, claim: Claim): LlmProvider {
   return {
     name: inner.name,
-    async generate(model, request) {
+    async generate(model, request, context) {
       const parallelEffort = /^parallel-(low|medium|high)$/.exec(model)?.[1];
-      const key = parallelEffort ? `parallel-chat:${parallelEffort}` : `gemini:${model}`;
-      if (!(await claim(key))) throw refused(key);
+      const key = parallelEffort ? "parallel-chat:" + parallelEffort : "gemini:" + model;
+      const attempt = attemptContext(context);
+      if (!(await claim(key, attempt))) throw refused(key);
       try {
-        return await inner.generate(model, request);
+        const result = await inner.generate(model, request, context);
+        await finishQuotaEvent(key, attempt.requestId!, "success");
+        return result;
       } catch (error) {
-        await recordQuotaError(key);
+        await finishQuotaEvent(key, attempt.requestId!, "error", errorMessage(error));
         throw error;
       }
     },
