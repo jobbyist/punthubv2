@@ -272,3 +272,12 @@ Phase 3.3 remains in progress until this corrective release is deployed and new 
 ## Phase 3.4 — Cache implementation status
 
 Persistent Search/Extract cache is wired into both fixture/results jobs and the standings/history/season/archive table pipeline. The first live results run created an active cache entry and emitted Search/Extract miss telemetry. Cache-hit/deduplication and avoided-spend measurements remain part of the Phase 3.6 production reliability audit.
+
+
+## Phase 3.6 — Live budget runway in Admin API Usage
+
+The Admin → API Usage tab now includes a live Q1 Parallel budget runway panel. It reads the shared-period status and daily provider usage, calculates all date boundaries in UTC, and displays the cumulative cap, spend, remaining balance, required daily average, observed daily average, seven-day average, projected end-of-period spend/overage and estimated days to exhaustion. Projections are explicitly marked provisional until at least seven days of data are available.
+
+The initial 28 November baseline is $7.684 spent against the $200 cap, leaving $192.316 for 124 calendar days (required average $1.5509/day). The first observed day averaged $7.684/day; a straight-line projection is $952.82, but this is an early warning rather than a steady-state forecast because the day includes launch recovery/backfill. The lower owner-approved daily quota ceilings remain deferred until Phase 3.3–3.6 production verification passes.
+
+Unit tests cover UTC inclusive-day calculations, zero-spend days, depleted budgets and the provisional first-day projection.
