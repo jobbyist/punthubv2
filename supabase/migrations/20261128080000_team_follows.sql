@@ -136,7 +136,9 @@ begin
     end if;
   end if;
 
-  return p_follow;
+  -- The row's actual state, so a repeated call reports the truth rather than echoing the request.
+  return exists (select 1 from public.team_follows
+                 where user_id = v_uid and sport = v_sport and team_key = v_key);
 end;
 $$;
 revoke all on function public.set_team_follow(text, text, text, boolean, text) from public, anon;

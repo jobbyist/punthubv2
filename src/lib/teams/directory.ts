@@ -101,10 +101,10 @@ export function buildDirectory(input: DirectoryInput): DirectoryTeam[] {
   const map = new Map<string, Acc>();
   const touch = (name: string, key: CompetitionKey, weight: number): Acc | null => {
     const k = badgeKey(name);
-    if (!k) return null;
+    const c = coverage.get(key);
+    if (!k || !c) return null;
     let t = map.get(k);
     if (!t) {
-      const c = coverage.get(key)!;
       t = {
         key: k,
         slug: teamSlug(name),
@@ -121,10 +121,8 @@ export function buildDirectory(input: DirectoryInput): DirectoryTeam[] {
       map.set(k, t);
     }
     t.names.set(name, (t.names.get(name) ?? 0) + weight);
-    if (!t.competitions.some((c) => c.key === key)) {
-      const c = coverage.get(key)!;
+    if (!t.competitions.some((x) => x.key === key))
       t.competitions.push({ key, name: c.name, phase: c.phase });
-    }
     return t;
   };
 
@@ -179,9 +177,9 @@ export function buildDirectory(input: DirectoryInput): DirectoryTeam[] {
   const order = [...coverage.keys()];
   return [...map.values()]
     .map(({ names, ...t }) => {
-      const name = [...names.entries()].sort(
-        (a, b) => b[1] - a[1] || a[0].length - b[0].length,
-      )[0]![0];
+      const name =
+        [...names.entries()].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length)[0]?.[0] ??
+        t.name;
       t.competitions.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
       const primary = t.competitions[0];
       return {

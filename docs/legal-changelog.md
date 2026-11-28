@@ -4,7 +4,7 @@
 - **Who sees what:** the member sees their own follows on `/account` and can unfollow there or in the directory. The public sees only an anonymous follower count per team (shown from 3 followers). Admins see totals and the most-followed teams in Admin > Analytics, never a list of who follows whom.
 - **PFIE learning:** only for members with separate PFIE-learning consent, a follow or unfollow is recorded as a pseudonymous learning event (`team_followed` / `team_unfollowed`: sport, team name, source). No consent, no event.
 - **Export:** the account data export now includes team follows and the follow log.
-- **Pages:** Privacy (Favourites row renamed "Favourites and followed teams", PFIE learning row), English and Afrikaans; notice version `2026-11-28-team-follows` in migration `20261128030000_team_follows.sql`.
+- **Pages:** Privacy (Favourites row renamed "Favourites and followed teams", PFIE learning row), English and Afrikaans; notice version `2026-11-28-team-follows` in migration `20261128080000_team_follows.sql`.
 - **Review `[attorney review]`:** confirm consent as the lawful basis for follows, the public anonymous follower count, admin aggregate analytics, retention of the follow log while the account is open, and the Afrikaans wording.
 ## 2026-11-27, simpler sign-up flow (no notice version change)
 

@@ -4,7 +4,7 @@
  * records a learning event. If the database migration is not applied yet, follow buttons stay hidden.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/session";
@@ -80,6 +80,7 @@ export function useTeamFollows() {
   const [available, setAvailable] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [pending, setPending] = useState<string | null>(null);
+  const inFlight = useRef(new Set<string>());
 
   useEffect(() => {
     if (!user) {
@@ -107,6 +108,9 @@ export function useTeamFollows() {
   const toggle = useCallback(
     async (team: { key: string; name: string; sport?: string }, source?: string) => {
       const sport = team.sport ?? "soccer";
+      // One change at a time per team, even when called outside the (disabled-while-busy) button.
+      if (inFlight.current.has(team.key)) return;
+      inFlight.current.add(team.key);
       const next = !follows.some((f) => f.teamKey === team.key && f.sport === sport);
       const before = follows;
       setPending(team.key);
@@ -131,6 +135,7 @@ export function useTeamFollows() {
         if (missing(error as { code?: string })) setAvailable(false);
         throw error;
       } finally {
+        inFlight.current.delete(team.key);
         setPending(null);
       }
     },
