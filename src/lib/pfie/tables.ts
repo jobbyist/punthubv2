@@ -215,8 +215,13 @@ export function hasHistoryResultEvidence(text: string): boolean {
     /\b[\p{L}][\p{L}\p{M}.'’ -]{1,40}\s+\d{1,2}\s*[-–:]\s*\d{1,2}\s+[\p{L}][\p{L}\p{M}.'’ -]{1,40}\b/u.test(clean);
   const finalMarker = /\b(?:FT|full\s*time|final|finished)\b/i.test(clean);
   const resultsContext = /\b(?:results?|scores?|fixtures|scoreboard|match result)\b/i.test(clean);
+  const datedRoundResults =
+    resultsContext &&
+    /\b(?:round|matchday)\s+\d+\b/i.test(clean) &&
+    /\b\d{1,2}\.\d{2}\.\s+\d{1,2}:\d{2}\b/.test(clean) &&
+    /\b\d{1,2}\s+\d{1,2}\b/.test(clean);
   // Do not mistake goal difference / points columns (e.g. "Wrexham 17 -1 22") for match scores.
-  return namedScoreline || (finalMarker && resultsContext);
+  return namedScoreline || (finalMarker && resultsContext) || datedRoundResults;
 }
 
 function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown>[] {
