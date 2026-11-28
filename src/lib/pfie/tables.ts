@@ -798,12 +798,13 @@ async function gatherSources(
   for (const { hit, page } of fetched) {
     if (!page?.markdown) continue;
     const domain = domainOf(hit.url);
+    // cleanText strips table pipes/headings; inspect raw markdown before normalising it.
+    if (!preferSearchResults && !hasStandingsTableEvidence(page.markdown)) continue;
     const clean = preferSearchResults
       ? cleanHistoryText(page.markdown, MAX_CHARS)
       : cleanText(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
     if (preferSearchResults && !hasHistoryResultEvidence(clean)) continue;
-    if (!preferSearchResults && !hasStandingsTableEvidence(clean)) continue;
     sources.push({
       index: sources.length + 1,
       url: hit.url,
