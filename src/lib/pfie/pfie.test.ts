@@ -8,7 +8,7 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 import { corroborate } from "./corroborate";
 import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
 import { createPfieProvider, PFIE_SOURCES, resultsGapMs, tierOf } from "./provider";
-import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
+import { isGenericTeamName, normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
 
@@ -123,6 +123,11 @@ const decide = (observations: Observation[], known: KnownFixture[] = []) =>
 describe("team names", () => {
   it("normalises spelling, suffixes and short forms", () => {
     expect(normaliseTeam("Manchester City FC")).toBe("manchester city");
+    expect(normaliseTeam("Paris FC")).toBe("paris fc");
+    expect(teamSlug("Paris FC")).toBe("paris-fc");
+    expect(isGenericTeamName("Paris")).toBe(true);
+    expect(resolveTeam("Paris FC", ["Paris FC", "Paris Saint-Germain"])).toBe("Paris FC");
+    expect(resolveTeam("Paris", ["Paris FC", "Paris Saint-Germain"])).toBeNull();
     expect(normaliseTeam("Man City")).toBe("manchester city");
     expect(normaliseTeam("AmaZulu F.C.")).toBe("amazulu");
     expect(normaliseTeam("LOSC Lille")).toBe("lille osc");
