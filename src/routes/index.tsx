@@ -83,11 +83,16 @@ function Landing() {
   }, [sessionLoading, isSignedIn]);
   // The hero's primary button follows the shared context: guests join (or sign in if they have an account on
   // this device); members get their next best step (first pick, favourites, last match, leaderboard).
-  const primary: NextAction = !isSignedIn
-    ? ctx.hasAccount
-      ? { key: "signIn", to: "/join", search: { mode: "signin" } }
+  // Until the context is ready the button is neutral, so it never swaps label after first paint.
+  const primary: Omit<NextAction, "key"> & { key: NextAction["key"] | "discover" } = !ctx.ready
+    ? isSignedIn
+      ? { key: "discover", to: "/discover" }
       : { key: "join", to: "/join" }
-    : ctx.next;
+    : !isSignedIn
+      ? ctx.hasAccount
+        ? { key: "signIn", to: "/join", search: { mode: "signin" } }
+        : { key: "join", to: "/join" }
+      : ctx.next;
   const member = isSignedIn && ctx.ready;
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);

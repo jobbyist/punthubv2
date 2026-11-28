@@ -140,7 +140,8 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     const fav = hasFavourites(favourites);
     const input = { isSignedIn, pickCount, hasFavourites: fav, isStandalone, hasAccount, local };
     return {
-      ready: mounted && !loading,
+      // A signed-in member is not "ready" until their pick count is known, so nobody sees first-pick copy flash.
+      ready: mounted && !loading && (!isSignedIn || pickCount !== null),
       segment: deriveSegment(input),
       isSignedIn,
       isStandalone,

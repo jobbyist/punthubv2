@@ -485,16 +485,29 @@ const ITEM_CLASS =
 /** Bolds the part of the title that matches what the member typed. */
 function Highlight({ text, query }: { text: string; query?: string | undefined }) {
   if (!query) return <>{text}</>;
-  // Match accent-insensitively, like the ranking does ("atletico" highlights "Atlético").
-  const index = normalise(text).indexOf(normalise(query));
-  if (index < 0) return <>{text}</>;
+  // Match accent-insensitively, like the ranking does ("atletico" highlights "Atlético"). Normalise one character
+  // at a time so offsets in the normalised string map straight back onto the original text.
+  const needle = normalise(query);
+  if (!needle) return <>{text}</>;
+  const chars = Array.from(text);
+  const starts: number[] = [];
+  let folded = "";
+  chars.forEach((ch, i) => {
+    const n = normalise(ch);
+    for (let k = 0; k < n.length; k++) starts.push(i);
+    folded += n;
+  });
+  const at = folded.indexOf(needle);
+  if (at < 0) return <>{text}</>;
+  const from = starts[at]!;
+  const to = (starts[at + needle.length - 1] ?? chars.length - 1) + 1;
   return (
     <>
-      {text.slice(0, index)}
+      {chars.slice(0, from).join("")}
       <mark className="bg-transparent font-bold text-primary">
-        {text.slice(index, index + query.length)}
+        {chars.slice(from, to).join("")}
       </mark>
-      {text.slice(index + query.length)}
+      {chars.slice(to).join("")}
     </>
   );
 }

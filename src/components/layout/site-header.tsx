@@ -104,7 +104,7 @@ function isActive(path: string, to: string) {
 export function SiteHeader() {
   const { t } = useTranslation("nav");
   const { isSignedIn, profile, signOut, isAdmin } = useSession();
-  const { hasAccount } = useUserContext();
+  const { hasAccount, ready: ctxReady } = useUserContext();
   const pp = usePoints();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -463,7 +463,7 @@ export function SiteHeader() {
               <div className="hidden xl:block">
                 <FoundingCounter compact />
               </div>
-              {hasAccount ? (
+              {ctxReady && hasAccount ? (
                 // Someone has signed in on this device before: lead with Sign in, keep Join as the quiet link.
                 <>
                   <Link
@@ -493,9 +493,13 @@ export function SiteHeader() {
                   </Link>
                   <Button
                     asChild
-                    className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
+                    // Until the context is ready we can't tell a returning user from a new one, so hold the
+                    // space and reveal the right button once, instead of swapping labels after paint.
+                    className={`h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm ${ctxReady ? "" : "invisible"}`}
                   >
-                    <Link to="/join">{t("header.getEarlyAccess")}</Link>
+                    <Link to="/join" tabIndex={ctxReady ? undefined : -1}>
+                      {t("header.getEarlyAccess")}
+                    </Link>
                   </Button>
                 </>
               )}
