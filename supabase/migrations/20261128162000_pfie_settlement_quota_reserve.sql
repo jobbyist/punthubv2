@@ -249,7 +249,8 @@ BEGIN
           '4b932e80-fe80-4ab4-86e3-69f5b7b114cf',
           '4e7d26f1-14e2-4f1b-b3fd-b376bc41c173',
           '66c3a929-5af5-4ca1-a9b1-529499980403',
-          '3fc45026-ca32-4d04-9804-270eabaa84aa'
+          '3fc45026-ca32-4d04-9804-270eabaa84aa',
+          'a37fec59-7d30-45f3-9fbe-8a5086feb400'
         )
         AND status <> 'completed'
       )
