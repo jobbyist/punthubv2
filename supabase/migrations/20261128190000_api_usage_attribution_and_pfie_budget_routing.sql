@@ -185,3 +185,10 @@ alter table public.team_badges
     'parallel_official'::text,
     'manual'::text
   ]));
+
+-- Give Parallel Responses low enough daily headroom for PFIE + PUNT AI while retaining the existing monthly cap
+-- and USD family guards. The PFIE feature tag routes its spend to core; PUNT AI remains in auxiliary.
+update public.api_quota_limits
+set daily_cap = 250,
+    note = 'Parallel Responses low for PFIE structured extraction and PUNT AI live-web; PFIE-tagged usage is charged to the $50 core family, PUNT AI to the $35 auxiliary family. Monthly 3,000 cap and $280 cumulative guard remain in force.'
+where provider = 'parallel-chat:low';
