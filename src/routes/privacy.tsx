@@ -187,7 +187,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Your consent",
     "Up to 14 months [attorney review]",
   ],
-  ["Affiliate tracking", "Which ad you clicked", "Your consent", "Up to 90 days [attorney review]"],
+  [
+    "Affiliate tracking",
+    "Which sponsored unit was shown, clicked or closed, and where on Puntr. Counted anonymously: no account, browser ID, IP address or device ID is stored with it",
+    "Your consent (Affiliate tracking)",
+    "Up to 90 days [attorney review]",
+  ],
   [
     "Marketing email, WhatsApp and SMS",
     "Email address and, for WhatsApp or SMS, phone number",
@@ -220,8 +225,8 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-tipster-support).
-          Draft pending attorney review.
+          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-ads). Draft pending
+          attorney review.
         </p>
 
         <section>

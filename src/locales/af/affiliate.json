@@ -15,5 +15,20 @@
   },
   "disclosure": {
     "short": "Puntr kan 'n kommissie verdien as jy deur 'n geaffilieerde skakel registreer of transaksies doen."
+  },
+  "ads": {
+    "sponsored": "Geborg",
+    "advertisement": "Advertensie",
+    "goAdFree": "Blaai sonder advertensies met Puntr Pro",
+    "agePrompt": "Vennootaanbiedinge is vir volwassenes. Bevestig dat jy 18+ is om dit te sien.",
+    "defaultCta": "Registreer by {{name}}",
+    "defaultBody": "Besoek {{name}} om 'n rekening oop te maak. Stel 'n begroting voordat jy speel.",
+    "defaultTerms": "Slegs 18+. Nuwe kliënte. B&V geld.",
+    "aria": "Geborg: {{name}}",
+    "overlayAria": "Advertensie: {{name}}",
+    "close": "Maak advertensie toe",
+    "continue": "Gaan voort na Puntr",
+    "closesIn_one": "Maak toe oor {{count}} sekonde",
+    "closesIn_other": "Maak toe oor {{count}} sekondes"
   }
 }

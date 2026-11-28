@@ -31,7 +31,9 @@ export function AffiliateDisclosureAf() {
             Privaatheidskeuses
           </a>{" "}
           aanvaar. Advertensies word nie gewys aan iemand wat nie bevestig het dat hulle 18+ is nie,
-          of wat op 'n blaaskans is nie.
+          of wat op 'n blaaskans is nie. Elke vennootbanier, -kaart, -teksskakel en
+          volskermadvertensie is gemerk &quot;Geborg&quot; of &quot;Advertensie&quot;. Puntr
+          Pro-lede blaai sonder advertensies.
         </p>
         <p>
           Sommige belonings wat jy met PuntPoints kan inruil, word deur vennote befonds. Geborgde

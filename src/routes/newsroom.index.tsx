@@ -1,9 +1,11 @@
 import { PageArt } from "@/components/motion/page-art";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { AdSlot } from "@/components/ads/ad-units";
 import { AppShell } from "@/components/layout/app-shell";
+import { withAdBreaks } from "@/lib/ads";
 import { analytics } from "@/lib/analytics";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -13,6 +15,9 @@ import {
   NEWSROOM_CATEGORIES,
   type NewsroomCategory,
 } from "@/lib/newsroom";
+
+/** Articles revealed per step (owner: five at a time). */
+const STEP = 5;
 
 export const Route = createFileRoute("/newsroom/")({
   validateSearch: (search: Record<string, unknown>): { category?: NewsroomCategory } =>
@@ -71,7 +76,13 @@ function Newsroom() {
     analytics.newsroomViewed();
   }, []);
 
-  const [featured, ...rest] = data;
+  const [limit, setLimit] = useState(STEP);
+  useEffect(() => setLimit(STEP), [category]);
+
+  const [featured, ...restAll] = data;
+  // The featured story counts as one of the five.
+  const rest = restAll.slice(0, Math.max(0, limit - 1));
+  const remaining = Math.max(0, data.length - limit);
 
   return (
     <AppShell>
@@ -145,24 +156,58 @@ function Newsroom() {
           </article>
         )}
 
+        {featured && <AdSlot placement="newsroom-top" format="banner" className="mt-6" />}
+
         {rest.length > 0 && (
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {rest.map((a) => (
-              <article key={a.id} className="flex flex-col border border-border p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
-                  {t(`cat.${a.category}`)}
-                </p>
-                <h3 className="mt-2 text-lg leading-snug">
-                  <Link to="/newsroom/$slug" params={{ slug: a.slug }} className="hover:underline">
-                    {a.title}
-                  </Link>
-                </h3>
-                <p className="mt-2 flex-1 text-sm text-muted-foreground">{a.excerpt}</p>
-                <p className="mt-3 text-xs text-muted-foreground tnum">
-                  {formatDate(a.published_at)}
-                </p>
-              </article>
-            ))}
+            {withAdBreaks(rest, 4).map((entry) => {
+              if (entry.kind === "ad") {
+                return (
+                  <AdSlot
+                    key={`ad-${entry.index}`}
+                    placement="newsroom-feed"
+                    format="card"
+                    seed={entry.index}
+                  />
+                );
+              }
+              const a = entry.item;
+              return (
+                <article key={a.id} className="flex flex-col border border-border p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+                    {t(`cat.${a.category}`)}
+                  </p>
+                  <h3 className="mt-2 text-lg leading-snug">
+                    <Link
+                      to="/newsroom/$slug"
+                      params={{ slug: a.slug }}
+                      className="hover:underline"
+                    >
+                      {a.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm text-muted-foreground">{a.excerpt}</p>
+                  <p className="mt-3 text-xs text-muted-foreground tnum">
+                    {formatDate(a.published_at)}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        )}
+
+        {remaining > 0 && (
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setLimit((l) => l + STEP)}
+              className="border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+            >
+              {t("showMore", { count: Math.min(STEP, remaining) })}
+            </button>
+            <p className="text-xs text-muted-foreground tnum">
+              {t("showing", { shown: limit, total: data.length })}
+            </p>
           </div>
         )}
       </div>

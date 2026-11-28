@@ -87,6 +87,17 @@ export function CookiesAf({
               Blaaier-sessieberging <code>puntr:claim:…</code>: keer dat dieselfde eenmalige
               kontrole vir 'n stigtersplek twee keer in een besoek loop.
             </li>
+            <li>
+              Blaaier-sessieberging <code>puntr:affiliate-age-confirmed</code>: onthou vir hierdie
+              besoek dat jy bevestig het dat jy 18+ is, sodat geborgde vennootaanbiedinge gewys kan
+              word.
+            </li>
+            <li>
+              Blaaier-sessieberging <code>puntr:ads:overlay</code>: tel bladsye in hierdie besoek
+              sodat 'n volskermadvertensie selde verskyn (hoogstens drie keer 'n besoek, minstens
+              drie minute uitmekaar) en nooit op registrasie-, betaal-, hulp- of regsbladsye nie.
+              Puntr Pro-lede sien geen advertensies nie.
+            </li>
           </ul>
         </section>
         <Separator />

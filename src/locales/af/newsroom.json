@@ -49,5 +49,8 @@
     "label": "Met KI-hulp geskryf en teen die bronne hieronder nagegaan.",
     "sources": "Bronne",
     "note": "Feite in hierdie artikel kom uit die bronne hierbo en is voor publikasie outomaties nagegaan. Sien jy 'n fout? E-pos support@puntr.co.za en ons sal dit regstel."
-  }
+  },
+  "showMore_one": "Wys nog {{count}} artikel",
+  "showMore_other": "Wys nog {{count}} artikels",
+  "showing": "Wys {{shown}} van {{total}}"
 }

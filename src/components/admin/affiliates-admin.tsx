@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { useMemo, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -375,6 +376,8 @@ export function AffiliatesTab() {
       )}
       {failed && <p className="text-sm text-destructive">{t("affiliates.loadError")}</p>}
 
+      {data && <CreativesPanel partners={data} />}
+
       <ul className="space-y-3">
         {(data ?? []).map((p) => (
           <li key={p.id} className={panel}>
@@ -416,5 +419,334 @@ export function AffiliatesTab() {
         ))}
       </ul>
     </div>
+  );
+}
+
+type Creative = {
+  id: string;
+  partner_id: string;
+  name: string;
+  format: string;
+  headline: string;
+  body: string | null;
+  cta_label: string;
+  image_url: string | null;
+  tracking_link: string | null;
+  terms_line: string | null;
+  placements: string[];
+  weight: number;
+  active: boolean;
+  approved_at: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+};
+
+type AdStat = {
+  partner_id: string;
+  creative_id: string | null;
+  placement: string;
+  impressions: number;
+  clicks: number;
+  dismissals: number;
+};
+
+const CREATIVE_FORMATS = ["banner", "card", "text_link", "overlay"] as const;
+/** Slots placed in the app (src/components/ads). Empty placements = every slot of that format. */
+export const AD_PLACEMENTS = [
+  "newsroom-top",
+  "newsroom-feed",
+  "newsroom-article",
+  "newsroom-article-end",
+  "teams-grid",
+  "bookmakers-list",
+  "interstitial",
+] as const;
+
+/** Untyped handle: the creatives tables arrive with migration 20261128300000. */
+const adsDb = supabase as unknown as SupabaseClient;
+
+function CreativeForm({
+  creative,
+  partners,
+  onDone,
+}: {
+  creative?: Creative;
+  partners: Partner[];
+  onDone: () => void;
+}) {
+  const { t } = useTranslation("admin");
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const placements = f.getAll("placements").map(String);
+    const weight = Number(f.get("weight") ?? 1);
+    const row = {
+      partner_id: String(f.get("partner_id") ?? ""),
+      name: String(f.get("name") ?? "").trim(),
+      format: String(f.get("format") ?? "card"),
+      headline: String(f.get("headline") ?? "").trim(),
+      body: text(f, "body"),
+      cta_label: String(f.get("cta_label") ?? "").trim() || "Visit site",
+      image_url: text(f, "image_url"),
+      tracking_link: text(f, "tracking_link"),
+      terms_line: text(f, "terms_line"),
+      placements,
+      weight: Number.isInteger(weight) ? Math.min(10, Math.max(1, weight)) : 1,
+      active: f.get("active") === "on",
+      approved_at: text(f, "approved_at"),
+      starts_at: text(f, "starts_at"),
+      ends_at: text(f, "ends_at"),
+      updated_at: new Date().toISOString(),
+    };
+    if (!row.partner_id || !row.name || !row.headline)
+      return void toast.error(t("affiliates.error"));
+    if (row.active && !row.approved_at)
+      return void toast.error(t("affiliates.creatives.needApproval"));
+    const { error } = creative
+      ? await adsDb.from("affiliate_creatives").update(row).eq("id", creative.id)
+      : await adsDb.from("affiliate_creatives").insert(row);
+    if (error) return void toast.error(t("affiliates.error"));
+    toast.success(t("affiliates.saved"));
+    if (!creative) e.currentTarget.reset();
+    onDone();
+  }
+
+  const d = (v: string | null | undefined) => v ?? "";
+  const dt = (v: string | null | undefined) => (v ? v.slice(0, 16) : "");
+  return (
+    <form onSubmit={(e) => void submit(e)} className="grid gap-3 sm:grid-cols-2">
+      <Field label={t("affiliates.creatives.partner")}>
+        <select
+          name="partner_id"
+          defaultValue={creative?.partner_id ?? partners[0]?.id ?? ""}
+          className="h-9 w-full border border-input bg-background px-2 text-sm"
+        >
+          {partners.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name} ({t(`affiliates.status.${p.status}`)})
+            </option>
+          ))}
+        </select>
+      </Field>
+      <Field label={t("affiliates.creatives.name")}>
+        <Input name="name" required maxLength={120} defaultValue={d(creative?.name)} />
+      </Field>
+      <Field label={t("affiliates.creatives.format")}>
+        <Select
+          name="format"
+          defaultValue={creative?.format ?? "card"}
+          options={CREATIVE_FORMATS}
+          label={(v) => t(`affiliates.creatives.formats.${v}`)}
+        />
+      </Field>
+      <Field label={t("affiliates.creatives.weight")}>
+        <Input name="weight" inputMode="numeric" defaultValue={creative?.weight ?? 1} />
+      </Field>
+      <Field label={t("affiliates.creatives.headline")} className="sm:col-span-2">
+        <Input name="headline" required maxLength={90} defaultValue={d(creative?.headline)} />
+      </Field>
+      <Field label={t("affiliates.creatives.body")} className="sm:col-span-2">
+        <Textarea name="body" rows={2} maxLength={220} defaultValue={d(creative?.body)} />
+      </Field>
+      <Field label={t("affiliates.creatives.cta")}>
+        <Input name="cta_label" maxLength={32} defaultValue={d(creative?.cta_label)} />
+      </Field>
+      <Field label={t("affiliates.creatives.terms")}>
+        <Input name="terms_line" maxLength={160} defaultValue={d(creative?.terms_line)} />
+      </Field>
+      <Field label={t("affiliates.creatives.image")}>
+        <Input name="image_url" type="url" defaultValue={d(creative?.image_url)} />
+      </Field>
+      <Field label={t("affiliates.creatives.link")}>
+        <Input name="tracking_link" type="url" defaultValue={d(creative?.tracking_link)} />
+      </Field>
+      <Field label={t("affiliates.creatives.approvedAt")}>
+        <Input name="approved_at" type="date" defaultValue={d(creative?.approved_at)} />
+      </Field>
+      <label className="flex items-center gap-2 self-end pb-2 text-xs">
+        <input type="checkbox" name="active" defaultChecked={creative?.active ?? false} />
+        {t("affiliates.creatives.active")}
+      </label>
+      <Field label={t("affiliates.creatives.startsAt")}>
+        <Input name="starts_at" type="datetime-local" defaultValue={dt(creative?.starts_at)} />
+      </Field>
+      <Field label={t("affiliates.creatives.endsAt")}>
+        <Input name="ends_at" type="datetime-local" defaultValue={dt(creative?.ends_at)} />
+      </Field>
+      <fieldset className="sm:col-span-2">
+        <legend className="text-xs">{t("affiliates.creatives.placements")}</legend>
+        <div className="mt-1 flex flex-wrap gap-3">
+          {AD_PLACEMENTS.map((pl) => (
+            <label key={pl} className="flex items-center gap-1.5 text-xs">
+              <input
+                type="checkbox"
+                name="placements"
+                value={pl}
+                defaultChecked={creative?.placements.includes(pl) ?? false}
+              />
+              {pl}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <p className="text-xs text-muted-foreground sm:col-span-2">
+        {t("affiliates.creatives.rules")}
+      </p>
+      <div className="sm:col-span-2">
+        <Button type="submit" size="sm">
+          {t(creative ? "affiliates.save" : "affiliates.creatives.add")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+/** Admin > Affiliates: promo creatives per partner, plus 30-day impressions, clicks and CTR. */
+export function CreativesPanel({ partners }: { partners: Partner[] }) {
+  const { t } = useTranslation("admin");
+  const [tick, setTick] = useState(0);
+  const [open, setOpen] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const { data } = useAsync(async () => {
+    const [c, s] = await Promise.all([
+      adsDb.from("affiliate_creatives").select("*").order("created_at"),
+      adsDb.rpc("affiliate_ad_stats", { p_days: 30 }),
+    ]);
+    if (c.error) return { missing: true, creatives: [] as Creative[], stats: [] as AdStat[] };
+    return {
+      missing: false,
+      creatives: (c.data ?? []) as Creative[],
+      stats: (s.data ?? []) as AdStat[],
+    };
+  }, [tick]);
+  const refresh = () => setTick((n) => n + 1);
+  const name = (id: string) => partners.find((p) => p.id === id)?.name ?? "?";
+
+  const byPartner = useMemo(() => {
+    const out = new Map<string, { impressions: number; clicks: number }>();
+    for (const s of data?.stats ?? []) {
+      const v = out.get(s.partner_id) ?? { impressions: 0, clicks: 0 };
+      v.impressions += Number(s.impressions);
+      v.clicks += Number(s.clicks);
+      out.set(s.partner_id, v);
+    }
+    return out;
+  }, [data]);
+  const byCreative = (id: string) =>
+    (data?.stats ?? [])
+      .filter((s) => s.creative_id === id)
+      .reduce((a, s) => ({ i: a.i + Number(s.impressions), c: a.c + Number(s.clicks) }), {
+        i: 0,
+        c: 0,
+      });
+  const ctr = (c: number, i: number) => (i > 0 ? `${((c / i) * 100).toFixed(1)}%` : "–");
+
+  if (!data) return null;
+  if (data.missing) {
+    return (
+      <section className={panel}>
+        <h3 className="text-base">{t("affiliates.creatives.title")}</h3>
+        <p className="mt-2 text-sm text-amber-600">{t("affiliates.creatives.missing")}</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={panel}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-base">{t("affiliates.creatives.title")}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">{t("affiliates.creatives.body")}</p>
+        </div>
+        <Button size="sm" variant="outline" onClick={() => setAdding((v) => !v)}>
+          {t(adding ? "affiliates.cancel" : "affiliates.creatives.new")}
+        </Button>
+      </div>
+
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-left text-xs">
+          <thead className="text-muted-foreground">
+            <tr>
+              <th className="py-1 pr-3 font-medium">{t("affiliates.creatives.partner")}</th>
+              <th className="py-1 pr-3 font-medium">{t("affiliates.creatives.impressions")}</th>
+              <th className="py-1 pr-3 font-medium">{t("affiliates.creatives.clicks")}</th>
+              <th className="py-1 font-medium">CTR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {partners
+              .filter((p) => p.status === "live")
+              .map((p) => {
+                const s = byPartner.get(p.id) ?? { impressions: 0, clicks: 0 };
+                return (
+                  <tr key={p.id} className="border-t border-border tnum">
+                    <td className="py-1.5 pr-3 font-semibold">{p.name}</td>
+                    <td className="py-1.5 pr-3">{s.impressions}</td>
+                    <td className="py-1.5 pr-3">{s.clicks}</td>
+                    <td className="py-1.5">{ctr(s.clicks, s.impressions)}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          {t("affiliates.creatives.statsNote")}
+        </p>
+      </div>
+
+      {adding && (
+        <div className="mt-4 border-t border-border pt-4">
+          <CreativeForm
+            partners={partners}
+            onDone={() => {
+              setAdding(false);
+              refresh();
+            }}
+          />
+        </div>
+      )}
+
+      <ul className="mt-4 space-y-2">
+        {data.creatives.map((c) => {
+          const s = byCreative(c.id);
+          return (
+            <li key={c.id} className="border border-border p-3">
+              <button
+                type="button"
+                onClick={() => setOpen(open === c.id ? null : c.id)}
+                aria-expanded={open === c.id}
+                className="flex w-full flex-wrap items-center justify-between gap-2 text-left"
+              >
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold">{c.name}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {name(c.partner_id)} · {t(`affiliates.creatives.formats.${c.format}`)} ·{" "}
+                    {c.placements.length
+                      ? c.placements.join(", ")
+                      : t("affiliates.creatives.everywhere")}
+                  </span>
+                </span>
+                <span className="flex items-center gap-2 text-xs tnum">
+                  <span className="text-muted-foreground">
+                    {s.i} / {s.c} · {ctr(s.c, s.i)}
+                  </span>
+                  <span
+                    className={`border px-2 py-0.5 font-semibold ${c.active ? "border-primary text-primary" : "border-border"}`}
+                  >
+                    {t(c.active ? "affiliates.creatives.on" : "affiliates.creatives.off")}
+                  </span>
+                </span>
+              </button>
+              {open === c.id && (
+                <div className="mt-3 border-t border-border pt-3">
+                  <CreativeForm creative={c} partners={partners} onDone={refresh} />
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

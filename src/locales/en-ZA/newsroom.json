@@ -49,5 +49,8 @@
     "label": "Written with AI assistance, checked against the sources listed.",
     "sources": "Sources",
     "note": "Facts in this article come from the sources above and were checked automatically before publication. Spotted a mistake? Email support@puntr.co.za and we will correct it."
-  }
+  },
+  "showMore_one": "Show {{count}} more article",
+  "showMore_other": "Show {{count}} more articles",
+  "showing": "Showing {{shown}} of {{total}}"
 }

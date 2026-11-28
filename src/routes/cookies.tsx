@@ -142,6 +142,16 @@ function Cookies() {
               Browser session storage <code>puntr:claim:…</code>: stops the same one-off
               Founding-spot check from running twice in a visit.
             </li>
+            <li>
+              Browser session storage <code>puntr:affiliate-age-confirmed</code>: remembers for this
+              visit that you confirmed you are 18+, so sponsored partner offers can be shown.
+            </li>
+            <li>
+              Browser session storage <code>puntr:ads:overlay</code>: counts pages viewed in this
+              visit so a full-screen advertisement appears rarely (at most three times a visit, at
+              least three minutes apart) and never on sign-up, payment, help or legal pages. It is
+              cleared when you close the tab. Puntr Pro members see no advertisements.
+            </li>
           </ul>
         </section>
         <Separator />

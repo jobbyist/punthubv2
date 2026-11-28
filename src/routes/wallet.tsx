@@ -327,6 +327,7 @@ function ProPanel() {
           {t("pro.usage", { used: p.usage.month, cap: p.usage.cap })}
         </p>
       )}
+      {p.hasPro && <p className="mt-2 text-xs font-semibold text-primary">{t("pro.adFree")}</p>}
       <p className="mt-3 text-xs text-muted-foreground">{t("pro.terms")}</p>
     </section>
   );

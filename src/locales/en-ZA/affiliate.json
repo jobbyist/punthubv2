@@ -15,5 +15,20 @@
   },
   "disclosure": {
     "short": "Puntr may earn a commission if you register or transact through an affiliate link."
+  },
+  "ads": {
+    "sponsored": "Sponsored",
+    "advertisement": "Advertisement",
+    "goAdFree": "Go ad-free with Puntr Pro",
+    "agePrompt": "Partner offers are for adults. Confirm you are 18+ to see them.",
+    "defaultCta": "Sign up at {{name}}",
+    "defaultBody": "Visit {{name}} to open an account. Set a budget before you play.",
+    "defaultTerms": "18+ only. New customers. T&Cs apply.",
+    "aria": "Sponsored: {{name}}",
+    "overlayAria": "Advertisement: {{name}}",
+    "close": "Close advertisement",
+    "continue": "Continue to Puntr",
+    "closesIn_one": "Closes in {{count}} second",
+    "closesIn_other": "Closes in {{count}} seconds"
   }
 }
