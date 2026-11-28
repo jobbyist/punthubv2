@@ -785,7 +785,7 @@ async function gatherSources(
     candidates.push(hit);
     // History pages vary in quality (some extractors return a cookie wall or a standings-only page).
     // Read two bounded fallbacks, then keep only pages that visibly contain result evidence.
-    const candidateLimit = preferSearchResults ? Math.min(8, maxSources + 2) : maxSources;
+    const candidateLimit = preferSearchResults ? Math.min(8, maxSources + 2) : Math.min(8, maxSources + 1);
     if (candidates.length >= candidateLimit) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
