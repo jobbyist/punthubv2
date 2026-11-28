@@ -369,3 +369,11 @@ Monthly USD family budgets remain unchanged. The scheduled job records the resto
 - The watchdog is now active every five minutes, but provider calls respect the bounded 5m / 15m / 60m per-competition retry backoff. Result search phrasing now explicitly asks for full-time status and final-score evidence.
 - The 2-minute settlement endpoint independently ran both pick and duel settlement successfully; it correctly found zero terminal fixtures to settle in this cycle.
 - The external Guardian clockwatch and a community match thread report a 0–0 draw, but the primary PFIE source set did not yet provide the required terminal status. Puntr deliberately does not promote that score solely on the basis of a scoreline without the required final-status evidence.
+
+
+### Cron dispatch isolation
+
+- The 16:00 UTC production cycle showed that the standard all-competition results sync can consume the full 120-second HTTP timeout. This bulk archive job is not allowed to delay member-impacting settlement checks.
+- General results/archive ingestion now runs hourly at minute 37, off the crowded :00/:30 schedule, with a 60-second request timeout.
+- The settlement-priority results watchdog remains every five minutes with a 90-second request timeout; the pick/duel settlement worker remains every two minutes with a 15-second request timeout.
+- Added a timeout-aware `public.invoke_cron(text, integer)` overload. The original 120-second helper remains unchanged for unrelated jobs.
