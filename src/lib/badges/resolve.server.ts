@@ -13,6 +13,7 @@ import {
   badgeKey,
   badgePath,
   badgeSearchRequest,
+  isOfficialBadgeSource,
   isSofascoreImageHost,
   pickCrestImage,
   sofascoreCandidates,
@@ -282,20 +283,9 @@ async function tryOfficialPage(
   hits: { url: string; title?: string; excerpt?: string }[],
   apiKey: string,
 ): Promise<{ logoUrl: string; page: string; image: string } | null> {
-  const candidates = hits.filter((hit) => {
-    try {
-      const url = new URL(hit.url);
-      const host = url.hostname.toLowerCase();
-      const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
-      return url.protocol === "https:"
-        && !host.includes("wikipedia.org")
-        && !host.includes("sofascore.")
-        && !/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)
-        && /official|club|team|crest|badge|logo|squad/i.test(text);
-    } catch {
-      return false;
-    }
-  }).slice(0, 2);
+  const candidates = hits
+    .filter((hit) => isOfficialBadgeSource(hit, team.name, team.competition))
+    .slice(0, 2);
   if (candidates.length === 0) return null;
 
   const { createParallelExtract } = await import("@/lib/content/providers.server");
