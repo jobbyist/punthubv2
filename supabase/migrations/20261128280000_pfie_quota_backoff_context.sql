@@ -355,3 +355,29 @@ grant execute on function public.api_call_event_result(uuid, text, text, jsonb) 
 
 comment on table public.api_provider_backoff is
   'Cross-job provider/family/global cooldowns after hard quota or spend denials. Expired rows are ignored and overwritten on the next denial.';
+
+create or replace view public.api_call_usage_attribution_detail
+with (security_invoker = true)
+as
+select
+  id,
+  attempt_id,
+  provider,
+  feature,
+  consumer,
+  operation,
+  status,
+  reason_code,
+  competition,
+  job_run_id,
+  estimated_cost_usd,
+  claimed_at,
+  completed_at,
+  metadata
+from public.api_call_events
+where claimed_at >= now() - interval '30 days';
+
+grant select on public.api_call_usage_attribution_detail to service_role;
+
+comment on view public.api_call_usage_attribution_detail is
+  'Thirty-day API claim detail including competition/run context, final outcome, reason code and estimated cost.';
