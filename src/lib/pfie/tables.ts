@@ -153,7 +153,7 @@ export interface TablesDeps {
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
-const MAX_CHARS = 10_000;
+const MAX_CHARS = 24_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
@@ -771,7 +771,7 @@ async function syncSeasonWindow(
       raw = parseObservations(answer.text);
     }
     if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now() });
+    const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now(), knownTeams: known });
     const { rows, unverified } = verifyHistory(accepted, key, known);
     const inserted = rows.length
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
@@ -841,7 +841,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
     );
     const raw = parseObservations(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted } = validateObservations(raw, sources, { from, to, now: to });
+    const { accepted } = validateObservations(raw, sources, { from, to, now: to, knownTeams: known });
     const { rows, unverified } = verifyHistory(accepted, key, known);
     const inserted = rows.length
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
