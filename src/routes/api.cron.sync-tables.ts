@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
           const pfieStore = createPfieStore();
           const report = await runTablesSync(
             {
-              search: guardSearch(createParallelSearch(keys.parallelKey!), claim),
+              search: guardSearch(createParallelSearch(parallelKey), claim),
               // Every PFIE page read uses Parallel Extract; no Firecrawl fallback is permitted.
               extract: guardExtract(
                 createParallelExtract(
