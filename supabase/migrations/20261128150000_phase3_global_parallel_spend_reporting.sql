@@ -21,13 +21,18 @@ as $function$
     l.period_start,
     l.period_end,
     l.limit_usd,
-    round(coalesce(s.spent, 0), 4),
-    round(l.limit_usd - coalesce(s.spent, 0), 4)
+    round(s.spent, 4),
+    case when s.spent is null then null else round(l.limit_usd - s.spent, 4) end
   from public.api_spend_period_limits l
   left join lateral (
-    select sum(u.calls * p.usd_per_unit) as spent
+    select
+      case
+        -- Never publish a misleadingly low spend total if a used endpoint has no configured unit price.
+        when count(*) filter (where p.provider is null) > 0 then null
+        else coalesce(sum(u.calls * p.usd_per_unit), 0)
+      end as spent
     from public.content_api_usage u
-    join public.api_unit_prices p on p.provider = u.provider
+    left join public.api_unit_prices p on p.provider = u.provider
     where
       (
         case
@@ -35,6 +40,7 @@ as $function$
           else public.api_provider_family(u.provider) = l.family
         end
       )
+      and u.calls > 0
       and u.day between l.period_start and l.period_end
   ) s on true
   where public.is_admin() or coalesce(auth.role(), '') = 'service_role'
