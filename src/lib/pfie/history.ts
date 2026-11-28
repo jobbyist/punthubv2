@@ -85,13 +85,18 @@ export function dedupeCompletedMatches(
   matches: CompletedMatchEvidence[],
   knownTeams: readonly string[] = [],
 ): CompletedMatchEvidence[] {
+  const identity = (name: string): string | null => {
+    const resolved = knownTeams.length ? resolveTeam(name, knownTeams) : null;
+    if (resolved === "ambiguous") return null;
+    return normaliseTeam(resolved ?? name);
+  };
   const grouped = new Map<string, { row: CompletedMatchEvidence; score: string; conflict: boolean }>();
   for (const row of matches) {
-    const home = normaliseTeam(row.home);
-    const away = normaliseTeam(row.away);
-    if (!home || !away || home === away || !/^\\d{4}-\\d{2}-\\d{2}$/.test(row.matchDate)) continue;
-    const key = `${row.matchDate}|${home}|${away}`;
-    const score = `${row.homeScore}-${row.awayScore}`;
+    const home = identity(row.home);
+    const away = identity(row.away);
+    if (!home || !away || home === away || !/^\d{4}-\d{2}-\d{2}$/.test(row.matchDate)) continue;
+    const key = row.matchDate + "|" + home + "|" + away;
+    const score = String(row.homeScore) + "-" + String(row.awayScore);
     const existing = grouped.get(key);
     if (!existing) grouped.set(key, { row, score, conflict: false });
     else if (existing.score !== score) existing.conflict = true;
