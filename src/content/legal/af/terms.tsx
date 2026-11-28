@@ -109,7 +109,7 @@ export function TermsAf() {
               <li>Gratis stigterslidmaatskap vir die eerste 100 lede</li>
               <li>
                 'n Beperkte aanbod vir die Stigters-jaarpas: die eerste 20 stigterslede wat dit voor
-                30 November 2026 bespreek, kry 12 maande se Puntr Pro vir 'n eenmalige R299, vanaf 1
+                31 Desember 2026 bespreek, kry 12 maande se Puntr Pro vir 'n eenmalige R299, vanaf 1
                 Desember 2026, sonder outomatiese hernuwing. Bespreking is gratis op Puntr. Ons
                 e-pos 'n veilige PayFast-betaalskakel; betaling moet binne 48 uur voltooi word,
                 anders verval die bespreking en word die plek vrygestel. Die jaarpas word eers
