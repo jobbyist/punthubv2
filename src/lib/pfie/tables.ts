@@ -131,6 +131,28 @@ export function seasonQueries(
   ];
   const clubs = teams.slice(0, 4).join(" ");
   if (clubs) out.push(`${clubs} results ${months}`);
+
+  // UEFA and CAF competitions do not have double-round-robin season matrices.
+  // Their official matchday/result articles are the historical source of record.
+  const month = Number(start.slice(5, 7));
+  const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
+  const seasonLabel = `${seasonStart}/${String(seasonStart + 1).slice(-2)}`;
+  if (name === "UEFA Champions League") {
+    out.push(
+      "site:uefa.com/uefachampionsleague/news/ " + seasonLabel + " Champions League all results matchday scores " + months,
+      "site:uefa.com/uefachampionsleague/news/ Champions League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+    );
+  } else if (name === "UEFA Conference League") {
+    out.push(
+      "site:uefa.com/uefaconferenceleague/news/ " + seasonLabel + " Conference League all results matchday scores " + months,
+      "site:uefa.com/uefaconferenceleague/news/ Conference League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+    );
+  } else if (name === "CAF Confederation Cup") {
+    out.push(
+      "site:cafonline.com/caf-confederation-cup/news/ " + seasonLabel + " Confederation Cup results matchday scores " + months,
+      "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " + longDate(start) + " " + longDate(end),
+    );
+  }
   return out;
 }
 
