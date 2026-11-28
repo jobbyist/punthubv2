@@ -380,6 +380,34 @@ describe("validation", () => {
       "team_name_not_on_page",
     );
   });
+  it("accepts Sky Sports score cells rendered as separate team and score tokens", () => {
+    const source: PfieSource = {
+      index: 1,
+      url: "https://www.skysports.com/serie-a-scores-fixtures",
+      domain: "skysports.com",
+      tier: "trusted",
+      text: "Scores & Fixtures Saturday 21st November Como, 1. Venezia, 0. Full time View fixture Como Como 1 Venezia Venezia 0 FT FT.",
+    };
+    const observation = raw({
+      source: 1,
+      home: "Como",
+      away: "Venezia",
+      date: "2026-11-21",
+      time: null,
+      status: "finished",
+      homeScore: 1,
+      awayScore: 0,
+      quote: "Como 1 Venezia 0 Full time",
+    });
+    const result = validateObservations([observation], [source], {
+      from: new Date("2026-11-12T00:00:00Z"),
+      to: new Date("2026-11-27T00:00:00Z"),
+      now: new Date("2026-11-28T12:00:00Z"),
+    });
+    expect(result.rejected).toEqual([]);
+    expect(result.accepted).toHaveLength(1);
+  });
+
   it("rejects a score that is not in the quote", () => {
     const bad = raw({
       home: "Mamelodi Sundowns",
