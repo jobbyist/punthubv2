@@ -9,24 +9,42 @@ export const Route = createFileRoute("/api/cron/settle")({
         const denied = checkCronAuth(request);
         if (denied) return denied;
 
-        const { runSettlement } = await import("@/lib/settle.server");
-        const { createSettlementStore } = await import("@/lib/settlement-store.server");
+        const startedAt = Date.now();
+        const errors: string[] = [];
+        let picks: Record<string, unknown> = { ok: false, error: "not_run" };
+        let duels: Record<string, unknown> = { ok: false, error: "not_run" };
+
+        // Run both settlement paths independently. A pick-ledger failure must never prevent a duel
+        // from settling, and a duel failure must never hold up ordinary predictions.
         try {
-          const report = await runSettlement(createSettlementStore());
-          console.info("settle", JSON.stringify(report));
-          // Duels settle on the same schedule, after picks, from the same final scores.
+          const { runSettlement } = await import("@/lib/settle.server");
+          const { createSettlementStore } = await import("@/lib/settlement-store.server");
+          picks = await runSettlement(createSettlementStore());
+        } catch (error) {
+          errors.push("picks");
+          console.error("pick settlement failed", error);
+          picks = { ok: false, error: error instanceof Error ? error.message : "unknown_error" };
+        }
+
+        try {
           const { runDuelSettlement } = await import("@/lib/duels");
           const { createDuelSettleStore } = await import("@/lib/duels-store.server");
-          const duels = await runDuelSettlement(createDuelSettleStore()).catch((error: unknown) => {
-            console.error("duel settle failed", error);
-            return { error: "duel_settle_failed" };
-          });
-          console.info("settle-duels", JSON.stringify(duels));
-          return Response.json({ ...report, duels });
+          duels = await runDuelSettlement(createDuelSettleStore());
         } catch (error) {
-          console.error("settle failed", error);
-          return Response.json({ ok: false, error: "settle_failed" }, { status: 500 });
+          errors.push("duels");
+          console.error("duel settlement failed", error);
+          duels = { ok: false, error: error instanceof Error ? error.message : "unknown_error" };
         }
+
+        const report = {
+          ok: errors.length === 0,
+          picks,
+          duels,
+          durationMs: Date.now() - startedAt,
+          errors,
+        };
+        console.info("settlement-cycle", JSON.stringify(report));
+        return Response.json(report, { status: errors.length ? 500 : 200 });
       },
     },
   },
