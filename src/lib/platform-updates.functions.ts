@@ -93,11 +93,23 @@ export const adminSyncPlatformUpdates = createServerFn({ method: "POST" })
     if (!db) return FORBIDDEN;
     const rows: { pr_number: number; title: string; summary: string; merged_at: string; url: string }[] = [];
     for (let page = 1; page <= 10; page++) {
+      const githubHeaders: Record<string, string> = {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      };
+      const githubToken = process.env.GITHUB_TOKEN?.trim();
+      if (githubToken) githubHeaders.Authorization = `Bearer ${githubToken}`;
       const response = await fetch(`https://api.github.com/repos/jobbyist/punthubv2/pulls?state=closed&per_page=100&sort=created&direction=asc&page=${page}`, {
-        headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+        headers: githubHeaders,
         signal: AbortSignal.timeout(20_000),
       });
-      if (!response.ok) return { ok: false, message: `GitHub history sync failed (HTTP ${response.status}). Try again later.` };
+      if (!response.ok) {
+        const remaining = response.headers.get("x-ratelimit-remaining");
+        const suffix = response.status === 403 || response.status === 429
+          ? ` GitHub rate limit remaining: ${remaining ?? "unknown"}. Configure GITHUB_TOKEN in Vercel for a higher authenticated limit.`
+          : "";
+        return { ok: false, message: `GitHub history sync failed (HTTP ${response.status}).${suffix}` };
+      }
       const batch = await response.json() as {
         number: number; title: string; body: string | null; merged_at: string | null; html_url: string;
       }[];
@@ -149,8 +161,9 @@ export const adminSavePlatformTask = createServerFn({ method: "POST" })
     if (data.description.length > 5000) return { ok: false, message: "Description must be 5,000 characters or fewer." };
     if (!["planned", "in_progress", "blocked", "completed", "cancelled"].includes(data.status)) return { ok: false, message: "Invalid status." };
     if (!["low", "medium", "high", "critical"].includes(data.priority)) return { ok: false, message: "Invalid priority." };
-    const progress = Math.max(0, Math.min(100, Math.round(Number(data.progress))));
-    if (!Number.isFinite(progress)) return { ok: false, message: "Progress must be between 0 and 100." };
+    const rawProgress = Number(data.progress);
+    if (!Number.isFinite(rawProgress)) return { ok: false, message: "Progress must be a number between 0 and 100." };
+    const progress = Math.max(0, Math.min(100, Math.round(rawProgress)));
     const dueDate = data.dueDate.trim();
     if (dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) return { ok: false, message: "Use a valid target date." };
     const row = {
