@@ -127,8 +127,9 @@ export async function syncResults(
       skipped: [{ key: "csv", reason: "open fixtures are not from a provider competition" }],
     };
 
-  // One provider call per competition. Rotate bounded batches every 30-minute cron slot so a large
-  // backlog cannot permanently starve older unresolved fixtures. Keep provider ownership isolated.
+  // One provider call per competition. Rotate standard batches every 30-minute cron slot and priority
+  // settlement batches every five-minute slot so a backlog cannot permanently starve older candidates.
+  // Keep provider ownership isolated.
   const fixtures: NormalisedFixture[] = [];
   const skipped: { key: string; reason: string }[] = [];
   let calls = 0;
