@@ -7,7 +7,7 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 import { corroborate } from "./corroborate";
 import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
-import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
+import { createPfieProvider, PFIE_SOURCES, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
@@ -639,6 +639,17 @@ const llm = (text: string | Error): LlmProvider & { models: string[] } => {
 const ANSWER = JSON.stringify({ matches: RAW });
 
 describe("provider", () => {
+  it("uses official UEFA, Saudi Pro League and EFL result pages", () => {
+    expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
+      "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
+    );
+    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toContain(
+      "https://www.spl.com.sa/en/fixtures-results",
+    );
+    expect(PFIE_SOURCES.championship?.pages?.results).toContain(
+      "https://www.efl.com/competitions/efl-championship/",
+    );
+  });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
 
   it("returns verified fixtures in the shape the existing sync expects, using the configured primary model first", async () => {
