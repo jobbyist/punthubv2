@@ -15,6 +15,12 @@ export async function createOddsStore(): Promise<OddsStore> {
         .eq("licence_status", "verified")
         .eq("data_rights_status", "approved")
         .eq("automated_access_allowed", true)
+        .eq("collection_approved", true)
+        .eq("storage_approved", true)
+        .eq("display_approved", true)
+        .eq("attribution_approved", true)
+        .eq("retention_approved", true)
+        .eq("redistribution_approved", true)
         .order("affiliate_priority", { ascending: true })
         .order("bookmaker_name", { ascending: true });
       if (error) throw new Error(`bookmaker_odds_permissions: ${error.message}`);

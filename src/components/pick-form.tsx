@@ -309,22 +309,28 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
               className="tnum"
             />
             <p className="text-xs text-muted-foreground">{t("form.oddsHint")}</p>
-            {reference ? (
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-                <span>
-                  {t("form.reference", {
-                    price: formatOdds(reference.price),
-                    time: formatTime(reference.capturedAt),
-                  })}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setOdds(formatOdds(reference.price))}
-                  className="font-semibold text-primary underline-offset-2 hover:underline"
-                >
-                  {t("form.useReference")}
-                </button>
-              </p>
+            {selection ? (
+              reference ? (
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                  <span>
+                    {t("form.reference", {
+                      price: formatOdds(reference.price),
+                      time: formatTime(reference.capturedAt),
+                    })}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setOdds(formatOdds(reference.price))}
+                    className="font-semibold text-primary underline-offset-2 hover:underline"
+                  >
+                    {t("form.useReference")}
+                  </button>
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground" role="status">
+                  {t("form.noReference")}
+                </p>
+              )
             ) : null}
             {reference && unverified ? (
               <p className="text-xs font-medium text-destructive" role="status">

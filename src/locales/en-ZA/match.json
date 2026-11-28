@@ -32,6 +32,7 @@
     "odds": "Odds you got",
     "oddsHint": "From 1.01 to 50, for example 2.10.",
     "reference": "Market reference {{price}}, as at {{time}}",
+    "noReference": "No verified bookmaker reference is available for this selection. Your odds entry is member-submitted.",
     "useReference": "Use this price",
     "oddsUnverifiedWarning": "That is more than 25% above the market reference. Your pick keeps the odds you enter but is marked \"odds unverified\", and rankings use {{price}}.",
     "confidence": "Confidence",
