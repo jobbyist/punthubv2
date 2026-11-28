@@ -69,7 +69,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
           </div>
         </div>
         <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-          Affiliate links
+          {t("placement.badge")}
         </span>
       </div>
 
@@ -81,7 +81,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
             onClick={confirmAge}
             className="rounded-md bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90"
           >
-            I confirm I am 18+
+            {t("placement.confirm")}
           </button>
         </div>
       ) : (
