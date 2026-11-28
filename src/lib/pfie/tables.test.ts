@@ -12,6 +12,7 @@ import {
   rankSyncSourceCandidates,
   shouldIncludeSecondaryStandingsSources,
   hasStandingsTableEvidence,
+  cleanStandingsMarkdown,
   MAX_STANDINGS_SOURCE_LIMIT,
   seasonQueries,
 } from "./tables";
@@ -19,6 +20,20 @@ import { parseStandingsMarkdown, validateTables, STANDINGS_COMPETITIONS } from "
 import type { PfieSource } from "./types";
 
 describe("PFIE deterministic standings extraction", () => {
+  it("preserves Markdown table separators and links for deterministic parsing", () => {
+    const markdown = [
+      "# PSL log table",
+      "| # | Club | MP | W | D | L | GF | GA | GD | Pts |",
+      "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+      "| 1 | [Orlando Pirates](https://example.com/pirates) | 10 | 9 | 1 | 0 | 23 | 2 | +21 | 28 |",
+    ].join("\\n");
+    const cleaned = cleanStandingsMarkdown(markdown);
+    expect(cleaned).toContain("| # | Club | MP | W | D | L | GF | GA | GD | Pts |");
+    expect(cleaned).toContain("Orlando Pirates");
+    expect(cleaned).not.toContain("https://");
+    expect(parseStandingsMarkdown(cleaned, 1)).toHaveLength(1);
+  });
+
   it("parses plain-text full tables and preserves a verified points deduction", () => {
     const text = [
       "Championship 2026/27 Overall Table",
