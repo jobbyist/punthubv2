@@ -271,3 +271,17 @@ describe("history source candidate ordering", () => {
     expect(rankSyncSourceCandidates(false, [], hits, configured, ["premierleague.com"])[0]).toEqual(configured[0]);
   });
 });
+
+describe("history result evidence precision", () => {
+  it("accepts named scorelines and full-time result pages", () => {
+    expect(hasHistoryResultEvidence("Middlesbrough 2-1 Stoke City")).toBe(true);
+    expect(hasHistoryResultEvidence("Scores & Fixtures Nottingham Forest 3 8:00pm 2 Chelsea Full time")).toBe(true);
+    expect(hasHistoryResultEvidence("Match Result Nottingham Forest 3 - 2 Chelsea FT")).toBe(true);
+  });
+  it("does not mistake standings goal difference and points for match scores", () => {
+    expect(
+      hasHistoryResultEvidence("Team P GD PTS 14 Wrexham 17 -1 22 15 Charlton Athletic 18 -7 21 Full Table Championship League One"),
+    ).toBe(false);
+    expect(hasHistoryResultEvidence("Premier League 2026/27 Table Pos Team Pl W D L GF GA GD Pts Form Next")).toBe(false);
+  });
+});

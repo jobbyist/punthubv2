@@ -200,10 +200,12 @@ const SEASON_GIVE_UP = 6;
 /** Detect whether an extracted page contains final-score evidence worth one bounded history retry. */
 export function hasHistoryResultEvidence(text: string): boolean {
   const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
-  return (
-    /\b(?:FT|full[- ]?time|final|finished)\b/i.test(clean) ||
-    /\b\d{1,2}\s*[–-]\s*\d{1,2}\b/.test(clean)
-  );
+  const namedScoreline =
+    /\b[\p{L}][\p{L}\p{M}.'’ -]{1,40}\s+\d{1,2}\s*[-–:]\s*\d{1,2}\s+[\p{L}][\p{L}\p{M}.'’ -]{1,40}\b/u.test(clean);
+  const finalMarker = /\b(?:FT|full\s*time|final|finished)\b/i.test(clean);
+  const resultsContext = /\b(?:results?|scores?|fixtures|scoreboard|match result)\b/i.test(clean);
+  // Do not mistake goal difference / points columns (e.g. "Wrexham 17 -1 22") for match scores.
+  return namedScoreline || (finalMarker && resultsContext);
 }
 
 function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown>[] {
