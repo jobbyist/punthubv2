@@ -400,7 +400,7 @@ describe("validation", () => {
     expect(parseObservations("here are the fixtures")).toBeNull();
     expect(parseObservations('{"matches":[{"home":"A"}]}')).toBeNull();
     const valid = JSON.stringify({ matches: [raw({})] });
-    expect(parseObservations(```json\n${valid}\n```)).toHaveLength(1);
+    expect(parseObservations("```json\\n" + valid + "\\n```")).toHaveLength(1);
     expect(parseObservations(`Here is the result:\n${valid}\nDone.`)).toHaveLength(1);
   });
 });
