@@ -45,4 +45,22 @@ describe("canonical completed match reconciliation", () => {
   it("uses canonical keys when deciding whether a team needs a backfill", () => {
     expect(needsBackfill(new Map([["queens park rangers", 8], ["millwall", 8]]), ["QPR", "Millwall"])).toBe(false);
   });
+  it("deduplicates Deportivo A Coruna and Racing Strasbourg publisher variants", () => {
+    const laLigaRoster = ["Dépor", "Elche CF"];
+    const laLigaRows = [
+      { matchDate: "2026-08-17", home: "Dépor", away: "ELC Elche CF", homeScore: 1, awayScore: 1 },
+      { matchDate: "2026-08-17", home: "Deportivo A Coruña", away: "ELC Elche CF", homeScore: 1, awayScore: 1 },
+    ];
+    expect(dedupeCompletedMatches(laLigaRows, laLigaRoster)).toHaveLength(1);
+    expect(completedMatchCounts(laLigaRows, laLigaRoster).get("deportivo la coruna")).toBe(1);
+
+    const ligue1Roster = ["Olympique Marseille", "Strasbourg"];
+    const ligue1Rows = [
+      { matchDate: "2026-08-21", home: "Olympique Marseille", away: "Racing Strasbourg", homeScore: 4, awayScore: 0 },
+      { matchDate: "2026-08-21", home: "Olympique Marseille", away: "Strasbourg", homeScore: 4, awayScore: 0 },
+    ];
+    expect(dedupeCompletedMatches(ligue1Rows, ligue1Roster)).toHaveLength(1);
+    expect(completedMatchCounts(ligue1Rows, ligue1Roster).get("strasbourg")).toBe(1);
+  });
+
 });
