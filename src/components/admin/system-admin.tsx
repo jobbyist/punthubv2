@@ -40,6 +40,9 @@ export function SystemTab() {
   if (health.loading) return <div className="h-40 animate-pulse rounded-lg bg-muted" aria-hidden />;
   if (health.failed || !h) return <p className="text-sm text-destructive">{t("system.error")}</p>;
   const lastPfie = h.pfie[0];
+  const legacyCalls = h.attribution
+    .filter((row) => row.consumer === "legacy-unattributed")
+    .reduce((total, row) => total + row.calls, 0);
 
   return (
     <div className="space-y-5">
@@ -124,6 +127,51 @@ export function SystemTab() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section className={panel}>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-lg font-bold">{t("system.attribution")}</h2>
+          <span className="text-xs text-muted-foreground">{t("system.attributionWindow")}</span>
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">{t("system.attributionBody")}</p>
+        {legacyCalls > 0 ? (
+          <p className="mt-2 text-xs text-destructive">
+            {t("system.attributionLegacy", { count: legacyCalls })}
+          </p>
+        ) : null}
+        {h.attribution.length === 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">{t("system.attributionEmpty")}</p>
+        ) : (
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[48rem] text-sm">
+              <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="py-2 pr-3">{t("system.attributionColumns.consumer")}</th>
+                  <th className="py-2 pr-3">{t("system.attributionColumns.feature")}</th>
+                  <th className="py-2 pr-3">{t("system.attributionColumns.provider")}</th>
+                  <th className="py-2 pr-3 text-right">{t("system.attributionColumns.calls")}</th>
+                  <th className="py-2 pr-3 text-right">{t("system.attributionColumns.cost")}</th>
+                  <th className="py-2">{t("system.attributionColumns.lastCall")}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {h.attribution.map((row) => (
+                  <tr key={`${row.consumer}:${row.feature}:${row.provider}`}>
+                    <td className={`py-2 pr-3 font-medium ${row.consumer === "legacy-unattributed" ? "text-destructive" : ""}`}>
+                      {row.consumer}
+                    </td>
+                    <td className="py-2 pr-3 font-mono text-xs">{row.feature}</td>
+                    <td className="py-2 pr-3 font-mono text-xs">{row.provider}</td>
+                    <td className="py-2 pr-3 text-right tnum">{row.calls}</td>
+                    <td className="py-2 pr-3 text-right tnum">${row.estimatedUsd.toFixed(4)}</td>
+                    <td className="py-2 text-xs text-muted-foreground">{formatDateTime(row.lastCall)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <Settings settings={h.settings} onSaved={refresh} />
