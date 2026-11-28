@@ -325,7 +325,7 @@ export function CommunityDiscussions() {
       ) : (
         <div className="card-surface mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
           <p className="text-sm text-muted-foreground">Sign in with a verified Puntr account to start a discussion or reply.</p>
-          <Button asChild size="sm" variant="outline"><Link to="/login">Sign in</Link></Button>
+          <Button asChild size="sm" variant="outline"><Link to="/join" search={{ mode: "signin", next: "/community" }}>Sign in</Link></Button>
         </div>
       )}
 
