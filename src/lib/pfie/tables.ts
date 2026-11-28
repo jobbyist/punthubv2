@@ -202,10 +202,11 @@ const SEASON_GIVE_UP = 6;
 /** Keep both ends of long history pages so recent results are not lost to front truncation. */
 export function cleanHistoryText(text: string, maxChars = MAX_CHARS): string {
   if (text.length <= maxChars) return cleanText(text, maxChars);
-  const segmentSize = Math.floor((maxChars - 32) / 2);
+  const marker = "\n[... middle of source page omitted ...]\n";
+  const segmentSize = Math.floor((maxChars - marker.length) / 2);
   const head = cleanText(text, maxChars * 2).slice(0, segmentSize);
   const tail = cleanText(text.slice(-maxChars * 2), maxChars * 2).slice(-segmentSize);
-  return head + "\n[... middle of source page omitted ...]\n" + tail;
+  return head + marker + tail;
 }
 
 export function hasHistoryResultEvidence(text: string): boolean {
