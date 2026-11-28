@@ -15,7 +15,7 @@ export async function createSportsProvider(
     const { createCacheStore } = await import("@/lib/parallel/cache.server");
     const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
       await import("@/lib/quota.server");
-    let usageContext: { competition?: string; jobRunId?: string } = {};
+    let usageContext: { competition?: string; jobRunId?: string; feature?: string } = {};
     const claim = await createQuotaClaim("pfie:fixtures-results", () => usageContext);
     const cache = await createCacheStore().catch((error: unknown) => {
       console.warn("pfie: Parallel cache unavailable; using in-process request deduplication only", error);
