@@ -58,7 +58,8 @@
     "synthetic": "Synthetic QA",
     "pfieLearning": "PFIE Learning",
     "bookmakers": "Bookmakers",
-    "apiUsage": "API Usage"
+    "apiUsage": "API Usage",
+    "platformUpdates": "Platform Updates"
   },
   "settle": {
     "title": "Settlement",
