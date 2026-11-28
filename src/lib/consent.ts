@@ -25,6 +25,15 @@ export const CONSENT_COOKIE = "puntr_consent";
 export const CONSENT_NOTICE_VERSION = "2026-11-27-pfie-learning";
 export const CONSENT_CHANGED_EVENT = "puntr:consent-changed";
 export const CONSENT_OPEN_EVENT = "puntr:open-consent";
+/** Fired by the consent banner whenever it shows or hides (detail: { open: boolean }). */
+export const CONSENT_BANNER_EVENT = "puntr:consent-banner";
+/** Set on <html> while the consent banner is on screen, so late-mounting overlays can check it. */
+export const CONSENT_BANNER_ATTR = "data-consent-banner";
+
+/** True when this browser already holds a choice made under the current notice. */
+export function hasCurrentConsent(): boolean {
+  return readConsent()?.noticeVersion === CONSENT_NOTICE_VERSION;
+}
 
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 
@@ -64,7 +73,8 @@ export function hasConsent(purpose: ConsentPurpose): boolean {
 }
 
 export function writeConsent(
-  choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> & Partial<Pick<ConsentState, "pfie_learning">>,
+  choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> &
+    Partial<Pick<ConsentState, "pfie_learning">>,
   source: "banner" | "account" = "banner",
   syncToAccount = true,
 ): ConsentState {
@@ -116,7 +126,6 @@ export async function syncConsentToAccount(
   }
 }
 
-
 /** On sign-in, persist a previously made browser choice only for purposes with no account record yet. */
 export async function syncMissingConsentToAccount(state: ConsentState): Promise<void> {
   try {
@@ -124,8 +133,11 @@ export async function syncMissingConsentToAccount(state: ConsentState): Promise<
     const { data } = await supabase.auth.getSession();
     if (!data.session) return;
     const purposes: ConsentPurpose[] = ["analytics", "affiliate_tracking", "pfie_learning"];
-    const { data: existing, error } = await supabase.from("current_consents")
-      .select("purpose").eq("user_id", data.session.user.id).in("purpose", purposes);
+    const { data: existing, error } = await supabase
+      .from("current_consents")
+      .select("purpose")
+      .eq("user_id", data.session.user.id)
+      .in("purpose", purposes);
     if (error) return;
     const recorded = new Set((existing ?? []).map((row) => row.purpose));
     for (const purpose of purposes) {

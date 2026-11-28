@@ -193,6 +193,12 @@
       "notNow": "Nie nou nie",
       "error": "Kon nie kennisgewings aktiveer nie.",
       "enabling": "Aktiveer…"
-    }
+    },
+    "notch": "Kry die app",
+    "notchLabel": "Kry die Puntr-app",
+    "perksLabel": "Hoekom installeer",
+    "perkFullScreen": "Maak volskerm oop",
+    "perkFaster": "Laai vinniger",
+    "perkAlerts": "Wedstryddag-kennisgewings"
   }
 }

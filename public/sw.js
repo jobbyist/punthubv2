@@ -1,6 +1,6 @@
 /* Puntr service worker. Cache static assets only; never cache private or live data. */
 const CACHE_PREFIX = "puntr-pwa";
-const BUILD_VERSION = "__PUNTR_BUILD_VERSION__";
+const BUILD_VERSION = "local";
 const CACHE_VERSION = BUILD_VERSION;
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
