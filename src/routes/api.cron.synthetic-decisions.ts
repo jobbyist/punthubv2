@@ -90,6 +90,8 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
           const style = typeof persona["research_style"] === "string" ? persona["research_style"] : "recent form";
           personaMarkets.set(row.persona_key, markets);
           for (const market of markets) {
+            const criteria = MARKET_OPTIONS[market];
+            if (!criteria) continue;
             const questionKey = `${row.persona_key}__${market}`;
             questions[questionKey] = {
               type: "choice",
@@ -101,7 +103,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions")({
                 "Choose no_pick if the fixture has started, finished, been postponed, evidence is insufficient, or sources materially disagree.",
                 "This is an informational forecast for QA and accuracy evaluation, not advice to place a bet.",
               ].join(" "),
-              criteria: MARKET_OPTIONS[market],
+              criteria,
             };
           }
         }
