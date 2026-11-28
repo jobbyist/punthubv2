@@ -16,7 +16,7 @@ describe("createModelRouter quota stop policy", () => {
   it("stops the PFIE chain on a hard quota denial instead of trying another model", async () => {
     const provider: LlmProvider = {
       name: "parallel-responses",
-      generate: vi.fn(async (model) => {
+      generate: vi.fn(async (model: string) => {
         if (model === "parallel-low") {
           throw new ProviderError("parallel-chat:low", "quota", 429, "daily cap reached", "provider_daily_call_cap_exhausted");
         }
