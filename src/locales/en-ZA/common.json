@@ -194,5 +194,7 @@
       "error": "Couldn't enable notifications.",
       "enabling": "Enabling…"
     }
-  }
+  },
+  "proBadge": "PRO",
+  "aiParticipant": "AI participant"
 }
