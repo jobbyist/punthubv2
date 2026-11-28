@@ -949,31 +949,7 @@ export function validateTables(
 }
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
-export function independentSourceKey(domain: string): string {
-  const value = domain.toLowerCase().replace(/^www\./, "");
-  const publisherRoots: Array<[string, string[]]> = [
-    ["bbc", ["bbc.com", "bbc.co.uk"]],
-    ["efl", ["efl.com"]],
-    ["dfb", ["dfb.de"]],
-    ["bundesliga", ["bundesliga.com"]],
-    ["espn", ["espn.com", "espn.co.uk"]],
-    ["sky-sports", ["skysports.com"]],
-    ["supersport", ["supersport.com"]],
-    ["goal", ["goal.com"]],
-    ["uefa", ["uefa.com"]],
-    ["fifa", ["fifa.com"]],
-    ["premier-league", ["premierleague.com"]],
-    ["soccerway", ["soccerway.com"]],
-    ["transfermarkt", ["transfermarkt.com"]],
-    ["worldfootball", ["worldfootball.net"]],
-    ["tactix", ["tactix.football"]],
-    ["football-edge-lab", ["footballedgelab.com"]],
-  ];
-  for (const [publisher, roots] of publisherRoots) {
-    if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;
-  }
-  return value;
-}
+export { publisherKey as independentSourceKey } from "./publisher-identity";
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
 export function tableRegression(
