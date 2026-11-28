@@ -636,7 +636,9 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       `${c.name} league table after latest matchday ${today}`,
       ...cfg.queries,
     ].slice(0, 5);
-    sources = await gatherSources(deps, key, objective, queries);
+    // Standings must consider independent full-table publishers when the official page is incomplete or stale.
+    // The existing validation still enforces official authority or multi-source consensus before persistence.
+    sources = await gatherSources(deps, key, objective, queries, false, [], true);
     primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
