@@ -705,6 +705,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       allowVerifiedGoalCorrections,
       cfg.allowVerifiedPlayedCorrections,
       cfg.allowTeamCountIncrease,
+      cfg.allowVerifiedRecordCorrections,
     );
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
