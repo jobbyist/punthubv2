@@ -233,7 +233,7 @@ export function PlanStep({ onNext }: { onNext: () => void }) {
                   count: selected.credits,
                   price: money(selected.price),
                 })
-              : tp("pro.cta")}
+              : t("join.plan.payg.soon")}
         </Button>
       </section>
 

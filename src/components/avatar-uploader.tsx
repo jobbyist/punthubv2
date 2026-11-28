@@ -49,7 +49,7 @@ export function AvatarUploader() {
     try {
       await chooseSportsAvatar(profile.id, key, current);
       await refreshProfile();
-      setNote({ text: "Sports avatar saved.", error: false });
+      setNote({ text: t("avatar.sportsSaved"), error: false });
     } catch (err) {
       console.error("sports avatar selection failed", err);
       setNote({ text: t("avatar.failed"), error: true });

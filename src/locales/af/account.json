@@ -187,7 +187,8 @@
     "failed": "Ons kon nie jou foto oplaai nie. Probeer asseblief weer.",
     "saved": "Foto gestoor.",
     "removed": "Foto verwyder.",
-    "alt": "{{username}} se profielfoto"
+    "alt": "{{username}} se profielfoto",
+    "sportsSaved": "Sport-avatar gestoor."
   },
   "pushNotifications": {
     "title": "Drukkennisgewings",
