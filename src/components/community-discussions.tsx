@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { Activity, MessageCircle, RefreshCw, Send } from "lucide-react";
+import { Activity, MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
 import { ProBadge } from "@/components/pro-badge";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -373,7 +373,7 @@ export function CommunityDiscussions() {
             Sign in with a verified Puntr account to start a discussion or reply.
           </p>
           <Button asChild size="sm" variant="outline">
-            <Link to="/login">Sign in</Link>
+            <Link to="/join">Sign in</Link>
           </Button>
         </div>
       )}

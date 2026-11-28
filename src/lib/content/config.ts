@@ -78,7 +78,7 @@ export function parseDailyCaps(raw: string | undefined): Record<string, number> 
 }
 
 export function readContentEnv(env: Env = process.env): ContentEnv {
-  const { models, refused } = parseModelList();
+  const { models, refused } = parseModelList(undefined);
   const budget = Number(env["CONTENT_RUN_BUDGET_MS"]);
   return {
     geminiKey: clean(env["GEMINI_API_KEY"]),

@@ -59,7 +59,7 @@ export async function sendViaResend(
   if (!process.env["RESEND_API_KEY"])
     return { ok: false as const, status: 0, body: "EMAIL_NOT_CONFIGURED" };
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim())("resend"))) {
+  if (!(await (await createQuotaClaim("email:resend-send"))("resend"))) {
     console.warn("resend: Puntr's daily or monthly email cap is reached; nothing sent");
     return { ok: false as const, status: 429, body: EMAIL_QUOTA_REACHED };
   }
@@ -89,7 +89,7 @@ export async function sendAuthViaResend(payload: Record<string, unknown>) {
   try {
     const { createQuotaClaim } = await import("@/lib/quota.server");
     await (
-      await createQuotaClaim()
+      await createQuotaClaim("email:resend-send")
     )("resend");
   } catch (error) {
     console.warn("resend: quota claim for an auth email failed; sending anyway", error);

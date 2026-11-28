@@ -38,8 +38,12 @@ describe("PFIE historical season windows", () => {
     const uecl = seasonQueries("UEFA Conference League", "2026-10-01", "2026-10-07");
     const caf = seasonQueries("CAF Confederation Cup", "2026-10-16", "2026-10-22");
 
-    expect(ucl.some((query) => query.includes("bbc.com/sport/football/champions-league"))).toBe(true);
-    expect(uecl.some((query) => query.includes("bbc.com/sport/football/europa-conference-league"))).toBe(true);
+    expect(ucl.some((query) => query.includes("bbc.com/sport/football/champions-league"))).toBe(
+      true,
+    );
+    expect(
+      uecl.some((query) => query.includes("bbc.com/sport/football/europa-conference-league")),
+    ).toBe(true);
     expect(uecl.some((query) => query.includes("espn.com/soccer/scoreboard"))).toBe(true);
     expect(caf.some((query) => query.includes("vavel.com"))).toBe(true);
     expect(caf.some((query) => query.includes("foot-africa.com"))).toBe(true);

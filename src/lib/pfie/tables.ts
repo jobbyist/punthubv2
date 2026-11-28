@@ -206,7 +206,7 @@ export function isConfirmedNoMatchesInWindow(result: {
     result.parsedSources > 0 &&
     result.parseFailures === 0 &&
     result.extracted > 0 &&
-    result.reasons.outside_date_range === result.extracted &&
+    result.reasons["outside_date_range"] === result.extracted &&
     Object.keys(result.reasons).every((reason) => reason === "outside_date_range")
   );
 }
@@ -663,8 +663,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             competition: c.name,
             season,
             sources: [source],
-            groups: cfg.groups,
-            groupNotes: cfg.groupNotes,
+            ...(cfg.groups ? { groups: cfg.groups } : {}),
+            ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
           }),
         );
         modelsUsed.add(answer.model);
@@ -714,8 +714,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             season,
             sources: [result.source],
             retryHint: hint,
-            groups: cfg.groups,
-            groupNotes: cfg.groupNotes,
+            ...(cfg.groups ? { groups: cfg.groups } : {}),
+            ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
           }),
           retryModels,
         );
@@ -806,8 +806,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                   season,
                   sources: [source],
                   retryHint: hint,
-                  groups: cfg.groups,
-                  groupNotes: cfg.groupNotes,
+                  ...(cfg.groups ? { groups: cfg.groups } : {}),
+                  ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
                 }),
               );
               modelsUsed.add(answer.model);
@@ -909,8 +909,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 competition: c.name,
                 season,
                 sources: [source],
-                groups: cfg.groups,
-                groupNotes: cfg.groupNotes,
+                ...(cfg.groups ? { groups: cfg.groups } : {}),
+                ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
               }),
             );
             modelsUsed.add(answer.model);
@@ -959,8 +959,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 season,
                 sources: [result.source],
                 retryHint: hint,
-                groups: cfg.groups,
-                groupNotes: cfg.groupNotes,
+                ...(cfg.groups ? { groups: cfg.groups } : {}),
+                ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
               }),
             );
             modelsUsed.add(answer.model);
@@ -1336,7 +1336,7 @@ async function syncSeasonWindow(
     let result = await extractAndVerify(sources);
     const onlyOutOfWindow = (value: typeof result) =>
       value.extracted > 0 &&
-      value.reasons.outside_date_range === value.extracted &&
+      value.reasons["outside_date_range"] === value.extracted &&
       Object.keys(value.reasons).every((reason) => reason === "outside_date_range");
     if (
       result.rows.length === 0 &&

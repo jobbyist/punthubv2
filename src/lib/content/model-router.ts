@@ -15,7 +15,13 @@ import type { LlmProvider, LlmRequest, LlmResult } from "./types";
 
 export interface ModelAttempt {
   model: string;
-  outcome: "ok" | "skipped_cap" | "refused_not_allowlisted" | ProviderError["kind"] | "error";
+  outcome:
+    | "ok"
+    | "skipped_cap"
+    | "refused_not_allowlisted"
+    | "refused_not_free"
+    | ProviderError["kind"]
+    | "error";
   detail?: string;
 }
 

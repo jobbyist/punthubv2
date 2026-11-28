@@ -402,7 +402,7 @@ describe("validation", () => {
     expect(parseObservations("here are the fixtures")).toBeNull();
     expect(parseObservations('{"matches":[{"home":"A"}]}')).toBeNull();
     const valid = JSON.stringify({ matches: [raw({})] });
-    expect(parseObservations(```json\n${valid}\n```)).toHaveLength(1);
+    expect(parseObservations(`\`\`\`json\n${valid}\n\`\`\``)).toHaveLength(1);
     expect(parseObservations(`Here is the result:\n${valid}\nDone.`)).toHaveLength(1);
   });
 });
@@ -696,9 +696,8 @@ describe("provider", () => {
     expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
       "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
     );
-    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toContain(
-      "https://www.spl.com.sa/en/fixtures-results",
-    );
+    // Saudi Pro is search-only on purpose (the later PFIE_SOURCES entry wins), so no full-page reads.
+    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toEqual([]);
     expect(PFIE_SOURCES.championship?.pages?.results).toContain(
       "https://www.efl.com/competitions/efl-championship/",
     );
@@ -825,8 +824,12 @@ describe("provider", () => {
       only: ["seriea"],
       fixtures: targets,
     });
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 1 vs Away Club 1 result score 2026-11-12");
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 12 vs Away Club 12 result score 2026-11-12");
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 1 vs Away Club 1 result score 2026-11-12",
+    );
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 12 vs Away Club 12 result score 2026-11-12",
+    );
     expect(captured.value?.queries).toHaveLength(5);
     for (const target of targets) {
       expect(captured.value?.objective).toContain(`${target.home} vs ${target.away}`);

@@ -49,7 +49,9 @@ describe("syncResults lookback", () => {
       away: `Away ${i + 1}`,
       kickoffAt: new Date(now.getTime() - (i + 2) * 60 * 60_000).toISOString(),
     }));
-    let received: { fixtures?: { home: string; away: string; kickoffAt: string }[] } | null = null;
+    let received = null as {
+      fixtures?: { home: string; away: string; kickoffAt: string }[];
+    } | null;
     const store = {
       async openSince() {
         return open;
@@ -126,13 +128,13 @@ describe("syncResults lookback", () => {
     const report = await syncResults(provider, store, now, { force: true, only: ["uecl"] });
 
     expect(report.upserted).toBe(2);
-    expect(saved.map((row) => row.providerRef).sort()).toEqual([
+    expect(saved.map((row) => row["providerRef"]).sort()).toEqual([
       "old-brann-agf",
       "old-brann-aarhus",
     ]);
-    expect(saved.every((row) => row.home === "Brann" && row.kickoffAt === open[0]?.kickoffAt)).toBe(
-      true,
-    );
+    expect(
+      saved.every((row) => row["home"] === "Brann" && row["kickoffAt"] === open[0]?.kickoffAt),
+    ).toBe(true);
   });
 
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {

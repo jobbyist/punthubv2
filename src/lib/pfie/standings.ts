@@ -310,7 +310,7 @@ export interface RawStandingRow {
   points: number;
   quote: string;
   /** Group label for competitions with multiple parallel tables, e.g. CAF Confederation Cup Group A. */
-  group?: string | null;
+  group?: string | null | undefined;
   /** Explicit table "as of" date, when the source states one. */
   tableDate?: string | null;
   tableDateQuote?: string | null;

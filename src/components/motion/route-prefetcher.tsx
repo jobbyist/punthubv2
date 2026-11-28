@@ -35,7 +35,7 @@ export function RoutePrefetcher() {
       for (const path of WARM_PATHS) {
         if (cancelled) return;
         if (path === window.location.pathname) continue;
-        const route = (router.routesByPath as Record<string, unknown>)[path];
+        const route = (router.routesByPath as unknown as Record<string, unknown>)[path];
         if (!route) continue;
         try {
           await router.loadRouteChunk(route as Parameters<typeof router.loadRouteChunk>[0]);

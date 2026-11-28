@@ -1692,7 +1692,11 @@ describe("cup history source attribution", () => {
     expect(report.ran[0]?.ok).toBe(true);
     expect(inserted).toHaveLength(1);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
+    expect(records.at(-1)?.meta["sources"]).toEqual([
+      "uefa.com",
+      "theguardian.com",
+      "cbssports.com",
+    ]);
   });
 });
 
@@ -1785,8 +1789,8 @@ describe("official standings fallback", () => {
     });
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.fallbackFromOfficial).toBe(true);
-    expect(records.at(-1)?.meta.sourceCount).toBeGreaterThanOrEqual(2);
+    expect(records.at(-1)?.meta["fallbackFromOfficial"]).toBe(true);
+    expect(records.at(-1)?.meta["sourceCount"]).toBeGreaterThanOrEqual(2);
   });
 });
 
@@ -1855,7 +1859,7 @@ describe("empty historical windows", () => {
     expect(calls).toBe(1);
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.noMatchesInWindow).toBe(true);
+    expect(records.at(-1)?.meta["noMatchesInWindow"]).toBe(true);
   });
 });
 

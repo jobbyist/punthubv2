@@ -86,11 +86,11 @@ describe("cachedCall", () => {
     const store = memoryStore();
     const extract = vi.fn(async () => ({ markdown: "Full page content", title: "Article" }));
     const cached = withExtractCache({ name: "firecrawl", extract }, store, "news");
-    expect(await cached.extract("https://example.com/story")).toEqual({
+    expect(await cached!.extract("https://example.com/story")).toEqual({
       markdown: "Full page content",
       title: "Article",
     });
-    expect(await cached.extract("https://example.com/story")).toEqual({
+    expect(await cached!.extract("https://example.com/story")).toEqual({
       markdown: "Full page content",
       title: "Article",
     });
