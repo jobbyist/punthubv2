@@ -40,7 +40,7 @@ const ALIASES: Record<string, string> = {
   "bayern munchen": "bayern munich",
   "bayer 04 leverkusen": "bayer leverkusen",
   "stade rennais": "rennes",
-  "losc lille": "lille osc",
+  lille: "lille osc",
   losc: "lille osc",
   "olympique lyonnais": "olympique lyon",
   leverkusen: "bayer leverkusen",
@@ -75,7 +75,7 @@ const ALIASES: Record<string, string> = {
   kairat: "kairat almaty",
   "vv sint truiden": "sint truidense",
   "fk kairat": "kairat almaty",
-  "fc iberia 1999": "iberia tbilisi",
+  "iberia 1999": "iberia tbilisi",
   "iberia 1999": "iberia tbilisi",
   "borac banja luka": "borac",
 
