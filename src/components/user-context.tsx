@@ -91,9 +91,15 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
       .from("predictions")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
-      .then(({ count }) => {
-        if (live) setPickCount(count ?? 0);
-      });
+      .then(
+        ({ count, error }) => {
+          // On failure fall back to 0 so the segment still resolves.
+          if (live) setPickCount(error ? 0 : (count ?? 0));
+        },
+        () => {
+          if (live) setPickCount(0);
+        },
+      );
     fetchFavourites(user.id)
       .then((f) => live && setFavourites(f))
       .catch(() => live && setFavourites(null));

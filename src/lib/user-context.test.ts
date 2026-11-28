@@ -66,6 +66,11 @@ describe("foldVisit", () => {
     expect(c.visits).toBe(2);
     expect(c.recentPaths[0]).toBe("/discover");
   });
+
+  it("does not throw on a malformed match id", () => {
+    const a = foldVisit(EMPTY_SIGNALS, "/match/%GH", new Date("2026-11-27T10:00:00Z"));
+    expect(a.lastMatchId).toBe("%GH");
+  });
 });
 
 describe("partOfDay", () => {

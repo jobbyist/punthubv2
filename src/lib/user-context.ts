@@ -111,7 +111,7 @@ export function foldVisit(
     firstVisit: signals.firstVisit ?? iso,
     lastVisit: iso,
     recentPaths: [clean, ...signals.recentPaths.filter((p) => p !== clean)].slice(0, 8),
-    lastMatchId: match ? decodeURIComponent(match[1]!) : signals.lastMatchId,
+    lastMatchId: match ? safeDecode(match[1]!) : signals.lastMatchId,
   };
 }
 
@@ -144,5 +144,13 @@ export function writeSignals(signals: LocalSignals) {
     window.localStorage.setItem(KEY, JSON.stringify(signals));
   } catch {
     // Storage blocked: context falls back to defaults for this session.
+  }
+}
+
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
   }
 }
