@@ -137,6 +137,60 @@ describe("syncResults lookback", () => {
     ).toBe(true);
   });
 
+  it("persists a verified result when the scheduled fixture has the wrong teams", async () => {
+    const now = new Date("2026-11-28T06:00:00.000Z");
+    const open = [
+      {
+        provider: "pfie",
+        providerRef: "ligue1:2026:paris-saint-germain:angers-sco",
+        competition: "Ligue 1",
+        home: "Paris Saint-Germain",
+        away: "Angers SCO",
+        kickoffAt: "2026-11-22T14:00:00.000Z",
+      },
+    ];
+    const verifiedParisFcResult = {
+      provider: "pfie",
+      providerRef: "ligue1:2026:paris-fc:angers-sco",
+      sport: "soccer",
+      competition: "Ligue 1",
+      home: "Paris FC",
+      away: "Angers SCO",
+      kickoffAt: "2026-11-22T14:00:00.000Z",
+      status: "finished",
+      homeScore: 4,
+      awayScore: 0,
+    };
+    const saved: Record<string, unknown>[] = [];
+    const store = {
+      async openSince() {
+        return open;
+      },
+      async upsert(rows: Record<string, unknown>[]) {
+        saved.push(...rows);
+      },
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults() {
+        return { fixtures: [verifiedParisFcResult], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    const report = await syncResults(provider, store, now, { force: true, only: ["ligue1"] });
+
+    expect(report.upserted).toBe(1);
+    expect(saved).toHaveLength(1);
+    expect(saved[0]).toMatchObject({
+      providerRef: "ligue1:2026:paris-fc:angers-sco",
+      home: "Paris FC",
+      away: "Angers SCO",
+      status: "finished",
+      homeScore: 4,
+      awayScore: 0,
+    });
+  });
+
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {
     const now = new Date("2026-11-28T06:00:00.000Z");
     const captured: Date[] = [];

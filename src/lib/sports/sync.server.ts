@@ -168,6 +168,7 @@ export async function syncResults(
   for (const result of fixtures) {
     const candidates = openByTeams.get(teamKey(result.competition, result.home, result.away)) ?? [];
     const resultKickoff = Date.parse(result.kickoffAt);
+    let matchedExisting = false;
     for (const candidate of candidates) {
       const candidateKickoff = Date.parse(candidate.kickoffAt);
       if (
@@ -176,6 +177,7 @@ export async function syncResults(
         Math.abs(resultKickoff - candidateKickoff) > 15 * 60 * 1000
       )
         continue;
+      matchedExisting = true;
       rowsByRef.set(candidate.providerRef, {
         ...result,
         provider: candidate.provider,
@@ -185,6 +187,18 @@ export async function syncResults(
         away: candidate.away,
         kickoffAt: candidate.kickoffAt,
       });
+    }
+
+    // PFIE can verify a result for a match missing from (or mislabelled in) the fixture schedule. The provider
+    // only returns publishable decisions; persist a verified terminal result under its own canonical provider_ref
+    // instead of silently dropping it because no unresolved row has the same teams and kick-off.
+    if (
+      !matchedExisting &&
+      result.provider === provider.name &&
+      result.status !== "scheduled" &&
+      result.status !== "live"
+    ) {
+      rowsByRef.set(result.providerRef, result);
     }
   }
   const rows = [...rowsByRef.values()];
