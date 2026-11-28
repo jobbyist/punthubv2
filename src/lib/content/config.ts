@@ -58,7 +58,8 @@ function clean(value: string | undefined): string | null {
 export function parseModelList(raw: string | undefined): { models: string[]; refused: string[] } {
   const wanted = (raw ?? "").split(",").map((m) => m.trim()).filter(Boolean);
   const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
-  const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
+  // PFIE/odds defaults stay on the free Gemini tier. Parallel is used only when explicitly ordered.
+  const ordered = list;
   const models: string[] = [];
   const refused: string[] = [];
   for (const model of ordered) {
