@@ -25,5 +25,29 @@
   "pending": "This table appears after the first verified refresh.",
   "empty": "No table yet for this league.",
   "error": "Could not load the table right now.",
-  "note": "Tables are refreshed daily from the league's own site or two independent sources that agree, and updated after each confirmed result."
+  "note": "Tables are refreshed daily from the league's own site or two independent sources that agree, and updated after each confirmed result.",
+  "views": {
+    "label": "Table view",
+    "short": "Short",
+    "full": "Full",
+    "form": "Form",
+    "scroll": "Swipe for more"
+  },
+  "group": "Group {{group}}",
+  "groupPending": "One Group C place is pending completion of the preliminary-round tie.",
+  "following": "You follow this team",
+  "key": {
+    "title": "Key",
+    "p": "Played",
+    "w": "Won",
+    "d": "Drawn",
+    "l": "Lost",
+    "gf": "Goals for",
+    "ga": "Goals against",
+    "gd": "Goal difference",
+    "pts": "Points",
+    "form": "Last five results, newest on the right",
+    "top": "Places 1 to {{count}} have a green badge.",
+    "followed": "Teams you follow are starred and highlighted."
+  }
 }

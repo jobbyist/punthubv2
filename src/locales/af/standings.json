@@ -25,5 +25,29 @@
   "pending": "Hierdie tabel verskyn ná die eerste bevestigde bywerking.",
   "empty": "Nog geen tabel vir hierdie liga nie.",
   "error": "Kon nie die tabel nou laai nie.",
-  "note": "Tabelle word daagliks bygewerk vanaf die liga se eie webwerf of twee onafhanklike bronne wat ooreenstem, en ná elke bevestigde uitslag bygewerk."
+  "note": "Tabelle word daagliks bygewerk vanaf die liga se eie webwerf of twee onafhanklike bronne wat ooreenstem, en ná elke bevestigde uitslag bygewerk.",
+  "views": {
+    "label": "Tabelaansig",
+    "short": "Kort",
+    "full": "Volledig",
+    "form": "Vorm",
+    "scroll": "Swiep vir meer"
+  },
+  "group": "Groep {{group}}",
+  "groupPending": "Een plek in Groep C wag op die uitslag van die voorrondte-wedstryd.",
+  "following": "Jy volg hierdie span",
+  "key": {
+    "title": "Sleutel",
+    "p": "Gespeel",
+    "w": "Gewen",
+    "d": "Gelykop",
+    "l": "Verloor",
+    "gf": "Doele vir",
+    "ga": "Doele teen",
+    "gd": "Doelverskil",
+    "pts": "Punte",
+    "form": "Laaste vyf uitslae, nuutste regs",
+    "top": "Plekke 1 tot {{count}} het 'n groen kenteken.",
+    "followed": "Spanne wat jy volg, kry 'n ster en word uitgelig."
+  }
 }
