@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Json } from "@/integrations/supabase/types";
+import { calculateSpendRunRate, type SpendRunRate } from "@/lib/api-usage.run-rate";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -41,6 +42,7 @@ export interface ApiUsageSnapshot {
     claimedAt: string;
     metadata: Record<string, Json>;
   }[];
+  runRate: SpendRunRate | null;
   generatedAt: string;
 }
 
@@ -68,6 +70,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       monthUsage,
       recentEvents,
       attribution,
+      spendStatus,
     ] = await Promise.all([
       db
         .from("api_quota_limits")
@@ -102,6 +105,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
         .select("provider,feature,consumer,operation,calls,estimated_usd,last_call")
         .order("calls", { ascending: false })
         .limit(50),
+      db.rpc("api_spend_period_status"),
     ]);
     for (const result of [
       limits,
@@ -112,6 +116,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       monthUsage,
       recentEvents,
       attribution,
+      spendStatus,
     ]) {
       if (result.error) throw new Error("API usage data unavailable: " + result.error.message);
     }
@@ -122,6 +127,44 @@ export const adminApiUsage = createServerFn({ method: "GET" })
         Number(p.usd_per_unit),
       ]),
     );
+    const periodRows = (spendStatus.data ?? []) as Record<string, unknown>[];
+    const parallelPeriod = periodRows.find((row) => row["family"] === "parallel");
+    const fallbackParallelPeriod = ((spendLimits.data ?? []) as Record<string, unknown>[]).find(
+      (row) => row["family"] === "parallel",
+    );
+    let runRate: SpendRunRate | null = null;
+    const periodStart = String(parallelPeriod?.["period_start"] ?? fallbackParallelPeriod?.["period_start"] ?? "");
+    const periodEnd = String(parallelPeriod?.["period_end"] ?? fallbackParallelPeriod?.["period_end"] ?? "");
+    if (periodStart && periodEnd) {
+      const periodUsage = await db
+        .from("content_api_usage")
+        .select("day,provider,calls")
+        .like("provider", "parallel%")
+        .gte("day", periodStart)
+        .lte("day", today);
+      if (periodUsage.error) throw new Error("Parallel run-rate data unavailable: " + periodUsage.error.message);
+
+      const dailySpend = new Map<string, number>();
+      for (const row of periodUsage.data ?? []) {
+        const price = priceByProvider.get(row.provider);
+        if (price === undefined) continue;
+        const day = String(row.day).slice(0, 10);
+        dailySpend.set(day, (dailySpend.get(day) ?? 0) + Number(row.calls ?? 0) * price);
+      }
+      const spentUsd = Number(
+        parallelPeriod?.["spent_usd"] ?? [...dailySpend.values()].reduce((sum, value) => sum + value, 0),
+      );
+      const limitUsd = Number(parallelPeriod?.["limit_usd"] ?? fallbackParallelPeriod?.["limit_usd"] ?? 0);
+      runRate = calculateSpendRunRate({
+        periodStart,
+        periodEnd,
+        today,
+        limitUsd,
+        spentUsd,
+        dailySpend: [...dailySpend.entries()].map(([day, spendUsd]) => ({ day, spendUsd })),
+      });
+    }
+
     const budgetRows = (budgets.data ?? []) as {
       family: string;
       monthly_usd: number;
@@ -197,6 +240,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
         claimedAt: String(r["claimed_at"]),
         metadata: (r["metadata"] as Record<string, Json>) ?? {},
       })),
+      runRate,
       generatedAt: now.toISOString(),
     };
   });
