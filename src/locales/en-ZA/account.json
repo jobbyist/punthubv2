@@ -23,7 +23,19 @@
     "securityLink": "Sign-in and security",
     "securityBody": "Confirm your email, turn on two-factor sign-in or set a password.",
     "rewardsLink": "PuntPoints and rewards",
-    "rewardsBody": "Your balance, how to earn, invites and rewards."
+    "rewardsBody": "Your balance, how to earn, invites and rewards.",
+    "usernameEdit": "Change username",
+    "usernameSave": "Save username",
+    "usernameSaving": "Saving…",
+    "usernameCancel": "Cancel",
+    "usernameHint": "Use 3–20 lowercase letters, numbers or underscores. This is public and appears in your profile link.",
+    "usernameSaved": "Username updated.",
+    "usernameErrors": {
+      "invalid_username": "Use 3–20 lowercase letters, numbers or underscores.",
+      "username_taken": "That username is already taken.",
+      "not_editable": "This account cannot change its username.",
+      "error": "Couldn't update your username. Please try again."
+    }
   },
   "privacy": {
     "title": "Privacy and data",

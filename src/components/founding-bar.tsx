@@ -59,17 +59,19 @@ export function FoundingBar() {
   const annualText = counts
     ? ` · ${counts.annualPassRemaining}/${ANNUAL_PASS_CAP} Annual Passes remaining`
     : "";
+  const giveawayText = t("foundingBar.giveaway");
 
   return (
     <div className="bg-foreground px-3 py-2.5 text-center text-[11px] leading-snug text-background sm:px-4 sm:py-2 sm:text-sm">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
+      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-center gap-x-3 gap-y-1 sm:flex-row">
         <span className="font-semibold" aria-live="polite">
           {foundingText}
           {annualText}
         </span>
+        <span className="font-bold text-primary">{giveawayText}</span>
         <Link
           to="/founding"
-          className="inline-flex shrink-0 items-center font-bold text-primary underline underline-offset-2"
+          className="inline-flex shrink-0 items-center font-bold underline underline-offset-2"
         >
           {t("foundingBar.cta")}
         </Link>

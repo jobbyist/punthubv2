@@ -1,17 +1,17 @@
 {
   "meta": {
-    "title": "Founding Member survey | Win a R500 OTT voucher | Puntr",
-    "description": "Founding Members: tell us what you want from Puntr at launch and enter the draw for a R500 OTT voucher.",
+    "title": "Founding Member survey | Three R500 OTT voucher winners | Puntr",
+    "description": "Founding Members with active Puntr Pro: tell us what you want from Puntr and enter the draw for one of three R500 OTT vouchers.",
     "ogTitle": "Founding Member survey: help shape Puntr"
   },
   "eyebrow": "Founding Member survey",
   "title1": "Help shape Puntr.",
-  "title2": "Win a R500 OTT voucher.",
+  "title2": "Three winners. Three R500 OTT vouchers.",
   "lead": "A few quick questions, one at a time. Your answers decide what we build first before launch on 1 December 2026.",
   "signIn": "Sign in or join free to take the Founding Member survey.",
   "signInCta": "Join free",
   "done": "Thank you. Your feedback has been received.",
-  "doneDraw": "You are entered into the draw.",
+  "doneDraw": "You are entered into the draw for one of three R500 OTT vouchers.",
   "already": "You have already completed this survey. Thank you.",
   "q1": "How would you rate Puntr so far?",
   "q1hint": "1 is poor, 5 is excellent",
@@ -34,9 +34,9 @@
     "good_value": "Good value",
     "unsure": "Not sure yet"
   },
-  "draw": "Enter me into the draw for a R500 OTT voucher (Founding Members who have tried Practice Mode)",
+  "draw": "Enter me into the draw for one of three R500 OTT vouchers (Founding Members with active Puntr Pro who have tried Practice Mode)",
   "contact": "You may contact me about my feedback (optional)",
-  "rules": "One entry per member. 18+ only. Entering the draw is optional and does not change your Puntr account. T&Cs apply. Full draw rules are below.",
+  "rules": "One entry per member. 18+ only. An active Puntr Pro entitlement is required. Entry is optional and does not change your Puntr account. T&Cs apply. Full draw rules are below.",
   "privacy": "We use your answers to improve Puntr. Read how we handle your data in our Privacy Policy.",
   "submit": "Submit feedback",
   "sending": "Sending",
@@ -146,19 +146,19 @@
   "upsell": {
     "title": "The Founding Member Annual Pass",
     "body": "12 months of Puntr Pro for a once-off R299, instead of R1,188 on R99 a month. You save R889. Your 12 months start on launch day, 1 December 2026, and it does not renew automatically.",
-    "note": "A prepaid membership, not an investment. Claiming includes payment of R299 once-off through PayFast, for the first 20 founding members before 30 November 2026.",
+    "note": "A prepaid membership, not an investment. Reserve one of 20 places and complete the R299 PayFast payment within 48 hours. Reservations close 31 December 2026.",
     "cta": "See the Founding offer"
   },
   "drawRules": {
-    "title": "R500 OTT voucher draw: rules",
+    "title": "Three R500 OTT voucher draw: rules",
     "items": [
-      "Open to Founding Members only, aged 18 or older.",
-      "To enter, you must have tried Practice Mode at least once and submit this survey with the draw box ticked. Both steps are needed. One entry per member.",
-      "The draw closes when Puntr goes live on Tuesday 1 December 2026.",
-      "One winner is picked at random from all valid entries. The pick is recorded with a witness.",
-      "The winner is announced on puntr.co.za and our social channels by username and Founding number only.",
-      "We tell the winner by email, or by phone if they gave us a number. If we cannot reach the winner, we may pick another.",
-      "The prize is a R500 OTT voucher. There is no cash alternative and it cannot be transferred.",
+      "Open to Founding Members with an active Puntr Pro entitlement, aged 18 or older.",
+      "To enter, make at least one Practice Mode pick and submit this survey with the draw box ticked. Both steps are needed. One entry per member.",
+      "Entries close at 23:59 SAST on 31 December 2026.",
+      "Three distinct winners are picked at random from all valid entries. The draw is recorded with a witness.",
+      "Each winner receives one R500 OTT voucher. There is no cash alternative and prizes cannot be transferred.",
+      "Winners are announced on puntr.co.za and our social channels by username and Founding number only.",
+      "We contact winners by email, or by phone if they supplied a number. If a winner cannot be reached, we may select a replacement.",
       "Puntr team members and their immediate family cannot enter. T&Cs apply. Helpline 0800 006 008."
     ]
   }

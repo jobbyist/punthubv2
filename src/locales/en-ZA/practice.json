@@ -18,8 +18,8 @@
     "cta": "Claim your Founding spot"
   },
   "draw": {
-    "title": "Win a R500 OTT voucher",
-    "body": "Try Practice Mode at least once, then leave your feedback and tick the draw box. Both steps are needed. Open to Founding Members only.",
+    "title": "Three winners. Three R500 OTT vouchers.",
+    "body": "Eligible Founding Members with an active Puntr Pro entitlement can enter. Make at least one Practice Mode pick, submit your feedback and opt into the draw. Entries close 31 December 2026 at 23:59 SAST.",
     "cta": "Leave feedback",
     "rules": "Draw rules"
   },
@@ -54,12 +54,12 @@
     "BTTS": "Both teams to score"
   },
   "selection": {
+    "12": "Home or away",
     "home": "Home",
     "draw": "Draw",
     "away": "Away",
     "1X": "Home or draw",
     "X2": "Draw or away",
-    "12": "Home or away",
     "over": "Over 2.5",
     "under": "Under 2.5",
     "yes": "Yes",

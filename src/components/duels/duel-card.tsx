@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Swords } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { ProBadge } from "@/components/pro-badge";
 
 import { CompetitionBadge } from "@/components/match/competition-badge";
 import { KickoffPill } from "@/components/match/kickoff-pill";
@@ -45,7 +46,7 @@ export function DuelCard({ duel }: { duel: DuelSummary }) {
   const side = (name: string | null, correct: number | null, won: boolean, isAi: boolean) => (
     <span className={cn("min-w-0 truncate text-sm font-bold", won && "text-primary")}>
       {name ? `@${name}` : t("open")}
-      {isAi && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">AI</span>}
+      {isAi && <span className="ml-1.5"><ProBadge aiParticipant /></span>}
       {settled && correct !== null && (
         <span className="ml-1.5 text-xs font-semibold text-muted-foreground tnum">{correct}</span>
       )}

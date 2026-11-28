@@ -4,7 +4,6 @@
  * idempotent: a table replaces the previous one atomically, history rows skip duplicates, and every attempt is
  * recorded in `sync_status` (failures back off and stop after three tries a day).
  */
-import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
@@ -153,7 +152,10 @@ export interface TablesDeps {
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
-const MAX_CHARS = 24_000;
+const MAX_SEASON_SOURCES = 3;
+const THREE_SEASON_HISTORY_KEYS = new Set<CompetitionKey>(["ucl", "uecl", "caf-cc"]);
+// Parallel Responses has a 20,000-character combined input/instructions ceiling. Keep three extracted sources below it.
+const MAX_CHARS = 4_500;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
@@ -161,9 +163,9 @@ const SEASON_WINDOW_DAYS = 7;
 const SEASON_GIVE_UP = 6;
 
 /**
- * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league: from the start of the previous
- * season up to where the form backfill begins (today - 42 days). Newest first, so the current season fills before
- * last season. Each window is one idempotent job, recorded in sync_status as `season` / `<key>:<start>`.
+ * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league. The three launch cup
+ * competitions (UCL, UECL and CAF CC) retain three seasons of history; other non-archive competitions retain
+ * two. Windows are newest first and each is an idempotent `season` / `<key>:<start>` job.
  */
 const MONTHS = [
   "January",
@@ -283,9 +285,10 @@ export function seasonQueries(
   return out;
 }
 
-export function seasonWindows(now: Date): { start: string; end: string }[] {
+export function seasonWindows(now: Date, key?: CompetitionKey): { start: string; end: string }[] {
   const year = now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
-  const first = Date.UTC(year - 1, 7, 1); // 1 August of the previous season
+  const seasonsBack = key && THREE_SEASON_HISTORY_KEYS.has(key) ? 2 : 1;
+  const first = Date.UTC(year - seasonsBack, 7, 1); // 1 August of the oldest retained season
   const stop = now.getTime() - HISTORY_DAYS * DAY;
   const out: { start: string; end: string }[] = [];
   for (let t = first; t < stop; t += SEASON_WINDOW_DAYS * DAY) {
@@ -375,14 +378,14 @@ export async function runTablesSync(
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
   const season: { key: CompetitionKey; start: string; end: string }[] = [];
   if (!opts.job || opts.job === "season") {
-    for (const w of seasonWindows(now())) {
-      for (const key of keys) {
-        // Leagues covered by the archive import no longer need the search-based backfill.
-        if (ARCHIVE_SOURCES[key]) continue;
-        const s = status("season", `${key}:${w.start}`);
-        if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
-        if (retryDue(s, now())) season.push({ key, ...w });
-      }
+    const windows = keys
+      .filter((key) => !ARCHIVE_SOURCES[key])
+      .flatMap((key) => seasonWindows(now(), key).map((window) => ({ key, ...window })))
+      .sort((a, b) => b.start.localeCompare(a.start));
+    for (const window of windows) {
+      const s = status("season", `${window.key}:${window.start}`);
+      if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
+      if (retryDue(s, now())) season.push(window);
     }
   }
 
@@ -408,6 +411,7 @@ async function gatherSources(
   preferSearchResults = false,
   preferredUrls: string[] = [],
   allowSecondary = false,
+  maxSources = MAX_SOURCES,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -446,7 +450,7 @@ async function gatherSources(
     if (tier === "other" || isBlockedDomain(domain) || (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))) continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
-    if (candidates.length >= MAX_SOURCES) break;
+    if (candidates.length >= maxSources) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
   const fetched = await Promise.all(
@@ -472,10 +476,15 @@ async function gatherSources(
 }
 
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
+  const models = deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
-  for (const m of models) usedToday[m] = (usage as Record<string, number>)[`gemini:${m}`] ?? 0;
+  for (const m of models) {
+    const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
+    usedToday[m] = effort
+      ? (usage as Record<string, number>)[`parallel-chat:${effort}`] ?? 0
+      : (usage as Record<string, number>)[m] ?? 0;
+  }
   return createModelRouter(deps.llm, { models, usedToday }).generate(request);
 }
 
@@ -490,22 +499,22 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   const modelsUsed = new Set<string>();
   const sourceFailures: string[] = [];
   let sourceDiagnostics: Array<Record<string, unknown>> = [];
+  let usedSecondaryFallback = false;
+  let primarySources: PfieSource[] = [];
   const sourceLabel = (index: number) => {
     const source = sources.find((item) => item.index === index);
     return source ? `${index}@${source.domain}` : String(index);
   };
   try {
     const today = sastDate(now());
-    sources = await gatherSources(
-      deps,
-      key,
-      `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
-      [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
-    );
+    const objective = `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`;
+    const queries = [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5);
+    sources = await gatherSources(deps, key, objective, queries);
+    primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
-    // Run the bounded first-pass Gemini calls concurrently. If a source fails deterministic validation,
+    // Run the bounded first-pass Parallel Responses calls concurrently. If a source fails deterministic validation,
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
@@ -542,7 +551,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
-    }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
+    }
     let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
@@ -614,6 +623,73 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         chosenTables = chooseTables(validation.tables, cfg.groups);
       }
     }
+    if (!chosenTables && sources.some((source) => source.tier === "official")) {
+      const secondary = (await gatherSources(deps, key, objective, queries, false, [], true, MAX_SOURCES))
+        .filter((source) => source.tier !== "official");
+      const secondaryDomains = new Set(secondary.map((source) => source.domain));
+      if (secondaryDomains.size >= 2) {
+        usedSecondaryFallback = true;
+        sources = secondary;
+        const secondaryInitial = await Promise.all(
+          sources.map(async (source) => {
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
+            modelsUsed.add(answer.model);
+            const parsed = parseStandings(answer.text);
+            const result = parsed
+              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json_secondary" }] };
+            return { source, parsed, result };
+          }),
+        );
+        const secondaryRetryCandidates = secondaryInitial.filter((result) => result.result.tables.length === 0);
+        const secondaryRetries = await Promise.all(
+          secondaryRetryCandidates.map(async (result) => {
+            const hint = result.result.rejected.map((item) => item.reason).join(", ") || "incomplete_secondary_table";
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }));
+            modelsUsed.add(answer.model);
+            const parsed = parseStandings(answer.text);
+            const validation = parsed
+              ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+              : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: result.source.index, reason: "invalid_json_secondary_retry" }] };
+            return { source: result.source, parsed, validation };
+          }),
+        );
+        const secondaryRetryByIndex = new Map(secondaryRetries.map((result) => [result.source.index, result]));
+        raw = [];
+        for (const firstPass of secondaryInitial) {
+          const retry = secondaryRetryByIndex.get(firstPass.source.index);
+          const parsed = retry?.parsed ?? firstPass.parsed;
+          const result = retry?.validation ?? firstPass.result;
+          if (parsed && result.tables.length > 0) raw.push(...parsed);
+          else {
+            const reason = result.rejected.map((item) => item.reason).join(";") || "incomplete_secondary_table";
+            sourceFailures.push(`secondary:${firstPass.source.index}@${firstPass.source.domain}:${reason}`);
+          }
+        }
+        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
+        sourceDiagnostics = validation.tables.map((table) => ({
+          domain: table.source.domain,
+          url: table.source.url,
+          group: table.group ?? null,
+          tableDate: table.tableDate ?? null,
+          rowCount: table.rows.length,
+          rows: table.rows.map((row) => ({
+            position: row.position,
+            team: row.team,
+            played: row.played,
+            won: row.won,
+            drawn: row.drawn,
+            lost: row.lost,
+            goalsFor: row.goalsFor,
+            goalsAgainst: row.goalsAgainst,
+            points: row.points,
+          })),
+        }));
+        chosenTables = chooseTables(validation.tables, cfg.groups);
+      } else {
+        sourceFailures.push("secondary_fallback_insufficient_independent_domains");
+      }
+    }
     if (!chosenTables && key === "caf-cc") {
       const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
       if (groupResults.length > 0) {
@@ -632,6 +708,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           await deps.store.record("standings", key, true, null, {
             verdict: "derived_verified_group_stage_results",
             provisional: true,
+            fallbackFromOfficial: usedSecondaryFallback,
             source: "verified_completed_matches",
             sourceUrl: CAF_GROUP_DRAW_URL,
             groupCount: 4,
@@ -654,9 +731,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     const previous = await deps.store.currentStandings(key, season);
     const candidateRows = chosenTables.flatMap((selection) => selection.table.rows);
     const supportingDomains = [...new Set(chosenTables.flatMap((selection) => selection.supportingDomains))].sort();
-    const allowVerifiedGoalCorrections = chosenTables.every(
+    const twoSourceCorroborated = chosenTables.every(
       (selection) => selection.verdict === "two_sources" && selection.supportingDomains.length >= 2,
     );
+    const allowVerifiedGoalCorrections = twoSourceCorroborated;
+    const allowVerifiedRecordCorrections = cfg.allowVerifiedRecordCorrections === true && twoSourceCorroborated;
     const goalCorrections = previous.flatMap((old) => {
       const next = candidateRows.find(
         (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
@@ -705,7 +784,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       allowVerifiedGoalCorrections,
       cfg.allowVerifiedPlayedCorrections,
       cfg.allowTeamCountIncrease,
-      cfg.allowVerifiedRecordCorrections,
+      allowVerifiedRecordCorrections,
     );
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
@@ -722,12 +801,15 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       sourceCount: supportingDomains.length,
       sources: supportingDomains,
       sourceFailures,
+      fallbackFromOfficial: usedSecondaryFallback,
+      primarySources: primarySources.map((source) => ({ domain: source.domain, url: source.url })),
       groups: chosenTables.map((selection) => selection.table.group ?? null),
       primarySource: chosenTables[0]!.table.source.url,
       tableDate: chosenTables[0]!.table.tableDate ?? null,
       teams: n,
       models: [...modelsUsed],
-      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
+      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated" : "strict",
+      recordCorrectionPolicy: allowVerifiedRecordCorrections ? "two-source-corroborated" : "strict",
       playedCorrectionPolicy: cfg.allowVerifiedPlayedCorrections ?? [],
       playedCorrections,
       teamCountExpansionPolicy: cfg.allowTeamCountIncrease ? "one-new-team-when-group-range-allows" : "strict",
@@ -742,6 +824,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       sources: sources.map((source) => ({ index: source.index, domain: source.domain, url: source.url, via: source.via, retrievedAt: source.retrievedAt })),
       sourceFailures,
       sourceDiagnostics,
+      fallbackFromOfficial: usedSecondaryFallback,
+      primarySources: primarySources.map((source) => ({ domain: source.domain, url: source.url })),
       models: [...modelsUsed],
     }).catch(() => undefined);
     return { ok: false, detail: message(e) };
@@ -778,6 +862,8 @@ async function syncSeasonWindow(
       const reasons: Record<string, number> = {};
       const models = new Set<string>();
       let extracted = 0;
+      let parsedSources = 0;
+      let parseFailures = 0;
       for (const source of list) {
         // Extract each publisher independently. A single multi-source prompt often attributes every row to
         // one source, which defeats the two-domain verification rule for non-official publishers.
@@ -797,7 +883,11 @@ async function syncSeasonWindow(
           raw = parseObservations(answer.text);
         }
         models.add(answer.model);
-        if (!raw) continue;
+        if (!raw) {
+          parseFailures += 1;
+          continue;
+        }
+        parsedSources += 1;
         extracted += raw.length;
         const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
         accepted.push(...validation.accepted);
@@ -806,6 +896,8 @@ async function syncSeasonWindow(
       const { rows, unverified } = verifyHistory(accepted, key, known);
       return {
         extracted,
+        parsedSources,
+        parseFailures,
         accepted,
         rows,
         unverified,
@@ -817,11 +909,19 @@ async function syncSeasonWindow(
     // First use the competition's own official result archive. If it cannot provide usable observations for
     // this particular window, retry with trusted independent publishers; history verification still requires
     // two matching domains whenever an official scoreline is not present.
-    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls);
+    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls, false, MAX_SEASON_SOURCES);
     if (sources.length === 0) throw new Error("no usable source");
     let result = await extractAndVerify(sources);
-    if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
-      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
+    const onlyOutOfWindow = (value: typeof result) =>
+      value.extracted > 0 &&
+      value.reasons.outside_date_range === value.extracted &&
+      Object.keys(value.reasons).every((reason) => reason === "outside_date_range");
+    if (
+      result.rows.length === 0 &&
+      !onlyOutOfWindow(result) &&
+      sources.some((source) => source.tier === "official")
+    ) {
+      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true, MAX_SEASON_SOURCES);
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
         if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
@@ -838,12 +938,22 @@ async function syncSeasonWindow(
       inserted,
       unverified: result.unverified,
       extracted: result.extracted,
+      parsedSources: result.parsedSources,
+      parseFailures: result.parseFailures,
       accepted: result.accepted.length,
       rejected: result.reasons,
       sources: sources.map((s) => s.domain),
       model: result.model,
     };
+    const noMatchesInWindow =
+      result.parsedSources > 0 &&
+      result.parseFailures === 0 &&
+      (result.extracted === 0 || onlyOutOfWindow(result));
     if (result.rows.length === 0) {
+      if (noMatchesInWindow) {
+        await deps.store.record("season", scope, true, null, { ...meta, noMatchesInWindow: true });
+        return { ok: true, detail: "no matches in this date window; verified source extraction was empty" };
+      }
       await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
@@ -879,7 +989,9 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
       true,
-      seasonArchiveUrls(c.name, start),
+      seasonArchiveUrls(c.name, sastDate(from)),
+      false,
+      MAX_SEASON_SOURCES,
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(

@@ -6,6 +6,8 @@ import {
   checkAvatarFile,
   cropBox,
   pathFromPublicUrl,
+  SPORTS_AVATARS,
+  sportsAvatarToken,
 } from "./avatar";
 
 describe("avatar", () => {
@@ -31,6 +33,11 @@ describe("avatar", () => {
   it("centre-crops to a square and never upscales", () => {
     expect(cropBox(4000, 3000)).toEqual({ sx: 500, sy: 0, edge: 3000, out: 512 });
     expect(cropBox(200, 300)).toEqual({ sx: 0, sy: 50, edge: 200, out: 200 });
+  });
+  it("exposes a unique set of 16 built-in sports avatar choices", () => {
+    expect(SPORTS_AVATARS).toHaveLength(16);
+    expect(new Set(SPORTS_AVATARS.map((item) => item.key)).size).toBe(16);
+    expect(sportsAvatarToken("football-fan")).toBe("puntr-avatar://football-fan");
   });
   it("builds paths in the user's folder and reads them back from public URLs", () => {
     expect(avatarPath("u1", "webp", 5)).toBe("u1/avatar-5.webp");
