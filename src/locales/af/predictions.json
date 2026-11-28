@@ -111,5 +111,102 @@
     "title": "Fantasy Arena",
     "body": "Bou jou span, pak kop-aan-kop-duelle aan en klim op die fantasie-ranglys. Jou volgende manier om deel te neem, kry vorm.",
     "cta": "Sluit by die fantasieliga aan"
+  },
+  "discover": {
+    "hero": {
+      "eyebrow": "Ontdek",
+      "greeting": {
+        "morning": "Môre, {{name}}",
+        "afternoon": "Middag, {{name}}",
+        "evening": "Naand, {{name}}",
+        "morningGuest": "Goeiemôre",
+        "afternoonGuest": "Goeiemiddag",
+        "eveningGuest": "Goeienaand"
+      },
+      "title": {
+        "guest-first": "Laat jou sportvoorspellings tel.",
+        "guest-returning": "Welkom terug. Gereed om jou voorspellings op rekord te sit?",
+        "member-onboarding": "Kom ons sluit jou eerste voorspelling in.",
+        "member-active": "Hier is wat vandag aan die gang is."
+      },
+      "body": {
+        "guest-first": "Puntr is 'n gratis Suid-Afrikaanse gemeenskap vir sportvoorspellings. Kies 'n wedstryd, maak jou voorspelling voor afskop en bou 'n openbare rekord wat nie verander kan word nie.",
+        "guest-returning": "Sluit gratis aan om jou keuses te stoor, jou spanne te volg en te sien hoe jy op die ranglys vaar. Geen kaart, geen weddery nie.",
+        "member-onboarding": "Kies enige komende wedstryd en maak jou voorspelling; dit word by afskop gesluit. Outomaties gegradeer, vir altyd op jou rekord.",
+        "member-active": "Wedstryde, regstreekse tellings en tweestryde op een plek. Jou volgende voorspelling is een tik weg."
+      },
+      "cta": {
+        "learn": "Sien hoe dit werk",
+        "join": "Sluit gratis aan",
+        "firstPick": "Maak my eerste voorspelling",
+        "favourites": "Kies my spanne",
+        "practice": "Probeer Oefenmodus",
+        "continueMatch": "Terug na my laaste wedstryd",
+        "leaderboard": "Sien waar ek staan"
+      },
+      "resume": "Terug na laaste wedstryd",
+      "browse": "Blaai deur wedstryde",
+      "stats": {
+        "today": "Vandag",
+        "live": "Regstreeks",
+        "leagues": "Ligas"
+      }
+    },
+    "tiles": {
+      "fixtures": {
+        "title": "Wedstryde",
+        "body": "Elke komende wedstryd"
+      },
+      "live": {
+        "title": "Regstreeks",
+        "body": "Wedstryde aan die gang"
+      },
+      "results": {
+        "title": "Uitslae",
+        "body": "Geverifieerde eindtellings"
+      },
+      "tables": {
+        "title": "Tabelle",
+        "body": "Puntestande en vorm"
+      },
+      "duels": {
+        "title": "Tweestryde",
+        "body": "Kop-aan-kop-voorspellings"
+      },
+      "practice": {
+        "title": "Oefenmodus",
+        "body": "Virtuele punte, geen rekord"
+      },
+      "leaderboards": {
+        "title": "Ranglyste",
+        "body": "Hierdie week se beste"
+      },
+      "slips": {
+        "title": "Strokies",
+        "body": "Maak keuses van 'n strokie"
+      },
+      "community": {
+        "title": "Gemeenskap",
+        "body": "Gesels oor wedstryde"
+      },
+      "newsroom": {
+        "title": "Nuuskamer",
+        "body": "Voorskoue en nuus"
+      }
+    },
+    "forYou": {
+      "title": "Vir jou",
+      "edit": "Wysig gunstelinge",
+      "open": "Maak wedstryd oop",
+      "nudgeTitle": "Maak Ontdek joune",
+      "nudgeBody": "Kies jou spanne en ligas en hul wedstryde verskyn eerste hier.",
+      "nudgeCta": "Kies spanne",
+      "dismiss": "Versteek hierdie wenk"
+    },
+    "leagues": {
+      "title": "Blaai per liga",
+      "count_one": "{{count}} wedstryd",
+      "count_other": "{{count}} wedstryde"
+    }
   }
 }

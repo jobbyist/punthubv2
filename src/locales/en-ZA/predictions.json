@@ -111,5 +111,102 @@
     "title": "Fantasy Arena",
     "body": "Build your squad, take on head-to-head duels and climb the fantasy leaderboard. Your next way to play is taking shape.",
     "cta": "Join the fantasy league"
+  },
+  "discover": {
+    "hero": {
+      "eyebrow": "Discover",
+      "greeting": {
+        "morning": "Morning, {{name}}",
+        "afternoon": "Afternoon, {{name}}",
+        "evening": "Evening, {{name}}",
+        "morningGuest": "Good morning",
+        "afternoonGuest": "Good afternoon",
+        "eveningGuest": "Good evening"
+      },
+      "title": {
+        "guest-first": "Make your sports calls count.",
+        "guest-returning": "Welcome back. Ready to put your calls on record?",
+        "member-onboarding": "Let's lock in your first prediction.",
+        "member-active": "Here's what's on today."
+      },
+      "body": {
+        "guest-first": "Puntr is a free South African community for sports predictions. Pick a match, make your call before kick-off and build a public track record that can't be edited.",
+        "guest-returning": "Join free to save your picks, follow your teams and see how you stack up on the leaderboard. No card, no betting.",
+        "member-onboarding": "Choose any upcoming match, make your call and it's locked at kick-off. Graded automatically, on your record for good.",
+        "member-active": "Fixtures, live scores and duels in one place. Your next call is a tap away."
+      },
+      "cta": {
+        "learn": "See how it works",
+        "join": "Join free",
+        "firstPick": "Make my first prediction",
+        "favourites": "Pick my teams",
+        "practice": "Try Practice Mode",
+        "continueMatch": "Back to my last match",
+        "leaderboard": "See where I rank"
+      },
+      "resume": "Back to last match",
+      "browse": "Browse fixtures",
+      "stats": {
+        "today": "Today",
+        "live": "Live",
+        "leagues": "Leagues"
+      }
+    },
+    "tiles": {
+      "fixtures": {
+        "title": "Fixtures",
+        "body": "Every upcoming match"
+      },
+      "live": {
+        "title": "Live scores",
+        "body": "Matches in play"
+      },
+      "results": {
+        "title": "Results",
+        "body": "Verified final scores"
+      },
+      "tables": {
+        "title": "Tables",
+        "body": "Standings and form"
+      },
+      "duels": {
+        "title": "Duels",
+        "body": "Head-to-head calls"
+      },
+      "practice": {
+        "title": "Practice Mode",
+        "body": "Virtual points, no record"
+      },
+      "leaderboards": {
+        "title": "Leaderboards",
+        "body": "This week's best"
+      },
+      "slips": {
+        "title": "Slips",
+        "body": "Turn a slip into picks"
+      },
+      "community": {
+        "title": "Community",
+        "body": "Talk matches"
+      },
+      "newsroom": {
+        "title": "Newsroom",
+        "body": "Previews and news"
+      }
+    },
+    "forYou": {
+      "title": "For you",
+      "edit": "Edit favourites",
+      "open": "Open match",
+      "nudgeTitle": "Make Discover yours",
+      "nudgeBody": "Pick your teams and leagues and their matches show up here first.",
+      "nudgeCta": "Pick teams",
+      "dismiss": "Hide this tip"
+    },
+    "leagues": {
+      "title": "Browse by league",
+      "count_one": "{{count}} match",
+      "count_other": "{{count}} matches"
+    }
   }
 }

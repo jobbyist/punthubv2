@@ -148,6 +148,7 @@ export function PickForm({ fixture, onPosted }: { fixture: FixtureRow; onPosted:
     }
 
     analytics.pickPosted(market, fixture.sport);
+    window.dispatchEvent(new Event("puntr:pick-posted"));
     triggerSuccessFeedback();
     if (row) {
       const label = selectionLabel(
