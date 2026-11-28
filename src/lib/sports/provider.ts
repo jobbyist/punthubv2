@@ -8,6 +8,8 @@ export interface ListOptions {
   fixtures?: { home: string; away: string; kickoffAt: string }[];
   /** Authenticated operator retry: bypass provider cooldown for the selected competitions only. */
   force?: boolean;
+  /** Member-impacting result polling uses its own protected API quota reserve. */
+  priority?: boolean;
 }
 
 export interface ListResult {
