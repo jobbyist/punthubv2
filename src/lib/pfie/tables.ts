@@ -6,7 +6,7 @@
 import { randomUUID } from "node:crypto";
 
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
-import { withExtractCache, withSearchCache, type CacheStore } from "@/lib/parallel/cached";
+import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
@@ -574,13 +574,15 @@ async function runTrackedTableJob(
       detail: error instanceof Error ? error.message.slice(0, 280) : "unexpected error",
     };
   }
-  await deps.recordRun?.({
-    jobRunId,
-    competition,
-    kind: job,
-    ok: result.ok,
-    ...(!result.ok ? { error: result.detail } : {}),
-  }).catch((error) => console.error("pfie: could not persist table job run", jobRunId, error));
+  if (deps.recordRun) {
+    await deps.recordRun({
+      jobRunId,
+      competition,
+      kind: job,
+      ok: result.ok,
+      ...(!result.ok ? { error: result.detail } : {}),
+    }).catch((error) => console.error("pfie: could not persist table job run", jobRunId, error));
+  }
   return result;
 }
 
@@ -716,7 +718,7 @@ async function gatherSources(
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const purpose = preferSearchResults ? "results" : "tables";
-  const cacheEvent = (event: Parameters<NonNullable<import("@/lib/parallel/cached").CacheEventHandler>>[0]) =>
+  const cacheEvent = (event: CacheEvent) =>
     console.info("pfie-cache", JSON.stringify({ competition: key, job: purpose, ...event }));
   // Cache wrappers sit outside the quota guards, so cached responses never claim provider budget.
   const searchProvider = withSearchCache(deps.search, deps.cache ?? null, purpose, cacheEvent);
