@@ -476,6 +476,14 @@ export interface PfieDeps {
 
 export const PFIE_PROVIDER = "pfie";
 
+/** Competitions explicitly deferred from PFIE refreshes until the ten launch competitions are stable. */
+export const PFIE_PRELAUNCH_DEFERRED_KEYS = ["saudi-pro", "primeira"] as const satisfies readonly CompetitionKey[];
+const PFIE_PRELAUNCH_DEFERRED = new Set<CompetitionKey>(PFIE_PRELAUNCH_DEFERRED_KEYS);
+
+export function isPfiePrelaunchDeferredCompetition(key: CompetitionKey): boolean {
+  return PFIE_PRELAUNCH_DEFERRED.has(key);
+}
+
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
   const now = deps.now ?? (() => new Date());
   const models = deps.models ?? ["parallel-low"];
@@ -688,7 +696,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
   function selected(opts?: ListOptions): Competition[] {
     return activeCompetitions().filter(
       (c) =>
-        c.sport === "soccer" && PFIE_SOURCES[c.key] && (!opts?.only || opts.only.includes(c.key)),
+        c.sport === "soccer" &&
+        !isPfiePrelaunchDeferredCompetition(c.key) &&
+        PFIE_SOURCES[c.key] &&
+        (!opts?.only || opts.only.includes(c.key)),
     );
   }
 
