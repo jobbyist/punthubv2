@@ -215,8 +215,13 @@ export function hasHistoryResultEvidence(text: string): boolean {
     /\b[\p{L}][\p{L}\p{M}.'’ -]{1,40}\s+\d{1,2}\s*[-–:]\s*\d{1,2}\s+[\p{L}][\p{L}\p{M}.'’ -]{1,40}\b/u.test(clean);
   const finalMarker = /\b(?:FT|full\s*time|final|finished)\b/i.test(clean);
   const resultsContext = /\b(?:results?|scores?|fixtures|scoreboard|match result)\b/i.test(clean);
+  const datedRoundResults =
+    resultsContext &&
+    /\b(?:round|matchday)\s+\d+\b/i.test(clean) &&
+    /\b\d{1,2}\.\d{2}\.\s+\d{1,2}:\d{2}\b/.test(clean) &&
+    /\b\d{1,2}\s+\d{1,2}\b/.test(clean);
   // Do not mistake goal difference / points columns (e.g. "Wrexham 17 -1 22") for match scores.
-  return namedScoreline || (finalMarker && resultsContext);
+  return namedScoreline || (finalMarker && resultsContext) || datedRoundResults;
 }
 
 function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown>[] {
@@ -291,6 +296,7 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
           : [];
     return [
       ...official,
+      "https://www.flashscore.com/football/europe/champions-league/results/",
       "https://www.bbc.com/sport/football/champions-league/scores-fixtures",
       "https://www.skysports.com/champions-league-scores-fixtures",
       "https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures",
@@ -305,6 +311,7 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
           : [];
     return [
       ...official,
+      "https://www.flashscore.com/football/europe/conference-league/results/",
       "https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures",
       "https://www.skysports.com/europa-conference-league-scores-fixtures",
       "https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf",
@@ -328,6 +335,7 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
             : [];
     return [
       ...official,
+      "https://www.flashscore.com/football/africa/caf-confederation-cup/results/",
       "https://www.vavel.com/en-us/data/caf-confederation-cup/results",
       "https://foot-africa.com/en/leagues/international/caf-confederations-cup/",
     ];
@@ -348,9 +356,19 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
       bundesliga: "https://www.skysports.com/bundesliga-scores-fixtures",
       ligue1: "https://www.skysports.com/ligue-1-scores-fixtures",
     };
+    const flashscoreResults: Partial<Record<CompetitionKey, string>> = {
+      psl: "https://www.flashscore.com/football/south-africa/betway-premiership/results/",
+      epl: "https://www.flashscore.com/football/england/premier-league/results/",
+      championship: "https://www.flashscore.com/football/england/championship/results/",
+      laliga: "https://www.flashscore.com/football/spain/laliga/results/",
+      bundesliga: "https://www.flashscore.com/football/germany/bundesliga/results/",
+      seriea: "https://www.flashscore.com/football/italy/serie-a/results/",
+      ligue1: "https://www.flashscore.com/football/france/ligue-1/results/",
+    };
     return [
-      urls.fbref,
+      ...(flashscoreResults[competition.key] ? [flashscoreResults[competition.key]!] : []),
       ...(skyResults[competition.key] ? [skyResults[competition.key]!] : []),
+      urls.fbref,
       urls.wikipedia,
     ];
   }
