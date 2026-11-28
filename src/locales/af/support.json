@@ -49,7 +49,7 @@
     "q15": "Wat gebeur as 'n wedstryd uitgestel of gekanselleer word?",
     "a15": "Puntr wag totdat die wedstrydstatus geverifieer is. 'n Gekanselleerde of gestaakte wedstryd kan volgens die toepaslike graderingsreëls nietig verklaar word; 'n uitgestelde wedstryd word nie onmiddellik outomaties nietig verklaar nie.",
     "q16": "Hoe vinnig word keuses afgehandel?",
-    "a16": "Puntr mik daarna om keuses binne minute af te handel nadat 'n geverifieerde einduitslag beskikbaar word. Prioriteitsuitslagkontroles loop elke vyf minute vir geskikte wedstryde en die afhandelingsproses elke twee minute. Verskaffervertragings of teenstrydige berigte kan die wagtyd steeds verleng.",
+    "a16": "Puntr mik daarna om keuses binne minute af te handel nadat 'n geverifieerde einduitslag beskikbaar word. Geskikte wedstryde gaan 'n prioriteitskontrolesiklus binne: elke vyf minute gedurende die eerste verwagte voltyd-uur, en daarna met 'n stadiger herprobeerinterval vir ouer onopgeloste wedstryde. Die afhandelingsproses loop elke twee minute. Verskaffervertragings of teenstrydige berigte kan die wagtyd steeds verleng.",
     "q17": "Waarom wag my keuse of tweestryd nog op afhandeling?",
     "a17": "'n Wedstryd kan hangende bly wanneer 'n uitslagbron nog nie voltyd gepubliseer het nie, bronne verskil of 'n verskaffer tydelik onbeskikbaar is. Puntr raai nie 'n telling nie. Prioriteitskontroles probeer outomaties weer; kontak ondersteuning as dit langer as 60 minute ná voltyd onopgelos bly en sluit die wedstryd- en keuse- of tweestrydskakel in.",
     "q18": "Wat beteken 'wag op geverifieerde uitslag'?",

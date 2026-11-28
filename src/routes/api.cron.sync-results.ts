@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/cron/sync-results")({
         const only = url.searchParams.get("only")?.split(",").filter(Boolean) as
           import("@/lib/sports/competitions").CompetitionKey[] | undefined;
         const priority = url.searchParams.get("priority") === "1";
-        const force = (url.searchParams.get("force") === "1" || priority) && Boolean(only?.length || priority);
+        const force = url.searchParams.get("force") === "1" && Boolean(only?.length);
         try {
           const { createSportsProvider } = await import("@/lib/sports/select.server");
           const provider = await createSportsProvider();
