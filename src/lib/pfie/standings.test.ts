@@ -807,6 +807,15 @@ describe("tableRegression", () => {
     expect(tableRegression(corrected, previous)).toBe("goalsFor_changed_without_new_matches_Alpha FC");
     expect(tableRegression(corrected, previous, true)).toBeNull();
   });
+  it("allows two-source-corroborated goal and record corrections when no matches were added", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const corrected = previous.map((row) =>
+      row.team === "Alpha FC"
+        ? { ...row, won: 8, drawn: 1, lost: 1, goalsFor: row.goalsFor + 2, points: 25 }
+        : row,
+    );
+    expect(tableRegression(corrected, previous, true, [], false, true)).toBeNull();
+  });
   it("still rejects points and win/draw/loss changes without additional matches", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
