@@ -205,3 +205,14 @@ The final history audit added only missing or weakly represented records; it did
 The ten-competition launch scope remains unchanged. Saudi Pro League and Liga Portugal remain deferred. The production implementation continues to use the existing completed_matches evidence path and roster-aware canonicalization; no duplicate archive store was introduced.
 
 **Deferred:** Saudi Pro League and Liga Portugal data/standings work remains outside the ten-competition MVP scope.
+
+
+### Production migration history alignment (28 November 2026)
+
+The production migration ledger records the three Phase 2 schema changes under these versions:
+
+- 20261128132556 — platform_updates_realtime
+- 20261128132928 — pfie_standings_snapshot_ledger_reconciliation
+- 20261128134420 — pfie_flag_snapshot_score_corrections
+
+The equivalent SQL files had been committed with later version prefixes. PR #432 aligns the repository filenames with the versions already recorded in production, preventing a future Supabase migration push from attempting to apply duplicate copies. The live apply_result_to_standings and replace_standings function bodies were compared with the committed migration SQL and match. The three admin read policies and Realtime publication membership for platform_implementation_tasks, platform_implementation_task_events and platform_updates are present in production. This is migration-ledger housekeeping only; no additional SQL was applied.
