@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "profileTitle": "{{name}}: licence, payments and reviews | Puntr",
+    "profileDescription": "{{name}} in South Africa: licence details, deposit and withdrawal methods, popularity and Puntr member ratings, with sources. 18+."
+  },
+  "breadcrumb": {
+    "directory": "Bookmaker directory"
+  },
+  "card": {
+    "viewProfile": "View profile",
+    "affiliate": "Partner"
+  },
+  "detail": {
+    "website": "Website",
+    "websiteUnknown": "Official website not yet verified",
+    "openPage": "Open full page",
+    "back": "Back to the directory",
+    "notFound": "We couldn't find that bookmaker.",
+    "sections": {
+      "licence": "Licence",
+      "popularity": "Popularity in South Africa",
+      "payments": "Deposits and withdrawals",
+      "ratings": "User-friendliness ratings",
+      "reviews": "Member reviews",
+      "sources": "Sources"
+    },
+    "licence": {
+      "holder": "Licence holder",
+      "regulator": "Regulator",
+      "province": "Province",
+      "reference": "Licence reference",
+      "verifyNgb": "Verify on the NGB register",
+      "verifyOffshore": "Verify the Curaçao certificate",
+      "offshoreBadge": "Offshore licence",
+      "saBadge": "SA provincial licence",
+      "otherLicences": "Other licences the operator publishes",
+      "flagsTitle": "Check before you rely on this"
+    },
+    "popularity": {
+      "rank": "#{{rank}} most visited gambling site in South Africa",
+      "visits": "About {{visits}} visits in October 2026 ({{domain}})",
+      "outside": "Outside the 20 most visited gambling sites in South Africa (October 2026).",
+      "noDomain": "Traffic data not available: the official website is not yet verified.",
+      "source": "Source: Semrush, October 2026"
+    },
+    "payments": {
+      "deposits": "Deposit methods",
+      "withdrawals": "Withdrawal methods",
+      "none": "Not yet verified",
+      "partial": "Partial list: the source shows only some methods.",
+      "unverified": "Unverified: no operator source confirmed these methods.",
+      "noData": "We haven't verified this bookmaker's payment methods yet. Check its cashier before you deposit."
+    },
+    "ratings": {
+      "overall": "Overall",
+      "easeOfUse": "Ease of use",
+      "payouts": "Payouts",
+      "support": "Support",
+      "based": "Based on {{count}} Puntr member review",
+      "based_other": "Based on {{count}} Puntr member reviews",
+      "none": "No member ratings yet.",
+      "external": "{{label}}: {{score}} out of {{outOf}} ({{count}})",
+      "unavailable": "Member ratings are coming soon."
+    },
+    "reviews": {
+      "empty": "No reviews yet. Be the first member to rate this bookmaker.",
+      "signIn": "Sign in to rate this bookmaker",
+      "yours": "Your review",
+      "write": "Rate this bookmaker",
+      "comment": "Comment (optional)",
+      "commentHint": "Up to {{max}} characters. Don't include personal details. Your public username is shown with your review.",
+      "save": "Save review",
+      "update": "Update review",
+      "delete": "Delete my review",
+      "saved": "Review saved",
+      "deleted": "Review deleted",
+      "failed": "We couldn't save your review. Please try again.",
+      "rateAll": "Rate all four areas to save.",
+      "member": "Puntr member",
+      "star": "{{n}} star",
+      "star_other": "{{n}} stars"
+    },
+    "affiliate": {
+      "ad": "Ad",
+      "title": "Sign up with {{name}}",
+      "body": "Puntr may earn a commission if you sign up through this link. It costs you nothing extra and doesn't affect the information on this page.",
+      "agePrompt": "Confirm you are 18 or older to see the sign-up link.",
+      "confirm": "I'm 18+",
+      "cta": "Visit {{name}}",
+      "terms": "18+ · T&Cs apply · 0800 006 008",
+      "offshoreWarning": "{{name}} holds a Curaçao licence and does not appear on South Africa's National Gambling Board register. Online betting with an operator that has no South African provincial licence may not be lawful where you live. Check with your provincial gambling board first."
+    },
+    "disclaimer": "Information on this page comes from the sources listed and was checked on the dates shown. Operators change their licences and payment methods without notice, so confirm everything on the operator's site and with the regulator. Puntr is not a bookmaker and does not endorse any operator."
+  },
+  "listCopy": "Puntr is an independent sports prediction and community platform, not a bookmaker. This is an informational licence reference, not an endorsement. Open a bookmaker for its licence, payment methods and member reviews. Sign-up links appear only for Puntr's affiliate partners, are labelled \"Ad\" and are shown only after you confirm you're 18+. A register entry does not prove that a particular website is authorised for online betting in every province. Confirm the current licence and online betting authorisation with the relevant regulator."
+}

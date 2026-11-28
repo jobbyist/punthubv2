@@ -30,15 +30,6 @@ type PermissionRow = {
 
 const additionalCandidates = [
   {
-    name: "1xBet",
-    licenceHolder: "Not confirmed",
-    regulator: "Not confirmed",
-    province: "Not confirmed",
-    licenceReference: "No NGB licence reference confirmed",
-    verificationNote:
-      "Affiliate approval does not establish a South African bookmaker licence. Verify with the relevant regulator before treating this operator as licensed.",
-  },
-  {
     name: "Playbet",
     licenceHolder: "Not confirmed",
     regulator: "Not confirmed",
