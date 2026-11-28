@@ -1,10 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { SYNTHETIC_QA_ORIGIN, syntheticQaUrl, syntheticResearchUrl } from "@/lib/synthetic/route-origin";
+import {
+  SYNTHETIC_QA_ORIGIN,
+  syntheticQaUrl,
+  syntheticResearchUrl,
+} from "@/lib/synthetic/route-origin";
 
 const EXPERIMENT_SLUG = "puntr-30-day-synthetic-2026-11-27";
-const ALLOWED_PATHS = new Set(["/", "/founding", "/predictions", "/fixtures", "/results", "/newsroom", "/roadmap"]);
+const ALLOWED_PATHS = new Set([
+  "/",
+  "/founding",
+  "/predictions",
+  "/fixtures",
+  "/results",
+  "/newsroom",
+  "/roadmap",
+]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -30,11 +42,18 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
           return Response.json({ ok: true, skipped: true, reason: "experiment_not_configured" });
         }
         if (experiment.status !== "active") {
-          return Response.json({ ok: true, skipped: true, reason: `experiment_${experiment.status}` });
+          return Response.json({
+            ok: true,
+            skipped: true,
+            reason: `experiment_${experiment.status}`,
+          });
         }
 
         const now = new Date();
-        if (now.getTime() < Date.parse(experiment.starts_at) || now.getTime() > Date.parse(experiment.ends_at)) {
+        if (
+          now.getTime() < Date.parse(experiment.starts_at) ||
+          now.getTime() > Date.parse(experiment.ends_at)
+        ) {
           return Response.json({ ok: true, skipped: true, reason: "outside_experiment_window" });
         }
 
@@ -48,7 +67,11 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
           .eq("session_type", "read_only_route_check")
           .eq("outcome", "started")
           .gte("started_at", leaseCutoff);
-        if (leaseError) return Response.json({ ok: false, error: "could_not_check_runner_lease" }, { status: 500 });
+        if (leaseError)
+          return Response.json(
+            { ok: false, error: "could_not_check_runner_lease" },
+            { status: 500 },
+          );
         const busy = new Set((leases ?? []).map((row) => row.persona_key));
 
         const { data: personas, error: personaError } = await db
@@ -59,7 +82,8 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
           .order("last_run_at", { ascending: true, nullsFirst: true })
           .order("persona_key", { ascending: true })
           .limit(50);
-        if (personaError) return Response.json({ ok: false, error: "could_not_load_personas" }, { status: 500 });
+        if (personaError)
+          return Response.json({ ok: false, error: "could_not_load_personas" }, { status: 500 });
 
         const persona = (personas ?? []).find((row) => !busy.has(row.persona_key));
         if (!persona) {
@@ -72,7 +96,10 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
           : [];
         const journey = requestedPaths.length ? requestedPaths : ["/"];
         if (journey.some((path) => !ALLOWED_PATHS.has(path))) {
-          return Response.json({ ok: false, error: "persona_contains_non_allowlisted_path" }, { status: 400 });
+          return Response.json(
+            { ok: false, error: "persona_contains_non_allowlisted_path" },
+            { status: 400 },
+          );
         }
 
         const startedAt = new Date().toISOString();
@@ -84,12 +111,19 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
             session_type: "read_only_route_check",
             started_at: startedAt,
             outcome: "started",
-            metadata: { marker: "synthetic_qa", runner: "vercel_cron", account_mode: "guest_read_only" },
+            metadata: {
+              marker: "synthetic_qa",
+              runner: "vercel_cron",
+              account_mode: "guest_read_only",
+            },
           })
           .select("id")
           .single();
         if (sessionError || !session) {
-          return Response.json({ ok: false, error: "could_not_start_synthetic_session" }, { status: 500 });
+          return Response.json(
+            { ok: false, error: "could_not_start_synthetic_session" },
+            { status: 500 },
+          );
         }
 
         const visited: string[] = [];
@@ -101,41 +135,55 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         const origin = SYNTHETIC_QA_ORIGIN;
 
         try {
-          const checks = await Promise.all(journey.map(async (path) => {
-          try {
-            const target = syntheticQaUrl(path);
-            const response = await fetch(target, {
-              method: "GET",
-              redirect: "follow",
-              cache: "no-store",
-              headers: {
-                "x-puntr-synthetic-test": "true",
-                "x-puntr-experiment": EXPERIMENT_SLUG,
-                cookie: "puntr_synthetic_qa=1",
-                "user-agent": "PuntrSyntheticQA/1.0 (+read-only route check)",
-              },
-              signal: AbortSignal.timeout(5_000),
-            });
-            const finalUrl = new URL(response.url || target.href);
-            const contentType = response.headers.get("content-type") ?? "";
-            if (finalUrl.origin !== origin) throw new Error(`${path}: redirected outside Puntr origin`);
-            if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
-            if (!contentType.includes("text/html")) throw new Error(`${path}: expected HTML, received ${contentType || "unknown content type"}`);
-            const html = await response.text();
-            if (!html.trim() || !/<html[\s>]/i.test(html)) throw new Error(`${path}: empty or invalid HTML response`);
-            return { path, error: null as string | null };
-          } catch (error) {
-            return { path, error: error instanceof Error ? error.message.slice(0, 200) : "unknown_route_check_error" };
+          const checks = await Promise.all(
+            journey.map(async (path) => {
+              try {
+                const target = syntheticQaUrl(path);
+                const response = await fetch(target, {
+                  method: "GET",
+                  redirect: "follow",
+                  cache: "no-store",
+                  headers: {
+                    "x-puntr-synthetic-test": "true",
+                    "x-puntr-experiment": EXPERIMENT_SLUG,
+                    cookie: "puntr_synthetic_qa=1",
+                    "user-agent": "PuntrSyntheticQA/1.0 (+read-only route check)",
+                  },
+                  signal: AbortSignal.timeout(5_000),
+                });
+                const finalUrl = new URL(response.url || target.href);
+                const contentType = response.headers.get("content-type") ?? "";
+                if (finalUrl.origin !== origin)
+                  throw new Error(`${path}: redirected outside Puntr origin`);
+                if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+                if (!contentType.includes("text/html"))
+                  throw new Error(
+                    `${path}: expected HTML, received ${contentType || "unknown content type"}`,
+                  );
+                const html = await response.text();
+                if (!html.trim() || !/<html[\s>]/i.test(html))
+                  throw new Error(`${path}: empty or invalid HTML response`);
+                return { path, error: null as string | null };
+              } catch (error) {
+                return {
+                  path,
+                  error:
+                    error instanceof Error
+                      ? error.message.slice(0, 200)
+                      : "unknown_route_check_error",
+                };
+              }
+            }),
+          );
+          for (const check of checks) {
+            if (check.error) throw new Error(check.error);
+            visited.push(check.path);
           }
-        }));
-        for (const check of checks) {
-          if (check.error) throw new Error(check.error);
-          visited.push(check.path);
+        } catch (error) {
+          outcome = "failed";
+          errorCode =
+            error instanceof Error ? error.message.slice(0, 240) : "unknown_route_check_error";
         }
-      } catch (error) {
-        outcome = "failed";
-        errorCode = error instanceof Error ? error.message.slice(0, 240) : "unknown_route_check_error";
-      }
 
         const finishedAt = new Date().toISOString();
         const { error: finishError } = await db
@@ -160,7 +208,10 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
           .eq("persona_key", persona.persona_key);
 
         if (finishError || personaUpdateError) {
-          return Response.json({ ok: false, error: "could_not_persist_synthetic_session" }, { status: 500 });
+          return Response.json(
+            { ok: false, error: "could_not_persist_synthetic_session" },
+            { status: 500 },
+          );
         }
 
         // Research is attempted only after the public route checks pass. The daily allocator
@@ -168,7 +219,8 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
         let research: Record<string, unknown> = { skipped: true, reason: "route_check_failed" };
         if (outcome === "passed") {
           const secret = process.env["CRON_SECRET"];
-          if (!secret) return Response.json({ ok: false, error: "cron_not_configured" }, { status: 503 });
+          if (!secret)
+            return Response.json({ ok: false, error: "cron_not_configured" }, { status: 503 });
           const endpoint = syntheticResearchUrl();
           const response = await fetch(endpoint, {
             method: "POST",
@@ -176,22 +228,28 @@ export const Route = createFileRoute("/api/cron/synthetic-run")({
             body: "{}",
             signal: AbortSignal.timeout(60_000),
           });
-          research = await response.json() as Record<string, unknown>;
+          research = (await response.json()) as Record<string, unknown>;
           if (!response.ok) {
-            return Response.json({ ok: false, persona: persona.persona_key, route_outcome: outcome, research }, { status: 502 });
+            return Response.json(
+              { ok: false, persona: persona.persona_key, route_outcome: outcome, research },
+              { status: 502 },
+            );
           }
         }
 
-        return Response.json({
-          ok: outcome === "passed",
-          runner: "vercel_cron",
-          check_type: "server_side_http_html",
-          persona: persona.persona_key,
-          paths_checked: visited,
-          route_outcome: outcome,
-          error: errorCode,
-          research,
-        }, { status: outcome === "passed" ? 200 : 502 });
+        return Response.json(
+          {
+            ok: outcome === "passed",
+            runner: "vercel_cron",
+            check_type: "server_side_http_html",
+            persona: persona.persona_key,
+            paths_checked: visited,
+            route_outcome: outcome,
+            error: errorCode,
+            research,
+          },
+          { status: outcome === "passed" ? 200 : 502 },
+        );
       },
     },
   },

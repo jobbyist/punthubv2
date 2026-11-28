@@ -75,7 +75,6 @@ export function withSearchCache(
   };
 }
 
-
 /** Cache full-page reads by canonical URL so the three daily newsroom slots share extracted source text. */
 export function withExtractCache(
   inner: ExtractProvider | null,

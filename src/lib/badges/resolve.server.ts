@@ -64,7 +64,8 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
       // PFIE can contain an empty team label when a source row is malformed. Never create an empty badge key.
       if (!validBadgeTeamName(name)) continue;
       const k = `${f.sport}:${badgeKey(name)}`;
-      if (!seen.has(k)) seen.set(k, { sport: f.sport, name: name.trim(), competition: f.competition });
+      if (!seen.has(k))
+        seen.set(k, { sport: f.sport, name: name.trim(), competition: f.competition });
     }
   }
   // Every team in a stored league table too, so the team directory has badges for teams without a fixture soon.
@@ -75,7 +76,8 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
   for (const r of (tables ?? []) as { competition: string; team: string }[]) {
     if (!validBadgeTeamName(r.team)) continue;
     const k = `soccer:${badgeKey(r.team)}`;
-    if (!seen.has(k)) seen.set(k, { sport: "soccer", name: r.team.trim(), competition: r.competition });
+    if (!seen.has(k))
+      seen.set(k, { sport: "soccer", name: r.team.trim(), competition: r.competition });
   }
   for (const item of MARQUEE_BADGE_TEAMS) {
     const k = `${item.sport}:${badgeKey(item.team)}`;
@@ -156,7 +158,8 @@ function compressPng(input: Uint8Array): Uint8Array {
     offset = end + 4;
   }
   const channels = colourType === 6 ? 4 : colourType === 2 ? 3 : 0;
-  if (!width || !height || bitDepth !== 8 || !channels || interlace !== 0 || imageData.length === 0) return input;
+  if (!width || !height || bitDepth !== 8 || !channels || interlace !== 0 || imageData.length === 0)
+    return input;
 
   try {
     const rowBytes = width * channels;
@@ -172,12 +175,18 @@ function compressPng(input: Uint8Array): Uint8Array {
         const left = x >= channels ? pixels[rowOffset + x - channels]! : 0;
         const above = y > 0 ? pixels[rowOffset - rowBytes + x]! : 0;
         const upperLeft = y > 0 && x >= channels ? pixels[rowOffset - rowBytes + x - channels]! : 0;
-        const predictor = filter === 0 ? 0
-          : filter === 1 ? left
-            : filter === 2 ? above
-              : filter === 3 ? Math.floor((left + above) / 2)
-                : filter === 4 ? paeth(left, above, upperLeft)
-                  : -1;
+        const predictor =
+          filter === 0
+            ? 0
+            : filter === 1
+              ? left
+              : filter === 2
+                ? above
+                : filter === 3
+                  ? Math.floor((left + above) / 2)
+                  : filter === 4
+                    ? paeth(left, above, upperLeft)
+                    : -1;
         if (predictor < 0) return input;
         pixels[rowOffset + x] = (value + predictor) & 0xff;
       }
@@ -307,7 +316,9 @@ async function tryOfficialPage(
       for (const match of markdown.matchAll(/!\[[^\]]*\]\((https:\/\/[^)\s]+)\)/gi)) {
         if (match[1]) urls.add(match[1].replace(/&amp;/g, "&"));
       }
-      for (const match of markdown.matchAll(/https:\/\/[^\s)<>]+?\.(?:png|jpe?g|webp)(?:\?[^\s)<>]*)?/gi)) {
+      for (const match of markdown.matchAll(
+        /https:\/\/[^\s)<>]+?\.(?:png|jpe?g|webp)(?:\?[^\s)<>]*)?/gi,
+      )) {
         urls.add(match[0].replace(/&amp;/g, "&"));
       }
       const pageHost = new URL(page.url).hostname.toLowerCase();
@@ -315,9 +326,11 @@ async function tryOfficialPage(
         try {
           const u = new URL(candidate);
           const host = u.hostname.toLowerCase();
-          return u.protocol === "https:"
-            && (host === pageHost || host.endsWith(`.${pageHost}`))
-            && /logo|crest|badge|emblem|team|club/i.test(u.pathname);
+          return (
+            u.protocol === "https:" &&
+            (host === pageHost || host.endsWith(`.${pageHost}`)) &&
+            /logo|crest|badge|emblem|team|club/i.test(u.pathname)
+          );
         } catch {
           return false;
         }
@@ -326,7 +339,12 @@ async function tryOfficialPage(
       const logoUrl = await mirror(client, image, badgePath(team.sport, team.name));
       return { logoUrl, page: page.url, image };
     } catch (error) {
-      console.warn("team-badges: official source failed", team.name, page.url, (error as Error).message);
+      console.warn(
+        "team-badges: official source failed",
+        team.name,
+        page.url,
+        (error as Error).message,
+      );
     }
   }
   return null;
@@ -458,7 +476,8 @@ export async function upgradeTeamBadge(
   const apiKey = process.env["PARALLEL_API_KEY"];
   if (!apiKey) return "quota";
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim("team-badges:sofascore-upgrade"))("parallel"))) return "quota";
+  if (!(await (await createQuotaClaim("team-badges:sofascore-upgrade"))("parallel")))
+    return "quota";
   const key = badgeKey(team.name);
   const now = new Date().toISOString();
   try {

@@ -47,11 +47,11 @@ function Refunds() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             The Founding Annual Pass provides 12 months of Puntr Pro for a once-off R299 payment,
             processed by PayFast by Network. It starts on 1 December 2026 and does not renew
-            automatically. The offer is for the first 20 Founding Members who claim it before
-            30 November 2026. To request a refund, email support@puntr.co.za from the email address
-            on your account and include your PayFast payment reference. Your rights under the
-            Consumer Protection Act and the Electronic Communications and Transactions Act,
-            including any applicable cooling-off period, are not affected. [attorney review]
+            automatically. The offer is for the first 20 Founding Members who claim it before 30
+            November 2026. To request a refund, email support@puntr.co.za from the email address on
+            your account and include your PayFast payment reference. Your rights under the Consumer
+            Protection Act and the Electronic Communications and Transactions Act, including any
+            applicable cooling-off period, are not affected. [attorney review]
           </p>
         </section>
 

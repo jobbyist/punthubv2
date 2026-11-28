@@ -93,7 +93,6 @@ function Verify() {
   // A link from a pick (/verify?id=...) checks it straight away.
   useEffect(() => {
     if (initial) void run(initial);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = (e: FormEvent) => {

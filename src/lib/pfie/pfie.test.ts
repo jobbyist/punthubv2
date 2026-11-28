@@ -414,14 +414,23 @@ describe("PFIE extraction request chunking", () => {
       url: "https://league.test/results",
       domain: "league.test",
       tier: "official",
-      text: Array.from({ length: 40 }, (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`).join("\n"),
+      text: Array.from(
+        { length: 40 },
+        (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`,
+      ).join("\n"),
     };
     const batches = chunkSourcesForExtraction([source], 1_000, 500);
-    const allText = batches.flatMap((batch) => batch.sources).map((chunk) => chunk.text).join("\n");
+    const allText = batches
+      .flatMap((batch) => batch.sources)
+      .map((chunk) => chunk.text)
+      .join("\n");
 
     expect(batches.length).toBeGreaterThan(1);
     for (const batch of batches) {
-      const sourceChars = batch.sources.reduce((sum, chunk) => sum + chunk.text.length + chunk.domain.length + 64, 0);
+      const sourceChars = batch.sources.reduce(
+        (sum, chunk) => sum + chunk.text.length + chunk.domain.length + 64,
+        0,
+      );
       expect(sourceChars).toBeLessThanOrEqual(1_000);
       expect(Object.values(batch.sourceIndexByChunk)).toEqual(batch.sources.map(() => 7));
     }
@@ -728,7 +737,11 @@ describe("provider", () => {
       only: ["psl"],
     });
     expect(out.fixtures).toHaveLength(1);
-    expect(store.runs[0]).toMatchObject({ kind: "results", ok: true, model: DEFAULT_PFIE_MODELS[0] });
+    expect(store.runs[0]).toMatchObject({
+      kind: "results",
+      ok: true,
+      model: DEFAULT_PFIE_MODELS[0],
+    });
     expect(out.fixtures[0]).toMatchObject({
       providerRef: "r1",
       status: "finished",

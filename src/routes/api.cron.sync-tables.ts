@@ -29,7 +29,8 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
             : undefined;
         const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
         // Forced retries are restricted to an authenticated cron request and an explicit standings scope.
-        const force = url.searchParams.get("force") === "1" && job === "standings" && Boolean(only?.length);
+        const force =
+          url.searchParams.get("force") === "1" && job === "standings" && Boolean(only?.length);
 
         const { createParallelExtract, createParallelResponses, createParallelSearch } =
           await import("@/lib/content/providers.server");

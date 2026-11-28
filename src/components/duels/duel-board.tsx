@@ -77,7 +77,11 @@ export function DuelBoard({ className }: { className?: string }) {
                   >
                     @{r.username}
                   </Link>
-                  {r.is_ai_participant && <span className="ml-1.5 align-middle"><ProBadge aiParticipant /></span>}
+                  {r.is_ai_participant && (
+                    <span className="ml-1.5 align-middle">
+                      <ProBadge aiParticipant />
+                    </span>
+                  )}
                 </td>
                 <td className="py-2 text-right">{r.wins}</td>
                 <td className="py-2 text-right">{r.draws}</td>

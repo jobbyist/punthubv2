@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { runCompleteSignup, signupSchema, usernameSchema, type SignupResult } from "@/lib/accounts.logic";
+import {
+  runCompleteSignup,
+  signupSchema,
+  usernameSchema,
+  type SignupResult,
+} from "@/lib/accounts.logic";
 import { runUsernameSignIn, type UsernameSignInResult } from "@/lib/username-signin.logic";
 
 export type { SignupResult } from "@/lib/accounts.logic";
@@ -13,9 +18,11 @@ export const updateMyUsername = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) => {
     const o = (typeof input === "object" && input !== null ? input : {}) as { username?: unknown };
-    return { username: usernameSchema.safeParse(o.username).success
-      ? usernameSchema.parse(o.username)
-      : "" };
+    return {
+      username: usernameSchema.safeParse(o.username).success
+        ? usernameSchema.parse(o.username)
+        : "",
+    };
   })
   .handler(async ({ data, context }): Promise<UsernameUpdateResult> => {
     if (!data.username) return { ok: false, code: "invalid_username" };
@@ -34,7 +41,6 @@ export const updateMyUsername = createServerFn({ method: "POST" })
     }
     return { ok: true, username: String(username ?? data.username) };
   });
-
 
 /**
  * Creates the signed-in user's profile and consent rows in one transaction (complete_signup).

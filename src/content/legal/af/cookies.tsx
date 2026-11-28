@@ -70,10 +70,10 @@ export function CookiesAf({
               rekeningsekuriteit weggewys het (3 dae).
             </li>
             <li>
-              Blaaierberging <code>puntr:context:v1</code>: onthou op hierdie toestel hoeveel keer jy
-              al besoek het, die laaste paar Puntr-bladsye en wedstryd wat jy oopgemaak het, en wenke
-              wat jy versteek het, sodat Ontdek en die tuisblad die volgende stap kan wys wat by jou
-              pas. Dit verlaat nooit jou blaaier nie.
+              Blaaierberging <code>puntr:context:v1</code>: onthou op hierdie toestel hoeveel keer
+              jy al besoek het, die laaste paar Puntr-bladsye en wedstryd wat jy oopgemaak het, en
+              wenke wat jy versteek het, sodat Ontdek en die tuisblad die volgende stap kan wys wat
+              by jou pas. Dit verlaat nooit jou blaaier nie.
             </li>
             <li>
               Blaaierberging <code>puntr:has-account</code>: onthou dat iemand al op hierdie toestel
@@ -116,8 +116,14 @@ export function CookiesAf({
         </section>
         <section className="flex items-start justify-between gap-4">
           <div>
-            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">PFIE-leerdata (opsioneel)</Label>
-            <p className="mt-1 text-sm text-muted-foreground">Laat Puntr toe om gepseudonimiseerde funksie-interaksies en gepubliseerde keuses te gebruik om PFIE se sportintelligensie te verbeter. Apart van ontledings; af tensy jy inteken. Jy kan dit onder Rekeningprivaatheid terugtrek.</p>
+            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">
+              PFIE-leerdata (opsioneel)
+            </Label>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Laat Puntr toe om gepseudonimiseerde funksie-interaksies en gepubliseerde keuses te
+              gebruik om PFIE se sportintelligensie te verbeter. Apart van ontledings; af tensy jy
+              inteken. Jy kan dit onder Rekeningprivaatheid terugtrek.
+            </p>
           </div>
           <Switch id="pfie-learning" checked={pfieLearning} onCheckedChange={setPfieLearning} />
         </section>

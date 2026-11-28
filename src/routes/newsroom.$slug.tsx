@@ -200,7 +200,9 @@ function Article() {
                 </ol>
               </>
             )}
-            {a.ai_model !== "parallel-medium" && <p className="mt-3 text-xs text-muted-foreground">{t("ai.note")}</p>}
+            {a.ai_model !== "parallel-medium" && (
+              <p className="mt-3 text-xs text-muted-foreground">{t("ai.note")}</p>
+            )}
           </aside>
         )}
 

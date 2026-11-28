@@ -12,14 +12,16 @@ export interface FixtureStore {
   openSince(
     since: Date,
     now: Date,
-  ): Promise<{
-    provider: string;
-    providerRef: string;
-    competition: string;
-    home: string;
-    away: string;
-    kickoffAt: string;
-  }[]>;
+  ): Promise<
+    {
+      provider: string;
+      providerRef: string;
+      competition: string;
+      home: string;
+      away: string;
+      kickoffAt: string;
+    }[]
+  >;
 }
 
 export interface SyncReport {
@@ -172,7 +174,8 @@ export async function syncResults(
         !Number.isFinite(resultKickoff) ||
         !Number.isFinite(candidateKickoff) ||
         Math.abs(resultKickoff - candidateKickoff) > 15 * 60 * 1000
-      ) continue;
+      )
+        continue;
       rowsByRef.set(candidate.providerRef, {
         ...result,
         provider: candidate.provider,

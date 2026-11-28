@@ -37,18 +37,38 @@ export function sportsBrief(
   const angles: Record<ContentSlot, { label: string; objective: string; queries: string[] }> = {
     breaking: {
       label: "Breaking News",
-      objective: "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Use sources from the last seven days only for supporting context, never as the lead development. Prefer individual, dated article pages from official and established publishers; avoid generic homepages, index pages and team profiles. Return only genuinely current stories and distinguish confirmed facts from reports.",
-      queries: [`South African football confirmed news ${sastDate(now)}`, `site:psl.co.za/news football ${sastDate(now)}`, `site:sabcsport.com/soccer/news Betway Premiership ${sastDate(now)}`, `site:africasoccer.com South African football ${sastDate(now)}`, `site:soccerladuma.co.za/news South African football ${sastDate(now)}`, `site:kickoff.com/news South African football ${sastDate(now)}`, `site:supersport.com/football South African football news ${sastDate(now)}`, `Premier League official football news ${sastDate(now)}`],
+      objective:
+        "Find the most important verified football developments published within the last 24 hours for South African fans. Prioritise official league, club and federation announcements, confirmed results, suspensions, injuries, transfers and fixture changes. Use sources from the last seven days only for supporting context, never as the lead development. Prefer individual, dated article pages from official and established publishers; avoid generic homepages, index pages and team profiles. Return only genuinely current stories and distinguish confirmed facts from reports.",
+      queries: [
+        `South African football confirmed news ${sastDate(now)}`,
+        `site:psl.co.za/news football ${sastDate(now)}`,
+        `site:sabcsport.com/soccer/news Betway Premiership ${sastDate(now)}`,
+        `site:africasoccer.com South African football ${sastDate(now)}`,
+        `site:soccerladuma.co.za/news South African football ${sastDate(now)}`,
+        `site:kickoff.com/news South African football ${sastDate(now)}`,
+        `site:supersport.com/football South African football news ${sastDate(now)}`,
+        `Premier League official football news ${sastDate(now)}`,
+      ],
     },
     editorial: {
       label: "Editorial Analysis",
-      objective: "Find a substantive football issue with enough recent evidence for an original editorial analysis for South African readers. Seek multiple credible perspectives, relevant match or season context, tactical evidence and data. Prefer individual article pages over generic indexes. Avoid recycled opinion columns and unsupported speculation.",
-      queries: [`site:psl.co.za/news Betway Premiership tactical analysis ${sastDate(now)}`, `South African football tactical analysis recent matches statistics ${sastDate(now)}`, `Premier League tactical analysis latest match data ${sastDate(now)}`],
+      objective:
+        "Find a substantive football issue with enough recent evidence for an original editorial analysis for South African readers. Seek multiple credible perspectives, relevant match or season context, tactical evidence and data. Prefer individual article pages over generic indexes. Avoid recycled opinion columns and unsupported speculation.",
+      queries: [
+        `site:psl.co.za/news Betway Premiership tactical analysis ${sastDate(now)}`,
+        `South African football tactical analysis recent matches statistics ${sastDate(now)}`,
+        `Premier League tactical analysis latest match data ${sastDate(now)}`,
+      ],
     },
     intelligence: {
       label: "Sports Intelligence",
-      objective: "Research a data-led football intelligence angle for South African fans: form, tactical patterns, team performance, competition context and upcoming fixtures. Prioritise official competition statistics and established sports data reporting, including relevant stats and fixture pages. Every statistic must be attributable to a source.",
-      queries: [`Betway Premiership team statistics form standings ${sastDate(now)}`, `South African football player and team statistics ${sastDate(now)}`, `Premier League team performance statistics latest ${sastDate(now)}`],
+      objective:
+        "Research a data-led football intelligence angle for South African fans: form, tactical patterns, team performance, competition context and upcoming fixtures. Prioritise official competition statistics and established sports data reporting, including relevant stats and fixture pages. Every statistic must be attributable to a source.",
+      queries: [
+        `Betway Premiership team statistics form standings ${sastDate(now)}`,
+        `South African football player and team statistics ${sastDate(now)}`,
+        `Premier League team performance statistics latest ${sastDate(now)}`,
+      ],
     },
   };
   const angle = slot ? angles[slot] : null;
@@ -141,16 +161,59 @@ function pageRank(hit: SearchHit, slot?: ContentSlot): number {
     return 9;
   }
   const segments = path.split("/").filter(Boolean);
-  const indexPages = ["news", "latest", "football", "sport", "fixtures", "results", "tournament", "data", "stats", "teams", "clubs", "competition", "league", "leagues"];
-  const dataPages = ["data", "stats", "standings", "table", "fixtures", "results", "teams", "clubs", "tournament", "competition"];
-  const genericTail = ["football", "soccer", "sports", "news", "world", "africa", "south-africa", "south+africa", "latest", "index", "home", "all"];
+  const indexPages = [
+    "news",
+    "latest",
+    "football",
+    "sport",
+    "fixtures",
+    "results",
+    "tournament",
+    "data",
+    "stats",
+    "teams",
+    "clubs",
+    "competition",
+    "league",
+    "leagues",
+  ];
+  const dataPages = [
+    "data",
+    "stats",
+    "standings",
+    "table",
+    "fixtures",
+    "results",
+    "teams",
+    "clubs",
+    "tournament",
+    "competition",
+  ];
+  const genericTail = [
+    "football",
+    "soccer",
+    "sports",
+    "news",
+    "world",
+    "africa",
+    "south-africa",
+    "south+africa",
+    "latest",
+    "index",
+    "home",
+    "all",
+  ];
   const title = hit.title.toLowerCase();
   let score = 0;
   if (path === "/") score += 8;
   if (segments.length === 1 && indexPages.includes(segments[0]!)) score += 5;
   if (segments.length === 1 && /^[a-z]{2}-[a-z]{2}$/i.test(segments[0]!)) score += 5;
   if (segments.length >= 3 && genericTail.includes(segments[segments.length - 1]!)) score += 5;
-  if (title.length < 25 && /(news|football|soccer|sport|home|latest|afrik-foot|newsnow)/i.test(title)) score += 4;
+  if (
+    title.length < 25 &&
+    /(news|football|soccer|sport|home|latest|afrik-foot|newsnow)/i.test(title)
+  )
+    score += 4;
   if (dataPages.some((segment) => segments.includes(segment))) {
     score += slot === "intelligence" ? -2 : 4;
   }
@@ -182,7 +245,12 @@ function freshnessPenalty(hit: SearchHit, slot: ContentSlot | undefined, now: Da
   return age > thresholds.stale ? 8 : 3;
 }
 
-export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot, now = new Date()): SearchHit[] {
+export function rankHits(
+  hits: SearchHit[],
+  limit: number,
+  slot?: ContentSlot,
+  now = new Date(),
+): SearchHit[] {
   const seen = new Set<string>();
   const perDomain = new Map<string, number>();
   const kept: (SearchHit & { rank: number; order: number })[] = [];
@@ -192,7 +260,14 @@ export function rankHits(hits: SearchHit[], limit: number, slot?: ContentSlot, n
     if (isBlockedDomain(domain) || seen.has(url)) return;
     seen.add(url);
     // Prefer individual, dated articles; keep stats/fixture pages higher for intelligence work.
-    kept.push({ ...hit, url, rank: (pageRank({ ...hit, url }, slot) + freshnessPenalty({ ...hit, url }, slot, now)) * 100 + domainRank(domain), order });
+    kept.push({
+      ...hit,
+      url,
+      rank:
+        (pageRank({ ...hit, url }, slot) + freshnessPenalty({ ...hit, url }, slot, now)) * 100 +
+        domainRank(domain),
+      order,
+    });
   });
   kept.sort((a, b) => a.rank - b.rank || a.order - b.order);
   const out: SearchHit[] = [];
@@ -232,7 +307,10 @@ export function toSource(
     domain: domainOf(hit.url),
     title: page?.title || hit.title || domainOf(hit.url),
     publishedAt: hit.publishedAt,
-    text: cleanText([hit.excerpt, page?.markdown].filter(Boolean).join("\n\n"), MAX_RESEARCH_SOURCE_CHARS),
+    text: cleanText(
+      [hit.excerpt, page?.markdown].filter(Boolean).join("\n\n"),
+      MAX_RESEARCH_SOURCE_CHARS,
+    ),
     via: page ? "extract" : "search",
   };
 }

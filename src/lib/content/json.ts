@@ -39,7 +39,9 @@ export function parseJsonObject(text: string): unknown | null {
       if (depth === 0) {
         try {
           const value: unknown = JSON.parse(candidate.slice(start, i + 1));
-          return typeof value === "object" && value !== null && !Array.isArray(value) ? value : null;
+          return typeof value === "object" && value !== null && !Array.isArray(value)
+            ? value
+            : null;
         } catch {
           return null;
         }

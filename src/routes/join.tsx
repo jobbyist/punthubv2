@@ -635,7 +635,6 @@ function CodeStep({
   );
 }
 
-
 function OnboardingStep({
   onDone,
   onBlocked,

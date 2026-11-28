@@ -67,7 +67,6 @@ export function pathFromPublicUrl(url: string | null | undefined): string | null
   return i === -1 ? null : url.slice(i + marker.length);
 }
 
-
 /** Sports avatar choices use one optimized 4x4 sprite sheet stored in the public assets directory. */
 export const SPORTS_AVATARS = [
   { key: "football-fan", label: "Football fan", index: 0 },

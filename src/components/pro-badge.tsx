@@ -11,9 +11,7 @@ export function ProBadge({ aiParticipant = false }: { aiParticipant?: boolean })
         {t("proBadge")}
       </span>
       {aiParticipant ? (
-        <span className="text-[10px] font-medium text-muted-foreground">
-          {t("aiParticipant")}
-        </span>
+        <span className="text-[10px] font-medium text-muted-foreground">{t("aiParticipant")}</span>
       ) : null}
     </span>
   );

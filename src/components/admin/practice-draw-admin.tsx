@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsync } from "@/hooks/use-async";
 import { formatDateTime } from "@/lib/format";
-import { DRAW_WINNER_COUNT, getDrawOverview, runPracticeDraw, type DrawResult } from "@/lib/practice-draw.functions";
+import {
+  DRAW_WINNER_COUNT,
+  getDrawOverview,
+  runPracticeDraw,
+  type DrawResult,
+} from "@/lib/practice-draw.functions";
 
 const panel = "card-surface p-5";
 
@@ -88,7 +93,9 @@ export function PracticeDrawTab() {
         <p className="mt-1 text-sm text-muted-foreground">{t("draw.runBody")}</p>
         {!data.closed && <p className="mt-2 text-sm font-semibold">{t("draw.notClosed")}</p>}
         {data.closed && data.entries.length < DRAW_WINNER_COUNT && (
-          <p className="mt-2 text-sm font-semibold text-destructive">{t("draw.notEnoughEntries")}</p>
+          <p className="mt-2 text-sm font-semibold text-destructive">
+            {t("draw.notEnoughEntries")}
+          </p>
         )}
         <div className="mt-3 space-y-2">
           <Input
@@ -176,7 +183,8 @@ export function PracticeDrawTab() {
             {data.log.map((l) => (
               <li key={l.id} className="py-2">
                 <span className="font-semibold">
-                  #{l.winner_rank} · @{l.winner_username ?? "?"} · #{l.winner_founding_number ?? "?"}
+                  #{l.winner_rank} · @{l.winner_username ?? "?"} · #
+                  {l.winner_founding_number ?? "?"}
                 </span>{" "}
                 <span className="text-muted-foreground">
                   {formatDateTime(l.drawn_at)} ·{" "}

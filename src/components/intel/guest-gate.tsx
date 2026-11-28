@@ -76,13 +76,16 @@ function GateCardInner({ overlap }: { overlap: boolean }) {
             {t("gate.title")}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">{t("gate.body")}</p>
-          <Button size="lg" className="mt-4 h-11 w-full" onClick={() => void navigate({ to: "/join", search: { next: returnTo } })}>
+          <Button
+            size="lg"
+            className="mt-4 h-11 w-full"
+            onClick={() => void navigate({ to: "/join", search: { next: returnTo } })}
+          >
             {t("gate.cta")}
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">{t("gate.reassure")}</p>
         </aside>
       </div>
-
     </>
   );
 }

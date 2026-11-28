@@ -60,7 +60,10 @@ export function PickCard({
             )}
           </p>
           <p className="text-xs text-muted-foreground">
-            {t("picks.submittedAt", { date: formatDate(pick.created_at), time: formatTime(pick.created_at) })}
+            {t("picks.submittedAt", {
+              date: formatDate(pick.created_at),
+              time: formatTime(pick.created_at),
+            })}
           </p>
           <p className="text-xs text-muted-foreground">
             {t("picks.lockedBefore", { span: lockedBefore(pick.created_at, kickoff) })}

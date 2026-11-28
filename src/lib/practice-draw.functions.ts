@@ -114,7 +114,16 @@ export type DrawResult =
       drawn_at: string;
       winners: DrawWinner[];
     }
-  | { ok: false; error: "not_closed" | "no_entries" | "not_enough_entries" | "already_drawn" | "witness_required" | "failed" };
+  | {
+      ok: false;
+      error:
+        | "not_closed"
+        | "no_entries"
+        | "not_enough_entries"
+        | "already_drawn"
+        | "witness_required"
+        | "failed";
+    };
 
 /** Admin: select three distinct eligible Pro members at random and record the draw as one group. */
 export const runPracticeDraw = createServerFn({ method: "POST" })
@@ -137,10 +146,12 @@ export const runPracticeDraw = createServerFn({ method: "POST" })
     });
     if (error) {
       if (error.message.includes("no_entries")) return { ok: false, error: "no_entries" };
-      if (error.message.includes("not_enough_entries")) return { ok: false, error: "not_enough_entries" };
+      if (error.message.includes("not_enough_entries"))
+        return { ok: false, error: "not_enough_entries" };
       if (error.message.includes("already_drawn")) return { ok: false, error: "already_drawn" };
       if (error.message.includes("not_closed")) return { ok: false, error: "not_closed" };
-      if (error.message.includes("witness_required")) return { ok: false, error: "witness_required" };
+      if (error.message.includes("witness_required"))
+        return { ok: false, error: "witness_required" };
       console.error("practice draw failed", error.message);
       return { ok: false, error: "failed" };
     }

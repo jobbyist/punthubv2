@@ -23,7 +23,8 @@ function errorKind(status: number): "auth" | "quota" | "unavailable" | "bad_requ
 export function createParallelDecisions(apiKey: string, fetchImpl: typeof fetch = fetch) {
   return {
     async decide(input: ParallelDecisionRequest): Promise<Record<string, unknown>> {
-      if (!apiKey) throw new ProviderError("parallel", "auth", null, "PARALLEL_API_KEY is not configured");
+      if (!apiKey)
+        throw new ProviderError("parallel", "auth", null, "PARALLEL_API_KEY is not configured");
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 45_000);
       try {
@@ -35,22 +36,42 @@ export function createParallelDecisions(apiKey: string, fetchImpl: typeof fetch 
         });
         const raw = await response.text();
         if (!response.ok) {
-          throw new ProviderError("parallel", errorKind(response.status), response.status, raw.slice(0, 300));
+          throw new ProviderError(
+            "parallel",
+            errorKind(response.status),
+            response.status,
+            raw.slice(0, 300),
+          );
         }
         let result: unknown;
         try {
           result = JSON.parse(raw);
         } catch {
-          throw new ProviderError("parallel", "bad_response", response.status, "Response was not valid JSON");
+          throw new ProviderError(
+            "parallel",
+            "bad_response",
+            response.status,
+            "Response was not valid JSON",
+          );
         }
         if (!result || typeof result !== "object" || Array.isArray(result)) {
-          throw new ProviderError("parallel", "bad_response", response.status, "Response was not an object");
+          throw new ProviderError(
+            "parallel",
+            "bad_response",
+            response.status,
+            "Response was not an object",
+          );
         }
         return result as Record<string, unknown>;
       } catch (error) {
         if (error instanceof ProviderError) throw error;
         const aborted = error instanceof Error && error.name === "AbortError";
-        throw new ProviderError("parallel", aborted ? "timeout" : "unavailable", null, error instanceof Error ? error.message : "Unknown provider error");
+        throw new ProviderError(
+          "parallel",
+          aborted ? "timeout" : "unavailable",
+          null,
+          error instanceof Error ? error.message : "Unknown provider error",
+        );
       } finally {
         clearTimeout(timer);
       }

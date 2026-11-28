@@ -67,7 +67,10 @@ describe("member-odds rule", () => {
 describe("sources", () => {
   it("prioritises approved affiliate partners, led by Hollywoodbets", () => {
     expect(ODDS_AFFILIATE_PRIORITY_DOMAINS.slice(0, 4)).toEqual([
-      "hollywoodbets.net", "supabets.co.za", "yesplay.bet", "1xbet.com",
+      "hollywoodbets.net",
+      "supabets.co.za",
+      "yesplay.bet",
+      "1xbet.com",
     ]);
     expect(oddsQueries("Premier League", fixtures)[0]).toContain("site:hollywoodbets.net");
     expect(oddsQueries("Premier League", fixtures)[1]).toContain("site:supabets.co.za");

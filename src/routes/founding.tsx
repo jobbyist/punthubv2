@@ -205,7 +205,10 @@ function Founding() {
 
       <AnnualPassClaim />
 
-      <section className="puntr-reveal mt-12 border border-primary/30 p-6" aria-labelledby="founding-giveaway">
+      <section
+        className="puntr-reveal mt-12 border border-primary/30 p-6"
+        aria-labelledby="founding-giveaway"
+      >
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
           {t("giveaway.eyebrow")}
         </p>

@@ -133,7 +133,8 @@ export const adminSettlementOverview = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: pending, error } = await supabaseAdmin.rpc("pending_settlements");
     if (error) throw error;
-    const { data: awaiting, error: awaitingError } = await supabaseAdmin.rpc("pending_result_fixtures");
+    const { data: awaiting, error: awaitingError } =
+      await supabaseAdmin.rpc("pending_result_fixtures");
     // A Vercel preview may point at a database before this additive migration has been applied.
     if (awaitingError && awaitingError.code !== "PGRST202") throw awaitingError;
     const resultPending = (awaiting ?? []).map((f) => ({

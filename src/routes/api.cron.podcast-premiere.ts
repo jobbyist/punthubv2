@@ -40,13 +40,16 @@ export const Route = createFileRoute("/api/cron/podcast-premiere")({
         let sentCount = 0;
         let failedCount = 0;
         for (const recipient of recipients) {
-          const email = await sendViaResend({
-            to: recipient.email,
-            reply_to: REPLY_TO,
-            subject: "The Good Sport is live — Episode 01",
-            text: "The wait is over. The Good Sport Episode 01 is now live. Listen here: https://puntr.co.za/the-good-sport/episode-01\n\nYou asked us to notify you when this episode was released. This is the one-off alert you requested.",
-            html: '<div style="margin:0;background:#0b100c;padding:32px 16px;font-family:Arial,sans-serif;color:#fff"><div style="max-width:560px;margin:0 auto;border:1px solid #243629;border-radius:20px;padding:32px;background:#101710"><p style="margin:0;color:#4ade80;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase">PUNTR ORIGINAL PODCAST</p><h1 style="margin:18px 0 8px;font-size:34px;line-height:1.05">THE GOOD SPORT<span style="color:#4ade80">.</span></h1><p style="color:#c6d0c8;font-size:15px;line-height:1.6">The wait is over. Episode one is now live — the stories, stats and split-second decisions that shape the way we see sport.</p><a href="https://puntr.co.za/the-good-sport/episode-01" style="display:inline-block;margin-top:16px;border-radius:10px;background:#16a34a;padding:14px 20px;color:#fff;font-weight:700;text-decoration:none">Listen to episode one</a><p style="margin-top:28px;color:#87958a;font-size:11px;line-height:1.6">You received this one-off alert because you requested to be notified about The Good Sport Episode 01. No other marketing emails are included in this signup.</p></div></div>',
-          }, { idempotencyKey: `puntr-podcast-premiere:${EPISODE_SLUG}:${recipient.id}` });
+          const email = await sendViaResend(
+            {
+              to: recipient.email,
+              reply_to: REPLY_TO,
+              subject: "The Good Sport is live — Episode 01",
+              text: "The wait is over. The Good Sport Episode 01 is now live. Listen here: https://puntr.co.za/the-good-sport/episode-01\n\nYou asked us to notify you when this episode was released. This is the one-off alert you requested.",
+              html: '<div style="margin:0;background:#0b100c;padding:32px 16px;font-family:Arial,sans-serif;color:#fff"><div style="max-width:560px;margin:0 auto;border:1px solid #243629;border-radius:20px;padding:32px;background:#101710"><p style="margin:0;color:#4ade80;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase">PUNTR ORIGINAL PODCAST</p><h1 style="margin:18px 0 8px;font-size:34px;line-height:1.05">THE GOOD SPORT<span style="color:#4ade80">.</span></h1><p style="color:#c6d0c8;font-size:15px;line-height:1.6">The wait is over. Episode one is now live — the stories, stats and split-second decisions that shape the way we see sport.</p><a href="https://puntr.co.za/the-good-sport/episode-01" style="display:inline-block;margin-top:16px;border-radius:10px;background:#16a34a;padding:14px 20px;color:#fff;font-weight:700;text-decoration:none">Listen to episode one</a><p style="margin-top:28px;color:#87958a;font-size:11px;line-height:1.6">You received this one-off alert because you requested to be notified about The Good Sport Episode 01. No other marketing emails are included in this signup.</p></div></div>',
+            },
+            { idempotencyKey: `puntr-podcast-premiere:${EPISODE_SLUG}:${recipient.id}` },
+          );
           if (!email.ok) {
             failedCount += 1;
             console.error("podcast-premiere: email send failed", email.status, email.body);

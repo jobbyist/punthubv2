@@ -20,7 +20,11 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
         // Automated odds remain disabled until written data rights are approved in the source registry
         // and an operator explicitly enables the feature flag.
         if (env["ODDS_AUTOMATION_ENABLED"] !== "true") {
-          return Response.json({ ok: true, disabled: true, reason: "awaiting_written_bookmaker_data_rights" });
+          return Response.json({
+            ok: true,
+            disabled: true,
+            reason: "awaiting_written_bookmaker_data_rights",
+          });
         }
         if (!env["PARALLEL_API_KEY"]?.trim()) {
           return Response.json({ ok: false, error: "parallel_not_configured" }, { status: 503 });
@@ -48,7 +52,11 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
           const store = await createOddsStore();
           const allowedDomains = await store.authorizedDomains();
           if (allowedDomains.length === 0) {
-            return Response.json({ ok: true, disabled: true, reason: "no_bookmaker_has_verified_licence_and_written_data_rights" });
+            return Response.json({
+              ok: true,
+              disabled: true,
+              reason: "no_bookmaker_has_verified_licence_and_written_data_rights",
+            });
           }
           const claim = await createQuotaClaim("pfie:odds");
           const report = await runOddsSync(
@@ -65,7 +73,10 @@ export const Route = createFileRoute("/api/cron/sync-odds")({
                 claim,
               ),
               // Structured odds extraction uses Parallel Chat low, not Gemini.
-              llm: guardLlm(createParallelResponses(keys.parallelKey!, {}, { effort: "low" }), claim),
+              llm: guardLlm(
+                createParallelResponses(keys.parallelKey!, {}, { effort: "low" }),
+                claim,
+              ),
               store,
               allowedDomains,
             },

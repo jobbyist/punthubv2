@@ -152,7 +152,8 @@ export function corroborate(input: {
     // Match stored rows by canonical team identity, not just display spelling. Prefer the closest
     // kick-off, then an unresolved duplicate over a finished alias row so syncResults can reconcile
     // every provider_ref for the same match.
-    const targetKickoff = kickoff?.value ?? c.observations.find((o) => o.kickoffUtc)?.kickoffUtc ?? null;
+    const targetKickoff =
+      kickoff?.value ?? c.observations.find((o) => o.kickoffUtc)?.kickoffUtc ?? null;
     const matchingFixtures = input.known
       .filter(
         (fixture) =>

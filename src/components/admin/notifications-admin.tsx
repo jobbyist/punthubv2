@@ -182,7 +182,8 @@ export function NotificationsTab() {
             )}
             {!valid && (
               <p className="text-xs text-muted-foreground">
-                Enter a title and message (at least 3 characters each). Sending to one member also requires their username.
+                Enter a title and message (at least 3 characters each). Sending to one member also
+                requires their username.
               </p>
             )}
           </div>

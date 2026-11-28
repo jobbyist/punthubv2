@@ -22,7 +22,10 @@ export const Route = createFileRoute("/api/cron/content-daily")({
         const kindParam = url.searchParams.get("kind");
         const kind = kindParam === "sports" || kindParam === "development" ? kindParam : undefined;
         const slotParam = url.searchParams.get("slot");
-        const slot = slotParam === "breaking" || slotParam === "editorial" || slotParam === "intelligence" ? slotParam : undefined;
+        const slot =
+          slotParam === "breaking" || slotParam === "editorial" || slotParam === "intelligence"
+            ? slotParam
+            : undefined;
         const force = url.searchParams.get("force") === "1";
         const dry = url.searchParams.get("dry") === "1";
         const scheduledSlot = slot !== undefined && url.searchParams.get("trigger") === "cron";
@@ -49,12 +52,15 @@ export const Route = createFileRoute("/api/cron/content-daily")({
               store: createContentStore(),
               env,
               search: env.parallelKey
-                ? withSearchCache(guardSearch(createParallelSearch(env.parallelKey), claim), cache, "news")
+                ? withSearchCache(
+                    guardSearch(createParallelSearch(env.parallelKey), claim),
+                    cache,
+                    "news",
+                  )
                 : null,
               extract: withExtractCache(
-                createPageReader(
-                  { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
-                  (r) => guardExtract(r, claim),
+                createPageReader({ firecrawl: env.firecrawlKey, parallel: env.parallelKey }, (r) =>
+                  guardExtract(r, claim),
                 ),
                 cache,
                 "news",

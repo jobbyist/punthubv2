@@ -114,7 +114,10 @@ export function LatestResults() {
   const { t } = useTranslation("predictions");
   const { data, failed, loading } = useAsync(() => fetchLatestResults(6), []);
   return (
-    <section aria-labelledby="hub-results" className="card-surface min-w-0 overflow-hidden p-4 sm:p-5">
+    <section
+      aria-labelledby="hub-results"
+      className="card-surface min-w-0 overflow-hidden p-4 sm:p-5"
+    >
       <span id="hub-results" className="sr-only">
         {t("hub.results.title")}
       </span>
@@ -129,8 +132,13 @@ export function LatestResults() {
             const homeWin = r.home_score > r.away_score;
             const awayWin = r.away_score > r.home_score;
             return (
-              <li key={r.id} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 py-2.5 text-xs sm:flex sm:gap-3 sm:text-sm">
-                <span className="hidden shrink-0 sm:inline-flex"><CompetitionBadge name={r.competition} showName={false} /></span>
+              <li
+                key={r.id}
+                className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 py-2.5 text-xs sm:flex sm:gap-3 sm:text-sm"
+              >
+                <span className="hidden shrink-0 sm:inline-flex">
+                  <CompetitionBadge name={r.competition} showName={false} />
+                </span>
                 <span
                   className={`min-w-0 flex-1 truncate text-right ${homeWin ? "font-bold" : ""}`}
                 >
@@ -231,7 +239,9 @@ export function DuelsTeaser() {
                 <span className="min-w-0 truncate">
                   {d.fixture.home} v {d.fixture.away}
                 </span>
-                <span className="max-w-[40%] shrink-0 truncate text-xs font-semibold text-primary">@{d.challenger}</span>
+                <span className="max-w-[40%] shrink-0 truncate text-xs font-semibold text-primary">
+                  @{d.challenger}
+                </span>
               </Link>
             </li>
           ))}
@@ -282,26 +292,48 @@ export function LeadersTeaser() {
   );
 }
 
-
 /** Five newest published sports stories. Draft and scheduled articles remain hidden by newsroom policy. */
 export function NewsroomTeaser() {
   const { t } = useTranslation("predictions");
-  const { data, loading, failed } = useAsync(() => fetchPublished({ category: "sports", limit: 5 }), []);
+  const { data, loading, failed } = useAsync(
+    () => fetchPublished({ category: "sports", limit: 5 }),
+    [],
+  );
   return (
-    <section className="card-surface min-w-0 overflow-hidden p-4 sm:p-5" aria-labelledby="discover-newsroom-title">
+    <section
+      className="card-surface min-w-0 overflow-hidden p-4 sm:p-5"
+      aria-labelledby="discover-newsroom-title"
+    >
       <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2">
-        <h2 id="discover-newsroom-title" className="text-lg sm:text-xl">{t("hub.newsroom.title")}</h2>
-        <Link to="/newsroom" className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline">{t("hub.newsroom.cta")} <ArrowRight className="size-3.5" aria-hidden /></Link>
+        <h2 id="discover-newsroom-title" className="text-lg sm:text-xl">
+          {t("hub.newsroom.title")}
+        </h2>
+        <Link
+          to="/newsroom"
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+        >
+          {t("hub.newsroom.cta")} <ArrowRight className="size-3.5" aria-hidden />
+        </Link>
       </div>
-      {loading ? <Skeleton rows={3} /> : failed || !data?.length ? (
+      {loading ? (
+        <Skeleton rows={3} />
+      ) : failed || !data?.length ? (
         <p className="text-sm text-muted-foreground">{t("hub.newsroom.empty")}</p>
       ) : (
         <ul className="divide-y divide-border">
           {data.slice(0, 5).map((article) => (
             <li key={article.id} className="py-2.5 first:pt-0 last:pb-0">
-              <Link to="/newsroom/$slug" params={{ slug: article.slug }} className="group block min-w-0">
-                <span className="block break-words text-sm font-semibold leading-snug group-hover:text-primary">{article.title}</span>
-                <span className="mt-1 block text-xs text-muted-foreground">{formatDate(article.published_at)} · {article.author_name}</span>
+              <Link
+                to="/newsroom/$slug"
+                params={{ slug: article.slug }}
+                className="group block min-w-0"
+              >
+                <span className="block break-words text-sm font-semibold leading-snug group-hover:text-primary">
+                  {article.title}
+                </span>
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  {formatDate(article.published_at)} · {article.author_name}
+                </span>
               </Link>
             </li>
           ))}

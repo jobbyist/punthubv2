@@ -231,7 +231,9 @@ function NavLink({
             : "text-foreground hover:bg-muted"
       }`}
     >
-      <Icon className={`size-5 shrink-0 ${disabled ? "text-muted-foreground/50" : active ? "text-primary" : "text-muted-foreground"}`} />
+      <Icon
+        className={`size-5 shrink-0 ${disabled ? "text-muted-foreground/50" : active ? "text-primary" : "text-muted-foreground"}`}
+      />
       <span className="flex-1 truncate">{label}</span>
       {badge && (
         <span
@@ -519,7 +521,11 @@ export function MobileNav() {
                   to="/responsible-play"
                   icon={Shield}
                   label={t("mobile.responsiblePlay")}
-                  right={<span className="text-xs font-semibold text-primary tnum">{HELPLINE_DISPLAY}</span>}
+                  right={
+                    <span className="text-xs font-semibold text-primary tnum">
+                      {HELPLINE_DISPLAY}
+                    </span>
+                  }
                 />
               </div>
 

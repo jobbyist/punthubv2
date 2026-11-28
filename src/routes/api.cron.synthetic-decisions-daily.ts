@@ -26,11 +26,18 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
           return Response.json({ ok: true, skipped: true, reason: "experiment_not_configured" });
         }
         if (experiment.status !== "active") {
-          return Response.json({ ok: true, skipped: true, reason: `experiment_${experiment.status}` });
+          return Response.json({
+            ok: true,
+            skipped: true,
+            reason: `experiment_${experiment.status}`,
+          });
         }
 
         const now = new Date();
-        if (now.getTime() < Date.parse(experiment.starts_at) || now.getTime() > Date.parse(experiment.ends_at)) {
+        if (
+          now.getTime() < Date.parse(experiment.starts_at) ||
+          now.getTime() > Date.parse(experiment.ends_at)
+        ) {
           return Response.json({ ok: true, skipped: true, reason: "outside_experiment_window" });
         }
 
@@ -51,7 +58,12 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
           return Response.json({ ok: false, error: "could_not_load_personas" }, { status: 500 });
         }
         if (!personas?.length) {
-          return Response.json({ ok: true, skipped: true, reason: "all_personas_have_daily_decisions", sast_day: sastDay });
+          return Response.json({
+            ok: true,
+            skipped: true,
+            reason: "all_personas_have_daily_decisions",
+            sast_day: sastDay,
+          });
         }
 
         const { data: fixtures, error: fixtureError } = await db
@@ -63,20 +75,33 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
           .order("kickoff_at", { ascending: true })
           .limit(250);
         if (fixtureError) {
-          return Response.json({ ok: false, error: "could_not_load_upcoming_fixtures" }, { status: 500 });
+          return Response.json(
+            { ok: false, error: "could_not_load_upcoming_fixtures" },
+            { status: 500 },
+          );
         }
         if (!fixtures?.length) {
-          return Response.json({ ok: true, skipped: true, reason: "no_upcoming_fixtures_in_24h", sast_day: sastDay });
+          return Response.json({
+            ok: true,
+            skipped: true,
+            reason: "no_upcoming_fixtures_in_24h",
+            sast_day: sastDay,
+          });
         }
 
-        const groups = new Map<string, { fixture: Record<string, unknown>; personaIds: string[] }>();
+        const groups = new Map<
+          string,
+          { fixture: Record<string, unknown>; personaIds: string[] }
+        >();
         let skippedNoFixture = 0;
         for (const row of personas) {
           const persona = isRecord(row.persona) ? row.persona : {};
           const competitions = Array.isArray(persona["competitions"])
             ? persona["competitions"].filter((value): value is string => typeof value === "string")
             : [];
-          const match = fixtures.find(fixture => competitions.includes(String(fixture.competition)));
+          const match = fixtures.find((fixture) =>
+            competitions.includes(String(fixture.competition)),
+          );
           if (!match) {
             skippedNoFixture += 1;
             continue;
@@ -97,18 +122,34 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
         }
 
         if (!groups.size) {
-          return Response.json({ ok: true, skipped: true, reason: "no_persona_competition_matches", sast_day: sastDay, skipped_no_fixture: skippedNoFixture });
+          return Response.json({
+            ok: true,
+            skipped: true,
+            reason: "no_persona_competition_matches",
+            sast_day: sastDay,
+            skipped_no_fixture: skippedNoFixture,
+          });
         }
 
-        const orderedGroups = [...groups.values()].sort(
-          (a, b) => Date.parse(String(a.fixture["kickoff_utc"])) - Date.parse(String(b.fixture["kickoff_utc"]))
-        ).slice(0, 5);
+        const orderedGroups = [...groups.values()]
+          .sort(
+            (a, b) =>
+              Date.parse(String(a.fixture["kickoff_utc"])) -
+              Date.parse(String(b.fixture["kickoff_utc"])),
+          )
+          .slice(0, 5);
 
         const cronSecret = process.env["CRON_SECRET"];
-        if (!cronSecret) return Response.json({ ok: false, error: "cron_not_configured" }, { status: 503 });
+        if (!cronSecret)
+          return Response.json({ ok: false, error: "cron_not_configured" }, { status: 503 });
 
         const endpoint = new URL("/api/cron/synthetic-decisions", request.url);
-        const successes: { fixture_id: string; personas: number; decisions: number; cached: boolean }[] = [];
+        const successes: {
+          fixture_id: string;
+          personas: number;
+          decisions: number;
+          cached: boolean;
+        }[] = [];
         const failures: { fixture_id: string; error: string }[] = [];
 
         for (const group of orderedGroups) {
@@ -127,9 +168,12 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
               }),
               signal: AbortSignal.timeout(60_000),
             });
-            const result = await response.json() as Record<string, unknown>;
+            const result = (await response.json()) as Record<string, unknown>;
             if (!response.ok || result["ok"] !== true) {
-              failures.push({ fixture_id: fixtureId, error: String(result["error"] || response.status) });
+              failures.push({
+                fixture_id: fixtureId,
+                error: String(result["error"] || response.status),
+              });
               continue;
             }
             const { error: updateError } = await db
@@ -138,31 +182,41 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
               .eq("experiment_id", experiment.id)
               .in("persona_key", group.personaIds);
             if (updateError) {
-              failures.push({ fixture_id: fixtureId, error: "could_not_update_persona_decision_timestamp" });
+              failures.push({
+                fixture_id: fixtureId,
+                error: "could_not_update_persona_decision_timestamp",
+              });
               continue;
             }
             const resultBody = isRecord(result["result"]) ? result["result"] : {};
             successes.push({
               fixture_id: fixtureId,
               personas: group.personaIds.length,
-              decisions: typeof resultBody["decision_count"] === "number" ? resultBody["decision_count"] : 0,
+              decisions:
+                typeof resultBody["decision_count"] === "number" ? resultBody["decision_count"] : 0,
               cached: result["cached"] === true,
             });
           } catch (error) {
-            failures.push({ fixture_id: fixtureId, error: error instanceof Error ? error.message.slice(0, 200) : "unknown_error" });
+            failures.push({
+              fixture_id: fixtureId,
+              error: error instanceof Error ? error.message.slice(0, 200) : "unknown_error",
+            });
           }
         }
 
-        return Response.json({
-          ok: failures.length === 0,
-          sast_day: sastDay,
-          fixtures_processed: successes.length,
-          personas_decided: successes.reduce((sum, item) => sum + item.personas, 0),
-          decisions_created: successes.reduce((sum, item) => sum + item.decisions, 0),
-          skipped_no_fixture: skippedNoFixture,
-          successes,
-          failures,
-        }, { status: failures.length === 0 ? 200 : 500 });
+        return Response.json(
+          {
+            ok: failures.length === 0,
+            sast_day: sastDay,
+            fixtures_processed: successes.length,
+            personas_decided: successes.reduce((sum, item) => sum + item.personas, 0),
+            decisions_created: successes.reduce((sum, item) => sum + item.decisions, 0),
+            skipped_no_fixture: skippedNoFixture,
+            successes,
+            failures,
+          },
+          { status: failures.length === 0 ? 200 : 500 },
+        );
       },
     },
   },

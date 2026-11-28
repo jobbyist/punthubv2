@@ -110,7 +110,11 @@ function PublicProfile() {
         {profile.founding_number
           ? t("record.founding", { number: profile.founding_number })
           : t("record.member")}
-        {profile.is_ai_participant && <span className="ml-2"><ProBadge aiParticipant /></span>}
+        {profile.is_ai_participant && (
+          <span className="ml-2">
+            <ProBadge aiParticipant />
+          </span>
+        )}
         {profile.created_at && ` · ${t("record.joined", { date: formatDate(profile.created_at) })}`}
       </p>
 

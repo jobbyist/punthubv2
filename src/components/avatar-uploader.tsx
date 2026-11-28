@@ -5,7 +5,15 @@ import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { supabase } from "@/integrations/supabase/client";
-import { avatarPath, checkAvatarFile, compressAvatar, pathFromPublicUrl, SPORTS_AVATARS, sportsAvatarToken, type SportsAvatarKey } from "@/lib/avatar";
+import {
+  avatarPath,
+  checkAvatarFile,
+  compressAvatar,
+  pathFromPublicUrl,
+  SPORTS_AVATARS,
+  sportsAvatarToken,
+  type SportsAvatarKey,
+} from "@/lib/avatar";
 
 // avatar_url is not in the generated types until types.ts is regenerated.
 const profiles = () =>
@@ -66,7 +74,9 @@ export function AvatarUploader() {
     setBusy(true);
     setNote(null);
     try {
-      const { error } = await profiles().update({ avatar_url: sportsAvatarToken(key) }).eq("id", profile.id);
+      const { error } = await profiles()
+        .update({ avatar_url: sportsAvatarToken(key) })
+        .eq("id", profile.id);
       if (error) throw error;
       const old = pathFromPublicUrl(current);
       if (old) await supabase.storage.from("avatars").remove([old]);
@@ -137,7 +147,9 @@ export function AvatarUploader() {
       <div className="mt-5 space-y-2">
         <div>
           <h3 className="text-sm font-semibold">Sports avatars</h3>
-          <p className="text-xs text-muted-foreground">Choose an illustrated sports profile picture instead of uploading your own.</p>
+          <p className="text-xs text-muted-foreground">
+            Choose an illustrated sports profile picture instead of uploading your own.
+          </p>
         </div>
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
           {SPORTS_AVATARS.map((avatar) => {
@@ -152,8 +164,14 @@ export function AvatarUploader() {
                 onClick={() => void chooseSportsAvatar(avatar.key)}
                 className={`flex flex-col items-center gap-1 rounded-lg p-1 transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${selected ? "bg-primary/10 ring-2 ring-primary" : ""}`}
               >
-                <UserAvatar username={avatar.label} url={sportsAvatarToken(avatar.key)} className="size-12" />
-                <span className="w-full truncate text-center text-[10px] text-muted-foreground">{avatar.label}</span>
+                <UserAvatar
+                  username={avatar.label}
+                  url={sportsAvatarToken(avatar.key)}
+                  className="size-12"
+                />
+                <span className="w-full truncate text-center text-[10px] text-muted-foreground">
+                  {avatar.label}
+                </span>
               </button>
             );
           })}

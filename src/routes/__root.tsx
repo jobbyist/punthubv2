@@ -283,27 +283,27 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <UserContextProvider>
-        <Preloader />
-        <PwaExperience />
-        <PushNotificationPrompt />
-        <RouteProgress />
-        <RoutePrefetcher />
-        <MfaGate />
-        <div className="puntr-app-frame flex min-h-dvh flex-col">
-          <ContextAwareTopStrip />
-          <SiteHeader />
-          <SecurityPrompt />
-          <div className="flex-1">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
+          <Preloader />
+          <PwaExperience />
+          <PushNotificationPrompt />
+          <RouteProgress />
+          <RoutePrefetcher />
+          <MfaGate />
+          <div className="puntr-app-frame flex min-h-dvh flex-col">
+            <ContextAwareTopStrip />
+            <SiteHeader />
+            <SecurityPrompt />
+            <div className="flex-1">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </div>
+            <SiteFooter />
           </div>
-          <SiteFooter />
-        </div>
-        <MobileNav />
-        <AdminNotch />
-        {SHOW_PUNT_AI_CHAT && <PuntAI />}
-        <ConsentBanner />
-        <Toaster />
+          <MobileNav />
+          <AdminNotch />
+          {SHOW_PUNT_AI_CHAT && <PuntAI />}
+          <ConsentBanner />
+          <Toaster />
         </UserContextProvider>
       </SessionProvider>
     </QueryClientProvider>

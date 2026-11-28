@@ -22,10 +22,15 @@ const suggestions = [
   "What is the current Premier League table?",
 ];
 
-function errorMessage(code: "not_launched" | "rate_limited" | "account_restricted" | "unavailable"): string {
-  if (code === "not_launched") return "PUNT AI will be available when your Puntr launch access is active.";
-  if (code === "rate_limited") return "You've reached the current PUNT AI usage limit. Try again later.";
-  if (code === "account_restricted") return "PUNT AI requires an age-verified account in good standing. Complete your account verification or contact support.";
+function errorMessage(
+  code: "not_launched" | "rate_limited" | "account_restricted" | "unavailable",
+): string {
+  if (code === "not_launched")
+    return "PUNT AI will be available when your Puntr launch access is active.";
+  if (code === "rate_limited")
+    return "You've reached the current PUNT AI usage limit. Try again later.";
+  if (code === "account_restricted")
+    return "PUNT AI requires an age-verified account in good standing. Complete your account verification or contact support.";
   return "PUNT AI is temporarily unavailable. Please try again shortly.";
 }
 
@@ -131,8 +136,12 @@ export function PuntAI() {
                     <Sparkles className="size-4 text-primary" />
                   </span>
                   <div>
-                    <p className="font-display text-sm font-extrabold uppercase tracking-wide">PUNT AI</p>
-                    <p className="text-xs text-muted-foreground">Sports intelligence · Puntr data first</p>
+                    <p className="font-display text-sm font-extrabold uppercase tracking-wide">
+                      PUNT AI
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Sports intelligence · Puntr data first
+                    </p>
                   </div>
                 </div>
                 <button
@@ -144,7 +153,11 @@ export function PuntAI() {
                 </button>
               </header>
 
-              <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5" role="log" aria-live="polite">
+              <div
+                className="flex-1 space-y-4 overflow-y-auto px-5 py-5"
+                role="log"
+                aria-live="polite"
+              >
                 {messages.map((message, index) => (
                   <div
                     key={index}
@@ -168,14 +181,18 @@ export function PuntAI() {
                     <div className="whitespace-pre-wrap">{message.text}</div>
                     {message.sources && message.sources.length > 0 && (
                       <div className="mt-3 border-t border-border/70 pt-2">
-                        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Sources</p>
+                        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          Sources
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {message.sources.map((source) => (
                             <a
                               key={source.url}
                               href={source.url}
                               target={source.url.startsWith("http") ? "_blank" : undefined}
-                              rel={source.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                              rel={
+                                source.url.startsWith("http") ? "noopener noreferrer" : undefined
+                              }
                               className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-medium text-foreground hover:border-primary hover:text-primary"
                             >
                               {source.title}
@@ -241,7 +258,8 @@ export function PuntAI() {
                   </button>
                 </form>
                 <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
-                  18+ only. No prediction is guaranteed. Never chase losses. Gambling support: 0800 006 008.
+                  18+ only. No prediction is guaranteed. Never chase losses. Gambling support: 0800
+                  006 008.
                 </p>
               </div>
             </motion.aside>

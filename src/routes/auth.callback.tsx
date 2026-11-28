@@ -61,7 +61,10 @@ function AuthCallback() {
           .maybeSingle();
 
         if (profileError) {
-          console.warn("[Puntr] Could not check OAuth profile; returning to the requested page", profileError);
+          console.warn(
+            "[Puntr] Could not check OAuth profile; returning to the requested page",
+            profileError,
+          );
           await navigate({ to: returnTo as never, replace: true });
           return;
         }
@@ -73,7 +76,9 @@ function AuthCallback() {
         }
       } catch (callbackError) {
         console.error("[Puntr] Google OAuth callback failed", callbackError);
-        setError("We couldn't finish signing you in. Please return to Puntr and try Google sign-in again.");
+        setError(
+          "We couldn't finish signing you in. Please return to Puntr and try Google sign-in again.",
+        );
       }
     })();
   }, [code, errorDescription, navigate, returnTo]);
@@ -83,11 +88,19 @@ function AuthCallback() {
       <h1 className="text-2xl font-bold">Finishing your sign-in</h1>
       {error ? (
         <>
-          <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>
-          <Button asChild className="mt-5"><Link to="/join" search={{ next: returnTo }}>Return to Puntr sign in</Link></Button>
+          <p role="alert" className="mt-3 text-sm text-destructive">
+            {error}
+          </p>
+          <Button asChild className="mt-5">
+            <Link to="/join" search={{ next: returnTo }}>
+              Return to Puntr sign in
+            </Link>
+          </Button>
         </>
       ) : (
-        <p className="mt-3 text-sm text-muted-foreground">Verifying your session. You will be returned to where you started.</p>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Verifying your session. You will be returned to where you started.
+        </p>
       )}
     </AccountPage>
   );

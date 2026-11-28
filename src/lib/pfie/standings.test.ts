@@ -189,9 +189,11 @@ describe("configured direct standings sources", () => {
     expect(STANDINGS_COMPETITIONS.ucl?.pages).toContain(
       "https://www.uefa.com/uefachampionsleague/standings/",
     );
-    expect(STANDINGS_COMPETITIONS.ucl?.pages?.indexOf(
-      "https://www.cbssports.com/soccer/champions-league/standings/",
-    )).toBe(1);
+    expect(
+      STANDINGS_COMPETITIONS.ucl?.pages?.indexOf(
+        "https://www.cbssports.com/soccer/champions-league/standings/",
+      ),
+    ).toBe(1);
   });
   it("keeps La Liga direct tables within the five-source cap using independent publishers", () => {
     const pages = STANDINGS_COMPETITIONS.laliga?.pages ?? [];
@@ -207,29 +209,31 @@ describe("configured direct standings sources", () => {
       ]),
     );
     expect(STANDINGS_COMPETITIONS.laliga?.queries).toHaveLength(5);
-    const publisherKeys = ["laliga.com", "skysports.com", "tactix.football", "footballedgelab.com", "transfermarkt.com"].map(
-      independentSourceKey,
-    );
+    const publisherKeys = [
+      "laliga.com",
+      "skysports.com",
+      "tactix.football",
+      "footballedgelab.com",
+      "transfermarkt.com",
+    ].map(independentSourceKey);
     expect(new Set(publisherKeys).size).toBe(5);
   });
 });
-  it("configures official and independent Conference League standings sources", () => {
-    expect(STANDINGS_COMPETITIONS.uecl?.teams).toBe(36);
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.uefa.com/uefaconferenceleague/standings/",
-    );
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://standings.nz/conference-league/",
-    );
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
-      "https://www.keepstandings.com/conference-league/table",
-    );
-    expect(tierOf("standings.nz", ["uefa.com"])).toBe("trusted");
-    expect(tierOf("globalsportsarchive.com", ["psl.co.za"])).toBe("trusted");
-    expect(STANDINGS_COMPETITIONS.uecl?.pages).not.toContain(
-      "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
-    );
-  });
+it("configures official and independent Conference League standings sources", () => {
+  expect(STANDINGS_COMPETITIONS.uecl?.teams).toBe(36);
+  expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+    "https://www.uefa.com/uefaconferenceleague/standings/",
+  );
+  expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain("https://standings.nz/conference-league/");
+  expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
+    "https://www.keepstandings.com/conference-league/table",
+  );
+  expect(tierOf("standings.nz", ["uefa.com"])).toBe("trusted");
+  expect(tierOf("globalsportsarchive.com", ["psl.co.za"])).toBe("trusted");
+  expect(STANDINGS_COMPETITIONS.uecl?.pages).not.toContain(
+    "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
+  );
+});
 describe("EFL Championship source configuration", () => {
   it("includes independent ESPN and Transfermarkt table candidates", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
@@ -322,7 +326,9 @@ describe("validateTables", () => {
   });
   it("accepts source-published points below the WDL total when a deduction is applied", () => {
     const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
-    const sourceLines = lines.map((line) => line.startsWith("1 Alpha FC") ? deductionQuote : line);
+    const sourceLines = lines.map((line) =>
+      line.startsWith("1 Alpha FC") ? deductionQuote : line,
+    );
     const source = page("league.com", "official", 1, sourceLines);
     const rows = raw(1, (row) =>
       row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
@@ -352,16 +358,16 @@ describe("validateTables", () => {
   });
   it("rejects placeholder clubs instead of inventing a missing group entrant", () => {
     const placeholder = raw(1, (row) =>
-      row.team === "Delta Rovers"
-        ? { ...row, team: "TBC", quote: "4 TBC 10 0 0 0 0 0 0" }
-        : row,
+      row.team === "Delta Rovers" ? { ...row, team: "TBC", quote: "4 TBC 10 0 0 0 0 0 0" } : row,
     );
     const source = page("league.com", "official", 1, [
       ...lines.slice(0, 3),
       "4 TBC 10 0 0 0 0 0 0",
     ]);
     const result = validateTables(placeholder, [source], 4);
-    expect(result.rejected.some((item) => item.reason === "placeholder_team_not_allowed")).toBe(true);
+    expect(result.rejected.some((item) => item.reason === "placeholder_team_not_allowed")).toBe(
+      true,
+    );
   });
   it("matches accentless source rows when the model includes a three-letter team code", () => {
     const sourceLines = [...lines];
@@ -540,7 +546,16 @@ describe("validateTables", () => {
 describe("pre-launch standings selection", () => {
   it("prioritises the ten agreed competitions and defers Motsepe", () => {
     expect(STANDINGS_LAUNCH_KEYS).toEqual([
-      "psl", "epl", "championship", "laliga", "ucl", "uecl", "bundesliga", "seriea", "ligue1", "caf-cc",
+      "psl",
+      "epl",
+      "championship",
+      "laliga",
+      "ucl",
+      "uecl",
+      "bundesliga",
+      "seriea",
+      "ligue1",
+      "caf-cc",
     ]);
     expect(STANDINGS_LAUNCH_KEYS).not.toContain("sa-championship");
     expect(STANDINGS_POST_LAUNCH_KEYS).toContain("sa-championship");
@@ -591,8 +606,26 @@ describe("CAF Confederation Cup group standings", () => {
   });
 
   it("validates and corroborates each group independently", () => {
-    const first = validateTables(groupedRaw(1), [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
-    const second = validateTables(groupedRaw(2), [groupedPage("globalsportsarchive.com", 2)], 16, [], new Date(), false, groups, 4);
+    const first = validateTables(
+      groupedRaw(1),
+      [groupedPage("365scores.com", 1)],
+      16,
+      [],
+      new Date(),
+      false,
+      groups,
+      4,
+    );
+    const second = validateTables(
+      groupedRaw(2),
+      [groupedPage("globalsportsarchive.com", 2)],
+      16,
+      [],
+      new Date(),
+      false,
+      groups,
+      4,
+    );
     expect(first.rejected).toEqual([]);
     expect(first.tables).toHaveLength(4);
     expect(first.tables.map((table) => table.group)).toEqual(groups);
@@ -604,14 +637,41 @@ describe("CAF Confederation Cup group standings", () => {
 
   it("rejects a source that omits any one of the four groups", () => {
     const incomplete = groupedRaw(1).filter((row) => row.group !== "D");
-    const result = validateTables(incomplete, [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
+    const result = validateTables(
+      incomplete,
+      [groupedPage("365scores.com", 1)],
+      16,
+      [],
+      new Date(),
+      false,
+      groups,
+      4,
+    );
     expect(result.tables).toEqual([]);
     expect(result.rejected).toContainEqual({ source: 1, reason: "missing_groups_D" });
   });
 
   it("requires every group to have two independent publishers", () => {
-    const first = validateTables(groupedRaw(1), [groupedPage("365scores.com", 1)], 16, [], new Date(), false, groups, 4);
-    const incompleteSecond = validateTables(groupedRaw(2).filter((row) => row.group !== "C"), [groupedPage("globalsportsarchive.com", 2)], 16, [], new Date(), false, groups, 4);
+    const first = validateTables(
+      groupedRaw(1),
+      [groupedPage("365scores.com", 1)],
+      16,
+      [],
+      new Date(),
+      false,
+      groups,
+      4,
+    );
+    const incompleteSecond = validateTables(
+      groupedRaw(2).filter((row) => row.group !== "C"),
+      [groupedPage("globalsportsarchive.com", 2)],
+      16,
+      [],
+      new Date(),
+      false,
+      groups,
+      4,
+    );
     expect(chooseTables([...first.tables, ...incompleteSecond.tables], groups)).toBeNull();
   });
 });
@@ -799,9 +859,19 @@ describe("CAF Confederation Cup group validation", () => {
   const known = Object.values(groupMembers).flat();
 
   it("accepts all four groups while Group C has three confirmed teams", () => {
-    const result = validateTables(rows, [source], 16, known, new Date("2026-11-27T12:00:00Z"), false, groups, 4, {
-      C: { min: 3, max: 4 },
-    });
+    const result = validateTables(
+      rows,
+      [source],
+      16,
+      known,
+      new Date("2026-11-27T12:00:00Z"),
+      false,
+      groups,
+      4,
+      {
+        C: { min: 3, max: 4 },
+      },
+    );
     expect(result.rejected).toEqual([]);
     expect(result.tables.map((table) => table.group).sort()).toEqual(groups);
     expect(result.tables.find((table) => table.group === "C")?.rows).toHaveLength(3);
@@ -809,10 +879,22 @@ describe("CAF Confederation Cup group validation", () => {
 
   it("rejects Group C if it falls below three confirmed teams", () => {
     const incomplete = rows.filter((row) => !(row.group === "C" && row.position === 3));
-    const result = validateTables(incomplete, [source], 16, known, new Date("2026-11-27T12:00:00Z"), false, groups, 4, {
-      C: { min: 3, max: 4 },
-    });
-    expect(result.rejected.some((item) => item.reason.includes("team_count_2_expected_3-4"))).toBe(true);
+    const result = validateTables(
+      incomplete,
+      [source],
+      16,
+      known,
+      new Date("2026-11-27T12:00:00Z"),
+      false,
+      groups,
+      4,
+      {
+        C: { min: 3, max: 4 },
+      },
+    );
+    expect(result.rejected.some((item) => item.reason.includes("team_count_2_expected_3-4"))).toBe(
+      true,
+    );
   });
 });
 
@@ -831,11 +913,14 @@ describe("tableRegression", () => {
     const corrected = previous.map((r) =>
       r.team === "Alpha FC" ? { ...r, goalsFor: r.goalsFor + 2 } : r,
     );
-    expect(tableRegression(corrected, previous)).toBe("goalsFor_changed_without_new_matches_Alpha FC");
+    expect(tableRegression(corrected, previous)).toBe(
+      "goalsFor_changed_without_new_matches_Alpha FC",
+    );
     expect(tableRegression(corrected, previous, true)).toBeNull();
   });
   it("allows two-source-corroborated goal and record corrections when no matches were added", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
     const corrected = previous.map((row) =>
       row.team === "Alpha FC"
         ? { ...row, won: 8, drawn: 1, lost: 1, goalsFor: row.goalsFor + 2, points: 25 }
@@ -849,39 +934,109 @@ describe("tableRegression", () => {
     const changedPoints = previous.map((r) =>
       r.team === "Alpha FC" ? { ...r, points: r.points + 3 } : r,
     );
-    expect(tableRegression(changedPoints, previous, true)).toBe("points_changed_without_new_matches_Alpha FC");
+    expect(tableRegression(changedPoints, previous, true)).toBe(
+      "points_changed_without_new_matches_Alpha FC",
+    );
   });
   it("allows a verified points-deduction correction without changing match records", () => {
-    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
     const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
-    const sourceLines = lines.map((line) => line.startsWith("1 Alpha FC") ? deductionQuote : line);
+    const sourceLines = lines.map((line) =>
+      line.startsWith("1 Alpha FC") ? deductionQuote : line,
+    );
     const rows = raw(1, (row) =>
       row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
     );
-    const candidate = validateTables(rows, [page("new.com", "trusted", 1, sourceLines)], 4).tables[0]!.rows;
+    const candidate = validateTables(rows, [page("new.com", "trusted", 1, sourceLines)], 4)
+      .tables[0]!.rows;
     expect(tableRegression(candidate, previous, false, [], false, true)).toBeNull();
   });
 
   it("allows one verified new team when a pending group qualifier is confirmed", () => {
     const previous: StandingRow[] = [
-      { group: "C", position: 1, team: "Alpha C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
-      { group: "C", position: 2, team: "Bravo C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
-      { group: "C", position: 3, team: "Charlie C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
+      {
+        group: "C",
+        position: 1,
+        team: "Alpha C",
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+      },
+      {
+        group: "C",
+        position: 2,
+        team: "Bravo C",
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+      },
+      {
+        group: "C",
+        position: 3,
+        team: "Charlie C",
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+      },
     ];
-    const candidate = [...previous, {
-      group: "C", position: 4, team: "Delta C", played: 0, won: 0, drawn: 0, lost: 0,
-      goalsFor: 0, goalsAgainst: 0, points: 0,
-    }];
+    const candidate = [
+      ...previous,
+      {
+        group: "C",
+        position: 4,
+        team: "Delta C",
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+      },
+    ];
     expect(tableRegression(candidate, previous)).toBe("team_count_changed_from_previous_snapshot");
     expect(tableRegression(candidate, previous, false, [], true)).toBeNull();
   });
 
   it("allows a corroborated one-match correction for the configured Serie A team only", () => {
     const previous: StandingRow[] = [
-      { position: 1, team: "Milan", played: 13, won: 8, drawn: 4, lost: 1, goalsFor: 32, goalsAgainst: 18, points: 28 },
+      {
+        position: 1,
+        team: "Milan",
+        played: 13,
+        won: 8,
+        drawn: 4,
+        lost: 1,
+        goalsFor: 32,
+        goalsAgainst: 18,
+        points: 28,
+      },
     ];
     const corrected: StandingRow[] = [
-      { position: 1, team: "Milan", played: 12, won: 8, drawn: 3, lost: 1, goalsFor: 28, goalsAgainst: 14, points: 27 },
+      {
+        position: 1,
+        team: "Milan",
+        played: 12,
+        won: 8,
+        drawn: 3,
+        lost: 1,
+        goalsFor: 28,
+        goalsAgainst: 14,
+        points: 27,
+      },
     ];
     expect(tableRegression(corrected, previous)).toBe("played_regressed_Milan");
     expect(tableRegression(corrected, previous, false, ["Milan"])).toBeNull();
@@ -955,7 +1110,9 @@ describe("parseStandings", () => {
   });
 
   it("rejects Markdown without the full required standings columns", () => {
-    expect(parseStandingsMarkdown("| Pos | Team | Pts |\n|---|---|---|\n| 1 | Arsenal | 25 |", 1)).toBeNull();
+    expect(
+      parseStandingsMarkdown("| Pos | Team | Pts |\n|---|---|---|\n| 1 | Arsenal | 25 |", 1),
+    ).toBeNull();
   });
 
   it("rejects invalid JSON", () => expect(parseStandings("nope")).toBeNull());
@@ -1195,30 +1352,34 @@ describe("history sync", () => {
   it("uses the requested history window start when selecting official archive sources", async () => {
     const pageText = `CAF Confederation Cup results 20 October 2026. Al Ahly 1-0 Raja Casablanca. ${"Match report and final score. ".repeat(20)}`;
     const answer = JSON.stringify({
-      matches: [{
-        source: 1,
-        home: "Al Ahly",
-        away: "Raja Casablanca",
-        date: "2026-10-20",
-        time: null,
-        tz: null,
-        status: "finished",
-        homeScore: 1,
-        awayScore: 0,
-        quote: "Al Ahly 1-0 Raja Casablanca",
-      }],
+      matches: [
+        {
+          source: 1,
+          home: "Al Ahly",
+          away: "Raja Casablanca",
+          date: "2026-10-20",
+          time: null,
+          tz: null,
+          status: "finished",
+          homeScore: 1,
+          awayScore: 0,
+          quote: "Al Ahly 1-0 Raja Casablanca",
+        },
+      ],
     });
     const inserted: unknown[] = [];
     const records: { ok: boolean; error: string | null }[] = [];
     const deps = {
       search: {
         name: "fake",
-        search: async () => [{
-          url: "https://www.cafonline.com/caf-confederation-cup/news/results",
-          title: "Official CAF results",
-          excerpt: pageText,
-          publishedAt: null,
-        }],
+        search: async () => [
+          {
+            url: "https://www.cafonline.com/caf-confederation-cup/news/results",
+            title: "Official CAF results",
+            excerpt: pageText,
+            publishedAt: null,
+          },
+        ],
       },
       extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
       llm: { name: "fake", generate: async () => ({ text: answer, model: "m" }) },
@@ -1230,17 +1391,26 @@ describe("history sync", () => {
         knownTeams: async () => ["Al Ahly", "Raja Casablanca"],
         completedCounts: async () => new Map(),
         replaceStandings: async () => 0,
-        insertHistory: async (rows: unknown[]) => { inserted.push(...rows); return rows.length; },
+        insertHistory: async (rows: unknown[]) => {
+          inserted.push(...rows);
+          return rows.length;
+        },
         record: async (
           _job: string,
           _scope: string,
           ok: boolean,
           error: string | null,
           _meta: Record<string, unknown>,
-        ) => { records.push({ ok, error }); },
+        ) => {
+          records.push({ ok, error });
+        },
       },
     };
-    const report = await runTablesSync(deps as never, { job: "history", only: ["caf-cc"], maxJobs: 1 });
+    const report = await runTablesSync(deps as never, {
+      job: "history",
+      only: ["caf-cc"],
+      maxJobs: 1,
+    });
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)).toEqual({ ok: true, error: null });
     expect(inserted).toHaveLength(1);
@@ -1249,14 +1419,30 @@ describe("history sync", () => {
 
 describe("PFIE match evidence validation", () => {
   const source: PfieSource = {
-    index: 1, url: "https://www.uefa.com/results", domain: "uefa.com", tier: "official",
+    index: 1,
+    url: "https://www.uefa.com/results",
+    domain: "uefa.com",
+    tier: "official",
     text: "Tuesday 13 October 2026\\nArsenal 3-0 Lille\\nWednesday 14 October 2026\\nRoma 3-4 Real Madrid",
     via: "extract",
   };
-  const window = { from: new Date("2026-10-13T00:00:00Z"), to: new Date("2026-10-14T23:59:59Z"), now: new Date("2026-11-28T00:00:00Z") };
+  const window = {
+    from: new Date("2026-10-13T00:00:00Z"),
+    to: new Date("2026-10-14T23:59:59Z"),
+    now: new Date("2026-11-28T00:00:00Z"),
+  };
   const observation = (overrides: Partial<RawObservation> = {}): RawObservation => ({
-    source: 1, home: "Arsenal", away: "Lille", date: "2026-10-13", time: null, tz: null,
-    status: "finished", homeScore: 3, awayScore: 0, quote: "Arsenal 3-0 defeated Lille", ...overrides,
+    source: 1,
+    home: "Arsenal",
+    away: "Lille",
+    date: "2026-10-13",
+    time: null,
+    tz: null,
+    status: "finished",
+    homeScore: 3,
+    awayScore: 0,
+    quote: "Arsenal 3-0 defeated Lille",
+    ...overrides,
   });
   it("accepts adjacent team and exact score evidence when a page splits table cells", () => {
     const result = validateObservations([observation()], [source], window);
@@ -1264,25 +1450,40 @@ describe("PFIE match evidence validation", () => {
     expect(result.rejected).toEqual([]);
   });
   it("rejects a score that does not appear with the named teams on the page", () => {
-    const result = validateObservations([observation({ homeScore: 2, quote: "Arsenal 2-0 Lille" })], [source], window);
+    const result = validateObservations(
+      [observation({ homeScore: 2, quote: "Arsenal 2-0 Lille" })],
+      [source],
+      window,
+    );
     expect(result.accepted).toHaveLength(0);
     expect(result.rejected[0]?.reason).toBe("quote_not_on_page");
   });
   it("resolves a known short team name before checking source evidence", () => {
-    const psgSource: PfieSource = { ...source, text: "Tuesday 13 October 2026\\nParis Saint-Germain 2-0 Lille" };
-    const result = validateObservations([
-      observation({ home: "PSG", homeScore: 2, awayScore: 0, quote: "PSG beat Lille" }),
-    ], [psgSource], { ...window, knownTeams: ["Paris Saint-Germain", "Lille"] });
+    const psgSource: PfieSource = {
+      ...source,
+      text: "Tuesday 13 October 2026\\nParis Saint-Germain 2-0 Lille",
+    };
+    const result = validateObservations(
+      [observation({ home: "PSG", homeScore: 2, awayScore: 0, quote: "PSG beat Lille" })],
+      [psgSource],
+      { ...window, knownTeams: ["Paris Saint-Germain", "Lille"] },
+    );
     expect(result.accepted).toHaveLength(1);
   });
   it("accepts a non-verbatim quote only when exact teams and score are independently visible", () => {
-    const result = validateObservations([
-      observation({ quote: "Arsenal defeated Lille", homeScore: 3, awayScore: 0 }),
-    ], [source], window);
+    const result = validateObservations(
+      [observation({ quote: "Arsenal defeated Lille", homeScore: 3, awayScore: 0 })],
+      [source],
+      window,
+    );
     expect(result.accepted).toHaveLength(1);
   });
   it("continues to accept an exact verbatim source quote", () => {
-    const result = validateObservations([observation({ quote: "Arsenal 3-0 Lille" })], [source], window);
+    const result = validateObservations(
+      [observation({ quote: "Arsenal 3-0 Lille" })],
+      [source],
+      window,
+    );
     expect(result.accepted).toHaveLength(1);
   });
 });
@@ -1312,33 +1513,69 @@ describe("official history source preference", () => {
 
 describe("official cup history search targets", () => {
   it("targets the current and prior UEFA season result archives", () => {
-    expect(seasonQueries("UEFA Champions League", "2026-10-09", "2026-10-15")).toContain("https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/");
-    expect(seasonQueries("UEFA Conference League", "2025-10-02", "2025-10-08")).toContain("https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/");
+    expect(seasonQueries("UEFA Champions League", "2026-10-09", "2026-10-15")).toContain(
+      "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
+    );
+    expect(seasonQueries("UEFA Conference League", "2025-10-02", "2025-10-08")).toContain(
+      "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
+    );
   });
   it("targets official CAF match-result archives across both seasons", () => {
     const queries = seasonQueries("CAF Confederation Cup", "2026-10-16", "2026-10-22");
-    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/");
-    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/");
+    expect(queries).toContain(
+      "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+    );
+    expect(queries).toContain(
+      "https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/",
+    );
   });
 });
 
 describe("CAF 2026/27 derived group standings", () => {
   it("calculates a provisional 15-team table from verified group-stage results and keeps Group C at three confirmed clubs", () => {
-    const results: CafGroupStageResult[] = [{
-      home: "Azam", away: "Ahli Tripoli", kickoffAt: "2026-11-27T13:00:00Z", homeScore: 1, awayScore: 2,
-    }];
+    const results: CafGroupStageResult[] = [
+      {
+        home: "Azam",
+        away: "Ahli Tripoli",
+        kickoffAt: "2026-11-27T13:00:00Z",
+        homeScore: 1,
+        awayScore: 2,
+      },
+    ];
     const rows = buildCafGroupStandings(results);
     expect(rows).toHaveLength(15);
-    expect(["A", "B", "C", "D"].map((group) => rows.filter((row) => row.group === group).length)).toEqual([4, 4, 3, 4]);
-    expect(rows.find((row) => row.team === "Al Ahly Tripoli")).toMatchObject({ group: "B", played: 1, won: 1, points: 3, goalsFor: 2, goalsAgainst: 1 });
-    expect(rows.find((row) => row.team === "Azam FC")).toMatchObject({ group: "B", played: 1, lost: 1, points: 0, goalsFor: 1, goalsAgainst: 2 });
+    expect(
+      ["A", "B", "C", "D"].map((group) => rows.filter((row) => row.group === group).length),
+    ).toEqual([4, 4, 3, 4]);
+    expect(rows.find((row) => row.team === "Al Ahly Tripoli")).toMatchObject({
+      group: "B",
+      played: 1,
+      won: 1,
+      points: 3,
+      goalsFor: 2,
+      goalsAgainst: 1,
+    });
+    expect(rows.find((row) => row.team === "Azam FC")).toMatchObject({
+      group: "B",
+      played: 1,
+      lost: 1,
+      points: 0,
+      goalsFor: 1,
+      goalsAgainst: 2,
+    });
     expect(rows.filter((row) => row.group === "C").every((row) => row.played === 0)).toBe(true);
   });
 
   it("does not count preliminary-round matches or cross-group fixtures", () => {
-    const rows = buildCafGroupStandings([{
-      home: "CR Belouizdad", away: "AC Douane", kickoffAt: "2026-11-27T19:00:00Z", homeScore: 1, awayScore: 0,
-    }]);
+    const rows = buildCafGroupStandings([
+      {
+        home: "CR Belouizdad",
+        away: "AC Douane",
+        kickoffAt: "2026-11-27T19:00:00Z",
+        homeScore: 1,
+        awayScore: 0,
+      },
+    ]);
     expect(rows.every((row) => row.played === 0)).toBe(true);
   });
 });
@@ -1354,28 +1591,66 @@ describe("cup history source attribution", () => {
     const replies = [
       JSON.stringify({ matches: [] }), // official-only attempt
       JSON.stringify({ matches: [] }), // official page in corroboration retry
-      JSON.stringify({ matches: [{
-        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
-        time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
-        quote: "Alpha FC 2-1 Bravo United",
-      }] }),
-      JSON.stringify({ matches: [{
-        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
-        time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
-        quote: "Alpha FC 2-1 Bravo United",
-      }] }),
+      JSON.stringify({
+        matches: [
+          {
+            source: 1,
+            home: "Alpha FC",
+            away: "Bravo United",
+            date: "2026-10-20",
+            time: null,
+            tz: null,
+            status: "finished",
+            homeScore: 2,
+            awayScore: 1,
+            quote: "Alpha FC 2-1 Bravo United",
+          },
+        ],
+      }),
+      JSON.stringify({
+        matches: [
+          {
+            source: 1,
+            home: "Alpha FC",
+            away: "Bravo United",
+            date: "2026-10-20",
+            time: null,
+            tz: null,
+            status: "finished",
+            homeScore: 2,
+            awayScore: 1,
+            quote: "Alpha FC 2-1 Bravo United",
+          },
+        ],
+      }),
     ];
     let calls = 0;
     const inserted: unknown[] = [];
     const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
-    const long = "UEFA Champions League results. Tuesday 20 October 2026. Alpha FC 2-1 Bravo United. ";
+    const long =
+      "UEFA Champions League results. Tuesday 20 October 2026. Alpha FC 2-1 Bravo United. ";
     const deps = {
       search: {
         name: "fake",
         search: async () => [
-          { url: "https://www.uefa.com/uefachampionsleague/news/results", title: "Official", excerpt: long, publishedAt: null },
-          { url: "https://www.theguardian.com/football/results", title: "Guardian", excerpt: long, publishedAt: null },
-          { url: "https://www.cbssports.com/soccer/results", title: "CBS", excerpt: long, publishedAt: null },
+          {
+            url: "https://www.uefa.com/uefachampionsleague/news/results",
+            title: "Official",
+            excerpt: long,
+            publishedAt: null,
+          },
+          {
+            url: "https://www.theguardian.com/football/results",
+            title: "Guardian",
+            excerpt: long,
+            publishedAt: null,
+          },
+          {
+            url: "https://www.cbssports.com/soccer/results",
+            title: "CBS",
+            excerpt: long,
+            publishedAt: null,
+          },
         ],
       },
       extract: {
@@ -1384,7 +1659,10 @@ describe("cup history source attribution", () => {
       },
       llm: {
         name: "fake",
-        generate: async () => ({ text: replies[Math.min(calls++, replies.length - 1)]!, model: "parallel-low" }),
+        generate: async () => ({
+          text: replies[Math.min(calls++, replies.length - 1)]!,
+          model: "parallel-low",
+        }),
       },
       models: ["parallel-low"],
       now: () => new Date("2026-11-28T02:00:00Z"),
@@ -1394,10 +1672,19 @@ describe("cup history source attribution", () => {
         knownTeams: async () => ["Alpha FC", "Bravo United"],
         completedCounts: async () => new Map(),
         replaceStandings: async () => 0,
-        insertHistory: async (rows: unknown[]) => { inserted.push(...rows); return rows.length; },
+        insertHistory: async (rows: unknown[]) => {
+          inserted.push(...rows);
+          return rows.length;
+        },
         record: async (
-          _job: string, _scope: string, ok: boolean, _error: string | null, meta: Record<string, unknown>,
-        ) => { records.push({ ok, meta }); },
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          _error: string | null,
+          meta: Record<string, unknown>,
+        ) => {
+          records.push({ ok, meta });
+        },
       },
     };
     const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
@@ -1412,32 +1699,49 @@ describe("cup history source attribution", () => {
 describe("official standings fallback", () => {
   it("retries an invalid official table using independent full-table sources", async () => {
     const teamNames = [
-      "Club 01", "Club 02", "Club 03", "Club 04", "Club 05",
-      "Club 06", "Club 07", "Club 08", "Club 09", "Club 10",
-      "Club 11", "Club 12", "Club 13", "Club 14", "Club 15",
-      "Club 16", "Club 17", "Club 18", "Club 19", "Club 20",
+      "Club 01",
+      "Club 02",
+      "Club 03",
+      "Club 04",
+      "Club 05",
+      "Club 06",
+      "Club 07",
+      "Club 08",
+      "Club 09",
+      "Club 10",
+      "Club 11",
+      "Club 12",
+      "Club 13",
+      "Club 14",
+      "Club 15",
+      "Club 16",
+      "Club 17",
+      "Club 18",
+      "Club 19",
+      "Club 20",
     ];
-    const makeRows = (source: number, count: number) => teamNames.slice(0, count).map((team, index) => {
-      const won = 20 - index;
-      const lost = 20 - won;
-      const goalsFor = won * 3;
-      const goalsAgainst = lost * 2;
-      const position = index + 1;
-      const quote = `${position} ${team} 20 ${won} 0 ${lost} ${goalsFor} ${goalsAgainst} ${won * 3}`;
-      return {
-        source,
-        position,
-        team,
-        played: 20,
-        won,
-        drawn: 0,
-        lost,
-        goalsFor,
-        goalsAgainst,
-        points: won * 3,
-        quote,
-      };
-    });
+    const makeRows = (source: number, count: number) =>
+      teamNames.slice(0, count).map((team, index) => {
+        const won = 20 - index;
+        const lost = 20 - won;
+        const goalsFor = won * 3;
+        const goalsAgainst = lost * 2;
+        const position = index + 1;
+        const quote = `${position} ${team} 20 ${won} 0 ${lost} ${goalsFor} ${goalsAgainst} ${won * 3}`;
+        return {
+          source,
+          position,
+          team,
+          played: 20,
+          won,
+          drawn: 0,
+          lost,
+          goalsFor,
+          goalsAgainst,
+          points: won * 3,
+          quote,
+        };
+      });
     const validRows = makeRows(1, 20);
     const pageText = validRows.map((row) => row.quote).join("\n") + "\nUpdated 28 November 2026";
     const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
@@ -1469,10 +1773,16 @@ describe("official standings fallback", () => {
           ok: boolean,
           _error: string | null,
           meta: Record<string, unknown>,
-        ) => { records.push({ ok, meta }); },
+        ) => {
+          records.push({ ok, meta });
+        },
       },
     };
-    const report = await runTablesSync(deps as never, { job: "standings", only: ["epl"], maxJobs: 1 });
+    const report = await runTablesSync(deps as never, {
+      job: "standings",
+      only: ["epl"],
+      maxJobs: 1,
+    });
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)?.ok).toBe(true);
     expect(records.at(-1)?.meta.fallbackFromOfficial).toBe(true);
@@ -1484,35 +1794,42 @@ describe("empty historical windows", () => {
   it("marks a week with only out-of-window results as complete without a redundant secondary read", async () => {
     const pageText = `UEFA Champions League historical results. Alpha FC 2-1 Bravo United. ${"Match report and final score. ".repeat(20)}`;
     const answer = JSON.stringify({
-      matches: [{
-        source: 1,
-        home: "Alpha FC",
-        away: "Bravo United",
-        date: "2026-10-20",
-        time: null,
-        tz: null,
-        status: "finished",
-        homeScore: 2,
-        awayScore: 1,
-        quote: "Alpha FC 2-1 Bravo United",
-      }],
+      matches: [
+        {
+          source: 1,
+          home: "Alpha FC",
+          away: "Bravo United",
+          date: "2026-10-20",
+          time: null,
+          tz: null,
+          status: "finished",
+          homeScore: 2,
+          awayScore: 1,
+          quote: "Alpha FC 2-1 Bravo United",
+        },
+      ],
     });
     let calls = 0;
     const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
     const deps = {
       search: {
         name: "fake",
-        search: async () => [{
-          url: "https://www.uefa.com/uefachampionsleague/news/results",
-          title: "Official UEFA results",
-          excerpt: pageText,
-          publishedAt: null,
-        }],
+        search: async () => [
+          {
+            url: "https://www.uefa.com/uefachampionsleague/news/results",
+            title: "Official UEFA results",
+            excerpt: pageText,
+            publishedAt: null,
+          },
+        ],
       },
       extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
       llm: {
         name: "fake",
-        generate: async () => { calls += 1; return { text: answer, model: "m" }; },
+        generate: async () => {
+          calls += 1;
+          return { text: answer, model: "m" };
+        },
       },
       models: ["m"],
       now: () => new Date("2026-11-28T02:00:00Z"),
@@ -1529,7 +1846,9 @@ describe("empty historical windows", () => {
           ok: boolean,
           _error: string | null,
           meta: Record<string, unknown>,
-        ) => { records.push({ ok, meta }); },
+        ) => {
+          records.push({ ok, meta });
+        },
       },
     };
     const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
@@ -1542,8 +1861,32 @@ describe("empty historical windows", () => {
 
 describe("verified standings record corrections", () => {
   it("allows a corroborated W/D/L correction when played count is unchanged and the new points total is valid", () => {
-    const previous = [{ team: "Genoa", position: 10, played: 12, won: 4, drawn: 1, lost: 7, goalsFor: 13, goalsAgainst: 16, points: 13 }];
-    const corrected = [{ team: "Genoa", position: 10, played: 12, won: 5, drawn: 1, lost: 6, goalsFor: 13, goalsAgainst: 16, points: 16 }];
+    const previous = [
+      {
+        team: "Genoa",
+        position: 10,
+        played: 12,
+        won: 4,
+        drawn: 1,
+        lost: 7,
+        goalsFor: 13,
+        goalsAgainst: 16,
+        points: 13,
+      },
+    ];
+    const corrected = [
+      {
+        team: "Genoa",
+        position: 10,
+        played: 12,
+        won: 5,
+        drawn: 1,
+        lost: 6,
+        goalsFor: 13,
+        goalsAgainst: 16,
+        points: 16,
+      },
+    ];
     expect(tableRegression(corrected, previous)).toBe("won_changed_without_new_matches_Genoa");
     expect(tableRegression(corrected, previous, false, [], false, true)).toBeNull();
   });

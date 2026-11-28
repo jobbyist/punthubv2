@@ -208,7 +208,8 @@ export const STANDINGS_COMPETITIONS: Partial<
       "CAF Confederation Cup 2026/27 all four group tables",
     ],
     groupTeamRanges: { C: { min: 3, max: 4 } },
-    groupNotes: "Group C currently has three confirmed teams. The fourth place is pending the postponed preliminary-round tie involving CR Belouizdad, AS Douanes and Hafia. Extract the three confirmed Group C teams only; do not invent a placeholder or omit Group C. Accept four teams once the qualifier is completed.",
+    groupNotes:
+      "Group C currently has three confirmed teams. The fourth place is pending the postponed preliminary-round tie involving CR Belouizdad, AS Douanes and Hafia. Extract the three confirmed Group C teams only; do not invent a placeholder or omit Group C. Accept four teams once the qualifier is completed.",
     allowTeamCountIncrease: true,
     pages: [
       "https://www.365scores.com/football/league/caf-confederation-cup-627/standings",
@@ -403,7 +404,11 @@ export function standingsRequest(input: {
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
       "6. Extract each source independently. Never use Wikipedia or historical season pages as a current standings source.\n" +
       "7. If a page repeats the same table in desktop/mobile layouts, or shows a summary card as well as the full table, use only the full overall table and return each club exactly once. Never merge rows from the summary, home, away, form or another competition table." +
-      (input.groups?.length ? "\n8. This competition has separate group tables: " + input.groups.join(", ") + ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet." : "") +
+      (input.groups?.length
+        ? "\n8. This competition has separate group tables: " +
+          input.groups.join(", ") +
+          ". Extract every group separately. Set the group field on every row to the exact group letter. Never combine teams across groups, and do not omit a group even if it has not played yet."
+        : "") +
       (input.groupNotes ? "\n9. Group-specific context: " + input.groupNotes : ""),
     prompt: `Competition: ${input.competition}\nSeason: ${input.season}${input.retryHint ? `\n\nRETRY INSTRUCTION: The previous extraction failed validation (${input.retryHint}). Re-read the relevant source row(s) carefully. Copy exact values from this page only. Do not infer, calculate or repair numbers. If a row cannot be read, omit it rather than inventing values.` : ""}\n\nSources:\n\n${sources}`,
     schema: input.groups?.length
@@ -467,7 +472,10 @@ export function parseStandings(text: string): RawStandingRow[] | null {
  * completeness, team identity, arithmetic, freshness and source quotes.
  */
 export function parseStandingsMarkdown(text: string, source: number): RawStandingRow[] | null {
-  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
   const headerKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
   const aliases = {
     position: ["pos", "position", "rank", "no"],
@@ -490,8 +498,12 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   for (let i = 0; i < lines.length; i++) {
     const headerLine = lines[i]!;
     if (!headerLine.includes("|")) continue;
-    const headers = headerLine.replace(/^\||\|$/g, "").split("|").map(headerKey);
-    const indexOf = (keys: readonly string[]) => headers.findIndex((header) => keys.includes(header));
+    const headers = headerLine
+      .replace(/^\||\|$/g, "")
+      .split("|")
+      .map(headerKey);
+    const indexOf = (keys: readonly string[]) =>
+      headers.findIndex((header) => keys.includes(header));
     const columns = {
       position: indexOf(aliases.position),
       team: indexOf(aliases.team),
@@ -509,8 +521,12 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     for (let rowIndex = i + 1; rowIndex < lines.length; rowIndex++) {
       const line = lines[rowIndex]!;
       if (!line.includes("|")) break;
-      const cells = line.replace(/^\||\|$/g, "").split("|").map((cell) => cell.trim());
-      if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell))) continue;
+      const cells = line
+        .replace(/^\||\|$/g, "")
+        .split("|")
+        .map((cell) => cell.trim());
+      if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
+        continue;
       const position = integer(cells[columns.position] ?? "");
       const team = (cells[columns.team] ?? "").replace(/^\d+[.)]?\s*/, "").trim();
       const played = integer(cells[columns.played] ?? "");
@@ -521,9 +537,17 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       const goalsAgainst = integer(cells[columns.goalsAgainst] ?? "");
       const points = integer(cells[columns.points] ?? "", true);
       if (
-        position === null || !team || played === null || won === null || drawn === null ||
-        lost === null || goalsFor === null || goalsAgainst === null || points === null
-      ) continue;
+        position === null ||
+        !team ||
+        played === null ||
+        won === null ||
+        drawn === null ||
+        lost === null ||
+        goalsFor === null ||
+        goalsAgainst === null ||
+        points === null
+      )
+        continue;
       rows.push({
         source,
         position,
@@ -599,7 +623,7 @@ export function validateTables(
     const index = Number(sourceIndex);
     const source = sources.find((s) => s.index === index);
     const groupRange = groupNames?.length
-      ? groupTeamRanges?.[groupName] ?? { min: teamsPerGroup, max: teamsPerGroup }
+      ? (groupTeamRanges?.[groupName] ?? { min: teamsPerGroup, max: teamsPerGroup })
       : { min: expectedTeams, max: expectedTeams };
     if (groupNames?.length && !groupName) {
       rejected.push({ source: index, reason: "group_missing" });
@@ -682,9 +706,10 @@ export function validateTables(
       continue;
     }
     if (rows.length < groupRange.min || rows.length > groupRange.max) {
-      const expectedLabel = groupRange.min === groupRange.max
-        ? String(groupRange.min)
-        : `${groupRange.min}-${groupRange.max}`;
+      const expectedLabel =
+        groupRange.min === groupRange.max
+          ? String(groupRange.min)
+          : `${groupRange.min}-${groupRange.max}`;
       fail(`team_count_${rows.length}_expected_${expectedLabel}`);
       continue;
     }
@@ -906,14 +931,18 @@ export function tableRegression(
     addedTeams < 0 ||
     (!allowTeamCountIncrease && addedTeams !== 0) ||
     (allowTeamCountIncrease && addedTeams > 1)
-  ) return "team_count_changed_from_previous_snapshot";
-  const rowKey = (row: StandingRow) => `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
+  )
+    return "team_count_changed_from_previous_snapshot";
+  const rowKey = (row: StandingRow) =>
+    `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
   const nextByTeam = new Map(candidate.map((r) => [rowKey(r), r]));
   for (const old of previous) {
     const next = nextByTeam.get(rowKey(old));
     if (!next) return `team_missing_from_new_snapshot_${old.team}`;
     const verifiedPlayedCorrection =
-      allowVerifiedPlayedCorrections.some((name) => normaliseTeam(name) === normaliseTeam(old.team)) &&
+      allowVerifiedPlayedCorrections.some(
+        (name) => normaliseTeam(name) === normaliseTeam(old.team),
+      ) &&
       old.played - next.played === 1 &&
       old.won - next.won + old.drawn - next.drawn + old.lost - next.lost === 1 &&
       next.won + next.drawn + next.lost === next.played &&
@@ -936,11 +965,13 @@ export function tableRegression(
           next.played === old.played &&
           next.won + next.drawn + next.lost === next.played &&
           (field === "goalsFor" || field === "goalsAgainst");
-        const verifiedRecordField = field === "won" || field === "drawn" || field === "lost" || field === "points";
+        const verifiedRecordField =
+          field === "won" || field === "drawn" || field === "lost" || field === "points";
         if (verifiedGoalCorrection || (verifiedRecordCorrection && verifiedRecordField)) continue;
         return `${field}_changed_without_new_matches_${old.team}`;
       }
-      const verifiedRecordField = field === "won" || field === "drawn" || field === "lost" || field === "points";
+      const verifiedRecordField =
+        field === "won" || field === "drawn" || field === "lost" || field === "points";
       if (next[field] < old[field] && !(verifiedRecordCorrection && verifiedRecordField)) {
         return `${field}_regressed_${old.team}`;
       }
@@ -1075,8 +1106,6 @@ export function chooseTables(
 }
 
 /** Backwards-compatible single-table selector for existing callers and tests. */
-export function chooseTable(
-  tables: SourceTable[],
-): ChosenStandingsTable | null {
+export function chooseTable(tables: SourceTable[]): ChosenStandingsTable | null {
   return chooseTables(tables)?.[0] ?? null;
 }

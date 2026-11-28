@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { SportsProvider } from "./provider";
-import { RESULTS_LOOKBACK_DAYS, RESULTS_TARGET_FIXTURE_LIMIT, syncResults, type FixtureStore } from "./sync.server";
+import {
+  RESULTS_LOOKBACK_DAYS,
+  RESULTS_TARGET_FIXTURE_LIMIT,
+  syncResults,
+  type FixtureStore,
+} from "./sync.server";
 
 describe("syncResults lookback", () => {
   it("forwards a forced retry only to the requested competition", async () => {
@@ -16,14 +21,16 @@ describe("syncResults lookback", () => {
     } as unknown as SportsProvider;
     const store = {
       async openSince() {
-        return [{
-          provider: "pfie",
-          providerRef: "premier-league-1",
-          competition: "Premier League",
-          home: "Arsenal",
-          away: "Chelsea",
-          kickoffAt: "2026-11-27T18:00:00.000Z",
-        }];
+        return [
+          {
+            provider: "pfie",
+            providerRef: "premier-league-1",
+            competition: "Premier League",
+            home: "Arsenal",
+            away: "Chelsea",
+            kickoffAt: "2026-11-27T18:00:00.000Z",
+          },
+        ];
       },
     } as unknown as FixtureStore;
 
@@ -43,7 +50,11 @@ describe("syncResults lookback", () => {
       kickoffAt: new Date(now.getTime() - (i + 2) * 60 * 60_000).toISOString(),
     }));
     let received: { fixtures?: { home: string; away: string; kickoffAt: string }[] } | null = null;
-    const store = { async openSince() { return open; } } as unknown as FixtureStore;
+    const store = {
+      async openSince() {
+        return open;
+      },
+    } as unknown as FixtureStore;
     const provider = {
       name: "pfie",
       async listResults(_from: Date, _to: Date, options: { fixtures?: typeof open }) {
@@ -82,8 +93,12 @@ describe("syncResults lookback", () => {
     ];
     const saved: Record<string, unknown>[] = [];
     const store = {
-      async openSince() { return open; },
-      async upsert(rows: Record<string, unknown>[]) { saved.push(...rows); },
+      async openSince() {
+        return open;
+      },
+      async upsert(rows: Record<string, unknown>[]) {
+        saved.push(...rows);
+      },
     } as unknown as FixtureStore;
     const provider = {
       name: "pfie",
@@ -91,17 +106,19 @@ describe("syncResults lookback", () => {
         return {
           calls: 1,
           skipped: [],
-          fixtures: [{
-            provider: "pfie",
-            providerRef: "new-brann-agf",
-            competition: "UEFA Conference League",
-            home: "Brann",
-            away: "AGF",
-            kickoffAt: "2026-11-26T17:45:00.000Z",
-            status: "finished",
-            homeScore: 2,
-            awayScore: 1,
-          }],
+          fixtures: [
+            {
+              provider: "pfie",
+              providerRef: "new-brann-agf",
+              competition: "UEFA Conference League",
+              home: "Brann",
+              away: "AGF",
+              kickoffAt: "2026-11-26T17:45:00.000Z",
+              status: "finished",
+              homeScore: 2,
+              awayScore: 1,
+            },
+          ],
         };
       },
     } as unknown as SportsProvider;
@@ -109,8 +126,13 @@ describe("syncResults lookback", () => {
     const report = await syncResults(provider, store, now, { force: true, only: ["uecl"] });
 
     expect(report.upserted).toBe(2);
-    expect(saved.map((row) => row.providerRef).sort()).toEqual(["old-brann-agf", "old-brann-aarhus"]);
-    expect(saved.every((row) => row.home === "Brann" && row.kickoffAt === open[0]?.kickoffAt)).toBe(true);
+    expect(saved.map((row) => row.providerRef).sort()).toEqual([
+      "old-brann-agf",
+      "old-brann-aarhus",
+    ]);
+    expect(saved.every((row) => row.home === "Brann" && row.kickoffAt === open[0]?.kickoffAt)).toBe(
+      true,
+    );
   });
 
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {

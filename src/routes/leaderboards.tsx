@@ -214,7 +214,11 @@ function Leaderboards() {
                   >
                     {r.username}
                   </Link>
-                  {r.is_ai_participant && <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">AI</span>}
+                  {r.is_ai_participant && (
+                    <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">
+                      AI
+                    </span>
+                  )}
                   <Blurred gated={gated(ranked.length + j)}>
                     <span className="tnum text-muted-foreground">{formatUnits(r.units)}</span>{" "}
                     <span className="tnum text-muted-foreground">{r.picks_settled}</span>

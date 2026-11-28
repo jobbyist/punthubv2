@@ -336,12 +336,15 @@ export const adminNewsroomGenerate = createServerFn({ method: "POST" })
           store: createContentStore(),
           env,
           search: env.parallelKey
-            ? withSearchCache(guardSearch(createParallelSearch(env.parallelKey), claim), cache, "news")
+            ? withSearchCache(
+                guardSearch(createParallelSearch(env.parallelKey), claim),
+                cache,
+                "news",
+              )
             : null,
           extract: withExtractCache(
-            createPageReader(
-              { firecrawl: env.firecrawlKey, parallel: env.parallelKey },
-              (r) => guardExtract(r, claim),
+            createPageReader({ firecrawl: env.firecrawlKey, parallel: env.parallelKey }, (r) =>
+              guardExtract(r, claim),
             ),
             cache,
             "news",

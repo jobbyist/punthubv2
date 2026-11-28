@@ -578,8 +578,10 @@ function Fixtures() {
           </Link>
         </Button>
       </section>
-            <div className="mt-10"><AffiliateBanner label="fixtures" /></div>
-      </AppShell>
+      <div className="mt-10">
+        <AffiliateBanner label="fixtures" />
+      </div>
+    </AppShell>
   );
 }
 

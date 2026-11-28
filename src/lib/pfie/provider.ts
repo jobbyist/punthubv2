@@ -22,7 +22,12 @@ import type { ListOptions, ListResult, SportsProvider } from "@/lib/sports/provi
 import type { NormalisedFixture } from "@/lib/sports/types";
 
 import { corroborate } from "./corroborate";
-import { chunkSourcesForExtraction, extractionRequest, parseObservations, validateObservations } from "./extract";
+import {
+  chunkSourcesForExtraction,
+  extractionRequest,
+  parseObservations,
+  validateObservations,
+} from "./extract";
 import type { Decision, PfieSource, PfieStore, SourceTier } from "./types";
 
 interface CompetitionSources {
@@ -497,9 +502,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       // 1. Discovery.
       const today = sastDate(now());
       calls++;
-      const targetedMatches = targetFixtures.slice(0, 12).map(
-        (fixture) => `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
-      );
+      const targetedMatches = targetFixtures
+        .slice(0, 12)
+        .map(
+          (fixture) =>
+            `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
+        );
       const hits = await deps.search
         .search({
           objective:
@@ -558,7 +566,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       const usedToday: Record<string, number> = {};
       for (const m of models) {
         const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
-        usedToday[m] = effort ? usage[`parallel-chat:${effort}`] ?? 0 : usage[m] ?? 0;
+        usedToday[m] = effort ? (usage[`parallel-chat:${effort}`] ?? 0) : (usage[m] ?? 0);
       }
       const router = createModelRouter(deps.llm, {
         models,
@@ -600,7 +608,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
             text: source.text.slice(0, 3_000),
           }));
           answer = await router.generate(
-            makeRequest(retrySources, "The previous response was not valid JSON or did not match the required schema."),
+            makeRequest(
+              retrySources,
+              "The previous response was not valid JSON or did not match the required schema.",
+            ),
           );
           modelUsed = answer.model;
           parsed = parseObservations(answer.text);
@@ -678,7 +689,6 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     );
   }
 
-
   async function prioritizeByMemberInterest(items: Competition[]): Promise<Competition[]> {
     try {
       const { getPfieLearningSignals } = await import("./learning.server");
@@ -691,9 +701,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         score.set(key, Math.max(score.get(key) ?? 0, value));
       }
       // Reorder only: every selected competition is still processed and validation rules are unchanged.
-      return [...items].sort((a, b) =>
-        (score.get(b.name.trim().toLocaleLowerCase()) ?? 0) -
-        (score.get(a.name.trim().toLocaleLowerCase()) ?? 0)
+      return [...items].sort(
+        (a, b) =>
+          (score.get(b.name.trim().toLocaleLowerCase()) ?? 0) -
+          (score.get(a.name.trim().toLocaleLowerCase()) ?? 0),
       );
     } catch {
       // Learning data is an optional prioritisation signal, never a dependency for PFIE facts.

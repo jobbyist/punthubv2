@@ -27,7 +27,6 @@ describe("parallelJsonSchema", () => {
   });
 });
 
-
 describe("createParallelResponses", () => {
   it("uses Parallel JSON Schema output with the configured low reasoning effort", async () => {
     let sent: Record<string, unknown> | null = null;
@@ -38,7 +37,11 @@ describe("createParallelResponses", () => {
         headers: { "Content-Type": "application/json" },
       });
     };
-    const provider = createParallelResponses("test-key", { fetchImpl, attempts: 1 }, { effort: "low" });
+    const provider = createParallelResponses(
+      "test-key",
+      { fetchImpl, attempts: 1 },
+      { effort: "low" },
+    );
     const result = await provider.generate("parallel-low", {
       system: "Return one JSON object.",
       prompt: "Extract matches.",
@@ -52,7 +55,9 @@ describe("createParallelResponses", () => {
       reasoning: { effort: "low" },
       text: { format: { type: "json_schema", name: "puntr_structured_output" } },
     });
-    expect((sent?.["text"] as { format: Record<string, unknown> }).format).not.toHaveProperty("strict");
+    expect((sent?.["text"] as { format: Record<string, unknown> }).format).not.toHaveProperty(
+      "strict",
+    );
     expect((sent?.["text"] as { format: Record<string, unknown> }).format["schema"]).toMatchObject({
       type: "object",
       additionalProperties: false,

@@ -188,19 +188,31 @@ export function parseObservations(text: string): RawObservation[] | null {
   }));
 }
 
-function matchEvidenceOnPage(pageText: string, home: string, away: string, homeScore: number, awayScore: number): boolean {
+function matchEvidenceOnPage(
+  pageText: string,
+  home: string,
+  away: string,
+  homeScore: number,
+  awayScore: number,
+): boolean {
   const page = normalise(pageText);
   const h = normalise(home);
   const a = normalise(away);
   if (!h || !a) return false;
-  const score = homeScore + '-' + awayScore;
-  const scoreVariants = [score, homeScore + ' - ' + awayScore, homeScore + ':' + awayScore].map(normalise);
+  const score = homeScore + "-" + awayScore;
+  const scoreVariants = [score, homeScore + " - " + awayScore, homeScore + ":" + awayScore].map(
+    normalise,
+  );
   let from = 0;
   while (true) {
     const index = page.indexOf(h, from);
     if (index < 0) return false;
-    const excerpt = page.slice(Math.max(0, index - 120), Math.min(page.length, index + h.length + 360));
-    if (excerpt.includes(a) && scoreVariants.some((variant) => excerpt.includes(variant))) return true;
+    const excerpt = page.slice(
+      Math.max(0, index - 120),
+      Math.min(page.length, index + h.length + 360),
+    );
+    if (excerpt.includes(a) && scoreVariants.some((variant) => excerpt.includes(variant)))
+      return true;
     from = index + h.length;
   }
 }
@@ -210,7 +222,13 @@ const DAY = 86_400_000;
 export function validateObservations(
   raw: RawObservation[],
   sources: PfieSource[],
-  window: { from: Date; to: Date; now: Date; homeZone?: string | null; knownTeams?: readonly string[] },
+  window: {
+    from: Date;
+    to: Date;
+    now: Date;
+    homeZone?: string | null;
+    knownTeams?: readonly string[];
+  },
 ): { accepted: Observation[]; rejected: Rejected[] } {
   const byIndex = new Map(sources.map((s) => [s.index, s]));
   const accepted: Observation[] = [];
@@ -231,7 +249,10 @@ export function validateObservations(
     const homeEvidence = homeResolved && homeResolved !== "ambiguous" ? homeResolved : o.home;
     const awayEvidence = awayResolved && awayResolved !== "ambiguous" ? awayResolved : o.away;
     const pageQuotePresent = quote.length >= 10 && text.includes(quote);
-    const independentlyVisibleMatch = o.status === "finished" && o.homeScore !== null && o.awayScore !== null &&
+    const independentlyVisibleMatch =
+      o.status === "finished" &&
+      o.homeScore !== null &&
+      o.awayScore !== null &&
       matchEvidenceOnPage(source.text, homeEvidence, awayEvidence, o.homeScore, o.awayScore);
     // Some result pages split table cells or use a known short name (e.g. Man City).
     // Accept a paraphrased quote only when both resolved teams and the exact score appear together on-page.
@@ -286,7 +307,10 @@ export function validateObservations(
         reject("finished_without_valid_score");
         continue;
       }
-      if (!independentlyVisibleMatch && (!quote.includes(String(h)) || !quote.includes(String(a)))) {
+      if (
+        !independentlyVisibleMatch &&
+        (!quote.includes(String(h)) || !quote.includes(String(a)))
+      ) {
         reject("score_not_in_quote");
         continue;
       }

@@ -81,11 +81,10 @@ export function GoodSportLaunchChecklist() {
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
               Premiere readiness · 3 complete · 1 partially verified · 2 deferred
             </p>
-            <h2 className="mt-1 text-lg font-semibold">
-              The Good Sport · Premiere readiness
-            </h2>
+            <h2 className="mt-1 text-lg font-semibold">The Good Sport · Premiere readiness</h2>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Production readiness for the Episode 01 premiere on 1 December 2026. Statuses reflect verified work; deferred assets remain untouched.
+              Production readiness for the Episode 01 premiere on 1 December 2026. Statuses reflect
+              verified work; deferred assets remain untouched.
             </p>
           </div>
         </div>
@@ -95,11 +94,7 @@ export function GoodSportLaunchChecklist() {
           className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium"
         >
           {open ? "Collapse" : "Expand"}{" "}
-          {open ? (
-            <ChevronUp className="size-4" />
-          ) : (
-            <ChevronDown className="size-4" />
-          )}
+          {open ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
         </button>
       </div>
       {open && (
@@ -107,10 +102,7 @@ export function GoodSportLaunchChecklist() {
           {launchTasks.map((task, index) => {
             const Icon = task.icon;
             return (
-              <article
-                key={task.title}
-                className="flex gap-3 rounded-xl border border-border p-4"
-              >
+              <article key={task.title} className="flex gap-3 rounded-xl border border-border p-4">
                 <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
                   <Icon className="size-4" />
                 </span>
@@ -136,7 +128,8 @@ export function GoodSportLaunchChecklist() {
         </div>
       )}
       <p className="mt-4 text-xs text-muted-foreground">
-        Release gate: confirm actual inbox receipt, scheduled sends, retries and database delivery acknowledgement during the premiere window. Artwork and audio remain deferred.
+        Release gate: confirm actual inbox receipt, scheduled sends, retries and database delivery
+        acknowledgement during the premiere window. Artwork and audio remain deferred.
       </p>
     </section>
   );

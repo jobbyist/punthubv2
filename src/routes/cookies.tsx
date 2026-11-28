@@ -54,8 +54,16 @@ function Cookies() {
     setPfieLearning(p);
     const { data: session } = await supabase.auth.getSession();
     if (session.session) {
-      try { await setPfieLearningConsent({ data: { granted: p } }); }
-      catch { toast.error(locale === "af" ? "Kon nie PFIE-leertoestemming stoor nie" : "Could not save the PFIE learning choice"); return; }
+      try {
+        await setPfieLearningConsent({ data: { granted: p } });
+      } catch {
+        toast.error(
+          locale === "af"
+            ? "Kon nie PFIE-leertoestemming stoor nie"
+            : "Could not save the PFIE learning choice",
+        );
+        return;
+      }
     }
     writeConsent({ analytics: a, affiliate_tracking: f, pfie_learning: p });
     toast.success(locale === "af" ? "Privaatheidskeuses gestoor" : "Privacy choices saved");
@@ -162,8 +170,14 @@ function Cookies() {
         </section>
         <section className="flex items-start justify-between gap-4">
           <div>
-            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">PFIE learning (optional)</Label>
-            <p className="mt-1 text-sm text-muted-foreground">Lets Puntr use pseudonymous feature engagement and published pick actions to improve PFIE sporting intelligence. Separate from analytics; off unless you opt in. You can withdraw in Account privacy.</p>
+            <Label htmlFor="pfie-learning" className="font-display text-lg font-bold">
+              PFIE learning (optional)
+            </Label>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Lets Puntr use pseudonymous feature engagement and published pick actions to improve
+              PFIE sporting intelligence. Separate from analytics; off unless you opt in. You can
+              withdraw in Account privacy.
+            </p>
           </div>
           <Switch id="pfie-learning" checked={pfieLearning} onCheckedChange={setPfieLearning} />
         </section>
@@ -174,7 +188,9 @@ function Cookies() {
           <Button variant="outline" onClick={() => void save(true, true, true)}>
             Accept all
           </Button>
-          <Button onClick={() => void save(analytics, affiliate, pfieLearning)}>Save choices</Button>
+          <Button onClick={() => void save(analytics, affiliate, pfieLearning)}>
+            Save choices
+          </Button>
         </div>
         <p className="text-xs text-muted-foreground">
           You must be 18+ to use Puntr. Gambling helpline: 0800 006 008.

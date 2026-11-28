@@ -77,15 +77,25 @@ export function isOfficialBadgeSource(
     if (/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)) return false;
 
     const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
-    const officialSite = /\bofficial\b.{0,50}\b(website|site|club|team|league)\b|\b(website|site)\b.{0,50}\bofficial\b/i.test(text);
-    const knownLeagueDomain = (OFFICIAL_LEAGUE_DOMAINS[competition.trim().toLowerCase()] ?? [])
-      .some((domain) => host === domain || host.endsWith(`.${domain}`));
+    const officialSite =
+      /\bofficial\b.{0,50}\b(website|site|club|team|league)\b|\b(website|site)\b.{0,50}\bofficial\b/i.test(
+        text,
+      );
+    const knownLeagueDomain = (
+      OFFICIAL_LEAGUE_DOMAINS[competition.trim().toLowerCase()] ?? []
+    ).some((domain) => host === domain || host.endsWith(`.${domain}`));
 
     const teamTokens = badgeKey(teamName)
       .split(" ")
-      .filter((token) => token.length >= 4 && !["club", "team", "football", "united", "city"].includes(token));
+      .filter(
+        (token) =>
+          token.length >= 4 && !["club", "team", "football", "united", "city"].includes(token),
+      );
     const teamDomain = teamTokens.some((token) => host.includes(token));
-    return knownLeagueDomain || (officialSite && (teamDomain || /\bofficial\s+(website|site)\b/i.test(text)));
+    return (
+      knownLeagueDomain ||
+      (officialSite && (teamDomain || /\bofficial\s+(website|site)\b/i.test(text)))
+    );
   } catch {
     return false;
   }

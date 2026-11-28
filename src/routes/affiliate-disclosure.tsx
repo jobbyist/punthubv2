@@ -57,7 +57,10 @@ function AffiliateDisclosure() {
           member becomes a paying Pro subscriber. This commission relates to Puntr subscriptions,
           not bookmaker deposits, stakes, losses or winnings. Rates, attribution and payment terms
           are governed by the approved referral programme agreement. See the{" "}
-          <a className="underline" href="/referrals">referral programme</a>.
+          <a className="underline" href="/referrals">
+            referral programme
+          </a>
+          .
         </p>
         <p>
           Commercial partners do not control or influence Puntr’s picks, results, prediction

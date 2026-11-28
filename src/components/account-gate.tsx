@@ -55,7 +55,9 @@ export function RequireMember({
         <h1 className="text-2xl">{t("signInNeeded.title")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t("signInNeeded.body")}</p>
         <Button asChild className="mt-4">
-          <Link to="/join" search={{ next: returnTo }}>{t("signInNeeded.cta")}</Link>
+          <Link to="/join" search={{ next: returnTo }}>
+            {t("signInNeeded.cta")}
+          </Link>
         </Button>
       </AccountPage>
     );

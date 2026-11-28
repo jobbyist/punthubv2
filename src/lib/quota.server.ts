@@ -41,7 +41,12 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
         metadata: { attribution_source: "quota_guard", budget_checked: true },
       });
       if (error) {
-        console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
+        console.warn(
+          "quota: call attribution could not be recorded",
+          provider,
+          feature,
+          error.message,
+        );
       }
     } catch {
       console.warn("quota: call attribution unavailable", provider, feature);

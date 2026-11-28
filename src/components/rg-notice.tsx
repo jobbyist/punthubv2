@@ -28,7 +28,10 @@ export function RgNotice({
           {HELPLINE_DISPLAY}
         </a>
         {" · "}
-        <a href="/responsible-play" className="font-semibold text-foreground underline underline-offset-2">
+        <a
+          href="/responsible-play"
+          className="font-semibold text-foreground underline underline-offset-2"
+        >
           {t("responsiblePlayLink")}
         </a>
       </p>
@@ -61,7 +64,10 @@ export function RgNotice({
         >
           <Phone className="size-4" /> {HELPLINE_DISPLAY}
         </a>
-        <a href="/responsible-play" className="mt-2 inline-block text-xs font-semibold text-primary underline underline-offset-2">
+        <a
+          href="/responsible-play"
+          className="mt-2 inline-block text-xs font-semibold text-primary underline underline-offset-2"
+        >
           {t("responsiblePlayLink")}
         </a>
       </div>

@@ -71,7 +71,15 @@ export function createTablesStore(): TablesStore {
         .lt("kickoff_at", "2027-02-01T00:00:00Z")
         .order("kickoff_at");
       if (error) throw new Error(`completed_matches CAF group stage: ${error.message}`);
-      return ((data ?? []) as { home: string; away: string; kickoff_at: string; home_score: number; away_score: number }[]).map((row) => ({
+      return (
+        (data ?? []) as {
+          home: string;
+          away: string;
+          kickoff_at: string;
+          home_score: number;
+          away_score: number;
+        }[]
+      ).map((row) => ({
         home: row.home,
         away: row.away,
         kickoffAt: row.kickoff_at,
@@ -82,13 +90,17 @@ export function createTablesStore(): TablesStore {
     async currentStandings(key, season): Promise<StandingRow[]> {
       const { data, error } = await db
         .from("league_standings")
-        .select("group_name, position, team, played, won, drawn, lost, goals_for, goals_against, points")
+        .select(
+          "group_name, position, team, played, won, drawn, lost, goals_for, goals_against, points",
+        )
         .eq("competition_key", key)
         .eq("season", season)
         .order("position");
       if (error) throw new Error(`league_standings: ${error.message}`);
       return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
-        ...(typeof r["group_name"] === "string" && r["group_name"] ? { group: r["group_name"] as string } : {}),
+        ...(typeof r["group_name"] === "string" && r["group_name"]
+          ? { group: r["group_name"] as string }
+          : {}),
         position: r["position"] as number,
         team: r["team"] as string,
         played: r["played"] as number,

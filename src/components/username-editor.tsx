@@ -51,7 +51,9 @@ export function UsernameEditor({ initialUsername }: { initialUsername: string })
         <dt className="text-sm text-muted-foreground">{t("home.username")}</dt>
         <dd className="mt-1 font-semibold">@{username}</dd>
         {saved ? (
-          <p className="mt-1 text-xs text-primary" role="status">{t("home.usernameSaved")}</p>
+          <p className="mt-1 text-xs text-primary" role="status">
+            {t("home.usernameSaved")}
+          </p>
         ) : !editing ? (
           <p className="mt-1 text-xs text-muted-foreground">{t("home.usernameHint")}</p>
         ) : null}
@@ -62,7 +64,14 @@ export function UsernameEditor({ initialUsername }: { initialUsername: string })
           <Input
             id="account-username"
             value={draft}
-            onChange={(event) => setDraft(event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20))}
+            onChange={(event) =>
+              setDraft(
+                event.target.value
+                  .toLowerCase()
+                  .replace(/[^a-z0-9_]/g, "")
+                  .slice(0, 20),
+              )
+            }
             autoComplete="username"
             autoCapitalize="none"
             spellCheck={false}
@@ -79,7 +88,11 @@ export function UsernameEditor({ initialUsername }: { initialUsername: string })
             </p>
           ) : null}
           <div className="flex gap-2">
-            <Button type="submit" size="sm" disabled={busy || draft === username || draft.length < 3}>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={busy || draft === username || draft.length < 3}
+            >
               {busy ? t("home.usernameSaving") : t("home.usernameSave")}
             </Button>
             <Button type="button" size="sm" variant="outline" onClick={cancel} disabled={busy}>
@@ -88,7 +101,15 @@ export function UsernameEditor({ initialUsername }: { initialUsername: string })
           </div>
         </form>
       ) : (
-        <Button type="button" size="sm" variant="outline" onClick={() => { setSaved(false); setEditing(true); }}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            setSaved(false);
+            setEditing(true);
+          }}
+        >
           {t("home.usernameEdit")}
         </Button>
       )}

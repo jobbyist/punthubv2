@@ -100,7 +100,9 @@ function SlipsPage() {
           <div>
             <h1 className="text-3xl sm:text-[34px]">{t("title")}</h1>
             <span className="puntr-grow-x mt-3 block h-1 w-14 rounded-full bg-primary" />
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">{t("subtitle")}</p>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              {t("subtitle")}
+            </p>
           </div>
           <BettingSlipGraphic compact />
         </div>

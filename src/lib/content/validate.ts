@@ -193,7 +193,8 @@ export function validateDraft(input: ValidateInput): QualityReport {
   }
 
   // Every claim must point at a real source and carry words that are really on that page.
-  const minClaims = input.slot === "editorial" || input.slot === "intelligence" ? 6 : kind === "sports" ? 4 : 2;
+  const minClaims =
+    input.slot === "editorial" || input.slot === "intelligence" ? 6 : kind === "sports" ? 4 : 2;
   if (draft.claims.length < minClaims)
     critical("few_claims", `${draft.claims.length} sourced claims (at least ${minClaims} needed)`);
   const citedDomains = new Set<string>();
@@ -220,7 +221,8 @@ export function validateDraft(input: ValidateInput): QualityReport {
     }
     citedDomains.add(source.domain);
   }
-  const minDomains = input.slot === "editorial" || input.slot === "intelligence" ? 3 : kind === "sports" ? 2 : 1;
+  const minDomains =
+    input.slot === "editorial" || input.slot === "intelligence" ? 3 : kind === "sports" ? 2 : 1;
   if (citedDomains.size < minDomains)
     critical(
       "thin_sourcing",
@@ -246,7 +248,10 @@ export function validateDraft(input: ValidateInput): QualityReport {
     // Keep its concerns visible without letting one noisy review turn into dozens of critical penalties.
     minor(
       "reviewer_unsupported",
-      `independent review raised ${reviewerFlags.length} potential factual-support concern(s): ${reviewerFlags.slice(0, 2).map((x) => x.slice(0, 90)).join(" | ")}`,
+      `independent review raised ${reviewerFlags.length} potential factual-support concern(s): ${reviewerFlags
+        .slice(0, 2)
+        .map((x) => x.slice(0, 90))
+        .join(" | ")}`,
       8,
     );
   }

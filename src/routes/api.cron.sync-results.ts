@@ -17,7 +17,8 @@ export const Route = createFileRoute("/api/cron/sync-results")({
         const { syncResults } = await import("@/lib/sports/sync.server");
         const { createFixtureStore } = await import("@/lib/sports/store.server");
         const url = new URL(request.url);
-        const only = url.searchParams.get("only")?.split(",").filter(Boolean) as import("@/lib/sports/competitions").CompetitionKey[] | undefined;
+        const only = url.searchParams.get("only")?.split(",").filter(Boolean) as
+          import("@/lib/sports/competitions").CompetitionKey[] | undefined;
         const force = url.searchParams.get("force") === "1" && Boolean(only?.length);
         try {
           const report = await syncResults(provider, createFixtureStore(), new Date(), {

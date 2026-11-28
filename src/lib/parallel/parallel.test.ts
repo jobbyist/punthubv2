@@ -199,7 +199,6 @@ describe("task and chat clients", () => {
   });
 });
 
-
 describe("Decisions API client", () => {
   it("sends typed questions to the live-web endpoint and parses the response", async () => {
     const fetchImpl = (async (url: string, init?: RequestInit) => {
@@ -208,11 +207,20 @@ describe("Decisions API client", () => {
       const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
       expect(body["mode"]).toBe("fast");
       expect(body["questions"]).toHaveProperty("persona-01");
-      return new Response(JSON.stringify({
-        decision_id: "decisions_test",
-        answers: { "persona-01": { type: "choice", choice: "home", probabilities: { home: 0.7, draw: 0.2, away: 0.1 } } },
-        citations: [{ url: "https://example.com/fixture" }]
-      }), { status: 200, headers: { "Content-Type": "application/json" } });
+      return new Response(
+        JSON.stringify({
+          decision_id: "decisions_test",
+          answers: {
+            "persona-01": {
+              type: "choice",
+              choice: "home",
+              probabilities: { home: 0.7, draw: 0.2, away: 0.1 },
+            },
+          },
+          citations: [{ url: "https://example.com/fixture" }],
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
     }) as unknown as typeof fetch;
 
     const result = await createParallelDecisions("test-key", fetchImpl).decide({
@@ -222,19 +230,31 @@ describe("Decisions API client", () => {
         "persona-01": {
           type: "choice",
           instructions: "Choose the most likely outcome.",
-          criteria: { home: "Home wins", draw: "Draw", away: "Away wins", no_pick: "Insufficient evidence" }
-        }
-      }
+          criteria: {
+            home: "Home wins",
+            draw: "Draw",
+            away: "Away wins",
+            no_pick: "Insufficient evidence",
+          },
+        },
+      },
     });
     expect(result["decision_id"]).toBe("decisions_test");
     expect(result["answers"]).toHaveProperty("persona-01");
   });
 
   it("maps quota failures to a quota provider error", async () => {
-    const fetchImpl = (async () => new Response(JSON.stringify({ error: "no credits" }), { status: 402 })) as unknown as typeof fetch;
-    await expect(createParallelDecisions("test-key", fetchImpl).decide({
-      state: {},
-      questions: { q: { type: "choice", instructions: "Choose", criteria: { yes: "Yes", no: "No" } } }
-    })).rejects.toMatchObject({ kind: "quota", status: 402 });
+    const fetchImpl = (async () =>
+      new Response(JSON.stringify({ error: "no credits" }), {
+        status: 402,
+      })) as unknown as typeof fetch;
+    await expect(
+      createParallelDecisions("test-key", fetchImpl).decide({
+        state: {},
+        questions: {
+          q: { type: "choice", instructions: "Choose", criteria: { yes: "Yes", no: "No" } },
+        },
+      }),
+    ).rejects.toMatchObject({ kind: "quota", status: 402 });
   });
 });
