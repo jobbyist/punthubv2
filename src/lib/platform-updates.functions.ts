@@ -167,7 +167,9 @@ export function validateSavePlatformTaskInput(value: unknown): SavePlatformTaskI
   }
   const progress = Number(input.progress);
   const sortOrder = input.sortOrder === undefined ? 0 : Number(input.sortOrder);
-  if (!Number.isFinite(progress)) throw new Error("Task progress must be a number.");
+  if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+    throw new Error("Task progress must be a number between 0 and 100.");
+  }
   if (!Number.isFinite(sortOrder)) throw new Error("Task sort order must be a number.");
   if (input.dueDate !== undefined && typeof input.dueDate !== "string") {
     throw new Error("Task target date must be text.");
