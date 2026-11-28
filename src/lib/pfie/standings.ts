@@ -14,6 +14,7 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
 import { PFIE_LAUNCH_KEYS } from "./launch-scope";
+import { publisherKey as independentSourceKey } from "./publisher-identity";
 
 /** Ten competition tables in the agreed MVP launch priority order. */
 export const STANDINGS_LAUNCH_KEYS = PFIE_LAUNCH_KEYS;
@@ -998,7 +999,7 @@ export function validateTables(
 }
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
-export { publisherKey as independentSourceKey } from "./publisher-identity";
+export { independentSourceKey };
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
 export function tableRegression(
