@@ -234,6 +234,19 @@ describe("EFL Championship source configuration", () => {
   });
 });
 
+describe("Serie A live source configuration", () => {
+  it("includes independent current-table sources for cross-checking", () => {
+    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain(
+      "https://www.transfermarkt.com/serie-a/tabelle/wettbewerb/IT1",
+    );
+    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain(
+      "https://www.flashscore.com/football/italy/serie-a/standings/",
+    );
+    expect(tierOf("transfermarkt.com", ["legaseriea.it"])).toBe("trusted");
+    expect(tierOf("flashscore.com", ["legaseriea.it"])).toBe("trusted");
+  });
+});
+
 describe("La Liga live source configuration", () => {
   it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
@@ -599,6 +612,11 @@ describe("EFL Championship team aliases", () => {
     expect(normaliseTeam("QPR")).toBe(normaliseTeam("Queens Park Rangers"));
     expect(normaliseTeam("Sheffield Utd")).toBe(normaliseTeam("Sheffield United"));
     expect(normaliseTeam("Sheffield Wed")).toBe(normaliseTeam("Sheffield Wednesday"));
+    expect(normaliseTeam("Birmingham")).toBe(normaliseTeam("Birmingham City"));
+    expect(normaliseTeam("West Brom")).toBe(normaliseTeam("West Bromwich Albion"));
+    expect(normaliseTeam("Blackburn")).toBe(normaliseTeam("Blackburn Rovers"));
+    expect(normaliseTeam("Swansea")).toBe(normaliseTeam("Swansea City"));
+    expect(normaliseTeam("Bolton")).toBe(normaliseTeam("Bolton Wanderers"));
   });
 });
 
