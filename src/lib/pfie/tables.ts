@@ -154,7 +154,8 @@ const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
 const MAX_SEASON_SOURCES = 3;
 const THREE_SEASON_HISTORY_KEYS = new Set<CompetitionKey>(["ucl", "uecl", "caf-cc"]);
-const MAX_CHARS = 24_000;
+// Parallel Responses has a 20,000-character combined input/instructions ceiling. Keep three extracted sources below it.
+const MAX_CHARS = 4_500;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
