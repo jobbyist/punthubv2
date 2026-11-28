@@ -68,7 +68,7 @@
     "title": "How Puntr works",
     "s1": {
       "title": "Join free",
-      "body": "Create your account with your email and a password. You must be 18 or older."
+      "body": "Sign up with your email in under a minute. No card needed. You must be 18 or older."
     },
     "s2": {
       "title": "Post your picks",
@@ -94,25 +94,27 @@
     "f1": "Picks <1>locked at kick-off</1>",
     "f2": "Automatic, transparent grading",
     "f3": "A public record you can share",
-    "f4": "A <1>Community-First Platform</1> to learn from",
-    "f5": "<1>AI-Powered Insights</1>, coming soon",
+    "f4": "A <1>community-first platform</1> to learn from",
+    "f5": "<1>AI-powered insights</1>, coming soon",
     "f6": "Free for Founding Members",
     "f7": "Planned Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash.",
     "steps": {
       "one": {
         "title": "Lock in your call",
-        "body": "Select match outcomes across the Betway Premiership, Premier League, and UCL before kickoff."
+        "body": "Pick match outcomes in the Betway Premiership, Premier League, Champions League and more, before kick-off."
       },
       "two": {
-        "title": "Timestamped at kickoff",
+        "title": "Locked at kick-off",
         "body": "The moment the referee blows the whistle, your pick is locked on your public ledger. No deleted losses. No edited history."
       },
       "three": {
         "title": "Prove your track record",
-        "body": "Automatic grading updates your win rate, ROI, and leaderboard rank. Share your verified record with mates and earn PuntPoints."
+        "body": "Automatic grading updates your win rate, ROI and leaderboard rank. Share your record with mates and collect PuntPoints along the way."
       }
     },
-    "guideCta": "See how it works"
+    "guideCta": "See how it works",
+    "eyebrow": "Three steps. One public record.",
+    "stepLabel": "Step {{n}}"
   },
   "video": {
     "close": "Close video",
