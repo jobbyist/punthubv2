@@ -136,3 +136,11 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 - **Migration provenance:** Supabase's applied migration list does not contain four migration names present in the repository: platform_updates_and_implementation_checklist, api_usage_attribution_and_pfie_budget_routing, fix_parallel_budget_spend_reporting, and parallel_newsroom_medium_quota_headroom. Their live database objects exist. Treat this as migration-history drift: compare exact live definitions and repository SQL before any migration replay; do not blindly reapply them.
 - **Phase 1 boundary:** all audit findings are captured in the Phase 1 issue register with severity and remediation direction. The outstanding defects are implementation work, not blockers to closing the audit phase. In particular, Phase 2 owns the shared ten-competition allowlist, stale/mixed standings repair, result-correction reconciliation, incremental history/archive completeness, and canonical publisher identity. Phase 3 owns global spend reporting and consumption controls. Phase 6 owns post-deployment scheduled-job and final production verification.
 - **No PFIE ingestion, standings, history, fixture/result data, provider configuration, budget limits or cron schedules were changed during Phase 1 close-out.
+
+
+### PFIE Phase 2 implementation — PR #394
+
+- **PR #394 — ten-competition launch-scope guard:** merged after the exact PR head SHA ab33748ee7c4ae1b9e41c2e45347140f5e0e1b27 received a Vercel Preview marked READY. Merge commit: 23ae523ec70cde8ecbdf16f3ae5eadc4543b5210.
+- Added src/lib/pfie/launch-scope.ts as the single ten-key allowlist and made standings, fixture/results selection and archive scheduling consume it. Direct archive invocation also rejects competitions outside the allowlist.
+- This prevents future pre-launch PFIE fixture/result/archive jobs from spending budget on non-priority competitions. It does not delete or rewrite historical records already ingested outside the launch scope.
+- Remaining Phase 2 work: protect and repair persisted standings (season/freshness and score-correction reconciliation), restore Championship standings from fresh corroborated sources, repair incremental history/archive coverage, and unify publisher identity across fixture/results/history/standings.
