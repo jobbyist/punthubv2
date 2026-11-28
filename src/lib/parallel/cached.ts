@@ -116,11 +116,11 @@ export function withSearchCache(
 ): SearchProvider {
   return {
     name: inner.name,
-    async search(input) {
+    async search(input, context) {
       const { value } = await cachedCall(
         store,
         { endpoint: `search:${inner.name}`, body: input, purpose, onEvent },
-        () => inner.search(input),
+        () => inner.search(input, context),
         (hits) => hits.length > 0,
       );
       return value;
@@ -138,11 +138,11 @@ export function withExtractCache(
   if (!inner) return null;
   return {
     name: inner.name,
-    async extract(url) {
+    async extract(url, context) {
       const { value } = await cachedCall(
         store,
         { endpoint: `extract:${inner.name}`, body: { url }, purpose, onEvent },
-        () => inner.extract(url),
+        () => inner.extract(url, context),
         (page) => Boolean(page?.markdown),
       );
       return value;
