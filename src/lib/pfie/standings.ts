@@ -1065,8 +1065,18 @@ export function tableRegression(
     (allowTeamCountIncrease && addedTeams > 1)
   )
     return "team_count_changed_from_previous_snapshot";
+  // Single-table publishers often label the table with the competition name (e.g. "Betway Premiership"),
+  // while stored rows use an empty group. Group identity is meaningful only when multiple named groups exist.
+  const groupKeys = new Set(
+    [...candidate, ...previous]
+      .map((row) => normaliseTeam(row.group ?? ""))
+      .filter(Boolean),
+  );
+  const hasNamedGroups = groupKeys.size > 1;
   const rowKey = (row: StandingRow) =>
-    `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`;
+    hasNamedGroups
+      ? `${normaliseTeam(row.group ?? "")}::${normaliseTeam(row.team)}`
+      : normaliseTeam(row.team);
   const nextByTeam = new Map(candidate.map((r) => [rowKey(r), r]));
   for (const old of previous) {
     const next = nextByTeam.get(rowKey(old));

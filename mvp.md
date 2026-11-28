@@ -292,3 +292,10 @@ Unit tests cover UTC inclusive-day calculations, zero-spend days, depleted budge
 - Production evidence from the bounded PSL test: the first Search/Extract reads missed, repeated reads in the same request hit cache (six provider calls avoided, approximately $0.006). The run still failed validation; the source/retry optimisations are intended to reduce that cost on the next verification.
 - Shared Parallel spend at the audit point: approximately $7.68 of the $200 Q1 cap. Monthly family spend: core $10.704/$50; auxiliary $0.010/$35; newsroom $30.900/$50; synthetic $0.015/$50.
 - The guarded quota restoration job is scheduled for 29 Nov 2026 from 00:05 UTC (02:05 SAST), polling every five minutes. It restores the approved Search/Extract/Responses daily and monthly limits only after Phase 3.1–3.5 are complete and Phase 3.6 reaches at least 90%, then closes the tracker and unschedules itself.
+
+
+### Phase 3.6 — Single-table regression identity repair
+
+- Production PSL refresh successfully parsed two independent 16-team standings tables, but the final regression guard rejected the candidate because source-specific group labels ("Betway Premiership") differed from the stored empty group value. The tables themselves agreed.
+- Updated `tableRegression` to use group identity only when multiple named groups exist. Single-table competitions now match teams by canonical team name regardless of a publisher's competition-heading label; multi-group competitions retain group-aware matching.
+- Added a regression test for the PSL-style empty-group versus competition-label case.
