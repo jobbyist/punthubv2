@@ -1997,3 +1997,33 @@ describe("ranked source tables with separate team and position cells", () => {
     expect(rows?.[0]).toMatchObject({ position: 1, team: "Middlesbrough", played: 18, goalsFor: 34, goalsAgainst: 22, points: 35 });
   });
 });
+
+describe("plain-text live standings source layouts", () => {
+  it("parses Sky Sports rows with a leading rank and separate team column", () => {
+    const plain = [
+      "Team Pl W D L F A GD Pts",
+      "1 Middlesbrough 18 10 5 3 34 22 +12 35",
+      "2 Stoke City 17 11 2 4 27 19 +8 35",
+      "3 Wolverhampton Wanderers 17 10 4 3 31 19 +12 34",
+      "4 Birmingham City 17 9 5 3 30 15 +15 32",
+    ].join("\n");
+    expect(parseStandingsMarkdown(plain, 2)?.[0]).toMatchObject({
+      position: 1,
+      team: "Middlesbrough",
+      goalsFor: 34,
+      goalsAgainst: 22,
+      points: 35,
+    });
+  });
+
+  it("strips strike-through wrappers from plain-text combined goal totals", () => {
+    const plain = [
+      "# Club P W D L Goals GD Pts",
+      "1 Middlesbrough 18 10 5 3 34~~:~~22 +12 35",
+      "2 Stoke City 17 11 2 4 27~~:~~19 +8 35",
+      "3 Wolves 17 10 4 3 31~~:~~19 +12 34",
+      "4 Birmingham City 17 9 5 3 30~~:~~15 +15 32",
+    ].join("\n");
+    expect(parseStandingsMarkdown(plain, 3)?.[0]).toMatchObject({ goalsFor: 34, goalsAgainst: 22 });
+  });
+});

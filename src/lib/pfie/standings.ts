@@ -582,7 +582,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   const plainHeaderIndex = lines.findIndex((line) => {
     const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/);
     const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
-    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line);
+    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line) || tokens[0] === "team";
     const hasGoals = (has(aliases.goalsFor) && has(aliases.goalsAgainst)) || has(aliases.goalsCombined);
     return hasPosition && has(aliases.team) && has(aliases.played) &&
       has(aliases.won) && has(aliases.drawn) && has(aliases.lost) && hasGoals && has(aliases.points);
@@ -594,14 +594,14 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       /^\s*(\d{1,2})[.)]?\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s*[:–-]\s*(\d{1,3})\s+([+-]?\d{1,3})\s+([+-]?\d{1,3})(?:\s+.*)?$/;
     const rows: RawStandingRow[] = [];
     for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
-      const line = lines[rowIndex]!;
+      const line = lines[rowIndex]!.replace(/~~/g, "").replace(/<[^>]+>/g, "").replace(/\\\*/g, "*");
       const match = rowPattern.exec(line) ?? combinedGoalsPattern.exec(line);
       if (!match) {
         if (rows.length) break;
         continue;
       }
       const position = integer(match[1] ?? "");
-      const team = (match[2] ?? "").trim();
+      const team = (match[2] ?? "").replace(/^\\?\*\s*/, "").trim();
       const played = integer(match[3] ?? "");
       const won = integer(match[4] ?? "");
       const drawn = integer(match[5] ?? "");
