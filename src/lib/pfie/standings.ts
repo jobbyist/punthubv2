@@ -228,6 +228,7 @@ export const STANDINGS_COMPETITIONS: Partial<
     ],
     pages: [
       "https://www.efl.com/competitions/efl-championship/",
+      "https://www.efl.com/embeds/league-table/",
       "https://www.skysports.com/championship-table?dcmp=GameOn",
       "https://www.cbssports.com/soccer/efl-championship/standings/",
       "https://www.sportsmole.co.uk/football/championship/table.html",
