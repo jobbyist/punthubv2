@@ -67,6 +67,47 @@ export function verifyHistory(
   return { rows, unverified };
 }
 
+
+export interface CompletedMatchEvidence {
+  matchDate: string;
+  home: string;
+  away: string;
+  homeScore: number;
+  awayScore: number;
+  kickoffAt?: string;
+}
+
+/**
+ * Collapse fixture/history copies of the same match by canonical team identity and local match date.
+ * If two records disagree on the score, quarantine that match from form counts rather than choosing one.
+ */
+export function dedupeCompletedMatches(matches: CompletedMatchEvidence[]): CompletedMatchEvidence[] {
+  const grouped = new Map<string, { row: CompletedMatchEvidence; score: string; conflict: boolean }>();
+  for (const row of matches) {
+    const home = normaliseTeam(row.home);
+    const away = normaliseTeam(row.away);
+    if (!home || !away || home === away || !/^\\d{4}-\\d{2}-\\d{2}$/.test(row.matchDate)) continue;
+    const key = `${row.matchDate}|${home}|${away}`;
+    const score = `${row.homeScore}-${row.awayScore}`;
+    const existing = grouped.get(key);
+    if (!existing) grouped.set(key, { row, score, conflict: false });
+    else if (existing.score !== score) existing.conflict = true;
+  }
+  return [...grouped.values()].filter((entry) => !entry.conflict).map((entry) => entry.row);
+}
+
+/** Canonical per-team match counts for the backfill selector. Duplicate aliases count once; score conflicts count zero. */
+export function completedMatchCounts(matches: CompletedMatchEvidence[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const row of dedupeCompletedMatches(matches)) {
+    for (const name of [row.home, row.away]) {
+      const key = normaliseTeam(name);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
 /** Teams with fewer than `min` completed matches recorded: the competition needs a history backfill. */
 export function needsBackfill(
   counts: Map<string, number>,
@@ -74,6 +115,6 @@ export function needsBackfill(
   min = 5,
 ): boolean {
   if (teams.length === 0) return true;
-  const short = teams.filter((t) => (counts.get(t.toLowerCase()) ?? 0) < min).length;
+  const short = teams.filter((t) => (counts.get(normaliseTeam(t)) ?? 0) < min).length;
   return short / teams.length > 0.25;
 }
