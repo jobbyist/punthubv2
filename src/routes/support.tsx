@@ -53,7 +53,7 @@ export const Route = createFileRoute("/support")({
   component: Support,
 });
 
-const FAQ_KEYS = [1, 2, 3, 4, 5, 6, 7] as const;
+const FAQ_KEYS = Array.from({ length: 49 }, (_, index) => index + 1);
 
 function Support() {
   const { t } = useTranslation("support");
