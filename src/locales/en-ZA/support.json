@@ -49,7 +49,7 @@
     "q15": "What happens if a fixture is postponed or cancelled?",
     "a15": "Puntr waits for the fixture status to be verified. A cancelled or abandoned event may be voided under the applicable grading rules; a postponed event is not automatically voided immediately.",
     "q16": "How quickly are picks settled?",
-    "a16": "Puntr aims to settle picks within minutes after a verified final result becomes available. Eligible fixtures enter a priority check cycle: every five minutes during the first expected full-time hour, then at a slower retry interval for older unresolved matches. The settlement process runs every two minutes. Provider delays or conflicting reports can still extend the wait.",
+    "a16": "Puntr aims to settle picks within minutes after a verified final result becomes available. Eligible fixtures are checked every five minutes for up to four hours after kick-off, then every fifteen minutes for older unresolved matches. The settlement process runs every two minutes. Provider delays or conflicting reports can still extend the wait.",
     "q17": "Why is my pick or duel still awaiting settlement?",
     "a17": "A fixture can remain pending when a result source has not published full time, sources disagree, or a provider is temporarily unavailable. Puntr will not guess a score. Priority checks retry automatically; if it remains unresolved for more than 60 minutes after full time, contact support with the fixture and pick or duel link.",
     "q18": "What does 'awaiting verified result' mean?",

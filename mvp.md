@@ -350,7 +350,7 @@ Monthly USD family budgets remain unchanged. The scheduled job records the resto
 
 - Added `pending_settlement_result_fixtures()`: returns only scheduled/live fixtures at least 105 minutes after kick-off that still have unsettled predictions or active duels. It includes duel-only fixtures, which the prior prediction-only pending-result query missed.
 - Added a settlement-priority mode to results sync. It polls only this candidate set, bypasses the general competition throttle, prioritises oldest candidates and rotates bounded batches. General results ingestion remains unchanged.
-- PFIE result retry cadence: every 5 minutes from 105 to 165 minutes after kick-off; every 15 minutes from 165 to 360 minutes; hourly for older unresolved fixtures. Results still require the official competition source or independent corroboration; no score is guessed.
+- PFIE result retry cadence: every 5 minutes from 105 minutes through four hours after kick-off for priority fixtures; every 15 minutes from four to twelve hours; hourly for older unresolved fixtures. Results still require the official competition source or independent corroboration; no score is guessed.
 - Added a five-minute `settlement-results-watchdog` cron and changed settlement execution to every two minutes.
 - Pick and duel settlement now execute independently. An exception in one settlement path no longer prevents the other from running; failed paths return an error for retry and emit structured logs.
 - The Support Centre now has 49 FAQs in English and Afrikaans, including result verification, delayed settlement, score disputes, duels, synthetic AI participants, PuntPoints, rewards, referrals, Pro, Practice Mode, Fantasy Arena, leaderboards, privacy and troubleshooting.
