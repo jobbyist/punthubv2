@@ -126,6 +126,7 @@ describe("PFIE historical season windows", () => {
     expect(ucl).toContain("https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures");
     expect(uecl).toContain("https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures");
     expect(uecl).toContain("https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf");
+    expect(uecl).toContain("https://www.skysports.com/europa-conference-league-scores-fixtures");
     expect(caf).toContain("https://www.vavel.com/en-us/data/caf-confederation-cup/results");
     expect(caf).toContain("https://foot-africa.com/en/leagues/international/caf-confederations-cup/");
   });
