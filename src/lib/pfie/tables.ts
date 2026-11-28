@@ -546,7 +546,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
-    }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
+    }
     let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
