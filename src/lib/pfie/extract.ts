@@ -26,11 +26,11 @@ const SCHEMA = {
           home: { type: "STRING" },
           away: { type: "STRING" },
           date: { type: "STRING" },
-          time: { type: "STRING", nullable: true },
-          tz: { type: "STRING", nullable: true },
+          time: { type: "STRING" },
+          tz: { type: "STRING" },
           status: { type: "STRING", enum: [...STATUSES] },
-          homeScore: { type: "INTEGER", nullable: true },
-          awayScore: { type: "INTEGER", nullable: true },
+          homeScore: { type: "INTEGER" },
+          awayScore: { type: "INTEGER" },
           quote: { type: "STRING" },
         },
         required: ["source", "home", "away", "date", "status", "quote"],
@@ -129,7 +129,7 @@ export function extractionRequest(input: {
       "2. `home` is the team listed first or marked (H); copy team names exactly as the page writes them.\n" +
       "3. `date` is YYYY-MM-DD. Skip a match whose date the page does not give in full or by clear context.\n" +
       "4. `time` is the 24-hour kick-off time HH:MM exactly as the page gives it (convert 7:30 PM to 19:30, " +
-      "nothing else). null when the page gives none.\n" +
+      "nothing else). Omit when the page gives none.\n" +
       "5. `tz` is the time zone label printed on the page for that time (SAST, GMT, BST, CET, ET, UTC). null " +
       "when the page prints none. Never guess it.\n" +
       "6. `status`: finished only when the page shows a final score; postponed, abandoned or cancelled only " +
