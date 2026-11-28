@@ -11,6 +11,7 @@ import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
 
 import {
   badgeKey,
+  validBadgeTeamName,
   badgePath,
   badgeSearchRequest,
   isOfficialBadgeSource,
@@ -60,8 +61,10 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
     away: string;
   }[]) {
     for (const name of [f.home, f.away]) {
+      // PFIE can contain an empty team label when a source row is malformed. Never create an empty badge key.
+      if (!validBadgeTeamName(name)) continue;
       const k = `${f.sport}:${badgeKey(name)}`;
-      if (!seen.has(k)) seen.set(k, { sport: f.sport, name, competition: f.competition });
+      if (!seen.has(k)) seen.set(k, { sport: f.sport, name: name.trim(), competition: f.competition });
     }
   }
   // Every team in a stored league table too, so the team directory has badges for teams without a fixture soon.
@@ -70,8 +73,9 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
     .select("competition, team")
     .limit(2000);
   for (const r of (tables ?? []) as { competition: string; team: string }[]) {
+    if (!validBadgeTeamName(r.team)) continue;
     const k = `soccer:${badgeKey(r.team)}`;
-    if (!seen.has(k)) seen.set(k, { sport: "soccer", name: r.team, competition: r.competition });
+    if (!seen.has(k)) seen.set(k, { sport: "soccer", name: r.team.trim(), competition: r.competition });
   }
   for (const item of MARQUEE_BADGE_TEAMS) {
     const k = `${item.sport}:${badgeKey(item.team)}`;
@@ -337,6 +341,7 @@ export async function resolveTeamBadge(
   /** False until the SofaScore migration (method value plus `upgrade_checked_at`) is applied. */
   sofascore = true,
 ): Promise<ResolveOutcome> {
+  if (!validBadgeTeamName(team.name)) return "skipped";
   const key = badgeKey(team.name);
   const { data: existing } = await client
     .from("team_badges")

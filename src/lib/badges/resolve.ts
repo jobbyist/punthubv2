@@ -15,6 +15,13 @@ export function badgeKey(name: string): string {
   return normaliseTeam(name).slice(0, 80);
 }
 
+/** Reject malformed fixture/table labels before they become database keys. */
+export function validBadgeTeamName(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const name = value.trim();
+  return name.length >= 2 && badgeKey(name).length > 0;
+}
+
 export function badgePath(sport: string, name: string): string {
   return `teams/${sport}/${teamSlug(name).slice(0, 80) || "team"}.png`;
 }
