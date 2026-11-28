@@ -3,7 +3,7 @@ import { withJobUsageContext, type TablesDeps } from "./tables";
 
 describe("withJobUsageContext", () => {
   it("sets competition/run context and persists it with sync metadata", async () => {
-    const setUsageContext = vi.fn();
+    const setUsageContext = vi.fn<(context: { competition: string; jobRunId: string; metadata?: Record<string, unknown> }) => void>();
     const record = vi.fn(async () => undefined);
     const deps = {
       search: { name: "search", search: vi.fn(async () => []) },
@@ -11,7 +11,7 @@ describe("withJobUsageContext", () => {
       llm: { name: "llm", generate: vi.fn(async () => ({ text: "", model: "test" })) },
       store: { record } as unknown as TablesDeps["store"],
       setUsageContext,
-    } as TablesDeps;
+    } as unknown as TablesDeps;
 
     const scoped = withJobUsageContext(deps, "championship", "history");
     const context = setUsageContext.mock.calls[0]?.[0] as {
