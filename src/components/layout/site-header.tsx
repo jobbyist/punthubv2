@@ -38,6 +38,7 @@ import { Logo } from "@/components/brand";
 import { openMobileMenu } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/session";
+import { useUserContext } from "@/components/user-context";
 import { UserAvatar } from "@/components/user-avatar";
 import { usePoints } from "@/hooks/use-points";
 import { useAsync } from "@/hooks/use-async";
@@ -103,6 +104,7 @@ function isActive(path: string, to: string) {
 export function SiteHeader() {
   const { t } = useTranslation("nav");
   const { isSignedIn, profile, signOut, isAdmin } = useSession();
+  const { hasAccount } = useUserContext();
   const pp = usePoints();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -461,19 +463,42 @@ export function SiteHeader() {
               <div className="hidden xl:block">
                 <FoundingCounter compact />
               </div>
-              <Link
-                to="/join"
-                search={{ mode: "signin" }}
-                className="hidden whitespace-nowrap rounded-md px-2 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
-              >
-                {t("header.signIn")}
-              </Link>
-              <Button
-                asChild
-                className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
-              >
-                <Link to="/join">{t("header.getEarlyAccess")}</Link>
-              </Button>
+              {hasAccount ? (
+                // Someone has signed in on this device before: lead with Sign in, keep Join as the quiet link.
+                <>
+                  <Link
+                    to="/join"
+                    search={{ mode: "create" }}
+                    className="hidden whitespace-nowrap rounded-md px-2 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+                  >
+                    {t("header.getEarlyAccess")}
+                  </Link>
+                  <Button
+                    asChild
+                    className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
+                  >
+                    <Link to="/join" search={{ mode: "signin" }}>
+                      {t("header.signIn")}
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/join"
+                    search={{ mode: "signin" }}
+                    className="hidden whitespace-nowrap rounded-md px-2 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+                  >
+                    {t("header.signIn")}
+                  </Link>
+                  <Button
+                    asChild
+                    className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
+                  >
+                    <Link to="/join">{t("header.getEarlyAccess")}</Link>
+                  </Button>
+                </>
+              )}
             </>
           )}
         </div>

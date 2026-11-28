@@ -9,6 +9,7 @@ import { AffiliateBanner } from "@/components/affiliate";
 import { AppShell } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
 import { PickForm } from "@/components/pick-form";
+import { FirstPickCoach } from "@/components/first-pick-coach";
 import { MatchDuels } from "@/components/duels/match-duels";
 import { AnalyticsDrawer } from "@/components/match/analytics-drawer";
 import { CompetitionBadge } from "@/components/match/competition-badge";
@@ -81,7 +82,11 @@ function Match() {
   // A shared pick link carries the sharer's invite code, kept until the visitor joins.
   useEffect(() => rememberRef(ref), [ref]);
   useEffect(() => {
-    trackEvent("fixture_viewed", { fixture_id: fixture.id, sport: fixture.sport, competition: fixture.competition });
+    trackEvent("fixture_viewed", {
+      fixture_id: fixture.id,
+      sport: fixture.sport,
+      competition: fixture.competition,
+    });
   }, [fixture.id, fixture.sport, fixture.competition]);
 
   const [picks, setPicks] = useState<PickRow[] | null>(null);
@@ -188,7 +193,11 @@ function Match() {
             type="button"
             onClick={() => {
               setDrawer(true);
-              trackEvent("pfie_insight_opened", { fixture_id: fixture.id, sport: fixture.sport, competition: fixture.competition });
+              trackEvent("pfie_insight_opened", {
+                fixture_id: fixture.id,
+                sport: fixture.sport,
+                competition: fixture.competition,
+              });
             }}
             aria-haspopup="dialog"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
@@ -230,6 +239,9 @@ function Match() {
             fixture.status === "scheduled" &&
             Date.parse(fixture.kickoff_at) > Date.now() + 5 * 60_000
           }
+        />
+        <FirstPickCoach
+          open={fixture.status === "scheduled" && Date.parse(fixture.kickoff_at) > Date.now()}
         />
         <PickForm fixture={fixture} onPosted={() => void load()} />
 

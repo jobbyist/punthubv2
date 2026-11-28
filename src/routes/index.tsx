@@ -9,17 +9,17 @@ import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
 import { MatchPreview } from "@/components/match-preview";
-import { HeroFixtureRail } from "@/components/match/hero-fixture-rail";
 import { MatchdayWidget } from "@/components/favourites/matchday-widget";
 import { IllustrativeFixtures } from "@/components/illustrative-panels";
 import { useSession } from "@/components/session";
+import { useUserContext } from "@/components/user-context";
+import type { NextAction } from "@/lib/user-context";
 import { BookmakerIndependenceNotice } from "@/components/bookmaker-independence-notice";
 import { ExplainerVideo } from "@/components/explainer-video";
 import { Button } from "@/components/ui/button";
 import { RgNotice } from "@/components/rg-notice";
 import { SHOW_BOOKMAKER_WALL } from "@/lib/flags";
 import { useEffect, useRef, useState } from "react";
-import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
 import { useTranslation } from "react-i18next";
 
 import { headT } from "@/lib/i18n/head";
@@ -70,32 +70,25 @@ function Landing() {
   const { loading: sessionLoading, isSignedIn } = useSession();
   const [headlineVariant, setHeadlineVariant] = useState<"A" | "B">("A");
   const headlineAssigned = useRef(false);
-  const [hasPostedPick, setHasPostedPick] = useState(false);
-  const [postLaunch, setPostLaunch] = useState(false);
-  useEffect(() => {
-    const today = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Africa/Johannesburg",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
-    setPostLaunch(today >= DEFAULT_LAUNCH_DATE);
-  }, []);
+  const ctx = useUserContext();
   useEffect(() => {
     if (sessionLoading || headlineAssigned.current) return;
     headlineAssigned.current = true;
     const variant = Math.random() < 0.5 ? "A" : "B";
     setHeadlineVariant(variant);
-    try {
-      setHasPostedPick(!!window.sessionStorage.getItem("puntr:analytics:event:pick_posted"));
-    } catch {
-      setHasPostedPick(false);
-    }
     trackEvent("home_hero_headline_viewed", {
       variant,
       authenticated: isSignedIn,
     });
   }, [sessionLoading, isSignedIn]);
+  // The hero's primary button follows the shared context: guests join (or sign in if they have an account on
+  // this device); members get their next best step (first pick, favourites, last match, leaderboard).
+  const primary: NextAction = !isSignedIn
+    ? ctx.hasAccount
+      ? { key: "signIn", to: "/join", search: { mode: "signin" } }
+      : { key: "join", to: "/join" }
+    : ctx.next;
+  const member = isSignedIn && ctx.ready;
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(true);
 
@@ -110,54 +103,54 @@ function Landing() {
         <HeroBackdrop />
         <div className="puntr-rise min-w-0">
           <span className="inline-block max-w-full rounded-md bg-primary-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-primary">
-            SOUTH AFRICA’S HOME FOR ACCOUNTABLE SPORTS PREDICTIONS
+            {t("hero.eyebrow")}
           </span>
           <h1 className="mt-5 text-[clamp(2.6rem,7vw,4.2rem)] leading-[1.02]">
             {headlineVariant === "A" ? (
               <>
-                Predict smarter.
+                {t("hero.headlineA1")}
                 <br />
-                <span className="text-primary">Prove it.</span>
+                <span className="text-primary">{t("hero.headlineA2")}</span>
               </>
             ) : (
               <>
-                Know your sport?
+                {t("hero.title1")}
                 <br />
-                <span className="text-primary">Back your call.</span>
+                <span className="text-primary">{t("hero.title2")}</span>
               </>
             )}
           </h1>
-          <p className="mt-4 text-base font-semibold sm:text-lg">
-            100% free to join. No card required. Sign up for early access.
-          </p>
-          <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Puntr is a sports prediction and community platform where South African fans publish
-            timestamped picks, follow transparent grading and build a public performance record.
-            Compete with the community and collect non-cash PuntPoints through eligible activity.
-          </p>
-          <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
-            Not a bookmaker. No real-money wagering. Just timestamped picks, transparent grading,
-            and a public record that speaks for itself.
-          </p>
+          {member ? (
+            <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+              {t(`hero.member.${ctx.segment === "member-active" ? "active" : "onboarding"}`)}
+            </p>
+          ) : (
+            <>
+              <p className="mt-4 text-base font-semibold sm:text-lg">{t("hero.free")}</p>
+              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+                {t("hero.lede")}
+              </p>
+              <p className="mt-3 max-w-lg text-xs leading-relaxed text-muted-foreground/80 sm:text-[13px]">
+                {t("hero.notBookie")}
+              </p>
+            </>
+          )}
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button
-              size="lg"
-              className="puntr-sheen h-12 px-6 text-[15px]"
-              onClick={() => {
-                trackEvent("home_hero_primary_cta_clicked", {
-                  authenticated: isSignedIn,
-                  destination: !isSignedIn ? "join" : hasPostedPick ? "leaderboards" : "discover",
-                });
-                navigate({
-                  to: !isSignedIn ? "/join" : hasPostedPick ? "/leaderboards" : "/discover",
-                });
-              }}
-            >
-              {!isSignedIn
-                ? "Become a Founding Member"
-                : hasPostedPick
-                  ? "View your leaderboard position"
-                  : "Make your first prediction"}
+            <Button asChild size="lg" className="puntr-sheen h-12 px-6 text-[15px]">
+              <Link
+                to={primary.to as never}
+                params={primary.params as never}
+                search={primary.search as never}
+                {...(primary.hash ? { hash: primary.hash } : {})}
+                onClick={() =>
+                  trackEvent("home_hero_primary_cta_clicked", {
+                    authenticated: isSignedIn,
+                    destination: primary.key,
+                  })
+                }
+              >
+                {t(`hero.cta.${primary.key}`)}
+              </Link>
             </Button>
             <Button
               size="lg"
@@ -177,15 +170,15 @@ function Landing() {
               }}
             >
               {isSignedIn ? (
-                "Explore predictions"
+                t("hero.secondary.discover")
               ) : (
                 <>
-                  <Play className="mr-2 size-4" /> Watch the video
+                  <Play className="mr-2 size-4" /> {t("hero.watch")}
                 </>
               )}
             </Button>
           </div>
-          <FoundingCounter className="mt-4" />
+          {!isSignedIn && <FoundingCounter className="mt-4" />}
           <ul className="mt-9 grid gap-5 sm:grid-cols-3">
             {(
               [
@@ -405,7 +398,9 @@ function Landing() {
 
       {/* Newsroom, then the bookmaker logo wall below it (owner, 27 Nov 2026). */}
       <LatestFromPuntr />
-      <div className="section-y"><AffiliateBanner label="homepage" /></div>
+      <div className="section-y">
+        <AffiliateBanner label="homepage" />
+      </div>
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (
