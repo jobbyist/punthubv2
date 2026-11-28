@@ -392,6 +392,8 @@ const TRUSTED = [
   "rotascore.com",
   "treble.co.za",
   "nasiscore.co.za",
+  "topbookmakers.co.za",
+  "serieaschedule.com",
   "tntsports.co.uk",
   "tactix.football",
   "footballedgelab.com",

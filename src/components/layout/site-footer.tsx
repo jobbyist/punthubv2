@@ -17,6 +17,7 @@ const columns = [
       ["fixtures", "/fixtures"],
       ["results", "/results"],
       ["tables", "/tables"],
+      ["teams", "/teams"],
       ["roadmap", "/roadmap"],
       ["pricing", "/pricing"],
       ["fantasyArena", "/fantasy-arena"],

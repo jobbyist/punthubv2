@@ -51,10 +51,10 @@ const PURPOSES: [string, string, string, string][] = [
     "Terwyl jou rekening oop is; geskrap wanneer jy jou rekening skrap [attorney review]",
   ],
   [
-    "Gunstelinge (opsioneel)",
-    "Die sportsoorte, kompetisies en spanne wat jy kies om te volg",
-    "Jou toestemming (jy kies om dit te stel; vee dit enige tyd in jou rekening uit)",
-    "Terwyl jou rekening oop is; geskrap wanneer jy dit uitvee of jou rekening skrap. Word slegs gebruik om jou eie Wedstryddag-kaart en kortpaaie te orden; nooit aan ander gewys of gedeel nie [attorney review]",
+    "Gunstelinge en spanne wat jy volg (opsioneel)",
+    "Die sportsoorte, kompetisies en spanne wat jy kies om te volg, insluitend spanne wat jy in die spangids volg, en 'n log van wanneer jy 'n span begin of opgehou volg het",
+    "Jou toestemming (jy kies om dit te stel; vee dit uit of hou op volg enige tyd in jou rekening of die spangids)",
+    "Terwyl jou rekening oop is; geskrap wanneer jy dit uitvee of jou rekening skrap. Word gebruik om jou eie Wedstryddag-kaart en kortpaaie te orden en om op jou rekeningblad te wys watter spanne jy volg. Ander sien slegs 'n anonieme aantal volgers per span; admins sien totale en die mees gevolgde spanne, nooit wie wie volg nie. Nooit gedeel nie [attorney review]",
   ],
   [
     "Wedstrokies (opsioneel)",

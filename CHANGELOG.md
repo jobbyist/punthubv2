@@ -5,6 +5,12 @@
 - Spare capacity in each run upgrades existing Wikipedia badges to the SofaScore crest, once per team. Mirrored files carry a version query so browsers pick up the new crest.
 - Migration `20261128081000_team_badges_sofascore.sql` adds the `parallel_sofascore` method and `upgrade_checked_at`. Until it is applied the job keeps the Wikipedia path.
 - No personal data is involved; legal-changelog notes the crest-source question for counsel.
+## 28 November 2026 — Team directory with follows
+
+- Add `/teams`: an SEO-friendly directory of every football team Puntr covers (from league tables, upcoming fixtures and the verified badge registry), with search, competition filters, a Following filter and CollectionPage/ItemList JSON-LD. Clicking a team opens a modal (bottom sheet on mobile) with badge, table position, recent verified form, next fixture and links; each team also has its own page at `/teams/<slug>` with SportsTeam JSON-LD, listed in the sitemap.
+- Members can follow and unfollow teams (`set_team_follow`, migration `20261128080000_team_follows.sql`). Follows are logged for admin analytics (Admin > Analytics > Team follows), shown on `/account` ("Teams you follow"), mirrored into favourites for the Matchday card, included in the data export, and recorded as PFIE learning events only with separate PFIE-learning consent. Follow buttons stay hidden until the migration is applied.
+- Footer link "Team directory" and a Team directory card on `/sports/soccer`.
+- Legal: Privacy (English and Afrikaans) updated for team follows; notice version `2026-11-28-team-follows`; `docs/legal-changelog.md` entry marked `[attorney review]`.
 
 ## 27 November 2026 — Football coverage page driven by the PFIE registry
 

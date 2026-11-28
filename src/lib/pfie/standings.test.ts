@@ -1237,3 +1237,12 @@ describe("cup history source attribution", () => {
     expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
   });
 });
+
+describe("verified standings record corrections", () => {
+  it("allows a corroborated W/D/L correction when played count is unchanged and the new points total is valid", () => {
+    const previous = [{ team: "Genoa", position: 10, played: 12, won: 4, drawn: 1, lost: 7, goalsFor: 13, goalsAgainst: 16, points: 13 }];
+    const corrected = [{ team: "Genoa", position: 10, played: 12, won: 5, drawn: 1, lost: 6, goalsFor: 13, goalsAgainst: 16, points: 16 }];
+    expect(tableRegression(corrected, previous)).toBe("won_changed_without_new_matches_Genoa");
+    expect(tableRegression(corrected, previous, false, [], false, true)).toBeNull();
+  });
+});
