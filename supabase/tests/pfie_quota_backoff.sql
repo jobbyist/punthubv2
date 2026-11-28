@@ -17,6 +17,20 @@ declare
   v_status text;
   v_event_count integer;
 begin
+  if not exists (
+    select 1 from information_schema.columns
+     where table_schema = 'public'
+       and table_name = 'api_call_usage_attribution_detail'
+       and column_name = 'competition'
+  ) or not exists (
+    select 1 from information_schema.columns
+     where table_schema = 'public'
+       and table_name = 'api_call_usage_attribution_detail'
+       and column_name = 'job_run_id'
+  ) then
+    raise exception 'Expected the contextual API attribution detail view';
+  end if;
+
   select
     coalesce(sum(calls) filter (where day = (now() at time zone 'UTC')::date), 0),
     coalesce(sum(calls), 0)
