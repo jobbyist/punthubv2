@@ -1,4 +1,5 @@
 /** PFIE is Parallel-only: Parallel Search discovers sources, Parallel Extract reads them, and Parallel Responses validates structured observations. */
+import { withLlmCache } from "@/lib/parallel/cached";
 import type { SportsProvider } from "./provider";
 
 export async function createSportsProvider(
@@ -20,10 +21,20 @@ export async function createSportsProvider(
       console.warn("pfie: Parallel cache unavailable; using in-process request deduplication only", error);
       return null;
     });
+    const cachedLlm = withLlmCache(
+      guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
+      cache,
+      "results",
+      (event) => console.info("pfie-cache", JSON.stringify({
+        competition: usageContext.competition ?? null,
+        job: "fixtures-results",
+        ...event,
+      })),
+    );
     return createPfieProvider({
       search: guardSearch(createParallelSearch(parallelKey), claim),
       extract: guardExtract(createParallelExtract(parallelKey), claim),
-      llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
+      llm: cachedLlm,
       store: createPfieStore(),
       cache,
       setUsageContext: (context) => {

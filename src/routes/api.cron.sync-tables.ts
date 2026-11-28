@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { withLlmCache } from "@/lib/parallel/cached";
 import type {} from "@tanstack/react-start";
 
 /**
@@ -52,6 +53,16 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
             console.warn("pfie: Parallel cache unavailable for standings/history; using in-process deduplication only", error);
             return null;
           });
+          const cachedLlm = withLlmCache(
+            guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
+            cache,
+            "tables",
+            (event) => console.info("pfie-cache", JSON.stringify({
+              competition: usageContext.competition ?? null,
+              job: "tables",
+              ...event,
+            })),
+          );
           const report = await runTablesSync(
             {
               search: guardSearch(createParallelSearch(parallelKey), claim),
@@ -68,7 +79,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                 ),
                 claim,
               ),
-              llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
+              llm: cachedLlm,
               store: createTablesStore(),
               cache,
               setUsageContext: (context) => {

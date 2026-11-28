@@ -200,6 +200,9 @@ export interface TablesDeps {
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
+// Standings need an official page plus two independent publishers; more pages add model cost without
+// improving the minimum consensus threshold. Secondary fallback is capped at two trusted domains.
+export const MAX_STANDINGS_SOURCE_LIMIT = 3;
 const MAX_SEASON_SOURCES = 3;
 const THREE_SEASON_HISTORY_KEYS = new Set<CompetitionKey>(["ucl", "uecl", "caf-cc"]);
 // Parallel Responses has a 20,000-character combined input/instructions ceiling. Keep three extracted sources below it.
@@ -234,6 +237,20 @@ export function hasHistoryResultEvidence(text: string): boolean {
     /\b\d{1,2}\s+\d{1,2}\b/.test(clean);
   // Do not mistake goal difference / points columns (e.g. "Wrexham 17 -1 22") for match scores.
   return namedScoreline || (finalMarker && resultsContext) || datedRoundResults;
+}
+
+
+/** Exclude extracted pages that mention a competition but do not contain a real standings table. */
+export function hasStandingsTableEvidence(text: string): boolean {
+  const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
+  if (parseStandingsMarkdown(clean, 1)?.length) return true;
+  const hasStandingsContext = /\b(?:standings|league table|log table|live table|table)\b/i.test(clean);
+  const hasHeader =
+    /(?:^|\n)\s*\|?\s*(?:#|pos(?:ition)?)\s*\|?\s*(?:team|club)\b/im.test(clean) ||
+    /(?:^|\n)\s*(?:pos(?:ition)?|#)\s+(?:team|club)\b/im.test(clean);
+  const hasPoints = /\b(?:pts|points)\b/i.test(clean);
+  const hasPlayed = /\b(?:played|pld|mp|pl|p)\b/i.test(clean);
+  return hasStandingsContext && hasHeader && hasPoints && hasPlayed;
 }
 
 function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown>[] {
@@ -768,7 +785,7 @@ async function gatherSources(
     candidates.push(hit);
     // History pages vary in quality (some extractors return a cookie wall or a standings-only page).
     // Read two bounded fallbacks, then keep only pages that visibly contain result evidence.
-    const candidateLimit = preferSearchResults ? Math.min(8, maxSources + 2) : maxSources;
+    const candidateLimit = preferSearchResults ? Math.min(8, maxSources + 2) : Math.min(8, maxSources + 1);
     if (candidates.length >= candidateLimit) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
@@ -786,6 +803,7 @@ async function gatherSources(
       : cleanText(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
     if (preferSearchResults && !hasHistoryResultEvidence(clean)) continue;
+    if (!preferSearchResults && !hasStandingsTableEvidence(clean)) continue;
     sources.push({
       index: sources.length + 1,
       url: hit.url,
@@ -853,6 +871,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       false,
       [],
       shouldIncludeSecondaryStandingsSources(key),
+      MAX_STANDINGS_SOURCE_LIMIT,
     );
     primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
@@ -933,7 +952,13 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         return { source, parsed, validation };
       }),
     );
-    const retryCandidates = initial.filter((result) => result.validation.tables.length === 0);
+    const hasInitialConsensus = Boolean(
+      chooseTables(initial.flatMap((result) => result.validation.tables), cfg.groups),
+    );
+    // Once two independent source tables already agree, a failed extra source adds no value and is not retried.
+    const retryCandidates = hasInitialConsensus
+      ? []
+      : initial.filter((result) => result.validation.tables.length === 0);
     const retried = await Promise.all(
       retryCandidates.map(async (result) => {
         const hint =
@@ -1138,8 +1163,10 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     }
     if (!chosenTables && sources.some((source) => source.tier === "official")) {
       const secondary = (
-        await gatherSources(deps, key, objective, queries, false, [], true, MAX_SOURCES)
-      ).filter((source) => source.tier !== "official");
+        await gatherSources(
+          deps, key, objective, queries, false, [], true, MAX_STANDINGS_SOURCE_LIMIT,
+        )
+      ).filter((source) => source.tier !== "official").slice(0, 2);
       const secondaryDomains = new Set(secondary.map((source) => source.domain));
       if (secondaryDomains.size >= 2) {
         usedSecondaryFallback = true;
@@ -1187,9 +1214,12 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             return { source, parsed, result };
           }),
         );
-        const secondaryRetryCandidates = secondaryInitial.filter(
-          (result) => result.result.tables.length === 0,
+        const hasSecondaryConsensus = Boolean(
+          chooseTables(secondaryInitial.flatMap((result) => result.result.tables), cfg.groups),
         );
+        const secondaryRetryCandidates = hasSecondaryConsensus
+          ? []
+          : secondaryInitial.filter((result) => result.result.tables.length === 0);
         const secondaryRetries = await Promise.all(
           secondaryRetryCandidates.map(async (result) => {
             const hint =

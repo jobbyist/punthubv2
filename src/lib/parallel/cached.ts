@@ -6,7 +6,7 @@
  * requests in one server process share a single in-flight provider call even when the persistent cache misses.
  */
 import { type CachePurpose, cacheKey, expiresAt, isFresh } from "./cache";
-import type { ExtractProvider, SearchProvider } from "@/lib/content/types";
+import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 import { costUsd } from "./pricing";
 
 export interface CacheStore {
@@ -53,11 +53,20 @@ export async function cachedCall<T>(
 ): Promise<{ value: T; cached: boolean; deduplicated?: boolean }> {
   const now = input.now ?? Date.now();
   const key = await cacheKey(input.endpoint, input.body);
+  const responseModel = input.endpoint.startsWith("responses:")
+    ? input.endpoint.slice("responses:".length)
+    : "";
+  const responseProvider =
+    responseModel === "parallel-low" ? "parallel-chat:low"
+      : responseModel === "parallel-medium" ? "parallel-chat:medium"
+        : null;
   const estimatedCostAvoidedUsd = input.endpoint.startsWith("search:")
     ? costUsd("parallel") ?? undefined
     : input.endpoint.startsWith("extract:")
       ? costUsd("parallel-extract") ?? undefined
-      : undefined;
+      : responseProvider
+        ? costUsd(responseProvider) ?? undefined
+        : undefined;
   if (store) {
     try {
       const hit = await store.get(key);
@@ -144,6 +153,36 @@ export function withExtractCache(
         { endpoint: `extract:${inner.name}`, body: { url }, purpose, onEvent },
         () => inner.extract(url),
         (page) => Boolean(page?.markdown),
+      );
+      return value;
+    },
+  };
+}
+
+
+/** Cache only valid structured Parallel Responses JSON; changed prompts/source text naturally get new keys. */
+export function withLlmCache(
+  inner: LlmProvider,
+  store: CacheStore | null,
+  purpose: CachePurpose,
+  onEvent?: CacheEventHandler,
+): LlmProvider {
+  return {
+    name: inner.name,
+    async generate(model, request) {
+      const { value } = await cachedCall(
+        store,
+        { endpoint: `responses:${model}`, body: { model, request }, purpose, onEvent },
+        () => inner.generate(model, request),
+        (result) => {
+          if (!result.text.trim()) return false;
+          try {
+            const parsed: unknown = JSON.parse(result.text);
+            return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed);
+          } catch {
+            return false;
+          }
+        },
       );
       return value;
     },

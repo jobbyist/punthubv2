@@ -281,3 +281,14 @@ The Admin → API Usage tab now includes a live Q1 Parallel budget runway panel.
 The initial 28 November baseline is $7.684 spent against the $200 cap, leaving $192.316 for 124 calendar days (required average $1.5509/day). The first observed day averaged $7.684/day; a straight-line projection is $952.82, but this is an early warning rather than a steady-state forecast because the day includes launch recovery/backfill. The lower owner-approved daily quota ceilings remain deferred until Phase 3.3–3.6 production verification passes.
 
 Unit tests cover UTC inclusive-day calculations, zero-spend days, depleted budgets and the provisional first-day projection.
+
+
+## PFIE Phase 3.6 — Sustainable run-rate controls (28 Nov 2026)
+
+- A bounded production PSL standings verification exposed a high-cost failure mode: 1 Parallel Search, 5 Extract calls and 18 Responses Low calls ($0.186 estimated) still produced no verified table. The failed run is recorded in `pfie_runs` under job-run ID `4a65e35f-6281-467a-83dc-cd668768c901`.
+- Fixed the production `pfie_runs_kind_check` constraint to accept all actual PFIE table job kinds: standings, history, season and archive, in addition to fixtures/results. Backfilled the failed PSL verification run after the constraint repair.
+- Standings discovery now filters pages that do not contain a real table, caps the primary source set at three pages (official plus two independent publishers), and caps secondary fallback at two trusted pages. Failed sources are not retried when two valid source tables already agree.
+- Added a structured Parallel Responses read-through cache. Only valid JSON objects are cached; prompts and source text remain case-sensitive in cache keys. Cache hits and in-flight deduplication avoid a new Responses quota claim, and avoided spend is recorded.
+- Production evidence from the bounded PSL test: the first Search/Extract reads missed, repeated reads in the same request hit cache (six provider calls avoided, approximately $0.006). The run still failed validation; the source/retry optimisations are intended to reduce that cost on the next verification.
+- Shared Parallel spend at the audit point: approximately $7.68 of the $200 Q1 cap. Monthly family spend: core $10.704/$50; auxiliary $0.010/$35; newsroom $30.900/$50; synthetic $0.015/$50.
+- The guarded quota restoration job is scheduled for 29 Nov 2026 from 00:05 UTC (02:05 SAST), polling every five minutes. It restores the approved Search/Extract/Responses daily and monthly limits only after Phase 3.1–3.5 are complete and Phase 3.6 reaches at least 90%, then closes the tracker and unschedules itself.

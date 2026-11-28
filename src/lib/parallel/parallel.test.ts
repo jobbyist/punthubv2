@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 
 import { CACHE_TTL_SECONDS, cacheKey, expiresAt, isFresh, stableStringify } from "./cache";
-import { type CacheStore, cachedCall, withExtractCache, withSearchCache } from "./cached";
+import { type CacheStore, cachedCall, withExtractCache, withLlmCache, withSearchCache } from "./cached";
 import { PARALLEL_UNIT_PRICES_USD, budgetFamily, costUsd } from "./pricing";
 import { createParallelChat, createParallelTask, extractOutputText, parseBasis } from "./task";
 import { createParallelDecisions } from "./decisions";
@@ -71,6 +71,12 @@ describe("cache keys", () => {
     expect(hostCase).not.toBe(differentQuery);
   });
 
+  it("preserves case-sensitive model prompt content in response cache keys", async () => {
+    const upper = await cacheKey("responses:parallel-low", { request: { prompt: "PSL table" } });
+    const lower = await cacheKey("responses:parallel-low", { request: { prompt: "psl table" } });
+    expect(upper).not.toBe(lower);
+  });
+
   it("computes freshness from the purpose TTL", () => {
     const now = Date.parse("2026-11-15T00:00:00Z");
     const exp = expiresAt("results", now);
@@ -105,6 +111,34 @@ describe("cachedCall", () => {
       title: "Article",
     });
     expect(extract).toHaveBeenCalledTimes(1);
+  });
+
+  it("caches valid Parallel Responses JSON and reports avoided Low spend", async () => {
+    const store = memoryStore();
+    const generate = vi.fn(async (model: string, _request: unknown) => ({ model, text: '{"rows":[]}' }));
+    const events: Array<{ outcome: string; estimatedCostAvoidedUsd?: number }> = [];
+    const cached = withLlmCache(
+      { name: "parallel-responses", generate },
+      store,
+      "tables",
+      (event) => events.push(event),
+    );
+    const request = { prompt: "PSL standings source" };
+    await cached.generate("parallel-low", request);
+    await cached.generate("parallel-low", request);
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(events[1]).toMatchObject({ outcome: "hit", estimatedCostAvoidedUsd: 0.01 });
+  });
+
+  it("does not cache malformed Parallel Responses output", async () => {
+    const store = memoryStore();
+    const generate = vi.fn(async (model: string, _request: unknown) => ({ model, text: "not-json" }));
+    const cached = withLlmCache({ name: "parallel-responses", generate }, store, "tables");
+    const request = { prompt: "PSL standings source" };
+    await cached.generate("parallel-low", request);
+    await cached.generate("parallel-low", request);
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(store.rows.size).toBe(0);
   });
 
   it("reports estimated avoided provider spend on a persistent cache hit", async () => {
