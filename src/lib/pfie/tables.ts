@@ -513,7 +513,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
-    // Run the bounded first-pass Gemini calls concurrently. If a source fails deterministic validation,
+    // Run the bounded first-pass Parallel Responses calls concurrently. If a source fails deterministic validation,
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
