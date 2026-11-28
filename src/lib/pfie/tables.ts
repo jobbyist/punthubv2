@@ -471,11 +471,20 @@ async function gatherSources(
   return sources;
 }
 
-async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
+const HISTORY_MODELS = ["parallel-medium", ...DEFAULT_PFIE_MODELS];
+
+async function generate(
+  deps: TablesDeps,
+  request: Parameters<LlmProvider["generate"]>[1],
+  preferredModels?: string[],
+) {
+  const models = preferredModels ?? deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
-  for (const m of models) usedToday[m] = (usage as Record<string, number>)[`gemini:${m}`] ?? 0;
+  for (const m of models) {
+    const provider = m.startsWith("parallel-") ? "parallel" : "gemini";
+    usedToday[m] = (usage as Record<string, number>)[`${provider}:${m}`] ?? 0;
+  }
   return createModelRouter(deps.llm, { models, usedToday }).generate(request);
 }
 
@@ -791,10 +800,10 @@ async function syncSeasonWindow(
             today: sastDate(now()),
             sources: items,
           });
-        let answer = await generate(deps, sourceRequest([isolated]));
+        let answer = await generate(deps, sourceRequest([isolated]), HISTORY_MODELS);
         let raw = parseObservations(answer.text);
         if (!raw) {
-          answer = await generate(deps, sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]));
+          answer = await generate(deps, sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]), HISTORY_MODELS);
           raw = parseObservations(answer.text);
         }
         models.add(answer.model);
