@@ -92,6 +92,8 @@ export function CommunityDiscussions() {
   const [failed, setFailed] = useState(false);
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortMode, setSortMode] = useState<"newest" | "most_replied">("newest");
   const [posting, setPosting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyBusy, setReplyBusy] = useState<string | null>(null);
@@ -183,7 +185,17 @@ export function CommunityDiscussions() {
   }, [load]);
 
   const canPost = Boolean(isSignedIn && profile?.id);
-  const visibleThreads = useMemo(() => activeCategory === "all" ? threads : threads.filter((thread) => thread.category === activeCategory), [threads, activeCategory]);
+  const visibleThreads = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    const filtered = threads.filter((thread) => {
+      const matchesCategory = activeCategory === "all" || thread.category === activeCategory;
+      const searchable = `${thread.title ?? ""} ${thread.body} ${authorLabel(thread.author)} ${thread.replies.map((reply) => reply.body).join(" ")}`.toLocaleLowerCase();
+      return matchesCategory && (!query || searchable.includes(query));
+    });
+    return [...filtered].sort((a, b) => sortMode === "most_replied"
+      ? b.replies.length - a.replies.length || b.created_at.localeCompare(a.created_at)
+      : b.created_at.localeCompare(a.created_at));
+  }, [threads, activeCategory, searchQuery, sortMode]);
   const threadCount = useMemo(() => visibleThreads.length, [visibleThreads]);
 
   async function createThread(event: FormEvent<HTMLFormElement>) {
@@ -267,8 +279,11 @@ export function CommunityDiscussions() {
       {canPost ? (
         <form onSubmit={createThread} className="card-surface mb-5 space-y-3 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-semibold">Start a discussion</h3>
-            <span className="text-[10px] text-muted-foreground">10 posts/replies per day · Community rules apply</span>
+            <div>
+              <h3 className="font-semibold">Start a discussion</h3>
+              <p className="mt-0.5 text-xs text-muted-foreground">Bring a match, a tactical idea or a product suggestion to the room.</p>
+            </div>
+            <span className="rounded-full border border-border px-2.5 py-1 text-[10px] text-muted-foreground">10 posts/replies daily</span>
           </div>
           <input
             value={title}
@@ -314,7 +329,22 @@ export function CommunityDiscussions() {
         </div>
       )}
 
-      <div className="mb-4 flex flex-wrap gap-2" aria-label="Filter discussions by category">
+      <div className="mb-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]">
+        <label className="block">
+          <span className="sr-only">Search discussions</span>
+          <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} type="search" placeholder="Search discussions, members or replies…" className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15" />
+        </label>
+        <label className="block">
+          <span className="sr-only">Sort discussions</span>
+          <select value={sortMode} onChange={(event) => setSortMode(event.target.value as typeof sortMode)} className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm">
+            <option value="newest">Newest first</option>
+            <option value="most_replied">Most discussed</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2" aria-label="Filter discussions by category">
         <button type="button" onClick={() => setActiveCategory("all")} aria-pressed={activeCategory === "all"} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === "all" ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}>
           All discussions
         </button>
@@ -323,6 +353,8 @@ export function CommunityDiscussions() {
             {item.label}
           </button>
         ))}
+        </div>
+        <span className="text-[11px] text-muted-foreground" aria-live="polite">{threadCount} {threadCount === 1 ? "discussion" : "discussions"}</span>
       </div>
 
       {failed ? (
