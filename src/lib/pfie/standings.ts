@@ -467,7 +467,7 @@ export function parseStandings(text: string): RawStandingRow[] | null {
  * completeness, team identity, arithmetic, freshness and source quotes.
  */
 export function parseStandingsMarkdown(text: string, source: number): RawStandingRow[] | null {
-  const lines = text.split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
   const headerKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
   const aliases = {
     position: ["pos", "position", "rank", "no"],
@@ -482,7 +482,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   } as const;
   const integer = (value: string, signed = false): number | null => {
     const cleaned = value.replace(/,/g, "").trim();
-    if (!(signed ? /^-?\\d+$/.test(cleaned) : /^\\d+$/.test(cleaned))) return null;
+    if (!(signed ? /^-?\d+$/.test(cleaned) : /^\d+$/.test(cleaned))) return null;
     const parsed = Number(cleaned);
     return Number.isSafeInteger(parsed) ? parsed : null;
   };
@@ -490,7 +490,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   for (let i = 0; i < lines.length; i++) {
     const headerLine = lines[i]!;
     if (!headerLine.includes("|")) continue;
-    const headers = headerLine.replace(/^\\||\\|$/g, "").split("|").map(headerKey);
+    const headers = headerLine.replace(/^\||\|$/g, "").split("|").map(headerKey);
     const indexOf = (keys: readonly string[]) => headers.findIndex((header) => keys.includes(header));
     const columns = {
       position: indexOf(aliases.position),
@@ -509,10 +509,10 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     for (let rowIndex = i + 1; rowIndex < lines.length; rowIndex++) {
       const line = lines[rowIndex]!;
       if (!line.includes("|")) break;
-      const cells = line.replace(/^\\||\\|$/g, "").split("|").map((cell) => cell.trim());
+      const cells = line.replace(/^\||\|$/g, "").split("|").map((cell) => cell.trim());
       if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell))) continue;
       const position = integer(cells[columns.position] ?? "");
-      const team = (cells[columns.team] ?? "").replace(/^\\d+[.)]?\\s*/, "").trim();
+      const team = (cells[columns.team] ?? "").replace(/^\d+[.)]?\s*/, "").trim();
       const played = integer(cells[columns.played] ?? "");
       const won = integer(cells[columns.won] ?? "");
       const drawn = integer(cells[columns.drawn] ?? "");
