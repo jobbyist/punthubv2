@@ -160,7 +160,8 @@ export function createParallelResponses(
               { role: "user", content: request.prompt },
             ],
             reasoning: { effort },
-            max_output_tokens: request.maxOutputTokens,
+            max_output_tokens: Math.min(request.maxOutputTokens, 4096),
+          text: { format: { type: "json_object" } },
           },
           { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
         );
