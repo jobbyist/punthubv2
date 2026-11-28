@@ -191,6 +191,47 @@ describe("syncResults lookback", () => {
     });
   });
 
+  it("rotates bounded result batches so older unresolved fixtures are not starved", async () => {
+    const firstRun = new Date("2026-11-28T03:00:00.000Z");
+    const open = Array.from({ length: 14 }, (_, index) => ({
+      provider: "pfie",
+      providerRef: `pfie:fixture:${index + 1}`,
+      competition: "Premier League",
+      home: `Home ${index + 1}`,
+      away: `Away ${index + 1}`,
+      kickoffAt: new Date(firstRun.getTime() - (index + 1) * 60 * 60_000).toISOString(),
+    }));
+    const batches: string[][] = [];
+    const store = {
+      async openSince() {
+        return open;
+      },
+      async upsert() {},
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults(_from: Date, _to: Date, options: {
+        fixtures?: { home: string; away: string; kickoffAt: string }[];
+      }) {
+        const refs = (options.fixtures ?? []).map((fixture) =>
+          open.find((item) => item.home === fixture.home)?.providerRef ?? "",
+        );
+        batches.push(refs);
+        return { fixtures: [], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    await syncResults(provider, store, firstRun);
+    await syncResults(provider, store, new Date(firstRun.getTime() + 30 * 60_000));
+
+    expect(batches[0]).toHaveLength(RESULTS_TARGET_FIXTURE_LIMIT);
+    expect(batches[1]).toHaveLength(14 - RESULTS_TARGET_FIXTURE_LIMIT);
+    expect(batches[0]).not.toEqual(batches[1]);
+    expect(new Set([...(batches[0] ?? []), ...(batches[1] ?? [])])).toEqual(
+      new Set(open.map((item) => item.providerRef)),
+    );
+  });
+
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {
     const now = new Date("2026-11-28T06:00:00.000Z");
     const captured: Date[] = [];
