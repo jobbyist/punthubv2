@@ -1123,6 +1123,13 @@ describe("official history source preference", () => {
     ];
     expect(preferAuthoritativeSources(hits, ["uefa.com"])).toEqual([hits[0]]);
   });
+  it("includes secondary sources for a controlled corroboration retry", () => {
+    const hits = [
+      { url: "https://www.uefa.com/results", title: "Official results" },
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"], true)).toEqual(hits);
+  });
   it("retains trusted sources when no official result page is found", () => {
     const hits = [
       { url: "https://www.theguardian.com/football/results", title: "News results" },

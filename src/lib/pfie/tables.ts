@@ -215,7 +215,12 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
   return [];
 }
 /** If the competition's own results page is available, use it alone rather than mixing in conflicting secondary score feeds. */
-export function preferAuthoritativeSources<T extends { url: string }>(hits: T[], official: string[]): T[] {
+export function preferAuthoritativeSources<T extends { url: string }>(
+  hits: T[],
+  official: string[],
+  allowSecondary = false,
+): T[] {
+  if (allowSecondary) return hits;
   const authoritative = hits.filter((hit) => tierOf(domainOf(hit.url), official) === "official");
   return authoritative.length > 0 ? authoritative : hits;
 }
@@ -402,6 +407,7 @@ async function gatherSources(
   queries: string[],
   preferSearchResults = false,
   preferredUrls: string[] = [],
+  allowSecondary = false,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -426,7 +432,7 @@ async function gatherSources(
   );
   // An official competition results page is authoritative. Mixing in secondary pages can introduce stale or
   // differently scoped scorelines that make otherwise verified official results look contradictory.
-  const sourcePool = preferAuthoritativeSources(ranked, official);
+  const sourcePool = preferAuthoritativeSources(ranked, official, allowSecondary);
   const sources: PfieSource[] = [];
   const seenDomains = new Set<string>();
   const candidates = [] as typeof ranked;
@@ -753,16 +759,11 @@ async function syncSeasonWindow(
   const to = new Date(`${end}T23:59:59+02:00`);
   try {
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    let sources = await gatherSources(
-      deps,
-      key,
+    const queries = seasonQueries(c.name, start, end, known);
+    const preferredUrls = seasonArchiveUrls(c.name, start);
+    const objective =
       `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
-        `Prefer the official competition site and established sports news sites.`,
-      seasonQueries(c.name, start, end, known),
-      true,
-      seasonArchiveUrls(c.name, start),
-    );
-    if (sources.length === 0) throw new Error("no usable source");
+      `Prefer the official competition site and established sports news sites.`;
     const request = (list: PfieSource[]) =>
       extractionRequest({
         competition: c.name,
@@ -771,45 +772,63 @@ async function syncSeasonWindow(
         today: sastDate(now()),
         sources: list,
       });
-    let answer = await generate(deps, request(sources));
-    let raw = parseObservations(answer.text);
-    if (!raw) {
-      // Usually a long answer cut off at the output limit: retry once with the three best sources, shorter.
-      sources = sources.slice(0, 3).map((x) => ({ ...x, text: x.text.slice(0, 8_000) }));
-      answer = await generate(deps, request(sources));
-      raw = parseObservations(answer.text);
-    }
-    if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now(), knownTeams: known });
-    const { rows, unverified } = verifyHistory(accepted, key, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
-    const reasons: Record<string, number> = {};
-    for (const r of rejected) reasons[r.reason] = (reasons[r.reason] ?? 0) + 1;
-    const meta = {
-      verified: rows.length,
-      inserted,
-      unverified,
-      extracted: raw.length,
-      accepted: accepted.length,
-      rejected: reasons,
-      sources: sources.map((s) => s.domain),
-      model: answer.model,
+    const extractAndVerify = async (list: PfieSource[]) => {
+      let answer = await generate(deps, request(list));
+      let raw = parseObservations(answer.text);
+      if (!raw) {
+        // Usually a long answer cut off at the output limit: retry once with the three best sources, shorter.
+        const shorter = list.slice(0, 3).map((x) => ({ ...x, text: x.text.slice(0, 8_000) }));
+        answer = await generate(deps, request(shorter));
+        raw = parseObservations(answer.text);
+      }
+      if (!raw) throw new Error("extraction answer was not valid JSON");
+      const { accepted, rejected } = validateObservations(raw, list, { from, to, now: now(), knownTeams: known });
+      const { rows, unverified } = verifyHistory(accepted, key, known);
+      const reasons: Record<string, number> = {};
+      for (const r of rejected) reasons[r.reason] = (reasons[r.reason] ?? 0) + 1;
+      return { answer, raw, accepted, rows, unverified, reasons };
     };
-    // No verified result is a miss, not a finished window: it is retried (20 min, 40 min, then daily), because a
-    // later search can find the second source a single-source score needs.
-    if (rows.length === 0) {
+
+    // First use the competition's own official result archive. If it cannot provide usable observations for
+    // this particular window, retry with trusted independent publishers; history verification still requires
+    // two matching domains whenever an official scoreline is not present.
+    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls);
+    if (sources.length === 0) throw new Error("no usable source");
+    let result = await extractAndVerify(sources);
+    if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
+      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
+      if (secondary.some((source) => source.tier !== "official")) {
+        const fallback = await extractAndVerify(secondary);
+        if (fallback.rows.length > 0 || fallback.raw.length > result.raw.length) {
+          sources = secondary;
+          result = fallback;
+        }
+      }
+    }
+    const inserted = result.rows.length
+      ? await deps.store.insertHistory(result.rows.map((r) => ({ ...r, competition: c.name })))
+      : 0;
+    const meta = {
+      verified: result.rows.length,
+      inserted,
+      unverified: result.unverified,
+      extracted: result.raw.length,
+      accepted: result.accepted.length,
+      rejected: result.reasons,
+      sources: sources.map((s) => s.domain),
+      model: result.answer.model,
+    };
+    if (result.rows.length === 0) {
       await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
-        detail: `no verified results (${raw.length} extracted, ${accepted.length} accepted, ${unverified} single-source)`,
+        detail: `no verified results (${result.raw.length} extracted, ${result.accepted.length} accepted, ${result.unverified} single-source)`,
       };
     }
     await deps.store.record("season", scope, true, null, meta);
     return {
       ok: true,
-      detail: `${inserted} new results (${rows.length} verified, ${unverified} unconfirmed)`,
+      detail: `${inserted} new results (${result.rows.length} verified, ${result.unverified} unconfirmed)`,
     };
   } catch (e) {
     await deps.store.record("season", scope, false, message(e), {}).catch(() => undefined);
