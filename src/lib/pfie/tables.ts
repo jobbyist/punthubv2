@@ -10,9 +10,10 @@ import { sastDate } from "@/lib/sast";
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
 import { extractionRequest, parseObservations, validateObservations } from "./extract";
-import { ARCHIVE_SOURCES } from "./archive";
+import { ARCHIVE_SOURCES, archiveUrls } from "./archive";
 import { archiveJobsDue, runArchiveJob } from "./archive-run";
 import { verifyHistory, type HistoryRow } from "./history";
+import { isPfieLaunchCompetition } from "./launch-scope";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
 import { modelQuotaOptions } from "./usage";
@@ -240,7 +241,7 @@ const longDate = (iso: string) =>
  * Search phrasings for a past window. Exact dates, a month name, "weekend round-up" and a few club names steer
  * the search to round-up and archive pages for those days instead of this week's fixtures.
  */
-export function seasonArchiveUrls(name: string, start: string): string[] {
+export export function seasonArchiveUrls(name: string, start: string): string[] {
   const month = Number(start.slice(5, 7));
   const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
   if (name === "UEFA Champions League") {
@@ -290,6 +291,16 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
       "https://www.vavel.com/en-us/data/caf-confederation-cup/results",
       "https://foot-africa.com/en/leagues/international/caf-confederations-cup/",
     ];
+  }
+  const competition = competitions.find((item) => item.name === name);
+  const archiveSource = competition && isPfieLaunchCompetition(competition.key)
+    ? ARCHIVE_SOURCES[competition.key]
+    : undefined;
+  if (archiveSource) {
+    const month = Number(start.slice(5, 7));
+    const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
+    const urls = archiveUrls(archiveSource, seasonStart);
+    return [urls.fbref, urls.wikipedia];
   }
   return [];
 }
@@ -1522,7 +1533,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       [`${c.name} results`, `${c.name} scores last matchdays`],
       true,
       seasonArchiveUrls(c.name, sastDate(from)),
-      false,
+      true,
       MAX_SEASON_SOURCES,
     );
     if (sources.length === 0) throw new Error("no usable source");

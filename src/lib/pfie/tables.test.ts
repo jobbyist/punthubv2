@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   isConfirmedNoMatchesInWindow,
   historyRefreshDue,
+  seasonArchiveUrls,
   isStandingsBaselineFresh,
   preferAuthoritativeSources,
   shouldIncludeSecondaryStandingsSources,
@@ -178,5 +179,19 @@ describe("manual history refresh cooldown", () => {
     const now = new Date("2026-11-28T12:00:00.000Z");
     expect(historyRefreshDue(recent, now)).toBe(false);
     expect(retryDue(recent, now)).toBe(true);
+  });
+});
+
+describe("rolling history source coverage", () => {
+  it("uses two independent archive sources for Serie A and other domestic launch leagues", () => {
+    const serieA = seasonArchiveUrls("Serie A", "2026-10-17");
+    expect(serieA).toContain("https://fbref.com/en/comps/11/2026-2027/schedule/2026-2027-Serie-A-Scores-and-Fixtures");
+    expect(serieA.some((url) => url.startsWith("https://en.wikipedia.org/wiki/"))).toBe(true);
+    expect(seasonArchiveUrls("EFL Championship", "2026-10-17")).toHaveLength(2);
+  });
+
+  it("does not add archive URLs for competitions outside the pre-launch allowlist", () => {
+    expect(seasonArchiveUrls("Saudi Pro League", "2026-10-17")).toEqual([]);
+    expect(seasonArchiveUrls("Liga Portugal", "2026-10-17")).toEqual([]);
   });
 });
