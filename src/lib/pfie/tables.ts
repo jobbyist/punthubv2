@@ -655,8 +655,6 @@ async function gatherSources(
     excerpt: "",
     publishedAt: null,
   }));
-  const preferredUrlSet = new Set(preferredUrls);
-  const order = { official: 0, trusted: 1, other: 2 } as const;
   // History and season backfills must not consume a slot on a configured standings-only page.
   // Keep explicit results/archive URLs ahead of discovery hits; standings sync retains official-page priority.
   const ranked = rankSyncSourceCandidates(
@@ -682,7 +680,7 @@ async function gatherSources(
     if (
       tier === "other" ||
       isBlockedDomain(domain) ||
-      (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))
+      seenDomains.has(sourceKey)
     )
       continue;
     seenDomains.add(sourceKey);
