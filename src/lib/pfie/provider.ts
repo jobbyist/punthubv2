@@ -177,7 +177,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   // African sites that print the zone, so kick-off times can be verified (see corroborate.ts).
   uel: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -189,7 +189,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   uecl: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -201,7 +201,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   ligue1: {
     official: ["ligue1.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -213,7 +213,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   championship: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -225,7 +225,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   facup: {
     official: ["thefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["FA Cup fixtures SAST kick-off times", "FA Cup fixtures kick-off times"],
@@ -234,7 +234,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   eflcup: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Carabao Cup fixtures SAST kick-off times", "EFL Cup fixtures kick-off times"],
@@ -243,7 +243,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   eredivisie: {
     official: ["eredivisie.nl"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -255,7 +255,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   primeira: {
     official: ["ligaportugal.pt"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -267,7 +267,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "saudi-pro": {
     official: ["spl.com.sa"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -279,7 +279,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   nedbank: {
     official: ["psl.co.za"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Nedbank Cup fixtures kick-off times", "Nedbank Cup fixtures SAST"],
@@ -288,7 +288,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "sa-championship": {
     official: ["psl.co.za"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -303,7 +303,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "caf-cl": {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -315,7 +315,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "caf-cc": {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -327,7 +327,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   afcon: {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -339,7 +339,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "bafana-friendlies": {
     official: ["safa.net"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Bafana Bafana next match kick-off time SAST", "Bafana Bafana friendly fixture"],
