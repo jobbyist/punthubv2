@@ -167,21 +167,21 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 
 | Launch competition | Historical results | Stored history range | Latest standings snapshot | Current teams | Finished fixtures in the last 42 days with scores |
 |---|---:|---|---|---:|---:|
-| Betway Premiership | 527 | 14 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 16 | 3 |
+| Betway Premiership | 526 | 14 Sep 2024–27 Nov 2026 | 28 Nov 2026 | 16 | 3 |
 | Premier League | 862 | 16 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 20 | 11 |
-| EFL Championship | 1,257 | 9 Aug 2024–7 Nov 2026 | 28 Nov 2026 | 24 | 26 |
-| La Liga | 923 | 15 Aug 2024–21 Nov 2026 | 28 Nov 2026 | 20 | 4 |
+| EFL Championship | 1,223 | 9 Aug 2024–7 Nov 2026 | 28 Nov 2026 | 24 | 26 |
+| La Liga | 870 | 15 Aug 2024–21 Nov 2026 | 28 Nov 2026 | 20 | 4 |
 | UEFA Champions League | 486 | 17 Sep 2024–25 Nov 2026 | 27 Nov 2026 | 36 | 7 |
 | UEFA Conference League | 378 | 2 Oct 2024–26 Nov 2026 | 27 Nov 2026 | 36 | 21 |
-| Bundesliga | 765 | 23 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 18 | 9 |
-| Serie A | 880 | 17 Aug 2024–8 Nov 2026 | 28 Nov 2026 | 20 | 11 |
-| Ligue 1 | 738 | 16 Aug 2024–22 Nov 2026 | 28 Nov 2026 | 18 | 10 |
+| Bundesliga | 703 | 23 Aug 2024–27 Nov 2026 | 28 Nov 2026 | 18 | 9 |
+| Serie A | 870 | 17 Aug 2024–8 Nov 2026 | 28 Nov 2026 | 20 | 11 |
+| Ligue 1 | 729 | 16 Aug 2024–22 Nov 2026 | 28 Nov 2026 | 18 | 10 |
 | CAF Confederation Cup | 29 | 16 Oct 2026–27 Nov 2026 | 28 Nov 2026 | 15 | 1 |
 
 ### Acceptance evidence
 
 1. **Standings integrity and corrected-result reconciliation — complete.** Championship (24 teams) and Bundesliga (18 teams) have validated snapshots. The 10 launch-scope legacy standings ledger rows are reconciled; no launch-scope `needs_refresh` rows remain. The 22 November 2026 Werder Bremen 4–0 Hamburger SV score is consistent in fixtures, team_results and the verified standings baseline. The correction migration ensures a match already included in a snapshot is flagged for a full snapshot reconciliation rather than an unsafe second delta. Saudi Pro League and Liga Portugal remain excluded.
-2. **Historical reuse and provenance — complete.** The existing 8,000+ row history store is reused; no bulk refetch was performed. The ten launch competitions contain 6,134+ historical rows, and the canonical natural-key duplicate audit returned zero duplicates.
+2. **Historical reuse and provenance — complete.** The existing 8,000+ row history store is reused; no bulk refetch was performed. The ten launch competitions contain 6,676 historical rows, and the canonical natural-key duplicate audit returned zero duplicates.
 3. **UEFA Conference League recovery — complete.** The archive now contains 378 historical UECL results from October 2024 through 26 November 2026.
 4. **Ten-competition validation — complete.** All ten competitions have current standings snapshots. The 42-day fixture audit found zero finished fixtures without scores and zero fixture/history score mismatches after the Bundesliga correction. Some recent completed fixtures are present in `fixtures` before being copied to `team_results`; PFIE now merges both evidence sets using the latest standings roster, SAST match date and canonical team identity. Exact duplicates count once; conflicting scores and ambiguous team labels are quarantined.
 5. **Archive completeness and idempotency — complete.** Completed double-round-robin archives must corroborate at least 90% of expected season matches. The active season is exempt. Incomplete archives are rejected before partial writes.
