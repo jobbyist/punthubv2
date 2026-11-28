@@ -915,6 +915,13 @@ describe("CAF Confederation Cup group validation", () => {
 });
 
 describe("tableRegression", () => {
+  it("ignores a source-specific league label for single-table team identity", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows
+      .map((row) => ({ ...row, group: "" }));
+    const candidate = previous.map((row) => ({ ...row, group: "Betway Premiership" }));
+    expect(tableRegression(candidate, previous)).toBeNull();
+  });
+
   it("rejects a table that moves played matches or statistics backwards", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
