@@ -255,3 +255,20 @@ A deeper route-level audit found that the PFIE standings/history pipeline (`api.
 - PFIE model configuration is restricted to Parallel Responses Low and Medium; the only Medium retry remains the bounded Championship-fixtures exception. A quota denial stops the chain rather than routing around the denied Parallel budget.
 - Added regression coverage for attempts to inject Firecrawl Search/Extract, Gemini Responses, or Gemini model IDs into PFIE.
 - Phase 3.4 cache-accounting correction merged as PR #447 and deployed to production. Extract failure events now use the cache-wrapped provider identity, matching successful calls.
+
+
+## Phase 3.3 — Final accounting and admin-access corrections (28 November 2026)
+
+The contextual claim/backoff migration is deployed in production as `20261128145438`, and the production release is READY. The first post-migration sample contains three successful Serie A provider events with competition, job-run UUID, estimated cost and final status. Fourteen other events in the same window still carry legacy `api_budget_claim` attribution with null competition/job-run fields; these have not been relabelled, and their originating request path must be traced before final sign-off.
+
+Corrective PR #450:
+- Removes a stale `count()` call in the extraction-error path; `guardExtract` already records the failure exactly once.
+- Reassigns PFIE Responses Medium to the core PFIE/Parallel monthly family budget, while removing PFIE Medium from the non-PFIE newsroom family.
+- Grants authenticated admins SELECT access to the 30-day usage detail view, protected by an admin-only RLS policy on `api_call_events`.
+- Adds rollback-only SQL regression coverage for family-budget attribution, admin grants/RLS and UTC backoff-boundary behavior.
+
+Phase 3.3 remains in progress until this corrective release is deployed and new scheduled runs consistently show context and final status for every PFIE provider attempt.
+
+## Phase 3.4 — Cache implementation status
+
+Persistent Search/Extract cache is wired into both fixture/results jobs and the standings/history/season/archive table pipeline. The first live results run created an active cache entry and emitted Search/Extract miss telemetry. Cache-hit/deduplication and avoided-spend measurements remain part of the Phase 3.6 production reliability audit.
