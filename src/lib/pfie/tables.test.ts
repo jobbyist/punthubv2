@@ -26,7 +26,7 @@ describe("PFIE deterministic standings extraction", () => {
       "| # | Club | MP | W | D | L | GF | GA | GD | Pts |",
       "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
       "| 1 | [Orlando Pirates](https://example.com/pirates) | 10 | 9 | 1 | 0 | 23 | 2 | +21 | 28 |",
-    ].join("\\n");
+    ].join("\n");
     const cleaned = cleanStandingsMarkdown(markdown);
     expect(cleaned).toContain("| # | Club | MP | W | D | L | GF | GA | GD | Pts |");
     expect(cleaned).toContain("Orlando Pirates");
