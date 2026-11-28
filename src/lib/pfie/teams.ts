@@ -106,13 +106,20 @@ export function normaliseTeam(name: string): string {
   const trimmed = name.trim();
   // RC is part of the official club name in "RC Deportivo", not a publisher table code.
   const withoutCode = trimmed === "RC Deportivo" ? trimmed : trimmed.replace(/^[A-Z]{2,4}\s+/, "");
-  const base = withoutCode
+  const rawBase = withoutCode
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/\./g, "")
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9 ]+/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .join(" ");
+  // "Paris FC" is a distinct Ligue 1 club. Dropping the FC suffix collapses it to the ambiguous name "Paris"
+  // and can collide with Paris Saint-Germain in publisher result tables.
+  if (rawBase === "paris fc" || rawBase === "paris football club") return "paris fc";
+  const base = rawBase
     .split(/\s+/)
     .filter((t) => t && !DROP_TOKENS.has(t))
     .join(" ");
@@ -121,6 +128,12 @@ export function normaliseTeam(name: string): string {
 
 export function teamSlug(name: string): string {
   return normaliseTeam(name).replace(/ /g, "-");
+}
+
+/** Generic one-word labels are not safe to introduce as new canonical teams. */
+export function isGenericTeamName(name: string): boolean {
+  const value = normaliseTeam(name);
+  return !value || GENERIC.has(value);
 }
 
 function isSubset(small: string[], large: Set<string>): boolean {
