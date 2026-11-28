@@ -501,6 +501,9 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       key,
       `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
       [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
+      false,
+      [],
+      true,
     );
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
