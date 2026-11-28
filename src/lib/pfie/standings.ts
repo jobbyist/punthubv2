@@ -14,6 +14,7 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
 import { PFIE_LAUNCH_KEYS } from "./launch-scope";
+import { publisherKey as independentSourceKey } from "./publisher-identity";
 
 /** Ten competition tables in the agreed MVP launch priority order. */
 export const STANDINGS_LAUNCH_KEYS = PFIE_LAUNCH_KEYS;
@@ -508,8 +509,9 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       points: indexOf(aliases.points),
     };
     const hasSplitGoals = columns.goalsFor >= 0 && columns.goalsAgainst >= 0;
+    const canUseLeadingRank = columns.position < 0 && columns.team === 0;
     if (
-      columns.position < 0 || columns.team < 0 || columns.played < 0 ||
+      (columns.position < 0 && !canUseLeadingRank) || columns.team < 0 || columns.played < 0 ||
       columns.won < 0 || columns.drawn < 0 || columns.lost < 0 ||
       columns.points < 0 || (!hasSplitGoals && columns.goalsCombined < 0)
     ) continue;
@@ -522,24 +524,27 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
         .replace(/^\||\|$/g, "")
         .split("|")
         .map((cell) => cell.trim());
-      if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
+      const leadingRank = canUseLeadingRank && cells.length === headers.length + 1 && /^\d{1,2}$/.test(cells[0] ?? "");
+      const offset = leadingRank ? 1 : 0;
+      if (cells.length !== headers.length + offset || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
         continue;
-      const position = integer(cells[columns.position] ?? "");
-      const team = (cells[columns.team] ?? "").replace(/^\d+[.)]?\s*/, "").trim();
-      const played = integer(cells[columns.played] ?? "");
-      const won = integer(cells[columns.won] ?? "");
-      const drawn = integer(cells[columns.drawn] ?? "");
-      const lost = integer(cells[columns.lost] ?? "");
+      const position = integer(leadingRank ? cells[0] ?? "" : cells[columns.position] ?? "");
+      const team = (cells[columns.team + offset] ?? "").replace(/^\d+[.)]?\s*/, "").replace(/^\\?\*\s*/, "").trim();
+      const played = integer(cells[columns.played + offset] ?? "");
+      const won = integer(cells[columns.won + offset] ?? "");
+      const drawn = integer(cells[columns.drawn + offset] ?? "");
+      const lost = integer(cells[columns.lost + offset] ?? "");
+      const combinedGoalsCell = (cells[columns.goalsCombined + offset] ?? "").replace(/~~/g, "").replace(/<[^>]+>/g, "").trim();
       const combinedGoals = columns.goalsCombined >= 0
-        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(cells[columns.goalsCombined] ?? "")
+        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(combinedGoalsCell)
         : null;
       const goalsFor = hasSplitGoals
-        ? integer(cells[columns.goalsFor] ?? "")
+        ? integer(cells[columns.goalsFor + offset] ?? "")
         : integer(combinedGoals?.[1] ?? "");
       const goalsAgainst = hasSplitGoals
-        ? integer(cells[columns.goalsAgainst] ?? "")
+        ? integer(cells[columns.goalsAgainst + offset] ?? "")
         : integer(combinedGoals?.[2] ?? "");
-      const points = integer(cells[columns.points] ?? "", true);
+      const points = integer(cells[columns.points + offset] ?? "", true);
       if (
         position === null ||
         !team ||
@@ -577,7 +582,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   const plainHeaderIndex = lines.findIndex((line) => {
     const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/);
     const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
-    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line);
+    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line) || tokens[0] === "team";
     const hasGoals = (has(aliases.goalsFor) && has(aliases.goalsAgainst)) || has(aliases.goalsCombined);
     return hasPosition && has(aliases.team) && has(aliases.played) &&
       has(aliases.won) && has(aliases.drawn) && has(aliases.lost) && hasGoals && has(aliases.points);
@@ -589,14 +594,14 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       /^\s*(\d{1,2})[.)]?\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s*[:–-]\s*(\d{1,3})\s+([+-]?\d{1,3})\s+([+-]?\d{1,3})(?:\s+.*)?$/;
     const rows: RawStandingRow[] = [];
     for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
-      const line = lines[rowIndex]!;
+      const line = lines[rowIndex]!.replace(/~~/g, "").replace(/<[^>]+>/g, "").replace(/\\\*/g, "*");
       const match = rowPattern.exec(line) ?? combinedGoalsPattern.exec(line);
       if (!match) {
         if (rows.length) break;
         continue;
       }
       const position = integer(match[1] ?? "");
-      const team = (match[2] ?? "").trim();
+      const team = (match[2] ?? "").replace(/^\\?\*\s*/, "").trim();
       const played = integer(match[3] ?? "");
       const won = integer(match[4] ?? "");
       const drawn = integer(match[5] ?? "");
@@ -659,7 +664,7 @@ export function extractStandingsTableDate(page: string, now: Date = new Date()):
     month = Number(iso[2]) - 1;
     day = Number(iso[3]);
   } else {
-    const dayFirst = /\b(\d{1,2})\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
+    const dayFirst = /\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
     const monthFirst = /\b([A-Za-z]{3,9})\s+(\d{1,2})(?:,?\s*(20\d{2}))?/.exec(value);
     const match = dayFirst ?? monthFirst;
     if (!match) return null;
@@ -994,7 +999,7 @@ export function validateTables(
 }
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
-export { publisherKey as independentSourceKey } from "./publisher-identity";
+export { independentSourceKey };
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
 export function tableRegression(

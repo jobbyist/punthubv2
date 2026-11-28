@@ -15,6 +15,7 @@ import { QuestsChecklist } from "@/components/quests-checklist";
 import { ReferralCard } from "@/components/referral-card";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useSession } from "@/components/session";
+import { TipsterUnlockProgress } from "@/components/tipster-support/unlock-progress";
 import { headT } from "@/lib/i18n/head";
 
 export const Route = createFileRoute("/account/")({
@@ -63,6 +64,8 @@ function Account() {
           {user ? <FavouritesEditor userId={user.id} /> : null}
 
           {user ? <FollowedTeams /> : null}
+
+          <TipsterUnlockProgress compact className="mt-6" />
 
           <IdentityCard />
           <PushNotificationSettings />

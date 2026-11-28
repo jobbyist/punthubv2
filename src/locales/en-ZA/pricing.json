@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Pricing | Free for Founding Members, Pay-As-You-Go and Puntr Pro",
-    "description": "Puntr is free for the first 100 Founding Members. Puntr Pro adds deeper sports analysis, advanced Tipster tools and planned PuntPoints Tipster Support from 1 December 2026.",
+    "description": "Puntr is free for the first 100 Founding Members. Puntr Pro adds deeper sports analysis, advanced Tipster tools and Tipster Support extras from 1 December 2026.",
     "ogTitle": "Puntr pricing: free for Founding Members",
     "ogDescription": "Claim one of 100 Founding spots. Posting, voting and the leaderboard are always free."
   },
@@ -16,7 +16,7 @@
     "f3": "30 free Pay-As-You-Go credits a month for 3 months once they launch",
     "cta": "Claim a Founding spot"
   },
-  "never": "Paying never buys points, a higher ranking or prize eligibility. Eligible Tipsters may receive voluntary PuntPoints tips through the separate Tipster Support programme.",
+  "never": "Paying never buys points, a higher ranking or prize eligibility. Verified Tipsters who unlock Tipster Support may receive PuntPoints from members who back them.",
   "faq": {
     "title": "Pricing questions",
     "q1": "Is Puntr free?",
@@ -24,7 +24,7 @@
     "q2": "When do Pay-As-You-Go and Puntr Pro launch?",
     "a2": "Both are available from the official launch on 1 December 2026. We will confirm final prices and terms before anything goes on sale. The prices here are indicative.",
     "q3": "What is the difference between Pay-As-You-Go and Puntr Pro?",
-    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro adds deeper analysis, additional tools and the planned Tipster Support benefit for eligible verified Tipsters.",
+    "a3": "Pay-As-You-Go lets you purchase credits when you need an eligible extra. Puntr Pro adds deeper analysis, additional tools and Tipster Support extras: back up to 10 tipsters instead of 2, and pay no platform fee on support you receive.",
     "q4": "Can paying improve my ranking?",
     "a4": "No. Payment does not buy points, improve your position on the leaderboard or change prize eligibility. Rankings are based on recorded performance.",
     "q5": "Is Puntr a bookmaker?",
@@ -56,15 +56,15 @@
     "title": "Puntr Pro",
     "tagline": "For sports fans and Tipsters who want deeper analysis, stronger tools and recognition for a consistent track record.",
     "price": "{{price}} per month",
-    "note": "Tipster Support launches subject to verification, eligibility thresholds and published programme rules. Tips earn PuntPoints, not cash; points cannot be withdrawn and never affect rankings.",
+    "note": "Tipster Support is open to every verified member who wins 10 picks in a row; Pro adds capacity and removes the 10% platform fee. Support is paid in PuntPoints, not cash; points cannot be withdrawn and never affect rankings.",
     "f1": "<1>Planned AI-powered insights</1>: match previews and slip checks",
     "f2": "Advanced tipster analytics: units, ROI and form by market, sport and odds range",
     "f3": "Custom alerts for fixtures and settled picks you follow",
     "f4": "Early access to new tools",
     "f5": "A Pro badge on your profile",
     "cta": "Available at launch",
-    "fine": "Puntr Pro does not buy a higher ranking or prize eligibility. Tipster Support is based on verified performance and voluntary community tips, not payment.",
-    "f6": "Planned Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points, not cash.",
+    "fine": "Puntr Pro does not buy a higher ranking or prize eligibility. Tipster Support is unlocked by verified performance, never by payment.",
+    "f6": "Tipster Support extras: back up to 10 tipsters at once and keep 100% of the PuntPoints supporters send you (10% platform fee on the free plan). Points, not cash.",
     "f7": "<1>Ad-free browsing</1>: no sponsored banners, partner links or interstitials anywhere on Puntr"
   },
   "annualPass": {

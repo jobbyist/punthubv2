@@ -20,6 +20,7 @@ legal pages in the same PR. The owner and counsel approve afterwards, so each ch
 | Invites and referrals | §7 | Data table (invites) | | `docs/growth.md` |
 | Brand Ambassador applications | | Data table (applications), §6 processors (Resend/Supabase) | | `partners@puntr.co.za` via Resend |
 | Points, rewards, prizes | §6, §8 | | | |
+| Tipster Support (unlock, support plans, copied picks, notes) | §6 Tipster Support | Data table "Tipster Support" | | `docs/tipster-support.md` |
 | Pay-As-You-Go, Puntr Pro, Annual Pass and any payment | §5 and §10 | Payment data table and §6 processors | | `/refunds`, `/pricing`, PayFast by Network |
 | Partner links, ads | §5 | §10 | Affiliate tracking switch | `/affiliate-disclosure` |
 
