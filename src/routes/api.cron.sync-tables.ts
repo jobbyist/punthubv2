@@ -39,13 +39,19 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
           await import("@/lib/content/providers.server");
         const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
           await import("@/lib/quota.server");
+        const { createCacheStore } = await import("@/lib/parallel/cache.server");
         const { runTablesSync } = await import("@/lib/pfie/tables");
         const { createTablesStore } = await import("@/lib/pfie/tables-store.server");
         const { createPfieStore } = await import("@/lib/pfie/store.server");
         try {
-          const claim = await createQuotaClaim("pfie:standings");
+          let usageContext: { competition?: string; jobRunId?: string } = {};
+          const claim = await createQuotaClaim("pfie:standings", () => usageContext);
           const parallelKey = env["PARALLEL_API_KEY"]!.trim();
           const pfieStore = createPfieStore();
+          const cache = await createCacheStore().catch((error: unknown) => {
+            console.warn("pfie: Parallel cache unavailable for standings/history; using in-process deduplication only", error);
+            return null;
+          });
           const report = await runTablesSync(
             {
               search: guardSearch(createParallelSearch(parallelKey), claim),
@@ -64,6 +70,18 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
               ),
               llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
               store: createTablesStore(),
+              cache,
+              setUsageContext: (context) => {
+                usageContext = context;
+              },
+              recordRun: (run) =>
+                pfieStore.recordRun({
+                  ...run,
+                  sources: [],
+                  accepted: [],
+                  rejected: [],
+                  decisions: [],
+                }),
               models: ["parallel-low"],
               usageToday: () => pfieStore.usageToday(),
             },

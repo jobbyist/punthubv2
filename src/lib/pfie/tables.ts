@@ -3,7 +3,10 @@
  * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
  * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
+import { randomUUID } from "node:crypto";
+
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
+import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
@@ -182,6 +185,15 @@ export interface TablesDeps {
   store: TablesStore;
   models?: string[];
   usageToday?: () => Promise<Record<string, number>>;
+  cache?: CacheStore | null;
+  setUsageContext?: (context: { competition: CompetitionKey; jobRunId: string }) => void;
+  recordRun?: (run: {
+    jobRunId: string;
+    competition: CompetitionKey;
+    kind: TableJob;
+    ok: boolean;
+    error?: string;
+  }) => Promise<void>;
   now?: () => Date;
 }
 
@@ -545,6 +557,35 @@ export function isStandingsBaselineFresh(
   return Number.isFinite(age) && age >= 0 && age <= maxAgeHours * HOUR;
 }
 
+async function runTrackedTableJob(
+  deps: TablesDeps,
+  job: TableJob,
+  competition: CompetitionKey,
+  work: () => Promise<{ ok: boolean; detail: string }>,
+): Promise<{ ok: boolean; detail: string }> {
+  const jobRunId = randomUUID();
+  deps.setUsageContext?.({ competition, jobRunId });
+  let result: { ok: boolean; detail: string };
+  try {
+    result = await work();
+  } catch (error) {
+    result = {
+      ok: false,
+      detail: error instanceof Error ? error.message.slice(0, 280) : "unexpected error",
+    };
+  }
+  if (deps.recordRun) {
+    await deps.recordRun({
+      jobRunId,
+      competition,
+      kind: job,
+      ok: result.ok,
+      ...(!result.ok ? { error: result.detail } : {}),
+    }).catch((error) => console.error("pfie: could not persist table job run", jobRunId, error));
+  }
+  return result;
+}
+
 export async function runTablesSync(
   deps: TablesDeps,
   opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
@@ -555,12 +596,10 @@ export async function runTablesSync(
   if (opts.job === "archive") {
     const jobs = archiveJobsDue(deps, statuses, opts.only).slice(0, maxJobs);
     const ran: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-    for (const j of jobs)
-      ran.push({
-        job: "archive",
-        key: `${j.key}:${j.year}`,
-        ...(await runArchiveJob(deps, j.key, j.year)),
-      });
+    for (const j of jobs) {
+      const result = await runTrackedTableJob(deps, "archive", j.key, () => runArchiveJob(deps, j.key, j.year));
+      ran.push({ job: "archive", key: `${j.key}:${j.year}`, ...result });
+    }
     return { due: jobs.length, seasonDue: 0, ran };
   }
   const status = (job: TableJob, scope: string) =>
@@ -629,12 +668,15 @@ export async function runTablesSync(
     }
   }
   for (const { job, key } of daily) {
-    const r =
-      job === "standings" ? await syncStandings(deps, key, now) : await syncHistory(deps, key, now);
+    const r = await runTrackedTableJob(deps, job, key, () =>
+      job === "standings" ? syncStandings(deps, key, now) : syncHistory(deps, key, now),
+    );
     report.push({ job, key, ...r });
   }
   for (const w of season.slice(0, Math.max(0, maxJobs - daily.length))) {
-    const r = await syncSeasonWindow(deps, w.key, w.start, w.end, now);
+    const r = await runTrackedTableJob(deps, "season", w.key, () =>
+      syncSeasonWindow(deps, w.key, w.start, w.end, now),
+    );
     report.push({ job: "season", key: `${w.key}:${w.start}`, ...r });
   }
   return { due: due.length, seasonDue: season.length, ran: report };
@@ -675,7 +717,13 @@ async function gatherSources(
   maxSources = MAX_SOURCES,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
-  const hits = await deps.search.search({ objective, queries, maxResults: 20 });
+  const purpose = preferSearchResults ? "results" : "tables";
+  const cacheEvent = (event: CacheEvent) =>
+    console.info("pfie-cache", JSON.stringify({ competition: key, job: purpose, ...event }));
+  // Cache wrappers sit outside the quota guards, so cached responses never claim provider budget.
+  const searchProvider = withSearchCache(deps.search, deps.cache ?? null, purpose, cacheEvent);
+  const extractProvider = withExtractCache(deps.extract, deps.cache ?? null, purpose, cacheEvent);
+  const hits = await searchProvider.search({ objective, queries, maxResults: 20 });
   const configuredPages = (STANDINGS_COMPETITIONS[key]?.pages ?? []).map((url) => ({
     url,
     title: "Configured official standings page",
@@ -703,7 +751,7 @@ async function gatherSources(
   const sources: PfieSource[] = [];
   const seenDomains = new Set<string>();
   const candidates = [] as typeof ranked;
-  const extract = deps.extract;
+  const extract = extractProvider;
   if (!extract) return [];
   // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
   for (const hit of sourcePool) {
@@ -761,7 +809,7 @@ async function generate(
   const models = modelOverride ?? deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const quota = modelQuotaOptions(models, usage as Record<string, number>);
-  return createModelRouter(deps.llm, { models, ...quota }).generate(request);
+  return createModelRouter(deps.llm, { models, ...quota, stopOnQuota: true }).generate(request);
 }
 
 const message = (e: unknown) =>
