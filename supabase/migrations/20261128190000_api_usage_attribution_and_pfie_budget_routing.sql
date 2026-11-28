@@ -41,7 +41,7 @@ for each row execute function public.set_api_call_event_cost();
 
 -- PFIE has a dedicated share of the existing core $50 monthly Parallel budget.
 -- Other low-effort chat consumers retain their existing auxiliary reserve.
-create or replace function public.api_budget_claim(p_provider text, p_units integer default 1, p_feature text default 'unattributed')
+create or replace function public.api_budget_claim(p_provider text, p_units integer, p_feature text)
 returns boolean
 language plpgsql
 security definer
