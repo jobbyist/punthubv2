@@ -44,6 +44,17 @@ begin
   if not public.api_call_event_finish(v_provider, v_request_success, 'success', null) then
     raise exception 'could not finish successful test claim';
   end if;
+  if public.api_budget_claim_with_context(
+    v_provider, 1, 'pfie:test',
+    jsonb_build_object(
+      'request_id', v_request_success,
+      'competition', 'championship',
+      'job_run_id', gen_random_uuid()::text,
+      'job_kind', 'standings'
+    )
+  ) then
+    raise exception 'a repeated request id must not be granted twice';
+  end if;
 
   if not public.api_budget_claim_with_context(
     v_provider, 1, 'pfie:test',
