@@ -11,7 +11,7 @@
   "balance": "Your balance",
   "soon": {
     "title": "PuntPoints are on their way",
-    "body": "Earn PuntPoints for eligible activity and invites, then redeem them for vouchers, sponsored rewards and perks. A planned Tipster Support feature will also let Punters recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value."
+    "body": "Earn PuntPoints for eligible activity and invites, then redeem them for vouchers, sponsored rewards and perks. From 1 December you can also use PuntPoints to back verified tipsters through Tipster Support. Points have no cash value."
   },
   "signIn": {
     "body": "Sign in to see your balance, invite friends and redeem rewards.",
@@ -105,11 +105,11 @@
     }
   },
   "rules": {
-    "note": "PuntPoints have no cash value, cannot be bought or exchanged for money, and never change rankings or leaderboard results. Until Tipster Support launches under its published rules, PuntPoints cannot be transferred between members. We may reverse points earned through fraud or abuse. Rewards are provided by our partners and subject to their terms."
+    "note": "PuntPoints have no cash value, cannot be bought or exchanged for money, and never change rankings or leaderboard results. PuntPoints move between members only through features with published rules, such as Duels and Tipster Support. We may reverse points earned through fraud or abuse. Rewards are provided by our partners and subject to their terms."
   },
   "tipSupport": {
     "title": "Support standout Tipsters",
-    "body": "Puntr Pro will introduce Tipster Support: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value and can't be withdrawn, and support never affects rankings. This feature is planned and is not available yet."
+    "body": "Tipster Support opens on 1 December: back verified tipsters who won 10 in a row with PuntPoints and get their picks copied as they post. Points are held until earned and refunded for void picks or empty periods. Points have no cash value and can't be withdrawn, and support never affects rankings."
   },
   "category": {
     "ott_voucher": "OTT vouchers",

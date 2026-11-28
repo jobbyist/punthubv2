@@ -49,6 +49,7 @@ import { Route as SupportRouteImport } from './routes/support'
 import { Route as TablesRouteImport } from './routes/tables'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TheGoodSportRouteImport } from './routes/the-good-sport'
+import { Route as TipsterSupportRouteImport } from './routes/tipster-support'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -62,6 +63,7 @@ import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
 import { Route as ApiPushRouteImport } from './routes/api.push'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as BookmakersSlugRouteImport } from './routes/bookmakers_.$slug'
 import { Route as DuelsIndexRouteImport } from './routes/duels.index'
 import { Route as DuelsDuelIdRouteImport } from './routes/duels.$duelId'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
@@ -302,6 +304,11 @@ const TheGoodSportRoute = TheGoodSportRouteImport.update({
   path: '/the-good-sport',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TipsterSupportRoute = TipsterSupportRouteImport.update({
+  id: '/tipster-support',
+  path: '/tipster-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -365,6 +372,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 const AuthConfirmRoute = AuthConfirmRouteImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmakersSlugRoute = BookmakersSlugRouteImport.update({
+  id: '/bookmakers_/$slug',
+  path: '/bookmakers/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DuelsIndexRoute = DuelsIndexRouteImport.update({
@@ -610,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
+  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -621,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -704,6 +718,7 @@ export interface FileRoutesByTo {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
+  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -715,6 +730,7 @@ export interface FileRoutesByTo {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -799,6 +815,7 @@ export interface FileRoutesById {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
+  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -810,6 +827,7 @@ export interface FileRoutesById {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers_/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -895,6 +913,7 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
+    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -906,6 +925,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -989,6 +1009,7 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
+    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -1000,6 +1021,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -1083,6 +1105,7 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
+    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -1094,6 +1117,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers_/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -1178,6 +1202,7 @@ export interface RootRouteChildren {
   TablesRoute: typeof TablesRoute
   TermsRoute: typeof TermsRoute
   TheGoodSportRoute: typeof TheGoodSportRouteWithChildren
+  TipsterSupportRoute: typeof TipsterSupportRoute
   ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
@@ -1189,6 +1214,7 @@ export interface RootRouteChildren {
   ApiPushRoute: typeof ApiPushRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
+  BookmakersSlugRoute: typeof BookmakersSlugRoute
   DuelsDuelIdRoute: typeof DuelsDuelIdRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   NewsroomSlugRoute: typeof NewsroomSlugRoute
@@ -1513,6 +1539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TheGoodSportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tipster-support': {
+      id: '/tipster-support'
+      path: '/tipster-support'
+      fullPath: '/tipster-support'
+      preLoaderRoute: typeof TipsterSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -1602,6 +1635,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/confirm'
       fullPath: '/auth/confirm'
       preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookmakers_/$slug': {
+      id: '/bookmakers_/$slug'
+      path: '/bookmakers/$slug'
+      fullPath: '/bookmakers/$slug'
+      preLoaderRoute: typeof BookmakersSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/duels/': {
@@ -1933,6 +1973,7 @@ const rootRouteChildren: RootRouteChildren = {
   TablesRoute: TablesRoute,
   TermsRoute: TermsRoute,
   TheGoodSportRoute: TheGoodSportRouteWithChildren,
+  TipsterSupportRoute: TipsterSupportRoute,
   ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,
@@ -1944,6 +1985,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPushRoute: ApiPushRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthConfirmRoute: AuthConfirmRoute,
+  BookmakersSlugRoute: BookmakersSlugRoute,
   DuelsDuelIdRoute: DuelsDuelIdRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   NewsroomSlugRoute: NewsroomSlugRoute,

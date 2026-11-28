@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   isConfirmedNoMatchesInWindow,
   historyRefreshDue,
+  isStandingsBaselineFresh,
   preferAuthoritativeSources,
   shouldIncludeSecondaryStandingsSources,
   seasonArchiveUrls,
@@ -154,5 +155,19 @@ describe("PFIE rolling history refresh cadence", () => {
   });
   it("honours failure back-off even after the refresh interval", () => {
     expect(historyRefreshDue({ job: "history", scope: "epl", lastAttemptAt: new Date(now.getTime() - 5 * 60000).toISOString(), lastSuccessAt: new Date(now.getTime() - 100 * 3600000).toISOString(), consecutiveFailures: 1 }, now)).toBe(false);
+  });
+});
+
+describe("PFIE standings baseline freshness", () => {
+  const now = new Date("2026-11-28T12:00:00.000Z");
+  it("ignores snapshots older than 72 hours", () => {
+    expect(isStandingsBaselineFresh(new Date(now.getTime() - 10 * 86400000).toISOString(), now)).toBe(false);
+  });
+  it("uses a recent successful snapshot as the regression baseline", () => {
+    expect(isStandingsBaselineFresh(new Date(now.getTime() - 24 * 3600000).toISOString(), now)).toBe(true);
+  });
+  it("does not trust missing or future-dated success timestamps", () => {
+    expect(isStandingsBaselineFresh(null, now)).toBe(false);
+    expect(isStandingsBaselineFresh(new Date(now.getTime() + 60000).toISOString(), now)).toBe(false);
   });
 });

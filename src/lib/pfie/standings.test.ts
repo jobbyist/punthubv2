@@ -1963,3 +1963,67 @@ describe("plain-text standings source parsing", () => {
     expect(extractStandingsTableDate("Updated 2026-11-28", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-28");
   });
 });
+
+describe("source-specific standings formatting", () => {
+  it("normalises strike-through markup around combined goal separators", () => {
+    const source = [
+      "| # | Club | P | W | D | L | Goals | GD | Pts |",
+      "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34~~:~~22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27~~:~~19 | +8 | 35 |",
+      "| 3 | Wolves | 17 | 10 | 4 | 3 | 31~~:~~19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30~~:~~15 | +15 | 32 |",
+    ].join("\n");
+    expect(parseStandingsMarkdown(source, 3)?.[0]).toMatchObject({ goalsFor: 34, goalsAgainst: 22 });
+  });
+
+  it("recognises ordinal dates on source pages", () => {
+    expect(extractStandingsTableDate("Last Updated 27th November 2026 at 21:53", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-27");
+  });
+});
+
+describe("ranked source tables with separate team and position cells", () => {
+  it("parses Sky Sports style tables where rank is an extra first data cell", () => {
+    const sky = [
+      "| Team | Pl | W | D | L | F | A | GD | Pts |",
+      "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34 | 22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27 | 19 | +8 | 35 |",
+      "| 3 | Wolverhampton Wanderers | 17 | 10 | 4 | 3 | 31 | 19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30 | 15 | +15 | 32 |",
+    ].join("\n");
+    const rows = parseStandingsMarkdown(sky, 2);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({ position: 1, team: "Middlesbrough", played: 18, goalsFor: 34, goalsAgainst: 22, points: 35 });
+  });
+});
+
+describe("plain-text live standings source layouts", () => {
+  it("parses Sky Sports rows with a leading rank and separate team column", () => {
+    const plain = [
+      "Team Pl W D L F A GD Pts",
+      "1 Middlesbrough 18 10 5 3 34 22 +12 35",
+      "2 Stoke City 17 11 2 4 27 19 +8 35",
+      "3 Wolverhampton Wanderers 17 10 4 3 31 19 +12 34",
+      "4 Birmingham City 17 9 5 3 30 15 +15 32",
+    ].join("\n");
+    expect(parseStandingsMarkdown(plain, 2)?.[0]).toMatchObject({
+      position: 1,
+      team: "Middlesbrough",
+      goalsFor: 34,
+      goalsAgainst: 22,
+      points: 35,
+    });
+  });
+
+  it("strips strike-through wrappers from plain-text combined goal totals", () => {
+    const plain = [
+      "# Club P W D L Goals GD Pts",
+      "1 Middlesbrough 18 10 5 3 34~~:~~22 +12 35",
+      "2 Stoke City 17 11 2 4 27~~:~~19 +8 35",
+      "3 Wolves 17 10 4 3 31~~:~~19 +12 34",
+      "4 Birmingham City 17 9 5 3 30~~:~~15 +15 32",
+    ].join("\n");
+    expect(parseStandingsMarkdown(plain, 3)?.[0]).toMatchObject({ goalsFor: 34, goalsAgainst: 22 });
+  });
+});

@@ -6,6 +6,8 @@ import { ProBadge } from "@/components/pro-badge";
 
 import { PickCard } from "@/components/pick-card";
 import { ReferralCard } from "@/components/referral-card";
+import { TipsterSupportCard } from "@/components/tipster-support/support-card";
+import { TipsterUnlockProgress } from "@/components/tipster-support/unlock-progress";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
@@ -155,6 +157,10 @@ function PublicProfile() {
           </div>
         </section>
       )}
+
+      <TipsterSupportCard username={profile.username} isSelf={!!me && me.id === profile.id} />
+
+      {me && me.id === profile.id && <TipsterUnlockProgress compact className="mt-6" />}
 
       {me && me.id === profile.id && <ReferralCard />}
 

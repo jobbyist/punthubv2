@@ -452,6 +452,17 @@ export function historyRefreshDue(
   return now.getTime() - Date.parse(s.lastSuccessAt) >= refreshHours * HOUR;
 }
 
+/** A stale persisted table is not a valid regression baseline for a newly verified season snapshot. */
+export function isStandingsBaselineFresh(
+  lastSuccessAt: string | null | undefined,
+  now: Date,
+  maxAgeHours = 72,
+): boolean {
+  if (!lastSuccessAt) return false;
+  const age = now.getTime() - Date.parse(lastSuccessAt);
+  return Number.isFinite(age) && age >= 0 && age <= maxAgeHours * HOUR;
+}
+
 export async function runTablesSync(
   deps: TablesDeps,
   opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
@@ -1114,7 +1125,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       const groupResults = (await deps.store.cafGroupStageResults?.()) ?? [];
       if (groupResults.length > 0) {
         const derivedRows = buildCafGroupStandings(groupResults);
-        const previousDerived = await deps.store.currentStandings(key, season);
+        const standingsStatuses = await deps.store.statuses();
+        const previousStatus = standingsStatuses.find((row) => row.job === "standings" && row.scope === key);
+        const previousDerived = isStandingsBaselineFresh(previousStatus?.lastSuccessAt, now())
+          ? await deps.store.currentStandings(key, season)
+          : [];
         const regression = tableRegression(derivedRows, previousDerived, false, undefined, true);
         if (!regression && derivedRows.length === 15) {
           const count = await deps.store.replaceStandings({
@@ -1167,7 +1182,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         "no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")",
       );
     }
-    const previous = await deps.store.currentStandings(key, season);
+    const standingsStatuses = await deps.store.statuses();
+    const previousStatus = standingsStatuses.find((row) => row.job === "standings" && row.scope === key);
+    const previous = isStandingsBaselineFresh(previousStatus?.lastSuccessAt, now())
+      ? await deps.store.currentStandings(key, season)
+      : [];
     const candidateRows = chosenTables.flatMap((selection) => selection.table.rows);
     const supportingDomains = [
       ...new Set(chosenTables.flatMap((selection) => selection.supportingDomains)),
@@ -1287,6 +1306,21 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         })),
         sourceFailures,
         sourceDiagnostics,
+        ...(key === "championship"
+          ? {
+              sourceTextDiagnostics: sources.map((source) => {
+                const text = source.text ?? "";
+                const marker = /middlesbrough|wolverhampton|\bgoals\b|\bpts\b/i.exec(text);
+                const center = marker?.index ?? 0;
+                return {
+                  domain: source.domain,
+                  length: text.length,
+                  format: /^\s*</.test(text) ? "html" : text.includes("|") ? "markdown-or-pipes" : "plain-text",
+                  excerpt: text.slice(Math.max(0, center - 350), Math.min(text.length, center + 1_200)),
+                };
+              }),
+            }
+          : {}),
         fallbackFromOfficial: usedSecondaryFallback,
         primarySources: primarySources.map((source) => ({
           domain: source.domain,
