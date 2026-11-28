@@ -476,6 +476,14 @@ export interface PfieDeps {
 
 export const PFIE_PROVIDER = "pfie";
 
+/** Championship fixture extraction gets one bounded Medium-first retry after the Low response fails JSON parsing. */
+export function pfieRetryPreference(
+  competitionKey: CompetitionKey,
+  kind: "fixtures" | "results",
+): string | undefined {
+  return competitionKey === "championship" && kind === "fixtures" ? "parallel-medium" : undefined;
+}
+
 /** Competitions explicitly deferred from PFIE refreshes until the ten launch competitions are stable. */
 export const PFIE_PRELAUNCH_DEFERRED_KEYS = ["saudi-pro", "primeira"] as const satisfies readonly CompetitionKey[];
 const PFIE_PRELAUNCH_DEFERRED = new Set<CompetitionKey>(PFIE_PRELAUNCH_DEFERRED_KEYS);
@@ -573,14 +581,18 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       // 3. Extraction. Split long historical pages into bounded chunks so the combined Parallel input
       // (instructions + schema + source text) stays comfortably below the 20,000-character endpoint limit.
+      const retryPreference = pfieRetryPreference(competition.key, kind);
+      const routerModels = retryPreference
+        ? [...new Set([...models, retryPreference])]
+        : models;
       const usage = await deps.store.usageToday().catch(() => ({}) as Record<string, number>);
       const usedToday: Record<string, number> = {};
-      for (const m of models) {
+      for (const m of routerModels) {
         const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
         usedToday[m] = effort ? (usage[`parallel-chat:${effort}`] ?? 0) : (usage[m] ?? 0);
       }
       const router = createModelRouter(deps.llm, {
-        models,
+        models: routerModels,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
@@ -623,6 +635,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               retrySources,
               "The previous response was not valid JSON or did not match the required schema.",
             ),
+            retryPreference,
           );
           modelUsed = answer.model;
           parsed = parseObservations(answer.text);
