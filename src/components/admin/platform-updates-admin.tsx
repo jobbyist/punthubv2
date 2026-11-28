@@ -24,6 +24,98 @@ const statuses: PlatformTask["status"][] = [
   "cancelled",
 ];
 const priorities: PlatformTask["priority"][] = ["low", "medium", "high", "critical"];
+const pfiePhases = [
+  {
+    number: "01",
+    title: "Phase 1 — Production audit & issue register",
+    summary: "Establish an evidence-backed baseline across GitHub, Supabase, Vercel, PFIE ingestion, source quality and API expenditure.",
+    priority: "critical",
+    sortOrder: -600,
+    criteria: [
+      "Record the current main commit and production Vercel deployment.",
+      "Audit all ten launch competitions across fixtures, results, standings, history and source corroboration.",
+      "Identify stale tables, failed jobs, unresolved fixtures, duplicate records and data-integrity risks.",
+      "Audit Parallel usage, attribution, quotas, monthly family budgets and the $200 cumulative allowance through 31 March 2027.",
+      "Reconcile Supabase schema, migrations, RLS, grants, cron schedules and learning-data views.",
+      "Classify every finding by severity, evidence, affected component and remediation phase.",
+    ],
+  },
+  {
+    number: "02",
+    title: "Phase 2 — Ten-competition data reliability",
+    summary: "Repair fixture, result, standings and historical ingestion without relaxing deterministic validation.",
+    priority: "critical",
+    sortOrder: -599,
+    criteria: [
+      "Stabilise Betway Premiership, Premier League, EFL Championship, La Liga, UCL, UECL, Bundesliga, Serie A, Ligue 1 and CAF Confederation Cup.",
+      "Keep Saudi Pro League and Liga Portugal deferred; prevent non-priority PFIE jobs from consuming launch budget.",
+      "Require fresh, complete and independently corroborated standings before replacing persisted tables.",
+      "Verify fixture identity, kickoff, status, final scores, postponements, rescheduling and historical reconciliation.",
+      "Preserve idempotency, canonical team matching, provenance and safe handling of disputed data.",
+      "Pass regression tests for all repaired failure cases and verify successful production syncs.",
+    ],
+  },
+  {
+    number: "03",
+    title: "Phase 3 — Parallel budget & consumption controls",
+    summary: "Make every external request attributable, budget-aware, deduplicated and safe under quota exhaustion.",
+    priority: "critical",
+    sortOrder: -598,
+    criteria: [
+      "Keep PFIE on Parallel Search, Extract and Responses only; prohibit silent Gemini or Firecrawl fallbacks.",
+      "Attribute usage and estimated cost to PFIE feature, operation, competition and job run.",
+      "Reduce repeated searches/extractions through cache reuse, request deduplication and bounded source reads.",
+      "Apply backoff and stop retries when a provider or spend ceiling is exhausted.",
+      "Enforce provider-family budgets and the shared $200 cumulative cap through 31 March 2027.",
+      "Demonstrate a sustainable daily run-rate without increasing the approved budget.",
+    ],
+  },
+  {
+    number: "04",
+    title: "Phase 4 — Admin observability & controls",
+    summary: "Give administrators a reliable operational view of PFIE health, provenance, schedules and spend.",
+    priority: "high",
+    sortOrder: -597,
+    criteria: [
+      "Show fixture, result, standings and history job health with last success, last attempt and consecutive failures.",
+      "Show source provenance, validation outcomes, disagreements and rejected records.",
+      "Show Parallel calls, estimated spend, quotas, remaining budget and budget alerts by feature.",
+      "Show scheduler status, next run, failures and controlled recovery actions.",
+      "Keep operational secrets and privileged data server-side and restrict controls to verified administrators.",
+    ],
+  },
+  {
+    number: "05",
+    title: "Phase 5 — First-party learning-data integrity",
+    summary: "Make real, consented member activity the primary learning source, with verified outcomes as ground truth and synthetic QA secondary.",
+    priority: "high",
+    sortOrder: -596,
+    criteria: [
+      "Use real opted-in member activity as the primary behavioural learning source from 1 December 2026.",
+      "Use independently verified match outcomes as ground-truth labels.",
+      "Keep synthetic sessions and research isolated as secondary QA; do not let them silently dominate the training dataset.",
+      "Preserve consent checks, pseudonymous subject keys, deletion/export controls and retention rules.",
+      "Keep raw personal identifiers out of model prompts, exports and general analytics.",
+      "Verify that the learning dashboard and dataset views reflect the intended source hierarchy.",
+    ],
+  },
+  {
+    number: "06",
+    title: "Phase 6 — Production verification & launch sign-off",
+    summary: "Prove the fixes in Vercel previews and production, then record evidence before declaring PFIE ready.",
+    priority: "high",
+    sortOrder: -595,
+    criteria: [
+      "Run targeted regression tests and the applicable full-suite checks for each change.",
+      "Require the exact PR head SHA to receive a Vercel preview marked READY before merge.",
+      "Do not use GitHub Actions as a PR acceptance gate.",
+      "Verify the production deployment, scheduled jobs, Supabase records and persisted data after merge.",
+      "Confirm all ten competition acceptance criteria and the Parallel budget guardrails.",
+      "Record merged changes, test evidence, production verification and remaining risks in mvp.md.",
+    ],
+  },
+] as const;
+
 const emptyDraft: SavePlatformTaskInput = {
   title: "",
   description: "",
@@ -89,6 +181,15 @@ export function PlatformUpdatesTab() {
       completed: tasks.filter((t) => t.status === "completed").length,
     };
   }, [data?.tasks]);
+
+  const pfiePhaseTasks = useMemo(
+    () => pfiePhases.map((phase) => data?.tasks.find((task) => task.title === phase.title)),
+    [data?.tasks],
+  );
+  const pfieOverallProgress = Math.round(
+    pfiePhaseTasks.reduce((sum, task) => sum + (task?.progress ?? 0), 0) / pfiePhases.length,
+  );
+
 
   function startEdit(task: PlatformTask) {
     setDraft({
@@ -205,6 +306,89 @@ export function PlatformUpdatesTab() {
             </div>
           </div>
         )}
+      </section>
+
+      <section className={panel}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+              Six-phase delivery programme
+            </p>
+            <h3 className="mt-1 font-display text-lg font-bold">PFIE Production Readiness</h3>
+            <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
+              Track the audit, ten-competition reliability work, Parallel budget controls, admin observability,
+              first-party learning pipeline and production sign-off from this workspace.
+            </p>
+          </div>
+          <div className="min-w-28 rounded-lg border border-border px-3 py-2 text-right">
+            <p className="text-xs text-muted-foreground">Programme progress</p>
+            <p className="text-2xl font-bold tnum">{pfieOverallProgress}%</p>
+          </div>
+        </div>
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
+          <div className="h-full rounded-full bg-primary transition-all" style={{ width: pfieOverallProgress + "%" }} />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {pfiePhases.map((phase, index) => {
+            const task = pfiePhaseTasks[index];
+            const status = task?.status ?? "planned";
+            const progress = task?.progress ?? 0;
+            return (
+              <article key={phase.number} className="rounded-xl border border-border p-4">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                      {phase.number} / 06
+                    </p>
+                    <h4 className="mt-1 font-semibold">{phase.title}</h4>
+                  </div>
+                  <span className="rounded-full bg-muted px-2 py-1 text-[11px]">
+                    {statusLabel(status)}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">{phase.summary}</p>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-primary" style={{ width: progress + "%" }} />
+                  </div>
+                  <span className="w-10 text-right text-xs font-semibold tnum">{progress}%</span>
+                </div>
+                <details className="mt-3">
+                  <summary className="cursor-pointer text-xs font-semibold text-primary">
+                    Acceptance criteria
+                  </summary>
+                  <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-relaxed text-muted-foreground">
+                    {phase.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
+                  </ul>
+                </details>
+                <div className="mt-3 flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      if (task) {
+                        startEdit(task);
+                        return;
+                      }
+                      setDraft({
+                        ...emptyDraft,
+                        title: phase.title,
+                        category: "PFIE Production Readiness",
+                        priority: phase.priority,
+                        description: phase.criteria.map((criterion) => "- " + criterion).join("\n"),
+                        sortOrder: phase.sortOrder,
+                      });
+                      setEditingId(null);
+                      setShowForm(true);
+                    }}
+                  >
+                    {task ? "Update phase" : "Create tracker"}
+                  </Button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </section>
 
       <section className={panel}>
