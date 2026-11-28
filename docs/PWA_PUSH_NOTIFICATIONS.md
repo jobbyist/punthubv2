@@ -77,3 +77,8 @@ The following items were identified during the PWA review. They are intentionall
 7. **Device verification:** complete real iOS Home Screen and Android Chrome installation, push permission, notification tap, account switch, sign-out and offline tests. The current validation is a Vercel preview/build plus automated QA, not a physical-device certification.
 
 No separate follow-up PR has been created. The owner must approve the selected improvements first.
+
+
+## Desktop browser opt-in and empty-audience handling
+
+Signed-in desktop browsers may opt in through the same explicit notification prompt as installed PWAs. The prompt does not request permission automatically; the member must select the enable action. Test sends and campaigns with no active opted-in recipients return a clear conflict response and do not create an empty campaign. The admin test control only reports success when at least one device delivery is confirmed.
