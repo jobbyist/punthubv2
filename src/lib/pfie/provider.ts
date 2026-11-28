@@ -699,7 +699,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       for (const c of await prioritizeByMemberInterest(selected(opts))) {
         const last = await deps.store.lastRunAt(c.key, "results").catch(() => null);
         const gap = resultsGapMs(now().getTime() - from.getTime());
-        if (last && now().getTime() - last.getTime() < gap) {
+        if (!opts?.force && last && now().getTime() - last.getTime() < gap) {
           out.skipped.push({
             key: c.key,
             reason: `checked less than ${Math.round(gap / 60_000)} minutes ago`,
