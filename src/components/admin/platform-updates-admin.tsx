@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAsync } from "@/hooks/use-async";
+import { supabase } from "@/integrations/supabase/client";
 import {
   adminPlatformUpdatesOverview,
   adminSavePlatformTask,
@@ -151,6 +152,33 @@ export function PlatformUpdatesTab() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
+
+  // Keep the admin tracker current when a task, audit event or merged-PR record changes.
+  // The server function remains the only read path; realtime events merely invalidate the snapshot.
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-platform-updates-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "platform_implementation_tasks" },
+        () => setTick((n) => n + 1),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "platform_implementation_task_events" },
+        () => setTick((n) => n + 1),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "platform_updates" },
+        () => setTick((n) => n + 1),
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, []);
 
   const filteredUpdates = useMemo(() => {
     const q = updateSearch.trim().toLowerCase();
