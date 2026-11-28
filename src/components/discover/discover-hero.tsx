@@ -74,7 +74,8 @@ export function DiscoverHero({ fixtures, now }: { fixtures: UpcomingFixture[]; n
           <Link
             to={next.to as never}
             params={next.params as never}
-            hash={next.hash}
+            search={next.search as never}
+            {...(next.hash ? { hash: next.hash } : {})}
             onClick={() =>
               trackEvent("discover_primary_cta_clicked", { action: next.key, segment })
             }

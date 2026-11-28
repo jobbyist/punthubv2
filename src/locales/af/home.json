@@ -10,7 +10,30 @@
     "title2": "Bewys jou waarde.",
     "tagline": "Kom vroeg in. Word 'n stigterslid. Wees deel van wat volgende kom.",
     "body": "Puntr is 'n sportvoorspellingsgemeenskap vir Suid-Afrikaanse aanhangers. Keuses open wanneer ons op Dinsdag 1 Desember 2026 bekendgestel word, met sokker eerste. Registrasie vir stigterslede is nou oop: sluit gratis aan en eis 'n genommerde kenteken op. Elke keuse sal 'n <1>tydstempel kry en gesluit word</1>, outomaties gegradeer word en in jou <1>openbare rekord</1> bewaar word — oorwinnings en verliese ingesluit.",
-    "watch": "Kyk na die video"
+    "watch": "Kyk na die video",
+    "eyebrow": "Suid-Afrika se tuiste vir aanspreeklike sportvoorspellings",
+    "headlineA1": "Voorspel slimmer.",
+    "headlineA2": "Bewys dit.",
+    "free": "Gratis om aan te sluit. Geen kaart nodig nie. Registrasie vir stigterslede is oop.",
+    "lede": "Puntr is ’n gratis sportvoorspellingsgemeenskap vir Suid-Afrikaanse aanhangers. Maak jou keuse voor die afskop, sien hoe dit outomaties gegradeer word en bou ’n openbare rekord wat nie verander kan word nie. Klim die ranglys op en versamel PuntPoints, ons nie-kontant-lojaliteitspunte.",
+    "notBookie": "Nie ’n boekmaker nie. Geen weddenskappe met regte geld nie. Net geslote keuses, regverdige gradering en ’n rekord wat vir homself praat.",
+    "member": {
+      "onboarding": "Jy’s in. Kies enige komende wedstryd, maak jou keuse voor die afskop en begin jou openbare rekord.",
+      "active": "Welkom terug. Jou rekord groei. Vind jou volgende wedstryd, kyk waar jy staan of beslis ’n tweestryd."
+    },
+    "cta": {
+      "join": "Word ’n stigterslid",
+      "signIn": "Teken aan",
+      "learn": "Sien hoe dit werk",
+      "firstPick": "Maak my eerste voorspelling",
+      "favourites": "Kies my spanne",
+      "practice": "Probeer Oefenmodus",
+      "continueMatch": "Terug na my laaste wedstryd",
+      "leaderboard": "Sien waar ek staan"
+    },
+    "secondary": {
+      "discover": "Verken Discover"
+    }
   },
   "pillars": {
     "locked": {

@@ -143,5 +143,14 @@
     "copy": "Copy text",
     "copied": "Copied",
     "toWin": "{{team}} to win"
+  },
+  "coach": {
+    "title": "Your first prediction in three taps",
+    "dismiss": "Hide these tips",
+    "steps": {
+      "market": "Choose a market. Match result is the simplest place to start.",
+      "outcome": "Pick the outcome you’re backing.",
+      "post": "Post it before kick-off. It locks, gets graded automatically and goes on your record."
+    }
   }
 }

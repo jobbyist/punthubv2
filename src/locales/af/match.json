@@ -143,5 +143,14 @@
     "copy": "Kopieer teks",
     "copied": "Gekopieer",
     "toWin": "{{team}} om te wen"
+  },
+  "coach": {
+    "title": "Jou eerste voorspelling in drie tikke",
+    "dismiss": "Versteek hierdie wenke",
+    "steps": {
+      "market": "Kies ’n mark. Wedstrydsuitslag is die maklikste plek om te begin.",
+      "outcome": "Kies die uitslag wat jy steun.",
+      "post": "Plaas dit voor die afskop. Dit word gesluit, outomaties gegradeer en op jou rekord gesit."
+    }
   }
 }

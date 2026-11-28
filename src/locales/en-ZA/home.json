@@ -10,7 +10,30 @@
     "title2": "Back your call.",
     "tagline": "Get in early. Become a founding member. Be part of what's next.",
     "body": "Puntr is a sports prediction community for South African fans. Picks open when we launch on Tuesday 1 December 2026, starting with football. Founding Member sign-ups are open now: join free and claim a numbered badge. Every pick will be <1>timestamped and locked</1>, graded automatically and kept in your <1>public record</1> — wins and losses included.",
-    "watch": "Watch the video"
+    "watch": "Watch the video",
+    "eyebrow": "South Africa’s home for accountable sports predictions",
+    "headlineA1": "Predict smarter.",
+    "headlineA2": "Prove it.",
+    "free": "Free to join. No card needed. Founding Member sign-ups are open.",
+    "lede": "Puntr is a free sports prediction community for South African fans. Make your call before kick-off, see it graded automatically and build a public record that can’t be edited. Climb the leaderboards and collect PuntPoints, our non-cash loyalty points.",
+    "notBookie": "Not a bookmaker. No real-money betting. Just locked picks, fair grading and a record that speaks for itself.",
+    "member": {
+      "onboarding": "You’re in. Pick any upcoming match, make your call before kick-off and start your public record.",
+      "active": "Welcome back. Your record is growing. Find your next match, check where you rank or settle a duel."
+    },
+    "cta": {
+      "join": "Become a Founding Member",
+      "signIn": "Sign in",
+      "learn": "See how it works",
+      "firstPick": "Make my first prediction",
+      "favourites": "Pick my teams",
+      "practice": "Try Practice Mode",
+      "continueMatch": "Back to my last match",
+      "leaderboard": "See where I rank"
+    },
+    "secondary": {
+      "discover": "Explore Discover"
+    }
   },
   "pillars": {
     "locked": {
