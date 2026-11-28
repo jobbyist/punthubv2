@@ -142,7 +142,8 @@ async function trySofascore(
       try {
         const logoUrl = await mirror(client, image, badgePath(team.sport, team.name), "sofascore");
         const page =
-          hits.find((h) => h.url.includes(`/${id}`))?.url ?? `https://www.sofascore.com/team/${id}`;
+          hits.find((h) => new RegExp(`/${id}(?:[/?#]|$)`).test(h.url))?.url ??
+          `https://www.sofascore.com/team/${id}`;
         return { logoUrl, page, image };
       } catch (error) {
         console.warn(
@@ -337,6 +338,12 @@ export async function runBadgeJob(limit = 8, force = false) {
     .from("team_badges")
     .select("sport, team_key, status, attempts, checked_at, method, upgrade_checked_at");
   const sofascore = !full.error;
+  if (full.error)
+    console.warn(
+      "team-badges: SofaScore path off for this run",
+      full.error.code,
+      full.error.message,
+    );
   const rows = sofascore
     ? full.data
     : (
