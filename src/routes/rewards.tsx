@@ -13,6 +13,7 @@ import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate, money, points } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
+import { rewardImage } from "@/lib/reward-images";
 import {
   affordability,
   groupByCategory,
@@ -215,6 +216,17 @@ function Catalogue({
                   key={r.id}
                   className={`card-surface flex flex-col gap-2 p-4 ${r.available ? "" : "opacity-90"}`}
                 >
+                  {rewardImage(r.code) && (
+                    <img
+                      src={rewardImage(r.code) ?? undefined}
+                      alt={r.title}
+                      width={1200}
+                      height={1200}
+                      loading="lazy"
+                      decoding="async"
+                      className="-mx-4 -mt-4 mb-1 aspect-square w-[calc(100%+2rem)] max-w-none object-cover"
+                    />
+                  )}
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-bold leading-snug">{r.title}</p>
                     {r.face_value_cents !== null && (
