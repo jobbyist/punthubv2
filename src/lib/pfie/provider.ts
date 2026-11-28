@@ -552,6 +552,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       const raw = [] as NonNullable<ReturnType<typeof parseObservations>>;
       const sourceBatches = chunkSourcesForExtraction(sources);
+      let modelUsed: string | null = null;
       for (const batch of sourceBatches) {
         const makeRequest = (batchSources: PfieSource[], retryHint?: string) =>
           extractionRequest({
@@ -565,6 +566,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
         calls++;
         let answer = await router.generate(makeRequest(batch.sources));
+        modelUsed = answer.model;
         let parsed = parseObservations(answer.text);
         if (!parsed) {
           // Retry only this bounded chunk with smaller source excerpts; all quotes are validated against
@@ -577,6 +579,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           answer = await router.generate(
             makeRequest(retrySources, "The previous response was not valid JSON or did not match the required schema."),
           );
+          modelUsed = answer.model;
           parsed = parseObservations(answer.text);
         }
         if (!parsed) throw new Error("extraction answer was not valid JSON after one chunk retry");
@@ -612,7 +615,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           competition: competition.key,
           kind,
           ok: true,
-          model: answer.model,
+          model: modelUsed ?? undefined,
           sources,
           accepted,
           rejected,

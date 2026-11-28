@@ -667,11 +667,13 @@ describe("provider", () => {
         status: "scheduled",
       },
     ];
-    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store: memory(known) });
+    const store = memory(known);
+    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store });
     const out = await provider.listResults(new Date("2026-11-12T17:30:00Z"), NOW, {
       only: ["psl"],
     });
     expect(out.fixtures).toHaveLength(1);
+    expect(store.runs[0]).toMatchObject({ kind: "results", ok: true, model: DEFAULT_PFIE_MODELS[0] });
     expect(out.fixtures[0]).toMatchObject({
       providerRef: "r1",
       status: "finished",
