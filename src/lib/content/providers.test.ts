@@ -29,7 +29,7 @@ describe("parallelJsonSchema", () => {
 
 
 describe("createParallelResponses", () => {
-  it("uses Parallel JSON-object mode with the configured low reasoning effort", async () => {
+  it("uses a prompt-based JSON contract with the configured low reasoning effort", async () => {
     let sent: Record<string, unknown> | null = null;
     const fetchImpl: typeof fetch = async (_input, init) => {
       sent = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
@@ -50,7 +50,9 @@ describe("createParallelResponses", () => {
     expect(sent).toMatchObject({
       model: "parallel",
       reasoning: { effort: "low" },
-      text: { format: { type: "json_object" } },
     });
+    expect(sent).not.toHaveProperty("text");
+    expect((sent?.["input"] as { role: string; content: string }[])[0]?.content).toContain('"matches"');
+    expect((sent?.["input"] as { role: string; content: string }[])[0]?.content).toContain("OUTPUT SCHEMA");
   });
 });

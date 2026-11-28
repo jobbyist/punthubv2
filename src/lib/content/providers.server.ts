@@ -141,23 +141,33 @@ export function createParallelResponses(
   return {
     name: "parallel-responses",
     async generate(_model: string, request: LlmRequest): Promise<LlmResult> {
-      const json = await postJson(
-        "https://api.parallel.ai/v1/responses",
-        { Authorization: `Bearer ${apiKey}` },
-        {
-          model: "parallel",
-          input: [
-            { role: "system", content: request.system },
-            { role: "user", content: request.prompt },
-          ],
-          reasoning: { effort },
-          max_output_tokens: request.maxOutputTokens,
-          // Parallel's Responses API accepts json_object reliably across all response shapes.
-          // PFIE applies its own Zod and source-evidence validation immediately after parsing.
-          text: { format: { type: "json_object" } },
-        },
-        { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
-      );
+      const outputSchema = parallelJsonSchema(request.schema);
+      const system = [
+        request.system,
+        "OUTPUT SCHEMA (JSON Schema):",
+        JSON.stringify(outputSchema),
+        "Return exactly one JSON object conforming to this schema. Do not include Markdown fences or commentary.",
+      ].join("\n\n");
+      let json: unknown;
+      try {
+        json = await postJson(
+          "https://api.parallel.ai/v1/responses",
+          { Authorization: `Bearer ${apiKey}` },
+          {
+            model: "parallel",
+            input: [
+              { role: "system", content: system },
+              { role: "user", content: request.prompt },
+            ],
+            reasoning: { effort },
+            max_output_tokens: request.maxOutputTokens,
+          },
+          { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+        );
+      } catch (error) {
+        console.error("parallel-responses request rejected", error instanceof Error ? error.message : "unknown error");
+        throw error;
+      }
       const direct = isRecord(json) ? str(json["output_text"]) : "";
       const items = isRecord(json) && Array.isArray(json["output"]) ? json["output"] : [];
       const nested = items.filter((item) => isRecord(item) && item["type"] === "message")
