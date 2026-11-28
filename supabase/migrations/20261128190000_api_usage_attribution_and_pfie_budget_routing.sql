@@ -57,6 +57,7 @@ declare
   v_period_spent numeric;
   v_today date := (now() at time zone 'utc')::date;
   v_synthetic boolean := v_feature like 'synthetic:%' or v_feature like 'ai-community:%';
+  v_granted boolean;
 begin
   if p_units is null or p_units < 1 or p_units > 100 then
     raise exception 'bad_units' using errcode='22023';
@@ -120,7 +121,20 @@ begin
     end if;
   end if;
 
-  return public.api_quota_claim(p_provider,p_units);
+  v_granted := public.api_quota_claim(p_provider,p_units);
+  if v_granted then
+    insert into public.api_call_events (
+      provider, feature, consumer, operation, status, metadata
+    ) values (
+      p_provider,
+      v_feature,
+      split_part(v_feature, ':', 1),
+      coalesce(nullif(substr(v_feature, length(split_part(v_feature, ':', 1)) + 2), ''), 'request'),
+      'claimed',
+      jsonb_build_object('attribution_source', 'api_budget_claim', 'budget_family', v_family)
+    );
+  end if;
+  return v_granted;
 end;
 $function$;
 
