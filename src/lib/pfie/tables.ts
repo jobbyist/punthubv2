@@ -278,6 +278,7 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
     return [
       ...official,
       "https://www.bbc.com/sport/football/champions-league/scores-fixtures",
+      "https://www.skysports.com/champions-league-scores-fixtures",
       "https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures",
     ];
   }
@@ -324,7 +325,19 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
     const month = Number(start.slice(5, 7));
     const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
     const urls = archiveUrls(archiveSource, seasonStart);
-    return [urls.fbref, urls.wikipedia];
+    const skyResults: Partial<Record<CompetitionKey, string>> = {
+      epl: "https://www.skysports.com/premier-league-scores-fixtures",
+      championship: "https://www.skysports.com/championship-scores-fixtures",
+      laliga: "https://www.skysports.com/la-liga-scores-fixtures",
+      seriea: "https://www.skysports.com/serie-a-scores-fixtures",
+      bundesliga: "https://www.skysports.com/bundesliga-scores-fixtures",
+      ligue1: "https://www.skysports.com/ligue-1-scores-fixtures",
+    };
+    return [
+      urls.fbref,
+      ...(skyResults[competition.key] ? [skyResults[competition.key]!] : []),
+      urls.wikipedia,
+    ];
   }
   return [];
 }
@@ -594,6 +607,30 @@ export async function runTablesSync(
   return { due: due.length, seasonDue: season.length, ran: report };
 }
 
+
+/** Prefer result-specific archive URLs over configured standings pages for rolling history and season backfills. */
+export function rankSyncSourceCandidates<T extends { url: string }>(
+  preferSearchResults: boolean,
+  preferredPages: T[],
+  hits: T[],
+  configuredPages: T[],
+  official: string[],
+): T[] {
+  const order = { official: 0, trusted: 1, other: 2 } as const;
+  const preferredUrls = new Set(preferredPages.map((page) => page.url));
+  const candidates = preferSearchResults
+    ? [...preferredPages, ...hits]
+    : [...configuredPages, ...hits];
+  return candidates.sort((a, b) => {
+    if (preferSearchResults) {
+      const aPreferred = preferredUrls.has(a.url);
+      const bPreferred = preferredUrls.has(b.url);
+      if (aPreferred !== bPreferred) return aPreferred ? -1 : 1;
+    }
+    return order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)];
+  });
+}
+
 async function gatherSources(
   deps: TablesDeps,
   key: CompetitionKey,
@@ -618,16 +655,14 @@ async function gatherSources(
     excerpt: "",
     publishedAt: null,
   }));
-  const preferredUrlSet = new Set(preferredUrls);
-  const order = { official: 0, trusted: 1, other: 2 } as const;
-  // Historical result queries must win over the configured standings URL for the same official domain.
-  // Otherwise domain deduplication keeps the table page and discards the match-results archive page.
-  const ranked = (
-    preferSearchResults
-      ? [...preferredPages, ...hits, ...configuredPages]
-      : [...configuredPages, ...hits]
-  ).sort(
-    (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
+  // History and season backfills must not consume a slot on a configured standings-only page.
+  // Keep explicit results/archive URLs ahead of discovery hits; standings sync retains official-page priority.
+  const ranked = rankSyncSourceCandidates(
+    preferSearchResults,
+    preferredPages,
+    hits,
+    configuredPages,
+    official,
   );
   // An official competition results page is authoritative. Mixing in secondary pages can introduce stale or
   // differently scoped scorelines that make otherwise verified official results look contradictory.
@@ -645,12 +680,15 @@ async function gatherSources(
     if (
       tier === "other" ||
       isBlockedDomain(domain) ||
-      (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))
+      seenDomains.has(sourceKey)
     )
       continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
-    if (candidates.length >= maxSources) break;
+    // History pages vary in quality (some extractors return a cookie wall or a standings-only page).
+    // Read two bounded fallbacks, then keep only pages that visibly contain result evidence.
+    const candidateLimit = preferSearchResults ? Math.min(8, maxSources + 2) : maxSources;
+    if (candidates.length >= candidateLimit) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
   const fetched = await Promise.all(
@@ -664,6 +702,7 @@ async function gatherSources(
     const domain = domainOf(hit.url);
     const clean = cleanText(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
+    if (preferSearchResults && !hasHistoryResultEvidence(clean)) continue;
     sources.push({
       index: sources.length + 1,
       url: hit.url,
@@ -674,6 +713,7 @@ async function gatherSources(
       retrievedAt: new Date().toISOString(),
       via: "extract",
     });
+    if (sources.length >= maxSources) break;
   }
   return sources;
 }
