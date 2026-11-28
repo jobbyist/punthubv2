@@ -644,33 +644,40 @@ export interface TableRejection {
 
 /** Extract an explicit source-page update date so stale model metadata cannot override a fresh table. */
 export function extractStandingsTableDate(page: string, now: Date = new Date()): { date: string; quote: string } | null {
-  const marker = /(?:last\\s+updated|updated|as\\s+of|table\\s+updated)\\s*:?\\s*([^\\n]{1,80})/i;
-  const line = page.split(/\\r?\\n/).find((item) => marker.test(item));
+  const marker = /(?:last\s+updated|updated|as\s+of|table\s+updated)\s*:?\s*([^\n]{1,80})/i;
+  const line = page.split(/\r?\n/).find((item) => marker.test(item));
   if (!line) return null;
   const marked = marker.exec(line);
   if (!marked) return null;
-  const value = marked[1] ?? \"\";
+  const value = marked[1] ?? "";
   let year = now.getUTCFullYear();
   let month = -1;
   let day = -1;
-  const iso = /\\b(20\\d{2})-(\\d{2})-(\\d{2})\\b/.exec(value);
-  if (iso) { year = Number(iso[1]); month = Number(iso[2]) - 1; day = Number(iso[3]); }
-  else {
-    const dayFirst = /\\b(\\d{1,2})\\s+([A-Za-z]{3,9})(?:\\s*,?\\s*(20\\d{2}))?/.exec(value);
-    const monthFirst = /\\b([A-Za-z]{3,9})\\s+(\\d{1,2})(?:,?\\s*(20\\d{2}))?/.exec(value);
+  const iso = /\b(20\d{2})-(\d{2})-(\d{2})\b/.exec(value);
+  if (iso) {
+    year = Number(iso[1]);
+    month = Number(iso[2]) - 1;
+    day = Number(iso[3]);
+  } else {
+    const dayFirst = /\b(\d{1,2})\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
+    const monthFirst = /\b([A-Za-z]{3,9})\s+(\d{1,2})(?:,?\s*(20\d{2}))?/.exec(value);
     const match = dayFirst ?? monthFirst;
     if (!match) return null;
     const monthName = dayFirst ? match[2] : match[1];
-    month = new Date(Date.parse(\"1 \" + monthName + \" 2000 UTC\")).getUTCMonth();
+    month = new Date(Date.parse("1 " + monthName + " 2000 UTC")).getUTCMonth();
     if (!Number.isFinite(month)) return null;
     day = Number(dayFirst ? match[1] : match[2]);
     if (match[3]) year = Number(match[3]);
     else if (new Date(Date.UTC(year, month, day)).getTime() > now.getTime() + 3 * 86_400_000) year -= 1;
   }
   const parsed = new Date(Date.UTC(year, month, day));
-  if (month < 0 || month > 11 || day < 1 || day > 31 || parsed.getUTCMonth() !== month || parsed.getUTCDate() !== day) return null;
+  if (
+    month < 0 || month > 11 || day < 1 || day > 31 ||
+    parsed.getUTCMonth() !== month || parsed.getUTCDate() !== day
+  ) return null;
   return { date: parsed.toISOString().slice(0, 10), quote: line.trim() };
 }
+
 function dateAppearsOnPage(page: string, date: string): boolean {
   const [year, month, day] = date.split("-").map(Number);
   const dateObj = new Date(Date.UTC(year!, month! - 1, day!));
