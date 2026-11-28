@@ -83,12 +83,14 @@ function UnlockCard({
               className="fill-none stroke-primary transition-[stroke-dashoffset] duration-700 motion-reduce:transition-none"
               strokeWidth="6"
               strokeDasharray={circ}
-              strokeDashoffset={stage === "unlocked" ? 0 : circ * (1 - share)}
+              strokeDashoffset={
+                stage === "unlocked" || stage === "pending" ? 0 : circ * (1 - share)
+              }
             />
           </svg>
           {stage === "unlocked" ? (
             <BadgeCheck className="size-6 text-primary" />
-          ) : stage === "verify" ? (
+          ) : stage === "verify" || stage === "pending" ? (
             <ShieldCheck className="size-6 text-primary" />
           ) : (
             <span className="font-display text-lg font-extrabold tnum">{progress.streak}</span>
@@ -104,6 +106,8 @@ function UnlockCard({
           </h2>
           {stage === "unlocked" ? (
             <p className="mt-1 text-sm text-muted-foreground">{t("nudge.unlockedBody")}</p>
+          ) : stage === "pending" ? (
+            <p className="mt-1 text-sm text-muted-foreground">{t("nudge.pendingBody")}</p>
           ) : (
             stage !== "paused" && (
               <>
@@ -122,7 +126,7 @@ function UnlockCard({
         </div>
       </div>
 
-      {!compact && progress.recent.length > 0 && stage !== "unlocked" && (
+      {!compact && progress.recent.length > 0 && stage !== "unlocked" && stage !== "pending" && (
         <ol className="mt-4 flex flex-wrap gap-1" aria-label={t("nudge.streak")}>
           {progress.recent.map((m, i) => (
             <li
@@ -137,13 +141,13 @@ function UnlockCard({
         </ol>
       )}
 
-      {!compact && stage !== "unlocked" && stage !== "paused" && (
+      {!compact && (stage === "building" || stage === "close" || stage === "verify") && (
         <p className="mt-3 text-xs text-muted-foreground">
           {t("nudge.rules", { odds: progress.min_odds.toFixed(2) })}
         </p>
       )}
 
-      {stage !== "paused" && (
+      {stage !== "paused" && (stage !== "pending" || compact) && (
         <div className="mt-4 flex flex-wrap gap-2">
           {stage === "unlocked" ? (
             <Button asChild size="sm">
@@ -157,7 +161,7 @@ function UnlockCard({
                 {t("nudge.verifyCta")}
               </Link>
             </Button>
-          ) : (
+          ) : stage === "pending" ? null : (
             <Button asChild size="sm">
               <Link to="/fixtures">{t("nudge.cta")}</Link>
             </Button>

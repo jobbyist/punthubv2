@@ -239,16 +239,16 @@ export function TermsAf() {
               tel nooit op die ondersteuner se eie rekord nie. Punte word gehou wanneer dit gehef
               word: 'n heffing per voorspelling gaan na die tipster wanneer daardie voorspelling
               afgehandel is en word terugbetaal as die wedstryd nietig is of die voorspelling
-              verwyder word; 'n weeklikse of maandelikse heffing gaan aan die einde van die tydperk
-              na die tipster slegs as minstens een nie-nietige voorspelling daarin gekopieer is,
-              anders word dit ten volle terugbetaal. Puntr hou 'n platformfooi van elke betaling aan
-              'n tipster (tans 10%, 0% vir Puntr Pro-tipsters), wat uit omloop verwyder word. Gratis
-              lede kan tot 2 tipsters op 'n slag ondersteun en Puntr Pro-lede tot 10, met 'n
-              30-dae-perk (tans 1 500 punte). PuntPoints het geen kontantwaarde nie en
-              Tipsterondersteuning betaal nooit geld uit nie. Ons kan Tipsterondersteuning opskort
-              of herroep, gehoue punte terugbetaal en punte terugtrek waar lede saamspan, meer as
-              een rekening gebruik of hierdie Bepalings oortree. Die Engelse weergawe geld.
-              [attorney review]
+              verwyder word; 'n weeklikse of maandelikse heffing gaan ná die tydperk na die tipster
+              sodra minstens een voorspelling wat daarin gekopieer is as gewen of verloor afgehandel
+              is (ons wag tot 14 dae vir wedstryde wat nog gespeel moet word), anders word dit ten
+              volle terugbetaal. Puntr hou 'n platformfooi van elke betaling aan 'n tipster (tans
+              10%, 0% vir Puntr Pro-tipsters), wat uit omloop verwyder word. Gratis lede kan tot 2
+              tipsters op 'n slag ondersteun en Puntr Pro-lede tot 10, met 'n 30-dae-perk (tans 1
+              500 punte). PuntPoints het geen kontantwaarde nie en Tipsterondersteuning betaal nooit
+              geld uit nie. Ons kan Tipsterondersteuning opskort of herroep, gehoue punte
+              terugbetaal en punte terugtrek waar lede saamspan, meer as een rekening gebruik of
+              hierdie Bepalings oortree. Die Engelse weergawe geld. [attorney review]
             </p>
             <p className={P}>
               Wedstrokies: jy kan 'n strokie wat jy by 'n boekmaker geplaas het, byvoeg deur dit in

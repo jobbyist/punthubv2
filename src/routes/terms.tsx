@@ -234,17 +234,18 @@ function Terms() {
               picks never count on the supporter&apos;s own record. Points are held when charged: a
               per-pick charge goes to the tipster when that pick settles and is returned if the
               match is void or the pick is removed; a weekly or monthly charge goes to the tipster
-              at the end of the period only if at least one non-void pick was copied in it,
-              otherwise it is returned in full. Stopping a weekly or monthly plan stops renewal and
-              does not refund the current period. Puntr keeps a platform fee from each payment to a
-              tipster (currently 10%, 0% for Puntr Pro tipsters), which is removed from circulation.
-              Free members can support up to 2 tipsters at a time and Puntr Pro members up to 10.
-              Only transferable points can be used (not invite points or points received in the last
-              7 days), and there is a 30-day limit (currently 1,500 points). Points received from
-              supporters cannot be transferred, staked or used for support for 7 days. PuntPoints
-              keep no cash value and Tipster Support never pays money. We may pause or revoke
-              Tipster Support, refund held points and reverse points where members collude, use more
-              than one account or break these Terms. [attorney review]
+              after the period once at least one pick copied in it has settled won or lost (we wait
+              up to 14 days for matches still to be played), otherwise it is returned in full.
+              Stopping a weekly or monthly plan stops renewal and does not refund the current
+              period. Puntr keeps a platform fee from each payment to a tipster (currently 10%, 0%
+              for Puntr Pro tipsters), which is removed from circulation. Free members can support
+              up to 2 tipsters at a time and Puntr Pro members up to 10. Only transferable points
+              can be used (not invite points or points received in the last 7 days), and there is a
+              30-day limit (currently 1,500 points). Points received from supporters cannot be
+              transferred, staked or used for support for 7 days. PuntPoints keep no cash value and
+              Tipster Support never pays money. We may pause or revoke Tipster Support, refund held
+              points and reverse points where members collude, use more than one account or break
+              these Terms. [attorney review]
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               Betting slips: you can add a slip you placed with a bookmaker by typing it, pasting

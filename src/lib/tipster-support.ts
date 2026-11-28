@@ -219,7 +219,7 @@ export function winsToGo(p: Pick<StreakProgress, "streak" | "target">): number {
 }
 
 /** Where the member stands, which decides the copy and the call to action on the nudge. */
-export type UnlockStage = "building" | "close" | "verify" | "unlocked" | "paused";
+export type UnlockStage = "building" | "close" | "verify" | "pending" | "unlocked" | "paused";
 
 export function unlockStage(
   data: Pick<MyTipsterSupport, "progress" | "verified" | "tipster">,
@@ -227,8 +227,10 @@ export function unlockStage(
   const status = data.tipster?.status;
   if (status === "active") return "unlocked";
   if (status === "paused" || status === "revoked") return "paused";
+  // Streak met but the database has not unlocked yet: either ID verification is missing, or the account is not
+  // in good standing / the unlock runs at the next settled pick. Only an `active` row is unlocked.
   if (status === "qualified" || data.progress.streak >= data.progress.target) {
-    return data.verified ? "unlocked" : "verify";
+    return data.verified ? "pending" : "verify";
   }
   return winsToGo(data.progress) <= 3 ? "close" : "building";
 }

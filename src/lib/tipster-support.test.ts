@@ -37,6 +37,10 @@ describe("tipster support helpers", () => {
     expect(unlockStage({ progress: progress(0), verified: false, tipster: row("qualified") })).toBe(
       "verify",
     );
+    expect(unlockStage({ progress: progress(0), verified: true, tipster: row("qualified") })).toBe(
+      "pending",
+    );
+    expect(unlockStage({ progress: progress(10), verified: true, tipster: null })).toBe("pending");
     expect(unlockStage({ progress: progress(0), verified: true, tipster: row("active") })).toBe(
       "unlocked",
     );

@@ -12,9 +12,9 @@
 --   NOT written to the supporter's own record, so copying can never inflate anyone's stats or streak.
 -- * Escrow, never trust: every charge is held from the supporter (ledger 'tipster_hold') and released to the tipster
 --   ('tipster_earning') only when it is earned. A per-pick charge is released when the pick settles won or lost and
---   refunded ('tipster_refund') when it is void or hidden by moderation. A weekly/monthly charge is released at the
---   end of the period only if the tipster delivered at least one non-void pick in it ("no-pick guarantee"),
---   otherwise refunded in full.
+--   refunded ('tipster_refund') when it is void or hidden by moderation. A weekly/monthly charge is released after
+--   the period once at least one pick copied in it has settled won or lost ("no-pick guarantee"); it waits up to
+--   14 days for pending picks and is otherwise refunded in full.
 -- * Transfer safeguards as for duels: 14-day-old account, 18+, good standing, only transferable points, a rolling
 --   30-day spend cap, and earnings sit in the 7-day hold window before they are transferable.
 -- * Streak integrity: one pick per fixture counts (the first one posted), voids are skipped, a win below the minimum
@@ -110,15 +110,20 @@ create table if not exists public.tipster_charges (
   amount integer not null check (amount > 0),
   fee integer not null default 0 check (fee >= 0),
   status text not null default 'held' check (status in ('held', 'paid', 'refunded')),
+  period_start timestamptz,
+  period_end timestamptz,
   created_at timestamptz not null default now(),
   resolved_at timestamptz,
-  constraint tipster_charges_pick_has_prediction check ((kind = 'pick') = (prediction_id is not null))
+  constraint tipster_charges_pick_has_prediction check ((kind = 'pick') = (prediction_id is not null)),
+  constraint tipster_charges_period_bounds check ((kind = 'period') = (period_end is not null))
 );
 create unique index if not exists tipster_charges_one_per_pick
   on public.tipster_charges (subscription_id, prediction_id) where kind = 'pick';
 create index if not exists tipster_charges_held_pick_idx on public.tipster_charges (prediction_id) where status = 'held';
 create index if not exists tipster_charges_tipster_idx on public.tipster_charges (tipster_id, created_at desc);
 create index if not exists tipster_charges_supporter_idx on public.tipster_charges (supporter_id, created_at desc);
+create index if not exists tipster_charges_held_period_idx on public.tipster_charges (period_end)
+  where status = 'held' and kind = 'period';
 
 create table if not exists public.tipster_copies (
   supporter_id uuid not null references public.profiles (id) on delete cascade,
@@ -298,7 +303,7 @@ $$;
 
 -- Shared checks before any hold. Raises with a code the app translates.
 create or replace function public.tipster_check_hold(p_user uuid, p_amount integer)
-returns void language plpgsql stable security definer set search_path = public, pg_temp as $$
+returns void language plpgsql volatile security definer set search_path = public, pg_temp as $$
 declare
   v_profile public.profiles;
   v_problem text;
@@ -403,8 +408,10 @@ begin
   returning id into v_id;
 
   if p_plan <> 'pick' then
-    insert into public.tipster_charges (subscription_id, supporter_id, tipster_id, kind, amount)
-    values (v_id, v_uid, v_tipster.id, 'period', v_price) returning id into v_charge;
+    insert into public.tipster_charges (subscription_id, supporter_id, tipster_id, kind, amount, period_start, period_end)
+    select v_id, v_uid, v_tipster.id, 'period', v_price, s.period_start, s.period_end
+      from public.tipster_subscriptions s where s.id = v_id
+    returning id into v_charge;
     insert into public.puntpoints_ledger (user_id, kind, points, ref_id, reason)
     values (v_uid, 'tipster_hold', -v_price, v_charge::text, 'Tipster Support held: @' || v_tipster.username);
   end if;
@@ -554,9 +561,13 @@ returns trigger language plpgsql security definer set search_path = public, pg_t
 declare
   v_charge uuid;
 begin
-  for v_charge in select id from public.tipster_charges where prediction_id = new.prediction_id and status = 'held' loop
-    perform public.tipster_resolve_charge(v_charge, false, 'Copied pick removed by moderation: refunded');
-  end loop;
+  begin
+    for v_charge in select id from public.tipster_charges where prediction_id = new.prediction_id and status = 'held' loop
+      perform public.tipster_resolve_charge(v_charge, false, 'Copied pick removed by moderation: refunded');
+    end loop;
+  exception when others then
+    raise warning 'tipster hidden refund failed: %', sqlerrm;
+  end;
   return new;
 end;
 $$;
@@ -581,41 +592,63 @@ create trigger z_tipster_on_verification after insert or update of status on pub
   for each row execute function public.tipster_on_verification();
 
 -- 7. Periods (cron every 15 minutes). ----------------------------------------------------------------------------
--- Closes every weekly/monthly period that has ended: pays the tipster when at least one copied pick in the period
--- was not void or hidden, otherwise refunds in full; then renews (at the lower of the old and current price) or ends.
 create or replace function public.process_tipster_periods(p_limit integer default 200)
 returns integer language plpgsql security definer set search_path = public, pg_temp as $$
 declare
+  v_c public.tipster_charges;
   v_s public.tipster_subscriptions;
   v_tp public.tipster_profiles;
   v_charge uuid;
-  v_delivered boolean;
+  v_settled boolean;
+  v_pending boolean;
   v_price integer;
   v_tipster text;
   v_n integer := 0;
 begin
+  -- (a) Resolve held period charges whose period has ended. Paid once a copied pick from the period has settled
+  -- won or lost; left held while copied picks are still pending (up to 14 days after the period, e.g. a pick on a
+  -- match after the period ends); otherwise refunded in full.
+  for v_c in select * from public.tipster_charges
+             where kind = 'period' and status = 'held' and period_end <= now()
+             order by period_end limit greatest(coalesce(p_limit, 200), 1)
+             for update skip locked loop
+    select exists (
+             select 1 from public.tipster_copies c
+             join public.prediction_results r on r.prediction_id = c.prediction_id
+             where c.subscription_id = v_c.subscription_id
+               and c.created_at >= v_c.period_start and c.created_at < v_c.period_end
+               and r.result in ('won', 'lost')
+               and not exists (select 1 from public.hidden_predictions h where h.prediction_id = c.prediction_id)),
+           exists (
+             select 1 from public.tipster_copies c
+             left join public.prediction_results r on r.prediction_id = c.prediction_id
+             where c.subscription_id = v_c.subscription_id
+               and c.created_at >= v_c.period_start and c.created_at < v_c.period_end
+               and r.prediction_id is null
+               and not exists (select 1 from public.hidden_predictions h where h.prediction_id = c.prediction_id))
+      into v_settled, v_pending;
+    if v_settled then
+      perform public.tipster_resolve_charge(v_c.id, true, 'Tipster Support period completed');
+      v_n := v_n + 1;
+    elsif v_pending and v_c.period_end > now() - interval '14 days' then
+      continue;
+    else
+      select username into v_tipster from public.profiles where id = v_c.tipster_id;
+      perform public.tipster_resolve_charge(v_c.id, false, 'No settled picks this period: refunded');
+      perform public.tipster_notify(v_c.supporter_id, 'Refunded: no picks from @' || v_tipster,
+        'No picks from @' || v_tipster || ' settled in your last period, so you have been refunded in full.',
+        '/tipster-support');
+      v_n := v_n + 1;
+    end if;
+  end loop;
+
+  -- (b) Renew or end weekly/monthly plans whose period has ended (at the lower of the old and current price).
   for v_s in select * from public.tipster_subscriptions
              where status = 'active' and plan <> 'pick' and period_end <= now()
              order by period_end limit greatest(coalesce(p_limit, 200), 1)
              for update skip locked loop
     v_n := v_n + 1;
     select username into v_tipster from public.profiles where id = v_s.tipster_id;
-    v_delivered := exists (
-      select 1 from public.tipster_copies c
-      left join public.prediction_results r on r.prediction_id = c.prediction_id
-      where c.subscription_id = v_s.id and c.created_at >= v_s.period_start and c.created_at < v_s.period_end
-        and coalesce(r.result, 'pending') not in ('void', 'push')
-        and not exists (select 1 from public.hidden_predictions h where h.prediction_id = c.prediction_id));
-    for v_charge in select id from public.tipster_charges
-                    where subscription_id = v_s.id and kind = 'period' and status = 'held' loop
-      perform public.tipster_resolve_charge(v_charge, v_delivered,
-        case when v_delivered then 'Tipster Support period completed' else 'No picks this period: refunded' end);
-    end loop;
-    if not v_delivered then
-      perform public.tipster_notify(v_s.supporter_id, 'Refunded: no picks from @' || v_tipster,
-        '@' || v_tipster || ' posted no picks in your last period, so you have been refunded in full.', '/tipster-support');
-    end if;
-
     select * into v_tp from public.tipster_profiles where user_id = v_s.tipster_id;
     v_price := case v_s.plan when 'week' then v_tp.price_week else v_tp.price_month end;
     if not v_s.auto_renew or v_tp.status is distinct from 'active' or not v_tp.accepting or v_price is null then
@@ -635,11 +668,13 @@ begin
       continue;
     end;
     update public.tipster_subscriptions
-       set price = v_price, period_start = v_s.period_end,
+       set price = v_price, period_start = greatest(v_s.period_end, now()),
            period_end = greatest(v_s.period_end, now()) + public.tipster_plan_interval(v_s.plan)
-     where id = v_s.id;
-    insert into public.tipster_charges (subscription_id, supporter_id, tipster_id, kind, amount)
-    values (v_s.id, v_s.supporter_id, v_s.tipster_id, 'period', v_price) returning id into v_charge;
+     where id = v_s.id
+     returning * into v_s;
+    insert into public.tipster_charges (subscription_id, supporter_id, tipster_id, kind, amount, period_start, period_end)
+    values (v_s.id, v_s.supporter_id, v_s.tipster_id, 'period', v_price, v_s.period_start, v_s.period_end)
+    returning id into v_charge;
     insert into public.puntpoints_ledger (user_id, kind, points, ref_id, reason)
     values (v_s.supporter_id, 'tipster_hold', -v_price, v_charge::text, 'Tipster Support renewed: @' || v_tipster);
   end loop;

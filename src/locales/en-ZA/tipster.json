@@ -20,6 +20,8 @@
     "close": "{{count}} more wins to unlock Tipster Support",
     "close_one": "1 more win to unlock Tipster Support",
     "verify": "Streak complete. Verify your ID to unlock",
+    "pending": "Streak complete: Tipster Support unlocks shortly",
+    "pendingBody": "We confirm your account is in good standing and unlock it with your next settled pick. Questions? Contact support.",
     "unlocked": "Tipster Support is unlocked",
     "paused": "Tipster Support is paused on your account",
     "body": "Hit {{target}} straight winning picks on matches played in the last {{days}} days and verified members can back you with PuntPoints for your picks.",
@@ -57,8 +59,8 @@
     },
     "planHelp": {
       "pick": "Held when each pick is copied. Refunded if the match is void or the pick is removed. Stops by itself if your balance runs low.",
-      "week": "Held up front for 7 days. Refunded in full if no picks arrive in that week.",
-      "month": "Held up front for 30 days. Refunded in full if no picks arrive in that month."
+      "week": "Held up front for 7 days. Refunded in full if none of that week's copied picks settle.",
+      "month": "Held up front for 30 days. Refunded in full if none of that month's copied picks settle."
     },
     "autoRenew": "Renew automatically",
     "available": "Available to spend: {{points}} PuntPoints",
@@ -173,7 +175,7 @@
     "s1": "Unlock it: verify your ID and win 10 picks in a row on matches played in the last 30 days. One pick per match counts, and wins below the minimum odds don't.",
     "s2": "Set your offer: a price per copied pick, a weekly price, a monthly price, or any mix.",
     "s3": "Members back you with PuntPoints. Each new pick you post is copied to their list with an alert, plus any supporters-only note.",
-    "s4": "Payments are held, never trusted. Per-pick payments release when the pick settles and are refunded if it is void. Weekly and monthly payments are refunded in full if no picks arrive.",
+    "s4": "Payments are held, never trusted. Per-pick payments release when the pick settles and are refunded if it is void. Weekly and monthly payments go to the tipster once a pick from that period settles, and are refunded in full if none does.",
     "proTitle": "Free for everyone, better with Pro",
     "pro": "Any verified member can unlock Tipster Support and back tipsters. Puntr Pro members can back up to {{limitPro}} tipsters at once (free members {{limitFree}}) and keep 100% of support as tipsters ({{feeFree}}% platform fee on the free plan).",
     "safeTitle": "Built to stay fair",
