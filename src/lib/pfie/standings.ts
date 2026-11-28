@@ -648,10 +648,20 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     .replace(/\\/g, "")
     .replace(/\s+/g, " ")
     .trim();
+  const tableHeaderPatterns = [
+    /Position\s+Team(?:\s+Team)?\s+Pl\s+Played\s+W\s+Won\s+D\s+Drawn\s+L\s+Lost\s+F\s+Goals\s+For\s+A\s+Goals\s+Against\s+GD\s+Goal\s+Difference\s+Pts\s+Points/i,
+    /\bClub\s+P\s+W\s+D\s+L\s+Goals\s+GD\s+Pts\b/i,
+    /\bTeam\s+Pl\s+W\s+D\s+L\s+F\s+A\s+GD\s+Pts\b/i,
+  ];
+  const header = tableHeaderPatterns
+    .map((pattern) => pattern.exec(flattened))
+    .find((match) => match !== null);
+  if (!header) return null;
+  const tableText = flattened.slice(header.index + header[0].length);
   const flattenedRowPattern =
     /(?:^|\s)(\d{1,2})\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})(?:\s*[:–-]\s*|\s+)(\d{1,3})\s+([+-]?\d{1,3})\s+(\d{1,3})/g;
   const flattenedRows: RawStandingRow[] = [];
-  for (const match of flattened.matchAll(flattenedRowPattern)) {
+  for (const match of tableText.matchAll(flattenedRowPattern)) {
     const position = integer(match[1] ?? "");
     const team = (match[2] ?? "").replace(/^\\?\*\s*/, "").trim();
     const played = integer(match[3] ?? "");
