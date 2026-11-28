@@ -22,7 +22,7 @@
     },
     "s3": {
       "title": "Dit sluit en word outomaties afgehandel",
-      "body": "Jou keuse kry 'n tydstempel en word <1>gesluit</1>. Ná die wedstryd word dit volgens die amptelike uitslag gegradeer.",
+      "body": "Jou keuse kry 'n tydstempel en word <1>gesluit</1>. Sodra 'n geverifieerde voltyd-uitslag beskikbaar is, word dit outomaties gegradeer. Ons gaan geskikte wedstryde gereeld na; as uitslagbronne vertraag of verskil, bly die keuse hangend eerder as om op 'n ongeverifieerde telling gegradeer te word.",
       "b1": "Geen wysigings nie, geen skrappings nie",
       "b2": "Regstellings word aangeteken, nooit oorskryf nie"
     },
@@ -64,7 +64,7 @@
       "r2": "Gewen: jy kry (prys - 1) eenhede by. Voorbeeld: 2.10 gee +1.10 eenhede.",
       "r3": "Verloor: jy verloor 1 eenheid.",
       "r4": "Nietig: 0 eenhede. Dit geld vir 'n wedstryd wat uitgestel, gestaak of gekanselleer word.",
-      "r5": "Keuses word volgens die amptelike volletyd-uitslag gegradeer.",
+      "r5": "Keuses word volgens 'n geverifieerde voltyd-uitslag gegradeer, bevestig deur die kompetisie se amptelike webwerf of twee onafhanklike sportbronne.",
       "r6": "As 'n uitslag reggestel word, word die regstelling as 'n nuwe inskrywing aangeteken. Die vorige inskrywing word nooit oorskryf nie."
     }
   },

@@ -1,18 +1,18 @@
 {
   "meta": {
     "title": "Gemeenskapsduelle: kop-teen-kop-voorspellings | Puntr",
-    "description": "Daag 'n ander voorspeller uit op 'n komende wedstryd. Voorspellings sluit by afskop, die gemeenskap stem, en Puntr handel dit by voltyd af.",
+    "description": "Daag 'n ander voorspeller uit op 'n komende wedstryd. Voorspellings sluit by afskop, die gemeenskap stem, en Puntr handel dit af nadat 'n geverifieerde voltyd-uitslag beskikbaar is.",
     "roomTitle": "@{{a}} teen @{{b}}: {{home}} teen {{away}}-duel | Puntr"
   },
   "title": "Gemeenskapsduelle",
-  "subtitle": "Daag 'n voorspeller uit op 'n komende wedstryd. Voorspellings bly versteek tot afskop, die gemeenskap stem, en Puntr handel dit by voltyd af.",
+  "subtitle": "Daag 'n voorspeller uit op 'n komende wedstryd. Voorspellings bly versteek tot afskop, die gemeenskap stem, en Puntr handel die tweestryd af nadat 'n geverifieerde voltyd-uitslag beskikbaar is.",
   "feature": "Gemeenskapsduelle",
   "how": {
     "title": "Hoe duelle werk",
     "s1": "Kies 'n wedstryd en maak 2 of 3 voorspellings: Wedstrydresultaat, Albei spanne druk, Meer/Minder as 2.5.",
     "s2": "Daag 'n lid uit met sy gebruikersnaam of plaas 'n oop uitdaging. Voeg 'n vriendskaplike PuntPoints-inset by wanneer insette aan is.",
     "s3": "Voorspellings bly versteek tot afskop en wys dan langs mekaar. Die gemeenskap stem oor wie dit beter voorspel het.",
-    "s4": "By voltyd neem die lid met die meeste korrekte voorspellings die pot en duel-XP (wen 3, gelykop 1). Gelykop en nietige wedstryde gee die insette terug."
+    "s4": "Sodra voltyd geverifieer is, neem die lid met die meeste korrekte voorspellings die pot en duel-XP (wen 3, gelykop 1). Gelykop en nietige wedstryde gee die insette terug."
   },
   "tabs": {
     "label": "Duelle",
