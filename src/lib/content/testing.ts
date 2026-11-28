@@ -223,7 +223,7 @@ export function fakeLlm(
     name: "gemini",
     calls,
     async generate(model, request) {
-      const review = request.system.startsWith("You are a fact checker");
+      const review = request.system.startsWith("You are an independent fact checker");
       calls.push({ model, review });
       const scripted = script?.(model, request, calls.length);
       if (scripted instanceof Error) throw scripted;
