@@ -509,7 +509,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
-        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
+        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], ...(cfg.groups ? { groups: cfg.groups } : {}), ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}) }));
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
@@ -524,7 +524,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
         const answer = await generate(
           deps,
-          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }),
+          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, ...(cfg.groups ? { groups: cfg.groups } : {}), ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}) }),
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
@@ -571,7 +571,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           [...new Set(validation.tables.map((table) => table.source.index))].map(async (sourceIndex) => {
             const source = sources.find((candidate) => candidate.index === sourceIndex);
             if (!source) return null;
-            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }));
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, ...(cfg.groups ? { groups: cfg.groups } : {}), ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}) }));
             modelsUsed.add(answer.model);
             const parsed = parseStandings(answer.text);
             const result = parsed
@@ -778,6 +778,7 @@ async function syncSeasonWindow(
       const reasons: Record<string, number> = {};
       const models = new Set<string>();
       let extracted = 0;
+      let validResponses = 0;
       for (const source of list) {
         // Extract each publisher independently. A single multi-source prompt often attributes every row to
         // one source, which defeats the two-domain verification rule for non-official publishers.
@@ -798,11 +799,13 @@ async function syncSeasonWindow(
         }
         models.add(answer.model);
         if (!raw) continue;
+        validResponses++;
         extracted += raw.length;
         const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
         accepted.push(...validation.accepted);
         for (const item of validation.rejected) reasons[item.reason] = (reasons[item.reason] ?? 0) + 1;
       }
+      if (validResponses === 0) throw new Error("extraction answer was not valid JSON");
       const { rows, unverified } = verifyHistory(accepted, key, known);
       return {
         extracted,
@@ -879,7 +882,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
       true,
-      seasonArchiveUrls(c.name, start),
+      seasonArchiveUrls(c.name, sastDate(from)),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
