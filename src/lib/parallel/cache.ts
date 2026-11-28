@@ -33,9 +33,10 @@ function normalise(value: unknown, key?: string): unknown {
         return trimmed;
       }
     }
-    return trimmed.toLowerCase();
+    if (key === "objective" || key === "query" || key === "queries") return trimmed.toLowerCase();
+    return trimmed;
   }
-  if (Array.isArray(value)) return value.map((item) => normalise(item));
+  if (Array.isArray(value)) return value.map((item) => normalise(item, key));
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
     for (const k of Object.keys(value as Record<string, unknown>).sort()) {
