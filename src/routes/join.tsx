@@ -23,7 +23,6 @@ import { analytics, trackEvent } from "@/lib/analytics";
 import { parseIdentifier } from "@/lib/identifier";
 import { mfaRequired } from "@/lib/mfa";
 import { validatePassword } from "@/lib/password";
-import { usernameIdeas } from "@/lib/username-ideas";
 import { FoundingCounter } from "@/components/founding-counter";
 import { QuestsChecklist } from "@/components/quests-checklist";
 import { forgetRef, rememberRef, storedRef } from "@/lib/ref-store";
@@ -170,7 +169,6 @@ function Join() {
         )}
         {step === "onboarding" && (
           <OnboardingStep
-            email={email}
             onBlocked={() => setStep("blocked")}
             onDone={async (n) => {
               setJustJoined(true);
@@ -640,11 +638,9 @@ function CodeStep({
 type Availability = "idle" | "checking" | "available" | "taken" | "invalid";
 
 function OnboardingStep({
-  email,
   onDone,
   onBlocked,
 }: {
-  email: string;
   onDone: (founding: number | null) => void | Promise<void>;
   onBlocked: () => void;
 }) {
@@ -654,10 +650,6 @@ function OnboardingStep({
   const languages = enabledLocales();
 
   const [language, setLanguage] = useState<LocaleCode>(locale);
-  const ideas = usernameIdeas(email);
-  // Start from a suggestion so most people only have to confirm it.
-  const [username, setUsername] = useState(ideas[0] ?? "");
-  const [availability, setAvailability] = useState<Availability>("idle");
   const [birthYear, setBirthYear] = useState("");
   const [adult, setAdult] = useState(false);
   const [accepted, setAccepted] = useState(false);
@@ -665,23 +657,6 @@ function OnboardingStep({
   const [marketingWhatsapp, setMarketingWhatsapp] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Live availability, debounced. The server re-checks on submit.
-  useEffect(() => {
-    const name = username.trim().toLowerCase();
-    if (!name) return setAvailability("idle");
-    if (!/^[a-z0-9_]{3,20}$/.test(name)) return setAvailability("invalid");
-    setAvailability("checking");
-    let active = true;
-    const id = setTimeout(async () => {
-      const { data } = await supabase.rpc("username_available", { p_username: name });
-      if (active) setAvailability(data ? "available" : "taken");
-    }, 350);
-    return () => {
-      active = false;
-      clearTimeout(id);
-    };
-  }, [username]);
 
   const year = Number(birthYear);
   const thisYear = new Date().getFullYear();
@@ -703,13 +678,10 @@ function OnboardingStep({
     }
     if (!adult) return setError(t("join.error.ageRequired"));
     if (!accepted) return setError(t("join.error.consentRequired"));
-    if (availability === "invalid") return setError(t("join.error.usernameInvalid"));
-    if (availability === "taken") return setError(t("join.error.usernameTaken"));
-
     setBusy(true);
     const result = await completeSignup({
       data: {
-        username: username.trim().toLowerCase(),
+        username: "",
         birthYear: year,
         language: locales.some((l) => l.code === language) ? language : "en-ZA",
         marketingEmail,
@@ -738,14 +710,6 @@ function OnboardingStep({
     analytics.profileCreated();
     analytics.signupCompleted(result.foundingNumber !== null);
     await onDone(result.foundingNumber);
-  };
-
-  const hint: Record<Availability, string> = {
-    idle: "",
-    checking: t("join.onboarding.checking"),
-    available: t("join.onboarding.available"),
-    taken: t("join.onboarding.taken"),
-    invalid: t("join.onboarding.invalid"),
   };
 
   return (
@@ -777,48 +741,11 @@ function OnboardingStep({
         </div>
       )}
 
-      <div className="space-y-1.5">
-        <Label htmlFor="o-username">{t("join.onboarding.username")}</Label>
-        <Input
-          id="o-username"
-          autoComplete="username"
-          autoCapitalize="none"
-          spellCheck={false}
-          maxLength={20}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          aria-describedby="o-username-hint"
-        />
-        <p
-          id="o-username-hint"
-          className={`text-xs ${
-            availability === "available"
-              ? "text-primary"
-              : availability === "taken" || availability === "invalid"
-                ? "text-destructive"
-                : "text-muted-foreground"
-          }`}
-        >
-          {hint[availability] || t("join.onboarding.usernameHint")}
+      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+        <p className="text-sm font-semibold">{t("join.onboarding.usernameAutoTitle")}</p>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          {t("join.onboarding.usernameAutoBody")}
         </p>
-        {(availability === "taken" || availability === "invalid") && ideas.length > 1 && (
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="text-xs text-muted-foreground">{t("join.onboarding.tryOne")}</span>
-            {ideas
-              .filter((idea) => idea !== username.trim().toLowerCase())
-              .slice(0, 3)
-              .map((idea) => (
-                <button
-                  key={idea}
-                  type="button"
-                  onClick={() => setUsername(idea)}
-                  className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold transition-colors hover:border-primary hover:text-primary"
-                >
-                  {idea}
-                </button>
-              ))}
-          </div>
-        )}
       </div>
 
       <div className="space-y-1.5">
