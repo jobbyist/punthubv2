@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+import { completedMatchCounts, dedupeCompletedMatches, type CompletedMatchEvidence } from "./history";
 import type { SyncStatusRow, TablesStore } from "./tables";
 import type { StandingRow } from "./standings";
 
@@ -50,41 +51,107 @@ export function createTablesStore(): TablesStore {
       return [...names];
     },
     async completedCounts(competition) {
-      const { data, error } = await db
-        .from("completed_matches")
-        .select("home, away")
-        .eq("competition", competition)
-        .limit(2000);
-      if (error) throw new Error(`completed_matches: ${error.message}`);
-      const counts = new Map<string, number>();
-      for (const r of (data ?? []) as { home: string; away: string }[])
-        for (const t of [r.home, r.away])
-          counts.set(t.toLowerCase(), (counts.get(t.toLowerCase()) ?? 0) + 1);
-      return counts;
+      const [fixtures, history] = await Promise.all([
+        db
+          .from("fixtures")
+          .select("home, away, kickoff_at, home_score, away_score")
+          .eq("competition", competition)
+          .eq("status", "finished")
+          .not("home_score", "is", null)
+          .not("away_score", "is", null)
+          .limit(2000),
+        db
+          .from("team_results")
+          .select("home, away, match_date, home_score, away_score")
+          .eq("competition", competition)
+          .limit(2000),
+      ]);
+      if (fixtures.error) throw new Error(`completed fixture counts: ${fixtures.error.message}`);
+      if (history.error) throw new Error(`historical result counts: ${history.error.message}`);
+      const dateInSast = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Africa/Johannesburg",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      const rows: CompletedMatchEvidence[] = [
+        ...((fixtures.data ?? []) as {
+          home: string; away: string; kickoff_at: string; home_score: number; away_score: number;
+        }[]).map((r) => ({
+          matchDate: dateInSast.format(new Date(r.kickoff_at)),
+          home: r.home,
+          away: r.away,
+          homeScore: r.home_score,
+          awayScore: r.away_score,
+          kickoffAt: r.kickoff_at,
+        })),
+        ...((history.data ?? []) as {
+          home: string; away: string; match_date: string; home_score: number; away_score: number;
+        }[]).map((r) => ({
+          matchDate: r.match_date,
+          home: r.home,
+          away: r.away,
+          homeScore: r.home_score,
+          awayScore: r.away_score,
+        })),
+      ];
+      return completedMatchCounts(rows);
     },
     async cafGroupStageResults() {
-      const { data, error } = await db
-        .from("completed_matches")
-        .select("home, away, kickoff_at, home_score, away_score")
-        .eq("competition", "CAF Confederation Cup")
-        .gte("kickoff_at", "2026-11-27T00:00:00Z")
-        .lt("kickoff_at", "2027-02-01T00:00:00Z")
-        .order("kickoff_at");
-      if (error) throw new Error(`completed_matches CAF group stage: ${error.message}`);
-      return (
-        (data ?? []) as {
-          home: string;
-          away: string;
-          kickoff_at: string;
-          home_score: number;
-          away_score: number;
-        }[]
-      ).map((row) => ({
+      const [fixtures, history] = await Promise.all([
+        db
+          .from("fixtures")
+          .select("home, away, kickoff_at, home_score, away_score")
+          .eq("competition", "CAF Confederation Cup")
+          .eq("status", "finished")
+          .not("home_score", "is", null)
+          .not("away_score", "is", null)
+          .gte("kickoff_at", "2026-11-27T00:00:00Z")
+          .lt("kickoff_at", "2027-02-01T00:00:00Z")
+          .order("kickoff_at"),
+        db
+          .from("team_results")
+          .select("home, away, match_date, home_score, away_score")
+          .eq("competition", "CAF Confederation Cup")
+          .gte("match_date", "2026-11-27")
+          .lt("match_date", "2027-02-01")
+          .order("match_date"),
+      ]);
+      if (fixtures.error) throw new Error(`completed CAF fixtures: ${fixtures.error.message}`);
+      if (history.error) throw new Error(`historical CAF results: ${history.error.message}`);
+      const dateInSast = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Africa/Johannesburg",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      const rows: CompletedMatchEvidence[] = [
+        ...((fixtures.data ?? []) as {
+          home: string; away: string; kickoff_at: string; home_score: number; away_score: number;
+        }[]).map((r) => ({
+          matchDate: dateInSast.format(new Date(r.kickoff_at)),
+          home: r.home,
+          away: r.away,
+          homeScore: r.home_score,
+          awayScore: r.away_score,
+          kickoffAt: r.kickoff_at,
+        })),
+        ...((history.data ?? []) as {
+          home: string; away: string; match_date: string; home_score: number; away_score: number;
+        }[]).map((r) => ({
+          matchDate: r.match_date,
+          home: r.home,
+          away: r.away,
+          homeScore: r.home_score,
+          awayScore: r.away_score,
+        })),
+      ];
+      return dedupeCompletedMatches(rows).map((row) => ({
         home: row.home,
         away: row.away,
-        kickoffAt: row.kickoff_at,
-        homeScore: row.home_score,
-        awayScore: row.away_score,
+        kickoffAt: row.kickoffAt ?? `${row.matchDate}T12:00:00.000Z`,
+        homeScore: row.homeScore,
+        awayScore: row.awayScore,
       }));
     },
     async currentStandings(key, season): Promise<StandingRow[]> {
