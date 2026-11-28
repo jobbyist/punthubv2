@@ -180,7 +180,7 @@ export async function resolveTeamBadge(
   const apiKey = process.env["PARALLEL_API_KEY"];
   if (!apiKey) return "quota";
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim())("parallel"))) return "quota";
+  if (!(await (await createQuotaClaim("team-badges:resolve"))("parallel"))) return "quota";
 
   const save = async (values: Record<string, unknown>) => {
     const { error } = await client.from("team_badges").upsert(
@@ -269,7 +269,7 @@ export async function upgradeTeamBadge(
   const apiKey = process.env["PARALLEL_API_KEY"];
   if (!apiKey) return "quota";
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim())("parallel"))) return "quota";
+  if (!(await (await createQuotaClaim("team-badges:sofascore-upgrade"))("parallel"))) return "quota";
   const key = badgeKey(team.name);
   const now = new Date().toISOString();
   try {
