@@ -11,6 +11,8 @@ import {
   preferAuthoritativeSources,
   rankSyncSourceCandidates,
   shouldIncludeSecondaryStandingsSources,
+  hasStandingsTableEvidence,
+  MAX_STANDINGS_SOURCE_LIMIT,
   seasonQueries,
 } from "./tables";
 import { parseStandingsMarkdown, validateTables, STANDINGS_COMPETITIONS } from "./standings";
@@ -57,6 +59,19 @@ describe("PFIE deterministic standings extraction", () => {
 });
 
 describe("PFIE standings source selection", () => {
+  it("keeps the source budget to an official page plus two independent publishers", () => {
+    expect(MAX_STANDINGS_SOURCE_LIMIT).toBe(3);
+  });
+
+  it("rejects pages that mention fixtures but do not contain a standings table", () => {
+    expect(hasStandingsTableEvidence("PSL Match Centre\\nFixtures\\nResults\\nNext matches")).toBe(false);
+    expect(
+      hasStandingsTableEvidence(
+        "# PSL log table 2026/27\\n| # | Team | P | W | D | L | GF | GA | GD | Pts |\\n| 1 | Orlando Pirates | 10 | 9 | 1 | 0 | 23 | 2 | +21 | 28 |",
+      ),
+    ).toBe(true);
+  });
+
   it("enables secondary publishers only for the ten pre-launch competitions", () => {
     for (const key of [
       "psl",
