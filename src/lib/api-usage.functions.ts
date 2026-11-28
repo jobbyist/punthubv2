@@ -25,7 +25,6 @@ export const adminApiUsage = createServerFn({ method: "GET" })
     const now = new Date();
     const today = now.toISOString().slice(0, 10);
     const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString();
-    const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
     const [limits, budgets, spendLimits, prices, todayUsage, recentEvents, weeklyUsage] = await Promise.all([
       db.from("api_quota_limits").select("provider,daily_cap,monthly_cap,note,updated_at").order("provider"),
@@ -34,7 +33,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       db.from("api_unit_prices").select("provider,usd_per_unit,note").order("provider"),
       db.from("content_api_usage").select("provider,calls,errors,refused").eq("day", today).order("provider"),
       db.from("api_call_events").select("id,provider,feature,consumer,operation,status,estimated_cost_usd,claimed_at,metadata").gte("claimed_at", sevenDaysAgo).order("claimed_at", { ascending: false }).limit(150),
-      db.from("content_api_usage").select("provider,day,calls,errors,refused").gte("day", today.slice(0, 4) + "-" + today.slice(5, 7) + "-01").order("day", { ascending: false }),
+      db.from("content_api_usage").select("provider,day,calls,errors,refused").gte("day", sevenDaysAgo.slice(0, 10)).order("day", { ascending: false }),
     ]);
     for (const result of [limits, budgets, spendLimits, prices, todayUsage, recentEvents, weeklyUsage]) {
       if (result.error) throw new Error("API usage data unavailable: " + result.error.message);
@@ -49,15 +48,6 @@ export const adminApiUsage = createServerFn({ method: "GET" })
     const spentByFamily = new Map(spent);
 
     const priceByProvider = new Map(((prices.data ?? []) as { provider: string; usd_per_unit: number }[]).map((p) => [p.provider, Number(p.usd_per_unit)]));
-    const aggregate = new Map<string, { provider: string; feature: string; calls: number; estimatedUsd: number; lastCall: string }>();
-    for (const row of (weeklyUsage.data ?? []) as { provider: string; day: string; calls: number }[]) {
-      const key = row.provider + "|unattributed";
-      const current = aggregate.get(key) ?? { provider: row.provider, feature: "unattributed/aggregate", calls: 0, estimatedUsd: 0, lastCall: row.day };
-      current.calls += Number(row.calls);
-      current.estimatedUsd += Number(row.calls) * (priceByProvider.get(row.provider) ?? 0);
-      if (row.day > current.lastCall) current.lastCall = row.day;
-      aggregate.set(key, current);
-    }
     // Replace the provider-level roll-up with the feature-level claim ledger wherever attribution exists.
     const eventGroups = new Map<string, { provider: string; feature: string; calls: number; estimatedUsd: number; lastCall: string }>();
     for (const event of (recentEvents.data ?? []) as { provider: string; feature: string; estimated_cost_usd: number | null; claimed_at: string }[]) {
