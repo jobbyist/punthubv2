@@ -1,0 +1,125 @@
+-- Enrich API attribution history while preserving the original quota-claim ledger.
+alter table public.api_call_events
+  add column if not exists consumer text,
+  add column if not exists operation text,
+  add column if not exists status text not null default 'claimed',
+  add column if not exists metadata jsonb not null default '{}'::jsonb,
+  add column if not exists estimated_cost_usd numeric(12,6);
+
+update public.api_call_events
+set
+  consumer = case when feature = 'unattributed' then 'unattributed' else split_part(feature, ':', 1) end,
+  operation = case when feature = 'unattributed' then 'unknown' else coalesce(nullif(substr(feature, length(split_part(feature, ':', 1)) + 2), ''), 'request') end,
+  status = case when feature = 'unattributed' then 'legacy_unattributed' else 'claimed' end,
+  metadata = coalesce(metadata, '{}'::jsonb) || jsonb_build_object('backfilled_attribution', true)
+where consumer is null or operation is null;
+
+create index if not exists api_call_events_claimed_at_idx
+  on public.api_call_events (claimed_at desc);
+create index if not exists api_call_events_consumer_feature_idx
+  on public.api_call_events (consumer, feature, claimed_at desc);
+
+create or replace function public.set_api_call_event_cost()
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
+begin
+  if new.estimated_cost_usd is null then
+    select usd_per_unit into new.estimated_cost_usd
+    from public.api_unit_prices
+    where provider = new.provider;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists api_call_events_estimated_cost on public.api_call_events;
+create trigger api_call_events_estimated_cost
+before insert on public.api_call_events
+for each row execute function public.set_api_call_event_cost();
+
+-- PFIE has a dedicated share of the existing core $50 monthly Parallel budget.
+-- Other low-effort chat consumers retain their existing auxiliary reserve.
+create or replace function public.api_budget_claim(p_provider text, p_units integer default 1, p_feature text default 'unattributed')
+returns boolean
+language plpgsql
+security definer
+set search_path to public, pg_temp
+as $function$
+declare
+  v_family text := public.api_provider_family(p_provider);
+  v_feature text := coalesce(nullif(trim(p_feature), ''), 'unattributed');
+  v_budget public.api_budgets;
+  v_period public.api_spend_period_limits;
+  v_price numeric;
+  v_spent numeric;
+  v_period_spent numeric;
+  v_today date := (now() at time zone 'utc')::date;
+  v_synthetic boolean := v_feature like 'synthetic:%' or v_feature like 'ai-community:%';
+begin
+  if p_units is null or p_units < 1 or p_units > 100 then
+    raise exception 'bad_units' using errcode='22023';
+  end if;
+
+  if v_feature like 'pfie:%' then
+    v_family := 'parallel';
+  elsif v_synthetic then
+    v_family := 'parallel-synthetic';
+  end if;
+
+  select * into v_budget from public.api_budgets where family = v_family;
+  if found then
+    select usd_per_unit into v_price from public.api_unit_prices where provider = p_provider;
+    if v_price is null then
+      insert into public.content_api_usage(provider,day,calls,errors,refused)
+      values(p_provider,v_today,0,0,1)
+      on conflict(provider,day) do update set refused = public.content_api_usage.refused + 1;
+      return false;
+    end if;
+
+    perform pg_advisory_xact_lock(hashtext('api_budget:' || v_family));
+
+    if v_synthetic then
+      select coalesce(sum(spent_usd), 0)
+        into v_spent
+        from public.synthetic_experiments
+       where created_at >= date_trunc('month', now() at time zone 'utc')::date;
+    else
+      v_spent := public.api_family_spend_usd(v_family);
+    end if;
+
+    if v_spent + v_price * p_units > v_budget.monthly_usd then
+      insert into public.content_api_usage(provider,day,calls,errors,refused)
+      values(p_provider,v_today,0,0,1)
+      on conflict(provider,day) do update set refused = public.content_api_usage.refused + 1;
+      return false;
+    end if;
+  end if;
+
+  -- One cumulative allowance across all Parallel endpoints, regardless of monthly family.
+  if p_provider like 'parallel%' then
+    perform pg_advisory_xact_lock(hashtext('api_budget:parallel-global'));
+    select * into v_period
+      from public.api_spend_period_limits
+     where family = 'parallel'
+       and v_today between period_start and period_end;
+    if found then
+      select coalesce(sum(u.calls * p.usd_per_unit), 0)
+        into v_period_spent
+        from public.content_api_usage u
+        join public.api_unit_prices p on p.provider = u.provider
+       where u.provider like 'parallel%'
+         and u.day between v_period.period_start and v_period.period_end;
+      if v_period_spent + v_price * p_units > v_period.limit_usd then
+        insert into public.content_api_usage(provider,day,calls,errors,refused)
+        values(p_provider,v_today,0,0,1)
+        on conflict(provider,day) do update set refused = public.content_api_usage.refused + 1;
+        return false;
+      end if;
+    end if;
+  end if;
+
+  return public.api_quota_claim(p_provider,p_units);
+end;
+$function$;
