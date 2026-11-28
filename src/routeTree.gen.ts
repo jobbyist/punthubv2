@@ -62,6 +62,7 @@ import { Route as AdminFoundingHqRouteImport } from './routes/admin.founding-hq'
 import { Route as ApiPushRouteImport } from './routes/api.push'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as BookmakersSlugRouteImport } from './routes/bookmakers_.$slug'
 import { Route as DuelsIndexRouteImport } from './routes/duels.index'
 import { Route as DuelsDuelIdRouteImport } from './routes/duels.$duelId'
 import { Route as MatchFixtureIdRouteImport } from './routes/match.$fixtureId'
@@ -367,6 +368,11 @@ const AuthConfirmRoute = AuthConfirmRouteImport.update({
   path: '/auth/confirm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookmakersSlugRoute = BookmakersSlugRouteImport.update({
+  id: '/bookmakers_/$slug',
+  path: '/bookmakers/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DuelsIndexRoute = DuelsIndexRouteImport.update({
   id: '/duels/',
   path: '/duels/',
@@ -621,6 +627,7 @@ export interface FileRoutesByFullPath {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -715,6 +722,7 @@ export interface FileRoutesByTo {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -810,6 +818,7 @@ export interface FileRoutesById {
   '/api/push': typeof ApiPushRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/bookmakers_/$slug': typeof BookmakersSlugRoute
   '/duels/$duelId': typeof DuelsDuelIdRoute
   '/match/$fixtureId': typeof MatchFixtureIdRoute
   '/newsroom/$slug': typeof NewsroomSlugRoute
@@ -906,6 +915,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -1000,6 +1010,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -1094,6 +1105,7 @@ export interface FileRouteTypes {
     | '/api/push'
     | '/auth/callback'
     | '/auth/confirm'
+    | '/bookmakers_/$slug'
     | '/duels/$duelId'
     | '/match/$fixtureId'
     | '/newsroom/$slug'
@@ -1189,6 +1201,7 @@ export interface RootRouteChildren {
   ApiPushRoute: typeof ApiPushRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
+  BookmakersSlugRoute: typeof BookmakersSlugRoute
   DuelsDuelIdRoute: typeof DuelsDuelIdRoute
   MatchFixtureIdRoute: typeof MatchFixtureIdRoute
   NewsroomSlugRoute: typeof NewsroomSlugRoute
@@ -1604,6 +1617,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookmakers_/$slug': {
+      id: '/bookmakers_/$slug'
+      path: '/bookmakers/$slug'
+      fullPath: '/bookmakers/$slug'
+      preLoaderRoute: typeof BookmakersSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/duels/': {
       id: '/duels/'
       path: '/duels'
@@ -1944,6 +1964,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPushRoute: ApiPushRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthConfirmRoute: AuthConfirmRoute,
+  BookmakersSlugRoute: BookmakersSlugRoute,
   DuelsDuelIdRoute: DuelsDuelIdRoute,
   MatchFixtureIdRoute: MatchFixtureIdRoute,
   NewsroomSlugRoute: NewsroomSlugRoute,

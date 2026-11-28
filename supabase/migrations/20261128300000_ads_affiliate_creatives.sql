@@ -145,6 +145,13 @@ begin
     select 1 from public.affiliate_partners
     where id = p_partner and status = 'live' and category = 'bookmaker'
   ) then return; end if;
+  -- Coarse flood guard: anonymous callers cannot inflate counts beyond 300 events a minute per partner.
+  if (
+    select count(*) from public.affiliate_ad_events
+    where partner_id = p_partner and created_at > now() - interval '1 minute'
+  ) >= 300 then
+    return;
+  end if;
   if p_creative is not null and not exists (
     select 1 from public.affiliate_creatives where id = p_creative and partner_id = p_partner
   ) then
@@ -172,7 +179,7 @@ returns table (
   dismissals bigint
 )
 language plpgsql
-stable
+volatile
 security definer
 set search_path = public
 as $$
