@@ -451,7 +451,14 @@ export function parseStandings(text: string): RawStandingRow[] | null {
   const json = parseJsonObject(text);
   if (!json) return null;
   const parsed = rawSchema.safeParse(json);
-  return parsed.success ? parsed.data.rows : null;
+  if (!parsed.success) return null;
+  return parsed.data.rows.map((row): RawStandingRow => {
+    if (row.group === undefined) {
+      const { group: _group, ...withoutGroup } = row;
+      return withoutGroup;
+    }
+    return { ...row, group: row.group };
+  });
 }
 
 export interface TableRejection {
