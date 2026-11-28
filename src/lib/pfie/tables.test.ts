@@ -64,10 +64,10 @@ describe("PFIE standings source selection", () => {
   });
 
   it("rejects pages that mention fixtures but do not contain a standings table", () => {
-    expect(hasStandingsTableEvidence("PSL Match Centre\\nFixtures\\nResults\\nNext matches")).toBe(false);
+    expect(hasStandingsTableEvidence("PSL Match Centre\nFixtures\nResults\nNext matches")).toBe(false);
     expect(
       hasStandingsTableEvidence(
-        "# PSL log table 2026/27\\n| # | Team | P | W | D | L | GF | GA | GD | Pts |\\n| 1 | Orlando Pirates | 10 | 9 | 1 | 0 | 23 | 2 | +21 | 28 |",
+        "# PSL log table 2026/27\n| # | Team | P | W | D | L | GF | GA | GD | Pts |\n| 1 | Orlando Pirates | 10 | 9 | 1 | 0 | 23 | 2 | +21 | 28 |",
       ),
     ).toBe(true);
   });
