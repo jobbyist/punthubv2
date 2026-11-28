@@ -17,6 +17,7 @@ const INTEGRATIONS = [
   { name: "Wikipedia REST API", status: "Public source · fallback badges", purpose: "Retrieves article summary and image metadata after Parallel Search identifies a candidate team article.", boundary: "Used only as a team-badge source fallback; not used for PFIE fixtures, results or standings." },
   { name: "Vercel Cron", status: "Scheduled job runner", purpose: "Triggers PFIE standings/history refreshes, badge resolution, learning ingestion and synthetic workflows.", boundary: "Runs Puntr server routes; it is not a sports-data provider." },
   { name: "Resend", status: "Transactional email", purpose: "Authentication, launch and transactional email delivery.", boundary: "Usage is separately quota-controlled." },
+  { name: "Web Push (VAPID)", status: "Browser push notifications", purpose: "Delivers opt-in browser notifications using VAPID public/private keys and service-worker subscriptions.", boundary: "Requires user permission; this is a push-delivery integration, not a sports-data provider." },
   { name: "PayFast", status: "Payments", purpose: "Payment checkout and Instant Transaction Notification handling.", boundary: "Payment status is confirmed server-side through verified callbacks." },
 ] as const;
 
