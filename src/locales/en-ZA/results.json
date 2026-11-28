@@ -43,7 +43,7 @@
   },
   "empty": {
     "title": "No results yet",
-    "body": "Finished matches appear here, usually within a few hours of full time."
+    "body": "We check eligible matches frequently. Final scores appear once the official competition source or independent sports sources confirm full time. If sources are delayed or disagree, the result stays pending rather than guessed."
   },
   "error": "We couldn't load results. Please refresh the page.",
   "example": {
