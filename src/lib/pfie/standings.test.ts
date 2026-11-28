@@ -27,6 +27,7 @@ import {
   seasonWindows,
   standingsDue,
   buildCafGroupStandings,
+  preferAuthoritativeSources,
   type CafGroupStageResult,
   type SyncStatusRow,
 } from "./tables";
@@ -1114,6 +1115,23 @@ describe("PFIE match evidence validation", () => {
     expect(result.accepted).toHaveLength(1);
   });
 });
+describe("official history source preference", () => {
+  it("uses the official competition archive alone when it is available", () => {
+    const hits = [
+      { url: "https://www.uefa.com/results", title: "Official results" },
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"])).toEqual([hits[0]]);
+  });
+  it("retains trusted sources when no official result page is found", () => {
+    const hits = [
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+      { url: "https://www.cbssports.com/soccer/results", title: "Scores" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"])).toEqual(hits);
+  });
+});
+
 describe("official cup history search targets", () => {
   it("targets the current and prior UEFA season result archives", () => {
     expect(seasonQueries("UEFA Champions League", "2026-10-09", "2026-10-15")).toContain("https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/");
