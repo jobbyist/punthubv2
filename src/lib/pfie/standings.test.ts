@@ -127,7 +127,7 @@ describe("launch standings coverage", () => {
   });
 });
 describe("configured direct standings sources", () => {
-  it("includes BBC as an independent EFL Championship table source", () => {
+  it("includes CBS Sports, Sports Mole and the official EFL embedded table", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
       "https://www.cbssports.com/soccer/efl-championship/standings/",
     );
@@ -139,6 +139,9 @@ describe("configured direct standings sources", () => {
       "https://www.sportsmole.co.uk/football/championship/table.html",
     );
     expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.efl.com/embeds/league-table/",
+    );
   });
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
