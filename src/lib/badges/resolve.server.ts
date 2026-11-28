@@ -11,6 +11,7 @@ import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
 
 import {
   badgeKey,
+  validBadgeTeamName,
   badgePath,
   badgeSearchRequest,
   isOfficialBadgeSource,
@@ -61,7 +62,7 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
   }[]) {
     for (const name of [f.home, f.away]) {
       // PFIE can contain an empty team label when a source row is malformed. Never create an empty badge key.
-      if (typeof name !== "string" || name.trim().length < 2 || !badgeKey(name)) continue;
+      if (!validBadgeTeamName(name)) continue;
       const k = `${f.sport}:${badgeKey(name)}`;
       if (!seen.has(k)) seen.set(k, { sport: f.sport, name: name.trim(), competition: f.competition });
     }
@@ -72,7 +73,7 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
     .select("competition, team")
     .limit(2000);
   for (const r of (tables ?? []) as { competition: string; team: string }[]) {
-    if (typeof r.team !== "string" || r.team.trim().length < 2 || !badgeKey(r.team)) continue;
+    if (!validBadgeTeamName(r.team)) continue;
     const k = `soccer:${badgeKey(r.team)}`;
     if (!seen.has(k)) seen.set(k, { sport: "soccer", name: r.team.trim(), competition: r.competition });
   }
@@ -340,8 +341,8 @@ export async function resolveTeamBadge(
   /** False until the SofaScore migration (method value plus `upgrade_checked_at`) is applied. */
   sofascore = true,
 ): Promise<ResolveOutcome> {
-  const key = typeof team.name === "string" ? badgeKey(team.name) : "";
-  if (team.name.trim().length < 2 || !key) return "skipped";
+  if (!validBadgeTeamName(team.name)) return "skipped";
+  const key = badgeKey(team.name);
   const { data: existing } = await client
     .from("team_badges")
     .select("status, attempts")
