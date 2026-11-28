@@ -450,6 +450,39 @@ describe("corroboration", () => {
     const d = by(decide(accepted).decisions, "Stellenbosch FC");
     expect(d?.sources.sort()).toEqual(["psl.co.za", "supersport.com"]);
   });
+  it("reconciles an unresolved alias duplicate when a finished canonical row already exists", () => {
+    const accepted = accept(
+      RAW.filter((o) => o.status === "finished" && o.home === "Mamelodi Sundowns"),
+    ).accepted;
+    const known: KnownFixture[] = [
+      {
+        providerRef: "finished-canonical",
+        home: "Mamelodi Sundowns",
+        away: "Durban City",
+        kickoffAt: "2026-11-12T17:30:00.000Z",
+        status: "finished",
+      },
+      {
+        providerRef: "scheduled-alias",
+        home: "Mamelodi Sundowns FC",
+        away: "Durban City",
+        kickoffAt: "2026-11-12T17:30:00.000Z",
+        status: "scheduled",
+      },
+    ];
+
+    const result = decide(accepted, known).decisions[0];
+
+    expect(result).toMatchObject({
+      providerRef: "scheduled-alias",
+      status: "finished",
+      statusVerdict: "verified",
+      publish: true,
+      homeScore: 4,
+      awayScore: 1,
+    });
+  });
+
   it("does not publish a result for a fixture it has no kick-off for", () => {
     const d = by(decide(accepted).decisions, "Mamelodi Sundowns");
     expect(d).toMatchObject({ status: "finished", homeScore: 4, awayScore: 1, publish: false });
