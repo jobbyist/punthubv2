@@ -258,7 +258,7 @@ describe("restored standings source coverage", () => {
       "https://www.stat-football.com/en/t/eng20.php",
     );
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
-      "https://www.skysports.com/football/competitions/championship/table",
+      "https://www.skysports.com/championship-table?dcmp=GameOn",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.ninetyminutesplus.com/league/ligue-1/standings",
@@ -1200,7 +1200,7 @@ describe("cup history source attribution", () => {
     let calls = 0;
     const inserted: unknown[] = [];
     const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
-    const long = "UEFA Champions League results. 10 October 2026. Alpha FC 2-1 Bravo United. ";
+    const long = "UEFA Champions League results. 10 October 2026. Alpha FC 2-1 Bravo United. ".repeat(10);
     const deps = {
       search: {
         name: "fake",
