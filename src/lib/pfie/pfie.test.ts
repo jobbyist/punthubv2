@@ -810,6 +810,21 @@ describe("provider", () => {
   });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
 
+  it("fails closed when PFIE is wired to a non-Parallel provider or model", () => {
+    const firecrawlSearch: SearchProvider = { name: "firecrawl", async search() { return []; } };
+    const firecrawlExtract: ExtractProvider = { name: "firecrawl", async extract() { return null; } };
+    const gemini: LlmProvider = { name: "gemini", async generate(model) { return { model, text: "{}" }; } };
+
+    expect(() => createPfieProvider({ ...base, search: firecrawlSearch, llm: llm(ANSWER), store: memory() }))
+      .toThrow("PFIE requires Parallel Search");
+    expect(() => createPfieProvider({ ...base, extract: firecrawlExtract, llm: llm(ANSWER), store: memory() }))
+      .toThrow("PFIE requires Parallel Extract");
+    expect(() => createPfieProvider({ ...base, llm: gemini, store: memory() }))
+      .toThrow("PFIE requires Parallel Responses");
+    expect(() => createPfieProvider({ ...base, models: ["gemini-3.8-flash"], llm: llm(ANSWER), store: memory() }))
+      .toThrow("PFIE models must be restricted to Parallel Responses low/medium");
+  });
+
   it("uses a Medium-first retry only for Championship fixture extraction", () => {
     expect(pfieRetryPreference("championship", "fixtures")).toBe("parallel-medium");
     expect(pfieRetryPreference("championship", "results")).toBeUndefined();
