@@ -552,6 +552,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       const raw = [] as NonNullable<ReturnType<typeof parseObservations>>;
       const sourceBatches = chunkSourcesForExtraction(sources);
+      // Keep the model name outside the per-chunk loop for the run audit record.
+      let modelUsed = models[0] ?? "parallel-low";
       for (const batch of sourceBatches) {
         const makeRequest = (batchSources: PfieSource[], retryHint?: string) =>
           extractionRequest({
@@ -580,6 +582,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           parsed = parseObservations(answer.text);
         }
         if (!parsed) throw new Error("extraction answer was not valid JSON after one chunk retry");
+        modelUsed = answer.model;
         raw.push(
           ...parsed.map((observation) => ({
             ...observation,
@@ -612,7 +615,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           competition: competition.key,
           kind,
           ok: true,
-          model: answer.model,
+          model: modelUsed,
           sources,
           accepted,
           rejected,
