@@ -195,6 +195,22 @@ const SEASON_WINDOW_DAYS = 7;
 /** A window that has failed this many times in a row is left alone (nothing to find, or no source has it). */
 const SEASON_GIVE_UP = 6;
 
+/** An empty extraction is not proof that a date window had no matches. */
+export function isConfirmedNoMatchesInWindow(result: {
+  parsedSources: number;
+  parseFailures: number;
+  extracted: number;
+  reasons: Record<string, number>;
+}): boolean {
+  return (
+    result.parsedSources > 0 &&
+    result.parseFailures === 0 &&
+    result.extracted > 0 &&
+    result.reasons.outside_date_range === result.extracted &&
+    Object.keys(result.reasons).every((reason) => reason === "outside_date_range")
+  );
+}
+
 /**
  * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league. The three launch cup
  * competitions (UCL, UECL and CAF CC) retain three seasons of history; other non-archive competitions retain
@@ -314,6 +330,8 @@ export function seasonQueries(
       'site:uefa.com/uefachampionsleague/news/ "2026/27 Champions League: All the league phase fixtures and results"',
       "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
       "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
+      `site:bbc.com/sport/football/champions-league/scores-fixtures ${longDate(start)} ${seasonLabel}`,
+      `site:fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures ${seasonLabel} results`,
     );
   } else if (name === "UEFA Conference League") {
     out.push(
@@ -330,6 +348,8 @@ export function seasonQueries(
       'site:uefa.com/uefaconferenceleague/news/ "2026/27 Conference League: All the league phase fixtures and results"',
       "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
       "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
+      `site:bbc.com/sport/football/europa-conference-league/scores-fixtures ${longDate(start)} ${seasonLabel}`,
+      `site:espn.com/soccer/scoreboard/_/league/uefa.europa.conf ${longDate(start)} ${seasonLabel}`,
     );
   } else if (name === "CAF Confederation Cup") {
     out.push(
@@ -350,6 +370,9 @@ export function seasonQueries(
       "https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/",
       "https://www.cafonline.com/caf-confederation-cup/news/fixtures-and-results-of-the-second-leg-of-first-preliminary-round-of-202526-totalenergies-caf-confederation-cup/",
       "https://www.cafonline.com/caf-confederation-cup/news/belouizdad-cruise-al-masry-edge-chiefs-in-totalenergies-caf-confederation-cup-group-stage-openers/",
+      `site:vavel.com/en-us/data/caf-confederation-cup/results ${months}`,
+      `site:foot-africa.com/en/leagues/international/caf-confederations-cup ${months}`,
+      `site:english.ahram.org.eg CAF Confederation Cup results ${months}`,
     );
   }
   return out;
@@ -1353,10 +1376,7 @@ async function syncSeasonWindow(
       sources: sources.map((s) => s.domain),
       model: result.model,
     };
-    const noMatchesInWindow =
-      result.parsedSources > 0 &&
-      result.parseFailures === 0 &&
-      (result.extracted === 0 || onlyOutOfWindow(result));
+    const noMatchesInWindow = isConfirmedNoMatchesInWindow(result);
     if (result.rows.length === 0) {
       if (noMatchesInWindow) {
         await deps.store.record("season", scope, true, null, { ...meta, noMatchesInWindow: true });

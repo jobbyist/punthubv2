@@ -443,6 +443,9 @@ const TRUSTED = [
   "statsfera.com.tr",
   "ligue1schedule.com",
   "sportnewsafrica.com",
+  "vavel.com",
+  "foot-africa.com",
+  "english.ahram.org.eg",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {
@@ -508,6 +511,14 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           (fixture) =>
             `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
         );
+      const targetedResultQueries = Array.from(
+        { length: Math.ceil(targetedMatches.length / 3) },
+        (_, index) =>
+          `${competition.name} results and final scores: ${targetedMatches.slice(index * 3, index * 3 + 3).join("; ")}`,
+      );
+      const resultQueries = targetedResultQueries.length
+        ? [...targetedResultQueries, ...config.queries.results.slice(0, 1)].slice(0, 5)
+        : config.queries.results.slice(0, 5);
       const hits = await deps.search
         .search({
           objective:
@@ -521,7 +532,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
             kind === "fixtures"
               ? // Parallel Search takes at most 5 phrasings per call.
                 [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
-              : [...config.queries.results, ...targetedMatches].slice(0, 5),
+              : resultQueries,
           maxResults: 10,
         })
         .then(
