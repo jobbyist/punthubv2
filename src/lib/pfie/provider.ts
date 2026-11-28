@@ -542,9 +542,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
         onAttempt: async (a) => {
-          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free")
+          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free") {
             const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
             await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
+          }
         },
       });
       calls++;
