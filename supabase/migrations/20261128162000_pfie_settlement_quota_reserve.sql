@@ -229,7 +229,7 @@ begin
 
   v_definition := replace(
     v_definition,
-    $old$      'blocked_until', v_blocked_until$new$,
+    $old$      'blocked_until', v_blocked_until$old$,
     $new$      'blocked_until', v_blocked_until,
       'quota_provider', v_quota_provider,
       'settlement_priority', v_priority$new$
