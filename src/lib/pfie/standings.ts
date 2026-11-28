@@ -218,15 +218,17 @@ export const STANDINGS_COMPETITIONS: Partial<
     refreshHours: 12,
     queries: [
       "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
-      "site:stat-football.com/en/t/eng20.php EFL Championship 2026/27 table",
-      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship 2026/27 standings",
       "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
+      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:transfermarkt.com/championship/tabelle/wettbewerb/GB2 EFL Championship table 2026/27",
     ],
     pages: [
-      "https://www.stat-football.com/en/t/eng20.php",
-      "https://zeanball.online/en/table/championship/",
-      "https://www.skysports.com/championship-table?dcmp=GameOn",
       "https://www.efl.com/competitions/efl-championship/",
+      "https://www.skysports.com/championship-table?dcmp=GameOn",
+      "https://www.espn.com/soccer/standings/_/league/eng.2",
+      "https://www.transfermarkt.com/championship/tabelle/wettbewerb/GB2",
+      "https://zeanball.online/en/table/championship/",
     ],
   },
   "saudi-pro": {
