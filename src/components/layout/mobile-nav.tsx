@@ -28,6 +28,7 @@ import {
   CheckCircle2,
   Map,
   Wrench,
+  HeartHandshake,
 } from "lucide-react";
 import {
   useCallback,
@@ -61,6 +62,7 @@ type FlyoutItem = {
     | "/leaderboards"
     | "/forum"
     | "/duels"
+    | "/tipster-support"
     | "/newsroom"
     | "/tools"
     | "/bookmakers"
@@ -91,9 +93,18 @@ const flyoutGroups: Record<
       { key: "leaderboards", to: "/leaderboards", icon: Trophy },
       { key: "discussions", to: "/forum", icon: MessageSquare },
       { key: "duels", to: "/duels", icon: Swords },
+      { key: "tipsterSupport", to: "/tipster-support", icon: HeartHandshake },
       { key: "newsroom", to: "/newsroom", icon: Radio },
     ],
-    match: ["/leaderboards", "/leaderboard", "/forum", "/duels", "/newsroom", "/u"],
+    match: [
+      "/leaderboards",
+      "/leaderboard",
+      "/forum",
+      "/duels",
+      "/tipster-support",
+      "/newsroom",
+      "/u",
+    ],
   },
   platform: {
     icon: Layers,

@@ -1,3 +1,4 @@
+import { TipsterUnlockProgress } from "@/components/tipster-support/unlock-progress";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion } from "motion/react";
@@ -136,6 +137,7 @@ function Predictions() {
       <DiscoverHero fixtures={fixtures} now={now} />
       <QuickActions liveCount={fixtures.filter((f) => f.status === "live").length} />
       <ForYou fixtures={fixtures} />
+      <TipsterUnlockProgress compact className="mb-8" />
       <div className="mb-3 flex items-end justify-between gap-3">
         <h2 className="text-xl sm:text-2xl">{t("hub.next.title")}</h2>
         <Link

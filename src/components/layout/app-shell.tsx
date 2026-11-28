@@ -10,6 +10,7 @@ import {
   Trophy,
   Swords,
   ReceiptText,
+  HeartHandshake,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +32,7 @@ const sideNav = [
   { key: "results", to: "/results", icon: Activity },
   { key: "standings", to: "/tables", icon: ListOrdered },
   { key: "duels", to: "/duels", icon: Swords },
+  { key: "tipsterSupport", to: "/tipster-support", icon: HeartHandshake },
   { key: "slips", to: "/slips", icon: ReceiptText },
   { key: "leaderboards", to: "/leaderboard", icon: Trophy },
   { key: "support", to: "/support", icon: LifeBuoy },

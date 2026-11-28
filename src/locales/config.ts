@@ -105,6 +105,7 @@ export const NAMESPACES = [
   "standings",
   "slips",
   "teams",
+  "tipster",
   "bookmakers",
 ] as const;
 
