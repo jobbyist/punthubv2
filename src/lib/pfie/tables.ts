@@ -51,7 +51,7 @@ export interface CafGroupStageResult {
 
 export interface TablesStore {
   /** Verified group-stage results only; preliminary rounds are excluded. */
-  cafGroupStageResults(): Promise<CafGroupStageResult[]>;
+  cafGroupStageResults?(): Promise<CafGroupStageResult[]>;
   statuses(): Promise<SyncStatusRow[]>;
   /** Latest kick-off (ms) of a finished match per competition name, for matches since `since`. */
   latestFinished(since: Date): Promise<Map<string, number>>;
@@ -565,7 +565,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       }
     }
     if (!chosenTables && key === "caf-cc") {
-      const groupResults = await deps.store.cafGroupStageResults();
+      const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
       if (groupResults.length > 0) {
         const derivedRows = buildCafGroupStandings(groupResults);
         const previousDerived = await deps.store.currentStandings(key, season);
