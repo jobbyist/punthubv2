@@ -29,6 +29,7 @@ const ALIASES: Record<string, string> = {
   "bayern munchen": "bayern munich",
   "bayer 04 leverkusen": "bayer leverkusen",
   "stade rennais": "rennes",
+  "inter d escaldes": "inter escaldes",
   sttruiden: "sint truidense",
   leverkusen: "bayer leverkusen",
   linz: "lask",
@@ -92,7 +93,7 @@ export function normaliseTeam(name: string): string {
   // Strip an uppercase code before canonicalizing so those rows match publishers that omit the code.
   const trimmed = name.trim();
   // RC is part of the official club name in "RC Deportivo", not a publisher table code.
-  const withoutCode = trimmed === "RC Deportivo" ? trimmed : trimmed.replace(/^[A-Z]{2,4}\s+/, "");
+  const withoutCode = trimmed === "RC Deportivo" || trimmed === "PSV Eindhoven" ? trimmed : trimmed.replace(/^[A-Z]{2,4}\s+/, "");
   const base = withoutCode
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
