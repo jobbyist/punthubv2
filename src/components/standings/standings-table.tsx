@@ -145,7 +145,6 @@ export function StandingsTable({
                 <th
                   key={c}
                   scope="col"
-                  title={t(`key.${c}`)}
                   className={cn(
                     "px-2 py-2 font-semibold",
                     c === "form" ? "pr-3 text-right" : "text-center",
@@ -167,7 +166,7 @@ export function StandingsTable({
                 {group && (
                   <tr className="border-t-2 border-border bg-muted/50">
                     <th
-                      scope="colgroup"
+                      scope="row"
                       colSpan={cols.length + 1}
                       className="px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-foreground"
                     >
