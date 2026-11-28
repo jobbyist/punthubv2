@@ -293,6 +293,7 @@ async function gatherSources(
   key: CompetitionKey,
   objective: string,
   queries: string[],
+  preferSearchResults = false,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -303,7 +304,9 @@ async function gatherSources(
     publishedAt: null,
   }));
   const order = { official: 0, trusted: 1, other: 2 } as const;
-  const ranked = [...configuredPages, ...hits].sort(
+  // Historical result queries must win over the configured standings URL for the same official domain.
+  // Otherwise domain deduplication keeps the table page and discards the match-results archive page.
+  const ranked = (preferSearchResults ? [...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
   const sources: PfieSource[] = [];
@@ -608,6 +611,7 @@ async function syncSeasonWindow(
       `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
         `Prefer the official competition site and established sports news sites.`,
       seasonQueries(c.name, start, end, known),
+      true,
     );
     if (sources.length === 0) throw new Error("no usable source");
     const request = (list: PfieSource[]) =>
@@ -681,6 +685,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       `${c.name} results with final scores for every match played from ${sastDate(from)} to ${sastDate(to)}. ` +
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
+      true,
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
