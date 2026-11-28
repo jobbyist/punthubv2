@@ -953,6 +953,14 @@ describe("seasonWindows", () => {
     expect(w.some((x) => x.start.startsWith("2026-07") && x.end.slice(5, 7) === "07")).toBe(false);
     expect(new Set(w.map((x) => x.start)).size).toBe(w.length);
   });
+
+  it("keeps three seasons for the launch cup competitions without expanding unrelated leagues", () => {
+    const now = new Date("2026-11-15T02:00:00Z");
+    for (const key of ["ucl", "uecl", "caf-cc"] as const) {
+      expect(seasonWindows(now, key).at(-1)!.start).toBe("2024-08-01");
+    }
+    expect(seasonWindows(now, "epl").at(-1)!.start).toBe("2025-08-01");
+  });
 });
 
 describe("seasonQueries", () => {
@@ -1073,6 +1081,62 @@ describe("season backfill sync", () => {
       maxJobs: 3,
     });
     expect(out.seasonDue).toBe(0);
+  });
+});
+
+describe("history sync", () => {
+  it("uses the requested history window start when selecting official archive sources", async () => {
+    const pageText = `CAF Confederation Cup results 20 October 2026. Al Ahly 1-0 Raja Casablanca. ${"Match report and final score. ".repeat(20)}`;
+    const answer = JSON.stringify({
+      matches: [{
+        source: 1,
+        home: "Al Ahly",
+        away: "Raja Casablanca",
+        date: "2026-10-20",
+        time: null,
+        tz: null,
+        status: "finished",
+        homeScore: 1,
+        awayScore: 0,
+        quote: "Al Ahly 1-0 Raja Casablanca",
+      }],
+    });
+    const inserted: unknown[] = [];
+    const records: { ok: boolean; error: string | null }[] = [];
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [{
+          url: "https://www.cafonline.com/caf-confederation-cup/news/results",
+          title: "Official CAF results",
+          excerpt: pageText,
+          publishedAt: null,
+        }],
+      },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: { name: "fake", generate: async () => ({ text: answer, model: "m" }) },
+      models: DEFAULT_PFIE_MODELS.slice(0, 1),
+      now: () => new Date("2026-11-28T03:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => ["Al Ahly", "Raja Casablanca"],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async (rows: unknown[]) => { inserted.push(...rows); return rows.length; },
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          error: string | null,
+          _meta: Record<string, unknown>,
+        ) => { records.push({ ok, error }); },
+      },
+    };
+    const report = await runTablesSync(deps as never, { job: "history", only: ["caf-cc"], maxJobs: 1 });
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)).toEqual({ ok: true, error: null });
+    expect(inserted).toHaveLength(1);
   });
 });
 
