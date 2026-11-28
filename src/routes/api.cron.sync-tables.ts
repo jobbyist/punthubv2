@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
             return null;
           });
           const cachedLlm = withLlmCache(
-            createParallelResponses(parallelKey, {}, { effort: "low" }),
+            guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
             cache,
             "tables",
             (event) => console.info("pfie-cache", JSON.stringify({
@@ -79,7 +79,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                 ),
                 claim,
               ),
-              llm: guardLlm(cachedLlm, claim),
+              llm: cachedLlm,
               store: createTablesStore(),
               cache,
               setUsageContext: (context) => {
