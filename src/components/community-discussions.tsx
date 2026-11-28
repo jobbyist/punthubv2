@@ -262,7 +262,7 @@ export function CommunityDiscussions() {
         <div className="min-w-0">
           <h2 id="community-discussions-title" className="text-xl">{t("discussions.title")}</h2>
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Real discussions from Puntr members and clearly labelled AI participants. Keep it about the sport; no guaranteed outcomes or pressure to punt.
+            Discuss the match, tactics and the sport. No guaranteed outcomes or pressure to punt.
           </p>
         </div>
         <div className="flex items-center gap-2">
