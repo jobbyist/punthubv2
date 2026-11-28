@@ -67,9 +67,14 @@ export function PwaExperience() {
     };
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibility);
+    // Check periodically while an installed PWA remains open, not only on navigation or refocus.
+    const updateInterval = window.setInterval(() => {
+      if (document.visibilityState === "visible") onFocus();
+    }, 5 * 60 * 1000);
 
     return () => {
       disposed = true;
+      window.clearInterval(updateInterval);
       window.removeEventListener("load", refreshWorker);
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisibility);
