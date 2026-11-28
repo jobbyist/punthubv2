@@ -185,6 +185,60 @@ export function ApiUsageTab() {
         </div>
       </section>
 
+      {data.runRate && (
+        <section className={panel}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 className="font-display text-lg font-bold">Shared Parallel budget runway</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {data.runRate.periodStart} – {data.runRate.periodEnd} · cumulative Q1 cap
+              </p>
+            </div>
+            <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-700">
+              {data.runRate.provisional ? `Provisional · ${data.runRate.observedDays} day sample` : "Rolling run-rate"}
+            </span>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-xl border border-border p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Spent / cap</p>
+              <p className="mt-1 text-xl font-bold tnum">{money(data.runRate.spentUsd)} <span className="text-xs font-normal text-muted-foreground">/ {money(data.runRate.limitUsd)}</span></p>
+              <Meter used={data.runRate.spentUsd} cap={data.runRate.limitUsd} />
+            </div>
+            <div className="rounded-xl border border-border p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Remaining</p>
+              <p className="mt-1 text-xl font-bold tnum">{money(data.runRate.remainingUsd)}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{data.runRate.daysRemaining} calendar days remaining</p>
+            </div>
+            <div className="rounded-xl border border-border p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Required daily average</p>
+              <p className="mt-1 text-xl font-bold tnum">{money(data.runRate.requiredDailyUsd)}<span className="text-xs font-normal text-muted-foreground"> / day</span></p>
+              <p className="mt-1 text-xs text-muted-foreground">To stay within the cumulative cap</p>
+            </div>
+            <div className="rounded-xl border border-border p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Observed daily average</p>
+              <p className="mt-1 text-xl font-bold tnum">{money(data.runRate.observedDailyUsd)}<span className="text-xs font-normal text-muted-foreground"> / day</span></p>
+              <p className="mt-1 text-xs text-muted-foreground">Current day: {money(data.runRate.currentDaySpendUsd)}</p>
+            </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-border p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-semibold">End-of-period projection at the observed average</p>
+              <p className="text-lg font-bold tnum">{money(data.runRate.projectedTotalUsd)}</p>
+            </div>
+            <div className="mt-1 flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
+              <span>Projected over cap: {money(data.runRate.projectedOverageUsd)}</span>
+              <span>Runway at this pace: {data.runRate.daysToExhaustion === null ? "—" : `about ${data.runRate.daysToExhaustion.toFixed(1)} days`}</span>
+              <span>7-day average: {money(data.runRate.last7DayAverageUsd)} / day</span>
+            </div>
+          </div>
+          {data.runRate.provisional && (
+            <p className="mt-3 text-xs text-amber-700">
+              This is an early warning, not a steady-state forecast. Fewer than seven days are available, and the first observed day includes launch recovery/backfill activity. Keep the $200 hard cap in place and reassess after recurring scheduled runs.
+            </p>
+          )}
+        </section>
+      )}
+
       <section className={panel}>
         <h3 className="font-display text-lg font-bold">Provider quota limits</h3>
         <div className="mt-3 overflow-x-auto">
