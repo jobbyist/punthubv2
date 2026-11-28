@@ -196,7 +196,15 @@ begin
   v_definition := replace(
     v_definition,
     $old$v_granted := public.api_quota_claim(p_provider, p_units);$old$,
-    $new$v_granted := public.api_quota_claim(v_quota_provider, p_units);$new$
+    $new$v_granted := public.api_quota_claim(v_quota_provider, p_units);
+    if not v_granted and v_priority and v_quota_provider <> p_provider then
+      -- Use unused general capacity after the protected reserve is consumed. This remains
+      -- bounded by the general pool cap, so combined usage cannot exceed the approved total.
+      v_granted := public.api_quota_claim(p_provider, p_units);
+      if v_granted then
+        v_quota_provider := p_provider;
+      end if;
+    end if;$new$
   );
 
   v_definition := replace(
