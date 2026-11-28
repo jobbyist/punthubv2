@@ -125,6 +125,8 @@ describe("team names", () => {
     expect(normaliseTeam("Manchester City FC")).toBe("manchester city");
     expect(normaliseTeam("Man City")).toBe("manchester city");
     expect(normaliseTeam("AmaZulu F.C.")).toBe("amazulu");
+    expect(resolveTeam("LOSC Lille", ["Lille OSC"])).toBe("Lille OSC");
+    expect(resolveTeam("Olympique Lyonnais", ["Olympique Lyon"])).toBe("Olympique Lyon");
     expect(teamSlug("Brighton & Hove Albion")).toBe("brighton-and-hove-albion");
   });
   it("matches a short name only when exactly one team fits", () => {
