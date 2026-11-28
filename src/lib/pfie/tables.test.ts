@@ -171,3 +171,12 @@ describe("PFIE standings baseline freshness", () => {
     expect(isStandingsBaselineFresh(new Date(now.getTime() + 60000).toISOString(), now)).toBe(false);
   });
 });
+
+describe("manual history refresh cooldown", () => {
+  it("requires the 72-hour refresh interval unless force is explicitly enabled", () => {
+    const recent = { job: "history" as const, scope: "epl", lastSuccessAt: "2026-11-28T10:00:00.000Z", lastAttemptAt: "2026-11-28T10:00:00.000Z", consecutiveFailures: 0 };
+    const now = new Date("2026-11-28T12:00:00.000Z");
+    expect(historyRefreshDue(recent, now)).toBe(false);
+    expect(retryDue(recent, now)).toBe(true);
+  });
+});

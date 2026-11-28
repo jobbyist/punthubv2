@@ -507,7 +507,7 @@ export async function runTablesSync(
   for (const key of keys) {
     if (opts.job === "standings") continue;
     const s = status("history", key);
-    const isDue = opts.job === "history" ? retryDue(s, now()) : historyRefreshDue(s, now());
+    const isDue = opts.job === "history" && opts.force ? retryDue(s, now()) : historyRefreshDue(s, now());
     if (isDue) due.push({ job: "history", key });
   }
 
