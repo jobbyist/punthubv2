@@ -1,6 +1,6 @@
 /**
- * Server-side adapters for Parallel, Firecrawl and Gemini. Gemini is retained for PFIE/odds extraction only;
- * the Newsroom route deliberately never instantiates or calls it.
+ * Server-side adapters for Parallel, Firecrawl and Gemini. PFIE is wired to Parallel Search, Extract and Responses
+ * exclusively; Gemini and Firecrawl remain available only to separate non-PFIE workflows.
  */
 import { postJson, ProviderError, type RetryOptions } from "./http";
 import type {

@@ -6,8 +6,16 @@ on:
     paths:
       - "src/lib/pfie/**"
       - "src/lib/odds/**"
+      - "src/lib/content/**"
+      - "src/lib/badges/**"
+      - "src/lib/quota.server.ts"
+      - "src/lib/sports/select.server.ts"
+      - "src/lib/api-usage.functions.ts"
+      - "src/components/admin/api-usage-admin.tsx"
+      - "src/routes/admin.index.tsx"
+      - "supabase/migrations/**"
       - "package.json"
-      - "package-lock.json"
+      - "bun.lock"
       - ".github/workflows/pfie-odds-tests.yml"
   workflow_dispatch:
 
@@ -21,14 +29,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
+          bun-version: 1.4.4
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
       - name: Typecheck
-        run: npm run typecheck
-      - name: Test PFIE and odds pipelines
-        run: npx vitest run src/lib/pfie/standings.test.ts src/lib/odds/sync.test.ts
+        run: bun run typecheck
+      - name: Test PFIE, odds and API attribution
+        run: bunx vitest run src/lib/pfie/standings.test.ts src/lib/pfie/pfie.test.ts src/lib/odds/sync.test.ts

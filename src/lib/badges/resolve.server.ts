@@ -1,10 +1,11 @@
 /**
  * Server job for team badges: finds fixture, league-table and curated marquee teams without a verified badge and resolves
- * them with Parallel Search (SofaScore first, then Wikipedia), then mirrors the crest to Supabase Storage
+ * them with Parallel Search (SofaScore first, official team/league pages second, Wikipedia fallback), then mirrors the crest to Supabase Storage
  * (`media/teams/...`). Spare capacity upgrades Wikipedia badges to SofaScore crests. Quota-guarded: every Parallel
  * call claims a unit of the shared `parallel` quota, so badges never push the account past its cap.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { deflateSync, inflateSync } from "node:zlib";
 
 import { MARQUEE_BADGE_TEAMS } from "@/lib/marquee-matchups";
 
@@ -91,6 +92,119 @@ async function fetchSummary(title: string): Promise<WikiSummary | null> {
   return (await res.json()) as WikiSummary;
 }
 
+function paeth(a: number, b: number, c: number): number {
+  const p = a + b - c;
+  const pa = Math.abs(p - a);
+  const pb = Math.abs(p - b);
+  const pc = Math.abs(p - c);
+  return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
+}
+
+function pngCrc32(bytes: Buffer): number {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type: string, data: Buffer): Buffer {
+  const typeBytes = Buffer.from(type, "ascii");
+  const body = Buffer.concat([typeBytes, data]);
+  const out = Buffer.allocUnsafe(data.length + 12);
+  out.writeUInt32BE(data.length, 0);
+  body.copy(out, 4);
+  out.writeUInt32BE(pngCrc32(body), data.length + 8);
+  return out;
+}
+
+/** Re-encodes common 8-bit RGB/RGBA PNG crests at zlib level 9 and drops non-visual metadata. */
+function compressPng(input: Uint8Array): Uint8Array {
+  const source = Buffer.from(input);
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  if (source.length < 33 || !source.subarray(0, 8).equals(signature)) return input;
+
+  let width = 0;
+  let height = 0;
+  let bitDepth = 0;
+  let colourType = 0;
+  let interlace = 0;
+  const imageData: Buffer[] = [];
+  const keep: { type: string; data: Buffer }[] = [];
+  for (let offset = 8; offset + 12 <= source.length;) {
+    const length = source.readUInt32BE(offset);
+    const type = source.toString("ascii", offset + 4, offset + 8);
+    const start = offset + 8;
+    const end = start + length;
+    if (end + 4 > source.length) return input;
+    const data = source.subarray(start, end);
+    if (type === "IHDR") {
+      width = data.readUInt32BE(0);
+      height = data.readUInt32BE(4);
+      bitDepth = data[8] ?? 0;
+      colourType = data[9] ?? 0;
+      interlace = data[12] ?? 0;
+    } else if (type === "IDAT") imageData.push(data);
+    else if (["PLTE", "tRNS", "sRGB", "gAMA", "cHRM"].includes(type)) keep.push({ type, data });
+    if (type === "IEND") break;
+    offset = end + 4;
+  }
+  const channels = colourType === 6 ? 4 : colourType === 2 ? 3 : 0;
+  if (!width || !height || bitDepth !== 8 || !channels || interlace !== 0 || imageData.length === 0) return input;
+
+  try {
+    const rowBytes = width * channels;
+    const raw = inflateSync(Buffer.concat(imageData));
+    if (raw.length !== height * (rowBytes + 1)) return input;
+    const pixels = Buffer.allocUnsafe(height * rowBytes);
+    let inputOffset = 0;
+    for (let y = 0; y < height; y++) {
+      const filter = raw[inputOffset++]!;
+      const rowOffset = y * rowBytes;
+      for (let x = 0; x < rowBytes; x++) {
+        const value = raw[inputOffset++]!;
+        const left = x >= channels ? pixels[rowOffset + x - channels]! : 0;
+        const above = y > 0 ? pixels[rowOffset - rowBytes + x]! : 0;
+        const upperLeft = y > 0 && x >= channels ? pixels[rowOffset - rowBytes + x - channels]! : 0;
+        const predictor = filter === 0 ? 0
+          : filter === 1 ? left
+            : filter === 2 ? above
+              : filter === 3 ? Math.floor((left + above) / 2)
+                : filter === 4 ? paeth(left, above, upperLeft)
+                  : -1;
+        if (predictor < 0) return input;
+        pixels[rowOffset + x] = (value + predictor) & 0xff;
+      }
+    }
+
+    const filtered = Buffer.allocUnsafe(height * (rowBytes + 1));
+    for (let y = 0; y < height; y++) {
+      const dest = y * (rowBytes + 1);
+      filtered[dest] = 0;
+      pixels.copy(filtered, dest + 1, y * rowBytes, (y + 1) * rowBytes);
+    }
+    const ihdr = Buffer.alloc(13);
+    ihdr.writeUInt32BE(width, 0);
+    ihdr.writeUInt32BE(height, 4);
+    ihdr[8] = bitDepth;
+    ihdr[9] = colourType;
+    ihdr[10] = 0;
+    ihdr[11] = 0;
+    ihdr[12] = 0;
+    const chunks = [
+      pngChunk("IHDR", ihdr),
+      ...keep.map((chunk) => pngChunk(chunk.type, chunk.data)),
+      pngChunk("IDAT", deflateSync(filtered, { level: 9 })),
+      pngChunk("IEND", Buffer.alloc(0)),
+    ];
+    const output = Buffer.concat([signature, ...chunks]);
+    return output.length < source.length ? new Uint8Array(output) : input;
+  } catch {
+    return input;
+  }
+}
+
 async function mirror(
   client: SupabaseClient,
   imageUrl: string,
@@ -116,9 +230,12 @@ async function mirror(
   const type = res.headers.get("content-type") ?? "";
   // PNG/JPEG/WebP only (the bucket refuses others; SVG could carry script).
   if (!/^image\/(png|jpeg|webp)/.test(type)) throw new Error(`not a PNG/JPEG/WebP image (${type})`);
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  if (bytes.byteLength === 0 || bytes.byteLength > MAX_IMAGE_BYTES)
+  const downloaded = new Uint8Array(await res.arrayBuffer());
+  if (downloaded.byteLength === 0 || downloaded.byteLength > 5_000_000)
     throw new Error("image too large or empty");
+  // PNG source badges are re-encoded losslessly; JPEG/WebP are already compressed and stay in their native format.
+  const bytes = type.includes("png") ? compressPng(downloaded) : downloaded;
+  if (bytes.byteLength > MAX_IMAGE_BYTES) throw new Error("compressed image exceeds 1 MB");
   const ext = type.includes("jpeg") ? "jpg" : type.includes("webp") ? "webp" : "png";
   const finalPath = path.replace(/\.png$/, `.${ext}`);
   const { error } = await client.storage.from("media").upload(finalPath, bytes, {
@@ -158,6 +275,69 @@ async function trySofascore(
   return null;
 }
 
+/** Extracts a candidate crest from an official team/league page discovered by Parallel Search. */
+async function tryOfficialPage(
+  client: SupabaseClient,
+  team: TeamRef,
+  hits: { url: string; title?: string; excerpt?: string }[],
+  apiKey: string,
+): Promise<{ logoUrl: string; page: string; image: string } | null> {
+  const candidates = hits.filter((hit) => {
+    try {
+      const url = new URL(hit.url);
+      const host = url.hostname.toLowerCase();
+      const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
+      return url.protocol === "https:"
+        && !host.includes("wikipedia.org")
+        && !host.includes("sofascore.")
+        && !/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)
+        && /official|club|team|crest|badge|logo|squad/i.test(text);
+    } catch {
+      return false;
+    }
+  }).slice(0, 2);
+  if (candidates.length === 0) return null;
+
+  const { createParallelExtract } = await import("@/lib/content/providers.server");
+  const { createQuotaClaim, guardExtract } = await import("@/lib/quota.server");
+  const extract = guardExtract(
+    createParallelExtract(apiKey, { timeoutMs: 25_000, attempts: 1 }),
+    await createQuotaClaim("team-badges:official-page-extract"),
+  );
+
+  for (const page of candidates) {
+    try {
+      const extracted = await extract.extract(page.url);
+      const markdown = extracted?.markdown ?? "";
+      const urls = new Set<string>();
+      for (const match of markdown.matchAll(/!\[[^\]]*\]\((https:\/\/[^)\s]+)\)/gi)) {
+        if (match[1]) urls.add(match[1].replace(/&amp;/g, "&"));
+      }
+      for (const match of markdown.matchAll(/https:\/\/[^\s)<>]+?\.(?:png|jpe?g|webp)(?:\?[^\s)<>]*)?/gi)) {
+        urls.add(match[0].replace(/&amp;/g, "&"));
+      }
+      const pageHost = new URL(page.url).hostname.toLowerCase();
+      const image = [...urls].find((candidate) => {
+        try {
+          const u = new URL(candidate);
+          const host = u.hostname.toLowerCase();
+          return u.protocol === "https:"
+            && (host === pageHost || host.endsWith(`.${pageHost}`))
+            && /logo|crest|badge|emblem|team|club/i.test(u.pathname);
+        } catch {
+          return false;
+        }
+      });
+      if (!image) continue;
+      const logoUrl = await mirror(client, image, badgePath(team.sport, team.name));
+      return { logoUrl, page: page.url, image };
+    } catch (error) {
+      console.warn("team-badges: official source failed", team.name, page.url, (error as Error).message);
+    }
+  }
+  return null;
+}
+
 export type ResolveOutcome = "verified" | "failed" | "quota" | "skipped";
 
 /** Resolves one team. Writes the result to team_badges either way. */
@@ -180,7 +360,7 @@ export async function resolveTeamBadge(
   const apiKey = process.env["PARALLEL_API_KEY"];
   if (!apiKey) return "quota";
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim())("parallel"))) return "quota";
+  if (!(await (await createQuotaClaim("team-badges:resolve"))("parallel"))) return "quota";
 
   const save = async (values: Record<string, unknown>) => {
     const { error } = await client.from("team_badges").upsert(
@@ -209,6 +389,20 @@ export async function resolveTeamBadge(
         logo_url: sofa.logoUrl,
         source_page: sofa.page.slice(0, 500),
         source_image: sofa.image.slice(0, 500),
+        last_error: null,
+        verified_at: new Date().toISOString(),
+        upgrade_checked_at: new Date().toISOString(),
+      });
+      return "verified";
+    }
+    const official = await tryOfficialPage(client, team, hits, apiKey);
+    if (official) {
+      await save({
+        status: "verified",
+        method: "parallel_official",
+        logo_url: official.logoUrl,
+        source_page: official.page.slice(0, 500),
+        source_image: official.image.slice(0, 500),
         last_error: null,
         verified_at: new Date().toISOString(),
         upgrade_checked_at: new Date().toISOString(),
@@ -269,7 +463,7 @@ export async function upgradeTeamBadge(
   const apiKey = process.env["PARALLEL_API_KEY"];
   if (!apiKey) return "quota";
   const { createQuotaClaim } = await import("@/lib/quota.server");
-  if (!(await (await createQuotaClaim())("parallel"))) return "quota";
+  if (!(await (await createQuotaClaim("team-badges:sofascore-upgrade"))("parallel"))) return "quota";
   const key = badgeKey(team.name);
   const now = new Date().toISOString();
   try {

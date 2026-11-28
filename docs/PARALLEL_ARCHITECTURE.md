@@ -49,16 +49,16 @@ Controls:
 - Enforce separate $50 core, $50 Newsroom, $35 auxiliary and $50 synthetic monthly family caps, with one global $280 cumulative cap from 28 Nov 2026 through 31 Mar 2027.
 - Keep Responses Medium at **12 calls/day and 360/month** (maximum $18/month at the current $0.05 unit price).
 - Raise Search and Extract daily caps to **500 and 400**, respectively, for the bounded historical backfill; retain their existing monthly call caps and $50 core family guard.
-- When the Medium quota is exhausted, the existing model router falls back to the approved Gemini models rather than continuing paid calls.
+- PFIE uses Parallel Responses low only and fails closed when its Parallel quota is exhausted; it never falls back to Gemini or Firecrawl. Newsroom remains on Parallel Medium.
 - Review the provider wallet and `api_spend_period_status()` at least weekly. Do not treat the internal caps as a substitute for reconciling the Parallel dashboard.
 
 ## Feature map
 
 | Feature | Parallel API | Cadence | Cache TTL | Est. per day after launch |
 |---|---|---|---|---|
-| Fixtures (21 competitions) | Search fast + Extract fallback | daily 03:00-03:42, only competitions with matches in the next 10 days | 12 h | ~40 calls, $0.04 |
-| Results | Search fast | after full time with back-off (existing) | 30 min | ~30, $0.03 |
-| League tables | Search fast + Extract | daily when stale (existing) | 18 h | ~12, $0.012 |
+| Fixtures (21 competitions) | Search fast + Parallel Extract + Responses low | daily 03:00-03:42, only competitions with matches in the next 10 days | 12 h | ~40 calls, $0.04 |
+| Results | Search fast + Parallel Extract + Responses low | after full time with back-off (existing) | 30 min | ~30, $0.03 |
+| League tables | Search fast + Parallel Extract + Responses low | daily when stale (existing) | 18 h | ~12, $0.012 |
 | Team news and line-ups | Not production-live; Monitor/webhook pipeline is not yet implemented and verified | Deferred | n/a | $0 at MVP |
 | Match stats (post-match) | Current outcome aggregates are derived from stored verified results; no dedicated event-level stats feed is production-live | Deferred | n/a | $0 at MVP |
 | **Pre-match odds** | Deferred. No South African bookmaker has supplied Puntr an authorized odds API, affiliate feed or other integration. Parallel Search/Extract/Monitor are not data rights. | Disabled for MVP | n/a | $0 at MVP |
@@ -70,7 +70,7 @@ Controls:
 | Punt AI chatbot | Answers first from Puntr's own data via Gemini; **Chat low** only for questions needing the live web, and only for Pro or credit-paying members | per message | 1 h per normalised question | charged to the member's credits |
 | Newsroom research | Search fast + Extract (existing) | 1 article a day | 6 h | ~8, $0.008 |
 | Internal synthetic QA | Decisions fast; up to 100 persona-market questions per shared fixture request; cached through `parallelCache` and guarded by `api_budget_claim` | owner-controlled batch; paused by default | 24 h | ~$0.001 per uncached fixture batch |
-| Team badges | Parallel Search fast + Wikipedia summary verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
+| Team badges | Parallel Search fast + Parallel Extract for official team/league pages; SofaScore and Wikipedia image verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
 
 **Synthetic QA note:** The 30-day experiment groups up to two preferred market questions for each of 50 synthetic personas into one Decisions request per fixture. It does not create 50–100 individual API requests. The $50 experiment ledger now covers fixture research, AI community post/reply generation and AI H2H decisions. These calls also pass through the separate synthetic monthly family and the global $280 cumulative guard, with caching before provider calls.
 

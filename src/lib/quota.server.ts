@@ -31,7 +31,15 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
 
   const recordClaim = async (provider: string) => {
     try {
-      const { error } = await db.from("api_call_events").insert({ provider, feature });
+      const [consumer, ...operationParts] = feature.split(":");
+      const { error } = await db.from("api_call_events").insert({
+        provider,
+        feature,
+        consumer: consumer || "unknown",
+        operation: operationParts.join(":") || "request",
+        status: "claimed",
+        metadata: { attribution_source: "quota_guard", budget_checked: true },
+      });
       if (error) {
         console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
       }
@@ -46,12 +54,10 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
         p_provider: provider,
         p_units: 1,
         p_feature: feature,
-        p_feature: feature,
       });
       if (!error) {
-        const granted = data === true;
-        if (granted) await recordClaim(provider);
-        return granted;
+        // api_budget_claim writes the attribution event in the same transaction as the quota debit.
+        return data === true;
       }
       if (!isMissingFunction(error)) {
         console.error("quota: budget claim failed, refusing the call", provider, error.message);

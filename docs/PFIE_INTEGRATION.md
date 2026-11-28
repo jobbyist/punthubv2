@@ -1,7 +1,7 @@
-# PFIE fixtures and results (Parallel Search + Gemini)
+# PFIE fixtures, results, standings and history (Parallel-only)
 
 Status on 13 November 2026: code and tests **completed**; migration applied; live runs **pending credentials**.
-Switch on with `SPORTS_PROVIDER=pfie` once `GEMINI_API_KEY` and `PARALLEL_API_KEY` are set in Vercel.
+Switch on with `SPORTS_PROVIDER=pfie` and `PARALLEL_API_KEY` set in Vercel. PFIE does not require or call Gemini or Firecrawl.
 
 ## What it does, and what it is not
 
@@ -14,9 +14,9 @@ Switch on with `SPORTS_PROVIDER=pfie` once `GEMINI_API_KEY` and `PARALLEL_API_KE
 
 ## How a fact becomes a fixture
 
-1. **Discovery**: one Parallel Search call per competition; the official page is also read in full when a page
-   reader is configured (Firecrawl, then Parallel Extract).
-2. **Extraction**: one Gemini call (lite model first). The model only lists what each page states, with a quote.
+1. **Discovery**: Parallel Search discovers official and independent source pages.
+2. **Page reading**: Parallel Extract reads each source page; Firecrawl is never a PFIE fallback.
+3. **Structured extraction**: Parallel Responses low effort lists only what each page states, with a quote; Gemini is never called.
 3. **Validation (code)**: the quote must be on the page, both team names must be on the page, the date must be in
    range, a final score must be inside the quote, a match cannot be finished before it could have ended. Anything
    else is rejected and logged with the reason.
@@ -36,10 +36,7 @@ zone (`time.ts`). Team names: short forms are matched only when exactly one club
 
 ## Cost (estimates to confirm on the Parallel dashboard after the first week)
 
-About 3 searches and 3 page reads a day for fixtures, plus roughly 1 to 3 of each per competition on match days, plus
-1 search and up to 4 page reads for the daily article: in the order of 300 to 400 searches a month. At the published
-rates (about $5 per 1,000 searches, $1 per 1,000 extracted pages) that is about $2 a month, so a $50 balance lasts
-well past launch. Gemini: about 10 to 40 lite-model calls a day, inside the free allowance.
+Search and Extract are priced at approximately $0.001 per call/URL; Parallel Responses low is approximately $0.01 per structured extraction. The PFIE quota guard routes all three into the existing $50 core monthly Parallel budget and the global cumulative allowance. Actual spend is shown in Admin > API Usage and must be reconciled with the provider dashboard. No Gemini or Firecrawl spend is attributable to PFIE.
 
 ## Known limits
 

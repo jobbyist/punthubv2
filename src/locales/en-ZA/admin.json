@@ -57,7 +57,8 @@
     "push": "Push notifications",
     "synthetic": "Synthetic QA",
     "pfieLearning": "PFIE Learning",
-    "bookmakers": "Bookmakers"
+    "bookmakers": "Bookmakers",
+    "apiUsage": "API Usage"
   },
   "settle": {
     "title": "Settlement",

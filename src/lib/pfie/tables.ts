@@ -4,7 +4,6 @@
  * idempotent: a table replaces the previous one atomically, history rows skip duplicates, and every attempt is
  * recorded in `sync_status` (failures back off and stop after three tries a day).
  */
-import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
@@ -476,10 +475,15 @@ async function gatherSources(
 }
 
 async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
+  const models = deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
-  for (const m of models) usedToday[m] = (usage as Record<string, number>)[`gemini:${m}`] ?? 0;
+  for (const m of models) {
+    const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
+    usedToday[m] = effort
+      ? (usage as Record<string, number>)[`parallel-chat:${effort}`] ?? 0
+      : (usage as Record<string, number>)[m] ?? 0;
+  }
   return createModelRouter(deps.llm, { models, usedToday }).generate(request);
 }
 
@@ -509,7 +513,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
-    // Run the bounded first-pass Gemini calls concurrently. If a source fails deterministic validation,
+    // Run the bounded first-pass Parallel Responses calls concurrently. If a source fails deterministic validation,
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
