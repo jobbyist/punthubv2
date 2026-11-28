@@ -1,45 +1,72 @@
 {
   "meta": {
-    "title": "Oor Puntr | 'n Beter standaard vir sportvoorspellings",
-    "description": "Maak kennis met Puntr: 'n Suid-Afrikaanse sportvoorspellingsgemeenskap gebou rondom deursigtige rekords, konsekwente gradering en gedeelde sportkennis.",
+    "title": "Oor Puntr | Sportintelligensie, op rekord",
+    "description": "Puntr is 'n Suid-Afrikaanse sportintelligensieplatform waar die gemeenskap eerste kom: ontdek wedstryde, ontleed bevestigde data, publiseer geslote voorspellings, vergelyk met die gemeenskap en versamel PuntPoints. 18+.",
     "ogTitle": "Oor Puntr | Sportkennis, op rekord"
   },
   "hero": {
+    "eyebrow": "Oor Puntr",
     "title1": "Sportkennis",
     "title2": "behoorlike rekord",
     "title3": "verdien 'n",
-    "body": "Puntr is 'n <1>sportplatform waar die gemeenskap eerste kom</1> vir Suid-Afrikaanse aanhangers wat meer wil hê as groot bewerings en skermskote. Publiseer keuses voor die afskop, sien hoe hulle gesluit en outomaties gegradeer word, en bou 'n openbare rekord wat die volle prentjie wys. <1>KI-aangedrewe insigte</1> is deel van die platform se breër padkaart.",
-    "cta": "Sluit by Puntr aan",
-    "meet": "Maak kennis met die platform"
+    "body": "Puntr is 'n <1>sportintelligensieplatform waar die gemeenskap eerste kom</1> vir Suid-Afrikaanse aanhangers en tipsters. Ontdek wedstryde, ontleed nagegaande data, publiseer jou keuses voor die afskop en bou 'n openbare rekord wat die volle prentjie wys, oorwinnings en verliese saam. Ons <1>Puntr Football Intelligence Engine (PFIE)</1> gaan die data agter dit alles na.",
+    "cta": "Sluit gratis by Puntr aan",
+    "meet": "Sien hoe dit werk",
+    "stats": {
+      "leagues": "{{count}} sokkerligas met die bekendstelling",
+      "locked": "Elke keuse gesluit voor die afskop",
+      "launch": "Amptelike bekendstelling 1 Desember 2026"
+    }
   },
   "why": {
     "title1": "Minder geraas.",
     "title2": "Meer",
     "title3": "bewys.",
-    "p1": "Sport is vol menings. Puntr gee daardie menings 'n konsekwente manier om getoets te word: elke keuse kry 'n tydstempel voor die afskop, word gesluit en teen die uitslag gegradeer.",
+    "p1": "Sport is vol menings. Puntr gee daardie menings 'n konsekwente manier om getoets te word: elke keuse kry 'n tydstempel voor die afskop, word gesluit en teen die bevestigde uitslag gegradeer.",
     "p2": "'n Wen-skermskoot vertel net 'n deel van die storie. Puntr hou oorwinnings en verliese saam, met prestasiekonteks, sodat die gemeenskap 'n rekord op sy meriete kan beoordeel.",
     "data": {
-      "title": "Data",
-      "body": "Verander inligting in insig."
+      "title": "Nagegaande data",
+      "body": "Wedstryde, uitslae en tabelle word deur PFIE bevestig voordat hulle verskyn."
     },
     "community": {
       "title": "Gemeenskap",
-      "body": "Sien wat ander voorspellers dink."
+      "body": "Sien wat ander voorspellers dink, en maak dan jou eie keuse."
     },
     "ai": {
-      "title": "KI-aangedrewe insigte",
-      "body": "Konteks in eenvoudige taal vir elke wedstryd, kom binnekort."
+      "title": "KI-ondersteun, reëls-nagegaan",
+      "body": "KI help om die bronne te lees. Vaste reëls en onafhanklike bronne besluit wat waar is."
     },
     "recognition": {
       "title": "Erkenning",
       "body": "Word bekend vir jou kennis, met 'n rekord om dit te bewys."
     }
   },
+  "journey": {
+    "title1": "Hoe Puntr",
+    "title2": "werk",
+    "body": "Vier stappe, van die eerste wedstryd wat jy nagaan tot 'n rekord waaragter jy kan staan.",
+    "discover": {
+      "title": "Ontdek",
+      "body": "Jou tuisbasis: komende wedstryde, die spanne wat jy volg en jou volgende beste skuif, op een plek."
+    },
+    "analyse": {
+      "title": "Ontleed",
+      "body": "Ligatabelle, vorm oor die laaste vyf wedstryde en kop-teen-kop-geskiedenis vir elke gedekte wedstryd."
+    },
+    "predict": {
+      "title": "Voorspel",
+      "body": "Publiseer jou keuse voor die afskop. Dit kry 'n tydstempel, word gesluit en kan nooit verander word nie."
+    },
+    "prove": {
+      "title": "Bewys dit",
+      "body": "Keuses word outomaties gegradeer. Vergelyk met die gemeenskap, klim op die ranglyste en versamel PuntPoints."
+    }
+  },
   "mission": {
     "title": "Missie",
     "body": "Om 'n <1>sportplatform waar die gemeenskap eerste kom</1> te bou, waar kennis openlik getoets word, prestasie deursigtig is en ware bydraes erken word.",
     "visionTitle": "Visie",
-    "vision": "Om 'n betroubare tuiste vir sportvoorspellings in Suid-Afrika te word, en daarna oor Afrika heen, met elke keuse op rekord."
+    "vision": "Om 'n betroubare tuiste vir sportintelligensie in Suid-Afrika te word, en daarna oor Afrika heen, met elke keuse op rekord."
   },
   "principles": {
     "title1": "Gebou op beter",
@@ -50,7 +77,7 @@
     },
     "transparency": {
       "title": "Deursigtigheid",
-      "body": "Duidelike inligting. Eerlike interaksies."
+      "body": "Duidelike inligting. Eerlike interaksies. Elke keuse bly op rekord."
     },
     "responsible": {
       "title": "Verantwoordelike dobbelary",
@@ -72,41 +99,82 @@
   "ecosystem": {
     "title1": "Een platform. Lae van",
     "title2": "insig",
-    "body": "Een gekoppelde ervaring: wedstryde en uitslae, geslote voorspellings, gemeenskapsinsig, prestasierekords en nuttige gereedskap.",
-    "data": {
-      "title": "Sportdata",
-      "body": "Wedstryde en uitslae vir die kompetisies wat ons dek"
+    "body": "Alles hang saam: die wedstryde wat jy ontdek, voed die ontleding, jou keuses voed jou rekord, en jou rekord voed die gemeenskap.",
+    "open": "Maak oop",
+    "badgeFounding": "Stigterslede",
+    "badgePro": "Puntr Pro",
+    "discover": {
+      "title": "Ontdek",
+      "body": "'n Persoonlike tuisbasis met wedstryde, spanne wat jy volg en 'n ligastrook."
+    },
+    "teams": {
+      "title": "Spangids",
+      "body": "Soek elke gedekte span en volg tot 50 van hulle."
+    },
+    "tables": {
+      "title": "Ligatabelle",
+      "body": "Bevestigde puntelyste met vorm oor die laaste vyf, gebou vir enige skerm."
+    },
+    "analysis": {
+      "title": "Wedstrydontleding",
+      "body": "Vorm, kop-teen-kop-geskiedenis en tabelkonteks by elke wedstryd."
     },
     "record": {
-      "title": "Geslote rekords",
-      "body": "Met 'n tydstempel voor die afskop, nooit gewysig nie"
+      "title": "Geslote voorspellings",
+      "body": "Tydstempel voor die afskop, outomaties gegradeer, nooit verander nie."
     },
-    "community": {
-      "title": "Gemeenskapsvoorspellings",
-      "body": "Sien op wie ander aanhangers hul geld sit"
+    "duels": {
+      "title": "Gemeenskapsduelle",
+      "body": "Kop-teen-kop-voorspellings teen ander lede, met 'n duel-ranglys."
     },
     "board": {
-      "title": "Weeklikse ranglys",
-      "body": "Gerangskik volgens eenhede, opbrengs en steekproefgrootte"
+      "title": "Ranglyste",
+      "body": "Gerangskik op uitslae en steekproefgrootte. PuntPoints beïnvloed nooit die rangorde nie."
+    },
+    "practice": {
+      "title": "Oefenmodus",
+      "body": "'n Fiktiewe liga wat binne minute afspeel, om sonder risiko die tou te leer."
     },
     "points": {
       "title": "PuntPoints",
-      "body": "Punte vir bedrywigheid, inruilbaar vir koopbewyse, geborgde belonings en voordele. Geen kontantwaarde nie"
-    },
-    "ai": {
-      "title": "KI-aangedrewe insigte",
-      "body": "Wedstrydvoorskoue, beskikbaar met die bekendstelling"
+      "body": "Versamel vir aktiwiteit, inruilbaar vir koopbewyse, geborgde belonings en voordele. Geen kontantwaarde nie."
     },
     "pro": {
       "title": "Puntr Pro",
-      "body": "Gevorderde ontledings en dieper gereedskap met Puntr Pro, plus beplande tipgewer-ondersteuning vir geverifieerde tipgewers."
+      "body": "Dieper ontledings en gereedskap vir lede wat meer wil hê."
     }
+  },
+  "pfie": {
+    "eyebrow": "Puntr Football Intelligence Engine",
+    "title": "Data wat jy kan nagaan, nie net vertrou nie.",
+    "body": "PFIE is die enjin agter Puntr se wedstryde, uitslae en ligatabelle. KI besluit nooit wat waar is nie: dit help om die bronne te lees, en dan beslis vaste reëls en onafhanklike bronne die feite.",
+    "collect": {
+      "title": "Versamel",
+      "body": "Wedstryde, uitslae en tabelle word van die liga se eie webwerf en ander betroubare bronne gelees."
+    },
+    "check": {
+      "title": "Gaan na",
+      "body": "Vaste reëls kontroleer elke rekord, en onafhanklike bronne moet ooreenstem voordat dit tel."
+    },
+    "publish": {
+      "title": "Publiseer",
+      "body": "Net bevestigde data bereik die webwerf. As 'n bywerking misluk, word die tabel gemerk of teruggehou."
+    },
+    "cta": "Sien sokkerdekking"
   },
   "sports": {
     "title1": "Gebou rondom die sport wat jy",
     "title2": "liefhet",
-    "body": "Ons begin met sokkerkompetisies wat Suid-Afrikaanse aanhangers volg. Dekking sal uitbrei soos die data en gradering gereed is.",
-    "heading": "SPORTDEKKING"
+    "body": "Ons begin met sokker en voeg sportsoorte eers by wanneer hul data en gradering gereed is. Tot dan beweer geen bladsy dat dit gedek word nie.",
+    "heading": "Sportdekking",
+    "footballTitle": "Sokker met die bekendstelling",
+    "footballBody": "{{count}} ligas met die bekendstelling, en PFIE lees reeds meer vir ná die bekendstelling.",
+    "postLaunch": "+{{count}} meer ná die bekendstelling",
+    "roadmapTitle": "Wat volgende kom",
+    "fromLaunch": "Vanaf 1 Des 2026",
+    "planned": "Beplan · {{when}}",
+    "explore": "Verken sokker",
+    "roadmap": "Sien die volle padkaart"
   },
   "tech": {
     "title1": "Gebou op 'n",
@@ -121,13 +189,13 @@
     "title2": "inmekaarpas",
     "core": "Kerntoepassing",
     "infra": "Infrastruktuur en dienste",
-    "c1": "Puntr-webtoep",
-    "c2": "Aantekening met 'n e-poskode",
-    "c3": "Geslote voorspellingsrekord",
-    "c4": "Gemeenskap en ranglyste",
+    "c1": "Puntr-webtoep, installeerbaar op jou foon",
+    "c2": "Aanmelding met e-poskode en wagwoord",
+    "c3": "Geslote, hash-geketende voorspellingsrekord",
+    "c4": "Gemeenskap, duelle en ranglyste",
     "i1": "Vercel (webgasheer)",
     "i2": "Supabase (databasis en aantekening)",
-    "i3": "Sportdataverskaffer (wedstryde en uitslae)",
+    "i3": "PFIE (wedstryde, uitslae en tabelle, nagegaan teen onafhanklike bronne)",
     "i4": "E-posaflewering"
   },
   "knowledge": {
@@ -158,7 +226,7 @@
   "points": {
     "title1": "Elke voorspelling",
     "title2": "tel",
-    "body": "PuntPoints erken kwalifiserende bedrywigheid en bydraes tot die gemeenskap. Hulle kan ingeruil word vir beskikbare koopbewyse, geborgde belonings en voordele. 'n Beplande tipgewer-ondersteuningsfunksie sal spelers toelaat om vrywillige PuntPoints-fooitjies aan kwalifiserende geverifieerde tipgewers te stuur. Punte het geen kontantwaarde nie en beïnvloed nie posisies nie.",
+    "body": "PuntPoints erken kwalifiserende aktiwiteit en bydraes tot die gemeenskap. Versamel dit en ruil dit in vir beskikbare koopbewyse, geborgde belonings en voordele. Punte het geen kontantwaarde nie en beïnvloed nooit ranglyste nie.",
     "accuracy": {
       "title": "Akkuraatheid",
       "body": "Word erken omdat jy dit reg het."
@@ -167,14 +235,16 @@
       "title": "Betrokkenheid",
       "body": "Neem deel, dra by en bou jou reputasie."
     },
-    "referrals": {
-      "title": "Verwysings",
-      "body": "Nooi vriende en kyk hoe die gemeenskap groei."
-    },
     "tipsters": {
       "title": "Tipgewer-ondersteuning",
-      "body": "Beplan vir Puntr Pro: spelers sal geverifieerde tipgewers met 'n konsekwente rekord kan erken deur vir hulle PuntPoints te stuur. Punte het geen kontantwaarde nie en beïnvloed nooit posisies nie. Nog nie beskikbaar nie."
+      "body": "Beplan vir Puntr Pro: Punters sal geverifieerde Tipsters kan erken deur vir hulle PuntPoints te stuur. Nog nie beskikbaar nie."
     }
+  },
+  "refer": {
+    "eyebrow": "Verwys en verdien",
+    "title": "Herhalende kommissie op Puntr Pro-verwysings.",
+    "body": "Deel Puntr met jou sportgemeenskap. Wanneer iemand wat jy verwys 'n betalende Puntr Pro-intekenaar word, kan jy 10–30% herhalende kommissie verdien volgens die programvoorwaardes. Kommissie kom slegs uit Pro-intekengeld, nooit uit weddenskappe, deposito's of winste nie.",
+    "cta": "Hoe verwysings werk"
   },
   "cta": {
     "title1": "Dink jy jy ken",
@@ -198,5 +268,5 @@
     "pricing": "Sien pryse",
     "newsroom": "Lees die Nuuskamer"
   },
-  "vision": "Om 'n betroubare tuiste vir sportvoorspellings in Suid-Afrika te word en mettertyd oor Afrika heen — met elke keuse op rekord."
+  "vision": "Om 'n betroubare tuiste vir sportintelligensie in Suid-Afrika te word en, mettertyd, oor Afrika heen, met elke keuse op rekord."
 }
