@@ -20,8 +20,8 @@ export interface AnnualPassExpiredEmailInput {
   offerOpen: boolean;
 }
 
-/** The offer closes at the end of 30 November 2026, South African time. Keep in step with claim_annual_pass(). */
-export const ANNUAL_PASS_OFFER_END = "2026-11-30T23:59:59+02:00";
+/** The offer closes at the end of 31 December 2026, South African time. Keep in step with claim_annual_pass(). */
+export const ANNUAL_PASS_OFFER_END = "2026-12-31T23:59:59+02:00";
 
 export function isOfferOpen(now: Date = new Date()): boolean {
   return now.getTime() <= new Date(ANNUAL_PASS_OFFER_END).getTime();
