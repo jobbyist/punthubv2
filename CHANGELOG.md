@@ -411,3 +411,10 @@ Pending
 - Added a compact member/post-launch live and upcoming fixture ticker, with direct links to match rooms for real fixtures.
 - Switched the sitewide top strip between Founding Bar and Fixture Ticker using session state and the configured launch date.
 - Added clearly labelled illustrative fixtures for offline/empty-data states; no fabricated scores, AI confidence percentages, or community-pick percentages are displayed.
+
+
+## 28 November 2026 — Desktop push hardening
+
+- Allow signed-in desktop browsers to explicitly opt in to web push; the prompt remains user-initiated and does not request permission automatically.
+- Reject test sends and campaigns when no active opted-in devices match, preventing empty campaigns and false-success responses.
+- Require at least one confirmed device delivery before the admin test action reports success.
