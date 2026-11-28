@@ -299,3 +299,39 @@ Unit tests cover UTC inclusive-day calculations, zero-spend days, depleted budge
 - Production PSL refresh successfully parsed two independent 16-team standings tables, but the final regression guard rejected the candidate because source-specific group labels ("Betway Premiership") differed from the stored empty group value. The tables themselves agreed.
 - Updated `tableRegression` to use group identity only when multiple named groups exist. Single-table competitions now match teams by canonical team name regardless of a publisher's competition-heading label; multi-group competitions retain group-aware matching.
 - Added a regression test for the PSL-style empty-group versus competition-label case.
+
+
+## PFIE Phase 3 — Final production verification (28 Nov 2026)
+
+### Provider routing and legacy ledger
+
+- Phase 3.5 provider audit completed. Active PFIE scheduled paths use Parallel Search, Parallel Extract and Parallel Responses only. No Gemini or Firecrawl fallback remains in the active PFIE provider path; no non-Parallel PFIE calls were observed in the two-hour post-deployment audit window.
+- Classified 2,034 pre-context-instrumentation PFIE API events as `legacy_unattributed`. No competition or job-run IDs were fabricated; the original provider, feature, cost and timestamps remain intact. New PFIE events carry competition and job-run context.
+- Corrected stale budget notes that referred to a $280 cumulative allowance. The authoritative `api_spend_period_limits` row is $200 through 31 March 2027.
+
+### Production verification
+
+- PSL standings refresh succeeded: 16 rows written, two-source consensus, and no new Parallel provider claims. Warm Search/Extract cache plus preserved Markdown table structure allowed deterministic parsing without a Responses call.
+- Two production results cycles (PSL and Championship) cost $0.022 per competition: one Search ($0.001), one Extract ($0.001), and two Responses Low calls ($0.020).
+- The same two result cycles produced 35 rejected score observations (3 PSL, 32 Championship), all rejected for `score_on_unfinished_match`. This is the intended guard: scores from unfinished matches were not written.
+- Valid structured Responses JSON is now cached. Cache keys preserve prompt/source case; cache hits and in-flight deduplication sit outside quota claims, so a hit does not consume a provider quota unit.
+
+### Budget position and planning rate
+
+- Shared Parallel Q1 allowance (28 Nov 2026–31 Mar 2027): $200. Spend: $7.914. Remaining: $192.086.
+- Current monthly family spend: core $11.50/$50; auxiliary $0.01/$35; newsroom $30.35/$50; synthetic $0.015/$50.
+- Measured results cost is $0.022 per competition check. A planning case of four checks per day across ten competitions is approximately $26.40/month for results alone. Standings refreshes are now deterministic/cache-first; the verified warm PSL refresh incurred $0 in new provider calls. Fixtures and shared non-PFIE core consumers remain additional costs, with the $50 monthly core budget enforced as the hard stop.
+- Results polling remains bounded by a 50-minute minimum and six-hour maximum per competition. This avoids a 30-minute global cron cadence turning into 30-minute provider calls for every competition.
+
+### Approved quota restoration
+
+The guarded restoration job is scheduled for **29 Nov 2026, 00:05 UTC (02:05 SAST)**. Daily counters reset automatically; the job restores the approved ceilings only after Phase 3.1–3.5 are complete and Phase 3.6 has reached 90%:
+
+| Provider | Daily | Monthly |
+|---|---:|---:|
+| Parallel Search | 1,200 | 12,000 |
+| Parallel Extract | 2,500 | 10,000 |
+| Responses Low | 500 | 12,000 |
+| Responses Medium | 18 | 1,000 |
+
+Monthly USD family budgets remain unchanged. The scheduled job records the restoration in Admin → Platform Updates, closes Phase 3.6 and the parent Phase 3 tracker, then unschedules itself.
