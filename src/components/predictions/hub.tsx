@@ -25,6 +25,7 @@ import { fetchLatestResults, fetchTableKeys } from "@/lib/hub-data";
 import { fetchThisWeeksLeaders } from "@/lib/records";
 import { competitions } from "@/lib/sports/competitions";
 import { fetchStandings } from "@/lib/standings-data";
+import { StandingsTable } from "@/components/standings/standings-table";
 
 type HubLink = "/fixtures" | "/results" | "/tables" | "/duels" | "/leaderboards";
 
@@ -192,26 +193,14 @@ export function TableSnapshot() {
       ) : !key || !table.data?.length ? (
         <p className="text-sm text-muted-foreground">{t("hub.tables.empty")}</p>
       ) : (
-        <div className="w-full overflow-x-auto"><table className="w-full min-w-[280px] text-sm">
-          <thead>
-            <tr className="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-              <th className="w-8 pb-2 font-semibold">#</th>
-              <th className="pb-2 font-semibold">{t("hub.tables.team")}</th>
-              <th className="w-10 pb-2 text-right font-semibold">{t("hub.tables.played")}</th>
-              <th className="w-12 pb-2 text-right font-semibold">{t("hub.tables.points")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {table.data.slice(0, 5).map((row) => (
-              <tr key={row.team} className="border-t border-border">
-                <td className="py-2 font-display font-bold tabular-nums">{row.position}</td>
-                <td className="truncate py-2">{row.team}</td>
-                <td className="py-2 text-right tabular-nums text-muted-foreground">{row.played}</td>
-                <td className="py-2 text-right font-bold tabular-nums">{row.points}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table></div>
+        <div className="-mx-4 sm:-mx-5">
+          <StandingsTable
+            rows={table.data.slice(0, 5)}
+            variant="compact"
+            competitionKey={key}
+            caption={name(key)}
+          />
+        </div>
       )}
     </section>
   );
