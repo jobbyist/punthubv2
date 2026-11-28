@@ -7,7 +7,6 @@ import {
   isStandingsBaselineFresh,
   preferAuthoritativeSources,
   shouldIncludeSecondaryStandingsSources,
-  seasonArchiveUrls,
   seasonQueries,
 } from "./tables";
 import { parseStandingsMarkdown, validateTables, STANDINGS_COMPETITIONS } from "./standings";
