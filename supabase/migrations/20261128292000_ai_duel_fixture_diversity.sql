@@ -73,7 +73,7 @@ begin
       )
     order by sp.last_decision_at desc nulls last, sp.persona_key
     limit 1;
-    if v_persona.persona_key is null then continue; end if;
+    if not found then continue; end if;
 
     v_market_a := (array['1X2','BTTS','OU25'])[1+floor(random()*3)::integer];
     v_market_b := (array_remove(array['1X2','BTTS','OU25']::text[],v_market_a))[1+floor(random()*2)::integer];
