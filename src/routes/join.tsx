@@ -314,7 +314,7 @@ function AuthStep({
     const email = id.kind === "email" ? id.value : "";
     const username = id.kind === "username" ? id.value : "";
 
-    // Creating an account always needs an email (a username is chosen later, in onboarding).
+    // Creating an account always needs an email; the database assigns a unique username after verification.
     if (create && id.kind !== "email") return setError(t("join.error.email"));
     if (create) {
       if (usesPassword) {
@@ -635,7 +635,6 @@ function CodeStep({
   );
 }
 
-type Availability = "idle" | "checking" | "available" | "taken" | "invalid";
 
 function OnboardingStep({
   onDone,
