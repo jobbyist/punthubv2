@@ -244,12 +244,12 @@ export function hasHistoryResultEvidence(text: string): boolean {
 export function hasStandingsTableEvidence(text: string): boolean {
   const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
   if (parseStandingsMarkdown(clean, 1)?.length) return true;
-  const hasStandingsContext = /\\b(?:standings|league table|log table|live table)\\b/i.test(clean);
+  const hasStandingsContext = /\b(?:standings|league table|log table|live table)\b/i.test(clean);
   const hasHeader =
-    /(?:^|\\n)\\s*\\|?\\s*(?:#|pos(?:ition)?)\\s*\\|?\\s*team\\b/im.test(clean) ||
-    /(?:^|\\n)\\s*(?:pos(?:ition)?|#)\\s+team\\b/im.test(clean);
-  const hasPoints = /\\b(?:pts|points)\\b/i.test(clean);
-  const hasPlayed = /\\b(?:played|pld|p)\\b/i.test(clean);
+    /(?:^|\n)\s*\|?\s*(?:#|pos(?:ition)?)\s*\|?\s*team\b/im.test(clean) ||
+    /(?:^|\n)\s*(?:pos(?:ition)?|#)\s+team\b/im.test(clean);
+  const hasPoints = /\b(?:pts|points)\b/i.test(clean);
+  const hasPlayed = /\b(?:played|pld|p)\b/i.test(clean);
   return hasStandingsContext && hasHeader && hasPoints && hasPlayed;
 }
 
