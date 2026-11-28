@@ -227,6 +227,35 @@ describe("sync", () => {
     expect(p.listResults).not.toHaveBeenCalled();
   });
 
+  it("rotates result checks across open fixtures so recent matches are not starved", async () => {
+    const now = new Date("2026-11-28T03:00:00Z");
+    const open = [
+      { provider: "apisports", providerRef: "football:latest", competition: "EFL Championship", home: "Southampton", away: "Middlesbrough", kickoffAt: "2026-11-27T20:00:00.000Z" },
+      { provider: "apisports", providerRef: "football:second", competition: "EFL Championship", home: "A", away: "B", kickoffAt: "2026-11-27T18:00:00.000Z" },
+      { provider: "apisports", providerRef: "football:third", competition: "EFL Championship", home: "C", away: "D", kickoffAt: "2026-11-26T18:00:00.000Z" },
+      { provider: "apisports", providerRef: "football:fourth", competition: "EFL Championship", home: "E", away: "F", kickoffAt: "2026-11-24T18:00:00.000Z" },
+      { provider: "apisports", providerRef: "football:fifth", competition: "EFL Championship", home: "G", away: "H", kickoffAt: "2026-11-21T12:30:00.000Z" },
+    ];
+    const batches: string[][] = [];
+    const makeProvider = () => ({
+      name: "apisports",
+      listFixtures: vi.fn(),
+      listResults: vi.fn().mockImplementation(async (_from: Date, _to: Date, opts: { fixtures: { home: string; away: string; kickoffAt: string }[] }) => {
+        const refs = opts.fixtures.map((fixture) => open.find((item) => item.home === fixture.home)?.providerRef ?? "");
+        batches.push(refs);
+        return { fixtures: refs.map((ref) => fx(ref, "finished")), calls: 1, skipped: [] };
+      }),
+    });
+    const storeFor = () => fakeStore({ openSince: vi.fn().mockResolvedValue(open) });
+    await syncResults(makeProvider(), storeFor(), now);
+    await syncResults(makeProvider(), storeFor(), new Date(now.getTime() + 30 * 60 * 1000));
+    expect(batches[0]).toContain("football:latest");
+    expect(batches[0]).toHaveLength(3);
+    expect(batches[1]).toHaveLength(2);
+    expect(batches[0]).not.toEqual(batches[1]);
+    expect(new Set([...batches[0], ...batches[1]])).toEqual(new Set(open.map((item) => item.providerRef)));
+  });
+
   it("asks only for competitions that have open fixtures and updates only those fixtures", async () => {
     const p = provider([fx("football:1", "finished"), fx("football:9", "finished")]);
     const store = fakeStore({
