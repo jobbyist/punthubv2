@@ -481,10 +481,15 @@ export async function runTablesSync(
     )
       due.push({ job: "standings", key });
   }
+  const HISTORY_REFRESH_HOURS = 72;
   for (const key of keys) {
     if (opts.job === "standings") continue;
     const s = status("history", key);
-    if (s?.lastSuccessAt && opts.job !== "history") continue; // one-time backfill
+    if (
+      s?.lastSuccessAt &&
+      opts.job !== "history" &&
+      now().getTime() - Date.parse(s.lastSuccessAt) < HISTORY_REFRESH_HOURS * HOUR
+    ) continue;
     if (retryDue(s, now())) due.push({ job: "history", key });
   }
 
@@ -1433,12 +1438,9 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
   const to = now();
   const from = new Date(to.getTime() - HISTORY_DAYS * DAY);
   try {
+    // Refresh a rolling 42-day window on a recurring cadence. A one-time backfill is not enough:
+    // source corrections and newly published results must flow into the history table.
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const counts = await deps.store.completedCounts(c.name).catch(() => new Map<string, number>());
-    if (known.length > 0 && !needsBackfill(counts, known)) {
-      await deps.store.record("history", key, true, null, { skipped: "enough results recorded" });
-      return { ok: true, detail: "enough results already recorded" };
-    }
     const sources = await gatherSources(
       deps,
       key,
@@ -1470,13 +1472,23 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       knownTeams: known,
     });
     const { rows, unverified } = verifyHistory(accepted, key, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
+    if (rows.length === 0) {
+      await deps.store.record("history", key, false, "no independently verified results in rolling window", {
+        extracted: raw.length,
+        accepted: accepted.length,
+        unverified,
+        sourceCount: sources.length,
+        model: answer.model,
+      });
+      return { ok: false, detail: "no independently verified results in rolling window; not marked successful" };
+    }
+    // insert_team_results performs a natural-key upsert, so corrected scores replace stale values.
+    const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
     await deps.store.record("history", key, true, null, {
       verified: rows.length,
-      inserted,
+      insertedOrUpdated: inserted,
       unverified,
+      sourceCount: sources.length,
       model: answer.model,
     });
     return {
