@@ -5,6 +5,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { EmptyState } from "@/components/empty-state";
+import { AffiliateBanner } from "@/components/affiliate";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { AnalyticsDrawer } from "@/components/match/analytics-drawer";
 import { CompetitionBadge } from "@/components/match/competition-badge";
@@ -577,7 +578,8 @@ function Fixtures() {
           </Link>
         </Button>
       </section>
-    </AppShell>
+            <div className="mt-10"><AffiliateBanner label="fixtures" /></div>
+      </AppShell>
   );
 }
 
