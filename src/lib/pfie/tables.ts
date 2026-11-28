@@ -29,7 +29,7 @@ import {
   validateTables,
   type StandingRow,
 } from "./standings";
-import type { PfieSource } from "./types";
+import type { Observation, PfieSource } from "./types";
 
 export type TableJob = "standings" | "history" | "season" | "archive";
 
@@ -773,20 +773,44 @@ async function syncSeasonWindow(
         sources: list,
       });
     const extractAndVerify = async (list: PfieSource[]) => {
-      let answer = await generate(deps, request(list));
-      let raw = parseObservations(answer.text);
-      if (!raw) {
-        // Usually a long answer cut off at the output limit: retry once with the three best sources, shorter.
-        const shorter = list.slice(0, 3).map((x) => ({ ...x, text: x.text.slice(0, 8_000) }));
-        answer = await generate(deps, request(shorter));
-        raw = parseObservations(answer.text);
-      }
-      if (!raw) throw new Error("extraction answer was not valid JSON");
-      const { accepted, rejected } = validateObservations(raw, list, { from, to, now: now(), knownTeams: known });
-      const { rows, unverified } = verifyHistory(accepted, key, known);
+      const accepted: Observation[] = [];
       const reasons: Record<string, number> = {};
-      for (const r of rejected) reasons[r.reason] = (reasons[r.reason] ?? 0) + 1;
-      return { answer, raw, accepted, rows, unverified, reasons };
+      const models = new Set<string>();
+      let extracted = 0;
+      for (const source of list) {
+        // Extract each publisher independently. A single multi-source prompt often attributes every row to
+        // one source, which defeats the two-domain verification rule for non-official publishers.
+        const isolated = { ...source, index: 1 };
+        const sourceRequest = (items: PfieSource[]) =>
+          extractionRequest({
+            competition: c.name,
+            from: start,
+            to: end,
+            today: sastDate(now()),
+            sources: items,
+          });
+        let answer = await generate(deps, sourceRequest([isolated]));
+        let raw = parseObservations(answer.text);
+        if (!raw) {
+          answer = await generate(deps, sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]));
+          raw = parseObservations(answer.text);
+        }
+        models.add(answer.model);
+        if (!raw) continue;
+        extracted += raw.length;
+        const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
+        accepted.push(...validation.accepted);
+        for (const item of validation.rejected) reasons[item.reason] = (reasons[item.reason] ?? 0) + 1;
+      }
+      const { rows, unverified } = verifyHistory(accepted, key, known);
+      return {
+        extracted,
+        accepted,
+        rows,
+        unverified,
+        reasons,
+        model: [...models].join(", "),
+      };
     };
 
     // First use the competition's own official result archive. If it cannot provide usable observations for
@@ -799,7 +823,7 @@ async function syncSeasonWindow(
       const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
-        if (fallback.rows.length > 0 || fallback.raw.length > result.raw.length) {
+        if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
           sources = secondary;
           result = fallback;
         }
@@ -812,17 +836,17 @@ async function syncSeasonWindow(
       verified: result.rows.length,
       inserted,
       unverified: result.unverified,
-      extracted: result.raw.length,
+      extracted: result.extracted,
       accepted: result.accepted.length,
       rejected: result.reasons,
       sources: sources.map((s) => s.domain),
-      model: result.answer.model,
+      model: result.model,
     };
     if (result.rows.length === 0) {
       await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
-        detail: `no verified results (${result.raw.length} extracted, ${result.accepted.length} accepted, ${result.unverified} single-source)`,
+        detail: `no verified results (${result.extracted} extracted, ${result.accepted.length} accepted, ${result.unverified} single-source)`,
       };
     }
     await deps.store.record("season", scope, true, null, meta);
