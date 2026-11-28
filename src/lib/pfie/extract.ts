@@ -207,12 +207,26 @@ function matchEvidenceOnPage(
   while (true) {
     const index = page.indexOf(h, from);
     if (index < 0) return false;
+    const excerptStart = Math.max(0, index - 120);
     const excerpt = page.slice(
-      Math.max(0, index - 120),
+      excerptStart,
       Math.min(page.length, index + h.length + 360),
     );
     if (excerpt.includes(a) && scoreVariants.some((variant) => excerpt.includes(variant)))
       return true;
+
+    // Some publishers render score cells separately: "Home, 1. Away, 0." rather than "Home 1-0 Away".
+    // Accept that layout only when the exact home score appears between the two named teams and the exact
+    // away score immediately follows the away team in the same bounded excerpt.
+    const homeOffset = index - excerptStart;
+    const awayOffset = excerpt.indexOf(a, homeOffset + h.length);
+    if (awayOffset >= 0) {
+      const betweenTeams = excerpt.slice(homeOffset + h.length, awayOffset);
+      const afterAway = excerpt.slice(awayOffset + a.length, awayOffset + a.length + 120);
+      const homeToken = new RegExp("(?:^|[\\s,])" + homeScore + "(?:[.,\\s]|$)");
+      const awayToken = new RegExp("(?:^|[\\s,])" + awayScore + "(?:[.,\\s]|$)");
+      if (homeToken.test(betweenTeams) && awayToken.test(afterAway)) return true;
+    }
     from = index + h.length;
   }
 }
