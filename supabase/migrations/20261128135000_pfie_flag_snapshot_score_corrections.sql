@@ -49,7 +49,7 @@ begin
       v_key,p_fixture,v_season,v_f.home,v_f.away,
       null,null,true
     )
-    on conflict (fixture_id) do update set
+    on conflict (competition_key,fixture_id) do update set
       season=excluded.season,
       home_team=excluded.home_team,
       away_team=excluded.away_team,
