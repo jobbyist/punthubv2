@@ -97,7 +97,12 @@ export function guardSearch(inner: SearchProvider, claim: Claim): SearchProvider
     name: inner.name,
     async search(input) {
       if (!(await claim(inner.name))) throw refused(inner.name);
-      return inner.search(input);
+      try {
+        return await inner.search(input);
+      } catch (error) {
+        await recordQuotaError(inner.name);
+        throw error;
+      }
     },
   };
 }
@@ -107,7 +112,12 @@ export function guardExtract(inner: ExtractProvider, claim: Claim): ExtractProvi
     name: inner.name,
     async extract(url) {
       if (!(await claim(inner.name))) throw refused(inner.name);
-      return inner.extract(url);
+      try {
+        return await inner.extract(url);
+      } catch (error) {
+        await recordQuotaError(inner.name);
+        throw error;
+      }
     },
   };
 }
@@ -120,7 +130,12 @@ export function guardLlm(inner: LlmProvider, claim: Claim): LlmProvider {
       const parallelEffort = /^parallel-(low|medium|high)$/.exec(model)?.[1];
       const key = parallelEffort ? `parallel-chat:${parallelEffort}` : `gemini:${model}`;
       if (!(await claim(key))) throw refused(key);
-      return inner.generate(model, request);
+      try {
+        return await inner.generate(model, request);
+      } catch (error) {
+        await recordQuotaError(key);
+        throw error;
+      }
     },
   };
 }
