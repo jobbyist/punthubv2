@@ -350,6 +350,31 @@ export function reconcileSeason(
   return { rows, report };
 }
 
+
+/**
+ * Full-season archives must prove that the corroborated results cover most of the
+ * competition's expected double round-robin schedule. This catches two publishers
+ * returning the same truncated page, which a source-to-source agreement ratio alone
+ * cannot detect. The active season is intentionally exempt because it is incomplete.
+ */
+export function archiveSeasonCompleteness(
+  verifiedMatches: number,
+  matrix: ResultsMatrix,
+  seasonYear: number,
+  currentSeasonYear: number,
+): { expectedMatches: number; verifiedMatches: number; coverage: number; requiredMatches: number; complete: boolean } {
+  const expectedMatches = matrix.teams.length * Math.max(0, matrix.teams.length - 1);
+  const requiredMatches = seasonYear < currentSeasonYear ? Math.ceil(expectedMatches * 0.9) : 0;
+  const coverage = expectedMatches > 0 ? verifiedMatches / expectedMatches : 0;
+  return {
+    expectedMatches,
+    verifiedMatches,
+    coverage,
+    requiredMatches,
+    complete: requiredMatches === 0 || verifiedMatches >= requiredMatches,
+  };
+}
+
 /**
  * Legacy historical-table consistency helper. The live standings publisher does not call this function.
  * The Wikipedia table is accepted only when every row matches the verified results exactly (played, W, D, L, GF,

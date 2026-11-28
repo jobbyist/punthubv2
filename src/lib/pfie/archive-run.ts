@@ -9,6 +9,7 @@ import { seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 import {
   ARCHIVE_SOURCES,
   archiveCompetition,
+  archiveSeasonCompleteness,
   archiveSeasons,
   archiveUrls,
   parseFbrefSchedule,
@@ -82,20 +83,34 @@ export async function runArchiveJob(
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     const { rows, report } = reconcileSeason(key, matches, matrix, known);
     const coverage = report.matrix > 0 ? report.verified / report.matrix : 0;
-    if (rows.length === 0 || report.matrix === 0 || coverage < 0.9 || report.disagreed > 0) {
+    const seasonCompleteness = archiveSeasonCompleteness(
+      report.verified,
+      matrix,
+      year,
+      seasonFor("july", now),
+    );
+    if (
+      rows.length === 0 ||
+      report.matrix === 0 ||
+      coverage < 0.9 ||
+      report.disagreed > 0 ||
+      !seasonCompleteness.complete
+    ) {
       const reason =
         report.matrix === 0
           ? "archive results matrix is empty"
           : report.disagreed > 0
             ? "archive sources disagree on one or more scores"
-            : `archive coverage below 90% (${Math.round(coverage * 100)}%)`;
-      await deps.store.record("archive", scope, false, reason, { ...report, coverage, inserted: 0 });
+            : !seasonCompleteness.complete
+              ? `full-season archive coverage below 90% (${seasonCompleteness.verifiedMatches}/${seasonCompleteness.expectedMatches} expected matches)`
+              : `archive coverage below 90% (${Math.round(coverage * 100)}%)`;
+      await deps.store.record("archive", scope, false, reason, { ...report, coverage, seasonCompleteness, inserted: 0 });
       return { ok: false, detail: `${reason}; no partial rows imported` };
     }
 
     // Only commit history after the complete two-source archive passes the coverage gate.
     const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
-    const meta = { ...report, inserted, coverage, table: "not checked" };
+    const meta = { ...report, inserted, coverage, seasonCompleteness, table: "not checked" };
 
     // Archive/Wikipedia sources are retained only for historical result reconciliation.
     // Current league standings are sourced separately through Parallel's live multi-source PFIE pipeline.
