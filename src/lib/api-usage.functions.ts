@@ -28,7 +28,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
     const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString();
     const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString().slice(0, 10);
 
-    const [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, weeklyUsage] = await Promise.all([
+    const [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, attribution] = await Promise.all([
       db.from("api_quota_limits").select("provider,daily_cap,monthly_cap,note,updated_at").order("provider"),
       db.from("api_budgets").select("family,monthly_usd,note").order("family"),
       db.from("api_spend_period_limits").select("family,period_start,period_end,limit_usd,note").order("family"),
@@ -36,9 +36,9 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       db.from("content_api_usage").select("provider,calls,errors,refused").eq("day", today).order("provider"),
       db.from("content_api_usage").select("provider,calls,errors,refused").gte("day", monthStart).order("provider"),
       db.from("api_call_events").select("id,provider,feature,consumer,operation,status,estimated_cost_usd,claimed_at,metadata").gte("claimed_at", sevenDaysAgo).order("claimed_at", { ascending: false }).limit(150),
-      db.from("content_api_usage").select("provider,day,calls,errors,refused").gte("day", sevenDaysAgo.slice(0, 10)).order("day", { ascending: false }),
+      db.from("api_call_usage_attribution").select("provider,feature,consumer,operation,calls,estimated_usd,last_call").order("calls", { ascending: false }).limit(50),
     ]);
-    for (const result of [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, weeklyUsage]) {
+    for (const result of [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, attribution]) {
       if (result.error) throw new Error("API usage data unavailable: " + result.error.message);
     }
 
@@ -50,17 +50,13 @@ export const adminApiUsage = createServerFn({ method: "GET" })
     }));
     const spentByFamily = new Map(spent);
 
-    const priceByProvider = new Map(((prices.data ?? []) as { provider: string; usd_per_unit: number }[]).map((p) => [p.provider, Number(p.usd_per_unit)]));
-    // Replace the provider-level roll-up with the feature-level claim ledger wherever attribution exists.
-    const eventGroups = new Map<string, { provider: string; feature: string; calls: number; estimatedUsd: number; lastCall: string }>();
-    for (const event of (recentEvents.data ?? []) as { provider: string; feature: string; estimated_cost_usd: number | null; claimed_at: string }[]) {
-      const key = event.provider + "|" + event.feature;
-      const current = eventGroups.get(key) ?? { provider: event.provider, feature: event.feature, calls: 0, estimatedUsd: 0, lastCall: event.claimed_at };
-      current.calls += 1;
-      current.estimatedUsd += Number(event.estimated_cost_usd ?? priceByProvider.get(event.provider) ?? 0);
-      if (event.claimed_at > current.lastCall) current.lastCall = event.claimed_at;
-      eventGroups.set(key, current);
-    }
+    const attributionRows = ((attribution.data ?? []) as Record<string, unknown>[]).map((r) => ({
+      provider: String(r["provider"]),
+      feature: String(r["feature"]),
+      calls: Number(r["calls"]),
+      estimatedUsd: Number(r["estimated_usd"] ?? 0),
+      lastCall: String(r["last_call"]),
+    }));
 
     return {
       limits: ((limits.data ?? []) as Record<string, unknown>[]).map((r) => ({
@@ -81,7 +77,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       month: ((monthUsage.data ?? []) as Record<string, unknown>[]).map((r) => ({
         provider: String(r["provider"]), calls: Number(r["calls"]), errors: Number(r["errors"]), refused: Number(r["refused"]),
       })),
-      last7Days: [...eventGroups.values()].sort((a, b) => b.calls - a.calls).slice(0, 50),
+      last7Days: attributionRows,
       events: ((recentEvents.data ?? []) as Record<string, unknown>[]).map((r) => ({
         id: Number(r["id"]), provider: String(r["provider"]), feature: String(r["feature"]),
         consumer: (r["consumer"] as string | null) ?? null, operation: (r["operation"] as string | null) ?? null,
