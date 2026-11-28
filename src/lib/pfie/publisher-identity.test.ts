@@ -18,5 +18,7 @@ describe("canonical publisher identity", () => {
   it("canonicalises known publisher families and regional subdomains", () => {
     expect(publisherKey("english.ahram.org.eg")).toBe("ahram.org.eg");
     expect(publisherKey("data.uefa.com")).toBe("uefa");
+    expect(publisherKey("www.skysports.com")).toBe("sky");
+    expect(publisherKey("www.sky.com")).toBe("sky");
   });
 });
