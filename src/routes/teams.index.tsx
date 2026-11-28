@@ -253,9 +253,13 @@ function TeamsDirectory() {
           <AnimatePresence initial={false}>
             {withAdBreaks(shown.slice(0, limit), 12).map((entry, i) =>
               entry.kind === "ad" ? (
-                <li key={`ad-${entry.index}`}>
-                  <AdSlot placement="teams-grid" format="card" seed={entry.index} />
-                </li>
+                <AdSlot
+                  key={`ad-${entry.index}`}
+                  listItem
+                  placement="teams-grid"
+                  format="card"
+                  seed={entry.index}
+                />
               ) : (
                 <motion.li
                   key={entry.item.key}

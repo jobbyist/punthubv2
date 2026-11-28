@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ArrowUpRight, Sparkles, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { recordAdEvent, useAds } from "@/components/ads/ads-provider";
@@ -150,7 +150,10 @@ export function AdSlot({
   format = "card",
   seed = 0,
   className = "",
+  listItem = false,
 }: {
+  /** Wrap in <li> so a grid keeps no empty cell when the slot renders nothing. */
+  listItem?: boolean;
   placement: string;
   format?: Exclude<AdFormat, "overlay">;
   /** Distinguishes several slots of the same placement on one page so they rotate partners. */
@@ -164,14 +167,17 @@ export function AdSlot({
       ? pickAdUnit(ads, placement, format, slotRoll(placement, seed))
       : null;
   const ref = useImpression(unit, placement);
+  const wrap = (node: ReactNode) => (listItem ? <li>{node}</li> : node);
 
   if (!ads.eligible) return null;
   if (!ads.ageConfirmed) {
-    return format === "text_link" ? null : (
-      <div className={className}>
-        <AgeGateSlot compact={format === "card"} />
-      </div>
-    );
+    return format === "text_link"
+      ? null
+      : wrap(
+          <div className={className}>
+            <AgeGateSlot compact={format === "card"} />
+          </div>,
+        );
   }
   if (!unit) return null;
 
@@ -186,7 +192,7 @@ export function AdSlot({
   } as const;
 
   if (format === "text_link") {
-    return (
+    return wrap(
       <div ref={ref} className={`flex flex-wrap items-center gap-2 text-xs ${className}`}>
         <SponsoredLabel />
         <a
@@ -196,12 +202,12 @@ export function AdSlot({
           {cta}
         </a>
         <span className="text-muted-foreground">· {terms}</span>
-      </div>
+      </div>,
     );
   }
 
   if (format === "banner") {
-    return (
+    return wrap(
       <aside
         ref={ref}
         aria-label={t("ads.aria", { name: unit.partnerName })}
@@ -236,12 +242,12 @@ export function AdSlot({
           <p className="text-[10px] font-semibold text-muted-foreground">{terms}</p>
           <RgNotice variant="compact" className="text-[10px]" />
         </div>
-      </aside>
+      </aside>,
     );
   }
 
   // card: sits inside grids and feeds, same footprint as a list item.
-  return (
+  return wrap(
     <aside
       ref={ref}
       aria-label={t("ads.aria", { name: unit.partnerName })}
@@ -267,7 +273,7 @@ export function AdSlot({
       </a>
       <p className="mt-2 text-[10px] font-semibold text-muted-foreground">{terms}</p>
       <RgNotice variant="compact" className="text-[10px]" />
-    </aside>
+    </aside>,
   );
 }
 
