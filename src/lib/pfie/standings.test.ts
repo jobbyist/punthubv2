@@ -1302,6 +1302,66 @@ describe("cup history source attribution", () => {
   });
 });
 
+describe("empty historical windows", () => {
+  it("marks a week with only out-of-window results as complete without a redundant secondary read", async () => {
+    const pageText = `UEFA Champions League historical results. Alpha FC 2-1 Bravo United. ${"Match report and final score. ".repeat(20)}`;
+    const answer = JSON.stringify({
+      matches: [{
+        source: 1,
+        home: "Alpha FC",
+        away: "Bravo United",
+        date: "2026-10-20",
+        time: null,
+        tz: null,
+        status: "finished",
+        homeScore: 2,
+        awayScore: 1,
+        quote: "Alpha FC 2-1 Bravo United",
+      }],
+    });
+    let calls = 0;
+    const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [{
+          url: "https://www.uefa.com/uefachampionsleague/news/results",
+          title: "Official UEFA results",
+          excerpt: pageText,
+          publishedAt: null,
+        }],
+      },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: {
+        name: "fake",
+        generate: async () => { calls += 1; return { text: answer, model: "m" }; },
+      },
+      models: ["m"],
+      now: () => new Date("2026-11-28T02:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => ["Alpha FC", "Bravo United"],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async () => 0,
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          _error: string | null,
+          meta: Record<string, unknown>,
+        ) => { records.push({ ok, meta }); },
+      },
+    };
+    const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
+    expect(calls).toBe(1);
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)?.ok).toBe(true);
+    expect(records.at(-1)?.meta.noMatchesInWindow).toBe(true);
+  });
+});
+
 describe("verified standings record corrections", () => {
   it("allows a corroborated W/D/L correction when played count is unchanged and the new points total is valid", () => {
     const previous = [{ team: "Genoa", position: 10, played: 12, won: 4, drawn: 1, lost: 7, goalsFor: 13, goalsAgainst: 16, points: 13 }];

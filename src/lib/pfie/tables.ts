@@ -782,6 +782,8 @@ async function syncSeasonWindow(
       const reasons: Record<string, number> = {};
       const models = new Set<string>();
       let extracted = 0;
+      let parsedSources = 0;
+      let parseFailures = 0;
       for (const source of list) {
         // Extract each publisher independently. A single multi-source prompt often attributes every row to
         // one source, which defeats the two-domain verification rule for non-official publishers.
@@ -801,7 +803,11 @@ async function syncSeasonWindow(
           raw = parseObservations(answer.text);
         }
         models.add(answer.model);
-        if (!raw) continue;
+        if (!raw) {
+          parseFailures += 1;
+          continue;
+        }
+        parsedSources += 1;
         extracted += raw.length;
         const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
         accepted.push(...validation.accepted);
@@ -810,6 +816,8 @@ async function syncSeasonWindow(
       const { rows, unverified } = verifyHistory(accepted, key, known);
       return {
         extracted,
+        parsedSources,
+        parseFailures,
         accepted,
         rows,
         unverified,
@@ -824,7 +832,15 @@ async function syncSeasonWindow(
     let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls, false, MAX_SEASON_SOURCES);
     if (sources.length === 0) throw new Error("no usable source");
     let result = await extractAndVerify(sources);
-    if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
+    const onlyOutOfWindow = (value: typeof result) =>
+      value.extracted > 0 &&
+      value.reasons.outside_date_range === value.extracted &&
+      Object.keys(value.reasons).every((reason) => reason === "outside_date_range");
+    if (
+      result.rows.length === 0 &&
+      !onlyOutOfWindow(result) &&
+      sources.some((source) => source.tier === "official")
+    ) {
       const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true, MAX_SEASON_SOURCES);
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
@@ -842,12 +858,22 @@ async function syncSeasonWindow(
       inserted,
       unverified: result.unverified,
       extracted: result.extracted,
+      parsedSources: result.parsedSources,
+      parseFailures: result.parseFailures,
       accepted: result.accepted.length,
       rejected: result.reasons,
       sources: sources.map((s) => s.domain),
       model: result.model,
     };
+    const noMatchesInWindow =
+      result.parsedSources > 0 &&
+      result.parseFailures === 0 &&
+      (result.extracted === 0 || onlyOutOfWindow(result));
     if (result.rows.length === 0) {
+      if (noMatchesInWindow) {
+        await deps.store.record("season", scope, true, null, { ...meta, noMatchesInWindow: true });
+        return { ok: true, detail: "no matches in this date window; verified source extraction was empty" };
+      }
       await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
