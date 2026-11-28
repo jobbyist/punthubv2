@@ -24,6 +24,7 @@ import {
   parseStandings,
   parseStandingsMarkdown,
   extractStandingsTableDate,
+  normaliseStandingsGroup,
   tableRegression,
   standingsRequest,
   standingsDisagreementHint,
@@ -704,9 +705,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     ) => {
       if (!rows) return rows;
       const pageDate = extractStandingsTableDate(source.text, now());
-      return pageDate
-        ? rows.map((row) => ({ ...row, tableDate: pageDate.date, tableDateQuote: pageDate.quote }))
-        : rows;
+      return rows.map((row) => ({
+        ...row,
+        group: normaliseStandingsGroup(row.group, c.name, Boolean(c.groupNames?.length)),
+        ...(pageDate ? { tableDate: pageDate.date, tableDateQuote: pageDate.quote } : {}),
+      }));
     };
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
     // Run the bounded first-pass Parallel Responses calls concurrently. If a source fails deterministic validation,

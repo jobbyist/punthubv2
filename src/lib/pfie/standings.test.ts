@@ -14,6 +14,7 @@ import {
   parseStandings,
   parseStandingsMarkdown,
   extractStandingsTableDate,
+  normaliseStandingsGroup,
   standingsRequest,
   standingsDisagreementHint,
   tableRegression,
@@ -2042,5 +2043,15 @@ describe("flattened Parallel Extract standings payloads", () => {
     const rows = parseStandingsMarkdown(flat, 3);
     expect(rows).toHaveLength(4);
     expect(rows?.[0]).toMatchObject({ team: "Middlesbrough", goalsFor: 34, goalsAgainst: 22, points: 35 });
+  });
+});
+
+describe("standings source group normalisation", () => {
+  it("normalises arbitrary source labels for single-table competitions", () => {
+    expect(normaliseStandingsGroup("overall", "EFL Championship", false)).toBe("EFL Championship");
+    expect(normaliseStandingsGroup("EFL Championship", "EFL Championship", false)).toBe("EFL Championship");
+  });
+  it("preserves named groups for multi-group competitions", () => {
+    expect(normaliseStandingsGroup("Group A", "CAF Confederation Cup", true)).toBe("Group A");
   });
 });
