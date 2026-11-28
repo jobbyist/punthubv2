@@ -223,7 +223,7 @@ function Landing() {
           aria-labelledby="home-steps-title"
         >
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
-            Three steps. One public record.
+            {t("join.eyebrow")}
           </p>
           <h2 id="home-steps-title" className="mt-2 text-2xl sm:text-3xl">
             {t("join.title")}
@@ -231,7 +231,7 @@ function Landing() {
           <ol className="mt-6 grid gap-4 md:grid-cols-3">
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
-                Step 1
+                {t("join.stepLabel", { n: 1 })}
               </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.one.title")}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -240,7 +240,7 @@ function Landing() {
             </li>
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
-                Step 2
+                {t("join.stepLabel", { n: 2 })}
               </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.two.title")}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -249,7 +249,7 @@ function Landing() {
             </li>
             <li className="rounded-xl border border-border p-4">
               <span className="text-xs font-extrabold uppercase tracking-wider text-primary">
-                Step 3
+                {t("join.stepLabel", { n: 3 })}
               </span>
               <h3 className="mt-2 text-base font-bold">{t("join.steps.three.title")}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -405,7 +405,9 @@ function Landing() {
 
       {/* Newsroom, then the bookmaker logo wall below it (owner, 27 Nov 2026). */}
       <LatestFromPuntr />
-      <div className="section-y"><AffiliateBanner label="homepage" /></div>
+      <div className="section-y">
+        <AffiliateBanner label="homepage" />
+      </div>
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (

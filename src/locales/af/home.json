@@ -45,7 +45,7 @@
     "title": "Hoe Puntr werk",
     "s1": {
       "title": "Sluit gratis aan",
-      "body": "Skep jou rekening met jou e-pos en 'n wagwoord. Jy moet 18 of ouer wees."
+      "body": "Sluit binne ’n minuut met jou e-pos aan. Geen kaart nodig nie. Jy moet 18 of ouer wees."
     },
     "s2": {
       "title": "Plaas jou keuses",
@@ -78,18 +78,20 @@
     "steps": {
       "one": {
         "title": "Bevestig jou voorspelling",
-        "body": "Kies wedstryduitslae in die Betway Premiership, Premier League en UCL voor afskop."
+        "body": "Kies wedstryduitslae in die Betway Premiership, Premier League, Champions League en meer, voor die afskop."
       },
       "two": {
-        "title": "Tydstempel met afskop",
+        "title": "Gesluit met afskop",
         "body": "Sodra die skeidsregter blaas, word jou keuse op jou openbare rekord vasgelê. Geen geskrapte verliese nie. Geen geredigeerde geskiedenis nie."
       },
       "three": {
         "title": "Bewys jou rekord",
-        "body": "Outomatiese gradering werk jou wenkoers, ROI en ranglysposisie by. Deel jou geverifieerde rekord met vriende en verdien PuntPoints."
+        "body": "Outomatiese gradering werk jou wenkoers, ROI en ranglysposisie by. Deel jou rekord met vriende en versamel PuntPoints langs die pad."
       }
     },
-    "guideCta": "Kyk hoe dit werk"
+    "guideCta": "Kyk hoe dit werk",
+    "eyebrow": "Drie stappe. Een openbare rekord.",
+    "stepLabel": "Stap {{n}}"
   },
   "video": {
     "close": "Maak video toe",
