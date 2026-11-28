@@ -23,6 +23,7 @@ import {
   independentSourceKey,
   parseStandings,
   parseStandingsMarkdown,
+  extractStandingsTableDate,
   tableRegression,
   standingsRequest,
   standingsDisagreementHint,
@@ -686,6 +687,16 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
+    const stampPageDate = (
+      rows: NonNullable<ReturnType<typeof parseStandings>> | null,
+      source: PfieSource,
+    ) => {
+      if (!rows) return rows;
+      const pageDate = extractStandingsTableDate(source.text, now());
+      return pageDate
+        ? rows.map((row) => ({ ...row, tableDate: pageDate.date, tableDateQuote: pageDate.quote }))
+        : rows;
+    };
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
     // Run the bounded first-pass Parallel Responses calls concurrently. If a source fails deterministic validation,
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
@@ -693,7 +704,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       sources.map(async (source) => {
         const deterministic =
           !cfg.groups?.length && source.via === "extract"
-            ? parseStandingsMarkdown(source.text, source.index)
+            ? stampPageDate(parseStandingsMarkdown(source.text, source.index), source)
             : null;
         if (deterministic) {
           const validation = validateTables(
@@ -720,7 +731,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           }),
         );
         modelsUsed.add(answer.model);
-        const parsed = parseStandings(answer.text) ?? deterministic;
+        const parsed = stampPageDate(parseStandings(answer.text) ?? deterministic, source);
         const validation = parsed
           ? validateTables(
               parsed,
@@ -772,7 +783,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           retryModels,
         );
         modelsUsed.add(answer.model);
-        const parsed = parseStandings(answer.text);
+        const parsed = stampPageDate(parseStandings(answer.text), result.source);
         const validation = parsed
           ? validateTables(
               parsed,
@@ -863,7 +874,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 }),
               );
               modelsUsed.add(answer.model);
-              const parsed = parseStandings(answer.text);
+              const parsed = stampPageDate(parseStandings(answer.text), source);
               const result = parsed
                 ? validateTables(
                     parsed,
