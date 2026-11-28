@@ -44,17 +44,17 @@ const OFFICIAL_LEAGUE_DOMAINS: Record<string, string[]> = {
 };
 
 const NON_OFFICIAL_LOGO_SOURCES = [
-  /(^|\\.)footylogos\\.com$/i,
-  /(^|\\.)football-logos\\.cc$/i,
-  /(^|\\.)transfermarkt\\./i,
-  /(^|\\.)soccerway\\./i,
-  /(^|\\.)worldfootball\\.net$/i,
-  /(^|\\.)espn\\./i,
-  /(^|\\.)flashscore\\./i,
-  /(^|\\.)fotmob\\.com$/i,
-  /(^|\\.)goal\\.com$/i,
-  /(^|\\.)wikipedia\\.org$/i,
-  /(^|\\.)sofascore\\./i,
+  /(^|\.)footylogos\.com$/i,
+  /(^|\.)football-logos\.cc$/i,
+  /(^|\.)transfermarkt\./i,
+  /(^|\.)soccerway\./i,
+  /(^|\.)worldfootball\.net$/i,
+  /(^|\.)espn\./i,
+  /(^|\.)flashscore\./i,
+  /(^|\.)fotmob\.com$/i,
+  /(^|\.)goal\.com$/i,
+  /(^|\.)wikipedia\.org$/i,
+  /(^|\.)sofascore\./i,
 ];
 
 export function isOfficialBadgeSource(
@@ -65,12 +65,12 @@ export function isOfficialBadgeSource(
   try {
     const url = new URL(hit.url);
     if (url.protocol !== "https:") return false;
-    const host = url.hostname.toLowerCase().replace(/^www\\./, "");
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
     if (NON_OFFICIAL_LOGO_SOURCES.some((pattern) => pattern.test(host))) return false;
-    if (/(facebook|instagram|twitter|x\\.com|youtube|tiktok)\\./i.test(host)) return false;
+    if (/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)) return false;
 
     const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
-    const officialSite = /\\bofficial\\b.{0,50}\\b(website|site|club|team|league)\\b|\\b(website|site)\\b.{0,50}\\bofficial\\b/i.test(text);
+    const officialSite = /\bofficial\b.{0,50}\b(website|site|club|team|league)\b|\b(website|site)\b.{0,50}\bofficial\b/i.test(text);
     const knownLeagueDomain = (OFFICIAL_LEAGUE_DOMAINS[competition.trim().toLowerCase()] ?? [])
       .some((domain) => host === domain || host.endsWith(`.${domain}`));
 
@@ -78,7 +78,7 @@ export function isOfficialBadgeSource(
       .split(" ")
       .filter((token) => token.length >= 4 && !["club", "team", "football", "united", "city"].includes(token));
     const teamDomain = teamTokens.some((token) => host.includes(token));
-    return knownLeagueDomain || (officialSite && (teamDomain || /\\bofficial\\s+(website|site)\\b/i.test(text)));
+    return knownLeagueDomain || (officialSite && (teamDomain || /\bofficial\s+(website|site)\b/i.test(text)));
   } catch {
     return false;
   }
