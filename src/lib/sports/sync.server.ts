@@ -159,6 +159,7 @@ export async function syncResults(
         kickoffAt: fixture.kickoffAt,
       })),
       ...(options.force ? { force: true } : {}),
+      ...(options.priority ? { priority: true } : {}),
     });
     // Do not filter returned results by the requested provider_ref: PFIE may legitimately return a verified
     // terminal result for a fixture absent from or mislabelled in the current schedule.
