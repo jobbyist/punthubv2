@@ -858,6 +858,8 @@ async function syncSeasonWindow(
       inserted,
       unverified: result.unverified,
       extracted: result.extracted,
+      parsedSources: result.parsedSources,
+      parseFailures: result.parseFailures,
       accepted: result.accepted.length,
       rejected: result.reasons,
       sources: sources.map((s) => s.domain),
