@@ -7,13 +7,6 @@ import { useConsentBannerPending, useOverlaySlot } from "@/hooks/use-overlay-slo
 
 const DISMISS_KEY = "puntr:push-prompt-dismissed-until";
 
-function isStandalone(): boolean {
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-  );
-}
-
 export function PushNotificationPrompt() {
   const { profile, loading } = useSession();
   const { t } = useTranslation("common");
@@ -28,7 +21,6 @@ export function PushNotificationPrompt() {
       loading ||
       !profile ||
       !supportsWebPush() ||
-      !isStandalone() ||
       Notification.permission !== "default"
     )
       return;

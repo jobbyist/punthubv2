@@ -12,7 +12,7 @@ type Msg = {
   text: string;
   sources?: AiSource[];
   mode?: "internal" | "live_web";
-  notice?: string;
+  notice?: string | undefined;
   creditsCharged?: number;
 };
 

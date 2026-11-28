@@ -245,7 +245,7 @@ export const adminDraftEndorsementEmail = createServerFn({ method: "POST" })
       const { createModelRouter } = await import("@/lib/content/model-router");
       const { createQuotaClaim, guardLlm } = await import("@/lib/quota.server");
       const router = createModelRouter(
-        guardLlm(createGemini(env.geminiKey), await createQuotaClaim()),
+        guardLlm(createGemini(env.geminiKey), await createQuotaClaim("endorsements:generate")),
         {
           models: env.models,
           dailyCap: env.dailyRequestCap,

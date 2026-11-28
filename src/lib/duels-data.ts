@@ -89,7 +89,7 @@ export type DuelScope = "open" | "live" | "settled" | "mine";
 export async function fetchDuels(scope: DuelScope, fixtureId?: string, limit = 30) {
   const { data, error } = await supabase.rpc("duels_feed", {
     p_scope: scope,
-    p_fixture: fixtureId ?? null,
+    ...(fixtureId ? { p_fixture: fixtureId } : {}),
     p_limit: limit,
   });
   if (error) throw error;
@@ -109,7 +109,10 @@ export async function fetchDuelConfig(): Promise<DuelConfig> {
 }
 
 export async function fetchDuelBoard(days: number | null) {
-  const { data, error } = await supabase.rpc("duel_leaderboard", { p_days: days, p_limit: 50 });
+  const { data, error } = await supabase.rpc("duel_leaderboard", {
+    ...(days === null ? {} : { p_days: days }),
+    p_limit: 50,
+  });
   if (error) throw error;
   return (data ?? []) as DuelBoardRow[];
 }
@@ -123,7 +126,7 @@ export async function createDuel(input: {
 }): Promise<string> {
   const { data, error } = await supabase.rpc("create_duel", {
     p_fixture: input.fixtureId,
-    p_opponent: input.opponent,
+    p_opponent: input.opponent as string,
     p_stake: input.stake,
     p_picks: input.calls as unknown as never,
     ...(input.message ? { p_message: input.message } : {}),

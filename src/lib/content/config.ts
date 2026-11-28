@@ -1,4 +1,4 @@
-/** Content engine configuration. The Newsroom uses Parallel Medium exclusively. */
+/** Content engine configuration. The Newsroom prefers Parallel Medium and falls back to Parallel Low at quota limits. */
 
 /**
  * Primary first, then the fallbacks, strongest to lightest (14 Nov 2026): two more Flash models and one more
@@ -17,7 +17,7 @@ export const DEFAULT_GEMINI_MODELS = [
 /** PFIE structured extraction is performed by Parallel Responses low effort only. */
 export const DEFAULT_PFIE_MODELS = ["parallel-low"] as const;
 
-/** Shared model allowlist. PFIE pins Parallel low; Newsroom pins Parallel medium; Gemini is non-PFIE only. */
+/** Shared model allowlist. PFIE pins Parallel low; Newsroom prefers Medium with Low fallback; Gemini is non-PFIE only. */
 export const APPROVED_CONTENT_MODELS: readonly string[] = [
   "parallel-medium",
   "parallel-low",
@@ -33,7 +33,7 @@ export interface ContentEnv {
   geminiKey: string | null;
   parallelKey: string | null;
   firecrawlKey: string | null;
-  /** Newsroom model allowlist; currently Parallel Medium only. */
+  /** Newsroom model allowlist; Parallel Medium preferred, Parallel Low fallback. */
   models: string[];
   /** Model IDs refused because they are not on the approved Newsroom allowlist. */
   refusedModels: string[];
@@ -78,7 +78,7 @@ export function parseDailyCaps(raw: string | undefined): Record<string, number> 
 }
 
 export function readContentEnv(env: Env = process.env): ContentEnv {
-  const { models, refused } = parseModelList();
+  const { models, refused } = parseModelList(undefined);
   const budget = Number(env["CONTENT_RUN_BUDGET_MS"]);
   return {
     geminiKey: clean(env["GEMINI_API_KEY"]),
@@ -105,10 +105,10 @@ export function redact(secret: string | null): string {
   return `${secret.slice(0, 2)}…${secret.slice(-2)}`;
 }
 
-/** Every Newsroom slot uses Parallel Medium; Gemini remains available to non-PFIE odds/content workflows only. */
+/** Prefer Medium for editorial quality, then use Low when Medium is capped or unavailable. Gemini stays out. */
 export function modelsForContentSlot(
   _models: readonly string[],
   _slot?: "breaking" | "editorial" | "intelligence",
 ): string[] {
-  return ["parallel-medium"];
+  return ["parallel-medium", "parallel-low"];
 }

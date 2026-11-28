@@ -13,20 +13,10 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
+import { PFIE_LAUNCH_KEYS } from "./launch-scope";
 
 /** Ten competition tables in the agreed MVP launch priority order. */
-export const STANDINGS_LAUNCH_KEYS = [
-  "psl",
-  "epl",
-  "championship",
-  "laliga",
-  "ucl",
-  "uecl",
-  "bundesliga",
-  "seriea",
-  "ligue1",
-  "caf-cc",
-] as const satisfies readonly CompetitionKey[];
+export const STANDINGS_LAUNCH_KEYS = PFIE_LAUNCH_KEYS;
 
 /** Other table-based competitions are explicitly deferred beyond the ten-competition launch scope. */
 export const STANDINGS_POST_LAUNCH_KEYS = [
@@ -221,18 +211,18 @@ export const STANDINGS_COMPETITIONS: Partial<
     refreshHours: 12,
     queries: [
       "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
-      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship 2026/27 standings",
-      "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
-      "site:cbssports.com/soccer/efl-championship/standings EFL Championship 2026/27 full table",
-      "site:sportsmole.co.uk/football/championship/table.html Championship 2026/27 full standings",
-      "site:transfermarkt.com/championship/tabelle/wettbewerb/GB2 EFL Championship table 2026/27",
+      "site:skysports.com/championship-table EFL Championship full table updated 27 November 2026",
+      "site:bbc.com/sport/football/championship/table EFL Championship 2026/27 full standings",
+      "site:flashscore.com/football/england/championship/standings EFL Championship 2026/27 table",
+      "site:stat-football.com/en/t/eng20.php EFL Championship 2026/27 full table",
+      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship standings",
     ],
+    // The EFL source remains first. Stat-Football is a trusted independent table with a combined GF:GA column.
     pages: [
-      "https://www.efl.com/competitions/efl-championship/",
       "https://www.efl.com/embeds/league-table/",
       "https://www.skysports.com/championship-table?dcmp=GameOn",
-      "https://www.cbssports.com/soccer/efl-championship/standings/",
-      "https://www.sportsmole.co.uk/football/championship/table.html",
+      "https://www.stat-football.com/en/t/eng20.php",
+      "https://www.bbc.com/sport/football/championship/table",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
     ],
   },
@@ -310,7 +300,7 @@ export interface RawStandingRow {
   points: number;
   quote: string;
   /** Group label for competitions with multiple parallel tables, e.g. CAF Confederation Cup Group A. */
-  group?: string | null;
+  group?: string | null | undefined;
   /** Explicit table "as of" date, when the source states one. */
   tableDate?: string | null;
   tableDateQuote?: string | null;
@@ -486,6 +476,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     lost: ["l", "lost"],
     goalsFor: ["gf", "f", "for", "goalsfor"],
     goalsAgainst: ["ga", "a", "against", "goalsagainst"],
+    goalsCombined: ["goals", "goalsscored"],
     points: ["pts", "points", "pt"],
   } as const;
   const integer = (value: string, signed = false): number | null => {
@@ -505,7 +496,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     const indexOf = (keys: readonly string[]) =>
       headers.findIndex((header) => keys.includes(header));
     const columns = {
-      position: indexOf(aliases.position),
+      position: indexOf(aliases.position) >= 0 ? indexOf(aliases.position) : (headers[0] === "" ? 0 : -1),
       team: indexOf(aliases.team),
       played: indexOf(aliases.played),
       won: indexOf(aliases.won),
@@ -513,9 +504,15 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       lost: indexOf(aliases.lost),
       goalsFor: indexOf(aliases.goalsFor),
       goalsAgainst: indexOf(aliases.goalsAgainst),
+      goalsCombined: indexOf(aliases.goalsCombined),
       points: indexOf(aliases.points),
     };
-    if (Object.values(columns).some((index) => index < 0)) continue;
+    const hasSplitGoals = columns.goalsFor >= 0 && columns.goalsAgainst >= 0;
+    if (
+      columns.position < 0 || columns.team < 0 || columns.played < 0 ||
+      columns.won < 0 || columns.drawn < 0 || columns.lost < 0 ||
+      columns.points < 0 || (!hasSplitGoals && columns.goalsCombined < 0)
+    ) continue;
 
     const rows: RawStandingRow[] = [];
     for (let rowIndex = i + 1; rowIndex < lines.length; rowIndex++) {
@@ -533,9 +530,85 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       const won = integer(cells[columns.won] ?? "");
       const drawn = integer(cells[columns.drawn] ?? "");
       const lost = integer(cells[columns.lost] ?? "");
-      const goalsFor = integer(cells[columns.goalsFor] ?? "");
-      const goalsAgainst = integer(cells[columns.goalsAgainst] ?? "");
+      const combinedGoals = columns.goalsCombined >= 0
+        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(cells[columns.goalsCombined] ?? "")
+        : null;
+      const goalsFor = hasSplitGoals
+        ? integer(cells[columns.goalsFor] ?? "")
+        : integer(combinedGoals?.[1] ?? "");
+      const goalsAgainst = hasSplitGoals
+        ? integer(cells[columns.goalsAgainst] ?? "")
+        : integer(combinedGoals?.[2] ?? "");
       const points = integer(cells[columns.points] ?? "", true);
+      if (
+        position === null ||
+        !team ||
+        played === null ||
+        won === null ||
+        drawn === null ||
+        lost === null ||
+        goalsFor === null ||
+        goalsAgainst === null ||
+        points === null
+      )
+        continue;
+      rows.push({
+        source,
+        position,
+        team,
+        played,
+        won,
+        drawn,
+        lost,
+        goalsFor,
+        goalsAgainst,
+        points,
+        quote: line,
+        tableDate: null,
+        tableDateQuote: null,
+      });
+    }
+    if (rows.length >= 4) return rows;
+  }
+
+  // Some trusted publishers are extracted as plain text rather than Markdown tables. If a complete
+  // standings header is present, parse the row's printed numeric columns deterministically instead of
+  // asking the language model to reconstruct JSON from an otherwise readable table.
+  const plainHeaderIndex = lines.findIndex((line) => {
+    const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/);
+    const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
+    return (
+      has(aliases.position) &&
+      has(aliases.team) &&
+      has(aliases.played) &&
+      has(aliases.won) &&
+      has(aliases.drawn) &&
+      has(aliases.lost) &&
+      has(aliases.goalsFor) &&
+      has(aliases.goalsAgainst) &&
+      has(aliases.points)
+    );
+  });
+  if (plainHeaderIndex >= 0) {
+    const rowPattern =
+      /^\s*(\d{1,2})[.)]?\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+([+-]?\d{1,3})\s+([+-]?\d{1,3})(?:\s+.*)?$/;
+    const rows: RawStandingRow[] = [];
+    for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
+      const line = lines[rowIndex]!;
+      const match = rowPattern.exec(line);
+      if (!match) {
+        if (rows.length) break;
+        continue;
+      }
+      const position = integer(match[1] ?? "");
+      const team = (match[2] ?? "").trim();
+      const played = integer(match[3] ?? "");
+      const won = integer(match[4] ?? "");
+      const drawn = integer(match[5] ?? "");
+      const lost = integer(match[6] ?? "");
+      const goalsFor = integer(match[7] ?? "");
+      const goalsAgainst = integer(match[8] ?? "");
+      const points = integer(match[10] ?? "", true);
       if (
         position === null ||
         !team ||
@@ -890,31 +963,7 @@ export function validateTables(
 }
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
-export function independentSourceKey(domain: string): string {
-  const value = domain.toLowerCase().replace(/^www\./, "");
-  const publisherRoots: Array<[string, string[]]> = [
-    ["bbc", ["bbc.com", "bbc.co.uk"]],
-    ["efl", ["efl.com"]],
-    ["dfb", ["dfb.de"]],
-    ["bundesliga", ["bundesliga.com"]],
-    ["espn", ["espn.com", "espn.co.uk"]],
-    ["sky-sports", ["skysports.com"]],
-    ["supersport", ["supersport.com"]],
-    ["goal", ["goal.com"]],
-    ["uefa", ["uefa.com"]],
-    ["fifa", ["fifa.com"]],
-    ["premier-league", ["premierleague.com"]],
-    ["soccerway", ["soccerway.com"]],
-    ["transfermarkt", ["transfermarkt.com"]],
-    ["worldfootball", ["worldfootball.net"]],
-    ["tactix", ["tactix.football"]],
-    ["football-edge-lab", ["footballedgelab.com"]],
-  ];
-  for (const [publisher, roots] of publisherRoots) {
-    if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;
-  }
-  return value;
-}
+export { publisherKey as independentSourceKey } from "./publisher-identity";
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
 export function tableRegression(

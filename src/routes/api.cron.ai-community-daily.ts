@@ -398,7 +398,9 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
               console.warn("AI community content skipped: synthetic QA budget cap reached");
             }
 
-            const postRows = Array.isArray(content["posts"]) ? content["posts"] : [];
+            const postRows = Array.isArray((content as Record<string, unknown>)["posts"])
+              ? ((content as Record<string, unknown>)["posts"] as unknown[])
+              : [];
             const allowedThreadKeys = new Set(threadPersonas.map((p) => p.persona_key));
             const usedThreadKeys = new Set<string>();
             for (const value of postRows) {
@@ -429,7 +431,9 @@ export const Route = createFileRoute("/api/cron/ai-community-daily")({
               postsCreated += 1;
             }
 
-            const replyRows = Array.isArray(content["replies"]) ? content["replies"] : [];
+            const replyRows = Array.isArray((content as Record<string, unknown>)["replies"])
+              ? ((content as Record<string, unknown>)["replies"] as unknown[])
+              : [];
             const allowedReplyKeys = new Set(replyPersonas.map((p) => p.persona_key));
             const usedReplyKeys = new Set<string>();
             for (const value of replyRows) {

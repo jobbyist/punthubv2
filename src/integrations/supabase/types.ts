@@ -14,40 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      bookmaker_odds_permissions: {
-        Row: {
-          id: string; bookmaker_name: string; domain: string | null; affiliate_partner_slug: string | null;
-          affiliate_status: string; affiliate_priority: number; licence_reference_candidate: string | null;
-          licence_status: string; data_rights_status: string; rights_evidence_url: string | null;
-          rights_reviewed_at: string | null; rights_reviewed_by: string | null; automated_access_allowed: boolean;
-          enabled: boolean; notes: string | null; licence_evidence_url: string | null; licence_verified_at: string | null;
-          licence_verified_by: string | null; collection_approved: boolean; storage_approved: boolean;
-          display_approved: boolean; attribution_approved: boolean; retention_approved: boolean;
-          redistribution_approved: boolean; created_at: string; updated_at: string;
-        };
-        Insert: {
-          id?: string; bookmaker_name: string; domain?: string | null; affiliate_partner_slug?: string | null;
-          affiliate_status?: string; affiliate_priority?: number; licence_reference_candidate?: string | null;
-          licence_status?: string; data_rights_status?: string; rights_evidence_url?: string | null;
-          rights_reviewed_at?: string | null; rights_reviewed_by?: string | null; automated_access_allowed?: boolean;
-          enabled?: boolean; notes?: string | null; licence_evidence_url?: string | null; licence_verified_at?: string | null;
-          licence_verified_by?: string | null; collection_approved?: boolean; storage_approved?: boolean;
-          display_approved?: boolean; attribution_approved?: boolean; retention_approved?: boolean;
-          redistribution_approved?: boolean; created_at?: string; updated_at?: string;
-        };
-        Update: {
-          id?: string; bookmaker_name?: string; domain?: string | null; affiliate_partner_slug?: string | null;
-          affiliate_status?: string; affiliate_priority?: number; licence_reference_candidate?: string | null;
-          licence_status?: string; data_rights_status?: string; rights_evidence_url?: string | null;
-          rights_reviewed_at?: string | null; rights_reviewed_by?: string | null; automated_access_allowed?: boolean;
-          enabled?: boolean; notes?: string | null; licence_evidence_url?: string | null; licence_verified_at?: string | null;
-          licence_verified_by?: string | null; collection_approved?: boolean; storage_approved?: boolean;
-          display_approved?: boolean; attribution_approved?: boolean; retention_approved?: boolean;
-          redistribution_approved?: boolean; created_at?: string; updated_at?: string;
-        };
-        Relationships: [];
-      };
-
       account_warnings: {
         Row: {
           acknowledged_at: string | null
@@ -264,6 +230,13 @@ export type Database = {
             referencedRelation: "affiliate_partners"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "affiliate_partner_events_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "public_affiliate_partners"
+            referencedColumns: ["id"]
+          },
         ]
       }
       affiliate_partners: {
@@ -365,6 +338,169 @@ export type Database = {
           },
         ]
       }
+      ai_community_activity: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string
+          duel_id: string | null
+          id: string
+          persona_key: string
+          post_id: string | null
+          target_post_id: string | null
+        }
+        Insert: {
+          activity_date: string
+          activity_type: string
+          created_at?: string
+          duel_id?: string | null
+          id?: string
+          persona_key: string
+          post_id?: string | null
+          target_post_id?: string | null
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          duel_id?: string | null
+          id?: string
+          persona_key?: string
+          post_id?: string | null
+          target_post_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_community_activity_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: false
+            referencedRelation: "duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_community_activity_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_community_activity_target_post_id_fkey"
+            columns: ["target_post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_community_runs: {
+        Row: {
+          activity_date: string
+          completed_at: string | null
+          duels_created: number
+          error: string | null
+          posts_created: number
+          replies_created: number
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          activity_date: string
+          completed_at?: string | null
+          duels_created?: number
+          error?: string | null
+          posts_created?: number
+          replies_created?: number
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          activity_date?: string
+          completed_at?: string | null
+          duels_created?: number
+          error?: string | null
+          posts_created?: number
+          replies_created?: number
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ai_duel_challenges: {
+        Row: {
+          created_at: string
+          duel_id: string
+          fixture_id: string
+          persona_key: string
+        }
+        Insert: {
+          created_at?: string
+          duel_id: string
+          fixture_id: string
+          persona_key: string
+        }
+        Update: {
+          created_at?: string
+          duel_id?: string
+          fixture_id?: string
+          persona_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_duel_challenges_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: true
+            referencedRelation: "duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_duel_challenges_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_sports_wallets: {
+        Row: {
+          allocated_points: number
+          balance: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allocated_points?: number
+          balance?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allocated_points?: number
+          balance?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_sports_wallets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_sports_wallets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       annual_pass_claims: {
         Row: {
           amount_cents: number | null
@@ -458,6 +594,42 @@ export type Database = {
         }
         Relationships: []
       }
+      api_call_events: {
+        Row: {
+          claimed_at: string
+          consumer: string | null
+          estimated_cost_usd: number | null
+          feature: string
+          id: number
+          metadata: Json
+          operation: string | null
+          provider: string
+          status: string
+        }
+        Insert: {
+          claimed_at?: string
+          consumer?: string | null
+          estimated_cost_usd?: number | null
+          feature?: string
+          id?: never
+          metadata?: Json
+          operation?: string | null
+          provider: string
+          status?: string
+        }
+        Update: {
+          claimed_at?: string
+          consumer?: string | null
+          estimated_cost_usd?: number | null
+          feature?: string
+          id?: never
+          metadata?: Json
+          operation?: string | null
+          provider?: string
+          status?: string
+        }
+        Relationships: []
+      }
       api_quota_limits: {
         Row: {
           daily_cap: number
@@ -481,6 +653,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      api_spend_period_limits: {
+        Row: {
+          family: string
+          limit_usd: number
+          note: string | null
+          period_end: string
+          period_start: string
+          updated_at: string
+        }
+        Insert: {
+          family: string
+          limit_usd: number
+          note?: string | null
+          period_end: string
+          period_start: string
+          updated_at?: string
+        }
+        Update: {
+          family?: string
+          limit_usd?: number
+          note?: string | null
+          period_end?: string
+          period_start?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_spend_period_limits_family_fkey"
+            columns: ["family"]
+            isOneToOne: true
+            referencedRelation: "api_budgets"
+            referencedColumns: ["family"]
+          },
+        ]
       }
       api_unit_prices: {
         Row: {
@@ -538,6 +745,255 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      bet_slip_legs: {
+        Row: {
+          away: string | null
+          competition: string | null
+          fixture_id: string | null
+          home: string | null
+          id: string
+          market: string | null
+          odds: number | null
+          position: number
+          prediction_id: string | null
+          raw_market: string | null
+          raw_selection: string | null
+          selection: string | null
+          slip_id: string
+        }
+        Insert: {
+          away?: string | null
+          competition?: string | null
+          fixture_id?: string | null
+          home?: string | null
+          id?: string
+          market?: string | null
+          odds?: number | null
+          position: number
+          prediction_id?: string | null
+          raw_market?: string | null
+          raw_selection?: string | null
+          selection?: string | null
+          slip_id: string
+        }
+        Update: {
+          away?: string | null
+          competition?: string | null
+          fixture_id?: string | null
+          home?: string | null
+          id?: string
+          market?: string | null
+          odds?: number | null
+          position?: number
+          prediction_id?: string | null
+          raw_market?: string | null
+          raw_selection?: string | null
+          selection?: string | null
+          slip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bet_slip_legs_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bet_slip_legs_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
+          {
+            foreignKeyName: "bet_slip_legs_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bet_slip_legs_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bet_slip_legs_slip_id_fkey"
+            columns: ["slip_id"]
+            isOneToOne: false
+            referencedRelation: "bet_slips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bet_slips: {
+        Row: {
+          bet_type: string
+          bookmaker: string | null
+          created_at: string
+          id: string
+          image_expires_at: string | null
+          image_path: string | null
+          import_provider: string | null
+          import_ref: string | null
+          note: string | null
+          potential_return: number | null
+          published_at: string | null
+          show_stake: boolean
+          source: string
+          stake: number | null
+          status: string
+          total_odds: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bet_type?: string
+          bookmaker?: string | null
+          created_at?: string
+          id?: string
+          image_expires_at?: string | null
+          image_path?: string | null
+          import_provider?: string | null
+          import_ref?: string | null
+          note?: string | null
+          potential_return?: number | null
+          published_at?: string | null
+          show_stake?: boolean
+          source: string
+          stake?: number | null
+          status?: string
+          total_odds?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bet_type?: string
+          bookmaker?: string | null
+          created_at?: string
+          id?: string
+          image_expires_at?: string | null
+          image_path?: string | null
+          import_provider?: string | null
+          import_ref?: string | null
+          note?: string | null
+          potential_return?: number | null
+          published_at?: string | null
+          show_stake?: boolean
+          source?: string
+          stake?: number | null
+          status?: string
+          total_odds?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bet_slips_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bet_slips_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookmaker_odds_permissions: {
+        Row: {
+          affiliate_partner_slug: string | null
+          affiliate_priority: number
+          affiliate_status: string
+          attribution_approved: boolean
+          automated_access_allowed: boolean
+          bookmaker_name: string
+          collection_approved: boolean
+          created_at: string
+          data_rights_status: string
+          display_approved: boolean
+          domain: string | null
+          enabled: boolean
+          id: string
+          licence_evidence_url: string | null
+          licence_reference_candidate: string | null
+          licence_status: string
+          licence_verified_at: string | null
+          licence_verified_by: string | null
+          notes: string | null
+          redistribution_approved: boolean
+          retention_approved: boolean
+          rights_evidence_url: string | null
+          rights_reviewed_at: string | null
+          rights_reviewed_by: string | null
+          storage_approved: boolean
+          updated_at: string
+        }
+        Insert: {
+          affiliate_partner_slug?: string | null
+          affiliate_priority?: number
+          affiliate_status?: string
+          attribution_approved?: boolean
+          automated_access_allowed?: boolean
+          bookmaker_name: string
+          collection_approved?: boolean
+          created_at?: string
+          data_rights_status?: string
+          display_approved?: boolean
+          domain?: string | null
+          enabled?: boolean
+          id?: string
+          licence_evidence_url?: string | null
+          licence_reference_candidate?: string | null
+          licence_status?: string
+          licence_verified_at?: string | null
+          licence_verified_by?: string | null
+          notes?: string | null
+          redistribution_approved?: boolean
+          retention_approved?: boolean
+          rights_evidence_url?: string | null
+          rights_reviewed_at?: string | null
+          rights_reviewed_by?: string | null
+          storage_approved?: boolean
+          updated_at?: string
+        }
+        Update: {
+          affiliate_partner_slug?: string | null
+          affiliate_priority?: number
+          affiliate_status?: string
+          attribution_approved?: boolean
+          automated_access_allowed?: boolean
+          bookmaker_name?: string
+          collection_approved?: boolean
+          created_at?: string
+          data_rights_status?: string
+          display_approved?: boolean
+          domain?: string | null
+          enabled?: boolean
+          id?: string
+          licence_evidence_url?: string | null
+          licence_reference_candidate?: string | null
+          licence_status?: string
+          licence_verified_at?: string | null
+          licence_verified_by?: string | null
+          notes?: string | null
+          redistribution_approved?: boolean
+          retention_approved?: boolean
+          rights_evidence_url?: string | null
+          rights_reviewed_at?: string | null
+          rights_reviewed_by?: string | null
+          storage_approved?: boolean
+          updated_at?: string
+        }
+        Relationships: []
       }
       brand_logos: {
         Row: {
@@ -686,6 +1142,13 @@ export type Database = {
             foreignKeyName: "chain_heads_last_prediction_id_fkey"
             columns: ["last_prediction_id"]
             isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
+          {
+            foreignKeyName: "chain_heads_last_prediction_id_fkey"
+            columns: ["last_prediction_id"]
+            isOneToOne: false
             referencedRelation: "predictions"
             referencedColumns: ["id"]
           },
@@ -694,6 +1157,67 @@ export type Database = {
             columns: ["last_prediction_id"]
             isOneToOne: false
             referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          author_id: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_ai_generated: boolean
+          parent_id: string | null
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_ai_generated?: boolean
+          parent_id?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_ai_generated?: boolean
+          parent_id?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
             referencedColumns: ["id"]
           },
         ]
@@ -748,6 +1272,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fixtures"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_score_ledger_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
           },
           {
             foreignKeyName: "competition_score_ledger_prediction_id_fkey"
@@ -1207,6 +1738,217 @@ export type Database = {
         }
         Relationships: []
       }
+      dev_readiness_state: {
+        Row: {
+          done: boolean
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          done: boolean
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          done?: boolean
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      duel_picks: {
+        Row: {
+          correct: boolean | null
+          created_at: string
+          duel_id: string
+          market: string
+          selection: string
+          user_id: string
+        }
+        Insert: {
+          correct?: boolean | null
+          created_at?: string
+          duel_id: string
+          market: string
+          selection: string
+          user_id: string
+        }
+        Update: {
+          correct?: boolean | null
+          created_at?: string
+          duel_id?: string
+          market?: string
+          selection?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duel_picks_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: false
+            referencedRelation: "duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duel_picks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duel_picks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      duel_votes: {
+        Row: {
+          created_at: string
+          duel_id: string
+          side: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duel_id: string
+          side: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duel_id?: string
+          side?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duel_votes_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: false
+            referencedRelation: "duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duel_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duel_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      duels: {
+        Row: {
+          accepted_at: string | null
+          challenger: string
+          challenger_correct: number | null
+          created_at: string
+          fixture_id: string
+          id: string
+          markets: string[]
+          message: string | null
+          opponent: string | null
+          opponent_correct: number | null
+          settled_at: string | null
+          stake: number
+          status: string
+          winner: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          challenger: string
+          challenger_correct?: number | null
+          created_at?: string
+          fixture_id: string
+          id?: string
+          markets: string[]
+          message?: string | null
+          opponent?: string | null
+          opponent_correct?: number | null
+          settled_at?: string | null
+          stake?: number
+          status?: string
+          winner?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          challenger?: string
+          challenger_correct?: number | null
+          created_at?: string
+          fixture_id?: string
+          id?: string
+          markets?: string[]
+          message?: string | null
+          opponent?: string | null
+          opponent_correct?: number | null
+          settled_at?: string | null
+          stake?: number
+          status?: string
+          winner?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duels_challenger_fkey"
+            columns: ["challenger"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_challenger_fkey"
+            columns: ["challenger"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_opponent_fkey"
+            columns: ["opponent"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_opponent_fkey"
+            columns: ["opponent"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       early_access: {
         Row: {
           created_at: string
@@ -1256,6 +1998,7 @@ export type Database = {
           claimed_at: string | null
           created_at: string
           created_by: string | null
+          event_key: string | null
           id: string
           kind: string
           last_error: string | null
@@ -1273,6 +2016,7 @@ export type Database = {
           claimed_at?: string | null
           created_at?: string
           created_by?: string | null
+          event_key?: string | null
           id?: string
           kind: string
           last_error?: string | null
@@ -1290,6 +2034,7 @@ export type Database = {
           claimed_at?: string | null
           created_at?: string
           created_by?: string | null
+          event_key?: string | null
           id?: string
           kind?: string
           last_error?: string | null
@@ -1582,6 +2327,104 @@ export type Database = {
         }
         Relationships: []
       }
+      founding_hq_activities: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          lead_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          lead_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          lead_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founding_hq_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "founding_hq_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      founding_hq_leads: {
+        Row: {
+          ambassador_stage: string
+          country: string
+          created_at: string
+          created_by: string | null
+          display_name: string
+          follow_up_on: string | null
+          follower_count: number | null
+          id: string
+          is_ambassador: boolean
+          last_contacted_on: string | null
+          notes: string | null
+          profile_url: string | null
+          registered: boolean
+          segment: string
+          source: string
+          stage: string
+          updated_at: string
+          x_handle: string | null
+        }
+        Insert: {
+          ambassador_stage?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          follow_up_on?: string | null
+          follower_count?: number | null
+          id?: string
+          is_ambassador?: boolean
+          last_contacted_on?: string | null
+          notes?: string | null
+          profile_url?: string | null
+          registered?: boolean
+          segment?: string
+          source?: string
+          stage?: string
+          updated_at?: string
+          x_handle?: string | null
+        }
+        Update: {
+          ambassador_stage?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          follow_up_on?: string | null
+          follower_count?: number | null
+          id?: string
+          is_ambassador?: boolean
+          last_contacted_on?: string | null
+          notes?: string | null
+          profile_url?: string | null
+          registered?: boolean
+          segment?: string
+          source?: string
+          stage?: string
+          updated_at?: string
+          x_handle?: string | null
+        }
+        Relationships: []
+      }
       founding_welcome_sends: {
         Row: {
           email: string
@@ -1633,6 +2476,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_predictions_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
           },
           {
             foreignKeyName: "hidden_predictions_prediction_id_fkey"
@@ -1710,29 +2560,109 @@ export type Database = {
         }
         Relationships: []
       }
-      member_preferences: {
+      league_standings: {
         Row: {
-          competitions: string[]
-          sports: string[]
-          teams: string[]
+          competition: string
+          competition_key: string
+          drawn: number
+          goal_diff: number | null
+          goals_against: number
+          goals_for: number
+          group_name: string
+          lost: number
+          played: number
+          points: number
+          position: number
+          season: string
+          source_domain: string | null
+          source_url: string | null
+          synced_at: string
+          team: string
           updated_at: string
-          user_id: string
+          won: number
         }
         Insert: {
-          competitions?: string[]
-          sports?: string[]
-          teams?: string[]
+          competition: string
+          competition_key: string
+          drawn: number
+          goal_diff?: number | null
+          goals_against: number
+          goals_for: number
+          group_name?: string
+          lost: number
+          played: number
+          points: number
+          position: number
+          season: string
+          source_domain?: string | null
+          source_url?: string | null
+          synced_at?: string
+          team: string
           updated_at?: string
-          user_id: string
+          won: number
         }
         Update: {
-          competitions?: string[]
-          sports?: string[]
-          teams?: string[]
+          competition?: string
+          competition_key?: string
+          drawn?: number
+          goal_diff?: number | null
+          goals_against?: number
+          goals_for?: number
+          group_name?: string
+          lost?: number
+          played?: number
+          points?: number
+          position?: number
+          season?: string
+          source_domain?: string | null
+          source_url?: string | null
+          synced_at?: string
+          team?: string
           updated_at?: string
-          user_id?: string
+          won?: number
         }
         Relationships: []
+      }
+      market_odds: {
+        Row: {
+          captured_at: string
+          fixture_id: string
+          id: number
+          market: string
+          price: number
+          selection: string
+          source_domain: string
+          source_url: string | null
+        }
+        Insert: {
+          captured_at?: string
+          fixture_id: string
+          id?: number
+          market: string
+          price: number
+          selection: string
+          source_domain: string
+          source_url?: string | null
+        }
+        Update: {
+          captured_at?: string
+          fixture_id?: string
+          id?: number
+          market?: string
+          price?: number
+          selection?: string
+          source_domain?: string
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_odds_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       member_details: {
         Row: {
@@ -1772,6 +2702,45 @@ export type Database = {
           },
           {
             foreignKeyName: "member_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_preferences: {
+        Row: {
+          competitions: string[]
+          sports: string[]
+          teams: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          competitions?: string[]
+          sports?: string[]
+          teams?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          competitions?: string[]
+          sports?: string[]
+          teams?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_preferences_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "public_profiles"
@@ -2007,6 +2976,208 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_orders: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          credits: number
+          id: string
+          pack: string
+          paid_at: string | null
+          pf_payment_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          credits: number
+          id?: string
+          pack: string
+          paid_at?: string | null
+          pf_payment_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          credits?: number
+          id?: string
+          pack?: string
+          paid_at?: string | null
+          pf_payment_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pfie_learning_examples: {
+        Row: {
+          created_at: string
+          experiment_id: string | null
+          fixture_key: string | null
+          id: string
+          label: Json | null
+          label_status: string
+          payload: Json
+          provenance: Json
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_id: string
+          source_kind: string
+          subject_key: string | null
+          task_type: string
+          training_status: string
+        }
+        Insert: {
+          created_at?: string
+          experiment_id?: string | null
+          fixture_key?: string | null
+          id?: string
+          label?: Json | null
+          label_status?: string
+          payload?: Json
+          provenance?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id: string
+          source_kind: string
+          subject_key?: string | null
+          task_type: string
+          training_status?: string
+        }
+        Update: {
+          created_at?: string
+          experiment_id?: string | null
+          fixture_key?: string | null
+          id?: string
+          label?: Json | null
+          label_status?: string
+          payload?: Json
+          provenance?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id?: string
+          source_kind?: string
+          subject_key?: string | null
+          task_type?: string
+          training_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pfie_learning_examples_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "synthetic_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pfie_learning_examples_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pfie_learning_examples_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pfie_learning_ingest_runs: {
+        Row: {
+          activity_events_seen: number
+          error: string | null
+          examples_inserted: number
+          examples_updated: number
+          finished_at: string | null
+          id: string
+          metadata: Json
+          real_examples_inserted: number
+          research_seen: number
+          sessions_seen: number
+          started_at: string
+        }
+        Insert: {
+          activity_events_seen?: number
+          error?: string | null
+          examples_inserted?: number
+          examples_updated?: number
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          real_examples_inserted?: number
+          research_seen?: number
+          sessions_seen?: number
+          started_at?: string
+        }
+        Update: {
+          activity_events_seen?: number
+          error?: string | null
+          examples_inserted?: number
+          examples_updated?: number
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          real_examples_inserted?: number
+          research_seen?: number
+          sessions_seen?: number
+          started_at?: string
+        }
+        Relationships: []
+      }
+      pfie_learning_subject_map: {
+        Row: {
+          created_at: string
+          subject_key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          subject_key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          subject_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pfie_learning_subject_map_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pfie_learning_subject_map_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pfie_observations: {
         Row: {
           accepted: boolean
@@ -2117,6 +3288,201 @@ export type Database = {
         }
         Relationships: []
       }
+      pfie_user_activity_events: {
+        Row: {
+          created_at: string
+          event_data: Json
+          event_type: string
+          fixture_id: string | null
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json
+          event_type: string
+          fixture_id?: string | null
+          id?: string
+          source?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json
+          event_type?: string
+          fixture_id?: string | null
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pfie_user_activity_events_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pfie_user_activity_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pfie_user_activity_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_implementation_task_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          detail: Json
+          event_type: string
+          id: number
+          task_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type: string
+          id?: never
+          task_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type?: string
+          id?: never
+          task_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_implementation_task_events_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "platform_implementation_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_implementation_tasks: {
+        Row: {
+          category: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string
+          due_date: string | null
+          id: string
+          priority: string
+          progress: number
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          due_date?: string | null
+          id?: string
+          priority?: string
+          progress?: number
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          due_date?: string | null
+          id?: string
+          priority?: string
+          progress?: number
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      platform_updates: {
+        Row: {
+          created_at: string
+          merged_at: string
+          pr_number: number
+          summary: string
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          merged_at: string
+          pr_number: number
+          summary: string
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          merged_at?: string
+          pr_number?: number
+          summary?: string
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      podcast_episode_notifications: {
+        Row: {
+          consented_at: string
+          created_at: string
+          email: string
+          episode_slug: string
+          id: string
+          notified_at: string | null
+          source: string
+        }
+        Insert: {
+          consented_at?: string
+          created_at?: string
+          email: string
+          episode_slug: string
+          id?: string
+          notified_at?: string | null
+          source?: string
+        }
+        Update: {
+          consented_at?: string
+          created_at?: string
+          email?: string
+          episode_slug?: string
+          id?: string
+          notified_at?: string | null
+          source?: string
+        }
+        Relationships: []
+      }
       point_rules: {
         Row: {
           active: boolean
@@ -2197,32 +3563,38 @@ export type Database = {
       }
       practice_draw_log: {
         Row: {
+          draw_group_id: string
           drawn_at: string
           drawn_by: string | null
           entries: number
           id: string
           note: string | null
           winner_founding_number: number | null
+          winner_rank: number
           winner_user_id: string | null
           witness: string
         }
         Insert: {
+          draw_group_id?: string
           drawn_at?: string
           drawn_by?: string | null
           entries: number
           id?: string
           note?: string | null
           winner_founding_number?: number | null
+          winner_rank?: number
           winner_user_id?: string | null
           witness: string
         }
         Update: {
+          draw_group_id?: string
           drawn_at?: string
           drawn_by?: string | null
           entries?: number
           id?: string
           note?: string | null
           winner_founding_number?: number | null
+          winner_rank?: number
           winner_user_id?: string | null
           witness?: string
         }
@@ -2596,6 +3968,52 @@ export type Database = {
         }
         Relationships: []
       }
+      prediction_odds_overrides: {
+        Row: {
+          admin_id: string | null
+          odds_unverified: boolean
+          prediction_id: string
+          reason: string
+          updated_at: string
+        }
+        Insert: {
+          admin_id?: string | null
+          odds_unverified: boolean
+          prediction_id: string
+          reason: string
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string | null
+          odds_unverified?: boolean
+          prediction_id?: string
+          reason?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
+          {
+            foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       predictions: {
         Row: {
           confidence: number
@@ -2726,9 +4144,136 @@ export type Database = {
           },
         ]
       }
+      pro_payments: {
+        Row: {
+          amount_cents: number
+          paid_at: string
+          pf_payment_id: string
+          subscription_id: string
+        }
+        Insert: {
+          amount_cents: number
+          paid_at?: string
+          pf_payment_id: string
+          subscription_id: string
+        }
+        Update: {
+          amount_cents?: number
+          paid_at?: string
+          pf_payment_id?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pro_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "pro_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pro_subscriptions: {
+        Row: {
+          amount_cents: number
+          cancel_requested_at: string | null
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          entitlement_id: string | null
+          id: string
+          pf_token: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          cancel_requested_at?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          entitlement_id?: string | null
+          id?: string
+          pf_token?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          cancel_requested_at?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          entitlement_id?: string | null
+          id?: string
+          pf_token?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pro_subscriptions_entitlement_id_fkey"
+            columns: ["entitlement_id"]
+            isOneToOne: false
+            referencedRelation: "user_entitlements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pro_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pro_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pro_usage: {
+        Row: {
+          feature: string
+          ref_id: string
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          feature: string
+          ref_id: string
+          used_at?: string
+          user_id: string
+        }
+        Update: {
+          feature?: string
+          ref_id?: string
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pro_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pro_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           account_type: string
+          ai_persona_key: string | null
           avatar_url: string | null
           birth_year: number | null
           created_at: string
@@ -2737,7 +4282,6 @@ export type Database = {
           id: string
           is_18_attested: boolean
           is_ai_participant: boolean
-          ai_persona_key: string | null
           is_banned: boolean
           language: string
           marketing_opt_in: boolean
@@ -2752,6 +4296,7 @@ export type Database = {
         }
         Insert: {
           account_type?: string
+          ai_persona_key?: string | null
           avatar_url?: string | null
           birth_year?: number | null
           created_at?: string
@@ -2760,7 +4305,6 @@ export type Database = {
           id: string
           is_18_attested: boolean
           is_ai_participant?: boolean
-          ai_persona_key?: string | null
           is_banned?: boolean
           language?: string
           marketing_opt_in?: boolean
@@ -2775,6 +4319,7 @@ export type Database = {
         }
         Update: {
           account_type?: string
+          ai_persona_key?: string | null
           avatar_url?: string | null
           birth_year?: number | null
           created_at?: string
@@ -2783,7 +4328,6 @@ export type Database = {
           id?: string
           is_18_attested?: boolean
           is_ai_participant?: boolean
-          ai_persona_key?: string | null
           is_banned?: boolean
           language?: string
           marketing_opt_in?: boolean
@@ -2807,6 +4351,90 @@ export type Database = {
           {
             foreignKeyName: "profiles_referred_by_fkey"
             columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      punt_ai_cache: {
+        Row: {
+          answer: string
+          cache_key: string
+          created_at: string
+          expires_at: string
+          mode: string
+          model: string
+          sources: Json
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          cache_key: string
+          created_at?: string
+          expires_at: string
+          mode: string
+          model: string
+          sources?: Json
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          cache_key?: string
+          created_at?: string
+          expires_at?: string
+          mode?: string
+          model?: string
+          sources?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      punt_ai_usage: {
+        Row: {
+          cache_hit: boolean
+          cache_key: string
+          created_at: string
+          credits_charged: number
+          id: string
+          mode: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cache_hit?: boolean
+          cache_key: string
+          created_at?: string
+          credits_charged?: number
+          id?: string
+          mode: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cache_hit?: boolean
+          cache_key?: string
+          created_at?: string
+          credits_charged?: number
+          id?: string
+          mode?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "punt_ai_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "punt_ai_usage_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
@@ -2881,6 +4509,41 @@ export type Database = {
           },
         ]
       }
+      puntpoints_reward_cost_promotions: {
+        Row: {
+          base_points_cost: number
+          ends_at: string
+          promotional_points_cost: number
+          reverted_at: string | null
+          reward_id: string
+          starts_at: string
+        }
+        Insert: {
+          base_points_cost: number
+          ends_at: string
+          promotional_points_cost: number
+          reverted_at?: string | null
+          reward_id: string
+          starts_at: string
+        }
+        Update: {
+          base_points_cost?: number
+          ends_at?: string
+          promotional_points_cost?: number
+          reverted_at?: string | null
+          reward_id?: string
+          starts_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puntpoints_reward_cost_promotions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: true
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       puntpoints_transfers: {
         Row: {
           created_at: string
@@ -2931,6 +4594,171 @@ export type Database = {
           {
             foreignKeyName: "puntpoints_transfers_to_user_fkey"
             columns: ["to_user"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_notification_campaigns: {
+        Row: {
+          attempted_count: number
+          audience: string
+          body: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          failed_count: number
+          id: string
+          sent_count: number
+          status: string
+          target_url: string
+          title: string
+        }
+        Insert: {
+          attempted_count?: number
+          audience: string
+          body: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          sent_count?: number
+          status?: string
+          target_url?: string
+          title: string
+        }
+        Update: {
+          attempted_count?: number
+          audience?: string
+          body?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          sent_count?: number
+          status?: string
+          target_url?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_notification_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_notification_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_notification_deliveries: {
+        Row: {
+          campaign_id: string
+          error: string | null
+          id: number
+          sent_at: string
+          status: string
+          status_code: number | null
+          subscription_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          campaign_id: string
+          error?: string | null
+          id?: never
+          sent_at?: string
+          status: string
+          status_code?: number | null
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          error?: string | null
+          id?: never
+          sent_at?: string
+          status?: string
+          status_code?: number | null
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_notification_deliveries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "push_notification_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_notification_deliveries_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "push_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          enabled: boolean
+          endpoint: string
+          expiration_time: number | null
+          id: string
+          last_seen_at: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          enabled?: boolean
+          endpoint: string
+          expiration_time?: number | null
+          id?: string
+          last_seen_at?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          enabled?: boolean
+          endpoint?: string
+          expiration_time?: number | null
+          id?: string
+          last_seen_at?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
@@ -3201,6 +5029,13 @@ export type Database = {
             foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
             columns: ["qualifying_prediction_id"]
             isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
+            columns: ["qualifying_prediction_id"]
+            isOneToOne: false
             referencedRelation: "predictions"
             referencedColumns: ["id"]
           },
@@ -3267,6 +5102,13 @@ export type Database = {
           resolved_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "reports_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
           {
             foreignKeyName: "reports_prediction_id_fkey"
             columns: ["prediction_id"]
@@ -3554,6 +5396,13 @@ export type Database = {
             foreignKeyName: "settlement_events_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
             referencedRelation: "predictions"
             referencedColumns: ["id"]
           },
@@ -3562,6 +5411,74 @@ export type Database = {
             columns: ["prediction_id"]
             isOneToOne: false
             referencedRelation: "visible_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slip_parses: {
+        Row: {
+          chars: number
+          created_at: string
+          id: number
+          ok: boolean
+          source: string
+          user_id: string
+        }
+        Insert: {
+          chars?: number
+          created_at?: string
+          id?: never
+          ok: boolean
+          source: string
+          user_id: string
+        }
+        Update: {
+          chars?: number
+          created_at?: string
+          id?: never
+          ok?: boolean
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "slip_parses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "slip_parses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      standings_applied: {
+        Row: {
+          applied_at: string
+          competition_key: string
+          fixture_id: string
+        }
+        Insert: {
+          applied_at?: string
+          competition_key: string
+          fixture_id: string
+        }
+        Update: {
+          applied_at?: string
+          competition_key?: string
+          fixture_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "standings_applied_fixture_id_fkey"
+            columns: ["fixture_id"]
+            isOneToOne: false
+            referencedRelation: "fixtures"
             referencedColumns: ["id"]
           },
         ]
@@ -3629,6 +5546,283 @@ export type Database = {
           },
         ]
       }
+      sync_status: {
+        Row: {
+          consecutive_failures: number
+          job: string
+          last_attempt_at: string | null
+          last_error: string | null
+          last_success_at: string | null
+          last_synced_at: string | null
+          meta: Json
+          scope: string
+        }
+        Insert: {
+          consecutive_failures?: number
+          job: string
+          last_attempt_at?: string | null
+          last_error?: string | null
+          last_success_at?: string | null
+          last_synced_at?: string | null
+          meta?: Json
+          scope: string
+        }
+        Update: {
+          consecutive_failures?: number
+          job?: string
+          last_attempt_at?: string | null
+          last_error?: string | null
+          last_success_at?: string | null
+          last_synced_at?: string | null
+          meta?: Json
+          scope?: string
+        }
+        Relationships: []
+      }
+      synthetic_budget_ledger: {
+        Row: {
+          created_at: string
+          estimated_usd: number
+          experiment_id: string
+          id: string
+          metadata: Json
+          operation: string
+          provider: string
+          provider_request_id: string | null
+          request_key: string
+          settled_at: string | null
+          settled_usd: number | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_usd: number
+          experiment_id: string
+          id?: string
+          metadata?: Json
+          operation: string
+          provider: string
+          provider_request_id?: string | null
+          request_key: string
+          settled_at?: string | null
+          settled_usd?: number | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          estimated_usd?: number
+          experiment_id?: string
+          id?: string
+          metadata?: Json
+          operation?: string
+          provider?: string
+          provider_request_id?: string | null
+          request_key?: string
+          settled_at?: string | null
+          settled_usd?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "synthetic_budget_ledger_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "synthetic_experiments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      synthetic_experiments: {
+        Row: {
+          budget_cap_usd: number
+          created_at: string
+          ends_at: string
+          environment: string
+          id: string
+          label: string
+          reserved_usd: number
+          slug: string
+          spent_usd: number
+          starts_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          budget_cap_usd?: number
+          created_at?: string
+          ends_at: string
+          environment?: string
+          id?: string
+          label: string
+          reserved_usd?: number
+          slug: string
+          spent_usd?: number
+          starts_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          budget_cap_usd?: number
+          created_at?: string
+          ends_at?: string
+          environment?: string
+          id?: string
+          label?: string
+          reserved_usd?: number
+          slug?: string
+          spent_usd?: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      synthetic_personas: {
+        Row: {
+          active: boolean
+          created_at: string
+          experiment_id: string
+          id: string
+          last_decision_at: string | null
+          last_run_at: string | null
+          persona: Json
+          persona_key: string
+          profile_id: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          experiment_id: string
+          id?: string
+          last_decision_at?: string | null
+          last_run_at?: string | null
+          persona: Json
+          persona_key: string
+          profile_id?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          experiment_id?: string
+          id?: string
+          last_decision_at?: string | null
+          last_run_at?: string | null
+          persona?: Json
+          persona_key?: string
+          profile_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "synthetic_personas_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "synthetic_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "synthetic_personas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "synthetic_personas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      synthetic_research: {
+        Row: {
+          created_at: string
+          experiment_id: string
+          fixture_key: string
+          id: string
+          provider: string
+          response_json: Json
+          source_urls: string[]
+        }
+        Insert: {
+          created_at?: string
+          experiment_id: string
+          fixture_key: string
+          id?: string
+          provider?: string
+          response_json: Json
+          source_urls?: string[]
+        }
+        Update: {
+          created_at?: string
+          experiment_id?: string
+          fixture_key?: string
+          id?: string
+          provider?: string
+          response_json?: Json
+          source_urls?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "synthetic_research_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "synthetic_experiments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      synthetic_sessions: {
+        Row: {
+          created_at: string
+          error_code: string | null
+          experiment_id: string
+          finished_at: string | null
+          id: string
+          metadata: Json
+          outcome: string
+          page_paths: string[]
+          persona_key: string
+          session_type: string
+          started_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_code?: string | null
+          experiment_id: string
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          outcome?: string
+          page_paths?: string[]
+          persona_key: string
+          session_type: string
+          started_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_code?: string | null
+          experiment_id?: string
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          outcome?: string
+          page_paths?: string[]
+          persona_key?: string
+          session_type?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "synthetic_sessions_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "synthetic_experiments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_badges: {
         Row: {
           attempts: number
@@ -3645,6 +5839,7 @@ export type Database = {
           team_key: string
           team_name: string
           updated_at: string
+          upgrade_checked_at: string | null
           verified_at: string | null
         }
         Insert: {
@@ -3662,6 +5857,7 @@ export type Database = {
           team_key: string
           team_name: string
           updated_at?: string
+          upgrade_checked_at?: string | null
           verified_at?: string | null
         }
         Update: {
@@ -3679,7 +5875,134 @@ export type Database = {
           team_key?: string
           team_name?: string
           updated_at?: string
+          upgrade_checked_at?: string | null
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      team_follow_events: {
+        Row: {
+          action: string
+          created_at: string
+          id: number
+          source: string
+          sport: string
+          team_key: string
+          team_name: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: never
+          source?: string
+          sport: string
+          team_key: string
+          team_name: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: never
+          source?: string
+          sport?: string
+          team_key?: string
+          team_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_follow_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_follow_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_follows: {
+        Row: {
+          created_at: string
+          sport: string
+          team_key: string
+          team_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          sport?: string
+          team_key: string
+          team_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          sport?: string
+          team_key?: string
+          team_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_follows_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_follows_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_results: {
+        Row: {
+          away: string
+          away_score: number
+          competition: string
+          competition_key: string
+          created_at: string
+          home: string
+          home_score: number
+          id: string
+          match_date: string
+          source_domains: string[]
+        }
+        Insert: {
+          away: string
+          away_score: number
+          competition: string
+          competition_key: string
+          created_at?: string
+          home: string
+          home_score: number
+          id?: string
+          match_date: string
+          source_domains?: string[]
+        }
+        Update: {
+          away?: string
+          away_score?: number
+          competition?: string
+          competition_key?: string
+          created_at?: string
+          home?: string
+          home_score?: number
+          id?: string
+          match_date?: string
+          source_domains?: string[]
         }
         Relationships: []
       }
@@ -3910,12 +6233,27 @@ export type Database = {
       }
     }
     Views: {
-      public_affiliate_partners: {
+      api_call_usage_attribution: {
         Row: {
+          calls: number | null
+          consumer: string | null
+          estimated_usd: number | null
+          feature: string | null
+          last_call: string | null
+          operation: string | null
+          provider: string | null
+        }
+        Relationships: []
+      }
+      completed_matches: {
+        Row: {
+          away: string | null
+          away_score: number | null
+          competition: string | null
+          home: string | null
+          home_score: number | null
           id: string | null
-          name: string | null
-          tracking_link: string | null
-          website_url: string | null
+          kickoff_at: string | null
         }
         Relationships: []
       }
@@ -3945,6 +6283,65 @@ export type Database = {
           },
         ]
       }
+      pfie_learning_signals: {
+        Row: {
+          category: string | null
+          competition: string | null
+          event_type: string | null
+          interactions: number | null
+          last_seen_at: string | null
+          market: string | null
+          pseudonymous_participants: number | null
+          sport: string | null
+        }
+        Relationships: []
+      }
+      pfie_training_dataset: {
+        Row: {
+          created_at: string | null
+          fixture_key: string | null
+          id: string | null
+          label: Json | null
+          payload: Json | null
+          provenance: Json | null
+          reviewed_at: string | null
+          source_kind: string | null
+          task_type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fixture_key?: string | null
+          id?: string | null
+          label?: Json | null
+          payload?: Json | null
+          provenance?: Json | null
+          reviewed_at?: string | null
+          source_kind?: string | null
+          task_type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fixture_key?: string | null
+          id?: string | null
+          label?: Json | null
+          payload?: Json | null
+          provenance?: Json | null
+          reviewed_at?: string | null
+          source_kind?: string | null
+          task_type?: string | null
+        }
+        Relationships: []
+      }
+      prediction_odds_state: {
+        Row: {
+          odds: number | null
+          odds_unverified: boolean | null
+          prediction_id: string | null
+          reference_odds: number | null
+          settle_odds: number | null
+        }
+        Relationships: []
+      }
       prediction_results: {
         Row: {
           prediction_id: string | null
@@ -3954,6 +6351,13 @@ export type Database = {
           units: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "settlement_events_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_odds_state"
+            referencedColumns: ["prediction_id"]
+          },
           {
             foreignKeyName: "settlement_events_prediction_id_fkey"
             columns: ["prediction_id"]
@@ -3970,6 +6374,27 @@ export type Database = {
           },
         ]
       }
+      public_affiliate_partners: {
+        Row: {
+          id: string | null
+          name: string | null
+          tracking_link: string | null
+          website_url: string | null
+        }
+        Insert: {
+          id?: string | null
+          name?: string | null
+          tracking_link?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          id?: string | null
+          name?: string | null
+          tracking_link?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       public_profiles: {
         Row: {
           avatar_url: string | null
@@ -3977,7 +6402,7 @@ export type Database = {
           display_name: string | null
           founding_number: number | null
           id: string | null
-          is_ai_participant: boolean
+          is_ai_participant: boolean | null
           username: string | null
         }
         Insert: {
@@ -3986,7 +6411,7 @@ export type Database = {
           display_name?: string | null
           founding_number?: number | null
           id?: string | null
-          is_ai_participant?: boolean
+          is_ai_participant?: boolean | null
           username?: never
         }
         Update: {
@@ -3995,7 +6420,7 @@ export type Database = {
           display_name?: string | null
           founding_number?: number | null
           id?: string | null
-          is_ai_participant?: boolean
+          is_ai_participant?: boolean | null
           username?: never
         }
         Relationships: []
@@ -4038,44 +6463,14 @@ export type Database = {
           id: string | null
           line: number | null
           market: string | null
-          odds_unverified: boolean | null
           odds: number | null
+          odds_unverified: boolean | null
           prev_hash: string | null
           reasoning: string | null
           reference_odds: number | null
           selection: string | null
           seq: number | null
           user_id: string | null
-        }
-        Insert: {
-          confidence?: number | null
-          created_at?: string | null
-          fixture_id?: string | null
-          hash?: string | null
-          id?: string | null
-          line?: number | null
-          market?: string | null
-          odds?: number | null
-          prev_hash?: string | null
-          reasoning?: string | null
-          selection?: string | null
-          seq?: number | null
-          user_id?: string | null
-        }
-        Update: {
-          confidence?: number | null
-          created_at?: string | null
-          fixture_id?: string | null
-          hash?: string | null
-          id?: string | null
-          line?: number | null
-          market?: string | null
-          odds?: number | null
-          prev_hash?: string | null
-          reasoning?: string | null
-          selection?: string | null
-          seq?: number | null
-          user_id?: string | null
         }
         Relationships: [
           {
@@ -4134,81 +6529,16 @@ export type Database = {
     }
     Functions: {
       accept_duel: { Args: { p_duel: string; p_picks: Json }; Returns: Json }
-      admin_set_odds_check: {
-        Args: { p_prediction: string; p_reason: string; p_unverified: boolean }
-        Returns: {
-          admin_id: string | null
-          odds_unverified: boolean
-          prediction_id: string
-          reason: string
-          updated_at: string
-        }
-      }
-      create_duel: {
-        Args: {
-          p_fixture: string
-          p_message?: string
-          p_opponent: string | null
-          p_picks: Json
-          p_stake: number
-        }
-        Returns: string
-      }
-      duel_config: { Args: never; Returns: Json }
-      duel_detail: { Args: { p_duel: string }; Returns: Json }
-      duel_leaderboard: {
-        Args: { p_days?: number | null; p_limit?: number }
-        Returns: {
-          draws: number
-          founding_number: number | null
-          losses: number
-          played: number
-          points_won: number
-          username: string
-          wins: number
-          xp: number
-        }[]
-      }
-      duel_vote_totals: { Args: { p_duel: string }; Returns: Json }
-      duels_feed: {
-        Args: { p_fixture?: string | null; p_limit?: number; p_scope: string }
-        Returns: Json
-      }
-      duels_to_settle: {
-        Args: never
-        Returns: {
-          away_score: number | null
-          duel_id: string
-          fixture_status: string
-          home_score: number | null
-          market: string
-          selection: string
-          user_id: string
-        }[]
-      }
-      expire_duels: { Args: never; Returns: number }
-      reference_odds: {
-        Args: { p_fixture_ids: string[] }
-        Returns: {
-          captured_at: string
-          fixture_id: string
-          market: string
-          price: number
-          selection: string
-        }[]
-      }
-      settle_duel: {
-        Args: { p_duel: string; p_results: Json; p_void: boolean }
-        Returns: string
-      }
-      vote_duel: { Args: { p_duel: string; p_side: string }; Returns: Json }
-      withdraw_duel: { Args: { p_duel: string }; Returns: string }
       acknowledge_warnings: { Args: never; Returns: number }
       admin_adjust_points: {
         Args: { p_points: number; p_reason: string; p_user: string }
         Returns: number
       }
       admin_analytics: { Args: { p_days?: number }; Returns: Json }
+      admin_approve_pfie_learning_example: {
+        Args: { p_admin_id: string; p_example_id: string }
+        Returns: boolean
+      }
       admin_campaign_report: {
         Args: { p_campaign?: string; p_since: string }
         Returns: {
@@ -4317,11 +6647,14 @@ export type Database = {
       admin_practice_draw_run: {
         Args: { p_note?: string; p_witness: string }
         Returns: {
+          draw_group_id: string
           drawn_at: string
           entries: number
           winner_email: string
           winner_founding_number: number
           winner_phone: string
+          winner_rank: number
+          winner_user_id: string
           winner_username: string
         }[]
       }
@@ -4354,6 +6687,22 @@ export type Database = {
         Args: { p_approve: boolean; p_reason?: string; p_user: string }
         Returns: string
       }
+      admin_set_odds_check: {
+        Args: { p_prediction: string; p_reason: string; p_unverified: boolean }
+        Returns: {
+          admin_id: string | null
+          odds_unverified: boolean
+          prediction_id: string
+          reason: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "prediction_odds_overrides"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       admin_settle_prediction: {
         Args: { p_prediction: string; p_reason: string; p_result: string }
         Returns: {
@@ -4374,6 +6723,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_team_follow_stats: { Args: never; Returns: Json }
       annual_pass_expired_recipients: {
         Args: { p_grace?: string }
         Returns: {
@@ -4415,10 +6765,12 @@ export type Database = {
         Args: { p_email: string; p_user: string }
         Returns: undefined
       }
-      api_budget_claim: {
-        Args: { p_provider: string; p_units?: number }
-        Returns: boolean
-      }
+      api_budget_claim:
+        | { Args: { p_provider: string; p_units?: number }; Returns: boolean }
+        | {
+            Args: { p_feature: string; p_provider: string; p_units: number }
+            Returns: boolean
+          }
       api_family_spend_usd: { Args: { p_family: string }; Returns: number }
       api_provider_family: { Args: { p_provider: string }; Returns: string }
       api_quota_claim: {
@@ -4438,6 +6790,17 @@ export type Database = {
           today: number
         }[]
       }
+      api_spend_period_status: {
+        Args: never
+        Returns: {
+          family: string
+          limit_usd: number
+          period_end: string
+          period_start: string
+          remaining_usd: number
+          spent_usd: number
+        }[]
+      }
       api_spend_status: {
         Args: never
         Returns: {
@@ -4448,6 +6811,10 @@ export type Database = {
         }[]
       }
       apply_auto_settlements: { Args: { p_rows: Json }; Returns: number }
+      apply_result_to_standings: {
+        Args: { p_fixture: string }
+        Returns: string
+      }
       award_points: {
         Args: {
           p_points?: number
@@ -4458,8 +6825,13 @@ export type Database = {
         Returns: number
       }
       can_post: { Args: { p_user: string }; Returns: boolean }
+      claim_ai_community_run: {
+        Args: { p_activity_date: string }
+        Returns: boolean
+      }
       claim_annual_pass: { Args: never; Returns: Json }
       claim_reserved_founding: { Args: { p_user: string }; Returns: number }
+      community_can_post: { Args: never; Returns: boolean }
       competition_board: {
         Args: { p_competition: string; p_period: string }
         Returns: {
@@ -4530,6 +6902,25 @@ export type Database = {
         Args: { p_error: boolean; p_provider: string }
         Returns: undefined
       }
+      create_ai_open_duel: {
+        Args: {
+          p_fixture_id: string
+          p_message?: string
+          p_persona_key: string
+          p_picks: Json
+        }
+        Returns: string
+      }
+      create_duel: {
+        Args: {
+          p_fixture: string
+          p_message?: string
+          p_opponent: string
+          p_picks: Json
+          p_stake: number
+        }
+        Returns: string
+      }
       create_prediction: {
         Args: {
           p_confidence: number
@@ -4549,8 +6940,10 @@ export type Database = {
           line: number | null
           market: string
           odds: number
+          odds_unverified: boolean
           prev_hash: string
           reasoning: string | null
+          reference_odds: number | null
           selection: string
           seq: number
           user_id: string
@@ -4563,6 +6956,61 @@ export type Database = {
         }
       }
       credit_balance: { Args: { p_user: string }; Returns: number }
+      duel_check_picks: { Args: { p_picks: Json }; Returns: string[] }
+      duel_check_stake: {
+        Args: { p_stake: number; p_user: string }
+        Returns: undefined
+      }
+      duel_config: { Args: never; Returns: Json }
+      duel_detail: { Args: { p_duel: string }; Returns: Json }
+      duel_leaderboard: {
+        Args: { p_days?: number; p_limit?: number }
+        Returns: {
+          draws: number
+          founding_number: number
+          is_ai_participant: boolean
+          losses: number
+          played: number
+          points_won: number
+          username: string
+          wins: number
+          xp: number
+        }[]
+      }
+      duel_notify: {
+        Args: {
+          p_message: string
+          p_title: string
+          p_url: string
+          p_user: string
+        }
+        Returns: undefined
+      }
+      duel_refund: {
+        Args: {
+          p_duel: Database["public"]["Tables"]["duels"]["Row"]
+          p_reason: string
+          p_user: string
+        }
+        Returns: undefined
+      }
+      duel_vote_totals: { Args: { p_duel: string }; Returns: Json }
+      duels_feed: {
+        Args: { p_fixture?: string; p_limit?: number; p_scope: string }
+        Returns: Json
+      }
+      duels_to_settle: {
+        Args: never
+        Returns: {
+          away_score: number
+          duel_id: string
+          fixture_status: string
+          home_score: number
+          market: string
+          selection: string
+          user_id: string
+        }[]
+      }
       email_outbox_claim: {
         Args: { p_limit: number }
         Returns: {
@@ -4571,6 +7019,7 @@ export type Database = {
           claimed_at: string | null
           created_at: string
           created_by: string | null
+          event_key: string | null
           id: string
           kind: string
           last_error: string | null
@@ -4590,7 +7039,10 @@ export type Database = {
         }
       }
       email_outbox_release: { Args: { p_ids: string[] }; Returns: number }
+      end_lapsed_pro: { Args: never; Returns: number }
+      expire_duels: { Args: never; Returns: number }
       export_my_data: { Args: never; Returns: Json }
+      export_my_pfie_learning_data: { Args: never; Returns: Json }
       founding_campaign_recipients: {
         Args: { p_campaign: string }
         Returns: {
@@ -4608,6 +7060,25 @@ export type Database = {
           recipient_name: string
         }[]
       }
+      grant_annual_pass_pro: { Args: { p_user: string }; Returns: undefined }
+      grant_credit_purchase: {
+        Args: {
+          p_amount_cents: number
+          p_order: string
+          p_pf_payment_id: string
+        }
+        Returns: string
+      }
+      grant_pro_payment: {
+        Args: {
+          p_amount_cents: number
+          p_pf_payment_id: string
+          p_sub: string
+          p_token: string
+        }
+        Returns: string
+      }
+      grant_staff_admin: { Args: { p_user: string }; Returns: boolean }
       has_entitlement: {
         Args: { p_entitlement: string; p_user: string }
         Returns: boolean
@@ -4619,9 +7090,11 @@ export type Database = {
           user_id: string
         }[]
       }
+      insert_team_results: { Args: { p_rows: Json }; Returns: number }
       invoke_cron: { Args: { p_path: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
       is_founding_member: { Args: never; Returns: boolean }
+      is_staff_email: { Args: { p_email: string }; Returns: boolean }
       launch_at: { Args: never; Returns: string }
       launch_audience: {
         Args: never
@@ -4732,6 +7205,19 @@ export type Database = {
         }[]
       }
       next_founding_number: { Args: never; Returns: number }
+      odds_unverified_threshold: { Args: never; Returns: number }
+      payments_enabled: { Args: never; Returns: boolean }
+      pending_result_fixtures: {
+        Args: never
+        Returns: {
+          away: string
+          fixture_id: string
+          home: string
+          kickoff_at: string
+          pending: number
+          status: string
+        }[]
+      }
       pending_settlements: {
         Args: never
         Returns: {
@@ -4746,17 +7232,7 @@ export type Database = {
           status: string
         }[]
       }
-      pending_result_fixtures: {
-        Args: never
-        Returns: {
-          away: string
-          fixture_id: string
-          home: string
-          kickoff_at: string
-          pending: number
-          status: string
-        }[]
-      }
+      pfie_prune_learning_subject_maps: { Args: never; Returns: number }
       point_rules_public: {
         Args: never
         Returns: {
@@ -4851,6 +7327,37 @@ export type Database = {
           is_founding: boolean
         }[]
       }
+      pro_cap: { Args: { p_user: string }; Returns: number }
+      provision_ai_community_member: {
+        Args: {
+          p_display_name: string
+          p_persona_key: string
+          p_user_id: string
+          p_username: string
+        }
+        Returns: number
+      }
+      publish_ai_community_post: {
+        Args: {
+          p_activity_date: string
+          p_activity_type: string
+          p_body: string
+          p_category: string
+          p_parent_id?: string
+          p_persona_key: string
+          p_target_post_id?: string
+          p_title: string
+        }
+        Returns: string
+      }
+      publish_slip: {
+        Args: { p_confidence?: number; p_slip: string }
+        Returns: Json
+      }
+      punt_ai_claim: {
+        Args: { p_cache_key: string; p_mode: string; p_user: string }
+        Returns: string
+      }
       puntpoints_balance: { Args: { p_user: string }; Returns: number }
       puntpoints_transferable: { Args: { p_user: string }; Returns: number }
       purge_old_campaign_events: { Args: never; Returns: undefined }
@@ -4884,6 +7391,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      record_sync: {
+        Args: {
+          p_error: string
+          p_job: string
+          p_meta: Json
+          p_ok: boolean
+          p_scope: string
+        }
+        Returns: undefined
+      }
       redeem_reward: {
         Args: { p_reward: string }
         Returns: {
@@ -4905,6 +7422,38 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      reference_odds: {
+        Args: { p_fixture_ids: string[] }
+        Returns: {
+          captured_at: string
+          fixture_id: string
+          market: string
+          price: number
+          selection: string
+        }[]
+      }
+      replace_standings: {
+        Args: {
+          p_competition: string
+          p_key: string
+          p_rows: Json
+          p_season: string
+          p_source_domain: string
+          p_source_url: string
+        }
+        Returns: number
+      }
+      reserve_synthetic_budget: {
+        Args: {
+          p_estimated_usd: number
+          p_experiment_id: string
+          p_operation: string
+          p_provider: string
+          p_request_key: string
+        }
+        Returns: boolean
+      }
+      revert_puntpoints_reward_cost_promo: { Args: never; Returns: number }
       reward_setting: { Args: { p_key: string }; Returns: boolean }
       rewards_catalogue: {
         Args: never
@@ -4934,10 +7483,51 @@ export type Database = {
           rewards_enabled: boolean
         }[]
       }
+      season_result_counts: {
+        Args: never
+        Returns: {
+          competition: string
+          results: number
+        }[]
+      }
+      seed_ai_open_duels: { Args: { p_target?: number }; Returns: number }
+      set_pro_subscription_status: {
+        Args: { p_status: string; p_sub: string }
+        Returns: string
+      }
+      set_team_follow: {
+        Args: {
+          p_follow: boolean
+          p_source?: string
+          p_sport: string
+          p_team_key: string
+          p_team_name: string
+        }
+        Returns: boolean
+      }
+      setting_bool: {
+        Args: { p_default: boolean; p_key: string }
+        Returns: boolean
+      }
       setting_int: {
         Args: { p_default: number; p_key: string }
         Returns: number
       }
+      settle_duel: {
+        Args: { p_duel: string; p_results: Json; p_void: boolean }
+        Returns: string
+      }
+      settle_synthetic_budget: {
+        Args: {
+          p_failed?: boolean
+          p_provider_request_id?: string
+          p_request_key: string
+          p_settled_usd?: number
+        }
+        Returns: boolean
+      }
+      slip_detail: { Args: { p_slip: string }; Returns: Json }
+      slips_feed: { Args: { p_limit?: number; p_scope: string }; Returns: Json }
       spend_credits: {
         Args: { p_feature: string; p_ref: string }
         Returns: Json
@@ -4948,12 +7538,22 @@ export type Database = {
         Returns: string
       }
       sync_my_points: { Args: never; Returns: number }
+      team_follower_counts: {
+        Args: { p_sport?: string }
+        Returns: {
+          followers: number
+          team_key: string
+        }[]
+      }
       transfer_puntpoints: {
         Args: { p_note?: string; p_points: number; p_to_username: string }
         Returns: Json
       }
+      update_my_username: { Args: { p_username: string }; Returns: string }
       username_available: { Args: { p_username: string }; Returns: boolean }
       vest_referrals: { Args: never; Returns: number }
+      vote_duel: { Args: { p_duel: string; p_side: string }; Returns: Json }
+      withdraw_duel: { Args: { p_duel: string }; Returns: string }
       write_chain_head: {
         Args: { p_day: string }
         Returns: {

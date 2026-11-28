@@ -242,6 +242,7 @@ export const adminListMembers = createServerFn({ method: "POST" })
         accountType: String(p["account_type"] ?? "free"),
         foundingNumber: (p["founding_number"] as number | null) ?? null,
         isBanned: p["is_banned"] === true,
+        isAiParticipant: p["is_ai_participant"] === true,
         suspendedUntil: future(p["suspended_until"]),
         limitedUntil: future(p["posting_paused_until"]),
         createdAt: String(p["created_at"]),

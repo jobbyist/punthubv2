@@ -10,6 +10,7 @@
 import { sastDate } from "@/lib/sast";
 
 import { missingCredentials, type ContentEnv } from "./config";
+import { modelQuotaOptions } from "./usage";
 import { ProviderError } from "./http";
 import { AllModelsFailed, createModelRouter } from "./model-router";
 import { articleRequest, parseReview, reviewRequest, revisionRequest } from "./prompt";
@@ -167,21 +168,19 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
 
     // Writing, through the Parallel-first editorial model router.
     const usage = await store.usageToday().catch(() => ({}) as Record<string, number>);
-    const usedToday: Record<string, number> = {};
-    for (const m of env.models) usedToday[m] = usage["parallel-chat:medium"] ?? 0;
+    const quota = modelQuotaOptions(env.models, usage, env.dailyRequestCap);
     const router = createModelRouter(deps.llm, {
       models: env.models,
-      usedToday,
-      dailyCap: env.dailyRequestCap,
+      ...quota,
       ...(deps.sleep ? { sleep: deps.sleep } : {}),
       onAttempt: async (a) => {
         if (a.outcome === "skipped_cap" || a.outcome === "refused_not_free") {
           await log("model", "warn", `${a.model}: ${a.outcome}`, a.detail);
           return;
         }
-        await store
-          .countUsage("parallel-chat:medium", a.outcome === "ok" ? "ok" : "error")
-          .catch(() => undefined);
+        const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
+        const provider = effort ? `parallel-chat:${effort}` : `gemini:${a.model}`;
+        await store.countUsage(provider, a.outcome === "ok" ? "ok" : "error").catch(() => undefined);
         if (a.outcome !== "ok")
           await log("model", "warn", `${a.model} failed: ${a.outcome}`, a.detail);
       },

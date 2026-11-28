@@ -49,7 +49,9 @@ describe("syncResults lookback", () => {
       away: `Away ${i + 1}`,
       kickoffAt: new Date(now.getTime() - (i + 2) * 60 * 60_000).toISOString(),
     }));
-    let received: { fixtures?: { home: string; away: string; kickoffAt: string }[] } | null = null;
+    let received = null as {
+      fixtures?: { home: string; away: string; kickoffAt: string }[];
+    } | null;
     const store = {
       async openSince() {
         return open;
@@ -126,12 +128,107 @@ describe("syncResults lookback", () => {
     const report = await syncResults(provider, store, now, { force: true, only: ["uecl"] });
 
     expect(report.upserted).toBe(2);
-    expect(saved.map((row) => row.providerRef).sort()).toEqual([
+    expect(saved.map((row) => row["providerRef"]).sort()).toEqual([
       "old-brann-agf",
       "old-brann-aarhus",
     ]);
-    expect(saved.every((row) => row.home === "Brann" && row.kickoffAt === open[0]?.kickoffAt)).toBe(
-      true,
+    expect(
+      saved.every((row) => row["home"] === "Brann" && row["kickoffAt"] === open[0]?.kickoffAt),
+    ).toBe(true);
+  });
+
+  it("persists a verified result when the scheduled fixture has the wrong teams", async () => {
+    const now = new Date("2026-11-28T06:00:00.000Z");
+    const open = [
+      {
+        provider: "pfie",
+        providerRef: "ligue1:2026:paris-saint-germain:angers-sco",
+        competition: "Ligue 1",
+        home: "Paris Saint-Germain",
+        away: "Angers SCO",
+        kickoffAt: "2026-11-22T14:00:00.000Z",
+      },
+    ];
+    const verifiedParisFcResult = {
+      provider: "pfie",
+      providerRef: "ligue1:2026:paris-fc:angers-sco",
+      sport: "soccer",
+      competition: "Ligue 1",
+      home: "Paris FC",
+      away: "Angers SCO",
+      kickoffAt: "2026-11-22T14:00:00.000Z",
+      status: "finished",
+      homeScore: 4,
+      awayScore: 0,
+    };
+    const saved: Record<string, unknown>[] = [];
+    const store = {
+      async openSince() {
+        return open;
+      },
+      async upsert(rows: Record<string, unknown>[]) {
+        saved.push(...rows);
+      },
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults() {
+        return { fixtures: [verifiedParisFcResult], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    const report = await syncResults(provider, store, now, { force: true, only: ["ligue1"] });
+
+    expect(report.upserted).toBe(1);
+    expect(saved).toHaveLength(1);
+    expect(saved[0]).toMatchObject({
+      providerRef: "ligue1:2026:paris-fc:angers-sco",
+      home: "Paris FC",
+      away: "Angers SCO",
+      status: "finished",
+      homeScore: 4,
+      awayScore: 0,
+    });
+  });
+
+  it("rotates bounded result batches so older unresolved fixtures are not starved", async () => {
+    const firstRun = new Date("2026-11-28T03:00:00.000Z");
+    const open = Array.from({ length: 14 }, (_, index) => ({
+      provider: "pfie",
+      providerRef: `pfie:fixture:${index + 1}`,
+      competition: "Premier League",
+      home: `Home ${index + 1}`,
+      away: `Away ${index + 1}`,
+      kickoffAt: new Date(firstRun.getTime() - (index + 1) * 60 * 60_000).toISOString(),
+    }));
+    const batches: string[][] = [];
+    const store = {
+      async openSince() {
+        return open;
+      },
+      async upsert() {},
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults(_from: Date, _to: Date, options: {
+        fixtures?: { home: string; away: string; kickoffAt: string }[];
+      }) {
+        const refs = (options.fixtures ?? []).map((fixture) =>
+          open.find((item) => item.home === fixture.home)?.providerRef ?? "",
+        );
+        batches.push(refs);
+        return { fixtures: [], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    await syncResults(provider, store, firstRun);
+    await syncResults(provider, store, new Date(firstRun.getTime() + 30 * 60_000));
+
+    expect(batches[0]).toHaveLength(RESULTS_TARGET_FIXTURE_LIMIT);
+    expect(batches[1]).toHaveLength(14 - RESULTS_TARGET_FIXTURE_LIMIT);
+    expect(batches[0]).not.toEqual(batches[1]);
+    expect(new Set([...(batches[0] ?? []), ...(batches[1] ?? [])])).toEqual(
+      new Set(open.map((item) => item.providerRef)),
     );
   });
 

@@ -12,6 +12,17 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 export type Claim = (provider: string) => Promise<boolean>;
 
+/** A denied provider stays denied for the remainder of one job; do not hammer the quota ledger per URL/retry. */
+export function memoizeQuotaClaim(claim: Claim): Claim {
+  const denied = new Set<string>();
+  return async (provider) => {
+    if (denied.has(provider)) return false;
+    const granted = await claim(provider);
+    if (!granted) denied.add(provider);
+    return granted;
+  };
+}
+
 /** PostgREST "function not found": the budget migration (20261115010000) is not applied yet. */
 const isMissingFunction = (error: { code?: string; message: string }) =>
   error.code === "PGRST202" || /could not find the function/i.test(error.message);
@@ -53,7 +64,7 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
     }
   };
 
-  return async (provider) => {
+  return memoizeQuotaClaim(async (provider) => {
     if (budgetAvailable) {
       const { data, error } = await db.rpc("api_budget_claim", {
         p_provider: provider,
@@ -79,7 +90,7 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
     const granted = data === true;
     if (granted) await recordClaim(provider);
     return granted;
-  };
+  });
 }
 
 export async function recordQuotaError(provider: string): Promise<void> {

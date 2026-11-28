@@ -751,7 +751,7 @@ function DockPill({ on }: { on: boolean }) {
   return (
     <motion.span
       aria-hidden="true"
-      layoutId={reduce ? undefined : "puntr-dock-pill"}
+      {...(reduce ? {} : { layoutId: "puntr-dock-pill" })}
       transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.8 }}
       className="absolute bottom-1 h-1 w-5 rounded-full bg-primary"
     />

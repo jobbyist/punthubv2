@@ -110,8 +110,8 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
 
           for (const r of rr.data ?? []) {
             const response = record(r.response_json) ? r.response_json : {};
-            const decisions = Array.isArray(response.decisions) ? response.decisions : [];
-            const citations = Array.isArray(response.citations) ? response.citations : [];
+            const decisions = Array.isArray(response["decisions"]) ? response["decisions"] : [];
+            const citations = Array.isArray(response["citations"]) ? response["citations"] : [];
             const { error } = await db.from("pfie_learning_examples").upsert(
               {
                 source_kind: "synthetic_research",
@@ -120,13 +120,15 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
                 fixture_key: r.fixture_key,
                 task_type: "forecast_evaluation",
                 payload: {
-                  fixture_context: record(response.fixture_context) ? response.fixture_context : {},
+                  fixture_context: record(response["fixture_context"])
+                    ? response["fixture_context"]
+                    : {},
                   provider: r.provider,
                   decisions,
                   citations,
-                  source_domains: response.source_domains ?? [],
+                  source_domains: response["source_domains"] ?? [],
                   source_urls: r.source_urls ?? [],
-                  decision_id: response.decision_id ?? null,
+                  decision_id: response["decision_id"] ?? null,
                 },
                 label: null,
                 label_status: "pending_verification",
@@ -150,12 +152,12 @@ export const Route = createFileRoute("/api/cron/pfie-learning-ingest")({
           // Cursor makes this incremental: a busy launch day is processed over multiple daily batches.
           const cursor = record(previous.data?.metadata) ? previous.data.metadata : {};
           const cursorAt =
-            typeof cursor.user_activity_cursor_at === "string"
-              ? cursor.user_activity_cursor_at
+            typeof cursor["user_activity_cursor_at"] === "string"
+              ? cursor["user_activity_cursor_at"]
               : null;
           const cursorId =
-            typeof cursor.user_activity_cursor_id === "string"
-              ? cursor.user_activity_cursor_id
+            typeof cursor["user_activity_cursor_id"] === "string"
+              ? cursor["user_activity_cursor_id"]
               : null;
           let activityQuery = db
             .from("pfie_user_activity_events")
