@@ -28,7 +28,7 @@ export function UserAvatar({
           aria-label={alt ?? sportsAvatar.label}
           className="size-full bg-cover bg-no-repeat"
           style={{
-            backgroundImage: "url('/avatars/sports/avatar-sheet.webp')",
+            backgroundImage: "url('/avatars/sports/avatar-sheet.svg')",
             backgroundSize: "400% 400%",
             backgroundPosition: position,
           }}
