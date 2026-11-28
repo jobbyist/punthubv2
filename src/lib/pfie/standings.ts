@@ -892,6 +892,11 @@ export function validateTables(
     const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow, teamVariants: string[]) => {
       const variants = teamVariants.map(fold).filter(Boolean);
+      const cleanEvidence = (value: string) =>
+        fold(value.replace(/\bTeam Badge\b/gi, " ").replace(/~~/g, " ").replace(/\\/g, " ").replace(/\s+/g, " "));
+      const quotedRow = cleanEvidence(r.quote ?? "");
+      const cleanedPage = cleanEvidence(source.text);
+      if (quotedRow && cleanedPage.includes(quotedRow)) return true;
       const expectedOrders = [
         [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points],
         [r.points, r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst],
