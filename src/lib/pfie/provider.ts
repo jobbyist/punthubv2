@@ -22,7 +22,7 @@ import type { ListOptions, ListResult, SportsProvider } from "@/lib/sports/provi
 import type { NormalisedFixture } from "@/lib/sports/types";
 
 import { corroborate } from "./corroborate";
-import { extractionRequest, parseObservations, validateObservations } from "./extract";
+import { chunkSourcesForExtraction, extractionRequest, parseObservations, validateObservations } from "./extract";
 import type { Decision, PfieSource, PfieStore, SourceTier } from "./types";
 
 interface CompetitionSources {
@@ -529,7 +529,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       sources.forEach((s, i) => (s.index = i + 1));
       if (sources.length === 0) throw new Error("no usable source");
 
-      // 3. Extraction (one model call for all sources).
+      // 3. Extraction. Split long historical pages into bounded chunks so the combined Parallel input
+      // (instructions + schema + source text) stays comfortably below the 20,000-character endpoint limit.
       const usage = await deps.store.usageToday().catch(() => ({}) as Record<string, number>);
       const usedToday: Record<string, number> = {};
       for (const m of models) {
@@ -548,40 +549,44 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           }
         },
       });
-      calls++;
-      let answer = await router.generate(
-        extractionRequest({
-          competition: competition.name,
-          from: sastDate(from),
-          to: sastDate(to),
-          today,
-          sources,
-        }),
-      );
-      let raw = parseObservations(answer.text);
-      if (!raw) {
-        // A malformed/overlong structured response must not fail the whole competition on the first attempt.
-        // Retry with the strongest three sources and a strict JSON-only instruction; all quotes are still
-        // validated against the original, full source text below.
-        calls++;
-        const retrySources = sources.slice(0, 3).map((source) => ({
-          ...source,
-          text: source.text.slice(0, 6_500),
-        }));
-        answer = await router.generate(
+
+      const raw = [] as NonNullable<ReturnType<typeof parseObservations>>;
+      const sourceBatches = chunkSourcesForExtraction(sources);
+      for (const batch of sourceBatches) {
+        const makeRequest = (batchSources: PfieSource[], retryHint?: string) =>
           extractionRequest({
             competition: competition.name,
             from: sastDate(from),
             to: sastDate(to),
             today,
-            sources: retrySources,
-            retryHint: "The previous response was not valid JSON or did not match the required schema.",
-          }),
-        );
-        raw = parseObservations(answer.text);
-      }
-      if (!raw) throw new Error("extraction answer was not valid JSON after one retry");
+            sources: batchSources,
+            ...(retryHint ? { retryHint } : {}),
+          });
 
+        calls++;
+        let answer = await router.generate(makeRequest(batch.sources));
+        let parsed = parseObservations(answer.text);
+        if (!parsed) {
+          // Retry only this bounded chunk with smaller source excerpts; all quotes are validated against
+          // the original, complete page text below.
+          calls++;
+          const retrySources = batch.sources.map((source) => ({
+            ...source,
+            text: source.text.slice(0, 3_000),
+          }));
+          answer = await router.generate(
+            makeRequest(retrySources, "The previous response was not valid JSON or did not match the required schema."),
+          );
+          parsed = parseObservations(answer.text);
+        }
+        if (!parsed) throw new Error("extraction answer was not valid JSON after one chunk retry");
+        raw.push(
+          ...parsed.map((observation) => ({
+            ...observation,
+            source: batch.sourceIndexByChunk[observation.source] ?? observation.source,
+          })),
+        );
+      }
       // 4. Validation and corroboration: code only.
       const { accepted, rejected } = validateObservations(raw, sources, {
         from,
