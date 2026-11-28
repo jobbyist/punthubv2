@@ -3,6 +3,7 @@
  * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
  * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
+import { randomUUID } from "node:crypto";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
@@ -180,9 +181,31 @@ export interface TablesDeps {
   extract: ExtractProvider | null;
   llm: LlmProvider;
   store: TablesStore;
+  /** Updates the context read by the quota-claim closure before each competition job. */
+  setUsageContext?: (context: { competition: string; jobRunId: string; metadata?: Record<string, unknown> }) => void;
   models?: string[];
   usageToday?: () => Promise<Record<string, number>>;
   now?: () => Date;
+}
+
+/** Bind each standings/history/season/archive provider attempt to its competition and job run. */
+function withJobUsageContext(deps: TablesDeps, key: CompetitionKey, jobKind: TableJob): TablesDeps {
+  const jobRunId = randomUUID();
+  const metadata = { job_kind: jobKind };
+  deps.setUsageContext?.({ competition: key, jobRunId, metadata });
+  return {
+    ...deps,
+    store: {
+      ...deps.store,
+      record: (job, scope, ok, error, meta) =>
+        deps.store.record(job, scope, ok, error, {
+          ...meta,
+          competition: key,
+          job_run_id: jobRunId,
+          ...metadata,
+        }),
+    },
+  };
 }
 
 const HOUR = 3_600_000;
@@ -556,10 +579,11 @@ export async function runTablesSync(
     const jobs = archiveJobsDue(deps, statuses, opts.only).slice(0, maxJobs);
     const ran: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
     for (const j of jobs)
+      const archiveDeps = withJobUsageContext(deps, j.key, "archive");
       ran.push({
         job: "archive",
         key: `${j.key}:${j.year}`,
-        ...(await runArchiveJob(deps, j.key, j.year)),
+        ...(await runArchiveJob(archiveDeps, j.key, j.year)),
       });
     return { due: jobs.length, seasonDue: 0, ran };
   }
@@ -773,6 +797,7 @@ export function shouldIncludeSecondaryStandingsSources(key: CompetitionKey): boo
 }
 
 async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
+  deps = withJobUsageContext(deps, key, "standings");
   const c = competitions.find((x) => x.key === key)!;
   const cfg = STANDINGS_COMPETITIONS[key]!;
   const season = String(seasonFor(c.seasonRule, now()));
@@ -1466,6 +1491,7 @@ async function syncSeasonWindow(
   end: string,
   now: () => Date,
 ) {
+  deps = withJobUsageContext(deps, key, "season");
   const c = competitions.find((x) => x.key === key)!;
   const scope = `${key}:${start}`;
   const from = new Date(`${start}T00:00:00+02:00`);
@@ -1631,6 +1657,7 @@ async function syncSeasonWindow(
 }
 
 async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
+  deps = withJobUsageContext(deps, key, "history");
   const c = competitions.find((x) => x.key === key)!;
   const to = now();
   const from = new Date(to.getTime() - HISTORY_DAYS * DAY);
