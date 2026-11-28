@@ -7,6 +7,48 @@ import {
   seasonArchiveUrls,
   seasonQueries,
 } from "./tables";
+import { parseStandingsMarkdown, validateTables, STANDINGS_COMPETITIONS } from "./standings";
+import type { PfieSource } from "./types";
+
+describe("PFIE deterministic standings extraction", () => {
+  it("parses plain-text full tables and preserves a verified points deduction", () => {
+    const text = [
+      "Championship 2026/27 Overall Table",
+      "Pos Team P W D L GF GA GD Pts",
+      "1 Middlesbrough 18 10 5 3 34 22 12 35",
+      "2 Stoke City 17 11 2 4 27 19 8 35",
+      "3 Southampton 18 10 5 3 34 16 18 31",
+      "4 Wolverhampton Wanderers 17 10 4 3 31 19 12 34",
+    ].join("\n");
+    const source: PfieSource = {
+      index: 1,
+      url: "https://www.sportsmole.co.uk/football/championship/table.html",
+      domain: "sportsmole.co.uk",
+      tier: "trusted",
+      text,
+      via: "extract",
+    };
+
+    const parsed = parseStandingsMarkdown(text, source.index);
+    expect(parsed).toHaveLength(4);
+    expect(parsed?.find((row) => row.team === "Southampton")).toMatchObject({
+      played: 18,
+      won: 10,
+      drawn: 5,
+      lost: 3,
+      points: 31,
+    });
+    const validation = validateTables(parsed ?? [], [source], 4, [], new Date("2026-11-28T09:00:00Z"));
+    expect(validation.tables).toHaveLength(1);
+    expect(validation.rejected).toHaveLength(0);
+  });
+
+  it("pins Sports Mole as a configured Championship source", () => {
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.sportsmole.co.uk/football/championship/table.html",
+    );
+  });
+});
 
 describe("PFIE standings source selection", () => {
   it("enables secondary publishers only for the ten pre-launch competitions", () => {
