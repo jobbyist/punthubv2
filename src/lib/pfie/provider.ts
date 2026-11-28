@@ -530,7 +530,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       const resultQueries = targetedResultQueries.length
         ? [...targetedResultQueries, ...config.queries.results.slice(0, 1)].slice(0, 5)
         : config.queries.results.slice(0, 5);
-      const hits = await deps.search
+      const hits = await searchProvider
         .search({
           objective:
             kind === "fixtures"
@@ -560,12 +560,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         for (const url of config.pages[kind]) {
           calls++;
           try {
-            const page = await extractProvider.extract(url);
-            if (cachedExtractResponses > 0) cachedExtractResponses--;
-            else void count(extractProvider.name, true);
+            const page = await extractProvider.extract(url, usageContext);
             if (page) add(url, page.markdown);
           } catch {
-            void count(deps.extract.name, false);
+            // The quota guard has already recorded the failed attempt and its cost estimate.
           }
         }
       }
