@@ -81,14 +81,22 @@ export interface CompletedMatchEvidence {
  * Collapse fixture/history copies of the same match by canonical team identity and local match date.
  * If two records disagree on the score, quarantine that match from form counts rather than choosing one.
  */
-export function dedupeCompletedMatches(matches: CompletedMatchEvidence[]): CompletedMatchEvidence[] {
+export function dedupeCompletedMatches(
+  matches: CompletedMatchEvidence[],
+  knownTeams: readonly string[] = [],
+): CompletedMatchEvidence[] {
+  const identity = (name: string): string | null => {
+    const resolved = knownTeams.length ? resolveTeam(name, knownTeams) : null;
+    if (resolved === "ambiguous") return null;
+    return normaliseTeam(resolved ?? name);
+  };
   const grouped = new Map<string, { row: CompletedMatchEvidence; score: string; conflict: boolean }>();
   for (const row of matches) {
-    const home = normaliseTeam(row.home);
-    const away = normaliseTeam(row.away);
-    if (!home || !away || home === away || !/^\\d{4}-\\d{2}-\\d{2}$/.test(row.matchDate)) continue;
-    const key = `${row.matchDate}|${home}|${away}`;
-    const score = `${row.homeScore}-${row.awayScore}`;
+    const home = identity(row.home);
+    const away = identity(row.away);
+    if (!home || !away || home === away || !/^\d{4}-\d{2}-\d{2}$/.test(row.matchDate)) continue;
+    const key = row.matchDate + "|" + home + "|" + away;
+    const score = String(row.homeScore) + "-" + String(row.awayScore);
     const existing = grouped.get(key);
     if (!existing) grouped.set(key, { row, score, conflict: false });
     else if (existing.score !== score) existing.conflict = true;
@@ -97,11 +105,16 @@ export function dedupeCompletedMatches(matches: CompletedMatchEvidence[]): Compl
 }
 
 /** Canonical per-team match counts for the backfill selector. Duplicate aliases count once; score conflicts count zero. */
-export function completedMatchCounts(matches: CompletedMatchEvidence[]): Map<string, number> {
+export function completedMatchCounts(
+  matches: CompletedMatchEvidence[],
+  knownTeams: readonly string[] = [],
+): Map<string, number> {
   const counts = new Map<string, number>();
-  for (const row of dedupeCompletedMatches(matches)) {
+  for (const row of dedupeCompletedMatches(matches, knownTeams)) {
     for (const name of [row.home, row.away]) {
-      const key = normaliseTeam(name);
+      const resolved = knownTeams.length ? resolveTeam(name, knownTeams) : null;
+      if (resolved === "ambiguous") continue;
+      const key = normaliseTeam(resolved ?? name);
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
   }

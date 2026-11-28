@@ -17,6 +17,7 @@ const ALIASES: Record<string, string> = {
   wolves: "wolverhampton wanderers",
   "nottm forest": "nottingham forest",
   "nott m forest": "nottingham forest",
+  hsv: "hamburger sv",
   newcastle: "newcastle united",
   "west ham": "west ham united",
   qpr: "queens park rangers",
