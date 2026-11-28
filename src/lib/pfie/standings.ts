@@ -834,12 +834,6 @@ export function tableRegression(
       next.points <= old.points;
     if (next.played < old.played && verifiedPlayedCorrection) continue;
     if (next.played < old.played) return `played_regressed_${old.team}`;
-    const resultRecordUnchanged =
-      next.played === old.played &&
-      next.won === old.won &&
-      next.drawn === old.drawn &&
-      next.lost === old.lost &&
-      next.points === old.points;
     const verifiedRecordCorrection =
       allowVerifiedRecordCorrections &&
       next.played === old.played &&
@@ -850,7 +844,8 @@ export function tableRegression(
       if (next.played === old.played && next[field] !== old[field]) {
         const verifiedGoalCorrection =
           allowVerifiedGoalCorrections &&
-          resultRecordUnchanged &&
+          next.played === old.played &&
+          next.won + next.drawn + next.lost === next.played &&
           (field === "goalsFor" || field === "goalsAgainst");
         const verifiedRecordField = field === "won" || field === "drawn" || field === "lost" || field === "points";
         if (verifiedGoalCorrection || (verifiedRecordCorrection && verifiedRecordField)) continue;
