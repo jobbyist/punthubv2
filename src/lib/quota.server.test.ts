@@ -5,11 +5,14 @@ import { memoizeQuotaClaim } from "./quota.server";
 describe("memoizeQuotaClaim", () => {
   it("checks a denied provider only once per job but keeps other providers independent", async () => {
     const checked: string[] = [];
-    const claim = memoizeQuotaClaim(async (provider) => ({
-      granted: provider === "parallel-chat:low",
-      attemptId: `attempt-${provider}`,
-      ...(provider === "firecrawl" ? { reasonCode: "provider_daily_call_cap_exhausted" } : {}),
-    }));
+    const claim = memoizeQuotaClaim(async (provider) => {
+      checked.push(provider);
+      return {
+        granted: provider === "parallel-chat:low",
+        attemptId: `attempt-${provider}`,
+        ...(provider === "firecrawl" ? { reasonCode: "provider_daily_call_cap_exhausted" } : {}),
+      };
+    });
 
     expect(await claim("firecrawl")).toEqual({
       granted: false,
@@ -29,7 +32,7 @@ describe("memoizeQuotaClaim", () => {
       granted: true,
       attemptId: "attempt-parallel-chat:low",
     });
-    expect(checked).toEqual([]);
+    expect(checked).toEqual(["firecrawl", "parallel-chat:low", "parallel-chat:low"]);
   });
 
   it("exposes result finalisation without repeating a denied claim", async () => {
