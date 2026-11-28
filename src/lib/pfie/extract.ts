@@ -67,7 +67,7 @@ export function extractionRequest(input: {
       "when the page says so; otherwise scheduled. Scores are null unless finished. Use the score after 90 " +
       "minutes, not after extra time or penalties.\n" +
       "7. `quote` is 10 to 200 characters copied word for word from that source showing the match (and the " +
-      "score, for a finished match).\n" +
+      "score, for a finished match). Prefer the exact single match row; do not paraphrase it.\n" +
       "8. Only matches of the named competition, with a date inside the given range.\n" +
       "9. Return exactly one JSON object matching the schema. Do not use Markdown fences, commentary or trailing text.",
     prompt:
@@ -116,6 +116,22 @@ export function parseObservations(text: string): RawObservation[] | null {
   }));
 }
 
+function matchEvidenceOnPage(pageText: string, home: string, away: string, homeScore: number, awayScore: number): boolean {
+  const page = normalise(pageText);
+  const h = normalise(home);
+  const a = normalise(away);
+  if (!h || !a) return false;
+  const score = homeScore + '-' + awayScore;
+  const scoreVariants = [score, homeScore + ' - ' + awayScore, homeScore + ':' + awayScore].map(normalise);
+  let from = 0;
+  while (true) {
+    const index = page.indexOf(h, from);
+    if (index < 0) return false;
+    const excerpt = page.slice(Math.max(0, index - 120), Math.min(page.length, index + h.length + 360));
+    if (excerpt.includes(a) && scoreVariants.some((variant) => excerpt.includes(variant))) return true;
+    from = index + h.length;
+  }
+}
 const DAY = 86_400_000;
 
 /** Deterministic checks. An observation that fails any of them is dropped and logged with the reason. */
@@ -138,7 +154,13 @@ export function validateObservations(
     }
     const text = normalise(source.text);
     const quote = normalise(o.quote);
-    if (quote.length < 10 || !text.includes(quote)) {
+    const pageQuotePresent = quote.length >= 10 && text.includes(quote);
+    const independentlyVisibleMatch = o.status === "finished" && o.homeScore !== null && o.awayScore !== null &&
+      matchEvidenceOnPage(source.text, o.home, o.away, o.homeScore, o.awayScore);
+    // Some result pages split team names, scores and punctuation across adjacent table cells.
+    // If a literal quote cannot be matched, accept only when both teams and the exact score
+    // occur together in one short source excerpt. The score and team checks below still apply.
+    if (!pageQuotePresent && !independentlyVisibleMatch) {
       reject("quote_not_on_page");
       continue;
     }
