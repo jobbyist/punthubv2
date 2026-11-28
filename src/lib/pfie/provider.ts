@@ -7,6 +7,8 @@
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
+import { randomUUID } from "node:crypto";
+
 import { ProviderError } from "@/lib/content/http";
 import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
@@ -471,6 +473,8 @@ export interface PfieDeps {
   store: PfieStore;
   /** Persistent Parallel cache; cache wrappers are applied outside quota guards. */
   cache?: CacheStore | null;
+  /** Set before each competition run so API claim events share the same competition/run context. */
+  setUsageContext?: (context: { competition: string; jobRunId: string }) => void;
   /** Ordered model list; extraction prefers the high-allowance lite model. */
   models?: string[];
   dailyCap?: Record<string, number>;
@@ -499,6 +503,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     to: Date,
     targetFixtures: NonNullable<ListOptions["fixtures"]> = [],
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
+    const jobRunId = randomUUID();
+    deps.setUsageContext?.({ competition: competition.key, jobRunId });
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
     const count = (provider: string, ok: boolean) =>
@@ -683,6 +689,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       await deps.store
         .recordRun({
+          jobRunId,
           competition: competition.key,
           kind,
           ok: true,
@@ -705,6 +712,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           : "unexpected error";
       await deps.store
         .recordRun({
+          jobRunId,
           competition: competition.key,
           kind,
           ok: false,
