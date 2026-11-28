@@ -1,6 +1,7 @@
 /**
- * Server job for team badges: finds fixture and curated marquee teams without a verified badge and resolves them with Parallel
- * Search + Wikipedia, then mirrors the crest to Supabase Storage (`media/teams/...`). Quota-guarded: every Parallel
+ * Server job for team badges: finds fixture, league-table and curated marquee teams without a verified badge and resolves
+ * them with Parallel Search (SofaScore first, then Wikipedia), then mirrors the crest to Supabase Storage
+ * (`media/teams/...`). Spare capacity upgrades Wikipedia badges to SofaScore crests. Quota-guarded: every Parallel
  * call claims a unit of the shared `parallel` quota, so badges never push the account past its cap.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -11,7 +12,10 @@ import {
   badgeKey,
   badgePath,
   badgeSearchRequest,
+  isSofascoreImageHost,
   pickCrestImage,
+  sofascoreCandidates,
+  sofascoreImageUrls,
   wikipediaCandidates,
   type WikiSummary,
 } from "@/lib/badges/resolve";
@@ -20,7 +24,9 @@ const UA = "PuntrBadgeBot/1.0 (https://puntr.co.za; support@puntr.co.za)";
 const MAX_IMAGE_BYTES = 1_000_000;
 const RETRY_AFTER_MS = 24 * 3600 * 1000;
 const MAX_ATTEMPTS = 6;
-const MARQUEE_BADGE_KEYS = new Set(MARQUEE_BADGE_TEAMS.map((t) => `${t.sport}:${badgeKey(t.team)}`));
+const MARQUEE_BADGE_KEYS = new Set(
+  MARQUEE_BADGE_TEAMS.map((t) => `${t.sport}:${badgeKey(t.team)}`),
+);
 
 async function db(): Promise<SupabaseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -56,6 +62,15 @@ export async function teamsInFixtures(client: SupabaseClient): Promise<TeamRef[]
       if (!seen.has(k)) seen.set(k, { sport: f.sport, name, competition: f.competition });
     }
   }
+  // Every team in a stored league table too, so the team directory has badges for teams without a fixture soon.
+  const { data: tables } = await client
+    .from("league_standings")
+    .select("competition, team")
+    .limit(2000);
+  for (const r of (tables ?? []) as { competition: string; team: string }[]) {
+    const k = `soccer:${badgeKey(r.team)}`;
+    if (!seen.has(k)) seen.set(k, { sport: "soccer", name: r.team, competition: r.competition });
+  }
   for (const item of MARQUEE_BADGE_TEAMS) {
     const k = `${item.sport}:${badgeKey(item.team)}`;
     if (!seen.has(k))
@@ -80,17 +95,23 @@ async function mirror(
   client: SupabaseClient,
   imageUrl: string,
   path: string,
-  trusted = false,
+  trusted: false | "wikimedia" | "sofascore" | true = false,
 ): Promise<string> {
-  // Admin URLs: no redirects, so the host that was checked is the host we fetch from. Wikimedia: redirects are
-  // allowed but the final host must still be Wikimedia.
+  // Admin URLs: no redirects, so the host that was checked is the host we fetch from. Wikimedia and SofaScore:
+  // redirects are allowed but the final host must still be theirs.
+  const kind = trusted === true ? "wikimedia" : trusted;
   const res = await fetch(imageUrl, {
-    headers: { "User-Agent": UA },
-    redirect: trusted ? "follow" : "error",
+    headers: { "User-Agent": UA, Accept: "image/png,image/webp,image/jpeg" },
+    redirect: kind ? "follow" : "error",
     signal: AbortSignal.timeout(10_000),
   });
-  if (trusted && !/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(res.url || imageUrl))
+  if (
+    kind === "wikimedia" &&
+    !/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(res.url || imageUrl)
+  )
     throw new Error("image redirected away from Wikimedia");
+  if (kind === "sofascore" && !isSofascoreImageHost(res.url || imageUrl))
+    throw new Error("image redirected away from SofaScore");
   if (!res.ok) throw new Error(`image ${res.status}`);
   const type = res.headers.get("content-type") ?? "";
   // PNG/JPEG/WebP only (the bucket refuses others; SVG could carry script).
@@ -106,7 +127,35 @@ async function mirror(
     cacheControl: "604800",
   });
   if (error) throw new Error(`storage: ${error.message}`);
-  return client.storage.from("media").getPublicUrl(finalPath).data.publicUrl;
+  // Version the address so browsers and the CDN pick up a replaced crest at the same path.
+  return `${client.storage.from("media").getPublicUrl(finalPath).data.publicUrl}?v=${Date.now().toString(36)}`;
+}
+
+/** Tries SofaScore's crest for each candidate id; returns the mirrored URL and the source used, or null. */
+async function trySofascore(
+  client: SupabaseClient,
+  team: TeamRef,
+  hits: { url: string; title?: string }[],
+): Promise<{ logoUrl: string; page: string; image: string } | null> {
+  for (const id of sofascoreCandidates(hits, team.name, team.sport)) {
+    for (const image of sofascoreImageUrls(id)) {
+      try {
+        const logoUrl = await mirror(client, image, badgePath(team.sport, team.name), "sofascore");
+        const page =
+          hits.find((h) => new RegExp(`/${id}(?:[/?#]|$)`).test(h.url))?.url ??
+          `https://www.sofascore.com/team/${id}`;
+        return { logoUrl, page, image };
+      } catch (error) {
+        console.warn(
+          "team-badges: sofascore image failed",
+          team.name,
+          id,
+          (error as Error).message,
+        );
+      }
+    }
+  }
+  return null;
 }
 
 export type ResolveOutcome = "verified" | "failed" | "quota" | "skipped";
@@ -115,6 +164,8 @@ export type ResolveOutcome = "verified" | "failed" | "quota" | "skipped";
 export async function resolveTeamBadge(
   client: SupabaseClient,
   team: TeamRef,
+  /** False until the SofaScore migration (method value plus `upgrade_checked_at`) is applied. */
+  sofascore = true,
 ): Promise<ResolveOutcome> {
   const key = badgeKey(team.name);
   const { data: existing } = await client
@@ -149,7 +200,21 @@ export async function resolveTeamBadge(
   try {
     const { createParallelSearch } = await import("@/lib/content/providers.server");
     const req = badgeSearchRequest(team.name, team.competition, team.sport);
-    const hits = await createParallelSearch(apiKey).search({ ...req, maxResults: 8 });
+    const hits = await createParallelSearch(apiKey).search({ ...req, maxResults: 10 });
+    const sofa = sofascore ? await trySofascore(client, team, hits) : null;
+    if (sofa) {
+      await save({
+        status: "verified",
+        method: "parallel_sofascore",
+        logo_url: sofa.logoUrl,
+        source_page: sofa.page.slice(0, 500),
+        source_image: sofa.image.slice(0, 500),
+        last_error: null,
+        verified_at: new Date().toISOString(),
+        upgrade_checked_at: new Date().toISOString(),
+      });
+      return "verified";
+    }
     const titles = wikipediaCandidates(hits, team.name);
     if (titles.length === 0) {
       await save({ status: "failed", last_error: "no Wikipedia article found" });
@@ -193,6 +258,54 @@ export async function resolveTeamBadge(
   }
 }
 
+/**
+ * Upgrades a badge verified from Wikipedia to SofaScore's crest (owner, 27 Nov: SofaScore logos are cleaner and more
+ * current). The Wikipedia badge stays when SofaScore has no match. Each team is tried once (`upgrade_checked_at`).
+ */
+export async function upgradeTeamBadge(
+  client: SupabaseClient,
+  team: TeamRef,
+): Promise<ResolveOutcome> {
+  const apiKey = process.env["PARALLEL_API_KEY"];
+  if (!apiKey) return "quota";
+  const { createQuotaClaim } = await import("@/lib/quota.server");
+  if (!(await (await createQuotaClaim())("parallel"))) return "quota";
+  const key = badgeKey(team.name);
+  const now = new Date().toISOString();
+  try {
+    const { createParallelSearch } = await import("@/lib/content/providers.server");
+    const req = badgeSearchRequest(team.name, team.competition, team.sport);
+    const hits = await createParallelSearch(apiKey).search({ ...req, maxResults: 10 });
+    const sofa = await trySofascore(client, team, hits);
+    const { error } = await client
+      .from("team_badges")
+      .update(
+        sofa
+          ? {
+              method: "parallel_sofascore",
+              logo_url: sofa.logoUrl,
+              source_page: sofa.page.slice(0, 500),
+              source_image: sofa.image.slice(0, 500),
+              verified_at: now,
+              upgrade_checked_at: now,
+            }
+          : { upgrade_checked_at: now },
+      )
+      .eq("sport", team.sport)
+      .eq("team_key", key);
+    if (error) console.error("team-badges: upgrade save failed", key, error.message);
+    return sofa ? "verified" : "failed";
+  } catch (error) {
+    await client
+      .from("team_badges")
+      .update({ upgrade_checked_at: now })
+      .eq("sport", team.sport)
+      .eq("team_key", key);
+    console.warn("team-badges: upgrade failed", key, (error as Error).message);
+    return "failed";
+  }
+}
+
 /** Mirrors an admin-supplied badge URL and marks it verified. */
 export async function setManualBadge(team: TeamRef, url: string): Promise<string> {
   const client = await db();
@@ -220,9 +333,24 @@ export async function setManualBadge(team: TeamRef, url: string): Promise<string
 export async function runBadgeJob(limit = 8, force = false) {
   const client = await db();
   const teams = await teamsInFixtures(client);
-  const { data: rows } = await client
+  // Fail soft until the SofaScore migration is applied: without `upgrade_checked_at` the job keeps the Wikipedia path.
+  const full = await client
     .from("team_badges")
-    .select("sport, team_key, status, attempts, checked_at");
+    .select("sport, team_key, status, attempts, checked_at, method, upgrade_checked_at");
+  const sofascore = !full.error;
+  if (full.error)
+    console.warn(
+      "team-badges: SofaScore path off for this run",
+      full.error.code,
+      full.error.message,
+    );
+  const rows = sofascore
+    ? full.data
+    : (
+        await client
+          .from("team_badges")
+          .select("sport, team_key, status, attempts, checked_at, method")
+      ).data;
   const state = new Map(
     (
       (rows ?? []) as {
@@ -231,6 +359,8 @@ export async function runBadgeJob(limit = 8, force = false) {
         status: string;
         attempts: number;
         checked_at: string | null;
+        method: string | null;
+        upgrade_checked_at?: string | null;
       }[]
     ).map((r) => [`${r.sport}:${r.team_key}`, r]),
   );
@@ -249,15 +379,48 @@ export async function runBadgeJob(limit = 8, force = false) {
       const bPriority = MARQUEE_BADGE_KEYS.has(`${b.sport}:${badgeKey(b.name)}`) ? 0 : 1;
       return aPriority - bPriority || a.name.localeCompare(b.name);
     });
-  const out = { teams: teams.length, due: due.length, verified: 0, failed: 0, quota: false };
+  const out = {
+    teams: teams.length,
+    due: due.length,
+    verified: 0,
+    failed: 0,
+    quota: false,
+    upgradesDue: 0,
+    upgraded: 0,
+  };
   // Small parallel batches keep the admin action responsive while the database quota claim remains the
   // authority for spend. Stop after the first batch that reports exhausted quota.
   const selected = due.slice(0, limit);
   for (let i = 0; i < selected.length; i += 4) {
-    const batch = await Promise.all(selected.slice(i, i + 4).map((team) => resolveTeamBadge(client, team)));
+    const batch = await Promise.all(
+      selected.slice(i, i + 4).map((team) => resolveTeamBadge(client, team, sofascore)),
+    );
     for (const result of batch) {
       if (result === "verified") out.verified++;
       if (result === "failed") out.failed++;
+      if (result === "quota") out.quota = true;
+    }
+    if (out.quota) break;
+  }
+
+  // Spare capacity in this run upgrades Wikipedia badges to SofaScore crests, one try per team.
+  const upgrades = !sofascore
+    ? []
+    : teams.filter((t) => {
+        const r = state.get(`${t.sport}:${badgeKey(t.name)}`);
+        return (
+          r?.status === "verified" && r.method === "parallel_wikipedia" && !r.upgrade_checked_at
+        );
+      });
+  out.upgradesDue = upgrades.length;
+  const spare = out.quota ? 0 : Math.max(0, limit - selected.length);
+  const toUpgrade = upgrades.slice(0, spare);
+  for (let i = 0; i < toUpgrade.length; i += 4) {
+    const batch = await Promise.all(
+      toUpgrade.slice(i, i + 4).map((team) => upgradeTeamBadge(client, team)),
+    );
+    for (const result of batch) {
+      if (result === "verified") out.upgraded++;
       if (result === "quota") out.quota = true;
     }
     if (out.quota) break;

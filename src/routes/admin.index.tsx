@@ -19,6 +19,7 @@ import { NewsroomTab } from "@/components/admin/newsroom-admin";
 import { NotificationsTab } from "@/components/admin/notifications-admin";
 import { PushNotificationsAdmin } from "@/components/admin/push-notifications-admin";
 import { ActionLogTab, AnalyticsTab, SystemTab } from "@/components/admin/system-admin";
+import { TeamFollowsPanel } from "@/components/admin/team-follows-admin";
 import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { SyntheticExperimentTab } from "@/components/admin/synthetic-experiment-admin";
@@ -44,7 +45,7 @@ const TAB_GROUPS = [
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
-    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw"],
+    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw", "bookmakers"],
   },
   {
     label: "Platform",
@@ -174,7 +175,10 @@ function Admin() {
                     <PushNotificationsAdmin />
                   </TabsContent>
                   <TabsContent value="analytics" className="mt-0">
-                    <AnalyticsTab />
+                    <div className="space-y-5">
+                      <AnalyticsTab />
+                      <TeamFollowsPanel />
+                    </div>
                   </TabsContent>
                   <TabsContent value="synthetic" className="mt-0">
                     <SyntheticExperimentTab />

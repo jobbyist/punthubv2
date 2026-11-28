@@ -4,6 +4,10 @@
  *   2. The Wikipedia summary API supplies the lead image, which is checked as a genuine team crest or logo.
  *   3. The verified image is mirrored to Supabase Storage; unsupported or ambiguous matches remain for admin review.
  * The same pipeline covers football, rugby, basketball and cricket teams, including the curated home marquee.
+ *
+ * SofaScore (owner, 27 Nov 2026) is tried first: the same Parallel Search call also looks for the team's SofaScore page
+ * (sofascore.com/<sport>/team/<slug>/<id>), and the crest is taken from SofaScore's team image for that id. Wikipedia
+ * stays as the fallback. `[attorney review]`: SofaScore's terms on automated access and reuse.
  */
 import { normaliseTeam, teamSlug } from "../pfie/teams";
 
@@ -27,14 +31,23 @@ export function searchName(name: string): string {
 export function badgeSearchRequest(name: string, competition: string, sport: string) {
   const full = searchName(name);
   const national = /world cup|international|national/i.test(competition);
-  const kind = sport === "soccer"
-    ? national ? "national football team" : "football club"
-    : sport === "rugby" ? "rugby union team"
-    : sport === "basketball" ? "professional basketball team"
-    : `${sport} team`;
+  const kind =
+    sport === "soccer"
+      ? national
+        ? "national football team"
+        : "football club"
+      : sport === "rugby"
+        ? "rugby union team"
+        : sport === "basketball"
+          ? "professional basketball team"
+          : `${sport} team`;
   return {
     objective: `Search for the official logo, crest or badge for the ${kind} "${name}" (${full}) in ${competition}. Prefer official team or governing-body sources; use an English Wikipedia article as a corroborating image source when needed.`,
-    queries: [`${full} ${kind} official logo crest badge`, `${full} ${competition} official team logo`, `${full} ${kind} Wikipedia`],
+    queries: [
+      `site:sofascore.com ${full} ${sofaSport(sport)} team`,
+      `${full} ${kind} official logo crest badge`,
+      `${full} ${kind} Wikipedia`,
+    ],
   };
 }
 
@@ -161,5 +174,70 @@ export function cleanManualLogoUrl(value: unknown): string | null {
     return u.toString();
   } catch {
     return null;
+  }
+}
+
+/** SofaScore's sport segment in team URLs. */
+export function sofaSport(sport: string): string {
+  return sport === "soccer" ? "football" : sport === "rugby" ? "rugby" : sport;
+}
+
+const SOFA_TEAM =
+  /^https:\/\/(?:www\.)?sofascore\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?([a-z-]+)\/team\/([a-z0-9-]+)\/(\d{1,9})\/?$/;
+/** Youth, women's, reserve and B sides: never the senior men's crest unless the team name says so. */
+const SOFA_VARIANT =
+  /(^|-)(u\d{2}|under-\d{2}|wfc|women|ladies|ii|b|reserves|youth|academy|res)(-|$)/;
+
+/**
+ * SofaScore team ids in the search hits that match the team, best first. A hit counts only when it is a team page for
+ * the right sport, its slug shares every meaningful word of the team name (or the reverse), and it is not a youth,
+ * women's or reserve side the name does not ask for. Ids seen on several hits (language versions) rank higher.
+ */
+export function sofascoreCandidates(
+  hits: { url: string; title?: string }[],
+  name: string,
+  sport: string,
+): number[] {
+  const words = badgeKey(name)
+    .split(" ")
+    .filter((w) => w.length >= 3);
+  const wantVariant = SOFA_VARIANT.test(teamSlug(name));
+  const score = new Map<number, number>();
+  for (const h of hits) {
+    const m = SOFA_TEAM.exec((h.url.split(/[?#]/)[0] ?? "").toLowerCase());
+    if (!m || m[1] !== sofaSport(sport)) continue;
+    const slug = m[2]!;
+    if (SOFA_VARIANT.test(slug) !== wantVariant) continue;
+    const slugWords = new Set(badgeKey(slug.replace(/-/g, " ")).split(" "));
+    const nameWords = new Set(badgeKey(name).split(" "));
+    const covered =
+      (words.length > 0 && words.every((w) => slugWords.has(w))) ||
+      ([...slugWords].filter((w) => w.length >= 3).length > 0 &&
+        [...slugWords].filter((w) => w.length >= 3).every((w) => nameWords.has(w)));
+    if (!covered) continue;
+    const id = Number(m[3]);
+    score.set(id, (score.get(id) ?? 0) + 1);
+  }
+  return [...score.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => id)
+    .slice(0, 2);
+}
+
+/** SofaScore team image addresses for an id, tried in order. */
+export function sofascoreImageUrls(id: number): string[] {
+  return [
+    `https://img.sofascore.com/api/v1/team/${id}/image`,
+    `https://api.sofascore.app/api/v1/team/${id}/image`,
+  ];
+}
+
+/** Hosts a SofaScore image may be served from (after redirects). */
+export function isSofascoreImageHost(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" && /(^|\.)sofascore\.(com|app)$/.test(u.hostname);
+  } catch {
+    return false;
   }
 }

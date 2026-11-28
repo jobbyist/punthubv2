@@ -29,7 +29,7 @@ import {
   validateTables,
   type StandingRow,
 } from "./standings";
-import type { PfieSource } from "./types";
+import type { Observation, PfieSource } from "./types";
 
 export type TableJob = "standings" | "history" | "season" | "archive";
 
@@ -41,7 +41,17 @@ export interface SyncStatusRow {
   consecutiveFailures: number;
 }
 
+export interface CafGroupStageResult {
+  home: string;
+  away: string;
+  kickoffAt: string;
+  homeScore: number;
+  awayScore: number;
+}
+
 export interface TablesStore {
+  /** Verified group-stage results only; preliminary rounds are excluded. */
+  cafGroupStageResults?(): Promise<CafGroupStageResult[]>;
   statuses(): Promise<SyncStatusRow[]>;
   /** Latest kick-off (ms) of a finished match per competition name, for matches since `since`. */
   latestFinished(since: Date): Promise<Map<string, number>>;
@@ -66,6 +76,70 @@ export interface TablesStore {
   ): Promise<void>;
 }
 
+const CAF_GROUP_DRAW_URL = "https://www.cafonline.com/caf-confederation-cup/news/totalenergies-caf-confederation-cup-202627-group-stage-draw-produces-exciting-encounters/";
+const CAF_GROUPS_2026_27 = {
+  A: [
+    { name: "Al Ahly", aliases: ["Al Ahly"] },
+    { name: "Raja Casablanca", aliases: ["Raja Casablanca"] },
+    { name: "ASKO Kara", aliases: ["ASKO Kara", "ASC Kara"] },
+    { name: "Primeiro de Agosto", aliases: ["Primeiro de Agosto", "1º de Agosto", "1 de Agosto"] },
+  ],
+  B: [
+    { name: "Royal Armed Forces", aliases: ["Royal Armed Forces", "AS FAR", "FAR Rabat"] },
+    { name: "Azam FC", aliases: ["Azam", "Azam FC"] },
+    { name: "Al Ahly Tripoli", aliases: ["Al Ahly Tripoli", "Al Ahli Tripoli", "Ahli Tripoli"] },
+    { name: "Durban City", aliases: ["Durban City"] },
+  ],
+  // CAF confirms three clubs; the fourth Group C place is still pending the postponed qualifier.
+  C: [
+    { name: "Maniema Union", aliases: ["Maniema Union", "AS Maniema Union"] },
+    { name: "Singida Black Stars", aliases: ["Singida Black Stars", "Black Stars"] },
+    { name: "Red Arrows", aliases: ["Red Arrows"] },
+  ],
+  D: [
+    { name: "USM Alger", aliases: ["USM Alger"] },
+    { name: "CS Sfaxien", aliases: ["CS Sfaxien"] },
+    { name: "Black Bulls", aliases: ["Black Bulls"] },
+    { name: "Real Bamako", aliases: ["Real Bamako", "Réal Bamako", "AS Real de Bamako"] },
+  ],
+} as const;
+
+export function buildCafGroupStandings(results: CafGroupStageResult[]): StandingRow[] {
+  const key = (name: string) => name.normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const teams = new Map<string, { group: string; row: Omit<StandingRow, "position"> }>();
+  for (const [group, entries] of Object.entries(CAF_GROUPS_2026_27)) {
+    for (const entry of entries) {
+      const row = { group, team: entry.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 };
+      for (const alias of entry.aliases) teams.set(key(alias), { group, row });
+    }
+  }
+  for (const result of results) {
+    const home = teams.get(key(result.home));
+    const away = teams.get(key(result.away));
+    if (!home || !away || home.group !== away.group) continue;
+    home.row.played += 1;
+    away.row.played += 1;
+    home.row.goalsFor += result.homeScore;
+    home.row.goalsAgainst += result.awayScore;
+    away.row.goalsFor += result.awayScore;
+    away.row.goalsAgainst += result.homeScore;
+    if (result.homeScore > result.awayScore) {
+      home.row.won += 1; home.row.points += 3; away.row.lost += 1;
+    } else if (result.homeScore < result.awayScore) {
+      away.row.won += 1; away.row.points += 3; home.row.lost += 1;
+    } else {
+      home.row.drawn += 1; away.row.drawn += 1; home.row.points += 1; away.row.points += 1;
+    }
+  }
+  const output: StandingRow[] = [];
+  for (const group of ["A", "B", "C", "D"]) {
+    const rows = [...teams.values()].filter((entry) => entry.group === group).map((entry) => entry.row);
+    const unique = [...new Map(rows.map((row) => [row.team, row])).values()];
+    unique.sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst) || b.goalsFor - a.goalsFor || b.won - a.won || a.team.localeCompare(b.team));
+    unique.forEach((row, index) => output.push({ ...row, position: index + 1 }));
+  }
+  return output;
+}
 export interface TablesDeps {
   search: SearchProvider;
   extract: ExtractProvider | null;
@@ -79,7 +153,7 @@ export interface TablesDeps {
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
-const MAX_CHARS = 10_000;
+const MAX_CHARS = 24_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
 const SEASON_WINDOW_DAYS = 7;
@@ -113,6 +187,44 @@ const longDate = (iso: string) =>
  * Search phrasings for a past window. Exact dates, a month name, "weekend round-up" and a few club names steer
  * the search to round-up and archive pages for those days instead of this week's fixtures.
  */
+export function seasonArchiveUrls(name: string, start: string): string[] {
+  const month = Number(start.slice(5, 7));
+  const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
+  if (name === "UEFA Champions League") {
+    return seasonStart === 2026
+      ? ["https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/"]
+      : seasonStart === 2025
+        ? ["https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/"]
+        : [];
+  }
+  if (name === "UEFA Conference League") {
+    return seasonStart === 2026
+      ? ["https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/"]
+      : seasonStart === 2025
+        ? ["https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/"]
+        : [];
+  }
+  if (name === "CAF Confederation Cup") {
+    if (start === "2026-10-16") return ["https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/"];
+    if (start === "2026-10-23") return [
+      "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+      "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+    ];
+    if (start === "2026-09-04") return ["https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/"];
+  }
+  return [];
+}
+/** If the competition's own results page is available, use it alone rather than mixing in conflicting secondary score feeds. */
+export function preferAuthoritativeSources<T extends { url: string }>(
+  hits: T[],
+  official: string[],
+  allowSecondary = false,
+): T[] {
+  if (allowSecondary) return hits;
+  const authoritative = hits.filter((hit) => tierOf(domainOf(hit.url), official) === "official");
+  return authoritative.length > 0 ? authoritative : hits;
+}
+
 export function seasonQueries(
   name: string,
   start: string,
@@ -131,6 +243,43 @@ export function seasonQueries(
   ];
   const clubs = teams.slice(0, 4).join(" ");
   if (clubs) out.push(`${clubs} results ${months}`);
+
+  // UEFA and CAF competitions do not have double-round-robin season matrices.
+  // Their official matchday/result articles are the historical source of record.
+  const month = Number(start.slice(5, 7));
+  const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
+  const seasonLabel = `${seasonStart}/${String(seasonStart + 1).slice(-2)}`;
+  if (name === "UEFA Champions League") {
+    out.push(
+      "site:uefa.com/uefachampionsleague/news/ " + seasonLabel + " Champions League all results matchday scores " + months,
+      "site:uefa.com/uefachampionsleague/news/ Champions League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      'site:uefa.com/uefachampionsleague/news/ "2026/27 Champions League: All the league phase fixtures and results"',
+      "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
+      "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
+    );
+  } else if (name === "UEFA Conference League") {
+    out.push(
+      "site:uefa.com/uefaconferenceleague/news/ " + seasonLabel + " Conference League all results matchday scores " + months,
+      "site:uefa.com/uefaconferenceleague/news/ Conference League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      'site:uefa.com/uefaconferenceleague/news/ "2026/27 Conference League: All the league phase fixtures and results"',
+      "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
+      "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
+    );
+  } else if (name === "CAF Confederation Cup") {
+    out.push(
+      "site:cafonline.com/caf-confederation-cup/news/ " + seasonLabel + " Confederation Cup results matchday scores " + months,
+      "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " + longDate(start) + " " + longDate(end),
+      'site:cafonline.com/caf-confederation-cup/news/ "Surprise results shake up TotalEnergies CAF Confederation Cup Group Stage race"',
+      'site:cafonline.com/caf-confederation-cup/news/ "Full results of first-leg of First Preliminary stage"',
+      "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+      "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+      "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+      "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
+      "https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/",
+      "https://www.cafonline.com/caf-confederation-cup/news/fixtures-and-results-of-the-second-leg-of-first-preliminary-round-of-202526-totalenergies-caf-confederation-cup/",
+      "https://www.cafonline.com/caf-confederation-cup/news/belouizdad-cruise-al-masry-edge-chiefs-in-totalenergies-caf-confederation-cup-group-stage-openers/",
+    );
+  }
   return out;
 }
 
@@ -256,6 +405,9 @@ async function gatherSources(
   key: CompetitionKey,
   objective: string,
   queries: string[],
+  preferSearchResults = false,
+  preferredUrls: string[] = [],
+  allowSecondary = false,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -265,21 +417,33 @@ async function gatherSources(
     excerpt: "",
     publishedAt: null,
   }));
+  const preferredPages = preferredUrls.map((url) => ({
+    url,
+    title: "Preferred official historical results archive",
+    excerpt: "",
+    publishedAt: null,
+  }));
+  const preferredUrlSet = new Set(preferredUrls);
   const order = { official: 0, trusted: 1, other: 2 } as const;
-  const ranked = [...configuredPages, ...hits].sort(
+  // Historical result queries must win over the configured standings URL for the same official domain.
+  // Otherwise domain deduplication keeps the table page and discards the match-results archive page.
+  const ranked = (preferSearchResults ? [...preferredPages, ...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
+  // An official competition results page is authoritative. Mixing in secondary pages can introduce stale or
+  // differently scoped scorelines that make otherwise verified official results look contradictory.
+  const sourcePool = preferAuthoritativeSources(ranked, official, allowSecondary);
   const sources: PfieSource[] = [];
   const seenDomains = new Set<string>();
   const candidates = [] as typeof ranked;
   const extract = deps.extract;
   if (!extract) return [];
   // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
-  for (const hit of ranked) {
+  for (const hit of sourcePool) {
     const domain = domainOf(hit.url);
     const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
-    if (tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
+    if (tier === "other" || isBlockedDomain(domain) || (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))) continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
     if (candidates.length >= MAX_SOURCES) break;
@@ -450,6 +614,36 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         chosenTables = chooseTables(validation.tables, cfg.groups);
       }
     }
+    if (!chosenTables && key === "caf-cc") {
+      const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
+      if (groupResults.length > 0) {
+        const derivedRows = buildCafGroupStandings(groupResults);
+        const previousDerived = await deps.store.currentStandings(key, season);
+        const regression = tableRegression(derivedRows, previousDerived, false, undefined, true);
+        if (!regression && derivedRows.length === 15) {
+          const count = await deps.store.replaceStandings({
+            key,
+            competition: c.name,
+            season,
+            rows: derivedRows,
+            domain: "derived:verified-group-stage-results",
+            url: CAF_GROUP_DRAW_URL,
+          });
+          await deps.store.record("standings", key, true, null, {
+            verdict: "derived_verified_group_stage_results",
+            provisional: true,
+            source: "verified_completed_matches",
+            sourceUrl: CAF_GROUP_DRAW_URL,
+            groupCount: 4,
+            confirmedTeams: count,
+            pendingGroupCQualifier: true,
+            verifiedMatchesUsed: groupResults.length,
+            latestMatch: groupResults.map((item) => item.kickoffAt).sort().at(-1) ?? null,
+          });
+          return { ok: true, detail: count + " teams across 4 provisional groups calculated from " + groupResults.length + " verified group-stage results" };
+        }
+      }
+    }
     if (!chosenTables) {
       const domains = validation.tables.map((table) => table.source.domain).join(", ");
       const why = [...sourceFailures, ...validation.rejected.map((r) => sourceLabel(r.source) + ":" + r.reason)].join(", ") ||
@@ -511,6 +705,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       allowVerifiedGoalCorrections,
       cfg.allowVerifiedPlayedCorrections,
       cfg.allowTeamCountIncrease,
+      cfg.allowVerifiedRecordCorrections,
     );
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
@@ -565,14 +760,11 @@ async function syncSeasonWindow(
   const to = new Date(`${end}T23:59:59+02:00`);
   try {
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    let sources = await gatherSources(
-      deps,
-      key,
+    const queries = seasonQueries(c.name, start, end, known);
+    const preferredUrls = seasonArchiveUrls(c.name, start);
+    const objective =
       `${c.name} results with final scores for every match played from ${start} to ${end}. ` +
-        `Prefer the official competition site and established sports news sites.`,
-      seasonQueries(c.name, start, end, known),
-    );
-    if (sources.length === 0) throw new Error("no usable source");
+      `Prefer the official competition site and established sports news sites.`;
     const request = (list: PfieSource[]) =>
       extractionRequest({
         competition: c.name,
@@ -581,45 +773,87 @@ async function syncSeasonWindow(
         today: sastDate(now()),
         sources: list,
       });
-    let answer = await generate(deps, request(sources));
-    let raw = parseObservations(answer.text);
-    if (!raw) {
-      // Usually a long answer cut off at the output limit: retry once with the three best sources, shorter.
-      sources = sources.slice(0, 3).map((x) => ({ ...x, text: x.text.slice(0, 8_000) }));
-      answer = await generate(deps, request(sources));
-      raw = parseObservations(answer.text);
-    }
-    if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted, rejected } = validateObservations(raw, sources, { from, to, now: now() });
-    const { rows, unverified } = verifyHistory(accepted, key, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
-    const reasons: Record<string, number> = {};
-    for (const r of rejected) reasons[r.reason] = (reasons[r.reason] ?? 0) + 1;
-    const meta = {
-      verified: rows.length,
-      inserted,
-      unverified,
-      extracted: raw.length,
-      accepted: accepted.length,
-      rejected: reasons,
-      sources: sources.map((s) => s.domain),
-      model: answer.model,
+    const extractAndVerify = async (list: PfieSource[]) => {
+      const accepted: Observation[] = [];
+      const reasons: Record<string, number> = {};
+      const models = new Set<string>();
+      let extracted = 0;
+      for (const source of list) {
+        // Extract each publisher independently. A single multi-source prompt often attributes every row to
+        // one source, which defeats the two-domain verification rule for non-official publishers.
+        const isolated = { ...source, index: 1 };
+        const sourceRequest = (items: PfieSource[]) =>
+          extractionRequest({
+            competition: c.name,
+            from: start,
+            to: end,
+            today: sastDate(now()),
+            sources: items,
+          });
+        let answer = await generate(deps, sourceRequest([isolated]));
+        let raw = parseObservations(answer.text);
+        if (!raw) {
+          answer = await generate(deps, sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]));
+          raw = parseObservations(answer.text);
+        }
+        models.add(answer.model);
+        if (!raw) continue;
+        extracted += raw.length;
+        const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
+        accepted.push(...validation.accepted);
+        for (const item of validation.rejected) reasons[item.reason] = (reasons[item.reason] ?? 0) + 1;
+      }
+      const { rows, unverified } = verifyHistory(accepted, key, known);
+      return {
+        extracted,
+        accepted,
+        rows,
+        unverified,
+        reasons,
+        model: [...models].join(", "),
+      };
     };
-    // No verified result is a miss, not a finished window: it is retried (20 min, 40 min, then daily), because a
-    // later search can find the second source a single-source score needs.
-    if (rows.length === 0) {
+
+    // First use the competition's own official result archive. If it cannot provide usable observations for
+    // this particular window, retry with trusted independent publishers; history verification still requires
+    // two matching domains whenever an official scoreline is not present.
+    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls);
+    if (sources.length === 0) throw new Error("no usable source");
+    let result = await extractAndVerify(sources);
+    if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
+      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
+      if (secondary.some((source) => source.tier !== "official")) {
+        const fallback = await extractAndVerify(secondary);
+        if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
+          sources = secondary;
+          result = fallback;
+        }
+      }
+    }
+    const inserted = result.rows.length
+      ? await deps.store.insertHistory(result.rows.map((r) => ({ ...r, competition: c.name })))
+      : 0;
+    const meta = {
+      verified: result.rows.length,
+      inserted,
+      unverified: result.unverified,
+      extracted: result.extracted,
+      accepted: result.accepted.length,
+      rejected: result.reasons,
+      sources: sources.map((s) => s.domain),
+      model: result.model,
+    };
+    if (result.rows.length === 0) {
       await deps.store.record("season", scope, false, "no verified results on the sources", meta);
       return {
         ok: false,
-        detail: `no verified results (${raw.length} extracted, ${accepted.length} accepted, ${unverified} single-source)`,
+        detail: `no verified results (${result.extracted} extracted, ${result.accepted.length} accepted, ${result.unverified} single-source)`,
       };
     }
     await deps.store.record("season", scope, true, null, meta);
     return {
       ok: true,
-      detail: `${inserted} new results (${rows.length} verified, ${unverified} unconfirmed)`,
+      detail: `${inserted} new results (${result.rows.length} verified, ${result.unverified} unconfirmed)`,
     };
   } catch (e) {
     await deps.store.record("season", scope, false, message(e), {}).catch(() => undefined);
@@ -644,6 +878,8 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       `${c.name} results with final scores for every match played from ${sastDate(from)} to ${sastDate(to)}. ` +
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
+      true,
+      seasonArchiveUrls(c.name, start),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
@@ -658,7 +894,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
     );
     const raw = parseObservations(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted } = validateObservations(raw, sources, { from, to, now: to });
+    const { accepted } = validateObservations(raw, sources, { from, to, now: to, knownTeams: known });
     const { rows, unverified } = verifyHistory(accepted, key, known);
     const inserted = rows.length
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))

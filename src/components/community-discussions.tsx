@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
+import { Activity, MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -90,6 +90,10 @@ export function CommunityDiscussions() {
   const [threads, setThreads] = useState<CommunityThread[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortMode, setSortMode] = useState<"newest" | "most_replied">("newest");
   const [posting, setPosting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyBusy, setReplyBusy] = useState<string | null>(null);
@@ -98,8 +102,8 @@ export function CommunityDiscussions() {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]["value"]>("matchday_chat");
   const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (quiet = false) => {
+    if (!quiet) setLoading(true);
     try {
       const { data: threadRows, error: threadError } = await db
         .from("community_posts")
@@ -152,14 +156,47 @@ export function CommunityDiscussions() {
       console.error("community discussion feed failed", error);
       setFailed(true);
     } finally {
-      setLoading(false);
+      if (!quiet) setLoading(false);
     }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  // Keep the discussion feed live across human posts, AI posts and replies.
+  // Realtime events trigger a quiet refresh so the feed does not flash its loading skeleton.
+  useEffect(() => {
+    void load();
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+    const channel = db
+      .channel("puntr-community-discussions")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_posts" },
+        () => {
+          if (refreshTimer) clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => { void load(true); }, 250);
+        },
+      )
+      .subscribe((status) => setRealtimeConnected(status === "SUBSCRIBED"));
+
+    return () => {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      setRealtimeConnected(false);
+      void db.removeChannel(channel);
+    };
+  }, [load]);
 
   const canPost = Boolean(isSignedIn && profile?.id);
-  const threadCount = useMemo(() => threads.length, [threads]);
+  const visibleThreads = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    const filtered = threads.filter((thread) => {
+      const matchesCategory = activeCategory === "all" || thread.category === activeCategory;
+      const searchable = `${thread.title ?? ""} ${thread.body} ${authorLabel(thread.author)} ${thread.replies.map((reply) => reply.body).join(" ")}`.toLocaleLowerCase();
+      return matchesCategory && (!query || searchable.includes(query));
+    });
+    return [...filtered].sort((a, b) => sortMode === "most_replied"
+      ? b.replies.length - a.replies.length || b.created_at.localeCompare(a.created_at)
+      : b.created_at.localeCompare(a.created_at));
+  }, [threads, activeCategory, searchQuery, sortMode]);
+  const threadCount = useMemo(() => visibleThreads.length, [visibleThreads]);
 
   async function createThread(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -228,16 +265,25 @@ export function CommunityDiscussions() {
             Real discussions from Puntr members and clearly labelled AI participants. Keep it about the sport; no guaranteed outcomes or pressure to punt.
           </p>
         </div>
-        <Button size="sm" variant="outline" onClick={() => void load()} disabled={loading}>
-          <RefreshCw className="mr-2 size-3.5" /> Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-[10px] font-medium text-muted-foreground" aria-live="polite">
+            <Activity className={`size-3 ${realtimeConnected ? "text-emerald-500" : "text-muted-foreground"}`} />
+            {realtimeConnected ? "Live updates" : "Refreshing manually"}
+          </span>
+          <Button size="sm" variant="outline" onClick={() => void load()} disabled={loading}>
+            <RefreshCw className="mr-2 size-3.5" /> Refresh
+          </Button>
+        </div>
       </div>
 
       {canPost ? (
         <form onSubmit={createThread} className="card-surface mb-5 space-y-3 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-semibold">Start a discussion</h3>
-            <span className="text-[10px] text-muted-foreground">10 posts/replies per day · Community rules apply</span>
+            <div>
+              <h3 className="font-semibold">Start a discussion</h3>
+              <p className="mt-0.5 text-xs text-muted-foreground">Bring a match, a tactical idea or a product suggestion to the room.</p>
+            </div>
+            <span className="rounded-full border border-border px-2.5 py-1 text-[10px] text-muted-foreground">10 posts/replies daily</span>
           </div>
           <input
             value={title}
@@ -283,6 +329,34 @@ export function CommunityDiscussions() {
         </div>
       )}
 
+      <div className="mb-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]">
+        <label className="block">
+          <span className="sr-only">Search discussions</span>
+          <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} type="search" placeholder="Search discussions, members or replies…" className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15" />
+        </label>
+        <label className="block">
+          <span className="sr-only">Sort discussions</span>
+          <select value={sortMode} onChange={(event) => setSortMode(event.target.value as typeof sortMode)} className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm">
+            <option value="newest">Newest first</option>
+            <option value="most_replied">Most discussed</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2" aria-label="Filter discussions by category">
+        <button type="button" onClick={() => setActiveCategory("all")} aria-pressed={activeCategory === "all"} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === "all" ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}>
+          All discussions
+        </button>
+        {CATEGORIES.map((item) => (
+          <button key={item.value} type="button" onClick={() => setActiveCategory(item.value)} aria-pressed={activeCategory === item.value} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === item.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}>
+            {item.label}
+          </button>
+        ))}
+        </div>
+        <span className="text-[11px] text-muted-foreground" aria-live="polite">{threadCount} {threadCount === 1 ? "discussion" : "discussions"}</span>
+      </div>
+
       {failed ? (
         <p role="alert" className="card-surface p-5 text-sm text-destructive">Discussions could not be loaded. Refresh to try again.</p>
       ) : loading ? (
@@ -293,11 +367,11 @@ export function CommunityDiscussions() {
         <div className="card-surface p-6 text-center">
           <MessageCircle className="mx-auto size-6 text-muted-foreground" />
           <h3 className="mt-3 font-semibold">No discussions yet</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Start the first conversation. AI participants will join the discussion after the founding campaign opens.</p>
+          <p className="mt-1 text-sm text-muted-foreground">{activeCategory === "all" ? "Start the first conversation. Clearly labelled AI participants also contribute to the community." : "No discussions in this category yet. Start a conversation to get it going."}</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {threads.map((thread) => (
+          {visibleThreads.map((thread) => (
             <article key={thread.id} className="card-surface p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <Author profile={thread.author} generated={thread.is_ai_generated} createdAt={thread.created_at} />

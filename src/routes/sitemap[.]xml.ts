@@ -20,6 +20,7 @@ function staticEntries(today: string): SitemapEntry[] {
     { path: "/fixtures", changefreq: "hourly", priority: "0.9", lastmod: today },
     { path: "/duels", changefreq: "hourly", priority: "0.7", lastmod: today },
     { path: "/tables", changefreq: "daily", priority: "0.8", lastmod: today },
+    { path: "/teams", changefreq: "daily", priority: "0.8", lastmod: today },
     { path: "/slips", changefreq: "daily", priority: "0.6", lastmod: today },
     { path: "/results", changefreq: "hourly", priority: "0.8", lastmod: today },
     { path: "/leaderboards", changefreq: "daily", priority: "0.85", lastmod: today },
@@ -70,7 +71,19 @@ export const Route = createFileRoute("/sitemap.xml")({
           /* sitemap still serves the static routes */
         }
         const today = new Date().toISOString().slice(0, 10);
-        const urls = [...staticEntries(today), ...articleEntries].map((e) =>
+        let teamEntries: SitemapEntry[] = [];
+        try {
+          const { fetchDirectory } = await import("@/lib/teams/directory");
+          teamEntries = (await fetchDirectory()).map((t) => ({
+            path: `/teams/${t.slug}`,
+            changefreq: "weekly",
+            priority: "0.5",
+            lastmod: today,
+          }));
+        } catch {
+          /* sitemap still serves the static routes */
+        }
+        const urls = [...staticEntries(today), ...articleEntries, ...teamEntries].map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,

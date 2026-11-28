@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
@@ -16,6 +16,13 @@ export function NotificationBell() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { items, status, unread, markRead, reload } = useNotifications(profile?.id);
+  // Ring the bell once when a new update arrives (not on first load).
+  const prevUnread = useRef<number | null>(null);
+  const [ring, setRing] = useState(0);
+  useEffect(() => {
+    if (prevUnread.current !== null && unread > prevUnread.current) setRing((n) => n + 1);
+    prevUnread.current = unread;
+  }, [unread]);
 
   return (
     <Popover
@@ -38,9 +45,12 @@ export function NotificationBell() {
               : t("notifications.label")
           }
         >
-          <Bell className="size-[18px]" />
+          <Bell key={ring} className={`size-[18px] ${ring ? "puntr-bell-ring" : ""}`} />
           {unread > 0 && (
-            <span className="absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold leading-4 text-primary-foreground tnum">
+            <span
+              key={unread}
+              className="puntr-pop absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold leading-4 text-primary-foreground tnum"
+            >
               {unread > 9 ? "9+" : unread}
             </span>
           )}
