@@ -83,6 +83,7 @@ export interface PfieStore {
   knownFixtures(competition: string, from: Date, to: Date): Promise<KnownFixture[]>;
   lastRunAt(competition: CompetitionKey, kind: "fixtures" | "results"): Promise<Date | null>;
   recordRun(run: {
+    id?: string;
     competition: CompetitionKey;
     kind: "fixtures" | "results";
     ok: boolean;
