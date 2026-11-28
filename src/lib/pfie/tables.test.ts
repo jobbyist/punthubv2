@@ -122,6 +122,13 @@ describe("PFIE historical season windows", () => {
     const ucl = seasonArchiveUrls("UEFA Champions League", "2026-10-15");
     const uecl = seasonArchiveUrls("UEFA Conference League", "2026-10-15");
     const caf = seasonArchiveUrls("CAF Confederation Cup", "2026-10-16");
+    const psl = seasonArchiveUrls("Betway Premiership", "2026-10-15");
+    const epl = seasonArchiveUrls("Premier League", "2026-10-15");
+    const championship = seasonArchiveUrls("EFL Championship", "2026-10-15");
+    const laliga = seasonArchiveUrls("La Liga", "2026-10-15");
+    const seriea = seasonArchiveUrls("Serie A", "2026-10-15");
+    const bundesliga = seasonArchiveUrls("Bundesliga", "2026-10-15");
+    const ligue1 = seasonArchiveUrls("Ligue 1", "2026-10-15");
 
     expect(ucl).toContain("https://www.bbc.com/sport/football/champions-league/scores-fixtures");
     expect(ucl).toContain("https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures");
@@ -133,6 +140,15 @@ describe("PFIE historical season windows", () => {
     expect(caf).toContain("https://foot-africa.com/en/leagues/international/caf-confederations-cup/");
   });
 
+    expect(ucl).toContain("https://www.flashscore.com/football/europe/champions-league/results/");
+    expect(caf).toContain("https://www.flashscore.com/football/africa/caf-confederation-cup/results/");
+    expect(psl).toContain("https://www.flashscore.com/football/south-africa/betway-premiership/results/");
+    expect(epl).toContain("https://www.flashscore.com/football/england/premier-league/results/");
+    expect(championship).toContain("https://www.flashscore.com/football/england/championship/results/");
+    expect(laliga).toContain("https://www.flashscore.com/football/spain/laliga/results/");
+    expect(seriea).toContain("https://www.flashscore.com/football/italy/serie-a/results/");
+    expect(bundesliga).toContain("https://www.flashscore.com/football/germany/bundesliga/results/");
+    expect(ligue1).toContain("https://www.flashscore.com/football/france/ligue-1/results/");
   it("discovers trusted secondary sources for UEFA and CAF historical backfills", () => {
     const ucl = seasonQueries("UEFA Champions League", "2026-10-01", "2026-10-07");
     const uecl = seasonQueries("UEFA Conference League", "2026-10-01", "2026-10-07");
