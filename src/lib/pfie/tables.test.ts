@@ -1,6 +1,43 @@
 import { describe, expect, it } from "vitest";
 
-import { isConfirmedNoMatchesInWindow, seasonArchiveUrls, seasonQueries } from "./tables";
+import {
+  isConfirmedNoMatchesInWindow,
+  preferAuthoritativeSources,
+  shouldIncludeSecondaryStandingsSources,
+  seasonArchiveUrls,
+  seasonQueries,
+} from "./tables";
+
+describe("PFIE standings source selection", () => {
+  it("enables secondary publishers only for the ten pre-launch competitions", () => {
+    for (const key of [
+      "psl",
+      "epl",
+      "championship",
+      "laliga",
+      "ucl",
+      "uecl",
+      "bundesliga",
+      "seriea",
+      "ligue1",
+      "caf-cc",
+    ] as const) {
+      expect(shouldIncludeSecondaryStandingsSources(key)).toBe(true);
+    }
+    expect(shouldIncludeSecondaryStandingsSources("saudi-pro")).toBe(false);
+    expect(shouldIncludeSecondaryStandingsSources("primeira")).toBe(false);
+  });
+
+  it("keeps independent trusted publishers available alongside official pages", () => {
+    const sources = [
+      { url: "https://www.efl.com/embeds/league-table/" },
+      { url: "https://www.skysports.com/championship-table" },
+      { url: "https://www.bbc.com/sport/football/championship/table" },
+    ];
+    expect(preferAuthoritativeSources(sources, ["efl.com"])).toEqual([sources[0]]);
+    expect(preferAuthoritativeSources(sources, ["efl.com"], true)).toEqual(sources);
+  });
+});
 
 describe("PFIE historical season windows", () => {
   it("does not treat an empty extraction as proof that a window had no matches", () => {
