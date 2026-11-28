@@ -54,8 +54,9 @@ const Ctx = createContext<AdsValue | null>(null);
 /** Untyped handle for the ads views and RPCs (added in migration 20261128300000). */
 const db = supabase as unknown as SupabaseClient;
 
-let inventory: Promise<{ partners: AdPartner[]; creatives: AdCreative[] }> | null = null;
+let inventory: Promise<{ partners: AdPartner[]; creatives: AdCreative[] } | null> | null = null;
 
+/** Live partners and approved creatives, fetched once per page load. Resolves null on failure (retried next mount). */
 function loadInventory() {
   inventory ??= (async () => {
     const [p, c] = await Promise.all([
@@ -63,6 +64,7 @@ function loadInventory() {
       // The creatives view arrives with migration 20261128300000; without it, slots use default units.
       db.from("public_affiliate_creatives").select("*"),
     ]);
+    if (p.error) throw p.error;
     const partners = ((p.data ?? []) as Record<string, unknown>[]).map((r) => ({
       id: String(r["id"]),
       name: String(r["name"]),
@@ -81,7 +83,7 @@ function loadInventory() {
     return { partners, creatives };
   })().catch(() => {
     inventory = null;
-    return { partners: [], creatives: [] };
+    return null;
   });
   return inventory;
 }
@@ -126,7 +128,7 @@ export function AdsProvider({ children }: { children: ReactNode }) {
     }
     if (!AFFILIATES_ENABLED) return;
     let live = true;
-    void loadInventory().then((v) => live && setInv(v));
+    void loadInventory().then((v) => live && v && setInv(v));
     return () => {
       live = false;
     };
@@ -161,12 +163,14 @@ export function AdsProvider({ children }: { children: ReactNode }) {
         ? Date.parse(row.posting_paused_until) > Date.now()
         : false;
       if (!live) return;
+      // When neither check answered, fail closed: a Pro member must never see ads because of a network error.
+      const unknown = Boolean(adFree.error) && Boolean(profile.error);
       setMember({
-        adFree: (adFree.data as unknown) === true || row?.account_type === "pro",
+        adFree: unknown || (adFree.data as unknown) === true || row?.account_type === "pro",
         attested: row?.is_18_attested === true,
         onBreak: paused,
       });
-    })().catch(() => live && setMember({ adFree: false, attested: false, onBreak: false }));
+    })().catch(() => live && setMember({ adFree: true, attested: false, onBreak: false }));
     return () => {
       live = false;
     };
