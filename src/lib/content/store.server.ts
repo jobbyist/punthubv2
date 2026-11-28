@@ -11,6 +11,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 import type { ContentSettings, ContentStore, ProjectUpdate } from "./types";
+import { mapProviderUsage } from "./usage";
 
 const db = supabaseAdmin as unknown as SupabaseClient;
 
@@ -190,15 +191,16 @@ export function createContentStore(): ContentStore {
 
     async usageToday() {
       const day = new Date().toISOString().slice(0, 10);
-      const { data, error } = await db
-        .from("content_api_usage")
-        .select("provider, calls")
-        .eq("day", day);
-      fail("content_api_usage", error);
-      const out: Record<string, number> = {};
-      for (const r of (data ?? []) as { provider: string; calls: number }[])
-        out[r.provider] = r.calls;
-      return out;
+      const [usage, quotas] = await Promise.all([
+        db.from("content_api_usage").select("provider, calls, refused").eq("day", day),
+        db.from("api_quota_limits").select("provider, daily_cap"),
+      ]);
+      fail("content_api_usage", usage.error);
+      fail("api_quota_limits", quotas.error);
+      return mapProviderUsage(
+        (usage.data ?? []) as { provider: string; calls: number; refused: number }[],
+        (quotas.data ?? []) as { provider: string; daily_cap: number }[],
+      );
     },
 
     async clearKindOverride() {
