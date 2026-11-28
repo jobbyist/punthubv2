@@ -196,6 +196,16 @@ describe("archive jobs", () => {
     expect(u.wikipedia).toBe("https://en.wikipedia.org/wiki/2025%E2%80%9326_Premier_League");
   });
 
+  it("never schedules deferred competitions for pre-launch archive imports", () => {
+    const now = new Date("2026-11-28T03:00:00Z");
+    const due = archiveJobsDue(
+      { now: () => now },
+      [],
+      ["saudi-pro", "primeira", "eredivisie"],
+    );
+    expect(due).toEqual([]);
+  });
+
   it("imports finished seasons once and refreshes the current one daily", () => {
     const now = new Date("2026-11-15T03:00:00Z");
     const deps = { now: () => now };
