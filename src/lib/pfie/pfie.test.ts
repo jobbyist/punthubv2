@@ -691,7 +691,7 @@ describe("provider", () => {
   it("retries malformed model JSON once with a smaller source set", async () => {
     const models: string[] = [];
     const retrying: LlmProvider = {
-      name: "gemini",
+      name: "parallel-responses",
       async generate(model) {
         models.push(model);
         return { model, text: models.length === 1 ? "not json" : ANSWER };
