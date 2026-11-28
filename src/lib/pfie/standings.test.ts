@@ -2027,3 +2027,20 @@ describe("plain-text live standings source layouts", () => {
     expect(parseStandingsMarkdown(plain, 3)?.[0]).toMatchObject({ goalsFor: 34, goalsAgainst: 22 });
   });
 });
+
+describe("flattened Parallel Extract standings payloads", () => {
+  it("parses flattened Sky Sports rows with badge labels and escaped goal differences", () => {
+    const flat = "EFL Championship Table Last updated: 27 November, 9:37pm Position Team Team Pl Played W Won D Drawn L Lost F Goals For A Goals Against GD Goal Difference Pts Points --- --- --- --- --- --- --- --- --- --- 1 Team Badge Middlesbrough 18 10 5 3 34 22 \\+12 35 2 Team Badge Stoke City 17 11 2 4 27 19 \\+8 35 3 Team Badge Wolverhampton Wanderers 17 10 4 3 31 19 \\+12 34 4 Team Badge Birmingham City 17 9 5 3 30 15 \\+15 32";
+    const rows = parseStandingsMarkdown(flat, 2);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({ team: "Middlesbrough", played: 18, goalsFor: 34, goalsAgainst: 22, points: 35 });
+    expect(rows?.[2]?.team).toBe("Wolverhampton Wanderers");
+  });
+
+  it("parses flattened Stat-Football combined goals with strike-through wrappers", () => {
+    const flat = "EFL Championship table 2026/27 season updated 2026-11-28 Overall Home Away The EFL Championship table covers 24 clubs over 18 matches each. Points run three for a win and one for a draw. Club P W D L Goals GD Pts --- --- --- --- --- --- --- 1 Middlesbrough 18 10 5 3 34 ~~:~~ 22 \\+12 35 2 Stoke City 17 11 2 4 27 ~~:~~ 19 \\+8 35 3 Wolverhampton Wanderers 17 10 4 3 31 ~~:~~ 19 \\+12 34 4 Birmingham City 17 9 5 3 30 ~~:~~ 15 \\+15 32 Top of the table";
+    const rows = parseStandingsMarkdown(flat, 3);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({ team: "Middlesbrough", goalsFor: 34, goalsAgainst: 22, points: 35 });
+  });
+});
