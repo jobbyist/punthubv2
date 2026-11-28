@@ -7,12 +7,49 @@ import {
   cleanManualLogoUrl,
   pickCrestImage,
   pickWikipediaTitle,
+  isOfficialBadgeSource,
   isSofascoreImageHost,
   searchName,
   sofascoreCandidates,
   sofascoreImageUrls,
   wikipediaCandidates,
 } from "./resolve";
+
+describe("official badge source verification", () => {
+  it("accepts official league pages and explicitly identified team websites", () => {
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.premierleague.com/clubs/1/Arsenal", title: "Arsenal Club Profile" },
+        "Arsenal",
+        "Premier League",
+      ),
+    ).toBe(true);
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.elchecf.es/en/club", title: "Official website of Elche CF" },
+        "Elche CF",
+        "La Liga",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects third-party logo repositories even when their titles mention a team crest", () => {
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.footylogos.com/logos/elche-cf", title: "Elche CF logo" },
+        "Elche CF",
+        "La Liga",
+      ),
+    ).toBe(false);
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://football-logos.cc/france/auxerre", title: "AJ Auxerre club crest" },
+        "AJ Auxerre",
+        "Ligue 1",
+      ),
+    ).toBe(false);
+  });
+});
 
 describe("Parallel search requests", () => {
   it("uses sport- and competition-aware queries for marquee teams", () => {
