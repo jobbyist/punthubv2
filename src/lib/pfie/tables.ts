@@ -41,7 +41,17 @@ export interface SyncStatusRow {
   consecutiveFailures: number;
 }
 
+export interface CafGroupStageResult {
+  home: string;
+  away: string;
+  kickoffAt: string;
+  homeScore: number;
+  awayScore: number;
+}
+
 export interface TablesStore {
+  /** Verified group-stage results only; preliminary rounds are excluded. */
+  cafGroupStageResults?(): Promise<CafGroupStageResult[]>;
   statuses(): Promise<SyncStatusRow[]>;
   /** Latest kick-off (ms) of a finished match per competition name, for matches since `since`. */
   latestFinished(since: Date): Promise<Map<string, number>>;
@@ -66,6 +76,70 @@ export interface TablesStore {
   ): Promise<void>;
 }
 
+const CAF_GROUP_DRAW_URL = "https://www.cafonline.com/caf-confederation-cup/news/totalenergies-caf-confederation-cup-202627-group-stage-draw-produces-exciting-encounters/";
+const CAF_GROUPS_2026_27 = {
+  A: [
+    { name: "Al Ahly", aliases: ["Al Ahly"] },
+    { name: "Raja Casablanca", aliases: ["Raja Casablanca"] },
+    { name: "ASKO Kara", aliases: ["ASKO Kara", "ASC Kara"] },
+    { name: "Primeiro de Agosto", aliases: ["Primeiro de Agosto", "1º de Agosto", "1 de Agosto"] },
+  ],
+  B: [
+    { name: "Royal Armed Forces", aliases: ["Royal Armed Forces", "AS FAR", "FAR Rabat"] },
+    { name: "Azam FC", aliases: ["Azam", "Azam FC"] },
+    { name: "Al Ahly Tripoli", aliases: ["Al Ahly Tripoli", "Al Ahli Tripoli", "Ahli Tripoli"] },
+    { name: "Durban City", aliases: ["Durban City"] },
+  ],
+  // CAF confirms three clubs; the fourth Group C place is still pending the postponed qualifier.
+  C: [
+    { name: "Maniema Union", aliases: ["Maniema Union", "AS Maniema Union"] },
+    { name: "Singida Black Stars", aliases: ["Singida Black Stars", "Black Stars"] },
+    { name: "Red Arrows", aliases: ["Red Arrows"] },
+  ],
+  D: [
+    { name: "USM Alger", aliases: ["USM Alger"] },
+    { name: "CS Sfaxien", aliases: ["CS Sfaxien"] },
+    { name: "Black Bulls", aliases: ["Black Bulls"] },
+    { name: "Real Bamako", aliases: ["Real Bamako", "Réal Bamako", "AS Real de Bamako"] },
+  ],
+} as const;
+
+export function buildCafGroupStandings(results: CafGroupStageResult[]): StandingRow[] {
+  const key = (name: string) => name.normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const teams = new Map<string, { group: string; row: Omit<StandingRow, "position"> }>();
+  for (const [group, entries] of Object.entries(CAF_GROUPS_2026_27)) {
+    for (const entry of entries) {
+      const row = { group, team: entry.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 };
+      for (const alias of entry.aliases) teams.set(key(alias), { group, row });
+    }
+  }
+  for (const result of results) {
+    const home = teams.get(key(result.home));
+    const away = teams.get(key(result.away));
+    if (!home || !away || home.group !== away.group) continue;
+    home.row.played += 1;
+    away.row.played += 1;
+    home.row.goalsFor += result.homeScore;
+    home.row.goalsAgainst += result.awayScore;
+    away.row.goalsFor += result.awayScore;
+    away.row.goalsAgainst += result.homeScore;
+    if (result.homeScore > result.awayScore) {
+      home.row.won += 1; home.row.points += 3; away.row.lost += 1;
+    } else if (result.homeScore < result.awayScore) {
+      away.row.won += 1; away.row.points += 3; home.row.lost += 1;
+    } else {
+      home.row.drawn += 1; away.row.drawn += 1; home.row.points += 1; away.row.points += 1;
+    }
+  }
+  const output: StandingRow[] = [];
+  for (const group of ["A", "B", "C", "D"]) {
+    const rows = [...teams.values()].filter((entry) => entry.group === group).map((entry) => entry.row);
+    const unique = [...new Map(rows.map((row) => [row.team, row])).values()];
+    unique.sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst) || b.goalsFor - a.goalsFor || b.won - a.won || a.team.localeCompare(b.team));
+    unique.forEach((row, index) => output.push({ ...row, position: index + 1 }));
+  }
+  return output;
+}
 export interface TablesDeps {
   search: SearchProvider;
   extract: ExtractProvider | null;
@@ -488,6 +562,36 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       })),
     }));
         chosenTables = chooseTables(validation.tables, cfg.groups);
+      }
+    }
+    if (!chosenTables && key === "caf-cc") {
+      const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
+      if (groupResults.length > 0) {
+        const derivedRows = buildCafGroupStandings(groupResults);
+        const previousDerived = await deps.store.currentStandings(key, season);
+        const regression = tableRegression(derivedRows, previousDerived, false, undefined, true);
+        if (!regression && derivedRows.length === 15) {
+          const count = await deps.store.replaceStandings({
+            key,
+            competition: c.name,
+            season,
+            rows: derivedRows,
+            domain: "derived:verified-group-stage-results",
+            url: CAF_GROUP_DRAW_URL,
+          });
+          await deps.store.record("standings", key, true, null, {
+            verdict: "derived_verified_group_stage_results",
+            provisional: true,
+            source: "verified_completed_matches",
+            sourceUrl: CAF_GROUP_DRAW_URL,
+            groupCount: 4,
+            confirmedTeams: count,
+            pendingGroupCQualifier: true,
+            verifiedMatchesUsed: groupResults.length,
+            latestMatch: groupResults.map((item) => item.kickoffAt).sort().at(-1) ?? null,
+          });
+          return { ok: true, detail: count + " teams across 4 provisional groups calculated from " + groupResults.length + " verified group-stage results" };
+        }
       }
     }
     if (!chosenTables) {

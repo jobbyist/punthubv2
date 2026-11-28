@@ -26,6 +26,8 @@ import {
   seasonQueries,
   seasonWindows,
   standingsDue,
+  buildCafGroupStandings,
+  type CafGroupStageResult,
   type SyncStatusRow,
 } from "./tables";
 import type { Observation, PfieSource, RawObservation } from "./types";
@@ -1108,5 +1110,26 @@ describe("official cup history search targets", () => {
     const queries = seasonQueries("CAF Confederation Cup", "2026-10-16", "2026-10-22");
     expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/");
     expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/");
+  });
+});
+
+describe("CAF 2026/27 derived group standings", () => {
+  it("calculates a provisional 15-team table from verified group-stage results and keeps Group C at three confirmed clubs", () => {
+    const results: CafGroupStageResult[] = [{
+      home: "Azam", away: "Ahli Tripoli", kickoffAt: "2026-11-27T13:00:00Z", homeScore: 1, awayScore: 2,
+    }];
+    const rows = buildCafGroupStandings(results);
+    expect(rows).toHaveLength(15);
+    expect(["A", "B", "C", "D"].map((group) => rows.filter((row) => row.group === group).length)).toEqual([4, 4, 3, 4]);
+    expect(rows.find((row) => row.team === "Al Ahly Tripoli")).toMatchObject({ group: "B", played: 1, won: 1, points: 3, goalsFor: 2, goalsAgainst: 1 });
+    expect(rows.find((row) => row.team === "Azam FC")).toMatchObject({ group: "B", played: 1, lost: 1, points: 0, goalsFor: 1, goalsAgainst: 2 });
+    expect(rows.filter((row) => row.group === "C").every((row) => row.played === 0)).toBe(true);
+  });
+
+  it("does not count preliminary-round matches or cross-group fixtures", () => {
+    const rows = buildCafGroupStandings([{
+      home: "CR Belouizdad", away: "AC Douane", kickoffAt: "2026-11-27T19:00:00Z", homeScore: 1, awayScore: 0,
+    }]);
+    expect(rows.every((row) => row.played === 0)).toBe(true);
   });
 });
