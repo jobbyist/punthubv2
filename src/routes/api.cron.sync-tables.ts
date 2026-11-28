@@ -43,7 +43,8 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
         const { createTablesStore } = await import("@/lib/pfie/tables-store.server");
         const { createPfieStore } = await import("@/lib/pfie/store.server");
         try {
-          const claim = await createQuotaClaim("pfie:standings");
+          let usageContext: { competition?: string; jobRunId?: string; metadata?: Record<string, unknown> } = {};
+          const claim = await createQuotaClaim("pfie:standings", () => usageContext);
           const parallelKey = env["PARALLEL_API_KEY"]!.trim();
           const pfieStore = createPfieStore();
           const report = await runTablesSync(
@@ -64,6 +65,9 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
               ),
               llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
               store: createTablesStore(),
+              setUsageContext: (context) => {
+                usageContext = context;
+              },
               models: ["parallel-low"],
               usageToday: () => pfieStore.usageToday(),
             },
