@@ -58,8 +58,10 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 - **PR #384 — Championship standings source consensus:** merged. Restored independent source consensus for Championship standings. Vercel preview was READY before merge.
 - **PR #385 — PFIE verified unmatched results:** merged. Preserves Paris FC as distinct from generic Paris labels and persists publishable terminal PFIE results when the fixture schedule is missing or mislabels the match. Vercel preview was READY before merge.
 - **PR #386 — Newsroom quota-aware fallback:** merged. Parallel Medium remains preferred with Parallel Low fallback; usage accounting includes refused attempts and provider caps. Denied provider claims are memoized within a job. Vercel preview was READY before merge.
-- **PR #352 — PFIE results model-scope incident:** the fix is already present on `main` and the results-path audit regression test is present. The PR branch became 38 commits behind and conflicted with later PFIE changes; it is superseded and must not be force-merged.
-- **PR #387 — Trusted secondary standings publishers:** source expansion is being restricted to the ten priority launch competitions. Saudi Pro League and Liga Portugal are explicitly excluded from this pre-launch change. Merge only after the updated PR head has a Vercel preview in `READY`.
+- **PR #352 — PFIE results model-scope incident:** the fix was already present on `main` and the results-path audit regression test was present. The PR branch was 38 commits behind and conflicted with later PFIE changes; closed as superseded. No force-merge was performed.
+- **PR #305 — older secondary standings source change:** closed as superseded by the scoped implementation in PR #387.
+- **PR #387 — trusted secondary standings publishers:** merged after the exact updated PR head (`c34f8c0`) received a Vercel preview marked `READY`. Secondary-source expansion is restricted to the ten priority launch competitions; regression coverage explicitly excludes Saudi Pro League (`saudi-pro`) and Liga Portugal (`primeira`).
+- **PR #380 — GitHub Actions typecheck/lint workflow:** closed without merging. Vercel is the required PR build gate; GitHub Actions are not used as an acceptance requirement.
 - **PUNT AI:** implementation deferred until after MVP launch. Pre-launch engineering capacity is reserved for PFIE reliability, the ten priority competitions, existing product functionality, UX refinement and production readiness.
 
 ## Outstanding pre-launch work
