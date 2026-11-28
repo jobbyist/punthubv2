@@ -42,6 +42,8 @@ export interface RouterOptions {
   onAttempt?: (attempt: ModelAttempt) => void | Promise<void>;
   sleep?: (ms: number) => Promise<void>;
   retryDelayMs?: number;
+  /** Stop the entire chain on a hard quota denial; PFIE must not route around a denied budget. */
+  stopOnQuota?: boolean;
 }
 
 export interface Routed extends LlmResult {
@@ -95,6 +97,9 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
                 outcome: error.kind,
                 detail: error.message.slice(0, 200),
               });
+              if (error.kind === "quota" && options.stopOnQuota) {
+                throw new AllModelsFailed(attempts);
+              }
               if (error.retryable && tryNo === 1 && model === lastUsable) {
                 await sleep(backoffDelay(1, options.retryDelayMs ?? 1_500));
                 continue;

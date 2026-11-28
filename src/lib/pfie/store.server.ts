@@ -57,6 +57,7 @@ export function createPfieStore(): PfieStore {
       const { data, error } = await db
         .from("pfie_runs")
         .insert({
+          id: run.jobRunId,
           competition: run.competition,
           kind: run.kind,
           ok: run.ok,

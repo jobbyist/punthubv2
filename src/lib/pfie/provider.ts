@@ -7,6 +7,8 @@
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
+import { randomUUID } from "node:crypto";
+
 import { ProviderError } from "@/lib/content/http";
 import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
@@ -471,6 +473,8 @@ export interface PfieDeps {
   store: PfieStore;
   /** Persistent Parallel cache; cache wrappers are applied outside quota guards. */
   cache?: CacheStore | null;
+  /** Set before each competition run so API claim events share the same competition/run context. */
+  setUsageContext?: (context: { competition: string; jobRunId: string }) => void;
   /** Ordered model list; extraction prefers the high-allowance lite model. */
   models?: string[];
   dailyCap?: Record<string, number>;
@@ -499,10 +503,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     to: Date,
     targetFixtures: NonNullable<ListOptions["fixtures"]> = [],
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
+    const jobRunId = randomUUID();
+    deps.setUsageContext?.({ competition: competition.key, jobRunId });
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
-    const count = (provider: string, ok: boolean) =>
-      deps.store.countUsage(provider, ok ? "ok" : "error").catch(() => undefined);
     let calls = 0;
     const sources: PfieSource[] = [];
     let cachedSearchResponses = 0;
@@ -535,7 +539,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       const resultQueries = targetedResultQueries.length
         ? [...targetedResultQueries, ...config.queries.results.slice(0, 1)].slice(0, 5)
         : config.queries.results.slice(0, 5);
-      const hits = await deps.search
+      const hits = await searchProvider
         .search({
           objective:
             kind === "fixtures"
@@ -550,18 +554,11 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
                 [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
               : resultQueries,
           maxResults: 10,
-        })
-        .then(
-          (h) => {
-            if (cachedSearchResponses > 0) cachedSearchResponses--;
-            else void count(searchProvider.name, true);
-            return h;
-          },
-          (e: unknown) => {
-            void count(searchProvider.name, false);
-            throw e;
-          },
-        );
+        });
+      if (cachedSearchResponses > 0) {
+        cachedSearchResponses--;
+        calls--;
+      }
 
       // 2. Sources: official pages read in full first, then the best search hits.
       const seen = new Set<string>();
@@ -577,8 +574,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           calls++;
           try {
             const page = await extractProvider.extract(url);
-            if (cachedExtractResponses > 0) cachedExtractResponses--;
-            else void count(extractProvider.name, true);
+            if (cachedExtractResponses > 0) {
+              cachedExtractResponses--;
+              calls--;
+            }
             if (page) add(url, page.markdown);
           } catch {
             void count(deps.extract.name, false);
@@ -608,12 +607,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         models: routerModels,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
+        stopOnQuota: true,
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
-        onAttempt: async (a) => {
-          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free") {
-            const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
-            await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
-          }
+        onAttempt: async (attempt) => {
+          console.info("pfie-model-attempt", JSON.stringify({ competition: competition.key, kind, ...attempt }));
         },
       });
 
@@ -683,6 +680,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       await deps.store
         .recordRun({
+          jobRunId,
           competition: competition.key,
           kind,
           ok: true,
@@ -705,6 +703,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           : "unexpected error";
       await deps.store
         .recordRun({
+          jobRunId,
           competition: competition.key,
           kind,
           ok: false,
