@@ -1,4 +1,4 @@
-name: PFIE and odds tests
+name: PFIE, sports and odds tests
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
     paths:
       - "src/lib/pfie/**"
       - "src/lib/odds/**"
+      - "src/lib/sports/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pfie-odds-tests.yml"
@@ -31,4 +32,4 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
       - name: Test PFIE and odds pipelines
-        run: npx vitest run src/lib/pfie/standings.test.ts src/lib/odds/sync.test.ts
+        run: npx vitest run src/lib/pfie/standings.test.ts src/lib/sports/sports.test.ts src/lib/odds/sync.test.ts
