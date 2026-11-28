@@ -696,9 +696,8 @@ describe("provider", () => {
     expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
       "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
     );
-    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toContain(
-      "https://www.spl.com.sa/en/fixtures-results",
-    );
+    // Saudi Pro is search-only on purpose (the later PFIE_SOURCES entry wins), so no full-page reads.
+    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toEqual([]);
     expect(PFIE_SOURCES.championship?.pages?.results).toContain(
       "https://www.efl.com/competitions/efl-championship/",
     );
