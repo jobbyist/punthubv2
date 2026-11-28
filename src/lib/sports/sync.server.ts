@@ -128,19 +128,28 @@ export async function syncResults(
   let calls = 0;
   for (const key of only) {
     const name = activeCompetitions().find((c) => c.key === key)?.name;
+    // Rotate the three-match result-check batch every 30-minute cron slot. Newest matches go first,
+    // while older unresolved fixtures are guaranteed another attempt on subsequent runs instead of starving.
     const mine = open
-      .filter((o) => o.competition === name)
-      .sort((a, b) => a.kickoffAt.localeCompare(b.kickoffAt));
-    const earliest = new Date(Math.min(...mine.map((o) => Date.parse(o.kickoffAt))));
+      .filter((o) => o.competition === name && o.provider === provider.name)
+      .sort((a, b) => b.kickoffAt.localeCompare(a.kickoffAt));
+    if (mine.length === 0) continue;
+    const batchSize = 3;
+    const batchCount = Math.ceil(mine.length / batchSize);
+    const cronSlot = Math.floor(now.getTime() / (30 * 60 * 1000));
+    const batchIndex = cronSlot % batchCount;
+    const batch = mine.slice(batchIndex * batchSize, (batchIndex + 1) * batchSize);
+    const earliest = new Date(Math.min(...batch.map((fixture) => Date.parse(fixture.kickoffAt))));
     const r = await provider.listResults(earliest, now, {
       only: [key],
-      fixtures: mine.slice(0, 3).map((fixture) => ({
+      fixtures: batch.map((fixture) => ({
         home: fixture.home,
         away: fixture.away,
         kickoffAt: fixture.kickoffAt,
       })),
     });
-    fixtures.push(...r.fixtures);
+    const batchRefs = new Set(batch.map((fixture) => fixture.providerRef));
+    fixtures.push(...r.fixtures.filter((fixture) => batchRefs.has(fixture.providerRef)));
     skipped.push(...r.skipped);
     calls += r.calls;
   }
