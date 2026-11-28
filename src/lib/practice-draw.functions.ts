@@ -44,7 +44,7 @@ async function requireAdmin(context: {
   if (!isAdmin) throw new Error("Admins only");
 }
 
-/** Admin: the eligible entries (Founding Member, at least one practice pick, draw box ticked) and past draws. */
+/** Admin: opted-in Founding Members with an active Pro entitlement and at least one practice pick, plus past draw results. */
 export const getDrawOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DrawOverview> => {
