@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   isConfirmedNoMatchesInWindow,
   historyRefreshDue,
+  cleanHistoryText,
   hasHistoryResultEvidence,
   retryDue,
   seasonArchiveUrls,
@@ -284,5 +285,18 @@ describe("history result evidence precision", () => {
       hasHistoryResultEvidence("Team P GD PTS 14 Wrexham 17 -1 22 15 Charlton Athletic 18 -7 21 Full Table Championship League One"),
     ).toBe(false);
     expect(hasHistoryResultEvidence("Premier League 2026/27 Table Pos Team Pl W D L GF GA GD Pts Form Next")).toBe(false);
+  });
+});
+
+describe("history page truncation", () => {
+  it("preserves both the start and latest end of long result pages", () => {
+    const page = "EARLY_MATCH ".repeat(900) + "LATEST_MATCH 2-1 FINAL";
+    const excerpt = cleanHistoryText(page, 1_000);
+    expect(excerpt.length).toBeLessThanOrEqual(1_000);
+    expect(excerpt).toContain("EARLY_MATCH");
+    expect(excerpt).toContain("LATEST_MATCH 2-1 FINAL");
+  });
+  it("leaves short source pages unchanged apart from normal cleaning", () => {
+    expect(cleanHistoryText("Recent result: Home 2-1 Away", 1_000)).toContain("Home 2-1 Away");
   });
 });
