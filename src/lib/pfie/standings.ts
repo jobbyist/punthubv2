@@ -587,7 +587,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   });
   if (plainHeaderIndex >= 0) {
     const rowPattern =
-      /^\s*(\\d{1,2})[.)]?\s+(.+?)\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+([+-]?\\d{1,3})\s+([+-]?\\d{1,3})(?:\s+.*)?$/;
+      /^\s*(\d{1,2})[.)]?\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+([+-]?\d{1,3})\s+([+-]?\d{1,3})(?:\s+.*)?$/;
     const rows: RawStandingRow[] = [];
     for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
       const line = lines[rowIndex]!;
