@@ -987,7 +987,7 @@ describe("season backfill sync", () => {
   const long = Array.from(
     { length: 8 },
     (_, i) =>
-      `Motsepe Foundation Championship historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`,
+      `UEFA Champions League historical results and final score table. Match ${i + 1}: Team A 2-1 Team B.`,
   ).join("\n");
   const answer = (matches: unknown[]) => JSON.stringify({ matches });
   const make = (replies: string[]) => {
@@ -996,9 +996,7 @@ describe("season backfill sync", () => {
     const deps = {
       search: {
         name: "fake",
-        search: async () => [
-          { url: "https://www.psl.co.za/a", title: "a", excerpt: long, publishedAt: null },
-        ],
+        search: async () => [],
       },
       extract: {
         name: "fake",
