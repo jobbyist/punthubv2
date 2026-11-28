@@ -25,6 +25,9 @@ begin
 end;
 $function$;
 
+revoke all on function public.invoke_cron(text, integer) from public, anon, authenticated;
+grant execute on function public.invoke_cron(text, integer) to service_role;
+
 -- General results/archive ingestion remains active, but runs hourly off the busy :00/:30
 -- boundary. The member-impacting priority watchdog continues every five minutes.
 select cron.alter_job(
