@@ -547,7 +547,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         .slice(0, 12)
         .map(
           (fixture) =>
-            `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
+            `${fixture.home} vs ${fixture.away} full-time result final score FT ${sastDate(new Date(fixture.kickoffAt))}`,
         );
       const targetedResultQueries = Array.from(
         { length: Math.ceil(targetedMatches.length / 3) },
