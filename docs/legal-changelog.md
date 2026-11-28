@@ -1,3 +1,9 @@
+## 2026-11-28, team crests sourced from SofaScore (no notice version change)
+
+- **What changed:** club crests shown next to team names are now taken from the team's public SofaScore page (Wikipedia/Wikimedia stays the fallback) and copied into Puntr's own storage. No personal information is involved.
+- **Pages:** none changed. The Terms do not describe crest sources, and the crests are shown only to identify clubs.
+- **Review `[attorney review]`:** (1) whether SofaScore's terms allow automated retrieval and reuse of their crest images, or whether a licence or attribution is needed; (2) club crests are trademarks: confirm identification-only use next to fixtures and tables is acceptable, and whether a trademark notice belongs in the Terms.
+
 ## 2026-11-27, simpler sign-up flow (no notice version change)
 
 - **What changed:** the first sign-up screen no longer shows a separate "I am 18 or older" checkbox. The line under the form now reads "By continuing you confirm you're 18 or older, agree to the Terms and have read the Privacy notice." The binding age check is unchanged: the profile step still asks for year of birth and an unticked "I am 18 or older" box plus Terms acceptance before any profile is created, and under-18 sign-ins are still discarded. Marketing consent stays as two separate, unticked, optional boxes.
