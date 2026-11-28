@@ -977,7 +977,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
               }),
             );
             modelsUsed.add(answer.model);
-            const parsed = parseStandings(answer.text);
+            const parsed = stampPageDate(parseStandings(answer.text), source);
             const result = parsed
               ? validateTables(
                   parsed,
@@ -1027,7 +1027,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
               }),
             );
             modelsUsed.add(answer.model);
-            const parsed = parseStandings(answer.text);
+            const parsed = stampPageDate(parseStandings(answer.text), result.source);
             const validation = parsed
               ? validateTables(
                   parsed,
