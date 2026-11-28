@@ -7,6 +7,7 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { Observation } from "./types";
+import { publisherKey } from "./publisher-identity";
 
 export interface HistoryRow {
   competitionKey: CompetitionKey;
@@ -46,8 +47,9 @@ export function verifyHistory(
       continue;
     }
     const domains = Array.from(new Set(group.map((o) => o.domain)));
+    const publishers = new Set(group.map((o) => publisherKey(o.domain)));
     const official = group.some((o) => o.tier === "official");
-    if (!official && domains.length < 2) {
+    if (!official && publishers.size < 2) {
       unverified++;
       continue;
     }

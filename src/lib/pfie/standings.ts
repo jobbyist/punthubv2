@@ -214,16 +214,16 @@ export const STANDINGS_COMPETITIONS: Partial<
       "site:skysports.com/championship-table EFL Championship full table updated 27 November 2026",
       "site:bbc.com/sport/football/championship/table EFL Championship 2026/27 full standings",
       "site:flashscore.com/football/england/championship/standings EFL Championship 2026/27 table",
+      "site:stat-football.com/en/t/eng20.php EFL Championship 2026/27 full table",
       "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship standings",
     ],
-    // Put the official compact table first; the general competition page did not expose a structured table.
+    // The EFL source remains first. Stat-Football is a trusted independent table with a combined GF:GA column.
     pages: [
       "https://www.efl.com/embeds/league-table/",
       "https://www.skysports.com/championship-table?dcmp=GameOn",
+      "https://www.stat-football.com/en/t/eng20.php",
       "https://www.bbc.com/sport/football/championship/table",
-      "https://www.flashscore.com/football/england/championship/standings/",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
-      "https://www.sportsmole.co.uk/football/championship/table.html",
     ],
   },
   "saudi-pro": {
@@ -476,6 +476,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     lost: ["l", "lost"],
     goalsFor: ["gf", "f", "for", "goalsfor"],
     goalsAgainst: ["ga", "a", "against", "goalsagainst"],
+    goalsCombined: ["goals", "goalsscored"],
     points: ["pts", "points", "pt"],
   } as const;
   const integer = (value: string, signed = false): number | null => {
@@ -495,7 +496,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     const indexOf = (keys: readonly string[]) =>
       headers.findIndex((header) => keys.includes(header));
     const columns = {
-      position: indexOf(aliases.position),
+      position: indexOf(aliases.position) >= 0 ? indexOf(aliases.position) : (headers[0] === "" ? 0 : -1),
       team: indexOf(aliases.team),
       played: indexOf(aliases.played),
       won: indexOf(aliases.won),
@@ -503,9 +504,15 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       lost: indexOf(aliases.lost),
       goalsFor: indexOf(aliases.goalsFor),
       goalsAgainst: indexOf(aliases.goalsAgainst),
+      goalsCombined: indexOf(aliases.goalsCombined),
       points: indexOf(aliases.points),
     };
-    if (Object.values(columns).some((index) => index < 0)) continue;
+    const hasSplitGoals = columns.goalsFor >= 0 && columns.goalsAgainst >= 0;
+    if (
+      columns.position < 0 || columns.team < 0 || columns.played < 0 ||
+      columns.won < 0 || columns.drawn < 0 || columns.lost < 0 ||
+      columns.points < 0 || (!hasSplitGoals && columns.goalsCombined < 0)
+    ) continue;
 
     const rows: RawStandingRow[] = [];
     for (let rowIndex = i + 1; rowIndex < lines.length; rowIndex++) {
@@ -523,8 +530,15 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       const won = integer(cells[columns.won] ?? "");
       const drawn = integer(cells[columns.drawn] ?? "");
       const lost = integer(cells[columns.lost] ?? "");
-      const goalsFor = integer(cells[columns.goalsFor] ?? "");
-      const goalsAgainst = integer(cells[columns.goalsAgainst] ?? "");
+      const combinedGoals = columns.goalsCombined >= 0
+        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(cells[columns.goalsCombined] ?? "")
+        : null;
+      const goalsFor = hasSplitGoals
+        ? integer(cells[columns.goalsFor] ?? "")
+        : integer(combinedGoals?.[1] ?? "");
+      const goalsAgainst = hasSplitGoals
+        ? integer(cells[columns.goalsAgainst] ?? "")
+        : integer(combinedGoals?.[2] ?? "");
       const points = integer(cells[columns.points] ?? "", true);
       if (
         position === null ||
@@ -949,31 +963,7 @@ export function validateTables(
 }
 
 /** Treat known multi-domain publishers as one upstream source for independence checks. */
-export function independentSourceKey(domain: string): string {
-  const value = domain.toLowerCase().replace(/^www\./, "");
-  const publisherRoots: Array<[string, string[]]> = [
-    ["bbc", ["bbc.com", "bbc.co.uk"]],
-    ["efl", ["efl.com"]],
-    ["dfb", ["dfb.de"]],
-    ["bundesliga", ["bundesliga.com"]],
-    ["espn", ["espn.com", "espn.co.uk"]],
-    ["sky-sports", ["skysports.com"]],
-    ["supersport", ["supersport.com"]],
-    ["goal", ["goal.com"]],
-    ["uefa", ["uefa.com"]],
-    ["fifa", ["fifa.com"]],
-    ["premier-league", ["premierleague.com"]],
-    ["soccerway", ["soccerway.com"]],
-    ["transfermarkt", ["transfermarkt.com"]],
-    ["worldfootball", ["worldfootball.net"]],
-    ["tactix", ["tactix.football"]],
-    ["football-edge-lab", ["footballedgelab.com"]],
-  ];
-  for (const [publisher, roots] of publisherRoots) {
-    if (roots.some((root) => value === root || value.endsWith(`.${root}`))) return publisher;
-  }
-  return value;
-}
+export { publisherKey as independentSourceKey } from "./publisher-identity";
 
 /** Reject a candidate snapshot that moves backwards from the already verified in-season table. */
 export function tableRegression(
