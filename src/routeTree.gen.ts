@@ -49,7 +49,6 @@ import { Route as SupportRouteImport } from './routes/support'
 import { Route as TablesRouteImport } from './routes/tables'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TheGoodSportRouteImport } from './routes/the-good-sport'
-import { Route as TipsterSupportRouteImport } from './routes/tipster-support'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -301,11 +300,6 @@ const TermsRoute = TermsRouteImport.update({
 const TheGoodSportRoute = TheGoodSportRouteImport.update({
   id: '/the-good-sport',
   path: '/the-good-sport',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TipsterSupportRoute = TipsterSupportRouteImport.update({
-  id: '/tipster-support',
-  path: '/tipster-support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsRoute = ToolsRouteImport.update({
@@ -616,7 +610,6 @@ export interface FileRoutesByFullPath {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
-  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -711,7 +704,6 @@ export interface FileRoutesByTo {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
-  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -807,7 +799,6 @@ export interface FileRoutesById {
   '/tables': typeof TablesRoute
   '/terms': typeof TermsRoute
   '/the-good-sport': typeof TheGoodSportRouteWithChildren
-  '/tipster-support': typeof TipsterSupportRoute
   '/tools': typeof ToolsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/verify': typeof VerifyRoute
@@ -904,7 +895,6 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
-    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -999,7 +989,6 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
-    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -1094,7 +1083,6 @@ export interface FileRouteTypes {
     | '/tables'
     | '/terms'
     | '/the-good-sport'
-    | '/tipster-support'
     | '/tools'
     | '/unsubscribe'
     | '/verify'
@@ -1190,7 +1178,6 @@ export interface RootRouteChildren {
   TablesRoute: typeof TablesRoute
   TermsRoute: typeof TermsRoute
   TheGoodSportRoute: typeof TheGoodSportRouteWithChildren
-  TipsterSupportRoute: typeof TipsterSupportRoute
   ToolsRoute: typeof ToolsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VerifyRoute: typeof VerifyRoute
@@ -1524,13 +1511,6 @@ declare module '@tanstack/react-router' {
       path: '/the-good-sport'
       fullPath: '/the-good-sport'
       preLoaderRoute: typeof TheGoodSportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tipster-support': {
-      id: '/tipster-support'
-      path: '/tipster-support'
-      fullPath: '/tipster-support'
-      preLoaderRoute: typeof TipsterSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools': {
@@ -1953,7 +1933,6 @@ const rootRouteChildren: RootRouteChildren = {
   TablesRoute: TablesRoute,
   TermsRoute: TermsRoute,
   TheGoodSportRoute: TheGoodSportRouteWithChildren,
-  TipsterSupportRoute: TipsterSupportRoute,
   ToolsRoute: ToolsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VerifyRoute: VerifyRoute,

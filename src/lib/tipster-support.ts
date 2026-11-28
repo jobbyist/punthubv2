@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Tipster Support (migration 20261128300000_tipster_support.sql).
+ * Tipster Support (migration 20261128310000_tipster_support.sql).
  *
  * The RPCs below are not in the generated Supabase types until the migration is applied and types.ts is
  * regenerated, so they go through `rpc()` here. Every reader treats "function does not exist" as "feature not

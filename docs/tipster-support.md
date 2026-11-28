@@ -1,6 +1,6 @@
 # Tipster Support
 
-Built 28 Nov 2026. Migration `supabase/migrations/20261128300000_tipster_support.sql`. The UI hides itself (or
+Built 28 Nov 2026. Migration `supabase/migrations/20261128310000_tipster_support.sql`. The UI hides itself (or
 shows "switches on soon") until that migration is applied: every reader treats "function does not exist" as not live.
 
 ## Rules
