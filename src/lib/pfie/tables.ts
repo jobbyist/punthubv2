@@ -3,9 +3,10 @@
  * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
  * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
+import { randomUUID } from "node:crypto";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
-import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
+import type { ExtractProvider, LlmProvider, SearchProvider, UsageContext } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
 import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/competitions";
 
@@ -183,6 +184,37 @@ export interface TablesDeps {
   models?: string[];
   usageToday?: () => Promise<Record<string, number>>;
   now?: () => Date;
+}
+
+/** Bind each PFIE provider request to the competition and persisted job-run metadata. */
+function withUsageContext(deps: TablesDeps, context: UsageContext): TablesDeps {
+  return {
+    ...deps,
+    search: {
+      name: deps.search.name,
+      search: (input) => deps.search.search(input, context),
+    },
+    extract: deps.extract
+      ? {
+          name: deps.extract.name,
+          extract: (url) => deps.extract!.extract(url, context),
+        }
+      : null,
+    llm: {
+      name: deps.llm.name,
+      generate: (model, request) => deps.llm.generate(model, request, context),
+    },
+    store: {
+      ...deps.store,
+      record: (job, scope, ok, error, meta) =>
+        deps.store.record(job, scope, ok, error, {
+          ...meta,
+          competition: context.competition,
+          jobRunId: context.jobRunId,
+          jobKind: context.jobKind,
+        }),
+    },
+  };
 }
 
 const HOUR = 3_600_000;
@@ -555,12 +587,19 @@ export async function runTablesSync(
   if (opts.job === "archive") {
     const jobs = archiveJobsDue(deps, statuses, opts.only).slice(0, maxJobs);
     const ran: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-    for (const j of jobs)
+    for (const j of jobs) {
+      const jobRunId = randomUUID();
+      const jobDeps = withUsageContext(deps, {
+        competition: j.key,
+        jobRunId,
+        jobKind: "archive",
+      });
       ran.push({
         job: "archive",
         key: `${j.key}:${j.year}`,
-        ...(await runArchiveJob(deps, j.key, j.year)),
+        ...(await runArchiveJob(jobDeps, j.key, j.year)),
       });
+    }
     return { due: jobs.length, seasonDue: 0, ran };
   }
   const status = (job: TableJob, scope: string) =>
@@ -773,6 +812,7 @@ export function shouldIncludeSecondaryStandingsSources(key: CompetitionKey): boo
 }
 
 async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
+  deps = withUsageContext(deps, { competition: key, jobRunId: randomUUID(), jobKind: "standings" });
   const c = competitions.find((x) => x.key === key)!;
   const cfg = STANDINGS_COMPETITIONS[key]!;
   const season = String(seasonFor(c.seasonRule, now()));
@@ -1466,6 +1506,7 @@ async function syncSeasonWindow(
   end: string,
   now: () => Date,
 ) {
+  deps = withUsageContext(deps, { competition: key, jobRunId: randomUUID(), jobKind: "season" });
   const c = competitions.find((x) => x.key === key)!;
   const scope = `${key}:${start}`;
   const from = new Date(`${start}T00:00:00+02:00`);
@@ -1631,6 +1672,7 @@ async function syncSeasonWindow(
 }
 
 async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
+  deps = withUsageContext(deps, { competition: key, jobRunId: randomUUID(), jobKind: "history" });
   const c = competitions.find((x) => x.key === key)!;
   const to = now();
   const from = new Date(to.getTime() - HISTORY_DAYS * DAY);
