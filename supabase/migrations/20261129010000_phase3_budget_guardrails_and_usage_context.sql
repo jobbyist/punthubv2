@@ -369,7 +369,14 @@ grant execute on function public.api_call_event_finish(text, text, text, text) t
 update public.api_call_events
    set metadata = metadata || jsonb_build_object('legacy_context_status', 'not_captured')
  where not (metadata ? 'competition')
-   and not (metadata ? 'job_run_id');
+    or not (metadata ? 'job_run_id');
+
+update public.api_call_events e
+   set estimated_cost_usd = p.usd_per_unit,
+       metadata = e.metadata || jsonb_build_object('legacy_cost_status', 'backfilled_from_unit_price')
+  from public.api_unit_prices p
+ where e.provider = p.provider
+   and e.estimated_cost_usd is null;
 
 update public.api_call_events
    set metadata = metadata || jsonb_build_object('legacy_attribution_status', 'unattributed')
