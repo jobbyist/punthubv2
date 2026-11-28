@@ -401,6 +401,8 @@ const TRUSTED = [
   "sportmetrics.org",
   "tribuna.com",
   "ninetyminutesplus.com",
+  "theanalyst.com",
+  "smartsoccerstats.eu",
   "swissfootballdata.com",
   "keepstandings.com",
   "365scores.com",

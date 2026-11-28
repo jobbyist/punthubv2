@@ -1,4 +1,19 @@
 {
-  "banner": { "title": "Promosieruimte", "ad": "Advertensie" },
-  "logoAlt": "{{name}}-logo"
+  "banner": {
+    "title": "Promosieruimte",
+    "ad": "Advertensie"
+  },
+  "logoAlt": "{{name}}-logo",
+  "placement": {
+    "eyebrow": "Geborgde vennote",
+    "title": "Puntr se beroepsweddervennote",
+    "description": "Slegs 18+. Puntr kan 'n kommissie verdien as jy deur hierdie skakels registreer. Kommersiële verhoudings beïnvloed nie ons voorspellings, ontleding of ranglyste nie.",
+    "badge": "Geaffilieerde skakels",
+    "agePrompt": "Bevestig dat jy 18 jaar of ouer is om vennootskakels te sien.",
+    "confirm": "Ek bevestig ek is 18+",
+    "visit": "Besoek vennoot se webwerf"
+  },
+  "disclosure": {
+    "short": "Puntr kan 'n kommissie verdien as jy deur 'n geaffilieerde skakel registreer of transaksies doen."
+  }
 }

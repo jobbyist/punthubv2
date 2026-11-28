@@ -3910,6 +3910,15 @@ export type Database = {
       }
     }
     Views: {
+      public_affiliate_partners: {
+        Row: {
+          id: string | null
+          name: string | null
+          tracking_link: string | null
+          website_url: string | null
+        }
+        Relationships: []
+      }
       current_consents: {
         Row: {
           created_at: string | null

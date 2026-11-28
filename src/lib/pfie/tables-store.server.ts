@@ -62,6 +62,23 @@ export function createTablesStore(): TablesStore {
           counts.set(t.toLowerCase(), (counts.get(t.toLowerCase()) ?? 0) + 1);
       return counts;
     },
+    async cafGroupStageResults() {
+      const { data, error } = await db
+        .from("completed_matches")
+        .select("home, away, kickoff_at, home_score, away_score")
+        .eq("competition", "CAF Confederation Cup")
+        .gte("kickoff_at", "2026-11-27T00:00:00Z")
+        .lt("kickoff_at", "2027-02-01T00:00:00Z")
+        .order("kickoff_at");
+      if (error) throw new Error(`completed_matches CAF group stage: ${error.message}`);
+      return ((data ?? []) as { home: string; away: string; kickoff_at: string; home_score: number; away_score: number }[]).map((row) => ({
+        home: row.home,
+        away: row.away,
+        kickoffAt: row.kickoff_at,
+        homeScore: row.home_score,
+        awayScore: row.away_score,
+      }));
+    },
     async currentStandings(key, season): Promise<StandingRow[]> {
       const { data, error } = await db
         .from("league_standings")

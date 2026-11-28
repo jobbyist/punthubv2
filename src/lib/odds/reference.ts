@@ -52,6 +52,7 @@ export const DEFAULT_ODDS_SOURCE_DOMAINS = [
   "playbet.co.za",
   "lottostar.co.za",
   "easybet.co.za",
+  "1xbet.com",
 ] as const;
 
 /**
@@ -59,12 +60,17 @@ export const DEFAULT_ODDS_SOURCE_DOMAINS = [
  * lists a 1.60 favourite as "0.6" (seen 15 Nov 2026). Their prices are copied as shown and converted here (+1).
  */
 /** Approved affiliate partners are searched first; the source-rights registry still decides what may be read. */
+/** Priority order requested for the Puntr pre-match odds rollout. Domains remain subject to
+ * the live bookmaker permission register (verified licence, approved data rights and automated access).
+ */
 export const ODDS_AFFILIATE_PRIORITY_DOMAINS = [
   "hollywoodbets.net",
+  "betway.co.za",
+  "easybet.co.za",
+  "1xbet.com",
+  "sportingbet.co.za",
   "supabets.co.za",
   "yesplay.bet",
-  "1xbet.com",
-  "easybet.co.za",
   "playbet.co.za",
 ] as const;
 
