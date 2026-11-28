@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Sparkles } from "lucide-react";
 
 import { CrowdSplit } from "@/components/crowd-split";
+import { AffiliateBanner } from "@/components/affiliate";
 import { AppShell } from "@/components/layout/app-shell";
 import { PickCard } from "@/components/pick-card";
 import { PickForm } from "@/components/pick-form";
@@ -248,6 +249,7 @@ function Match() {
             ))}
           </div>
         </section>
+        <AffiliateBanner label="match-detail" />
       </div>
     </AppShell>
   );
