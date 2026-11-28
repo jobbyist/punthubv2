@@ -594,8 +594,14 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               calls--;
             }
             if (page) add(url, page.markdown);
-          } catch {
-            void count(extractProvider.name, false);
+          } catch (error) {
+            // guardExtract has already finalised the attempt and counted the provider error once.
+            console.warn("pfie: source extraction failed", {
+              competition: competition.key,
+              kind,
+              url,
+              error: error instanceof Error ? error.message : String(error),
+            });
           }
         }
       }
