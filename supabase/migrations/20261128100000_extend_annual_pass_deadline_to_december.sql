@@ -19,7 +19,7 @@ declare
   v_deadline constant timestamptz := timestamptz '2026-12-31 23:59:59+02';
   v_row public.annual_pass_claims%rowtype;
   v_taken int;
-  v_hold timestamptz := now() + interval '48 hours';
+  v_hold timestamptz := least(now() + interval '48 hours', v_deadline);
 begin
   if v_uid is null or not exists (select 1 from public.profiles where id = v_uid and role <> 'admin') then
     return jsonb_build_object('status', 'not_member');
