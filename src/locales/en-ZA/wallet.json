@@ -74,7 +74,7 @@
   },
   "pro": {
     "title": "Puntr Pro",
-    "pitch": "Deeper analysis and AI tools included, {{price}} a month. Cancel any time.",
+    "pitch": "Deeper analysis, AI tools and ad-free browsing included, {{price}} a month. Cancel any time.",
     "subscribe": "Get Pro, {{price}}/month",
     "renewsOn": "Active. Renews on {{date}}.",
     "endsOn": "Cancelled. Pro stays on until {{date}}; you will not be charged again.",
@@ -87,6 +87,7 @@
     "cancelError": "We could not cancel right now. Please try again or contact support@puntr.co.za.",
     "error": "Pro checkout could not start. Please try again.",
     "already": "You already have Puntr Pro.",
-    "terms": "Billed monthly through PayFast until you cancel. Pro never buys a higher ranking or prize eligibility. See Terms and Refunds."
+    "terms": "Billed monthly through PayFast until you cancel. Pro never buys a higher ranking or prize eligibility. See Terms and Refunds.",
+    "adFree": "Ad-free browsing is on: you will not see sponsored placements while Pro is active."
   }
 }

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 
+import { AdSlot } from "@/components/ads/ad-units";
 import { AppShell } from "@/components/layout/app-shell";
 import { FilterChips, type FilterChip } from "@/components/match/filter-chips";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
@@ -11,6 +12,7 @@ import { FollowButton } from "@/components/teams/follow-button";
 import { ordinal, TeamCrest, TeamDetail } from "@/components/teams/team-detail";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { withAdBreaks } from "@/lib/ads";
 import { headT } from "@/lib/i18n/head";
 import { soccerCoverage } from "@/lib/sports/coverage";
 import { fetchDirectory, fetchFollowerCounts, type DirectoryTeam } from "@/lib/teams/directory";
@@ -249,18 +251,24 @@ function TeamsDirectory() {
       ) : (
         <ul className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <AnimatePresence initial={false}>
-            {shown.slice(0, limit).map((team, i) => (
-              <motion.li
-                key={team.key}
-                layout={!reduce}
-                initial={reduce ? false : { opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.3, delay: reduce ? 0 : Math.min(i, 12) * 0.025 }}
-              >
-                <TeamCard team={team} onOpen={open(team)} follows={follows} />
-              </motion.li>
-            ))}
+            {withAdBreaks(shown.slice(0, limit), 12).map((entry, i) =>
+              entry.kind === "ad" ? (
+                <li key={`ad-${entry.index}`}>
+                  <AdSlot placement="teams-grid" format="card" seed={entry.index} />
+                </li>
+              ) : (
+                <motion.li
+                  key={entry.item.key}
+                  layout={!reduce}
+                  initial={reduce ? false : { opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.3, delay: reduce ? 0 : Math.min(i, 12) * 0.025 }}
+                >
+                  <TeamCard team={entry.item} onOpen={open(entry.item)} follows={follows} />
+                </motion.li>
+              ),
+            )}
           </AnimatePresence>
         </ul>
       )}

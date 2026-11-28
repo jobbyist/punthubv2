@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 28 November 2026 (version 2026-11-28-r25). Draft pending
+            <strong>Last Updated:</strong> 28 November 2026 (version 2026-11-28-r26). Draft pending
             attorney review.
           </p>
 
@@ -317,14 +317,15 @@ function Terms() {
               through your Wallet. Credit-pack prices and included credits are displayed before
               payment. Credits unlock eligible premium actions one use at a time, appear in your
               Wallet, cannot be transferred to another member and cannot be exchanged for cash.
-              Puntr Pro is a monthly subscription; the current price is shown at checkout. Unless
-              the checkout says otherwise, it renews monthly until you cancel it from your Wallet.
-              Cancellation stops future renewals, while Pro access continues until the end of the
-              paid period. The Founding Annual Pass is a separate once-off R299 offer and does not
-              renew automatically. Refunds and payment queries are handled under the Refunds page,
-              the terms shown at checkout and applicable law. Credits we grant for promotions or
-              testing are not purchases and have no cash value. Paying never earns extra points, a
-              higher prediction ranking or prize eligibility.
+              Puntr Pro is a monthly subscription; the current price is shown at checkout. Pro
+              includes ad-free browsing: while Pro is active, no sponsored partner placements are
+              shown to you. Unless the checkout says otherwise, it renews monthly until you cancel
+              it from your Wallet. Cancellation stops future renewals, while Pro access continues
+              until the end of the paid period. The Founding Annual Pass is a separate once-off R299
+              offer and does not renew automatically. Refunds and payment queries are handled under
+              the Refunds page, the terms shown at checkout and applicable law. Credits we grant for
+              promotions or testing are not purchases and have no cash value. Paying never earns
+              extra points, a higher prediction ranking or prize eligibility.
             </p>
           </section>
 

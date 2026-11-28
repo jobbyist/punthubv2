@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import { AdSlot } from "@/components/ads/ad-units";
 import { AppShell } from "@/components/layout/app-shell";
 import { useAsync } from "@/hooks/use-async";
 import { analytics } from "@/lib/analytics";
@@ -155,21 +156,26 @@ function Article() {
         )}
         <p className="mt-6 text-lg font-medium">{a.excerpt}</p>
         <div className="mt-6 space-y-4 leading-relaxed">
-          {blocks.map((b, i) =>
-            b.type === "h2" ? (
-              <h2 key={i} className="pt-4 text-2xl">
-                {b.text}
-              </h2>
-            ) : b.type === "ul" ? (
-              <ul key={i} className="list-disc space-y-1.5 pl-6">
-                {b.items.map((it, j) => (
-                  <li key={j}>{it}</li>
-                ))}
-              </ul>
-            ) : (
-              <p key={i}>{b.text}</p>
-            ),
-          )}
+          {blocks.map((b, i) => (
+            <Fragment key={i}>
+              {i === Math.min(3, blocks.length - 1) && i > 0 && (
+                <AdSlot placement="newsroom-article" format="banner" className="my-8" />
+              )}
+              {b.type === "h2" ? (
+                <h2 key={i} className="pt-4 text-2xl">
+                  {b.text}
+                </h2>
+              ) : b.type === "ul" ? (
+                <ul key={i} className="list-disc space-y-1.5 pl-6">
+                  {b.items.map((it, j) => (
+                    <li key={j}>{it}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p key={i}>{b.text}</p>
+              )}
+            </Fragment>
+          ))}
         </div>
 
         {a.origin === "ai" && (
@@ -268,6 +274,8 @@ function Article() {
             {t("copyLink")}
           </button>
         </div>
+
+        <AdSlot placement="newsroom-article-end" format="text_link" className="mt-6" />
 
         {related.length > 0 && (
           <section className="mt-10">

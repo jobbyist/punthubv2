@@ -1,61 +1,28 @@
-import { useEffect, useState } from "react";
 import { ExternalLink, ShieldCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { PartnerLogo } from "@/components/partner-logo";
 import { RgNotice } from "@/components/rg-notice";
-import { useAsync } from "@/hooks/use-async";
-import { supabase } from "@/integrations/supabase/client";
+import { AdFreeLink, SponsoredLabel } from "@/components/ads/ad-units";
+import { recordAdEvent, useAds } from "@/components/ads/ads-provider";
 import { platforms } from "@/lib/mock-data";
-import { useBrandLogos } from "@/hooks/use-brand-logos";
-import { AFFILIATES_ENABLED } from "@/lib/flags";
 import { trackEvent } from "@/lib/analytics";
-
-type PublicAffiliatePartner = {
-  id: string;
-  name: string;
-  tracking_link: string;
-  website_url: string | null;
-};
 
 /**
  * Sponsored bookmaker placements. The public view exposes only live partner names and tracking URLs;
- * commission terms, contacts and internal notes remain admin-only. A session-level 18+ attestation
- * is required before links are revealed.
+ * commission terms, contacts and internal notes remain admin-only. An 18+ confirmation (session or profile)
+ * is required before links are revealed. Puntr Pro members and members on a break never see it.
  */
 export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
   const { t } = useTranslation("affiliate");
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
-  const uploadedLogos = useBrandLogos("bookmakers");
-  const { data } = useAsync(async () => {
-    if (!AFFILIATES_ENABLED) return [] as PublicAffiliatePartner[];
-    const { data: rows, error } = await supabase
-      .from("public_affiliate_partners")
-      .select("id, name, tracking_link, website_url")
-      .order("name");
-    if (error) throw error;
-    return (rows ?? []) as PublicAffiliatePartner[];
-  }, []);
+  const ads = useAds();
+  const data = ads.partners;
+  const ageConfirmed = ads.ageConfirmed;
 
-  useEffect(() => {
-    try {
-      setAgeConfirmed(window.sessionStorage.getItem("puntr:affiliate-age-confirmed") === "yes");
-    } catch {
-      setAgeConfirmed(false);
-    }
-  }, []);
+  if (!ads.eligible) return null;
 
-  if (!AFFILIATES_ENABLED || !data?.length) return null;
-
-  const confirmAge = () => {
-    try {
-      window.sessionStorage.setItem("puntr:affiliate-age-confirmed", "yes");
-    } catch {
-      // The confirmation still applies for this mounted page if session storage is unavailable.
-    }
-    setAgeConfirmed(true);
-  };
+  const confirmAge = ads.confirmAge;
 
   return (
     <section
@@ -75,9 +42,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
             </p>
           </div>
         </div>
-        <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-          {t("placement.badge")}
-        </span>
+        <SponsoredLabel />
       </div>
 
       {!ageConfirmed ? (
@@ -94,27 +59,21 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
       ) : (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {data.map((partner) => {
-            const logo =
-              uploadedLogos.find(
-                (entry) =>
-                  entry.active &&
-                  entry.imageUrl &&
-                  entry.name.toLowerCase() === partner.name.toLowerCase(),
-              )?.imageUrl ??
-              platforms.find((p) => p.name.toLowerCase() === partner.name.toLowerCase())?.logo;
+            const logo = ads.logoFor(partner.name, partner.slug);
             return (
               <a
                 key={partner.id}
                 href={partner.tracking_link}
                 target="_blank"
                 rel="sponsored nofollow noopener noreferrer"
-                onClick={() =>
+                onClick={() => {
+                  recordAdEvent(partner.id, null, label, "click");
                   trackEvent("affiliate_partner_click", {
                     partner_id: partner.id,
                     partner_name: partner.name,
                     placement: label,
-                  })
-                }
+                  });
+                }}
                 className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-border bg-background p-3 transition hover:border-primary/50 hover:bg-primary-soft/30"
               >
                 <span className="flex min-w-0 items-center gap-3">
@@ -164,6 +123,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
           .
         </p>
         <RgNotice variant="compact" className="mt-2" />
+        <AdFreeLink className="mt-2" />
       </div>
     </section>
   );

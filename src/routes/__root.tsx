@@ -12,6 +12,8 @@ import { type ReactNode, useEffect } from "react";
 import appCss from "../styles.css?url";
 import { SessionProvider } from "@/components/session";
 import { UserContextProvider } from "@/components/user-context";
+import { AdOverlay } from "@/components/ads/ad-units";
+import { AdsProvider } from "@/components/ads/ads-provider";
 import { ContextAwareTopStrip } from "@/components/layout/context-aware-top-strip";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdminNotch } from "@/components/admin-notch";
@@ -283,27 +285,30 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <UserContextProvider>
-          <Preloader />
-          <PwaExperience />
-          <PushNotificationPrompt />
-          <RouteProgress />
-          <RoutePrefetcher />
-          <MfaGate />
-          <div className="puntr-app-frame flex min-h-dvh flex-col">
-            <ContextAwareTopStrip />
-            <SiteHeader />
-            <SecurityPrompt />
-            <div className="flex-1">
-              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-              <Outlet />
+          <AdsProvider>
+            <Preloader />
+            <PwaExperience />
+            <PushNotificationPrompt />
+            <RouteProgress />
+            <RoutePrefetcher />
+            <MfaGate />
+            <div className="puntr-app-frame flex min-h-dvh flex-col">
+              <ContextAwareTopStrip />
+              <SiteHeader />
+              <SecurityPrompt />
+              <div className="flex-1">
+                {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                <Outlet />
+              </div>
+              <SiteFooter />
             </div>
-            <SiteFooter />
-          </div>
-          <MobileNav />
-          <AdminNotch />
-          {SHOW_PUNT_AI_CHAT && <PuntAI />}
-          <ConsentBanner />
-          <Toaster />
+            <MobileNav />
+            <AdminNotch />
+            {SHOW_PUNT_AI_CHAT && <PuntAI />}
+            <AdOverlay />
+            <ConsentBanner />
+            <Toaster />
+          </AdsProvider>
         </UserContextProvider>
       </SessionProvider>
     </QueryClientProvider>

@@ -325,14 +325,16 @@ export function TermsAf() {
               betaling vertoon. Krediete ontsluit kwalifiserende premiumaksies een gebruik op 'n
               slag, verskyn in jou Beursie, kan nie aan 'n ander lid oorgedra of vir kontant
               omgeruil word nie. Puntr Pro is 'n maandelikse intekening; die huidige prys word by
-              betaalpunt gewys. Tensy betaalpunt anders aandui, hernu dit maandeliks totdat jy dit
-              in jou Beursie kanselleer. Kansellasie stop toekomstige hernuwings, terwyl Pro-toegang
-              tot die einde van die betaalde tydperk voortduur. Die Stigters-jaarpas is 'n
-              afsonderlike eenmalige R299-aanbod en hernu nie outomaties nie. Terugbetalings en
-              betalingsnavrae word volgens die Terugbetalings-bladsy, die voorwaardes by betaalpunt
-              en toepaslike wetgewing hanteer. Krediete wat ons vir promosies of toetsing toeken, is
-              nie aankope nie en het geen kontantwaarde nie. Betaling verdien nooit ekstra punte, 'n
-              hoër voorspellingsranglys of kwalifikasie vir pryse nie.
+              betaalpunt gewys. Pro sluit blaai sonder advertensies in: terwyl Pro aktief is, word
+              geen geborgde vennootplasings aan jou gewys nie. Tensy betaalpunt anders aandui, hernu
+              dit maandeliks totdat jy dit in jou Beursie kanselleer. Kansellasie stop toekomstige
+              hernuwings, terwyl Pro-toegang tot die einde van die betaalde tydperk voortduur. Die
+              Stigters-jaarpas is 'n afsonderlike eenmalige R299-aanbod en hernu nie outomaties nie.
+              Terugbetalings en betalingsnavrae word volgens die Terugbetalings-bladsy, die
+              voorwaardes by betaalpunt en toepaslike wetgewing hanteer. Krediete wat ons vir
+              promosies of toetsing toeken, is nie aankope nie en het geen kontantwaarde nie.
+              Betaling verdien nooit ekstra punte, 'n hoër voorspellingsranglys of kwalifikasie vir
+              pryse nie.
             </p>
           </section>
 

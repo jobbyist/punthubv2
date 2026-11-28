@@ -408,6 +408,41 @@
         "call": "Call",
         "payment": "Payment"
       }
+    },
+    "creatives": {
+      "title": "Promo creatives and ad performance",
+      "body": "Body copy",
+      "new": "New creative",
+      "add": "Add creative",
+      "partner": "Partner",
+      "name": "Internal name",
+      "format": "Format",
+      "formats": {
+        "banner": "Banner",
+        "card": "Feed card",
+        "text_link": "Text link",
+        "overlay": "Interstitial"
+      },
+      "weight": "Rotation weight (1–10)",
+      "headline": "Headline",
+      "cta": "Button label",
+      "terms": "Terms line (e.g. 18+ only. T&Cs apply.)",
+      "image": "Partner-issued image URL (https)",
+      "link": "Partner-issued tracking link for this creative (optional; defaults to the partner link)",
+      "approvedAt": "Partner approved this creative on",
+      "active": "Active",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "placements": "Placements (none ticked = every slot of this format)",
+      "rules": "Use only partner-issued links and partner-approved copy and images, unaltered. Never promise winnings or reward sign-ups. Every unit is labelled Sponsored or Advertisement, carries 18+, T&Cs and the helpline, and is hidden from Puntr Pro members, under-18s and members on a break.",
+      "needApproval": "Record the partner's approval date before switching a creative on.",
+      "missing": "Creatives need database migration 20261128300000_ads_affiliate_creatives.sql. Until it is applied, live partners show the default units.",
+      "impressions": "Views (30 days)",
+      "clicks": "Clicks (30 days)",
+      "statsNote": "Anonymous counts from visitors who accepted Affiliate tracking in Privacy choices. No user is identified.",
+      "everywhere": "all slots",
+      "on": "Active",
+      "off": "Draft"
     }
   },
   "draw": {

@@ -34,8 +34,11 @@ function AffiliateDisclosure() {
         </p>
         <p>
           Puntr may earn a commission if you click a partner link and sign up with that partner.
-          Every such link is labelled &quot;Ad&quot;. A partner appears only after we have checked
-          it holds the licence it needs.
+          Every partner banner, card, text link and full-screen advertisement is labelled
+          &quot;Sponsored&quot; or &quot;Advertisement&quot;. A partner appears only after we have
+          checked it holds the licence it needs, and its copy and images are the ones the partner
+          approved. A full-screen advertisement appears rarely, can be closed at once and closes by
+          itself after a few seconds.
         </p>
         <p>
           Partner links never contain your name, email or any other personal information. Click
@@ -44,6 +47,7 @@ function AffiliateDisclosure() {
             Privacy choices
           </a>
           . Ads are not shown to anyone who has not confirmed they are 18+ or who is on a break.
+          Puntr Pro members browse ad-free: no sponsored placements are shown to them.
         </p>
         <p>
           Some rewards you can redeem with PuntPoints are funded by partners. Sponsored rewards say
