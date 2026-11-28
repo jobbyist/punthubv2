@@ -154,7 +154,7 @@ export function createParallelResponses(
               { role: "user", content: request.prompt },
             ],
             reasoning: { effort },
-            max_output_tokens: Math.min(request.maxOutputTokens, 4096),
+            max_output_tokens: Math.min(request.maxOutputTokens, 8192),
             text: {
               format: {
                 type: "json_schema",
