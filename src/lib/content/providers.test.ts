@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createParallelResponses, parallelJsonSchema } from "./providers.server";
 
 describe("parallelJsonSchema", () => {
-  it("converts nullable PFIE fields into JSON Schema type unions and requires every property", () => {
+  it("converts nullable PFIE fields into JSON Schema type unions while preserving required keys", () => {
     expect(
       parallelJsonSchema({
         type: "OBJECT",
