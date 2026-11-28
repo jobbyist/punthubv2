@@ -195,7 +195,6 @@ describe("configured direct standings sources", () => {
     );
     expect(new Set(publisherKeys).size).toBe(5);
   });
-});
   it("configures official and independent Conference League standings sources", () => {
     expect(STANDINGS_COMPETITIONS.uecl?.teams).toBe(36);
     expect(STANDINGS_COMPETITIONS.uecl?.pages).toContain(
@@ -213,6 +212,7 @@ describe("configured direct standings sources", () => {
       "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
     );
   });
+});
 describe("EFL Championship source configuration", () => {
   it("includes independent ESPN and Transfermarkt table candidates", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
