@@ -92,12 +92,24 @@ export const adminSyncPlatformUpdates = createServerFn({ method: "POST" })
     const db = await adminDb(context as Ctx);
     if (!db) return FORBIDDEN;
     const rows: { pr_number: number; title: string; summary: string; merged_at: string; url: string }[] = [];
-    for (let page = 1; page <= 10; page++) {
+    for (let page = 1; page <= 20; page++) {
+      const headers: Record<string, string> = {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      };
+      const githubToken = process.env.GITHUB_TOKEN?.trim();
+      if (githubToken) headers.Authorization = `Bearer ${githubToken}`;
       const response = await fetch(`https://api.github.com/repos/jobbyist/punthubv2/pulls?state=closed&per_page=100&sort=created&direction=asc&page=${page}`, {
-        headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+        headers,
         signal: AbortSignal.timeout(20_000),
       });
-      if (!response.ok) return { ok: false, message: `GitHub history sync failed (HTTP ${response.status}). Try again later.` };
+      if (!response.ok) {
+        const rateLimit = response.headers.get("x-ratelimit-remaining") ?? "unknown";
+        const hint = response.status === 403 || response.status === 429
+          ? ` GitHub rate-limit remaining: ${rateLimit}. Add a read-only GITHUB_TOKEN in Vercel to raise the API allowance.`
+          : "";
+        return { ok: false, message: `GitHub history sync failed (HTTP ${response.status}).${hint}` };
+      }
       const batch = await response.json() as {
         number: number; title: string; body: string | null; merged_at: string | null; html_url: string;
       }[];
@@ -137,9 +149,48 @@ export interface SavePlatformTaskInput {
   sortOrder: number;
 }
 
+function validateSavePlatformTaskInput(value: unknown): SavePlatformTaskInput {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Invalid implementation task payload.");
+  }
+  const input = value as Record<string, unknown>;
+  const statuses = ["planned", "in_progress", "blocked", "completed", "cancelled"] as const;
+  const priorities = ["low", "medium", "high", "critical"] as const;
+  if (typeof input.title !== "string") throw new Error("Task title is required.");
+  if (typeof input.description !== "string") throw new Error("Task description must be text.");
+  if (typeof input.category !== "string") throw new Error("Task category must be text.");
+  if (typeof input.status !== "string" || !statuses.includes(input.status as (typeof statuses)[number])) {
+    throw new Error("Invalid task status.");
+  }
+  if (typeof input.priority !== "string" || !priorities.includes(input.priority as (typeof priorities)[number])) {
+    throw new Error("Invalid task priority.");
+  }
+  const progress = Number(input.progress);
+  const sortOrder = input.sortOrder === undefined ? 0 : Number(input.sortOrder);
+  if (!Number.isFinite(progress)) throw new Error("Task progress must be a number.");
+  if (!Number.isFinite(sortOrder)) throw new Error("Task sort order must be a number.");
+  if (input.dueDate !== undefined && typeof input.dueDate !== "string") {
+    throw new Error("Task target date must be text.");
+  }
+  if (input.id !== undefined && typeof input.id !== "string") {
+    throw new Error("Invalid task identifier.");
+  }
+  return {
+    id: input.id as string | undefined,
+    title: input.title,
+    description: input.description,
+    category: input.category,
+    status: input.status as SavePlatformTaskInput["status"],
+    priority: input.priority as SavePlatformTaskInput["priority"],
+    progress,
+    dueDate: (input.dueDate as string | undefined) ?? "",
+    sortOrder,
+  };
+}
+
 export const adminSavePlatformTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((d: unknown) => d as SavePlatformTaskInput)
+  .validator(validateSavePlatformTaskInput)
   .handler(async ({ context, data }): Promise<{ ok: true; id: string } | Fail> => {
     const ctx = context as Ctx;
     const db = await adminDb(ctx);
@@ -149,8 +200,11 @@ export const adminSavePlatformTask = createServerFn({ method: "POST" })
     if (data.description.length > 5000) return { ok: false, message: "Description must be 5,000 characters or fewer." };
     if (!["planned", "in_progress", "blocked", "completed", "cancelled"].includes(data.status)) return { ok: false, message: "Invalid status." };
     if (!["low", "medium", "high", "critical"].includes(data.priority)) return { ok: false, message: "Invalid priority." };
-    const progress = Math.max(0, Math.min(100, Math.round(Number(data.progress))));
-    if (!Number.isFinite(progress)) return { ok: false, message: "Progress must be between 0 and 100." };
+    const rawProgress = Number(data.progress);
+    if (!Number.isFinite(rawProgress) || rawProgress < 0 || rawProgress > 100) {
+      return { ok: false, message: "Progress must be a number between 0 and 100." };
+    }
+    const progress = Math.round(rawProgress);
     const dueDate = data.dueDate.trim();
     if (dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) return { ok: false, message: "Use a valid target date." };
     const row = {
@@ -162,8 +216,10 @@ export const adminSavePlatformTask = createServerFn({ method: "POST" })
     let id = data.id;
     let before: Row | null = null;
     if (id) {
-      const { data: prev } = await db.from("platform_implementation_tasks").select("status,progress,title").eq("id", id).maybeSingle();
-      before = (prev as Row | null) ?? null;
+      const { data: prev, error: lookupError } = await db.from("platform_implementation_tasks").select("status,progress,title").eq("id", id).maybeSingle();
+      if (lookupError) return { ok: false, message: lookupError.message };
+      if (!prev) return { ok: false, message: "Implementation task not found." };
+      before = prev as Row;
       const { error } = await db.from("platform_implementation_tasks").update(row).eq("id", id);
       if (error) return { ok: false, message: error.message };
     } else {
