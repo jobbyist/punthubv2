@@ -6,10 +6,10 @@ import { RESULTS_LOOKBACK_DAYS, syncResults, type FixtureStore } from "./sync.se
 describe("syncResults lookback", () => {
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {
     const now = new Date("2026-11-28T06:00:00.000Z");
-    let since: Date | null = null;
+    const captured: Date[] = [];
     const store = {
       async openSince(value: Date) {
-        since = value;
+        captured.push(value);
         return [];
       },
     } as unknown as FixtureStore;
@@ -17,6 +17,6 @@ describe("syncResults lookback", () => {
     await syncResults({ name: "pfie" } as SportsProvider, store, now);
 
     expect(RESULTS_LOOKBACK_DAYS).toBe(30);
-    expect(since?.toISOString()).toBe("2026-10-29T06:00:00.000Z");
+    expect(captured[0]?.toISOString()).toBe("2026-10-29T06:00:00.000Z");
   });
 });
