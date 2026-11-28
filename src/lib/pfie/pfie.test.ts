@@ -7,7 +7,13 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 import { corroborate } from "./corroborate";
 import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
-import { createPfieProvider, PFIE_SOURCES, resultsGapMs, tierOf } from "./provider";
+import {
+  createPfieProvider,
+  isPfiePrelaunchDeferredCompetition,
+  PFIE_SOURCES,
+  resultsGapMs,
+  tierOf,
+} from "./provider";
 import { isGenericTeamName, normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
@@ -774,6 +780,28 @@ describe("provider", () => {
     );
   });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
+
+  it("defers Saudi Pro League and Liga Portugal PFIE fixture/result refreshes before launch", async () => {
+    expect(isPfiePrelaunchDeferredCompetition("saudi-pro")).toBe(true);
+    expect(isPfiePrelaunchDeferredCompetition("primeira")).toBe(true);
+    expect(isPfiePrelaunchDeferredCompetition("epl")).toBe(false);
+    expect(isPfiePrelaunchDeferredCompetition("bundesliga")).toBe(false);
+
+    const store = memory();
+    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store });
+    const fixtures = await provider.listFixtures(WINDOW.from, WINDOW.to, {
+      only: ["saudi-pro", "primeira"],
+    });
+    const results = await provider.listResults(WINDOW.from, WINDOW.to, {
+      only: ["saudi-pro", "primeira"],
+    });
+
+    expect(fixtures.calls).toBe(0);
+    expect(results.calls).toBe(0);
+    expect(fixtures.fixtures).toHaveLength(0);
+    expect(results.fixtures).toHaveLength(0);
+    expect(store.runs).toHaveLength(0);
+  });
 
   it("returns verified fixtures in the shape the existing sync expects, using the configured primary model first", async () => {
     const model = llm(ANSWER);
