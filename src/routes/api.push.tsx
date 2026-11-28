@@ -239,6 +239,19 @@ export const Route = createFileRoute("/api/push")({
             ? await query.in("user_id", targetUserIds)
             : await query;
           if (subError) return json({ error: "Could not load active device subscriptions." }, 500);
+          const list = subscriptions ?? [];
+          if (list.length === 0) {
+            return json(
+              {
+                error:
+                  action === "test"
+                    ? "No active devices registered for your account. Enable push notifications on this device in Account settings, then try again."
+                    : "No opted-in devices match this audience. No campaign was created.",
+                activeSubscriptions: 0,
+              },
+              409,
+            );
+          }
           if (action === "dispatch") {
             const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
             const { count } = await db
@@ -263,7 +276,6 @@ export const Route = createFileRoute("/api/push")({
             .single();
           if (campaignError || !campaign)
             return json({ error: "Could not create push campaign." }, 500);
-          const list = subscriptions ?? [];
           let sentCount = 0;
           let failedCount = 0;
           if (list.length > 0) {
