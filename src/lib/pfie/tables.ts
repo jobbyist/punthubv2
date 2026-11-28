@@ -198,6 +198,17 @@ const SEASON_WINDOW_DAYS = 7;
 /** A window that has failed this many times in a row is left alone (nothing to find, or no source has it). */
 const SEASON_GIVE_UP = 6;
 /** Detect whether an extracted page contains final-score evidence worth one bounded history retry. */
+
+/** Keep both ends of long history pages so recent results are not lost to front truncation. */
+export function cleanHistoryText(text: string, maxChars = MAX_CHARS): string {
+  const full = cleanText(text, maxChars);
+  if (full.length <= maxChars) return full;
+  const segmentSize = Math.floor((maxChars - 32) / 2);
+  const head = cleanText(text, maxChars * 2).slice(0, segmentSize);
+  const tail = cleanText(text.slice(-maxChars * 2), maxChars * 2).slice(-segmentSize);
+  return head + "\n[... middle of source page omitted ...]\n" + tail;
+}
+
 export function hasHistoryResultEvidence(text: string): boolean {
   const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
   const namedScoreline =
@@ -219,6 +230,7 @@ function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown
       length: text.length,
       scoreEvidence: hasHistoryResultEvidence(text),
       excerpt: text.slice(Math.max(0, center - 250), Math.min(text.length, center + 750)),
+      tailExcerpt: text.slice(-800),
     };
   });
 }
@@ -703,7 +715,9 @@ async function gatherSources(
   for (const { hit, page } of fetched) {
     if (!page?.markdown) continue;
     const domain = domainOf(hit.url);
-    const clean = cleanText(page.markdown, MAX_CHARS);
+    const clean = preferSearchResults
+      ? cleanHistoryText(page.markdown, MAX_CHARS)
+      : cleanText(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
     if (preferSearchResults && !hasHistoryResultEvidence(clean)) continue;
     sources.push({
