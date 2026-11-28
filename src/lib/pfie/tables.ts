@@ -241,7 +241,7 @@ const longDate = (iso: string) =>
  * Search phrasings for a past window. Exact dates, a month name, "weekend round-up" and a few club names steer
  * the search to round-up and archive pages for those days instead of this week's fixtures.
  */
-export export function seasonArchiveUrls(name: string, start: string): string[] {
+export function seasonArchiveUrls(name: string, start: string): string[] {
   const month = Number(start.slice(5, 7));
   const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
   if (name === "UEFA Champions League") {
