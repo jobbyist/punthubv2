@@ -98,10 +98,19 @@ begin
     perform pg_advisory_xact_lock(hashtext('api_budget:' || v_family));
 
     if v_synthetic then
-      select coalesce(sum(spent_usd), 0)
+      -- Include both experiment-ledger spend and every attributable synthetic/AI-community API call.
+      -- GREATEST avoids double-counting experiment costs that are already represented in the API event ledger.
+      select coalesce(sum(estimated_cost_usd), 0)
         into v_spent
-        from public.synthetic_experiments
-       where created_at >= date_trunc('month', now() at time zone 'utc')::date;
+        from public.api_call_events
+       where (feature like 'synthetic:%' or feature like 'ai-community:%')
+         and claimed_at >= date_trunc('month', now() at time zone 'utc');
+      v_spent := greatest(
+        v_spent,
+        (select coalesce(sum(spent_usd), 0)
+           from public.synthetic_experiments
+          where created_at >= date_trunc('month', now() at time zone 'utc')::date)
+      );
     else
       v_spent := public.api_family_spend_usd(v_family);
     end if;
