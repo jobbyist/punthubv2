@@ -237,3 +237,22 @@ PR #438 passed exact-head Vercel Preview READY (head 4d32cb587df5eaa3aef61af5bde
 
 - **Phase 3.3 — Enforce provider budgets and quota-exhaustion retry stops: in progress.** New migration `20261128280000_pfie_quota_backoff_context.sql` adds per-attempt IDs, competition/job-run fields, reason codes and completion timestamps to `api_call_events`; creates provider/family/global `api_provider_backoff`; and adds `api_budget_claim_context` plus `api_call_event_result` so every claim is recorded as claimed/denied then finalised succeeded/failed. Hard denials set cross-job cooldowns until the relevant daily, monthly or Q1 reset. PFIE model routing now stops on quota denial instead of falling back to another model. The claim context uses the same UUID as the `pfie_runs` record. A 30-day `api_call_usage_attribution_detail` view exposes competition, run, status, reason and estimated cost. The full migration and transactional SQL regression test passed against the connected production schema inside a transaction that was rolled back; no production schema or quota values were changed by this test. Exact-head Vercel Preview and merge are pending.
 - **Phase 3.4 — Cache/deduplication: reopened for a corrective change.** PR #443 is merged and production READY, but code review found the Search cache wrapper was constructed without being used by the discovery call. Extract caching was wired; Search caching was not. The Phase 3.3 corrective branch now calls `searchProvider` and excludes cache hits/deduped requests from provider-call totals. This correction will be verified and merged before Phase 3.4 is closed. First live PFIE cache-hit telemetry remains scheduled for Phase 3.6.
+
+
+## PFIE Phase 3.3 — Post-deployment audit and corrective work (28 November 2026)
+
+The core contextual quota/backoff implementation landed in PR #444, merge commit `c30918542b5883ac202fc9d954ef0828d87deba0`. Its exact-head Vercel Preview was READY before merge, the production deployment is READY, and the Supabase migration was applied as version `20261128145438`. The new attempt/context columns, contextual claim function, outcome function and provider/family/global backoff ledger are present in production.
+
+The live audit identified follow-up items before Phase 3.3 can be signed off:
+
+- The fixture/results path already sets competition and run context, but the separate standings/history/season/archive path did not. Corrective PR #446 adds a per-competition job ID and job-kind metadata to those claims and persists the same context in sync-status metadata.
+- The fixture/results provider had a stale error-counter reference in its extraction-failure branch. Corrective PR #446 removes it; the quota guard remains the single owner of attempt outcome/error counting.
+- The 30-day usage detail view was created but authenticated admins lacked SELECT access to the view and its base table. Corrective migration `20261129020000_phase3_pfie_family_budget_admin_view.sql` adds the grant with an admin-only RLS policy.
+- PFIE Responses Medium was still assigned to the newsroom family in monthly family accounting. The corrective migration reassigns PFIE Medium (as well as Low) to the core PFIE/Parallel monthly budget while subtracting those PFIE calls from their non-PFIE provider families.
+- The existing global-backoff date expression was tested under an `America/New_York` session timezone and resolves to UTC midnight as intended; no timezone code change is required.
+
+At this audit point, no provider events had yet been written after the new migration timestamp, so the first scheduled PFIE run after the corrective release must be checked for non-null competition/job-run context and final attempt status. Phase 3.3 remains **in progress** until PR #446 passes its exact-head Preview, the additive migration is applied, production is READY, and post-release events confirm both fixtures/results and table/history attribution.
+
+## Phase 3.4 — Cache and deduplication scope
+
+The fixture/results cache is merged and production READY. The Search wrapper is now actually used by the PFIE fixture/results provider. The separate standings/history/season/archive path remains uncached, so Phase 3.4 remains open until those jobs use the persistent cache and live hit/deduplication/avoided-cost telemetry is verified.
