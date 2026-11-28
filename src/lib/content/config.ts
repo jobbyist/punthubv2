@@ -14,18 +14,13 @@ export const DEFAULT_GEMINI_MODELS = [
   "gemini-3.1-flash-lite",
 ] as const;
 
-/** Strongest approved free Gemini models for PFIE structured extraction. */
-export const DEFAULT_PFIE_MODELS = [
-  "gemini-3.8-flash",
-  "gemini-3.6-flash",
-  "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
-] as const;
+/** PFIE structured extraction is performed by Parallel Responses low effort only. */
+export const DEFAULT_PFIE_MODELS = ["parallel-low"] as const;
 
 /** Shared router allowlist for PFIE/odds. The Newsroom slot selector below pins Newsroom to Parallel only. */
 export const APPROVED_CONTENT_MODELS: readonly string[] = [
   "parallel-medium",
+  "parallel-low",
   "gemini-3.8-flash",
   "gemini-3.7-flash",
   "gemini-3.6-flash",
@@ -108,7 +103,7 @@ export function redact(secret: string | null): string {
 }
 
 
-/** Every Newsroom slot uses Parallel Medium; Gemini remains available only to the separate PFIE/odds pipelines. */
+/** Every Newsroom slot uses Parallel Medium; Gemini remains available to non-PFIE odds/content workflows only. */
 export function modelsForContentSlot(_models: readonly string[], _slot?: "breaking" | "editorial" | "intelligence"): string[] {
   return ["parallel-medium"];
 }
