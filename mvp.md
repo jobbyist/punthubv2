@@ -62,7 +62,13 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 - **PR #305 — older secondary standings source change:** closed as superseded by the scoped implementation in PR #387.
 - **PR #387 — trusted secondary standings publishers:** merged after the exact updated PR head (`c34f8c0`) received a Vercel preview marked `READY`. Secondary-source expansion is restricted to the ten priority launch competitions; regression coverage explicitly excludes Saudi Pro League (`saudi-pro`) and Liga Portugal (`primeira`).
 - **PR #380 — GitHub Actions typecheck/lint workflow:** closed without merging. Vercel is the required PR build gate; GitHub Actions are not used as an acceptance requirement.
-- **PUNT AI:** implementation deferred until after MVP launch. Pre-launch engineering capacity is reserved for PFIE reliability, the ten priority competitions, existing product functionality, UX refinement and production readiness.
+- **PR #331 — community AI participant badges:** merged after its exact PR head received a Vercel preview marked `READY`. AI participant profiles now use the Pro badge treatment, while AI-generated posts retain a separate disclosure.
+- **PR #303 — older result-sync rotation branch:** closed because it was 85 commits behind, conflicted, and bundled unrelated changes and GitHub Actions modifications. Its relevant fairness fix was reimplemented cleanly in PR #388.
+- **PR #388 — fair unresolved-result rotation:** merged after the exact PR head received a Vercel preview marked `READY`. The 12-fixture batch now rotates every 30-minute cron slot, is scoped to the active provider, and preserves PFIE's verified unmatched terminal results.
+- **PR #195 — PFIE verified data-products foundation:** not merged. Its preview is from an old branch 325 commits behind current `main`; the schema/evidence-ledger foundation needs a fresh current-main review and is not required to stabilise the ten launch competitions.
+- **PR #196 — match intelligence, odds and exclusions:** not merged. Its branch is 358 commits behind and contains substantial match-intelligence and odds feature work. Defer this bundle pending the post-MVP scope decision; responsible-gambling content can be reviewed separately if needed.
+- **PR #210 — PWA desktop hardening:** not merged. Its branch is 229 commits behind and has conflicts despite an older READY preview; port only validated UX fixes into a current-main PR if they remain launch-critical.
+- **PUNT AI:** recommend deferring new AI-facing product implementations until after MVP launch. Pre-launch engineering capacity is reserved for PFIE reliability, the ten priority competitions, existing product functionality, UX refinement and production readiness.
 
 ## Outstanding pre-launch work
 
