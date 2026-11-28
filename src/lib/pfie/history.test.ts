@@ -23,6 +23,16 @@ describe("canonical completed match reconciliation", () => {
     expect(completedMatchCounts(conflicting).size).toBe(0);
   });
 
+  it("resolves shortened publisher names against the current standings roster", () => {
+    const roster = ["SV Werder Bremen", "Hamburger SV"];
+    const result = completedMatchCounts([
+      { matchDate: "2026-11-22", home: "Werder Bremen", away: "HSV", homeScore: 4, awayScore: 0 },
+      { matchDate: "2026-11-22", home: "SV Werder Bremen", away: "Hamburger SV", homeScore: 4, awayScore: 0 },
+    ], roster);
+    expect(result.get("sv werder bremen")).toBe(1);
+    expect(result.get("hamburger sv")).toBe(1);
+  });
+
   it("keeps distinct match dates separate", () => {
     const counts = completedMatchCounts([
       ...rows.slice(0, 1),
