@@ -433,8 +433,11 @@ const TRUSTED = [
   "ligue1schedule.com",
   "sportnewsafrica.com",
   "vavel.com",
+  "vavel.fr",
   "foot-africa.com",
   "english.ahram.org.eg",
+  "psg.fr",
+  "footmercato.net",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {

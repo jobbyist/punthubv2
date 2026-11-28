@@ -44,7 +44,9 @@ function decide<T>(
   const stated = observations
     .map((o) => ({ value: pick(o), domain: o.domain, tier: o.tier }))
     .filter((v): v is { value: T; domain: string; tier: Observation["tier"] } => v.value !== null);
-  const official = stated.filter((v) => v.tier === "official");
+  // "Other" sources are useful for discovery and audit, but never count as verification.
+  const eligible = stated.filter((v) => v.tier !== "other");
+  const official = eligible.filter((v) => v.tier === "official");
   if (official.length > 0) {
     const result = agree(official);
     // Official pages that contradict each other are a dispute; one official statement is enough otherwise.
@@ -55,7 +57,7 @@ function decide<T>(
       }
     );
   }
-  return agree(stated);
+  return agree(eligible.filter((v) => v.tier === "trusted"));
 }
 
 export function corroborate(input: {
