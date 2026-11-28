@@ -90,7 +90,7 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
               competition: match.competition,
               kickoff_utc: match.kickoff_at,
             },
-            personaIds: [],
+            personaIds: [] as string[],
           };
           current.personaIds.push(row.persona_key);
           groups.set(key, current);
