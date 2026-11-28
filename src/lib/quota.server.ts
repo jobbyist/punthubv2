@@ -46,6 +46,7 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
         p_provider: provider,
         p_units: 1,
         p_feature: feature,
+        p_feature: feature,
       });
       if (!error) {
         const granted = data === true;
