@@ -508,8 +508,9 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       points: indexOf(aliases.points),
     };
     const hasSplitGoals = columns.goalsFor >= 0 && columns.goalsAgainst >= 0;
+    const canUseLeadingRank = columns.position < 0 && columns.team === 0;
     if (
-      columns.position < 0 || columns.team < 0 || columns.played < 0 ||
+      (columns.position < 0 && !canUseLeadingRank) || columns.team < 0 || columns.played < 0 ||
       columns.won < 0 || columns.drawn < 0 || columns.lost < 0 ||
       columns.points < 0 || (!hasSplitGoals && columns.goalsCombined < 0)
     ) continue;
@@ -522,24 +523,27 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
         .replace(/^\||\|$/g, "")
         .split("|")
         .map((cell) => cell.trim());
-      if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
+      const leadingRank = canUseLeadingRank && cells.length === headers.length + 1 && /^\d{1,2}$/.test(cells[0] ?? "");
+      const offset = leadingRank ? 1 : 0;
+      if (cells.length !== headers.length + offset || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
         continue;
-      const position = integer(cells[columns.position] ?? "");
-      const team = (cells[columns.team] ?? "").replace(/^\d+[.)]?\s*/, "").trim();
-      const played = integer(cells[columns.played] ?? "");
-      const won = integer(cells[columns.won] ?? "");
-      const drawn = integer(cells[columns.drawn] ?? "");
-      const lost = integer(cells[columns.lost] ?? "");
+      const position = integer(leadingRank ? cells[0] ?? "" : cells[columns.position] ?? "");
+      const team = (cells[columns.team + offset] ?? "").replace(/^\d+[.)]?\s*/, "").replace(/^\\?\*\s*/, "").trim();
+      const played = integer(cells[columns.played + offset] ?? "");
+      const won = integer(cells[columns.won + offset] ?? "");
+      const drawn = integer(cells[columns.drawn + offset] ?? "");
+      const lost = integer(cells[columns.lost + offset] ?? "");
+      const combinedGoalsCell = (cells[columns.goalsCombined + offset] ?? "").replace(/~~/g, "").replace(/<[^>]+>/g, "").trim();
       const combinedGoals = columns.goalsCombined >= 0
-        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(cells[columns.goalsCombined] ?? "")
+        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(combinedGoalsCell)
         : null;
       const goalsFor = hasSplitGoals
-        ? integer(cells[columns.goalsFor] ?? "")
+        ? integer(cells[columns.goalsFor + offset] ?? "")
         : integer(combinedGoals?.[1] ?? "");
       const goalsAgainst = hasSplitGoals
-        ? integer(cells[columns.goalsAgainst] ?? "")
+        ? integer(cells[columns.goalsAgainst + offset] ?? "")
         : integer(combinedGoals?.[2] ?? "");
-      const points = integer(cells[columns.points] ?? "", true);
+      const points = integer(cells[columns.points + offset] ?? "", true);
       if (
         position === null ||
         !team ||
@@ -659,7 +663,7 @@ export function extractStandingsTableDate(page: string, now: Date = new Date()):
     month = Number(iso[2]) - 1;
     day = Number(iso[3]);
   } else {
-    const dayFirst = /\b(\d{1,2})\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
+    const dayFirst = /\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
     const monthFirst = /\b([A-Za-z]{3,9})\s+(\d{1,2})(?:,?\s*(20\d{2}))?/.exec(value);
     const match = dayFirst ?? monthFirst;
     if (!match) return null;
