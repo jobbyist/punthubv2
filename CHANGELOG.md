@@ -1,3 +1,10 @@
+## 28 November 2026 — Team directory with follows
+
+- Add `/teams`: an SEO-friendly directory of every football team Puntr covers (from league tables, upcoming fixtures and the verified badge registry), with search, competition filters, a Following filter and CollectionPage/ItemList JSON-LD. Clicking a team opens a modal (bottom sheet on mobile) with badge, table position, recent verified form, next fixture and links; each team also has its own page at `/teams/<slug>` with SportsTeam JSON-LD, listed in the sitemap.
+- Members can follow and unfollow teams (`set_team_follow`, migration `20261128080000_team_follows.sql`). Follows are logged for admin analytics (Admin > Analytics > Team follows), shown on `/account` ("Teams you follow"), mirrored into favourites for the Matchday card, included in the data export, and recorded as PFIE learning events only with separate PFIE-learning consent. Follow buttons stay hidden until the migration is applied.
+- Footer link "Team directory" and a Team directory card on `/sports/soccer`.
+- Legal: Privacy (English and Afrikaans) updated for team follows; notice version `2026-11-28-team-follows`; `docs/legal-changelog.md` entry marked `[attorney review]`.
+
 ## 27 November 2026 — Football coverage page driven by the PFIE registry
 
 - Add `src/lib/sports/coverage.ts`: one football coverage registry with a phase per competition (launch 10, post-launch, planned), matching the owner's 27 Nov split and PFIE v2.1 (Nedbank Cup and CAF Champions League labelled post-launch, recommendation D9). A test keeps it equal to `PFIE_SOURCES` and the launch standings set.

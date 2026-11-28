@@ -77,6 +77,10 @@ export async function fetchSoccerCoverage(now = new Date()): Promise<SoccerCover
         const { data, error } = await db
           .from("league_standings")
           .select("competition_key, team, updated_at")
+          .in(
+            "competition_key",
+            list.filter((c) => c.table).map((c) => c.key),
+          )
           .limit(2000);
         if (error) throw error;
         return (data ?? []) as { competition_key: string; team: string; updated_at: string }[];
