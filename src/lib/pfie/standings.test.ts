@@ -1078,7 +1078,7 @@ describe("PFIE match evidence validation", () => {
   const window = { from: new Date("2026-10-13T00:00:00Z"), to: new Date("2026-10-14T23:59:59Z"), now: new Date("2026-11-28T00:00:00Z") };
   const observation = (overrides: Partial<RawObservation> = {}): RawObservation => ({
     source: 1, home: "Arsenal", away: "Lille", date: "2026-10-13", time: null, tz: null,
-    status: "finished", homeScore: 3, awayScore: 0, quote: "Arsenal won three nil against Lille", ...overrides,
+    status: "finished", homeScore: 3, awayScore: 0, quote: "Arsenal 3-0 defeated Lille", ...overrides,
   });
   it("accepts adjacent team and exact score evidence when a page splits table cells", () => {
     const result = validateObservations([observation()], [source], window);
