@@ -377,3 +377,14 @@ Monthly USD family budgets remain unchanged. The scheduled job records the resto
 - General results/archive ingestion now runs hourly at minute 37, off the crowded :00/:30 schedule, with a 60-second request timeout.
 - The settlement-priority results watchdog remains every five minutes with a 90-second request timeout; the pick/duel settlement worker remains every two minutes with a 15-second request timeout.
 - Added a timeout-aware `public.invoke_cron(text, integer)` overload. The original 120-second helper remains unchanged for unrelated jobs.
+
+
+### Settlement incident close-out: Lincoln City vs Wolves
+
+- Source verification completed at 16:08:02 UTC on 28 Nov 2026. Two independent trusted sources confirmed the final score: the official Wolves match report (`wolves.co.uk`) and the Sky Sports match report (`skysports.com`). Both explicitly report full time at Lincoln City 0–0 Wolves.
+- The verification was recorded as PFIE run `f2fd0e48-785b-4934-9a57-26a0cf518c5d`, model `manual-two-source-verification`, with two accepted source observations and zero rejected observations. The stale EFL/FBref status was documented; the score was not inferred from the 0–0 line alone.
+- Fixture `7b79607f-5e1e-445a-a6d3-a3611933db0a` was marked finished at 0–0. The existing fixture result trigger ran, and the normal duel settlement worker settled the active duel at 16:08:09 UTC.
+- Duel `67482ce1-dbf7-4ab7-a840-4e9b23f7247d` settled as a draw: challenger 1 correct call, opponent 1 correct call, no winner. No manual grading or payout override was performed.
+- Post-settlement check: `pending_settlement_result_fixtures()` returned zero candidates. The active duel was settled and the settlement queue was clear.
+- Production schedules confirmed: priority results watchdog every 5 minutes (90s request timeout); settlement every 2 minutes (15s timeout); general results/archive ingestion hourly at minute 37 (60s timeout). The timeout-aware cron helper is restricted to trusted roles.
+- Support Centre expanded to 49 FAQs in both English and Afrikaans. Results, Duels and How It Works copy now explicitly distinguishes a verified full-time result from an unverified score and explains delayed settlement.
