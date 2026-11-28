@@ -142,12 +142,6 @@ export function createParallelResponses(
     name: "parallel-responses",
     async generate(_model: string, request: LlmRequest): Promise<LlmResult> {
       const outputSchema = parallelJsonSchema(request.schema);
-      const system = [
-        request.system,
-        "OUTPUT SCHEMA (JSON Schema):",
-        JSON.stringify(outputSchema),
-        "Return exactly one JSON object conforming to this schema. Do not include Markdown fences or commentary.",
-      ].join("\n\n");
       let json: unknown;
       try {
         json = await postJson(
@@ -156,12 +150,18 @@ export function createParallelResponses(
           {
             model: "parallel",
             input: [
-              { role: "system", content: system },
+              { role: "system", content: request.system },
               { role: "user", content: request.prompt },
             ],
             reasoning: { effort },
-            max_output_tokens: Math.min(request.maxOutputTokens, 4096),
-          text: { format: { type: "json_object" } },
+            max_output_tokens: Math.min(request.maxOutputTokens, 8192),
+            text: {
+              format: {
+                type: "json_schema",
+                name: "puntr_structured_output",
+                schema: outputSchema,
+              },
+            },
           },
           { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
         );

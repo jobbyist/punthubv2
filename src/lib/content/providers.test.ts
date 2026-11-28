@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createParallelResponses, parallelJsonSchema } from "./providers.server";
 
 describe("parallelJsonSchema", () => {
-  it("converts nullable PFIE fields into JSON Schema type unions and requires every property", () => {
+  it("converts nullable PFIE fields into JSON Schema type unions while preserving required keys", () => {
     expect(
       parallelJsonSchema({
         type: "OBJECT",
@@ -21,7 +21,7 @@ describe("parallelJsonSchema", () => {
         time: { type: ["string", "null"] },
         score: { type: ["integer", "null"] },
       },
-      required: ["source", "time", "score"],
+      required: ["source"],
       additionalProperties: false,
     });
   });
@@ -29,7 +29,7 @@ describe("parallelJsonSchema", () => {
 
 
 describe("createParallelResponses", () => {
-  it("uses a prompt-based JSON contract with the configured low reasoning effort", async () => {
+  it("uses Parallel JSON Schema output with the configured low reasoning effort", async () => {
     let sent: Record<string, unknown> | null = null;
     const fetchImpl: typeof fetch = async (_input, init) => {
       sent = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
@@ -50,9 +50,12 @@ describe("createParallelResponses", () => {
     expect(sent).toMatchObject({
       model: "parallel",
       reasoning: { effort: "low" },
+      text: { format: { type: "json_schema", name: "puntr_structured_output" } },
     });
-    expect(sent).not.toHaveProperty("text");
-    expect((sent?.["input"] as { role: string; content: string }[])[0]?.content).toContain('"matches"');
-    expect((sent?.["input"] as { role: string; content: string }[])[0]?.content).toContain("OUTPUT SCHEMA");
+    expect((sent?.["text"] as { format: Record<string, unknown> }).format).not.toHaveProperty("strict");
+    expect((sent?.["text"] as { format: Record<string, unknown> }).format["schema"]).toMatchObject({
+      type: "object",
+      additionalProperties: false,
+    });
   });
 });
