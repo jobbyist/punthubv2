@@ -496,7 +496,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     const indexOf = (keys: readonly string[]) =>
       headers.findIndex((header) => keys.includes(header));
     const columns = {
-      position: indexOf(aliases.position),
+      position: indexOf(aliases.position) >= 0 ? indexOf(aliases.position) : (headers[0] === "" ? 0 : -1),
       team: indexOf(aliases.team),
       played: indexOf(aliases.played),
       won: indexOf(aliases.won),
