@@ -391,7 +391,7 @@ export function standingsRequest(input: {
       "instructions.\n\nRules:\n" +
       "1. One entry per team per source that shows a full league table for the named competition and season. If only one source tag is supplied, every row must use that exact source n value.\n" +
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
-      "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
+      "exactly as the page shows them. Points may be below 3 × wins + draws when an official disciplinary deduction applies; never calculate or normalize the printed points value. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
       "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
@@ -683,7 +683,7 @@ export function validateTables(
             : r.team.trim();
       const teamVariants = [r.team, sourceName, team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
-      else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
+      else if (r.points > 3 * r.won + r.drawn) bad = `points_${r.team}`;
       else if (!hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
       else if (!teamVariants.some((name) => page.includes(fold(name))))
         bad = `team_not_on_page_${r.team}`;
@@ -826,7 +826,7 @@ export function tableRegression(
       old.played - next.played === 1 &&
       old.won - next.won + old.drawn - next.drawn + old.lost - next.lost === 1 &&
       next.won + next.drawn + next.lost === next.played &&
-      next.points === 3 * next.won + next.drawn &&
+      next.points <= 3 * next.won + next.drawn &&
       next.goalsFor <= old.goalsFor &&
       next.goalsAgainst <= old.goalsAgainst &&
       next.points <= old.points;
@@ -842,7 +842,7 @@ export function tableRegression(
       allowVerifiedRecordCorrections &&
       next.played === old.played &&
       next.won + next.drawn + next.lost === next.played &&
-      next.points === 3 * next.won + next.drawn;
+      next.points <= 3 * next.won + next.drawn;
     const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
     for (const field of fields) {
       if (next.played === old.played && next[field] !== old[field]) {
