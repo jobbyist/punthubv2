@@ -412,10 +412,10 @@ describe("PFIE extraction request chunking", () => {
       url: "https://league.test/results",
       domain: "league.test",
       tier: "official",
-      text: Array.from({ length: 40 }, (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`).join("\\n"),
+      text: Array.from({ length: 40 }, (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`).join("\n"),
     };
     const batches = chunkSourcesForExtraction([source], 1_000, 500);
-    const allText = batches.flatMap((batch) => batch.sources).map((chunk) => chunk.text).join("\\n");
+    const allText = batches.flatMap((batch) => batch.sources).map((chunk) => chunk.text).join("\n");
 
     expect(batches.length).toBeGreaterThan(1);
     for (const batch of batches) {
