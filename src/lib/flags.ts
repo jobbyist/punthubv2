@@ -1,5 +1,5 @@
 /** Launch flags. Flip deliberately, in a reviewed commit. */
-/** Logo strip only: no links, no odds, no offers. Referral/ad placements stay behind AFFILIATES_ENABLED. */
+/** Age-confirmed, disclosed affiliate placements. Odds collection remains separately permission-gated. */
 export const SHOW_BOOKMAKER_WALL = true;
 export const AFFILIATES_ENABLED = true;
 export const SHOW_PUNT_AI_CHAT = false;
