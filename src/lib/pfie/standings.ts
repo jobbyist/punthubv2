@@ -712,7 +712,7 @@ export function extractStandingsTableDate(page: string, now: Date = new Date()):
     month < 0 || month > 11 || day < 1 || day > 31 ||
     parsed.getUTCMonth() !== month || parsed.getUTCDate() !== day
   ) return null;
-  return { date: parsed.toISOString().slice(0, 10), quote: line.trim() };
+  return { date: parsed.toISOString().slice(0, 10), quote: marked[0].trim() };
 }
 
 function dateAppearsOnPage(page: string, date: string): boolean {
