@@ -32,7 +32,7 @@
     "odds": "Prys wat jy gekry het",
     "oddsHint": "Van 1.01 tot 50, byvoorbeeld 2.10.",
     "reference": "Markverwysing {{price}}, soos om {{time}}",
-    "noReference": "Geen geverifieerde beroepsmakelaarverwysingsprys is vir hierdie keuse beskikbaar nie. Jou prysinskrywing is deur die lid verskaf.",
+    "noReference": "Geen geverifieerde boekmakerverwysingsprys is vir hierdie keuse beskikbaar nie. Jou prysinskrywing is deur die lid verskaf.",
     "useReference": "Gebruik hierdie prys",
     "oddsUnverifiedWarning": "Dit is meer as 25% bo die markverwysing. Jou keuse behou die pryse wat jy invoer, maar word as \"pryse ongeverifieer\" gemerk, en ranglyste gebruik {{price}}.",
     "confidence": "Vertroue",
