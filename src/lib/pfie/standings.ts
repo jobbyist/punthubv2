@@ -530,8 +530,9 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       const won = integer(cells[columns.won] ?? "");
       const drawn = integer(cells[columns.drawn] ?? "");
       const lost = integer(cells[columns.lost] ?? "");
+      const combinedGoalsCell = (cells[columns.goalsCombined] ?? "").replace(/~~/g, "").replace(/<[^>]+>/g, "").trim();
       const combinedGoals = columns.goalsCombined >= 0
-        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(cells[columns.goalsCombined] ?? "")
+        ? /^(\d{1,3})\s*[:–-]\s*(\d{1,3})$/.exec(combinedGoalsCell)
         : null;
       const goalsFor = hasSplitGoals
         ? integer(cells[columns.goalsFor] ?? "")
@@ -659,7 +660,7 @@ export function extractStandingsTableDate(page: string, now: Date = new Date()):
     month = Number(iso[2]) - 1;
     day = Number(iso[3]);
   } else {
-    const dayFirst = /\b(\d{1,2})\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
+    const dayFirst = /\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})(?:\s*,?\s*(20\d{2}))?/.exec(value);
     const monthFirst = /\b([A-Za-z]{3,9})\s+(\d{1,2})(?:,?\s*(20\d{2}))?/.exec(value);
     const match = dayFirst ?? monthFirst;
     if (!match) return null;
