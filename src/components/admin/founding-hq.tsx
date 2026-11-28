@@ -176,10 +176,12 @@ export function FoundingHqPage() {
         .map((member) => member.foundingNumber)
         .filter((number): number is number => number !== null)
         .sort((a, b) => a - b);
-      if (numbers.length > 0) {
+      const firstNumber = numbers.at(0);
+      const lastNumber = numbers.at(-1);
+      if (firstNumber !== undefined && lastNumber !== undefined) {
         const contiguous = numbers.every((number, index) => index === 0 || number === numbers[index - 1] + 1);
         setAiNumberSummary(contiguous
-          ? `#${numbers[0]}–#${numbers[numbers.length - 1]}`
+          ? `#${firstNumber}–#${lastNumber}`
           : numbers.map((number) => `#${number}`).join(", "));
       }
         toast.success(`Provisioned ${result.created} AI accounts; ${result.alreadyProvisioned} were already linked.`);
