@@ -192,3 +192,18 @@ update public.api_quota_limits
 set daily_cap = 250,
     note = 'Parallel Responses low for PFIE structured extraction and PUNT AI live-web; PFIE-tagged usage is charged to the $50 core family, PUNT AI to the $35 auxiliary family. Monthly 3,000 cap and $280 cumulative guard remain in force.'
 where provider = 'parallel-chat:low';
+
+create or replace view public.api_call_usage_attribution
+with (security_invoker = true)
+as
+select
+  provider,
+  feature,
+  coalesce(consumer, split_part(feature, ':', 1)) as consumer,
+  coalesce(operation, 'request') as operation,
+  count(*)::bigint as calls,
+  coalesce(sum(estimated_cost_usd), 0)::numeric(12,6) as estimated_usd,
+  max(claimed_at) as last_call
+from public.api_call_events
+where claimed_at >= now() - interval '7 days'
+group by provider, feature, consumer, operation;
