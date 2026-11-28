@@ -19,6 +19,21 @@ create index if not exists api_call_events_claimed_at_idx
 create index if not exists api_call_events_consumer_feature_idx
   on public.api_call_events (consumer, feature, claimed_at desc);
 
+create or replace view public.api_call_usage_attribution as
+select
+  provider,
+  feature,
+  consumer,
+  operation,
+  count(*)::bigint as calls,
+  coalesce(sum(estimated_cost_usd), 0)::numeric(12,6) as estimated_usd,
+  max(claimed_at) as last_call
+from public.api_call_events
+where claimed_at >= now() - interval '7 days'
+group by provider, feature, consumer, operation;
+
+grant select on public.api_call_usage_attribution to service_role;
+
 create or replace function public.set_api_call_event_cost()
 returns trigger
 language plpgsql
