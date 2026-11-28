@@ -4,12 +4,11 @@
  */
 import { z } from "zod";
 
+export const usernameSchema = z.string().trim().toLowerCase().regex(/^[a-z0-9_]{3,20}$/);
+
 export const signupSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(/^[a-z0-9_]{3,20}$/),
+  // Blank asks the database to assign a unique handle in the same first_lastInitialNN style as Puntr's profiles.
+  username: z.string().trim().toLowerCase().max(20).refine((value) => value === "" || /^[a-z0-9_]{3,20}$/.test(value), "invalid_username").default(""),
   birthYear: z.number().int().min(1900).max(3000),
   language: z.enum(["en-ZA", "af", "zu"]),
   marketingEmail: z.boolean(),

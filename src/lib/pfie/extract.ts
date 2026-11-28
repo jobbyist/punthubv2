@@ -26,11 +26,11 @@ const SCHEMA = {
           home: { type: "STRING" },
           away: { type: "STRING" },
           date: { type: "STRING" },
-          time: { type: "STRING", nullable: true },
-          tz: { type: "STRING", nullable: true },
+          time: { type: "STRING" },
+          tz: { type: "STRING" },
           status: { type: "STRING", enum: [...STATUSES] },
-          homeScore: { type: "INTEGER", nullable: true },
-          awayScore: { type: "INTEGER", nullable: true },
+          homeScore: { type: "INTEGER" },
+          awayScore: { type: "INTEGER" },
           quote: { type: "STRING" },
         },
         required: ["source", "home", "away", "date", "status", "quote"],
@@ -39,6 +39,75 @@ const SCHEMA = {
   },
   required: ["matches"],
 } as const;
+
+export interface PfieExtractionSourceBatch {
+  sources: PfieSource[];
+  /** Maps the temporary source number returned by the model back to the original page source index. */
+  sourceIndexByChunk: Record<number, number>;
+}
+
+/**
+ * Parallel Responses limits the combined instructions and input to 20,000 characters.
+ * Keep page text to 12,000 characters per request, splitting on line boundaries so historical match rows are not
+ * discarded just because a source page is long.
+ */
+export function chunkSourcesForExtraction(
+  sources: PfieSource[],
+  maxBatchChars = 14_000,
+  maxChunkChars = 6_000,
+): PfieExtractionSourceBatch[] {
+  const chunks: { source: PfieSource; originalIndex: number }[] = [];
+
+  for (const source of sources) {
+    let buffer = "";
+    const pushBuffer = () => {
+      if (!buffer) return;
+      chunks.push({ source: { ...source, text: buffer }, originalIndex: source.index });
+      buffer = "";
+    };
+
+    for (const line of source.text.split(/\r?\n/)) {
+      if (line.length > maxChunkChars) {
+        pushBuffer();
+        for (let offset = 0; offset < line.length; offset += maxChunkChars) {
+          chunks.push({
+            source: { ...source, text: line.slice(offset, offset + maxChunkChars) },
+            originalIndex: source.index,
+          });
+        }
+        continue;
+      }
+      if (buffer.length && buffer.length + line.length + 1 > maxChunkChars) pushBuffer();
+      buffer += (buffer ? "\n" : "") + line;
+    }
+    pushBuffer();
+  }
+
+  const batches: { source: PfieSource; originalIndex: number }[][] = [];
+  let current: { source: PfieSource; originalIndex: number }[] = [];
+  let currentChars = 0;
+  for (const chunk of chunks) {
+    const cost = chunk.source.text.length + chunk.source.domain.length + 64;
+    if (current.length && currentChars + cost > maxBatchChars) {
+      batches.push(current);
+      current = [];
+      currentChars = 0;
+    }
+    current.push(chunk);
+    currentChars += cost;
+  }
+  if (current.length) batches.push(current);
+
+  return batches.map((batch) => {
+    const sourceIndexByChunk: Record<number, number> = {};
+    const batchSources = batch.map(({ source, originalIndex }, index) => {
+      const temporaryIndex = index + 1;
+      sourceIndexByChunk[temporaryIndex] = originalIndex;
+      return { ...source, index: temporaryIndex };
+    });
+    return { sources: batchSources, sourceIndexByChunk };
+  });
+}
 
 export function extractionRequest(input: {
   competition: string;
@@ -60,11 +129,11 @@ export function extractionRequest(input: {
       "2. `home` is the team listed first or marked (H); copy team names exactly as the page writes them.\n" +
       "3. `date` is YYYY-MM-DD. Skip a match whose date the page does not give in full or by clear context.\n" +
       "4. `time` is the 24-hour kick-off time HH:MM exactly as the page gives it (convert 7:30 PM to 19:30, " +
-      "nothing else). null when the page gives none.\n" +
-      "5. `tz` is the time zone label printed on the page for that time (SAST, GMT, BST, CET, ET, UTC). null " +
+      "nothing else). Omit when the page gives none.\n" +
+      "5. `tz` is the time zone label printed on the page for that time (SAST, GMT, BST, CET, ET, UTC). Omit " +
       "when the page prints none. Never guess it.\n" +
       "6. `status`: finished only when the page shows a final score; postponed, abandoned or cancelled only " +
-      "when the page says so; otherwise scheduled. Scores are null unless finished. Use the score after 90 " +
+      "when the page says so; otherwise scheduled. Omit scores unless finished. Use the score after 90 " +
       "minutes, not after extra time or penalties.\n" +
       "7. `quote` is 10 to 200 characters copied word for word from that source showing the match and score. " +
       "Prefer the exact single match row; never paraphrase a score.\n" +

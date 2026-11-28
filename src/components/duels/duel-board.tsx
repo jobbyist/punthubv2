@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ProBadge } from "@/components/pro-badge";
 
 import { FilterChips } from "@/components/match/filter-chips";
 import { fetchDuelBoard, type DuelBoardRow } from "@/lib/duels-data";
@@ -76,7 +77,7 @@ export function DuelBoard({ className }: { className?: string }) {
                   >
                     @{r.username}
                   </Link>
-                  {r.is_ai_participant && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 align-middle text-[9px] font-bold uppercase tracking-wide text-primary">AI</span>}
+                  {r.is_ai_participant && <span className="ml-1.5 align-middle"><ProBadge aiParticipant /></span>}
                 </td>
                 <td className="py-2 text-right">{r.wins}</td>
                 <td className="py-2 text-right">{r.draws}</td>

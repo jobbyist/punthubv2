@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsync } from "@/hooks/use-async";
 import { formatDateTime } from "@/lib/format";
-import { getDrawOverview, runPracticeDraw, type DrawResult } from "@/lib/practice-draw.functions";
+import { DRAW_WINNER_COUNT, getDrawOverview, runPracticeDraw, type DrawResult } from "@/lib/practice-draw.functions";
 
 const panel = "card-surface p-5";
 
-/** R500 OTT voucher draw. Entries are listed here; the winner is picked at random by the system, never by hand. */
+/** Three R500 OTT vouchers. Only opted-in, eligible Puntr Pro members appear in the draw pool. */
 export function PracticeDrawTab() {
   const { t } = useTranslation("admin");
   const [tick, setTick] = useState(0);
@@ -49,7 +49,7 @@ export function PracticeDrawTab() {
   const canRun =
     !result &&
     data.closed &&
-    data.entries.length > 0 &&
+    data.entries.length >= DRAW_WINNER_COUNT &&
     witness.trim().length >= 2 &&
     confirm === "DRAW";
 
@@ -87,6 +87,9 @@ export function PracticeDrawTab() {
         <h3 className="text-base">{t("draw.runTitle")}</h3>
         <p className="mt-1 text-sm text-muted-foreground">{t("draw.runBody")}</p>
         {!data.closed && <p className="mt-2 text-sm font-semibold">{t("draw.notClosed")}</p>}
+        {data.closed && data.entries.length < DRAW_WINNER_COUNT && (
+          <p className="mt-2 text-sm font-semibold text-destructive">{t("draw.notEnoughEntries")}</p>
+        )}
         <div className="mt-3 space-y-2">
           <Input
             value={witness}
@@ -114,20 +117,24 @@ export function PracticeDrawTab() {
         </div>
         {result && (
           <div className="mt-4 border border-primary p-4 text-sm" role="status">
-            <p className="font-bold uppercase text-primary">{t("draw.winner")}</p>
-            <p className="mt-1 text-lg font-bold">
-              @{result.winner.username} · #{result.winner.founding_number}
+            <p className="font-bold uppercase text-primary">{t("draw.winnersSelected")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("draw.winnersSummary", { count: result.winners.length, entries: result.entries })}
             </p>
-            <p className="mt-1 text-muted-foreground">
-              {result.winner.email}
-              {result.winner.phone ? ` · ${result.winner.phone}` : ""}
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("draw.announce", {
-                username: result.winner.username,
-                number: result.winner.founding_number,
-              })}
-            </p>
+            <ol className="mt-3 space-y-3">
+              {result.winners.map((winner) => (
+                <li key={winner.user_id} className="border-t border-border pt-3">
+                  <p className="text-lg font-bold">
+                    #{winner.rank} · @{winner.username} · #{winner.founding_number}
+                  </p>
+                  <p className="mt-1 text-muted-foreground">
+                    {winner.email}
+                    {winner.phone ? ` · ${winner.phone}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-3 text-xs text-muted-foreground">{t("draw.announce")}</p>
           </div>
         )}
       </section>
@@ -169,7 +176,7 @@ export function PracticeDrawTab() {
             {data.log.map((l) => (
               <li key={l.id} className="py-2">
                 <span className="font-semibold">
-                  @{l.winner_username ?? "?"} · #{l.winner_founding_number ?? "?"}
+                  #{l.winner_rank} · @{l.winner_username ?? "?"} · #{l.winner_founding_number ?? "?"}
                 </span>{" "}
                 <span className="text-muted-foreground">
                   {formatDateTime(l.drawn_at)} ·{" "}

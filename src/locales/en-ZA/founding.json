@@ -64,7 +64,7 @@
     "error": "We couldn't start your claim just now. Please try again.",
     "onboardingTitle": "One more thing: the Founding Annual Pass",
     "leftOf": "{{count}}/{{total}} Annual Passes remaining",
-    "teaser": "Founding Members can reserve one of just 20 Annual Passes: 12 months of Puntr Pro for R299 once-off instead of R1,188 at the standard monthly rate. Reserve free on Puntr, then pay through the secure PayFast link emailed to you within 48 hours."
+    "teaser": "Founding Members can reserve one of just 20 Annual Passes: 12 months of Puntr Pro for R299 once-off instead of R1,188 at the standard monthly rate. Reserve free on Puntr, then pay through the secure PayFast link emailed to you within 48 hours. Reservations close 31 December 2026."
   },
   "trust": {
     "t1": "Free to join. No card needed.",
@@ -83,5 +83,13 @@
     "a4": "Anyone in South Africa who is 18 or older. You confirm your email before you can sign in."
   },
   "marqueePick": "You backed {{team}} in the {{matchup}}. Join below to make calls like this on your public record from {{launch}}.",
-  "marqueePickDraw": "You backed a draw in the {{matchup}}. Join below to make calls like this on your public record from {{launch}}."
+  "marqueePickDraw": "You backed a draw in the {{matchup}}. Join below to make calls like this on your public record from {{launch}}.",
+  "giveaway": {
+    "eyebrow": "Puntr Pro member giveaway",
+    "title": "Three winners. Three R500 OTT vouchers.",
+    "body": "Three eligible members will each receive a R500 OTT voucher. The draw is open to active Puntr Pro members only.",
+    "eligibility": "You must be a Founding Member, hold an active Puntr Pro entitlement, have opted into the draw, and have at least one recorded Practice Mode pick. AI participant accounts are excluded.",
+    "closing": "Entries close at 23:59 SAST on 31 December 2026. Three distinct winners are selected at random after the draw closes.",
+    "cta": "Explore Puntr Pro"
+  }
 }

@@ -29,6 +29,7 @@ export const platforms: Platform[] = [
   { name: "Playabets", logo: "/logos/playabets.png" },
   { name: "10bet", logo: "/logos/10bet.png" },
   { name: "Easybet", logo: "/logos/easybet.png" },
+  { name: "1xBet", logo: "/logos/1xbet.png" },
   { name: "WorldSportsBetting", logo: "/logos/wsb.png" },
 ];
 

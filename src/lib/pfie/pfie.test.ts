@@ -6,7 +6,7 @@ import { withExtractFallback } from "@/lib/content/providers.server";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 
 import { corroborate } from "./corroborate";
-import { parseObservations, validateObservations } from "./extract";
+import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
 import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
@@ -405,6 +405,30 @@ describe("validation", () => {
   });
 });
 
+describe("PFIE extraction request chunking", () => {
+  it("splits long pages without dropping lines and maps chunk IDs back to the original source", () => {
+    const source: PfieSource = {
+      index: 7,
+      url: "https://league.test/results",
+      domain: "league.test",
+      tier: "official",
+      text: Array.from({ length: 40 }, (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`).join("\n"),
+    };
+    const batches = chunkSourcesForExtraction([source], 1_000, 500);
+    const allText = batches.flatMap((batch) => batch.sources).map((chunk) => chunk.text).join("\n");
+
+    expect(batches.length).toBeGreaterThan(1);
+    for (const batch of batches) {
+      const sourceChars = batch.sources.reduce((sum, chunk) => sum + chunk.text.length + chunk.domain.length + 64, 0);
+      expect(sourceChars).toBeLessThanOrEqual(1_000);
+      expect(Object.values(batch.sourceIndexByChunk)).toEqual(batch.sources.map(() => 7));
+    }
+    for (let index = 0; index < 40; index++) {
+      expect(allText).toContain(`ROW_${String(index).padStart(2, "0")}`);
+    }
+  });
+});
+
 describe("corroboration", () => {
   const { accepted } = accept(RAW);
   const by = (decisions: ReturnType<typeof decide>["decisions"], home: string) =>
@@ -603,7 +627,7 @@ const search: SearchProvider = {
 const llm = (text: string | Error): LlmProvider & { models: string[] } => {
   const models: string[] = [];
   return {
-    name: "gemini",
+    name: "parallel-responses",
     models,
     async generate(model) {
       models.push(model);
@@ -643,11 +667,13 @@ describe("provider", () => {
         status: "scheduled",
       },
     ];
-    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store: memory(known) });
+    const store = memory(known);
+    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store });
     const out = await provider.listResults(new Date("2026-11-12T17:30:00Z"), NOW, {
       only: ["psl"],
     });
     expect(out.fixtures).toHaveLength(1);
+    expect(store.runs[0]).toMatchObject({ kind: "results", ok: true, model: DEFAULT_PFIE_MODELS[0] });
     expect(out.fixtures[0]).toMatchObject({
       providerRef: "r1",
       status: "finished",
@@ -679,7 +705,7 @@ describe("provider", () => {
     expect(resultsGapMs(7 * 24 * h)).toBe(6 * h);
   });
   it("records a failed run and returns nothing when the model output is unusable or every model fails", async () => {
-    for (const bad of ["not json", new ProviderError("gemini", "quota", 429, "limit")]) {
+    for (const bad of ["not json", new ProviderError("parallel-chat", "quota", 429, "limit")]) {
       const store = memory();
       const provider = createPfieProvider({ ...base, llm: llm(bad), store });
       const out = await provider.listFixtures(WINDOW.from, WINDOW.to, { only: ["psl"] });
@@ -691,7 +717,7 @@ describe("provider", () => {
   it("retries malformed model JSON once with a smaller source set", async () => {
     const models: string[] = [];
     const retrying: LlmProvider = {
-      name: "gemini",
+      name: "parallel-responses",
       async generate(model) {
         models.push(model);
         return { model, text: models.length === 1 ? "not json" : ANSWER };
@@ -735,24 +761,23 @@ describe("provider", () => {
     expect(captured.value?.objective).toContain("Napoli vs Torino");
   });
 
-  it("falls back to the second model on quota", async () => {
+  it("does not fall back to Gemini or another provider when Parallel Responses is capped", async () => {
     const models: string[] = [];
-    const flaky: LlmProvider = {
-      name: "gemini",
+    const capped: LlmProvider = {
+      name: "parallel-responses",
       async generate(model) {
         models.push(model);
-        if (model === DEFAULT_PFIE_MODELS[0])
-          throw new ProviderError("gemini", "quota", 429, "limit");
-        return { model, text: ANSWER };
+        throw new ProviderError("parallel-chat", "quota", 429, "limit");
       },
     };
-    const out = await createPfieProvider({ ...base, llm: flaky, store: memory() }).listFixtures(
+    const out = await createPfieProvider({ ...base, llm: capped, store: memory() }).listFixtures(
       WINDOW.from,
       WINDOW.to,
       { only: ["psl"] },
     );
-    expect(models).toEqual(DEFAULT_PFIE_MODELS.slice(0, 2));
-    expect(out.fixtures).toHaveLength(2);
+    expect(models).toEqual(["parallel-low"]);
+    expect(out.fixtures).toEqual([]);
+    expect(out.skipped[0]?.reason).toContain("failed");
   });
 });
 

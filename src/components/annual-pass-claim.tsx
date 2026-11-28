@@ -11,7 +11,7 @@ import { analytics } from "@/lib/analytics";
 import { reserveAnnualPass, type ReserveAnnualPassResult } from "@/lib/annual-pass.functions";
 
 const SPOTS = 20;
-const DEADLINE = "30 November 2026";
+const DEADLINE = "31 December 2026";
 
 type Offer = { remaining: number; open: boolean };
 type MyClaim = { status: "pending" | "paid"; hold_expires_at: string | null } | null;

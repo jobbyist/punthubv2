@@ -254,10 +254,29 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       }
     }
 
-    // A separate Parallel review pass checks the draft against the supplied sources.
+    // Re-check after the optional revision. A draft that still has critical evidence failures is
+    // sent to the editorial queue without spending another model call on an independent review.
+    const preReviewQuality = validateDraft({
+      draft,
+      kind,
+      sources,
+      recentTitles: recent.map((r) => r.title),
+      reviewerUnsupported: [],
+      ...(options.slot ? { slot: options.slot } : {}),
+    });
+
+    // A separate Parallel review pass checks only drafts that have cleared critical deterministic checks.
     let reviewerUnsupported: string[] = [];
     let reviewRan = false;
-    if (budgetLeft() > 12_000) {
+    if (preReviewQuality.critical) {
+      const problems = preReviewQuality.issues.filter((i) => i.critical).map((i) => i.detail);
+      await log(
+        "review",
+        "warn",
+        "independent review skipped: draft still has critical QA issues",
+        problems,
+      );
+    } else if (budgetLeft() > 12_000) {
       try {
         const review = await router.generate(reviewRequest(draft, sources, options.slot), written.model);
         const parsed = parseReview(review.text);
@@ -298,11 +317,13 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
 
     // `enabled` guards publishing for every trigger: a manual run while the engine is off can only ever produce a review-queue article.
     const passed = reviewRan && !quality.critical && quality.score >= settings.minQuality;
-    // Parallel-authored articles publish for owner review even when QA is below the configured threshold.
-    // QA flags and score remain attached to the article and the alert; this is not recorded as a QA pass.
+    // Parallel-authored articles may publish below the score threshold, as requested, but never
+    // bypass a critical evidence failure or the independent review. Those drafts remain in REVIEW.
     const publish =
       settings.enabled &&
       settings.autoPublish &&
+      reviewRan &&
+      !quality.critical &&
       (passed || written.model === "parallel-medium");
 
     if (options.dry) {

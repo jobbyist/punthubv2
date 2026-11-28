@@ -3,8 +3,9 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-/** The draw closes when Puntr goes live. A draw cannot be run before this moment (Tue 1 Dec 2026, 00:00 SAST). */
-export const DRAW_CLOSES_AT = "2026-12-01T00:00:00+02:00";
+/** Three R500 OTT vouchers; entries close at the end of December 2026 (South African time). */
+export const DRAW_CLOSES_AT = "2026-12-31T23:59:59+02:00";
+export const DRAW_WINNER_COUNT = 3;
 
 export type DrawEntry = {
   user_id: string;
@@ -18,6 +19,8 @@ export type DrawEntry = {
 
 export type DrawLogRow = {
   id: string;
+  draw_group_id: string;
+  winner_rank: number;
   drawn_at: string;
   witness: string;
   entries: number;
@@ -41,7 +44,7 @@ async function requireAdmin(context: {
   if (!isAdmin) throw new Error("Admins only");
 }
 
-/** Admin: the eligible entries (Founding Member, at least one practice pick, draw box ticked) and past draws. */
+/** Admin: opted-in Founding Members with an active Pro entitlement and at least one practice pick, plus past draw results. */
 export const getDrawOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DrawOverview> => {
@@ -49,13 +52,24 @@ export const getDrawOverview = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: entries, error } = await supabaseAdmin.rpc("admin_practice_draw_entries");
     if (error) throw new Error(error.message);
-    const { data: log, error: logError } = await supabaseAdmin
+    const { data: logData, error: logError } = await supabaseAdmin
       .from("practice_draw_log")
-      .select("id, drawn_at, witness, entries, winner_user_id, winner_founding_number, note")
+      .select("*")
       .order("drawn_at", { ascending: false })
       .limit(20);
     if (logError) throw new Error(logError.message);
-    const ids = (log ?? []).flatMap((l) => (l.winner_user_id ? [l.winner_user_id] : []));
+    const log = (logData ?? []) as unknown as Array<{
+      id: string;
+      draw_group_id: string;
+      winner_rank: number;
+      drawn_at: string;
+      witness: string;
+      entries: number;
+      winner_user_id: string | null;
+      winner_founding_number: number | null;
+      note: string | null;
+    }>;
+    const ids = log.flatMap((l) => (l.winner_user_id ? [l.winner_user_id] : []));
     const names = new Map<string, string>();
     if (ids.length) {
       const { data: profiles, error: profilesError } = await supabaseAdmin
@@ -69,8 +83,10 @@ export const getDrawOverview = createServerFn({ method: "GET" })
       closesAt: DRAW_CLOSES_AT,
       closed: Date.now() >= new Date(DRAW_CLOSES_AT).getTime(),
       entries: (entries ?? []) as DrawEntry[],
-      log: (log ?? []).map((l) => ({
+      log: log.map((l) => ({
         id: l.id,
+        draw_group_id: l.draw_group_id,
+        winner_rank: l.winner_rank,
         drawn_at: l.drawn_at,
         witness: l.witness,
         entries: l.entries,
@@ -81,21 +97,26 @@ export const getDrawOverview = createServerFn({ method: "GET" })
     };
   });
 
+export type DrawWinner = {
+  rank: number;
+  user_id: string;
+  username: string;
+  founding_number: number;
+  email: string;
+  phone: string | null;
+};
+
 export type DrawResult =
   | {
       ok: true;
-      winner: {
-        username: string;
-        founding_number: number;
-        email: string;
-        phone: string | null;
-        entries: number;
-        drawn_at: string;
-      };
+      draw_group_id: string;
+      entries: number;
+      drawn_at: string;
+      winners: DrawWinner[];
     }
-  | { ok: false; error: "not_closed" | "no_entries" | "witness_required" | "failed" };
+  | { ok: false; error: "not_closed" | "no_entries" | "not_enough_entries" | "already_drawn" | "witness_required" | "failed" };
 
-/** Admin: pick one winner at random from the entries and record it with the witness. Only after the draw closes. */
+/** Admin: select three distinct eligible Pro members at random and record the draw as one group. */
 export const runPracticeDraw = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: unknown) =>
@@ -116,22 +137,40 @@ export const runPracticeDraw = createServerFn({ method: "POST" })
     });
     if (error) {
       if (error.message.includes("no_entries")) return { ok: false, error: "no_entries" };
-      if (error.message.includes("witness_required"))
-        return { ok: false, error: "witness_required" };
+      if (error.message.includes("not_enough_entries")) return { ok: false, error: "not_enough_entries" };
+      if (error.message.includes("already_drawn")) return { ok: false, error: "already_drawn" };
+      if (error.message.includes("not_closed")) return { ok: false, error: "not_closed" };
+      if (error.message.includes("witness_required")) return { ok: false, error: "witness_required" };
       console.error("practice draw failed", error.message);
       return { ok: false, error: "failed" };
     }
-    const w = rows?.[0];
-    if (!w) return { ok: false, error: "failed" };
+    const winners = (rows ?? []) as unknown as Array<{
+      winner_rank: number;
+      winner_user_id: string;
+      winner_username: string;
+      winner_founding_number: number;
+      winner_email: string;
+      winner_phone: string | null;
+      entries: number;
+      drawn_at: string;
+      draw_group_id: string;
+    }>;
+    if (winners.length !== DRAW_WINNER_COUNT) return { ok: false, error: "failed" };
+    const first = winners[0]!;
     return {
       ok: true,
-      winner: {
-        username: w.winner_username,
-        founding_number: w.winner_founding_number,
-        email: w.winner_email,
-        phone: w.winner_phone || null,
-        entries: w.entries,
-        drawn_at: w.drawn_at,
-      },
+      draw_group_id: first.draw_group_id,
+      entries: first.entries,
+      drawn_at: first.drawn_at,
+      winners: winners
+        .sort((a, b) => a.winner_rank - b.winner_rank)
+        .map((winner) => ({
+          rank: winner.winner_rank,
+          user_id: winner.winner_user_id,
+          username: winner.winner_username,
+          founding_number: winner.winner_founding_number,
+          email: winner.winner_email,
+          phone: winner.winner_phone || null,
+        })),
     };
   });
