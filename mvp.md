@@ -255,3 +255,22 @@ A deeper route-level audit found that the PFIE standings/history pipeline (`api.
 - PFIE model configuration is restricted to Parallel Responses Low and Medium; the only Medium retry remains the bounded Championship-fixtures exception. A quota denial stops the chain rather than routing around the denied Parallel budget.
 - Added regression coverage for attempts to inject Firecrawl Search/Extract, Gemini Responses, or Gemini model IDs into PFIE.
 - Phase 3.4 cache-accounting correction merged as PR #447 and deployed to production. Extract failure events now use the cache-wrapped provider identity, matching successful calls.
+
+
+## PFIE Phase 3.3 — Live usage verification and remaining corrections (28 November 2026)
+
+The core contextual quota/backoff implementation is merged in PR #444, commit `c30918542b5883ac202fc9d954ef0828d87deba0`. Its Supabase migration is applied in production as version `20261128145438`, and the production deployment for that release is READY.
+
+The first post-migration production sample includes three successful Serie A provider events with the expected competition key, shared job-run UUID, estimated costs and final `succeeded` status. A further 14 events in the same time window still carry the legacy `api_budget_claim` attribution source and null competition/job-run fields. Those rows are not being silently reclassified; their originating request path/deployment must be identified before Phase 3.3 can be closed.
+
+Corrective PR #449 addresses the remaining confirmed defects:
+- Remove a stale `count()` reference in the extraction-error path. `guardExtract` already finalises and counts the provider error, so the extra call is both invalid and unnecessary.
+- Reassign PFIE Responses Medium to the core PFIE/Parallel monthly family budget, while subtracting PFIE Medium from the non-PFIE newsroom family. The existing Low reassignment is preserved.
+- Grant authenticated admins access to the 30-day usage attribution view with a base-table RLS policy that restricts reads to `public.is_admin()`.
+- Add rollback-only SQL tests for family-budget attribution, admin grants/RLS and the UTC backoff boundary.
+
+The existing global-backoff timestamp expression was tested under an `America/New_York` session timezone and returns UTC midnight as intended; no timezone expression change is required.
+
+## PFIE Phase 3.4 — Cache deployment evidence
+
+Persistent cache wrappers are now wired into both the fixtures/results provider and the standings/history/season/archive table pipeline. The production cache store recorded the first active PFIE results Search entry at 15:00 UTC on 28 November; the corresponding live runtime logs show Search and Extract cache misses for Serie A. No cache hit/deduplication has yet been observed in the sampled window, so the implementation is deployed but Phase 3.4 remains open pending repeat-use evidence and avoided-spend telemetry.
