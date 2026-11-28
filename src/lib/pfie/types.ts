@@ -85,7 +85,7 @@ export interface PfieStore {
   recordRun(run: {
     jobRunId: string;
     competition: CompetitionKey;
-    kind: "fixtures" | "results";
+    kind: "fixtures" | "results" | "standings" | "history" | "season" | "archive";
     ok: boolean;
     error?: string;
     model?: string;
