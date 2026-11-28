@@ -2,12 +2,12 @@
  * Response cache keys and lifetimes for Parallel calls (docs/PARALLEL_ARCHITECTURE.md, rule 2: cache before you
  * call). Pure: the storage side is cache.server.ts.
  *
- * The key is a SHA-256 of the endpoint plus the request body serialised with sorted keys, after trimming and
- * lower-casing query text, so the same question asked twice (in any key order or spacing) shares one entry.
+ * Request objects are serialised with sorted keys. Search text is case/whitespace normalised, while URL hosts
+ * are canonicalised without lower-casing case-sensitive URL paths or query values.
  */
 
 export type CachePurpose =
-  "fixtures" | "results" | "tables" | "odds" | "news" | "research" | "badges" | "chat" | "stats";
+  | "fixtures" | "results" | "tables" | "odds" | "news" | "research" | "badges" | "chat" | "stats";
 
 /** Seconds an answer stays fresh, per purpose. Results are short because scores change at full time. */
 export const CACHE_TTL_SECONDS: Readonly<Record<CachePurpose, number>> = {
@@ -22,21 +22,32 @@ export const CACHE_TTL_SECONDS: Readonly<Record<CachePurpose, number>> = {
   stats: 30 * 24 * 3600,
 };
 
-function normalise(value: unknown): unknown {
-  if (typeof value === "string") return value.trim().replace(/\s+/g, " ").toLowerCase();
-  if (Array.isArray(value)) return value.map(normalise);
+function normalise(value: unknown, key?: string): unknown {
+  if (typeof value === "string") {
+    const trimmed = value.trim().replace(/\s+/g, " ");
+    if (key === "url" && /^https?:\/\//i.test(trimmed)) {
+      try {
+        // URL normalisation lower-cases protocol/host but deliberately preserves path and query-value case.
+        return new URL(trimmed).toString();
+      } catch {
+        return trimmed;
+      }
+    }
+    return trimmed.toLowerCase();
+  }
+  if (Array.isArray(value)) return value.map((item) => normalise(item));
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
     for (const k of Object.keys(value as Record<string, unknown>).sort()) {
       const v = (value as Record<string, unknown>)[k];
-      if (v !== undefined) out[k] = normalise(v);
+      if (v !== undefined) out[k] = normalise(v, k);
     }
     return out;
   }
   return value;
 }
 
-/** Deterministic JSON with sorted keys and normalised strings. */
+/** Deterministic JSON with sorted keys and safe string normalisation. */
 export function stableStringify(value: unknown): string {
   return JSON.stringify(normalise(value));
 }

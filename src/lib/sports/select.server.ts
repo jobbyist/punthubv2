@@ -11,14 +11,20 @@ export async function createSportsProvider(
       await import("@/lib/content/providers.server");
     const { createPfieProvider } = await import("@/lib/pfie/provider");
     const { createPfieStore } = await import("@/lib/pfie/store.server");
+    const { createCacheStore } = await import("@/lib/parallel/cache.server");
     const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
       await import("@/lib/quota.server");
     const claim = await createQuotaClaim("pfie:fixtures-results");
+    const cache = await createCacheStore().catch((error: unknown) => {
+      console.warn("pfie: Parallel cache unavailable; using in-process request deduplication only", error);
+      return null;
+    });
     return createPfieProvider({
       search: guardSearch(createParallelSearch(parallelKey), claim),
       extract: guardExtract(createParallelExtract(parallelKey), claim),
       llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
       store: createPfieStore(),
+      cache,
       models: ["parallel-low"],
     });
   }
