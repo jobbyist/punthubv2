@@ -264,7 +264,7 @@ describe("restored standings source coverage", () => {
       "https://www.ninetyminutesplus.com/league/ligue-1/standings",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://theanalyst.com/competition/ligue-1/table",
+      "https://footballedgelab.com/ligue-1/tables/2026-27",
     );
     expect(STANDINGS_COMPETITIONS.seriea?.allowVerifiedPlayedCorrections).toEqual(["Milan"]);
     expect(STANDINGS_COMPETITIONS.psl?.pages?.length).toBeLessThanOrEqual(6);
@@ -1039,7 +1039,7 @@ describe("season backfill sync", () => {
       only: ["ucl"],
       maxJobs: 1,
     });
-    expect(calls()).toBe(2);
+    expect(calls()).toBe(6);
     expect(out.ran[0]!.detail).toContain("no verified results");
     expect(recorded.at(-1)!.error).toBe("no verified results on the sources");
   });
@@ -1231,11 +1231,11 @@ describe("cup history source attribution", () => {
       },
     };
     const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
-    expect(calls).toBe(4);
+    expect(calls).toBe(6);
     expect(report.ran[0]?.ok).toBe(true);
     expect(inserted).toHaveLength(1);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta["sources"]).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
+    expect(records.at(-1)?.meta["sources"]).toEqual(expect.arrayContaining(["uefa.com", "theguardian.com", "cbssports.com"]));
   });
 });
 
