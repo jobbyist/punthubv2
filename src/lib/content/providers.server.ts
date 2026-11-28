@@ -1,6 +1,6 @@
 /**
- * Server-side adapters for Parallel, Firecrawl and Gemini. Gemini is retained for PFIE/odds extraction only;
- * the Newsroom route deliberately never instantiates or calls it.
+ * Server-side adapters for Parallel, Firecrawl and Gemini. PFIE is wired to Parallel Search, Extract and Responses
+ * exclusively; Gemini and Firecrawl remain available only to separate non-PFIE workflows.
  */
 import { postJson, ProviderError, type RetryOptions } from "./http";
 import type {
@@ -117,7 +117,7 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
  * Parallel Responses API used for Newsroom drafting, revision and review.
  * Structured JSON output is normalised from the shared content-engine schema.
  */
-function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
+export function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
   const visit = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(visit);
     if (!isRecord(value)) return value;
@@ -135,7 +135,12 @@ function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unk
               BOOLEAN: "boolean",
             } as Record<string, string>
           )[child] ?? child;
-      } else out[key] = visit(child);
+      } else if (key !== "nullable") {
+        out[key] = visit(child);
+      }
+    }
+    if (value["nullable"] === true && typeof out["type"] === "string") {
+      out["type"] = [out["type"], "null"];
     }
     if (out["type"] === "object") {
       out["additionalProperties"] = false;
@@ -155,34 +160,43 @@ export function createParallelResponses(
   return {
     name: "parallel-responses",
     async generate(_model: string, request: LlmRequest): Promise<LlmResult> {
-      const json = await postJson(
-        "https://api.parallel.ai/v1/responses",
-        { Authorization: `Bearer ${apiKey}` },
-        {
-          model: "parallel",
-          input: [
-            { role: "system", content: request.system },
-            { role: "user", content: request.prompt },
-          ],
-          reasoning: { effort },
-          max_output_tokens: request.maxOutputTokens,
-          text: {
-            format: {
-              type: "json_schema",
-              name: "puntr_structured_output",
-              strict: true,
-              schema: parallelJsonSchema(request.schema),
+      const outputSchema = parallelJsonSchema(request.schema);
+      let json: unknown;
+      try {
+        json = await postJson(
+          "https://api.parallel.ai/v1/responses",
+          { Authorization: `Bearer ${apiKey}` },
+          {
+            model: "parallel",
+            input: [
+              { role: "system", content: request.system },
+              { role: "user", content: request.prompt },
+            ],
+            reasoning: { effort },
+            max_output_tokens: Math.min(request.maxOutputTokens, 8192),
+            text: {
+              format: {
+                type: "json_schema",
+                name: "puntr_structured_output",
+                schema: outputSchema,
+              },
             },
           },
-        },
-        {
-          provider: "parallel-chat",
-          timeoutMs: 60_000,
-          attempts: 1,
-          baseDelayMs: 1_000,
-          ...overrides,
-        },
-      );
+          {
+            provider: "parallel-chat",
+            timeoutMs: 60_000,
+            attempts: 1,
+            baseDelayMs: 1_000,
+            ...overrides,
+          },
+        );
+      } catch (error) {
+        console.error(
+          "parallel-responses request rejected",
+          error instanceof Error ? error.message : "unknown error",
+        );
+        throw error;
+      }
       const direct = isRecord(json) ? str(json["output_text"]) : "";
       const items = isRecord(json) && Array.isArray(json["output"]) ? json["output"] : [];
       const nested = items

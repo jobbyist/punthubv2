@@ -21,7 +21,9 @@ export interface ModelAttempt {
 
 export class AllModelsFailed extends Error {
   constructor(readonly attempts: ModelAttempt[]) {
-    super(`all models failed: ${attempts.map((a) => `${a.model}=${a.outcome}`).join(", ")}`);
+    super(
+      `all models failed: ${attempts.map((a) => `${a.model}=${a.outcome}${a.detail ? ` [${a.detail.slice(0, 140)}]` : ""}`).join(", ")}`,
+    );
     this.name = "AllModelsFailed";
   }
 }

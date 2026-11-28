@@ -89,6 +89,11 @@ describe("signupSchema", () => {
   it("lower-cases and trims the username", () => {
     expect(signupSchema.parse({ ...base, username: "  Tip_One " }).username).toBe("tip_one");
   });
+  it("allows a blank or omitted username for database assignment", () => {
+    expect(signupSchema.parse({ ...base, username: "" }).username).toBe("");
+    const { username: _username, ...withoutUsername } = base;
+    expect(signupSchema.parse(withoutUsername).username).toBe("");
+  });
   it("rejects bad usernames, years and languages", () => {
     expect(() => signupSchema.parse({ ...base, username: "a b" })).toThrow();
     expect(() => signupSchema.parse({ ...base, username: "ab" })).toThrow();

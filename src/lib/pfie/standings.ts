@@ -114,15 +114,17 @@ export const STANDINGS_COMPETITIONS: Partial<
     teams: 20,
     refreshHours: 12,
     queries: [
-      "Serie A 2026/27 full 20-team standings updated 27 November 2026 played wins draws losses goals for goals against points",
+      "Serie A 2026/27 full 20-team standings updated 28 November 2026 played wins draws losses goals for goals against points",
       "site:en.legaseriea.it/serie-a/standings 2026/27 Serie A official table",
       "site:serieaschedule.com/serie-a/standings Serie A 2026/27 full table",
-      "site:sportnewsafrica.com/en/fixtures/serie-a/table Serie A 2026/27 standings",
+      "site:transfermarkt.com/serie-a/tabelle/wettbewerb/IT1 Serie A 2026/27 standings",
+      "site:flashscore.com/football/italy/serie-a/standings Serie A table",
     ],
     pages: [
       "https://en.legaseriea.it/serie-a/standings",
       "https://www.serieaschedule.com/serie-a/standings",
-      "https://sportnewsafrica.com/en/fixtures/serie-a/table/",
+      "https://www.transfermarkt.com/serie-a/tabelle/wettbewerb/IT1",
+      "https://www.flashscore.com/football/italy/serie-a/standings/",
     ],
     allowVerifiedPlayedCorrections: ["Milan"],
     allowVerifiedRecordCorrections: true,
@@ -219,15 +221,17 @@ export const STANDINGS_COMPETITIONS: Partial<
     refreshHours: 12,
     queries: [
       "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
-      "site:stat-football.com/en/t/eng20.php EFL Championship 2026/27 table",
-      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship 2026/27 standings",
       "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
+      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:transfermarkt.com/championship/tabelle/wettbewerb/GB2 EFL Championship table 2026/27",
     ],
     pages: [
-      "https://www.stat-football.com/en/t/eng20.php",
-      "https://zeanball.online/en/table/championship/",
-      "https://www.skysports.com/championship-table?dcmp=GameOn",
       "https://www.efl.com/competitions/efl-championship/",
+      "https://www.skysports.com/championship-table?dcmp=GameOn",
+      "https://www.espn.com/soccer/standings/_/league/eng.2",
+      "https://www.transfermarkt.com/championship/tabelle/wettbewerb/GB2",
+      "https://zeanball.online/en/table/championship/",
     ],
   },
   "saudi-pro": {
@@ -392,7 +396,7 @@ export function standingsRequest(input: {
       "instructions.\n\nRules:\n" +
       "1. One entry per team per source that shows a full league table for the named competition and season. If only one source tag is supplied, every row must use that exact source n value.\n" +
       "2. Copy position, team name (as written), played, won, drawn, lost, goals for, goals against and points " +
-      "exactly as the page shows them. Skip a source whose table lacks any of these columns.\n" +
+      "exactly as the page shows them. Points may be below 3 × wins + draws when an official disciplinary deduction applies; never calculate or normalize the printed points value. Skip a source whose table lacks any of these columns.\n" +
       "3. `quote` is 5 to 160 characters copied word for word from that source's row for the team.\n" +
       "4. If a page offers Total/Overall, Home and Away views, extract only the Total/Overall league table; never substitute home-only or away-only standings. Ignore projected, predicted, simulated, modelled, season-simulator, forecast or expected-points tables; use only current standings based on completed matches. Ignore tables of other competitions, seasons or form-only tables.\n" +
       "5. If the page explicitly states when the table was last updated or the latest matchday date, copy that ISO date into tableDate and quote it in tableDateQuote. If no date is printed, omit both fields.\n" +
@@ -689,7 +693,7 @@ export function validateTables(
             : r.team.trim();
       const teamVariants = [r.team, sourceName, team].filter(Boolean);
       if (r.won + r.drawn + r.lost !== r.played) bad = `wdl_${r.team}`;
-      else if (r.points !== 3 * r.won + r.drawn) bad = `points_${r.team}`;
+      else if (r.points > 3 * r.won + r.drawn) bad = `points_${r.team}`;
       else if (!hasRowEvidence(r, teamVariants)) bad = `row_evidence_not_on_page_${r.team}`;
       else if (!teamVariants.some((name) => page.includes(fold(name))))
         bad = `team_not_on_page_${r.team}`;
@@ -836,29 +840,24 @@ export function tableRegression(
       old.played - next.played === 1 &&
       old.won - next.won + old.drawn - next.drawn + old.lost - next.lost === 1 &&
       next.won + next.drawn + next.lost === next.played &&
-      next.points === 3 * next.won + next.drawn &&
+      next.points <= 3 * next.won + next.drawn &&
       next.goalsFor <= old.goalsFor &&
       next.goalsAgainst <= old.goalsAgainst &&
       next.points <= old.points;
     if (next.played < old.played && verifiedPlayedCorrection) continue;
     if (next.played < old.played) return `played_regressed_${old.team}`;
-    const resultRecordUnchanged =
-      next.played === old.played &&
-      next.won === old.won &&
-      next.drawn === old.drawn &&
-      next.lost === old.lost &&
-      next.points === old.points;
     const verifiedRecordCorrection =
       allowVerifiedRecordCorrections &&
       next.played === old.played &&
       next.won + next.drawn + next.lost === next.played &&
-      next.points === 3 * next.won + next.drawn;
+      next.points <= 3 * next.won + next.drawn;
     const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
     for (const field of fields) {
       if (next.played === old.played && next[field] !== old[field]) {
         const verifiedGoalCorrection =
           allowVerifiedGoalCorrections &&
-          resultRecordUnchanged &&
+          next.played === old.played &&
+          next.won + next.drawn + next.lost === next.played &&
           (field === "goalsFor" || field === "goalsAgainst");
         const verifiedRecordField =
           field === "won" || field === "drawn" || field === "lost" || field === "points";

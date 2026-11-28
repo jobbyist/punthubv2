@@ -2,17 +2,55 @@ import { describe, expect, it } from "vitest";
 
 import {
   badgeKey,
+  validBadgeTeamName,
   badgePath,
   badgeSearchRequest,
   cleanManualLogoUrl,
   pickCrestImage,
   pickWikipediaTitle,
+  isOfficialBadgeSource,
   isSofascoreImageHost,
   searchName,
   sofascoreCandidates,
   sofascoreImageUrls,
   wikipediaCandidates,
 } from "./resolve";
+
+describe("official badge source verification", () => {
+  it("accepts official league pages and explicitly identified team websites", () => {
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.premierleague.com/clubs/1/Arsenal", title: "Arsenal Club Profile" },
+        "Arsenal",
+        "Premier League",
+      ),
+    ).toBe(true);
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.elchecf.es/en/club", title: "Official website of Elche CF" },
+        "Elche CF",
+        "La Liga",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects third-party logo repositories even when their titles mention a team crest", () => {
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://www.footylogos.com/logos/elche-cf", title: "Elche CF logo" },
+        "Elche CF",
+        "La Liga",
+      ),
+    ).toBe(false);
+    expect(
+      isOfficialBadgeSource(
+        { url: "https://football-logos.cc/france/auxerre", title: "AJ Auxerre club crest" },
+        "AJ Auxerre",
+        "Ligue 1",
+      ),
+    ).toBe(false);
+  });
+});
 
 describe("Parallel search requests", () => {
   it("uses sport- and competition-aware queries for marquee teams", () => {
@@ -28,6 +66,14 @@ describe("Parallel search requests", () => {
   });
 });
 describe("names", () => {
+  it("rejects empty or malformed team labels before they become badge keys", () => {
+    expect(validBadgeTeamName("")).toBe(false);
+    expect(validBadgeTeamName("   ")).toBe(false);
+    expect(validBadgeTeamName(null)).toBe(false);
+    expect(validBadgeTeamName(undefined)).toBe(false);
+    expect(validBadgeTeamName("Mamelodi Sundowns")).toBe(true);
+  });
+
   it("normalises short forms", () => {
     expect(badgeKey("Man Utd")).toBe("manchester united");
     expect(badgeKey("Nott'm Forest")).toBe("nottingham forest");

@@ -24,6 +24,8 @@ import { PracticeDrawTab } from "@/components/admin/practice-draw-admin";
 import { NotificationBanner } from "@/components/admin/launch-panel";
 import { SyntheticExperimentTab } from "@/components/admin/synthetic-experiment-admin";
 import { PfieLearningTab } from "@/components/admin/pfie-learning-admin";
+import { ApiUsageTab } from "@/components/admin/api-usage-admin";
+import { PlatformUpdatesTab } from "@/components/admin/platform-updates-admin";
 import { EndorsementsTab } from "@/components/admin/endorsements-admin";
 import { LogosTab } from "@/components/admin/logos-admin";
 import { QuestsTab } from "@/components/admin/quests-admin";
@@ -41,7 +43,18 @@ export const Route = createFileRoute("/admin/")({
 });
 
 const TAB_GROUPS = [
-  { label: "Overview", items: ["system", "analytics", "synthetic", "pfieLearning", "log"] },
+  {
+    label: "Overview",
+    items: [
+      "system",
+      "analytics",
+      "apiUsage",
+      "platformUpdates",
+      "synthetic",
+      "pfieLearning",
+      "log",
+    ],
+  },
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
@@ -191,6 +204,12 @@ function Admin() {
                       <AnalyticsTab />
                       <TeamFollowsPanel />
                     </div>
+                  </TabsContent>
+                  <TabsContent value="apiUsage" className="mt-0">
+                    <ApiUsageTab />
+                  </TabsContent>
+                  <TabsContent value="platformUpdates" className="mt-0">
+                    <PlatformUpdatesTab />
                   </TabsContent>
                   <TabsContent value="synthetic" className="mt-0">
                     <SyntheticExperimentTab />

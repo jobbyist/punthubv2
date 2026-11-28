@@ -73,17 +73,9 @@ const raw = (source: number, tweak?: (r: RawStandingRow) => RawStandingRow): Raw
     return tweak ? tweak(r) : r;
   });
 
-describe("PFIE standings extraction model order", () => {
-  it("uses the strongest free Flash models before Flash-Lite fallbacks", () => {
-    expect(DEFAULT_PFIE_MODELS.slice(0, 3)).toEqual([
-      "gemini-3.8-flash",
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
-    ]);
-    expect(DEFAULT_PFIE_MODELS.slice(3)).toEqual([
-      "gemini-3.5-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
+describe("PFIE standings extraction model", () => {
+  it("uses Parallel Responses low effort as its only structured extraction model", () => {
+    expect(DEFAULT_PFIE_MODELS).toEqual(["parallel-low"]);
   });
 });
 describe("trusted standings publisher domains", () => {
@@ -225,6 +217,32 @@ it("configures official and independent Conference League standings sources", ()
     "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
   );
 });
+describe("EFL Championship source configuration", () => {
+  it("includes independent ESPN and Transfermarkt table candidates", () => {
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.espn.com/soccer/standings/_/league/eng.2",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.transfermarkt.com/championship/tabelle/wettbewerb/GB2",
+    );
+    expect(tierOf("espn.com", ["efl.com"])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", ["efl.com"])).toBe("trusted");
+  });
+});
+
+describe("Serie A live source configuration", () => {
+  it("includes independent current-table sources for cross-checking", () => {
+    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain(
+      "https://www.transfermarkt.com/serie-a/tabelle/wettbewerb/IT1",
+    );
+    expect(STANDINGS_COMPETITIONS.seriea?.pages).toContain(
+      "https://www.flashscore.com/football/italy/serie-a/standings/",
+    );
+    expect(tierOf("transfermarkt.com", ["legaseriea.it"])).toBe("trusted");
+    expect(tierOf("flashscore.com", ["legaseriea.it"])).toBe("trusted");
+  });
+});
+
 describe("La Liga live source configuration", () => {
   it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
@@ -288,6 +306,19 @@ describe("validateTables", () => {
     const { tables, rejected } = validateTables(raw(1), [official], 4, teams);
     expect(rejected).toEqual([]);
     expect(tables[0]!.rows.map((r) => r.team)).toEqual(teams);
+  });
+  it("accepts source-published points below the WDL total when a deduction is applied", () => {
+    const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
+    const sourceLines = lines.map((line) =>
+      line.startsWith("1 Alpha FC") ? deductionQuote : line,
+    );
+    const source = page("league.com", "official", 1, sourceLines);
+    const rows = raw(1, (row) =>
+      row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
+    );
+    const result = validateTables(rows, [source], 4, teams);
+    expect(result.rejected).toEqual([]);
+    expect(result.tables[0]!.rows[0]!.points).toBe(20);
   });
   it("rejects bad arithmetic, wrong team counts and unsupported row statistics", () => {
     expect(
@@ -633,6 +664,11 @@ describe("EFL Championship team aliases", () => {
     expect(normaliseTeam("QPR")).toBe(normaliseTeam("Queens Park Rangers"));
     expect(normaliseTeam("Sheffield Utd")).toBe(normaliseTeam("Sheffield United"));
     expect(normaliseTeam("Sheffield Wed")).toBe(normaliseTeam("Sheffield Wednesday"));
+    expect(normaliseTeam("Birmingham")).toBe(normaliseTeam("Birmingham City"));
+    expect(normaliseTeam("West Brom")).toBe(normaliseTeam("West Bromwich Albion"));
+    expect(normaliseTeam("Blackburn")).toBe(normaliseTeam("Blackburn Rovers"));
+    expect(normaliseTeam("Swansea")).toBe(normaliseTeam("Swansea City"));
+    expect(normaliseTeam("Bolton")).toBe(normaliseTeam("Bolton Wanderers"));
   });
 });
 
@@ -865,6 +901,16 @@ describe("tableRegression", () => {
     );
     expect(tableRegression(corrected, previous, true)).toBeNull();
   });
+  it("allows two-source-corroborated goal and record corrections when no matches were added", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const corrected = previous.map((row) =>
+      row.team === "Alpha FC"
+        ? { ...row, won: 8, drawn: 1, lost: 1, goalsFor: row.goalsFor + 2, points: 25 }
+        : row,
+    );
+    expect(tableRegression(corrected, previous, true, [], false, true)).toBeNull();
+  });
   it("still rejects points and win/draw/loss changes without additional matches", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
@@ -875,6 +921,21 @@ describe("tableRegression", () => {
       "points_changed_without_new_matches_Alpha FC",
     );
   });
+  it("allows a verified points-deduction correction without changing match records", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
+      .rows;
+    const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
+    const sourceLines = lines.map((line) =>
+      line.startsWith("1 Alpha FC") ? deductionQuote : line,
+    );
+    const rows = raw(1, (row) =>
+      row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
+    );
+    const candidate = validateTables(rows, [page("new.com", "trusted", 1, sourceLines)], 4)
+      .tables[0]!.rows;
+    expect(tableRegression(candidate, previous, false, [], false, true)).toBeNull();
+  });
+
   it("allows one verified new team when a pending group qualifier is confirmed", () => {
     const previous: StandingRow[] = [
       {
@@ -1101,6 +1162,14 @@ describe("seasonWindows", () => {
     expect(w.some((x) => x.start.startsWith("2026-07") && x.end.slice(5, 7) === "07")).toBe(false);
     expect(new Set(w.map((x) => x.start)).size).toBe(w.length);
   });
+
+  it("keeps three seasons for the launch cup competitions without expanding unrelated leagues", () => {
+    const now = new Date("2026-11-15T02:00:00Z");
+    for (const key of ["ucl", "uecl", "caf-cc"] as const) {
+      expect(seasonWindows(now, key).at(-1)!.start).toBe("2024-08-01");
+    }
+    expect(seasonWindows(now, "epl").at(-1)!.start).toBe("2025-08-01");
+  });
 });
 
 describe("seasonQueries", () => {
@@ -1221,6 +1290,75 @@ describe("season backfill sync", () => {
       maxJobs: 3,
     });
     expect(out.seasonDue).toBe(0);
+  });
+});
+
+describe("history sync", () => {
+  it("uses the requested history window start when selecting official archive sources", async () => {
+    const pageText = `CAF Confederation Cup results 20 October 2026. Al Ahly 1-0 Raja Casablanca. ${"Match report and final score. ".repeat(20)}`;
+    const answer = JSON.stringify({
+      matches: [
+        {
+          source: 1,
+          home: "Al Ahly",
+          away: "Raja Casablanca",
+          date: "2026-10-20",
+          time: null,
+          tz: null,
+          status: "finished",
+          homeScore: 1,
+          awayScore: 0,
+          quote: "Al Ahly 1-0 Raja Casablanca",
+        },
+      ],
+    });
+    const inserted: unknown[] = [];
+    const records: { ok: boolean; error: string | null }[] = [];
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [
+          {
+            url: "https://www.cafonline.com/caf-confederation-cup/news/results",
+            title: "Official CAF results",
+            excerpt: pageText,
+            publishedAt: null,
+          },
+        ],
+      },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: { name: "fake", generate: async () => ({ text: answer, model: "m" }) },
+      models: DEFAULT_PFIE_MODELS.slice(0, 1),
+      now: () => new Date("2026-11-28T03:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => ["Al Ahly", "Raja Casablanca"],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async (rows: unknown[]) => {
+          inserted.push(...rows);
+          return rows.length;
+        },
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          error: string | null,
+          _meta: Record<string, unknown>,
+        ) => {
+          records.push({ ok, error });
+        },
+      },
+    };
+    const report = await runTablesSync(deps as never, {
+      job: "history",
+      only: ["caf-cc"],
+      maxJobs: 1,
+    });
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)).toEqual({ ok: true, error: null });
+    expect(inserted).toHaveLength(1);
   });
 });
 
@@ -1468,10 +1606,10 @@ describe("cup history source attribution", () => {
         name: "fake",
         generate: async () => ({
           text: replies[Math.min(calls++, replies.length - 1)]!,
-          model: "gemini-3.8-flash",
+          model: "parallel-low",
         }),
       },
-      models: ["gemini-3.8-flash"],
+      models: ["parallel-low"],
       now: () => new Date("2026-11-28T02:00:00Z"),
       store: {
         statuses: async (): Promise<SyncStatusRow[]> => [],
@@ -1500,6 +1638,169 @@ describe("cup history source attribution", () => {
     expect(inserted).toHaveLength(1);
     expect(records.at(-1)?.ok).toBe(true);
     expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
+  });
+});
+
+describe("official standings fallback", () => {
+  it("retries an invalid official table using independent full-table sources", async () => {
+    const teamNames = [
+      "Club 01",
+      "Club 02",
+      "Club 03",
+      "Club 04",
+      "Club 05",
+      "Club 06",
+      "Club 07",
+      "Club 08",
+      "Club 09",
+      "Club 10",
+      "Club 11",
+      "Club 12",
+      "Club 13",
+      "Club 14",
+      "Club 15",
+      "Club 16",
+      "Club 17",
+      "Club 18",
+      "Club 19",
+      "Club 20",
+    ];
+    const makeRows = (source: number, count: number) =>
+      teamNames.slice(0, count).map((team, index) => {
+        const won = 20 - index;
+        const lost = 20 - won;
+        const goalsFor = won * 3;
+        const goalsAgainst = lost * 2;
+        const position = index + 1;
+        const quote = `${position} ${team} 20 ${won} 0 ${lost} ${goalsFor} ${goalsAgainst} ${won * 3}`;
+        return {
+          source,
+          position,
+          team,
+          played: 20,
+          won,
+          drawn: 0,
+          lost,
+          goalsFor,
+          goalsAgainst,
+          points: won * 3,
+          quote,
+        };
+      });
+    const validRows = makeRows(1, 20);
+    const pageText = validRows.map((row) => row.quote).join("\n") + "\nUpdated 28 November 2026";
+    const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
+    const deps = {
+      search: { name: "fake", search: async () => [] },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: {
+        name: "fake",
+        generate: async (request: { prompt?: string }) => {
+          const source = Number(request.prompt?.match(/<source n="(\d+)"/)?.[1] ?? 1);
+          const isOfficial = request.prompt?.includes("premierleague.com") ?? false;
+          return {
+            text: JSON.stringify({ rows: makeRows(source, isOfficial ? 19 : 20) }),
+            model: "mock-model",
+          };
+        },
+      },
+      models: ["parallel-low"],
+      now: () => new Date("2026-11-28T03:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => teamNames,
+        currentStandings: async () => [],
+        replaceStandings: async (input: { rows: unknown[] }) => input.rows.length,
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          _error: string | null,
+          meta: Record<string, unknown>,
+        ) => {
+          records.push({ ok, meta });
+        },
+      },
+    };
+    const report = await runTablesSync(deps as never, {
+      job: "standings",
+      only: ["epl"],
+      maxJobs: 1,
+    });
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)?.ok).toBe(true);
+    expect(records.at(-1)?.meta.fallbackFromOfficial).toBe(true);
+    expect(records.at(-1)?.meta.sourceCount).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe("empty historical windows", () => {
+  it("marks a week with only out-of-window results as complete without a redundant secondary read", async () => {
+    const pageText = `UEFA Champions League historical results. Alpha FC 2-1 Bravo United. ${"Match report and final score. ".repeat(20)}`;
+    const answer = JSON.stringify({
+      matches: [
+        {
+          source: 1,
+          home: "Alpha FC",
+          away: "Bravo United",
+          date: "2026-10-20",
+          time: null,
+          tz: null,
+          status: "finished",
+          homeScore: 2,
+          awayScore: 1,
+          quote: "Alpha FC 2-1 Bravo United",
+        },
+      ],
+    });
+    let calls = 0;
+    const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [
+          {
+            url: "https://www.uefa.com/uefachampionsleague/news/results",
+            title: "Official UEFA results",
+            excerpt: pageText,
+            publishedAt: null,
+          },
+        ],
+      },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: {
+        name: "fake",
+        generate: async () => {
+          calls += 1;
+          return { text: answer, model: "m" };
+        },
+      },
+      models: ["m"],
+      now: () => new Date("2026-11-28T02:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => ["Alpha FC", "Bravo United"],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async () => 0,
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          _error: string | null,
+          meta: Record<string, unknown>,
+        ) => {
+          records.push({ ok, meta });
+        },
+      },
+    };
+    const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
+    expect(calls).toBe(1);
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)?.ok).toBe(true);
+    expect(records.at(-1)?.meta.noMatchesInWindow).toBe(true);
   });
 });
 

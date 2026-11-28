@@ -1,12 +1,12 @@
 /**
- * PFIE fixtures provider: Parallel Search finds the pages, Gemini lists what each page states, and plain code
- * validates and corroborates. It implements the same `SportsProvider` interface as the API-Sports adapter, so the
+ * PFIE fixtures provider: Parallel Search finds the pages, Parallel Extract reads them, Parallel Responses
+ * structures observations, and plain code validates and corroborates. It implements the same `SportsProvider`
+ * interface as the API-Sports adapter, so the
  * existing sync, settlement and cron code runs unchanged.
  *
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
-import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { ProviderError } from "@/lib/content/http";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
@@ -22,7 +22,12 @@ import type { ListOptions, ListResult, SportsProvider } from "@/lib/sports/provi
 import type { NormalisedFixture } from "@/lib/sports/types";
 
 import { corroborate } from "./corroborate";
-import { extractionRequest, parseObservations, validateObservations } from "./extract";
+import {
+  chunkSourcesForExtraction,
+  extractionRequest,
+  parseObservations,
+  validateObservations,
+} from "./extract";
 import type { Decision, PfieSource, PfieStore, SourceTier } from "./types";
 
 interface CompetitionSources {
@@ -177,7 +182,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   // African sites that print the zone, so kick-off times can be verified (see corroborate.ts).
   uel: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -189,7 +194,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   uecl: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -201,7 +206,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   ligue1: {
     official: ["ligue1.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -213,7 +218,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   championship: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -225,7 +230,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   facup: {
     official: ["thefa.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["FA Cup fixtures SAST kick-off times", "FA Cup fixtures kick-off times"],
@@ -234,7 +239,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   eflcup: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Carabao Cup fixtures SAST kick-off times", "EFL Cup fixtures kick-off times"],
@@ -243,7 +248,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   eredivisie: {
     official: ["eredivisie.nl"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -255,7 +260,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   primeira: {
     official: ["ligaportugal.pt"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -267,7 +272,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "saudi-pro": {
     official: ["spl.com.sa"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -279,7 +284,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   nedbank: {
     official: ["psl.co.za"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Nedbank Cup fixtures kick-off times", "Nedbank Cup fixtures SAST"],
@@ -288,7 +293,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "sa-championship": {
     official: ["psl.co.za"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -303,7 +308,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "caf-cl": {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -315,7 +320,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "caf-cc": {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -327,7 +332,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   afcon: {
     official: ["cafonline.com"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: [
@@ -339,7 +344,7 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "bafana-friendlies": {
     official: ["safa.net"],
-    // Search only (no full-page reads), so the wider coverage stays inside the Firecrawl free tier.
+    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
     pages: { fixtures: [], results: [] },
     queries: {
       fixtures: ["Bafana Bafana next match kick-off time SAST", "Bafana Bafana friendly fixture"],
@@ -455,7 +460,7 @@ export const PFIE_PROVIDER = "pfie";
 
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
   const now = deps.now ?? (() => new Date());
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
+  const models = deps.models ?? ["parallel-low"];
 
   async function run(
     competition: Competition,
@@ -532,55 +537,70 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       sources.forEach((s, i) => (s.index = i + 1));
       if (sources.length === 0) throw new Error("no usable source");
 
-      // 3. Extraction (one model call for all sources).
+      // 3. Extraction. Split long historical pages into bounded chunks so the combined Parallel input
+      // (instructions + schema + source text) stays comfortably below the 20,000-character endpoint limit.
       const usage = await deps.store.usageToday().catch(() => ({}) as Record<string, number>);
       const usedToday: Record<string, number> = {};
-      for (const m of models) usedToday[m] = usage[`gemini:${m}`] ?? 0;
+      for (const m of models) {
+        const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
+        usedToday[m] = effort ? (usage[`parallel-chat:${effort}`] ?? 0) : (usage[m] ?? 0);
+      }
       const router = createModelRouter(deps.llm, {
         models,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
         onAttempt: async (a) => {
-          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free")
-            await count(`gemini:${a.model}`, a.outcome === "ok");
+          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free") {
+            const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
+            await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
+          }
         },
       });
-      calls++;
-      let answer = await router.generate(
-        extractionRequest({
-          competition: competition.name,
-          from: sastDate(from),
-          to: sastDate(to),
-          today,
-          sources,
-        }),
-      );
-      let raw = parseObservations(answer.text);
-      if (!raw) {
-        // A malformed/overlong structured response must not fail the whole competition on the first attempt.
-        // Retry with the strongest three sources and a strict JSON-only instruction; all quotes are still
-        // validated against the original, full source text below.
-        calls++;
-        const retrySources = sources.slice(0, 3).map((source) => ({
-          ...source,
-          text: source.text.slice(0, 6_500),
-        }));
-        answer = await router.generate(
+
+      const raw = [] as NonNullable<ReturnType<typeof parseObservations>>;
+      const sourceBatches = chunkSourcesForExtraction(sources);
+      let modelUsed: string | null = null;
+      for (const batch of sourceBatches) {
+        const makeRequest = (batchSources: PfieSource[], retryHint?: string) =>
           extractionRequest({
             competition: competition.name,
             from: sastDate(from),
             to: sastDate(to),
             today,
-            sources: retrySources,
-            retryHint:
-              "The previous response was not valid JSON or did not match the required schema.",
-          }),
-        );
-        raw = parseObservations(answer.text);
-      }
-      if (!raw) throw new Error("extraction answer was not valid JSON after one retry");
+            sources: batchSources,
+            ...(retryHint ? { retryHint } : {}),
+          });
 
+        calls++;
+        let answer = await router.generate(makeRequest(batch.sources));
+        modelUsed = answer.model;
+        let parsed = parseObservations(answer.text);
+        if (!parsed) {
+          // Retry only this bounded chunk with smaller source excerpts; all quotes are validated against
+          // the original, complete page text below.
+          calls++;
+          const retrySources = batch.sources.map((source) => ({
+            ...source,
+            text: source.text.slice(0, 3_000),
+          }));
+          answer = await router.generate(
+            makeRequest(
+              retrySources,
+              "The previous response was not valid JSON or did not match the required schema.",
+            ),
+          );
+          modelUsed = answer.model;
+          parsed = parseObservations(answer.text);
+        }
+        if (!parsed) throw new Error("extraction answer was not valid JSON after one chunk retry");
+        raw.push(
+          ...parsed.map((observation) => ({
+            ...observation,
+            source: batch.sourceIndexByChunk[observation.source] ?? observation.source,
+          })),
+        );
+      }
       // 4. Validation and corroboration: code only.
       const { accepted, rejected } = validateObservations(raw, sources, {
         from,
@@ -606,7 +626,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           competition: competition.key,
           kind,
           ok: true,
-          model: answer.model,
+          model: modelUsed ?? undefined,
           sources,
           accepted,
           rejected,

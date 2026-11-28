@@ -4,6 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AccountPage, RequireMember } from "@/components/account-gate";
+import { UsernameEditor } from "@/components/username-editor";
 import { AnnualPassClaim } from "@/components/annual-pass-claim";
 import { AvatarUploader } from "@/components/avatar-uploader";
 import { IdentityCard } from "@/components/identity-card";
@@ -67,10 +68,7 @@ function Account() {
           <PushNotificationSettings />
 
           <dl className="card-surface mt-6 divide-y divide-border">
-            <div className="flex items-center justify-between gap-4 p-4 text-sm">
-              <dt className="text-muted-foreground">{t("home.username")}</dt>
-              <dd className="font-semibold">{profile.username}</dd>
-            </div>
+            <UsernameEditor initialUsername={profile.username} />
             <div className="flex items-center justify-between gap-4 p-4 text-sm">
               <dt className="text-muted-foreground">
                 {profile.founding_number

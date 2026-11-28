@@ -35,7 +35,7 @@ function Terms() {
       <div className="card-surface p-6 sm:p-8">
         <div className="prose prose-sm max-w-none">
           <p className="text-sm text-muted-foreground">
-            <strong>Last Updated:</strong> 23 November 2026 (version 2026-11-23-r24). Draft pending
+            <strong>Last Updated:</strong> 28 November 2026 (version 2026-11-28-r25). Draft pending
             attorney review.
           </p>
 
@@ -113,7 +113,7 @@ function Terms() {
               <li>Founding Membership for the first 100 members, free</li>
               <li>
                 A limited Founding Annual Pass offer: the first 20 Founding Members to reserve it
-                before 30 November 2026 get 12 months of Puntr Pro for a once-off R299, starting on
+                before 31 December 2026 get 12 months of Puntr Pro for a once-off R299, starting on
                 1 December 2026, with no automatic renewal. Reserving is free on Puntr. We email a
                 secure PayFast payment link; payment must be completed within 48 hours or the
                 reservation expires and the place is released. The Annual Pass is confirmed only

@@ -205,6 +205,32 @@ function Founding() {
 
       <AnnualPassClaim />
 
+      <section
+        className="puntr-reveal mt-12 border border-primary/30 p-6"
+        aria-labelledby="founding-giveaway"
+      >
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+          {t("giveaway.eyebrow")}
+        </p>
+        <h2 id="founding-giveaway" className="mt-2 text-2xl">
+          {t("giveaway.title")}
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          {t("giveaway.body")}
+        </p>
+        <ul className="mt-4 grid gap-2 text-sm">
+          {(["eligibility", "closing"] as const).map((key) => (
+            <li key={key} className="flex items-start gap-2">
+              <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+              <span>{t(`giveaway.${key}`)}</span>
+            </li>
+          ))}
+        </ul>
+        <Button asChild size="lg" variant="outline" className="mt-5 h-11 px-5">
+          <Link to="/pricing">{t("giveaway.cta")}</Link>
+        </Button>
+      </section>
+
       <section className="puntr-reveal mt-12" aria-labelledby="founding-faq">
         <h2 id="founding-faq" className="text-xl">
           {t("faq.title")}

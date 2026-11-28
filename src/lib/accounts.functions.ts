@@ -1,9 +1,46 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { runCompleteSignup, signupSchema, type SignupResult } from "@/lib/accounts.logic";
+import {
+  runCompleteSignup,
+  signupSchema,
+  usernameSchema,
+  type SignupResult,
+} from "@/lib/accounts.logic";
 import { runUsernameSignIn, type UsernameSignInResult } from "@/lib/username-signin.logic";
 
 export type { SignupResult } from "@/lib/accounts.logic";
+export type UsernameUpdateResult =
+  | { ok: true; username: string }
+  | { ok: false; code: "invalid_username" | "username_taken" | "not_editable" | "error" };
+
+/** Changes only the signed-in member's public username; the database enforces uniqueness and excludes AI accounts. */
+export const updateMyUsername = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((input: unknown) => {
+    const o = (typeof input === "object" && input !== null ? input : {}) as { username?: unknown };
+    return {
+      username: usernameSchema.safeParse(o.username).success
+        ? usernameSchema.parse(o.username)
+        : "",
+    };
+  })
+  .handler(async ({ data, context }): Promise<UsernameUpdateResult> => {
+    if (!data.username) return { ok: false, code: "invalid_username" };
+    const { data: username, error } = await context.supabase.rpc("update_my_username", {
+      p_username: data.username,
+    });
+    if (error) {
+      const message = error.message.toLowerCase();
+      if (message.includes("username_taken") || message.includes("unique")) {
+        return { ok: false, code: "username_taken" };
+      }
+      if (message.includes("invalid_username")) return { ok: false, code: "invalid_username" };
+      if (message.includes("not_editable")) return { ok: false, code: "not_editable" };
+      console.error("update_my_username failed", error.message);
+      return { ok: false, code: "error" };
+    }
+    return { ok: true, username: String(username ?? data.username) };
+  });
 
 /**
  * Creates the signed-in user's profile and consent rows in one transaction (complete_signup).

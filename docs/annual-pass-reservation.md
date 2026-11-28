@@ -1,6 +1,6 @@
 # Founding Annual Pass reservation flow
 
-The Founding Annual Pass is reserved on Puntr without collecting payment on the website.
+The Founding Annual Pass is reserved on Puntr without collecting payment on the website. The 20-place offer remains open until 23:59 SAST on 31 December 2026. Each reservation creates a 48-hour payment hold, but no hold may extend beyond the offer deadline.
 
 ## Runtime configuration
 

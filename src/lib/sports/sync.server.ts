@@ -98,16 +98,14 @@ export async function syncFixturesByCompetition(
   return report;
 }
 
-/**
- * Fixtures that kicked off in the last seven days and are not final. Old unresolved fixtures stay eligible for
- * another verified-results attempt instead of silently falling out of the sync window.
- */
+/** Unresolved fixtures remain eligible for a verified result update for 30 days after kick-off. */
+export const RESULTS_LOOKBACK_DAYS = 30;
 export async function syncResults(
   provider: SportsProvider,
   store: FixtureStore,
   now = new Date(),
 ): Promise<SyncReport> {
-  const since = new Date(now.getTime() - 7 * DAY);
+  const since = new Date(now.getTime() - RESULTS_LOOKBACK_DAYS * DAY);
   const open = await store.openSince(since, now);
   if (open.length === 0) return { ok: true, calls: 0, upserted: 0, skipped: [] };
 
