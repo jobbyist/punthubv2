@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isConfirmedNoMatchesInWindow, seasonQueries } from "./tables";
+import { isConfirmedNoMatchesInWindow, seasonArchiveUrls, seasonQueries } from "./tables";
 
 describe("PFIE historical season windows", () => {
   it("does not treat an empty extraction as proof that a window had no matches", () => {
@@ -31,6 +31,19 @@ describe("PFIE historical season windows", () => {
         reasons: { outside_date_range: 3, quote_not_on_page: 1 },
       }),
     ).toBe(false);
+  });
+
+  it("reads trusted fallback pages directly when official cup pages are empty", () => {
+    const ucl = seasonArchiveUrls("UEFA Champions League", "2026-10-15");
+    const uecl = seasonArchiveUrls("UEFA Conference League", "2026-10-15");
+    const caf = seasonArchiveUrls("CAF Confederation Cup", "2026-10-16");
+
+    expect(ucl).toContain("https://www.bbc.com/sport/football/champions-league/scores-fixtures");
+    expect(ucl).toContain("https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures");
+    expect(uecl).toContain("https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures");
+    expect(uecl).toContain("https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf");
+    expect(caf).toContain("https://www.vavel.com/en-us/data/caf-confederation-cup/results");
+    expect(caf).toContain("https://foot-africa.com/en/leagues/international/caf-confederations-cup/");
   });
 
   it("discovers trusted secondary sources for UEFA and CAF historical backfills", () => {

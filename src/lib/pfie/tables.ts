@@ -242,41 +242,52 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
   const month = Number(start.slice(5, 7));
   const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
   if (name === "UEFA Champions League") {
-    return seasonStart === 2026
-      ? [
-          "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
-        ]
-      : seasonStart === 2025
-        ? [
-            "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
-          ]
-        : [];
+    const official =
+      seasonStart === 2026
+        ? ["https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/"]
+        : seasonStart === 2025
+          ? ["https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/"]
+          : [];
+    return [
+      ...official,
+      "https://www.bbc.com/sport/football/champions-league/scores-fixtures",
+      "https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures",
+    ];
   }
   if (name === "UEFA Conference League") {
-    return seasonStart === 2026
-      ? [
-          "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
-        ]
-      : seasonStart === 2025
-        ? [
-            "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
-          ]
-        : [];
+    const official =
+      seasonStart === 2026
+        ? ["https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/"]
+        : seasonStart === 2025
+          ? ["https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/"]
+          : [];
+    return [
+      ...official,
+      "https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures",
+      "https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf",
+    ];
   }
   if (name === "CAF Confederation Cup") {
-    if (start === "2026-10-16")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
-      ];
-    if (start === "2026-10-23")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
-        "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
-      ];
-    if (start === "2026-09-04")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
-      ];
+    const official =
+      start === "2026-10-16"
+        ? [
+            "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+          ]
+        : start === "2026-10-23"
+          ? [
+              "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+              "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+            ]
+          : start === "2026-09-04"
+            ? [
+                "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
+              ]
+            : [];
+    return [
+      ...official,
+      "https://www.vavel.com/en-us/data/caf-confederation-cup/results",
+      "https://foot-africa.com/en/leagues/international/caf-confederations-cup/",
+    ];
   }
   return [];
 }
@@ -1355,7 +1366,11 @@ async function syncSeasonWindow(
       );
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
-        if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
+        if (
+          fallback.rows.length > 0 ||
+          fallback.extracted > result.extracted ||
+          fallback.parsedSources > result.parsedSources
+        ) {
           sources = secondary;
           result = fallback;
         }
