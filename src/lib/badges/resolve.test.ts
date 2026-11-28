@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   badgeKey,
+  validBadgeTeamName,
   badgePath,
   badgeSearchRequest,
   cleanManualLogoUrl,
@@ -65,6 +66,14 @@ describe("Parallel search requests", () => {
   });
 });
 describe("names", () => {
+  it("rejects empty or malformed team labels before they become badge keys", () => {
+    expect(validBadgeTeamName("")).toBe(false);
+    expect(validBadgeTeamName("   ")).toBe(false);
+    expect(validBadgeTeamName(null)).toBe(false);
+    expect(validBadgeTeamName(undefined)).toBe(false);
+    expect(validBadgeTeamName("Mamelodi Sundowns")).toBe(true);
+  });
+
   it("normalises short forms", () => {
     expect(badgeKey("Man Utd")).toBe("manchester united");
     expect(badgeKey("Nott'm Forest")).toBe("nottingham forest");
