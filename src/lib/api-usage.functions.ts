@@ -36,7 +36,6 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       db.from("content_api_usage").select("provider,calls,errors,refused").eq("day", today).order("provider"),
       db.from("content_api_usage").select("provider,calls,errors,refused").gte("day", monthStart).order("provider"),
       db.from("api_call_events").select("id,provider,feature,consumer,operation,status,estimated_cost_usd,claimed_at,metadata").gte("claimed_at", sevenDaysAgo).order("claimed_at", { ascending: false }).limit(150),
-      db.from("api_call_events").select("provider,feature,estimated_cost_usd,claimed_at").gte("claimed_at", sevenDaysAgo).order("claimed_at", { ascending: false }).limit(10000),
       db.from("api_call_usage_attribution").select("provider,feature,consumer,operation,calls,estimated_usd,last_call").order("calls", { ascending: false }).limit(50),
     ]);
     for (const result of [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, attribution]) {
