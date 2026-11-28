@@ -141,16 +141,20 @@ export function seasonQueries(
     out.push(
       "site:uefa.com/uefachampionsleague/news/ " + seasonLabel + " Champions League all results matchday scores " + months,
       "site:uefa.com/uefachampionsleague/news/ Champions League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      'site:uefa.com/uefachampionsleague/news/ "2026/27 Champions League: All the league phase fixtures and results"',
     );
   } else if (name === "UEFA Conference League") {
     out.push(
       "site:uefa.com/uefaconferenceleague/news/ " + seasonLabel + " Conference League all results matchday scores " + months,
       "site:uefa.com/uefaconferenceleague/news/ Conference League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      'site:uefa.com/uefaconferenceleague/news/ "2026/27 Conference League: All the league phase fixtures and results"',
     );
   } else if (name === "CAF Confederation Cup") {
     out.push(
       "site:cafonline.com/caf-confederation-cup/news/ " + seasonLabel + " Confederation Cup results matchday scores " + months,
       "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " + longDate(start) + " " + longDate(end),
+      'site:cafonline.com/caf-confederation-cup/news/ "Surprise results shake up TotalEnergies CAF Confederation Cup Group Stage race"',
+      'site:cafonline.com/caf-confederation-cup/news/ "Full results of first-leg of First Preliminary stage"',
     );
   }
   return out;
