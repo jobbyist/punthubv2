@@ -539,7 +539,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       const resultQueries = targetedResultQueries.length
         ? [...targetedResultQueries, ...config.queries.results.slice(0, 1)].slice(0, 5)
         : config.queries.results.slice(0, 5);
-      const hits = await deps.search
+      const hits = await searchProvider
         .search({
           objective:
             kind === "fixtures"
