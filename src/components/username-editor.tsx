@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/components/session";
@@ -23,7 +23,7 @@ export function UsernameEditor({ initialUsername }: { initialUsername: string })
     setEditing(false);
   };
 
-  const save = async (event: React.FormEvent<HTMLFormElement>) => {
+  const save = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setSaved(false);
