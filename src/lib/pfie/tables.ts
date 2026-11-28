@@ -326,7 +326,9 @@ export function standingsDue(
   latestFinishedMs: number | undefined,
   now: Date,
   refreshHours = 24,
+  force = false,
 ): boolean {
+  if (force) return true;
   if (!retryDue(s, now)) return false;
   if (!s?.lastSuccessAt) return true;
   const last = Date.parse(s.lastSuccessAt);
@@ -336,7 +338,7 @@ export function standingsDue(
 
 export async function runTablesSync(
   deps: TablesDeps,
-  opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob } = {},
+  opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
 ) {
   const now = deps.now ?? (() => new Date());
   const maxJobs = opts.maxJobs ?? 2;
@@ -364,7 +366,7 @@ export async function runTablesSync(
     const c = competitions.find((x) => x.key === key)!;
     if (
       opts.job !== "history" &&
-      standingsDue(status("standings", key), finished.get(c.name), now(), STANDINGS_COMPETITIONS[key]!.refreshHours)
+      standingsDue(status("standings", key), finished.get(c.name), now(), STANDINGS_COMPETITIONS[key]!.refreshHours, opts.force)
     )
       due.push({ job: "standings", key });
   }

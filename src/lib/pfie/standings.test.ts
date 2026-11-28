@@ -127,14 +127,21 @@ describe("launch standings coverage", () => {
   });
 });
 describe("configured direct standings sources", () => {
-  it("includes BBC as an independent EFL Championship table source", () => {
+  it("includes CBS Sports, Sports Mole and the official EFL embedded table", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
-      "https://www.bbc.com/sport/football/championship/table",
+      "https://www.cbssports.com/soccer/efl-championship/standings/",
     );
     expect(STANDINGS_COMPETITIONS.championship?.queries).toContain(
-      "site:bbc.com/sport/football/championship/table EFL Championship 2026/27 full table",
+      "site:cbssports.com/soccer/efl-championship/standings EFL Championship 2026/27 full table",
     );
-    expect(tierOf("bbc.com", [])).toBe("trusted");
+    expect(tierOf("cbssports.com", [])).toBe("trusted");
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.sportsmole.co.uk/football/championship/table.html",
+    );
+    expect(tierOf("sportsmole.co.uk", [])).toBe("trusted");
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.efl.com/embeds/league-table/",
+    );
   });
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
@@ -1003,6 +1010,13 @@ describe("scheduling", () => {
     expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
     expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
+    const backoff = s({
+      lastSuccessAt: "2026-11-14T20:10:00Z",
+      lastAttemptAt: "2026-11-15T01:30:00Z",
+      consecutiveFailures: 3,
+    });
+    expect(standingsDue(backoff, undefined, now, 12)).toBe(false);
+    expect(standingsDue(backoff, undefined, now, 12, true)).toBe(true);
   });
 });
 
