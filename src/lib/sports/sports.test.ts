@@ -253,7 +253,7 @@ describe("sync", () => {
     expect(batches[0]).toHaveLength(3);
     expect(batches[1]).toHaveLength(2);
     expect(batches[0]).not.toEqual(batches[1]);
-    expect(new Set([...batches[0], ...batches[1]])).toEqual(new Set(open.map((item) => item.providerRef)));
+    expect(new Set([...(batches[0] ?? []), ...(batches[1] ?? [])])).toEqual(new Set(open.map((item) => item.providerRef)));
   });
 
   it("asks only for competitions that have open fixtures and updates only those fixtures", async () => {
