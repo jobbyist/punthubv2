@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { Activity, MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
+import { Activity, MessageCircle, RefreshCw, Send } from "lucide-react";
+import { ProBadge } from "@/components/pro-badge";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import type { SupabaseClient } from "@supabase/supabase-js";

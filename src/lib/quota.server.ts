@@ -21,14 +21,25 @@ const isMissingFunction = (error: { code?: string; message: string }) =>
  * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
  * code first changes nothing.
  */
-export async function createQuotaClaim(feature = "unattributed"): Promise<Claim> {
+export async function createQuotaClaim(feature: string): Promise<Claim> {
+  if (!feature.trim() || feature === "unattributed") {
+    throw new Error("createQuotaClaim requires a named feature for usage attribution");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
   let budgetAvailable = true;
 
   const recordClaim = async (provider: string) => {
     try {
-      const { error } = await db.from("api_call_events").insert({ provider, feature });
+      const [consumer, ...operationParts] = feature.split(":");
+      const { error } = await db.from("api_call_events").insert({
+        provider,
+        feature,
+        consumer: consumer || "unknown",
+        operation: operationParts.join(":") || "request",
+        status: "claimed",
+        metadata: { attribution_source: "quota_guard", budget_checked: true },
+      });
       if (error) {
         console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
       }
@@ -42,11 +53,11 @@ export async function createQuotaClaim(feature = "unattributed"): Promise<Claim>
       const { data, error } = await db.rpc("api_budget_claim", {
         p_provider: provider,
         p_units: 1,
+        p_feature: feature,
       });
       if (!error) {
-        const granted = data === true;
-        if (granted) await recordClaim(provider);
-        return granted;
+        // api_budget_claim writes the attribution event in the same transaction as the quota debit.
+        return data === true;
       }
       if (!isMissingFunction(error)) {
         console.error("quota: budget claim failed, refusing the call", provider, error.message);
@@ -86,7 +97,12 @@ export function guardSearch(inner: SearchProvider, claim: Claim): SearchProvider
     name: inner.name,
     async search(input) {
       if (!(await claim(inner.name))) throw refused(inner.name);
-      return inner.search(input);
+      try {
+        return await inner.search(input);
+      } catch (error) {
+        await recordQuotaError(inner.name);
+        throw error;
+      }
     },
   };
 }
@@ -96,7 +112,12 @@ export function guardExtract(inner: ExtractProvider, claim: Claim): ExtractProvi
     name: inner.name,
     async extract(url) {
       if (!(await claim(inner.name))) throw refused(inner.name);
-      return inner.extract(url);
+      try {
+        return await inner.extract(url);
+      } catch (error) {
+        await recordQuotaError(inner.name);
+        throw error;
+      }
     },
   };
 }
@@ -109,7 +130,12 @@ export function guardLlm(inner: LlmProvider, claim: Claim): LlmProvider {
       const parallelEffort = /^parallel-(low|medium|high)$/.exec(model)?.[1];
       const key = parallelEffort ? `parallel-chat:${parallelEffort}` : `gemini:${model}`;
       if (!(await claim(key))) throw refused(key);
-      return inner.generate(model, request);
+      try {
+        return await inner.generate(model, request);
+      } catch (error) {
+        await recordQuotaError(key);
+        throw error;
+      }
     },
   };
 }

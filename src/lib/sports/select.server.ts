@@ -1,37 +1,25 @@
-/**
- * Chooses the fixtures provider. `SPORTS_PROVIDER=pfie` switches on PFIE (Parallel Search + Gemini, no
- * subscription); it needs GEMINI_API_KEY and PARALLEL_API_KEY and returns null without them. Anything else keeps
- * the API-Sports adapter. The switch is explicit so that adding the content-engine keys never starts writing
- * fixtures to the live site by itself.
- */
+/** PFIE is Parallel-only: Parallel Search discovers sources, Parallel Extract reads them, and Parallel Responses validates structured observations. */
 import type { SportsProvider } from "./provider";
 
 export async function createSportsProvider(
   env: Record<string, string | undefined> = process.env,
 ): Promise<SportsProvider | null> {
   const wanted = env["SPORTS_PROVIDER"]?.trim().toLowerCase();
-  const pfieReady = Boolean(env["GEMINI_API_KEY"]?.trim() && env["PARALLEL_API_KEY"]?.trim());
-
-  if (wanted === "pfie" && pfieReady) {
-    const { DEFAULT_PFIE_MODELS, parseDailyCaps, parseModelList, readContentEnv } =
-      await import("@/lib/content/config");
-    const { createGemini, createPageReader, createParallelSearch } =
+  const parallelKey = env["PARALLEL_API_KEY"]?.trim();
+  if (wanted === "pfie" && parallelKey) {
+    const { createParallelExtract, createParallelResponses, createParallelSearch } =
       await import("@/lib/content/providers.server");
     const { createPfieProvider } = await import("@/lib/pfie/provider");
     const { createPfieStore } = await import("@/lib/pfie/store.server");
     const { createQuotaClaim, guardExtract, guardLlm, guardSearch } =
       await import("@/lib/quota.server");
-    const claim = await createQuotaClaim();
-    const keys = readContentEnv(env);
+    const claim = await createQuotaClaim("pfie:fixtures-results");
     return createPfieProvider({
-      search: guardSearch(createParallelSearch(keys.parallelKey!), claim),
-      extract: createPageReader({ firecrawl: keys.firecrawlKey, parallel: keys.parallelKey }, (r) =>
-        guardExtract(r, claim),
-      ),
-      llm: guardLlm(createGemini(keys.geminiKey!), claim),
+      search: guardSearch(createParallelSearch(parallelKey), claim),
+      extract: guardExtract(createParallelExtract(parallelKey), claim),
+      llm: guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
       store: createPfieStore(),
-      models: parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(",")).models,
-      dailyCap: parseDailyCaps(env["CONTENT_GEMINI_RPD"]),
+      models: ["parallel-low"],
     });
   }
   if (wanted === "pfie") return null;

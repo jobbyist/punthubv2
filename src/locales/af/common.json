@@ -16,7 +16,8 @@
   },
   "foundingBar": {
     "text": "Registrasie vir stigterslede is oop: die eerste 100 kry gratis 'n genommerde kenteken. Puntr word {{launch}} bekendgestel.",
-    "cta": "Eis jou plek op"
+    "cta": "Eis jou plek op",
+    "giveaway": "3 × R500 OTT-bewyse · 3 wenners · Slegs Pro-lede · sluit 31 Des 2026"
   },
   "badge": {
     "example": "Voorbeeld",
@@ -200,5 +201,7 @@
     "perkFullScreen": "Maak volskerm oop",
     "perkFaster": "Laai vinniger",
     "perkAlerts": "Wedstryddag-kennisgewings"
-  }
+  },
+  "proBadge": "PRO",
+  "aiParticipant": "KI-deelnemer"
 }

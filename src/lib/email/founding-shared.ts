@@ -9,7 +9,7 @@ export const esc = (v: string) =>
 
 /** Limited offer terms. Keep in step with claim_annual_pass() in the database. */
 export const PASS_SPOTS = 20;
-export const PASS_DEADLINE_TEXT = "30 November 2026";
+export const PASS_DEADLINE_TEXT = "31 December 2026";
 /** Claiming includes payment. Keep in step with /founding and the Terms. */
 export const PASS_PAYMENT_TEXT =
   "Reserving is free on Puntr. We email you a secure PayFast payment link; complete the R299 payment within 48 hours or the reservation expires and the place is released.";

@@ -4,7 +4,7 @@ Owner direction (15 Nov 2026): Parallel's APIs power fixtures, results, tables, 
 analysis, Confidence Scores, Deep Analysis, the Punt AI chatbot, Newsroom research and **pre-match odds** (no
 in-play). "Manually added odds" means the odds members enter when they submit a pick or a slip (owner, 15 Nov). Credits are spent as sparingly as possible without hurting quality.
 
-Budget (owner update, 27 Nov 2026): approximately **$200 of Parallel balance remains** to carry Puntr through 31 March 2027. The internal monthly family ceiling is **$50**, with a separate cumulative **$200 ceiling from 28 Nov 2026 through 31 Mar 2027**. These are spend guards, not a statement of the provider wallet balance. Reconcile the provider dashboard monthly.
+Budget (owner update, 28 Nov 2026): the cumulative internal allowance is **$280 from 28 Nov 2026 through 31 Mar 2027**: the prior $230 allowance plus an additional $50 reserved for synthetic QA. Monthly spend is split into separate families: **$50 core Search/Extract**, **$50 Newsroom Responses Medium**, **$35 shared PUNT AI/Monitor lite/Task lite**, and **$50 synthetic QA**. Synthetic activity is also capped by the experiment ledger. These are internal spend guards, not a statement of the provider wallet balance. Reconcile the provider dashboard monthly.
 
 ## Ground rules
 
@@ -37,27 +37,28 @@ Rate limits are far above our needs (Search/Extract 600/min, Tasks 2,000/min, Ch
 
 ## Production usage review and Q1 controls (27 Nov 2026)
 
-The production ledger recorded **4,438 Parallel calls costing $33.838** so far in November:
-- Search: 2,182 calls, approximately $2.182.
-- Extract: 1,655 calls, approximately $1.655.
+Production usage review (28 Nov 2026): November's provider ledger shows **$34.398** in priced Parallel usage:
 - Responses Medium: 600 calls, approximately $30.00.
+- Search: 2,478 calls, approximately $2.478.
+- Extract: 1,910 calls, approximately $1.910.
+- Responses Low: 1 call, approximately $0.01.
 
-Responses Medium accounted for about **89%** of the recorded spend. The newsroom runs three daily editorial slots and can make separate writer, revision and reviewer calls. The live quota row had drifted to **300 Medium calls/day**, even though its note still described the earlier 45-call limit. That mismatch allowed much more paid usage than the intended operating envelope.
+Responses Medium is the largest cost driver. It is now isolated in its own $50 monthly Newsroom family rather than consuming the PUNT AI reserve. Search and Extract share a separate $50 core family. PUNT AI live-web, Monitor lite and Task lite share the $35 auxiliary family. Synthetic QA has its own $50 family and experiment ledger.
 
 Controls:
-- Raise the monthly Parallel family ceiling to $50, while enforcing a cumulative $200 cap from 28 Nov 2026 through 31 Mar 2027.
-- Limit Responses Medium to **15 calls/day and 450/month** (maximum $22.50/month at the current $0.05 unit price).
-- When the Medium quota is exhausted, the existing model router falls back to the approved Gemini models rather than continuing paid calls.
-- Keep Search and Extract under the shared dollar guard; do not expand their per-call caps simply because their unit prices are low.
+- Enforce separate $50 core, $50 Newsroom, $35 auxiliary and $50 synthetic monthly family caps, with one global $280 cumulative cap from 28 Nov 2026 through 31 Mar 2027.
+- Keep Responses Medium at **12 calls/day and 360/month** (maximum $18/month at the current $0.05 unit price).
+- Raise Search and Extract daily caps to **500 and 400**, respectively, for the bounded historical backfill; retain their existing monthly call caps and $50 core family guard.
+- PFIE uses Parallel Responses low only and fails closed when its Parallel quota is exhausted; it never falls back to Gemini or Firecrawl. Newsroom remains on Parallel Medium.
 - Review the provider wallet and `api_spend_period_status()` at least weekly. Do not treat the internal caps as a substitute for reconciling the Parallel dashboard.
 
 ## Feature map
 
 | Feature | Parallel API | Cadence | Cache TTL | Est. per day after launch |
 |---|---|---|---|---|
-| Fixtures (21 competitions) | Search fast + Extract fallback | daily 03:00-03:42, only competitions with matches in the next 10 days | 12 h | ~40 calls, $0.04 |
-| Results | Search fast | after full time with back-off (existing) | 30 min | ~30, $0.03 |
-| League tables | Search fast + Extract | daily when stale (existing) | 18 h | ~12, $0.012 |
+| Fixtures (21 competitions) | Search fast + Parallel Extract + Responses low | daily 03:00-03:42, only competitions with matches in the next 10 days | 12 h | ~40 calls, $0.04 |
+| Results | Search fast + Parallel Extract + Responses low | after full time with back-off (existing) | 30 min | ~30, $0.03 |
+| League tables | Search fast + Parallel Extract + Responses low | daily when stale (existing) | 18 h | ~12, $0.012 |
 | Team news and line-ups | Not production-live; Monitor/webhook pipeline is not yet implemented and verified | Deferred | n/a | $0 at MVP |
 | Match stats (post-match) | Current outcome aggregates are derived from stored verified results; no dedicated event-level stats feed is production-live | Deferred | n/a | $0 at MVP |
 | **Pre-match odds** | Deferred. No South African bookmaker has supplied Puntr an authorized odds API, affiliate feed or other integration. Parallel Search/Extract/Monitor are not data rights. | Disabled for MVP | n/a | $0 at MVP |
@@ -69,9 +70,9 @@ Controls:
 | Punt AI chatbot | Answers first from Puntr's own data via Gemini; **Chat low** only for questions needing the live web, and only for Pro or credit-paying members | per message | 1 h per normalised question | charged to the member's credits |
 | Newsroom research | Search fast + Extract (existing) | 1 article a day | 6 h | ~8, $0.008 |
 | Internal synthetic QA | Decisions fast; up to 100 persona-market questions per shared fixture request; cached through `parallelCache` and guarded by `api_budget_claim` | owner-controlled batch; paused by default | 24 h | ~$0.001 per uncached fixture batch |
-| Team badges | Parallel Search fast + Wikipedia summary verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
+| Team badges | Parallel Search fast + Parallel Extract for official team/league pages; SofaScore and Wikipedia image verification; mirrored to Supabase Storage | one-off per fixture team and curated hero marquee team; admin can force retry | permanent | ~0 |
 
-**Synthetic QA note:** The 30-day experiment groups up to two preferred market questions for each of 50 synthetic personas into one Decisions request per fixture. It does not create 50–100 individual API requests. The experiment-specific $50 ledger is an additional cap; all actual provider calls still claim through the existing `api_budget_claim` / `api_quota_claim` guard and `parallelCache`.
+**Synthetic QA note:** The 30-day experiment groups up to two preferred market questions for each of 50 synthetic personas into one Decisions request per fixture. It does not create 50–100 individual API requests. The $50 experiment ledger now covers fixture research, AI community post/reply generation and AI H2H decisions. These calls also pass through the separate synthetic monthly family and the global $280 cumulative guard, with caching before provider calls.
 
 **Cost note:** The earlier steady-state estimate is not a current forecast: it assumed automated odds and Monitor-based team news that are not launch-enabled. Use api_spend_status() and the live quota/budget tables before increasing any provider cadence. At MVP, automated bookmaker odds and team-news Monitor jobs remain disabled.
 
@@ -114,8 +115,9 @@ The ~$50 does not roll over, so spend it on lasting data while it exists. Estima
 
 | Job | Method | Est. cost |
 |---|---|---|
-| 2025/26 season results, 12 table leagues (~4,500 matches) | season backfill (#131), Search + Extract | $3 |
-| 2024/25 season results, same leagues (form and H2H depth) | same job, earlier windows | $3 |
+| 2025/26 season results, 10 launch competitions | season backfill, Search + Extract | $3 |
+| 2024/25 season results, 10 launch competitions (form and H2H depth) | same job, earlier windows | $3 |
+| 2023/24 UEFA and CAF competition history where source evidence is available | same job, bounded competition-specific batches | $2 |
 | Head-to-head history (last 10 meetings) for every fixture pair in the next 4 weeks | Task lite, JSON schema, two-source check | $3 |
 | Team profiles (stadium, city, coach, nickname) for ~350 teams | Task lite batches | $2 |
 | Evergreen deep-research briefs for the 20 biggest clubs and derbies (Newsroom, Marquee card) | Task core | $1 |

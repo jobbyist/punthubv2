@@ -23,7 +23,19 @@
     "securityLink": "Aantekening en sekuriteit",
     "securityBody": "Bevestig jou e-pos, skakel tweefaktor-aantekening aan of stel 'n wagwoord.",
     "rewardsLink": "PuntPoints en belonings",
-    "rewardsBody": "Jou saldo, hoe om te verdien, uitnodigings en belonings."
+    "rewardsBody": "Jou saldo, hoe om te verdien, uitnodigings en belonings.",
+    "usernameEdit": "Verander gebruikersnaam",
+    "usernameSave": "Stoor gebruikersnaam",
+    "usernameSaving": "Stoor tans…",
+    "usernameCancel": "Kanselleer",
+    "usernameHint": "Gebruik 3–20 kleinletters, syfers of onderstrepings. Dit is openbaar en verskyn in jou profielskakel.",
+    "usernameSaved": "Gebruikersnaam bygewerk.",
+    "usernameErrors": {
+      "invalid_username": "Gebruik 3–20 kleinletters, syfers of onderstrepings.",
+      "username_taken": "Daardie gebruikersnaam is reeds geneem.",
+      "not_editable": "Hierdie rekening kan nie sy gebruikersnaam verander nie.",
+      "error": "Kon nie jou gebruikersnaam bywerk nie. Probeer asseblief weer."
+    }
   },
   "privacy": {
     "title": "Privaatheid en data",

@@ -1,17 +1,17 @@
 {
   "meta": {
-    "title": "Stigterslid-opname | Wen 'n OTT-koopbewys van R500 | Puntr",
-    "description": "Stigterslede: vertel ons wat jy van Puntr met die bekendstelling wil hê en neem deel aan die trekking vir 'n OTT-koopbewys van R500.",
+    "title": "Stigterslid-opname | Drie wenners van R500 OTT-bewyse | Puntr",
+    "description": "Stigterslede met aktiewe Puntr Pro: vertel ons wat jy van Puntr wil hê en neem deel aan die trekking vir een van drie R500 OTT-bewyse.",
     "ogTitle": "Stigterslid-opname: help om Puntr te vorm"
   },
   "eyebrow": "Stigterslid-opname",
   "title1": "Help om Puntr te vorm.",
-  "title2": "Wen 'n OTT-koopbewys van R500.",
+  "title2": "Drie wenners. Drie R500 OTT-bewyse.",
   "lead": "'n Paar vinnige vrae, een op 'n slag. Jou antwoorde bepaal wat ons eerste bou voor die bekendstelling op 1 Desember 2026.",
   "signIn": "Teken aan of sluit gratis aan om die stigterslid-opname te voltooi.",
   "signInCta": "Sluit gratis aan",
   "done": "Dankie. Jou terugvoer is ontvang.",
-  "doneDraw": "Jy neem deel aan die trekking.",
+  "doneDraw": "Jy neem deel aan die trekking vir een van drie R500 OTT-bewyse.",
   "already": "Jy het hierdie opname reeds voltooi. Dankie.",
   "q1": "Hoe sou jy Puntr tot dusver beoordeel?",
   "q1hint": "1 is swak, 5 is uitstekend",
@@ -34,9 +34,9 @@
     "good_value": "Goeie waarde",
     "unsure": "Nog nie seker nie"
   },
-  "draw": "Laat my deelneem aan die trekking vir 'n OTT-koopbewys van R500 (stigterslede wat Oefenmodus probeer het)",
+  "draw": "Laat my deelneem aan die trekking vir een van drie R500 OTT-bewyse (stigterslede met aktiewe Puntr Pro wat Oefenmodus probeer het)",
   "contact": "Julle mag my oor my terugvoer kontak (opsioneel)",
-  "rules": "Een inskrywing per lid. Slegs 18+. Deelname aan die trekking is opsioneel en verander nie jou Puntr-rekening nie. Bepalings en voorwaardes geld. Die volledige reëls vir die trekking is hieronder.",
+  "rules": "Een inskrywing per lid. Slegs 18+. 'n Aktiewe Puntr Pro-reg word vereis. Deelname is opsioneel en verander nie jou Puntr-rekening nie. Bepalings en voorwaardes geld. Die volledige reëls is hieronder.",
   "privacy": "Ons gebruik jou antwoorde om Puntr te verbeter. Lees in ons Privaatheidsbeleid hoe ons jou data hanteer.",
   "submit": "Dien terugvoer in",
   "sending": "Stuur tans",
@@ -146,19 +146,19 @@
   "upsell": {
     "title": "Die Stigters-jaarpas",
     "body": "12 maande se Puntr Pro vir 'n eenmalige R299, in plaas van R1,188 teen R99 per maand. Jy spaar R889. Jou 12 maande begin op bekendstellingsdag, 1 Desember 2026, en dit hernu nie outomaties nie.",
-    "note": "'n Voorafbetaalde lidmaatskap, nie 'n belegging nie. Om dit op te eis sluit 'n eenmalige betaling van R299 deur PayFast in, vir die eerste 20 stigterslede voor 30 November 2026.",
+    "note": "'n Voorafbetaalde lidmaatskap, nie 'n belegging nie. Bespreek een van 20 plekke en voltooi die R299 PayFast-betaling binne 48 uur. Besprekings sluit op 31 Desember 2026.",
     "cta": "Sien die stigtersaanbod"
   },
   "drawRules": {
-    "title": "Trekking vir 'n OTT-koopbewys van R500: reëls",
+    "title": "Trekking vir drie R500 OTT-bewyse: reëls",
     "items": [
-      "Slegs oop vir stigterslede wat 18 of ouer is.",
-      "Om deel te neem, moet jy Oefenmodus ten minste een keer probeer het en hierdie opname indien met die blokkie vir die trekking gemerk. Albei stappe is nodig. Een inskrywing per lid.",
-      "Die trekking sluit wanneer Puntr op Dinsdag 1 Desember 2026 regstreeks gaan.",
-      "Een wenner word lukraak uit alle geldige inskrywings gekies. Die keuse word in die teenwoordigheid van 'n getuie aangeteken.",
-      "Die wenner word op puntr.co.za en ons sosiale kanale aangekondig, slegs met gebruikersnaam en stigtersnommer.",
-      "Ons laat die wenner per e-pos weet, of telefonies as hulle vir ons 'n nommer gegee het. As ons die wenner nie kan bereik nie, kan ons iemand anders kies.",
-      "Die prys is 'n OTT-koopbewys van R500. Daar is geen kontantalternatief nie en dit kan nie oorgedra word nie.",
+      "Oop vir stigterslede met 'n aktiewe Puntr Pro-reg wat 18 of ouer is.",
+      "Om deel te neem, moet jy ten minste een Oefenmodus-keuse maak en hierdie opname indien met die blokkie vir die trekking gemerk. Albei stappe is nodig. Een inskrywing per lid.",
+      "Inskrywings sluit op 31 Desember 2026 om 23:59 SAST.",
+      "Drie verskillende wenners word lukraak uit alle geldige inskrywings gekies. Die trekking word met 'n getuie aangeteken.",
+      "Elke wenner ontvang een R500 OTT-bewys. Daar is geen kontantalternatief nie en pryse kan nie oorgedra word nie.",
+      "Wenners word op puntr.co.za en ons sosiale kanale aangekondig, slegs met gebruikersnaam en stigtersnommer.",
+      "Ons kontak wenners per e-pos, of telefonies indien hulle 'n nommer verskaf het. Indien 'n wenner nie bereik kan word nie, kan ons 'n plaasvervanger kies.",
       "Lede van die Puntr-span en hul onmiddellike familie mag nie deelneem nie. Bepalings en voorwaardes geld. Hulplyn 0800 006 008."
     ]
   }

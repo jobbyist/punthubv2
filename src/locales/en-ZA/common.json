@@ -16,7 +16,8 @@
   },
   "foundingBar": {
     "text": "Founding Member sign-ups are open: the first 100 get a numbered badge, free. Puntr launches {{launch}}.",
-    "cta": "Claim your spot"
+    "cta": "Claim your spot",
+    "giveaway": "3 × R500 OTT vouchers · 3 winners · Pro members only · closes 31 Dec 2026"
   },
   "badge": {
     "example": "Example",
@@ -200,5 +201,7 @@
     "perkFullScreen": "Opens full screen",
     "perkFaster": "Loads faster",
     "perkAlerts": "Matchday alerts"
-  }
+  },
+  "proBadge": "PRO",
+  "aiParticipant": "AI participant"
 }
