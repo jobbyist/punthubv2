@@ -7,6 +7,7 @@
  */
 import { type CachePurpose, cacheKey, expiresAt, isFresh } from "./cache";
 import type { ExtractProvider, SearchProvider } from "@/lib/content/types";
+import { costUsd } from "./pricing";
 
 export interface CacheStore {
   get(key: string): Promise<{ response: unknown; expiresAt: string } | null>;
@@ -23,6 +24,7 @@ export type CacheEvent = {
   endpoint: string;
   purpose: CachePurpose;
   outcome: "hit" | "miss" | "deduplicated" | "read_error" | "write_error";
+  estimatedCostAvoidedUsd?: number;
 };
 export type CacheEventHandler = (event: CacheEvent) => void;
 
@@ -51,11 +53,16 @@ export async function cachedCall<T>(
 ): Promise<{ value: T; cached: boolean; deduplicated?: boolean }> {
   const now = input.now ?? Date.now();
   const key = await cacheKey(input.endpoint, input.body);
+  const estimatedCostAvoidedUsd = input.endpoint.startsWith("search:")
+    ? costUsd("parallel") ?? undefined
+    : input.endpoint.startsWith("extract:")
+      ? costUsd("parallel-extract") ?? undefined
+      : undefined;
   if (store) {
     try {
       const hit = await store.get(key);
       if (hit && isFresh(hit.expiresAt, now)) {
-        notify(input.onEvent, { endpoint: input.endpoint, purpose: input.purpose, outcome: "hit" });
+        notify(input.onEvent, { endpoint: input.endpoint, purpose: input.purpose, outcome: "hit", ...(estimatedCostAvoidedUsd !== undefined ? { estimatedCostAvoidedUsd } : {}) });
         return { value: hit.response as T, cached: true };
       }
     } catch (error) {
@@ -66,7 +73,7 @@ export async function cachedCall<T>(
 
   const pending = inFlight.get(key);
   if (pending) {
-    notify(input.onEvent, { endpoint: input.endpoint, purpose: input.purpose, outcome: "deduplicated" });
+    notify(input.onEvent, { endpoint: input.endpoint, purpose: input.purpose, outcome: "deduplicated", ...(estimatedCostAvoidedUsd !== undefined ? { estimatedCostAvoidedUsd } : {}) });
     return { value: (await pending) as T, cached: true, deduplicated: true };
   }
 
