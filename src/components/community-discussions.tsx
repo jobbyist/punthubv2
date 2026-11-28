@@ -367,7 +367,7 @@ export function CommunityDiscussions() {
         <div className="card-surface p-6 text-center">
           <MessageCircle className="mx-auto size-6 text-muted-foreground" />
           <h3 className="mt-3 font-semibold">No discussions yet</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{activeCategory === "all" ? "Start the first conversation. Clearly labelled AI participants also contribute to the community." : "No discussions in this category yet. Start a conversation to get it going."}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{activeCategory === "all" ? "Start the first conversation. Be the first to get it going." : "No discussions in this category yet. Start a conversation to get it going."}</p>
         </div>
       ) : (
         <div className="space-y-4">
