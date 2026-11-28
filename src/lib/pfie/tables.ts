@@ -22,6 +22,7 @@ import {
   chooseTables,
   independentSourceKey,
   parseStandings,
+  parseStandingsMarkdown,
   tableRegression,
   standingsRequest,
   standingsDisagreementHint,
@@ -520,9 +521,27 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
+        const deterministic =
+          !cfg.groups?.length && source.via === "extract"
+            ? parseStandingsMarkdown(source.text, source.index)
+            : null;
+        if (deterministic) {
+          const validation = validateTables(
+            deterministic,
+            [source],
+            cfg.teams,
+            known,
+            now(),
+            key === "ucl",
+            cfg.groups,
+            cfg.teamsPerGroup ?? cfg.teams,
+            cfg.groupTeamRanges,
+          );
+          if (validation.tables.length > 0) return { source, parsed: deterministic, validation };
+        }
         const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
         modelsUsed.add(answer.model);
-        const parsed = parseStandings(answer.text);
+        const parsed = parseStandings(answer.text) ?? deterministic;
         const validation = parsed
           ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
           : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json" }] };

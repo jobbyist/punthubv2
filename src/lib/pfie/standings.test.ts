@@ -12,6 +12,7 @@ import {
   chooseTables,
   independentSourceKey,
   parseStandings,
+  parseStandingsMarkdown,
   standingsRequest,
   standingsDisagreementHint,
   tableRegression,
@@ -928,6 +929,35 @@ describe("team aliases", () => {
   });
 });
 describe("parseStandings", () => {
+  it("parses a complete Markdown standings table without a model call", () => {
+    const markdown = [
+      "| Pos | Team | P | W | D | L | GF | GA | GD | Pts |",
+      "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Arsenal | 10 | 8 | 1 | 1 | 22 | 6 | 16 | 25 |",
+      "| 2 | Chelsea | 10 | 7 | 2 | 1 | 20 | 8 | 12 | 23 |",
+      "| 3 | Liverpool | 10 | 6 | 2 | 2 | 18 | 10 | 8 | 20 |",
+      "| 4 | Aston Villa | 10 | 6 | 1 | 3 | 17 | 12 | 5 | 19 |",
+    ].join("\n");
+    const rows = parseStandingsMarkdown(markdown, 3);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({
+      source: 3,
+      position: 1,
+      team: "Arsenal",
+      played: 10,
+      won: 8,
+      drawn: 1,
+      lost: 1,
+      goalsFor: 22,
+      goalsAgainst: 6,
+      points: 25,
+    });
+  });
+
+  it("rejects Markdown without the full required standings columns", () => {
+    expect(parseStandingsMarkdown("| Pos | Team | Pts |\n|---|---|---|\n| 1 | Arsenal | 25 |", 1)).toBeNull();
+  });
+
   it("rejects invalid JSON", () => expect(parseStandings("nope")).toBeNull());
 });
 
