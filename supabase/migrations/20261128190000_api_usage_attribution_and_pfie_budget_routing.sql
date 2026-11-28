@@ -58,6 +58,7 @@ declare
   v_today date := (now() at time zone 'utc')::date;
   v_synthetic boolean := v_feature like 'synthetic:%' or v_feature like 'ai-community:%';
   v_granted boolean;
+  v_granted boolean;
 begin
   if p_units is null or p_units < 1 or p_units > 100 then
     raise exception 'bad_units' using errcode='22023';
