@@ -600,7 +600,20 @@
       "HCP": "Handicap"
     },
     "pfieRuns": "Fixtures checks (PFIE)",
-    "pfieCounts": "{{accepted}} accepted, {{rejected}} rejected, {{published}} published"
+    "pfieCounts": "{{accepted}} accepted, {{rejected}} rejected, {{published}} published",
+    "attribution": "API usage attribution",
+    "attributionWindow": "Last 7 days",
+    "attributionBody": "New API calls are tagged with a consumer and feature. Estimated costs use configured provider unit prices; the monthly family totals above remain the budget source of truth.",
+    "attributionEmpty": "No API calls were recorded in this window.",
+    "attributionLegacy": "{{count}} historical calls remain unattributed. They are kept separate rather than assigned to a consumer by guesswork.",
+    "attributionColumns": {
+      "consumer": "Consumer",
+      "feature": "Feature",
+      "provider": "Provider",
+      "calls": "Calls",
+      "cost": "Est. USD",
+      "lastCall": "Last call"
+    }
   },
   "log": {
     "title": "Action log",
