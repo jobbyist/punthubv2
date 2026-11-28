@@ -16,7 +16,7 @@
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
-import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
+import { isGenericTeamName, normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import type { Decision, KnownFixture, Observation, Verdict } from "./types";
 
 interface Cluster {
@@ -75,7 +75,7 @@ export function corroborate(input: {
   // Names from the official site (seen first) become the canonical spelling for teams not already known.
   const canonical = (name: string): string | null => {
     const hit = resolveTeam(name, registry);
-    if (hit === "ambiguous") return null;
+    if (hit === "ambiguous" || isGenericTeamName(name)) return null;
     if (hit) return hit;
     registry.push(name);
     return name;
