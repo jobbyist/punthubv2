@@ -116,7 +116,12 @@ function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unk
     for (const [key, child] of Object.entries(value)) {
       if (key === "type" && typeof child === "string") {
         out[key] = ({ OBJECT: "object", ARRAY: "array", STRING: "string", INTEGER: "integer", NUMBER: "number", BOOLEAN: "boolean" } as Record<string, string>)[child] ?? child;
-      } else out[key] = visit(child);
+      } else if (key !== "nullable") {
+        out[key] = visit(child);
+      }
+    }
+    if (value["nullable"] === true && typeof out["type"] === "string") {
+      out["type"] = [out["type"], "null"];
     }
     if (out["type"] === "object") {
       out["additionalProperties"] = false;
@@ -147,7 +152,7 @@ export function createParallelResponses(
           ],
           reasoning: { effort },
           max_output_tokens: request.maxOutputTokens,
-          text: { format: { type: "json_schema", name: "puntr_structured_output", strict: true, schema: parallelJsonSchema(request.schema) } },
+          text: { format: { type: "json_schema", name: "puntr_structured_output", schema: parallelJsonSchema(request.schema) } },
         },
         { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
       );
