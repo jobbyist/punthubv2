@@ -22,7 +22,7 @@ export async function createSportsProvider(
       return null;
     });
     const cachedLlm = withLlmCache(
-      createParallelResponses(parallelKey, {}, { effort: "low" }),
+      guardLlm(createParallelResponses(parallelKey, {}, { effort: "low" }), claim),
       cache,
       "results",
       (event) => console.info("pfie-cache", JSON.stringify({
@@ -34,7 +34,7 @@ export async function createSportsProvider(
     return createPfieProvider({
       search: guardSearch(createParallelSearch(parallelKey), claim),
       extract: guardExtract(createParallelExtract(parallelKey), claim),
-      llm: guardLlm(cachedLlm, claim),
+      llm: cachedLlm,
       store: createPfieStore(),
       cache,
       setUsageContext: (context) => {
