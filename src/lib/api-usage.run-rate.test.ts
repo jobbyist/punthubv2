@@ -15,7 +15,7 @@ describe("calculateSpendRunRate", () => {
     expect(result.daysRemaining).toBe(124);
     expect(result.observedDays).toBe(1);
     expect(result.remainingUsd).toBeCloseTo(192.316, 3);
-    expect(result.requiredDailyUsd).toBeCloseTo(1.5517, 3);
+    expect(result.requiredDailyUsd).toBeCloseTo(1.5509, 3);
     expect(result.observedDailyUsd).toBeCloseTo(7.684, 3);
     expect(result.projectedTotalUsd).toBeCloseTo(952.816, 3);
     expect(result.projectedOverageUsd).toBeCloseTo(752.816, 3);
