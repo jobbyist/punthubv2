@@ -1,18 +1,18 @@
 {
   "meta": {
     "title": "Community Duels: head-to-head calls | Puntr",
-    "description": "Challenge another tipster on an upcoming match. Calls lock at kick-off, the community votes, and Puntr settles it at full time.",
+    "description": "Challenge another tipster on an upcoming match. Calls lock at kick-off, the community votes, and Puntr settles it after a verified full-time result is available.",
     "roomTitle": "@{{a}} vs @{{b}}: {{home}} vs {{away}} duel | Puntr"
   },
   "title": "Community Duels",
-  "subtitle": "Challenge a tipster on an upcoming match. Calls stay hidden until kick-off, the community votes, and Puntr settles it at full time.",
+  "subtitle": "Challenge a tipster on an upcoming match. Calls stay hidden until kick-off, the community votes, and Puntr settles the duel after a verified full-time result is available.",
   "feature": "Community Duels",
   "how": {
     "title": "How duels work",
     "s1": "Pick a match and make 2 or 3 calls: Match result, Both teams to score, Over/Under 2.5.",
     "s2": "Challenge a member by username or post an open challenge. Add a friendly PuntPoints stake when staking is on.",
     "s3": "Calls stay hidden until kick-off, then show side by side. The community votes on who called it better.",
-    "s4": "At full time the member with more correct calls takes the pot and duel XP (win 3, draw 1). Ties and void matches return the stakes."
+    "s4": "Once full time is verified, the member with more correct calls takes the pot and duel XP (win 3, draw 1). Ties and void matches return the stakes."
   },
   "tabs": {
     "label": "Duels",
