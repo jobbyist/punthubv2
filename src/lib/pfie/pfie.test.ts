@@ -6,7 +6,7 @@ import { withExtractFallback } from "@/lib/content/providers.server";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
 
 import { corroborate } from "./corroborate";
-import { parseObservations, validateObservations } from "./extract";
+import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
 import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
@@ -402,6 +402,30 @@ describe("validation", () => {
     const valid = JSON.stringify({ matches: [raw({})] });
     expect(parseObservations(```json\n${valid}\n```)).toHaveLength(1);
     expect(parseObservations(`Here is the result:\n${valid}\nDone.`)).toHaveLength(1);
+  });
+});
+
+describe("PFIE extraction request chunking", () => {
+  it("splits long pages without dropping lines and maps chunk IDs back to the original source", () => {
+    const source: PfieSource = {
+      index: 7,
+      url: "https://league.test/results",
+      domain: "league.test",
+      tier: "official",
+      text: Array.from({ length: 40 }, (_, index) => `ROW_${String(index).padStart(2, "0")} ${"match-result ".repeat(12)}`).join("\\n"),
+    };
+    const batches = chunkSourcesForExtraction([source], 1_000, 500);
+    const allText = batches.flatMap((batch) => batch.sources).map((chunk) => chunk.text).join("\\n");
+
+    expect(batches.length).toBeGreaterThan(1);
+    for (const batch of batches) {
+      const sourceChars = batch.sources.reduce((sum, chunk) => sum + chunk.text.length + chunk.domain.length + 64, 0);
+      expect(sourceChars).toBeLessThanOrEqual(1_000);
+      expect(Object.values(batch.sourceIndexByChunk)).toEqual(batch.sources.map(() => 7));
+    }
+    for (let index = 0; index < 40; index++) {
+      expect(allText).toContain(`ROW_${String(index).padStart(2, "0")}`);
+    }
   });
 });
 
