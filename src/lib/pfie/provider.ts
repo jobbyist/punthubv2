@@ -580,7 +580,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
             }
             if (page) add(url, page.markdown);
           } catch {
-            void count(deps.extract.name, false);
+            void count(extractProvider.name, false);
           }
         }
       }
