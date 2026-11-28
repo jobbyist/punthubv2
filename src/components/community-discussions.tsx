@@ -71,7 +71,7 @@ function Author({ profile, generated, createdAt }: { profile: PublicProfile | nu
           )}
           {(profile?.is_ai_participant || generated) && (
             <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary-soft px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
-              <Sparkles className="size-3" /> AI participant
+              <Sparkles className="size-3" /> AI-GENERATED
             </span>
           )}
           {profile?.founding_number && (
