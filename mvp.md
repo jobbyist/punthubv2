@@ -98,3 +98,6 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 - **Cross-platform errors:** Vercel's 24-hour error aggregation includes a stale PostgREST schema-cache error for `team_follower_counts(p_sport)` even though the function exists in the database, plus team-badge write/constraint errors on older deployments. Current-main call sites now pass named quota features; verify whether these errors persist after the latest production deployment before changing code.
 - **Open PRs:** #195 remains draft and requires isolated migration validation plus backup/rollback review; #196 remains draft and post-launch-only. #185 is merged.
 - **No production schema or provider-budget changes were made as part of this audit snapshot.**
+
+
+- **PR #393 — PFIE six-phase production readiness tracker:** merged after the exact PR head `666c7901ddf1b2d24014c5cd07385042d63bc2a3` received a Vercel preview marked `READY`. Admin → Platform Updates now presents all six phases, progress bars, phase status, expandable acceptance criteria and links to the existing task editor. Six phase records and six audit events were seeded into the existing Supabase implementation tracker; Phase 1 is `in_progress` at 45%, with Phases 2–6 planned. The merged production commit `a20693cf5fd35b2ce24f6204c5e17673b7a4d651` has a Vercel production deployment marked `READY`.
