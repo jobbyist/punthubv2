@@ -233,6 +233,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       "https://www.bbc.com/sport/football/championship/table",
       "https://www.flashscore.com/football/england/championship/standings/",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
+      "https://www.sportsmole.co.uk/football/championship/table.html",
     ],
   },
   "saudi-pro": {
@@ -535,6 +536,75 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
       const goalsFor = integer(cells[columns.goalsFor] ?? "");
       const goalsAgainst = integer(cells[columns.goalsAgainst] ?? "");
       const points = integer(cells[columns.points] ?? "", true);
+      if (
+        position === null ||
+        !team ||
+        played === null ||
+        won === null ||
+        drawn === null ||
+        lost === null ||
+        goalsFor === null ||
+        goalsAgainst === null ||
+        points === null
+      )
+        continue;
+      rows.push({
+        source,
+        position,
+        team,
+        played,
+        won,
+        drawn,
+        lost,
+        goalsFor,
+        goalsAgainst,
+        points,
+        quote: line,
+        tableDate: null,
+        tableDateQuote: null,
+      });
+    }
+    if (rows.length >= 4) return rows;
+  }
+
+  // Some trusted publishers are extracted as plain text rather than Markdown tables. If a complete
+  // standings header is present, parse the row's printed numeric columns deterministically instead of
+  // asking the language model to reconstruct JSON from an otherwise readable table.
+  const plainHeaderIndex = lines.findIndex((line) => {
+    const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/);
+    const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
+    return (
+      has(aliases.position) &&
+      has(aliases.team) &&
+      has(aliases.played) &&
+      has(aliases.won) &&
+      has(aliases.drawn) &&
+      has(aliases.lost) &&
+      has(aliases.goalsFor) &&
+      has(aliases.goalsAgainst) &&
+      has(aliases.points)
+    );
+  });
+  if (plainHeaderIndex >= 0) {
+    const rowPattern =
+      /^\\s*(\\d{1,2})[.)]?\\s+(.+?)\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+([+-]?\\d{1,3})\\s+([+-]?\\d{1,3})(?:\\s+.*)?$/;
+    const rows: RawStandingRow[] = [];
+    for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
+      const line = lines[rowIndex]!;
+      const match = rowPattern.exec(line);
+      if (!match) {
+        if (rows.length) break;
+        continue;
+      }
+      const position = integer(match[1] ?? "");
+      const team = (match[2] ?? "").trim();
+      const played = integer(match[3] ?? "");
+      const won = integer(match[4] ?? "");
+      const drawn = integer(match[5] ?? "");
+      const lost = integer(match[6] ?? "");
+      const goalsFor = integer(match[7] ?? "");
+      const goalsAgainst = integer(match[8] ?? "");
+      const points = integer(match[10] ?? "", true);
       if (
         position === null ||
         !team ||
