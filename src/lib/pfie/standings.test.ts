@@ -1110,3 +1110,9 @@ describe("official cup history search targets", () => {
     expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/");
   });
 });
+
+describe("Ligue 1 team aliases", () => {
+  it("normalises Stade Rennais to Rennes across table publishers", () => {
+    expect(normaliseTeam("Stade Rennais")).toBe("rennes");
+  });
+});
