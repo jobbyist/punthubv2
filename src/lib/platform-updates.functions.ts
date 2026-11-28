@@ -149,7 +149,7 @@ export interface SavePlatformTaskInput {
   sortOrder: number;
 }
 
-function validateSavePlatformTaskInput(value: unknown): SavePlatformTaskInput {
+export function validateSavePlatformTaskInput(value: unknown): SavePlatformTaskInput {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error("Invalid implementation task payload.");
   }
