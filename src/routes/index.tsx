@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Check, Clock, Lock, Play, ShieldCheck, X as CloseIcon } from "lucide-react";
 
-import { PlatformRail } from "@/components/affiliate";
+import { AffiliateBanner, PlatformRail } from "@/components/affiliate";
 import { BadgeMarquee } from "@/components/motion/badge-marquee";
 import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { FoundingCounter } from "@/components/founding-counter";
@@ -405,6 +405,7 @@ function Landing() {
 
       {/* Newsroom, then the bookmaker logo wall below it (owner, 27 Nov 2026). */}
       <LatestFromPuntr />
+      <div className="section-y"><AffiliateBanner label="homepage" /></div>
 
       {/* Platforms */}
       {SHOW_BOOKMAKER_WALL && !isSignedIn && (

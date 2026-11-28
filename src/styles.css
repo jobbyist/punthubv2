@@ -333,7 +333,7 @@ html.theme-transition * {
     opacity: 0;
   }
 }
-@keyframes puntr-sheen {
+@keyframes puntr-splash-sheen {
   from {
     background-position: 130% 0;
   }
@@ -452,7 +452,7 @@ html[data-splash] .puntr-preloader[data-done="true"] {
   background-position: 130% 0;
   -webkit-mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
   mask: url("/brand/puntr-wordmark.png") center / contain no-repeat;
-  animation: puntr-sheen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.35s both;
+  animation: puntr-splash-sheen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.35s both;
 }
 .dark .puntr-preloader .sheen {
   background-image: linear-gradient(
@@ -892,5 +892,108 @@ button,
 @keyframes puntr-fade-in-soft {
   from {
     opacity: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Micro-interactions (27 Nov 2026): motion that answers what the member just did (press, toggle, check, a new
+ * update, switching theme). Shared easing tokens below; everything settles instantly for prefers-reduced-motion.
+ * ------------------------------------------------------------------------------------------------------------- */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Damped spring (about 12% overshoot), for small things that snap into place: switch thumbs, badges, checks. */
+  --ease-spring: linear(
+    0, 0.063, 0.214, 0.405, 0.6, 0.776, 0.917, 1.02, 1.085, 1.118, 1.126, 1.117, 1.097, 1.072, 1.048, 1.026,
+    1.009, 0.996, 0.988, 0.985, 0.984, 0.986, 0.988, 0.991, 0.994, 0.997, 0.999, 1.001, 1.002, 1.002, 1
+  );
+}
+/* Spring pop for things the member just changed. Named apart from the entrance .puntr-pop (which also fades in). */
+@keyframes puntr-spring-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@utility puntr-spring-pop {
+  animation: puntr-spring-pop 380ms var(--ease-spring) both;
+}
+/* Checkbox tick draws itself. */
+@keyframes puntr-check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.puntr-check-draw path,
+.puntr-check-draw polyline {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: puntr-check-draw 280ms var(--ease-out-expo) 40ms forwards;
+}
+/* Bell rings once when a new update arrives. */
+@keyframes puntr-bell-ring {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  15% {
+    transform: rotate(14deg);
+  }
+  30% {
+    transform: rotate(-12deg);
+  }
+  45% {
+    transform: rotate(8deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+}
+.puntr-bell-ring {
+  transform-origin: 50% 10%;
+  animation: puntr-bell-ring 700ms ease-out;
+}
+/* Mobile dock: icons dip under the thumb and pop when their tab becomes active. */
+.puntr-dock-icon {
+  transition: transform 160ms var(--ease-out-expo);
+}
+:active > .puntr-dock-icon {
+  transform: scale(0.84);
+}
+[aria-current="page"] > .puntr-dock-icon,
+[aria-expanded="true"] > .puntr-dock-icon {
+  animation: puntr-spring-pop 420ms var(--ease-spring);
+}
+/* Theme switch: the circular reveal is driven from ThemeToggle; header and dock join the page snapshot. */
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-vt .puntr-app-frame > header,
+html.theme-vt .puntr-dock {
+  view-transition-name: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puntr-spring-pop,
+  .puntr-page-skeleton,
+  .puntr-bell-ring,
+  .puntr-check-draw path,
+  .puntr-check-draw polyline,
+  [aria-current="page"] > .puntr-dock-icon,
+  [aria-expanded="true"] > .puntr-dock-icon {
+    animation: none !important;
+  }
+  .puntr-check-draw path,
+  .puntr-check-draw polyline {
+    stroke-dashoffset: 0;
+  }
+  :active > .puntr-dock-icon {
+    transform: none;
   }
 }

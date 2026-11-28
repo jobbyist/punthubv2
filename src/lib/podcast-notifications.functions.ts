@@ -20,7 +20,7 @@ export const subscribeToPodcastPremiere = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<PodcastSignupResult> => {
     if (data.spam) return { ok: true };
-    if (Date.now() >= Date.parse("2026-12-01T06:30:00Z")) return { ok: false, code: "unavailable" };
+    if (Date.now() >= Date.parse("2027-01-05T06:30:00Z")) return { ok: false, code: "unavailable" };
     const url = process.env["SUPABASE_URL"];
     const key = process.env["SUPABASE_SERVICE_ROLE_KEY"];
     if (!url || !key) return { ok: false, code: "unavailable" };

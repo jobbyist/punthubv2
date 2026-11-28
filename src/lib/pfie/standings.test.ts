@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
+import { validateObservations } from "./extract";
 import { tierOf } from "./provider";
 import { normaliseTeam, resolveTeam } from "./teams";
 import {
@@ -25,9 +26,12 @@ import {
   seasonQueries,
   seasonWindows,
   standingsDue,
+  buildCafGroupStandings,
+  preferAuthoritativeSources,
+  type CafGroupStageResult,
   type SyncStatusRow,
 } from "./tables";
-import type { Observation, PfieSource } from "./types";
+import type { Observation, PfieSource, RawObservation } from "./types";
 
 const teams = ["Alpha FC", "Bravo United", "Charlie City", "Delta Rovers"];
 const page = (
@@ -98,6 +102,8 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("sportmetrics.org", [])).toBe("trusted");
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
+    expect(tierOf("theanalyst.com", [])).toBe("trusted");
+    expect(tierOf("smartsoccerstats.eu", [])).toBe("trusted");
     expect(tierOf("scoremondo.com", [])).toBe("trusted");
     expect(tierOf("zeanball.online", [])).toBe("trusted");
     expect(tierOf("statsfera.com.tr", [])).toBe("trusted");
@@ -139,16 +145,19 @@ describe("configured direct standings sources", () => {
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.sportsmole.co.uk/football/ligue-1/table.html",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://footballedgelab.com/ligue-1/tables/2026-27",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://smartsoccerstats.eu/leagues/france-ligue-1-2026-27",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.ligue1schedule.com/table/2026-27",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.cbssports.com/soccer/ligue-1/standings/",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://zeanball.online/en/table/ligue-1/",
     );
     expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
       "https://www.vi.nl/competities/eredivisie/stand",
@@ -249,10 +258,10 @@ describe("restored standings source coverage", () => {
       "https://statsfera.com.tr/en/standings/ingiltere-championship",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.ligue1schedule.com/table/2026-27",
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://zeanball.online/en/table/ligue-1/",
+      "https://theanalyst.com/competition/ligue-1/table",
     );
     expect(STANDINGS_COMPETITIONS.seriea?.allowVerifiedPlayedCorrections).toEqual(["Milan"]);
     expect(STANDINGS_COMPETITIONS.psl?.pages?.length).toBeLessThanOrEqual(6);
@@ -1064,5 +1073,167 @@ describe("season backfill sync", () => {
       maxJobs: 3,
     });
     expect(out.seasonDue).toBe(0);
+  });
+});
+
+describe("PFIE match evidence validation", () => {
+  const source: PfieSource = {
+    index: 1, url: "https://www.uefa.com/results", domain: "uefa.com", tier: "official",
+    text: "Tuesday 13 October 2026\\nArsenal 3-0 Lille\\nWednesday 14 October 2026\\nRoma 3-4 Real Madrid",
+    via: "extract",
+  };
+  const window = { from: new Date("2026-10-13T00:00:00Z"), to: new Date("2026-10-14T23:59:59Z"), now: new Date("2026-11-28T00:00:00Z") };
+  const observation = (overrides: Partial<RawObservation> = {}): RawObservation => ({
+    source: 1, home: "Arsenal", away: "Lille", date: "2026-10-13", time: null, tz: null,
+    status: "finished", homeScore: 3, awayScore: 0, quote: "Arsenal 3-0 defeated Lille", ...overrides,
+  });
+  it("accepts adjacent team and exact score evidence when a page splits table cells", () => {
+    const result = validateObservations([observation()], [source], window);
+    expect(result.accepted).toHaveLength(1);
+    expect(result.rejected).toEqual([]);
+  });
+  it("rejects a score that does not appear with the named teams on the page", () => {
+    const result = validateObservations([observation({ homeScore: 2, quote: "Arsenal 2-0 Lille" })], [source], window);
+    expect(result.accepted).toHaveLength(0);
+    expect(result.rejected[0]?.reason).toBe("quote_not_on_page");
+  });
+  it("resolves a known short team name before checking source evidence", () => {
+    const psgSource: PfieSource = { ...source, text: "Tuesday 13 October 2026\\nParis Saint-Germain 2-0 Lille" };
+    const result = validateObservations([
+      observation({ home: "PSG", homeScore: 2, awayScore: 0, quote: "PSG beat Lille" }),
+    ], [psgSource], { ...window, knownTeams: ["Paris Saint-Germain", "Lille"] });
+    expect(result.accepted).toHaveLength(1);
+  });
+  it("accepts a non-verbatim quote only when exact teams and score are independently visible", () => {
+    const result = validateObservations([
+      observation({ quote: "Arsenal defeated Lille", homeScore: 3, awayScore: 0 }),
+    ], [source], window);
+    expect(result.accepted).toHaveLength(1);
+  });
+  it("continues to accept an exact verbatim source quote", () => {
+    const result = validateObservations([observation({ quote: "Arsenal 3-0 Lille" })], [source], window);
+    expect(result.accepted).toHaveLength(1);
+  });
+});
+describe("official history source preference", () => {
+  it("uses the official competition archive alone when it is available", () => {
+    const hits = [
+      { url: "https://www.uefa.com/results", title: "Official results" },
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"])).toEqual([hits[0]]);
+  });
+  it("includes secondary sources for a controlled corroboration retry", () => {
+    const hits = [
+      { url: "https://www.uefa.com/results", title: "Official results" },
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"], true)).toEqual(hits);
+  });
+  it("retains trusted sources when no official result page is found", () => {
+    const hits = [
+      { url: "https://www.theguardian.com/football/results", title: "News results" },
+      { url: "https://www.cbssports.com/soccer/results", title: "Scores" },
+    ];
+    expect(preferAuthoritativeSources(hits, ["uefa.com"])).toEqual(hits);
+  });
+});
+
+describe("official cup history search targets", () => {
+  it("targets the current and prior UEFA season result archives", () => {
+    expect(seasonQueries("UEFA Champions League", "2026-10-09", "2026-10-15")).toContain("https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/");
+    expect(seasonQueries("UEFA Conference League", "2025-10-02", "2025-10-08")).toContain("https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/");
+  });
+  it("targets official CAF match-result archives across both seasons", () => {
+    const queries = seasonQueries("CAF Confederation Cup", "2026-10-16", "2026-10-22");
+    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/");
+    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/");
+  });
+});
+
+describe("CAF 2026/27 derived group standings", () => {
+  it("calculates a provisional 15-team table from verified group-stage results and keeps Group C at three confirmed clubs", () => {
+    const results: CafGroupStageResult[] = [{
+      home: "Azam", away: "Ahli Tripoli", kickoffAt: "2026-11-27T13:00:00Z", homeScore: 1, awayScore: 2,
+    }];
+    const rows = buildCafGroupStandings(results);
+    expect(rows).toHaveLength(15);
+    expect(["A", "B", "C", "D"].map((group) => rows.filter((row) => row.group === group).length)).toEqual([4, 4, 3, 4]);
+    expect(rows.find((row) => row.team === "Al Ahly Tripoli")).toMatchObject({ group: "B", played: 1, won: 1, points: 3, goalsFor: 2, goalsAgainst: 1 });
+    expect(rows.find((row) => row.team === "Azam FC")).toMatchObject({ group: "B", played: 1, lost: 1, points: 0, goalsFor: 1, goalsAgainst: 2 });
+    expect(rows.filter((row) => row.group === "C").every((row) => row.played === 0)).toBe(true);
+  });
+
+  it("does not count preliminary-round matches or cross-group fixtures", () => {
+    const rows = buildCafGroupStandings([{
+      home: "CR Belouizdad", away: "AC Douane", kickoffAt: "2026-11-27T19:00:00Z", homeScore: 1, awayScore: 0,
+    }]);
+    expect(rows.every((row) => row.played === 0)).toBe(true);
+  });
+});
+
+describe("Ligue 1 team aliases", () => {
+  it("normalises Stade Rennais to Rennes across table publishers", () => {
+    expect(normaliseTeam("Stade Rennais")).toBe("rennes");
+  });
+});
+
+describe("cup history source attribution", () => {
+  it("extracts sources separately and accepts only two-domain score agreement when official extraction is empty", async () => {
+    const replies = [
+      JSON.stringify({ matches: [] }), // official-only attempt
+      JSON.stringify({ matches: [] }), // official page in corroboration retry
+      JSON.stringify({ matches: [{
+        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
+        time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
+        quote: "Alpha FC 2-1 Bravo United",
+      }] }),
+      JSON.stringify({ matches: [{
+        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
+        time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
+        quote: "Alpha FC 2-1 Bravo United",
+      }] }),
+    ];
+    let calls = 0;
+    const inserted: unknown[] = [];
+    const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
+    const long = "UEFA Champions League results. Tuesday 20 October 2026. Alpha FC 2-1 Bravo United. ";
+    const deps = {
+      search: {
+        name: "fake",
+        search: async () => [
+          { url: "https://www.uefa.com/uefachampionsleague/news/results", title: "Official", excerpt: long, publishedAt: null },
+          { url: "https://www.theguardian.com/football/results", title: "Guardian", excerpt: long, publishedAt: null },
+          { url: "https://www.cbssports.com/soccer/results", title: "CBS", excerpt: long, publishedAt: null },
+        ],
+      },
+      extract: {
+        name: "fake",
+        extract: async (url: string) => ({ markdown: long + url }),
+      },
+      llm: {
+        name: "fake",
+        generate: async () => ({ text: replies[Math.min(calls++, replies.length - 1)]!, model: "gemini-3.8-flash" }),
+      },
+      models: ["gemini-3.8-flash"],
+      now: () => new Date("2026-11-28T02:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => ["Alpha FC", "Bravo United"],
+        completedCounts: async () => new Map(),
+        replaceStandings: async () => 0,
+        insertHistory: async (rows: unknown[]) => { inserted.push(...rows); return rows.length; },
+        record: async (
+          _job: string, _scope: string, ok: boolean, _error: string | null, meta: Record<string, unknown>,
+        ) => { records.push({ ok, meta }); },
+      },
+    };
+    const report = await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
+    expect(calls).toBe(4);
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(inserted).toHaveLength(1);
+    expect(records.at(-1)?.ok).toBe(true);
+    expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
   });
 });

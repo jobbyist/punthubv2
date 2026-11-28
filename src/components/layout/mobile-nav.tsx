@@ -46,6 +46,7 @@ import { useSession } from "@/components/session";
 import { HELPLINE_DISPLAY } from "@/components/rg-notice";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SocialLinks } from "@/components/social-links";
+import { motion, useReducedMotion } from "motion/react";
 
 let setMenuOpenExternal: ((open: boolean) => void) | null = null;
 
@@ -694,7 +695,7 @@ export function MobileNav() {
                       path === "/" && !flyout ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
-                    <Home className="size-[19px]" />
+                    <Home className="puntr-dock-icon size-[19px]" />
                     <span>{t("mobile.home")}</span>
                     <DockPill on={path === "/" && !flyout} />
                   </Link>
@@ -719,7 +720,7 @@ export function MobileNav() {
                           on ? "text-primary" : "text-muted-foreground"
                         }`}
                       >
-                        <Icon className="size-[19px]" />
+                        <Icon className="puntr-dock-icon size-[19px]" />
                         <span>{t(`mobile.dock.${key}`)}</span>
                         <DockPill on={on} />
                       </button>
@@ -735,13 +736,16 @@ export function MobileNav() {
   );
 }
 
+/** Active-tab marker. One shared element slides between tabs (spring), so the dock shows where you moved from. */
 function DockPill({ on }: { on: boolean }) {
+  const reduce = useReducedMotion();
+  if (!on) return null;
   return (
-    <span
+    <motion.span
       aria-hidden="true"
-      className={`absolute bottom-1 h-1 w-5 rounded-full transition-all ${
-        on ? "bg-primary opacity-100" : "bg-transparent opacity-0"
-      }`}
+      layoutId={reduce ? undefined : "puntr-dock-pill"}
+      transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.8 }}
+      className="absolute bottom-1 h-1 w-5 rounded-full bg-primary"
     />
   );
 }

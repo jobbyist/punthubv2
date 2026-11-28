@@ -20,12 +20,37 @@ import { HeroBackdrop } from "@/components/motion/hero-backdrop";
 import { Reveal } from "@/components/motion/reveal";
 
 import { AppShell } from "@/components/layout/app-shell";
+import { useSession } from "@/components/session";
+import {
+  CoverageBoard,
+  PfieSteps,
+  SoccerCta,
+  SoccerFaq,
+  SoccerFeatures,
+  SoccerMarketsAndOdds,
+  SoccerStats,
+} from "@/components/sports/soccer-coverage";
 import { LiveBadge } from "@/components/live-badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
 import { buildRoadmap, SPORT_ROADMAP, type RoadmapSport } from "@/lib/roadmap";
 import { getRoadmapStatus } from "@/lib/roadmap.functions";
+import { soccerCoverage } from "@/lib/sports/coverage";
+import { fetchSoccerCoverage, type SoccerCoverageLive } from "@/lib/sports/coverage-data";
+
+type Translate = (key: string, opts?: Record<string, unknown>) => unknown;
+
+/** FAQ entries for the soccer page, with the launch list filled in from the coverage registry. */
+function soccerFaq(t: Translate): { q: string; a: string }[] {
+  const launch = soccerCoverage()
+    .filter((c) => c.phase === "launch")
+    .map((c) => c.name)
+    .join(", ");
+  return (t("soccer.faq.items", { returnObjects: true, launch }) as { q: string; a: string }[]).map(
+    (f) => ({ q: f.q, a: f.a.replace("{{launch}}", launch) }),
+  );
+}
 
 const SPORTS = SPORT_ROADMAP.map((s) => s.sport);
 
@@ -44,7 +69,11 @@ const isSport = (v: string): v is RoadmapSport => (SPORTS as readonly string[]).
 export const Route = createFileRoute("/sports/$sport")({
   loader: async ({ params }) => {
     if (!isSport(params.sport)) throw notFound();
-    return { status: await getRoadmapStatus(), sport: params.sport };
+    const [status, coverage] = await Promise.all([
+      getRoadmapStatus(),
+      params.sport === "soccer" ? fetchSoccerCoverage() : Promise.resolve(null),
+    ]);
+    return { status, sport: params.sport, coverage };
   },
   head: ({ match, params }) => {
     if (!isSport(params.sport)) return {};
@@ -77,6 +106,18 @@ export const Route = createFileRoute("/sports/$sport")({
                 about: { "@type": "Thing", name: t(`items.${params.sport}.name`) },
                 isPartOf: { "@type": "WebSite", name: "Puntr", url: "https://puntr.co.za/" },
               },
+              ...(params.sport === "soccer"
+                ? [
+                    {
+                      "@type": "FAQPage",
+                      mainEntity: soccerFaq(t as Translate).map((f) => ({
+                        "@type": "Question",
+                        name: f.q,
+                        acceptedAnswer: { "@type": "Answer", text: f.a },
+                      })),
+                    },
+                  ]
+                : []),
               {
                 "@type": "BreadcrumbList",
                 itemListElement: [
@@ -106,7 +147,8 @@ export const Route = createFileRoute("/sports/$sport")({
 
 function SportPage() {
   const { t } = useTranslation("sports");
-  const { status, sport } = Route.useLoaderData();
+  const { status, sport, coverage } = Route.useLoaderData();
+  if (sport === "soccer" && coverage) return <SoccerPage status={status} coverage={coverage} />;
   const items = buildRoadmap(status);
   const item = items.find((i) => i.sport === sport);
   const k = (key: string) => `items.${sport}.${key}`;
@@ -242,6 +284,65 @@ function SportPage() {
   );
 }
 
+function SoccerPage({
+  status,
+  coverage,
+}: {
+  status: Awaited<ReturnType<typeof getRoadmapStatus>>;
+  coverage: SoccerCoverageLive;
+}) {
+  const { t } = useTranslation("sports");
+  const { isSignedIn } = useSession();
+  const name = t("items.soccer.name");
+  return (
+    <AppShell>
+      <nav aria-label={t("breadcrumbLabel")} className="mb-4 text-xs text-muted-foreground">
+        <Link to="/" className="hover:underline">
+          Puntr
+        </Link>{" "}
+        /{" "}
+        <Link to="/roadmap" className="hover:underline">
+          {t("breadcrumb")}
+        </Link>{" "}
+        / <span aria-current="page">{name}</span>
+      </nav>
+      <SportHero
+        sport="soccer"
+        name={name}
+        intro={t("items.soccer.intro")}
+        status={
+          <>
+            <LiveBadge /> {t("status.live")}
+          </>
+        }
+        live={status.enabled.includes("soccer")}
+        stats={[]}
+      >
+        <SoccerStats live={coverage} />
+      </SportHero>
+
+      <BadgeMarquee label={t("marquee")} />
+
+      <div className="mt-8 space-y-12">
+        <CoverageBoard live={coverage} />
+        <SoccerFeatures />
+        <SoccerMarketsAndOdds />
+        <PfieSteps checkedAt={coverage.checkedAt} />
+        <Reveal as="section">
+          <h2 className="text-xl">{t("sections.sa")}</h2>
+          <p className="mt-2 max-w-3xl leading-relaxed text-muted-foreground">
+            {t("items.soccer.sa")}
+          </p>
+        </Reveal>
+        <SoccerFaq items={soccerFaq(t as Translate)} />
+        <SoccerCta signedIn={isSignedIn} />
+      </div>
+
+      <p className="mt-10 text-xs text-muted-foreground">{t("disclaimer")}</p>
+    </AppShell>
+  );
+}
+
 function SportHero({
   sport,
   name,
@@ -249,7 +350,9 @@ function SportHero({
   status,
   live,
   stats,
+  children,
 }: {
+  children?: ReactNode;
   sport: string;
   name: string;
   intro: string;
@@ -289,20 +392,23 @@ function SportHero({
       >
         {intro}
       </motion.p>
-      <motion.ul {...rise(0.24)} className="mt-7 grid max-w-xl grid-cols-3 gap-3">
-        {stats.map((st) => (
-          <li key={st.label} className="card-surface p-3 sm:p-4">
-            <st.icon className="size-4 text-primary" aria-hidden="true" />
-            <CountUp
-              to={st.value}
-              className="mt-1 block font-display text-2xl font-extrabold tnum"
-            />
-            <span className="block text-[11px] leading-tight text-muted-foreground">
-              {st.label}
-            </span>
-          </li>
-        ))}
-      </motion.ul>
+      {children && <motion.div {...rise(0.24)}>{children}</motion.div>}
+      {stats.length > 0 && (
+        <motion.ul {...rise(0.24)} className="mt-7 grid max-w-xl grid-cols-3 gap-3">
+          {stats.map((st) => (
+            <li key={st.label} className="card-surface p-3 sm:p-4">
+              <st.icon className="size-4 text-primary" aria-hidden="true" />
+              <CountUp
+                to={st.value}
+                className="mt-1 block font-display text-2xl font-extrabold tnum"
+              />
+              <span className="block text-[11px] leading-tight text-muted-foreground">
+                {st.label}
+              </span>
+            </li>
+          ))}
+        </motion.ul>
+      )}
     </header>
   );
 }

@@ -8,7 +8,7 @@ import type { LlmRequest } from "@/lib/content/types";
 import { normalise } from "@/lib/content/validate";
 import { parseJsonObject } from "@/lib/content/json";
 
-import { normaliseTeam } from "./teams";
+import { normaliseTeam, resolveTeam } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { Observation, PfieSource, RawObservation, Rejected } from "./types";
 
@@ -66,10 +66,13 @@ export function extractionRequest(input: {
       "6. `status`: finished only when the page shows a final score; postponed, abandoned or cancelled only " +
       "when the page says so; otherwise scheduled. Scores are null unless finished. Use the score after 90 " +
       "minutes, not after extra time or penalties.\n" +
-      "7. `quote` is 10 to 200 characters copied word for word from that source showing the match (and the " +
-      "score, for a finished match).\n" +
+      "7. `quote` is 10 to 200 characters copied word for word from that source showing the match and score. " +
+      "Prefer the exact single match row; never paraphrase a score.\n" +
       "8. Only matches of the named competition, with a date inside the given range.\n" +
-      "9. Return exactly one JSON object matching the schema. Do not use Markdown fences, commentary or trailing text.",
+      "9. If a page separates Fixtures from Results, extract completed matches only from Results. Ignore fixture-only " +
+      "rows even when their dates are in the past; omit any match without an explicit final score.\n" +
+      "10. Do not treat a match as finished merely because its date has passed.\n" +
+      "11. Return exactly one JSON object matching the schema. Do not use Markdown fences, commentary or trailing text.",
     prompt:
       `Competition: ${input.competition}\nDate range: ${input.from} to ${input.to}\nToday: ${input.today}\n\n` +
       `${input.retryHint ? `RETRY INSTRUCTION: ${input.retryHint} Return only compact valid JSON matching the schema.\n\n` : ""}` +
@@ -116,13 +119,29 @@ export function parseObservations(text: string): RawObservation[] | null {
   }));
 }
 
+function matchEvidenceOnPage(pageText: string, home: string, away: string, homeScore: number, awayScore: number): boolean {
+  const page = normalise(pageText);
+  const h = normalise(home);
+  const a = normalise(away);
+  if (!h || !a) return false;
+  const score = homeScore + '-' + awayScore;
+  const scoreVariants = [score, homeScore + ' - ' + awayScore, homeScore + ':' + awayScore].map(normalise);
+  let from = 0;
+  while (true) {
+    const index = page.indexOf(h, from);
+    if (index < 0) return false;
+    const excerpt = page.slice(Math.max(0, index - 120), Math.min(page.length, index + h.length + 360));
+    if (excerpt.includes(a) && scoreVariants.some((variant) => excerpt.includes(variant))) return true;
+    from = index + h.length;
+  }
+}
 const DAY = 86_400_000;
 
 /** Deterministic checks. An observation that fails any of them is dropped and logged with the reason. */
 export function validateObservations(
   raw: RawObservation[],
   sources: PfieSource[],
-  window: { from: Date; to: Date; now: Date; homeZone?: string | null },
+  window: { from: Date; to: Date; now: Date; homeZone?: string | null; knownTeams?: readonly string[] },
 ): { accepted: Observation[]; rejected: Rejected[] } {
   const byIndex = new Map(sources.map((s) => [s.index, s]));
   const accepted: Observation[] = [];
@@ -138,7 +157,16 @@ export function validateObservations(
     }
     const text = normalise(source.text);
     const quote = normalise(o.quote);
-    if (quote.length < 10 || !text.includes(quote)) {
+    const homeResolved = window.knownTeams?.length ? resolveTeam(o.home, window.knownTeams) : null;
+    const awayResolved = window.knownTeams?.length ? resolveTeam(o.away, window.knownTeams) : null;
+    const homeEvidence = homeResolved && homeResolved !== "ambiguous" ? homeResolved : o.home;
+    const awayEvidence = awayResolved && awayResolved !== "ambiguous" ? awayResolved : o.away;
+    const pageQuotePresent = quote.length >= 10 && text.includes(quote);
+    const independentlyVisibleMatch = o.status === "finished" && o.homeScore !== null && o.awayScore !== null &&
+      matchEvidenceOnPage(source.text, homeEvidence, awayEvidence, o.homeScore, o.awayScore);
+    // Some result pages split table cells or use a known short name (e.g. Man City).
+    // Accept a paraphrased quote only when both resolved teams and the exact score appear together on-page.
+    if (!pageQuotePresent && !independentlyVisibleMatch) {
       reject("quote_not_on_page");
       continue;
     }
@@ -146,7 +174,9 @@ export function validateObservations(
       reject("same_team_twice");
       continue;
     }
-    if (!text.includes(normalise(o.home)) || !text.includes(normalise(o.away))) {
+    const homeOnPage = text.includes(normalise(o.home)) || text.includes(normalise(homeEvidence));
+    const awayOnPage = text.includes(normalise(o.away)) || text.includes(normalise(awayEvidence));
+    if (!homeOnPage || !awayOnPage) {
       reject("team_name_not_on_page");
       continue;
     }
@@ -187,7 +217,7 @@ export function validateObservations(
         reject("finished_without_valid_score");
         continue;
       }
-      if (!quote.includes(String(h)) || !quote.includes(String(a))) {
+      if (!independentlyVisibleMatch && (!quote.includes(String(h)) || !quote.includes(String(a)))) {
         reject("score_not_in_quote");
         continue;
       }

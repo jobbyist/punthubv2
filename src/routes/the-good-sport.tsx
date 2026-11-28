@@ -8,7 +8,7 @@ export const Route = createFileRoute("/the-good-sport")({
       {
         name: "description",
         content:
-          "Big games. Bigger opinions. Better questions. Meet The Good Sport, Puntr's original sports podcast. Season one premieres 1 December 2026.",
+          "Big games. Bigger opinions. Better questions. Meet The Good Sport, Puntr's original sports podcast. Season one premieres 5 January 2027.",
       },
       { property: "og:title", content: "The Good Sport | Puntr" },
       {

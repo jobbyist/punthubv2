@@ -1,6 +1,7 @@
 /* Puntr service worker. Cache static assets only; never cache private or live data. */
 const CACHE_PREFIX = "puntr-pwa";
-const CACHE_VERSION = "v3";
+const BUILD_VERSION = "__PUNTR_BUILD_VERSION__";
+const CACHE_VERSION = BUILD_VERSION;
 const STATIC_CACHE = CACHE_PREFIX + "-static-" + CACHE_VERSION;
 const OFFLINE_URL = "/offline.html";
 const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/brand/icon-192.png", "/brand/icon-512.png", "/brand/puntr-wordmark.png", "/brand/puntr-wordmark-dark.png"];

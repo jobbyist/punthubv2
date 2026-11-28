@@ -1,5 +1,5 @@
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { applyTheme, readTheme, resolvedTheme, type ThemeChoice } from "@/lib/theme";
@@ -25,10 +25,42 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  const toggle = () => {
+  const toggle = (event: MouseEvent<HTMLButtonElement>) => {
     const next: ThemeChoice = mode === "dark" ? "light" : "dark";
-    applyTheme(next);
-    setMode(next);
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!doc.startViewTransition || reduce) {
+      applyTheme(next);
+      setMode(next);
+      return;
+    }
+    // The new theme spreads out in a circle from the toggle (View Transitions); other browsers just switch.
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const root = document.documentElement;
+    root.classList.add("theme-vt");
+    const vt = doc.startViewTransition(() => {
+      applyTheme(next, false);
+      setMode(next);
+    });
+    vt.ready
+      .then(
+        () =>
+          root.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+            {
+              duration: 520,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+              pseudoElement: "::view-transition-new(root)",
+            },
+          ).finished,
+      )
+      .catch(() => undefined)
+      .finally(() => root.classList.remove("theme-vt"));
   };
 
   const dark = mode === "dark";
