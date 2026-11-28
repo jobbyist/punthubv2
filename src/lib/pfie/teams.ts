@@ -76,7 +76,6 @@ const ALIASES: Record<string, string> = {
   "vv sint truiden": "sint truidense",
   "fk kairat": "kairat almaty",
   "iberia 1999": "iberia tbilisi",
-  "iberia 1999": "iberia tbilisi",
   "borac banja luka": "borac",
 
   // LaLiga publishers abbreviate these clubs differently; signatures must resolve to one canonical identity.
