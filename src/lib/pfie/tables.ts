@@ -1,8 +1,7 @@
 /**
- * Daily standings and history sync. Each cron call handles at most `maxJobs` due jobs (standings first, then a
- * one-time history backfill), so a run stays inside the function time limit and the API quotas. Jobs are
- * idempotent: a table replaces the previous one atomically, history rows skip duplicates, and every attempt is
- * recorded in `sync_status` (failures back off and stop after three tries a day).
+ * Daily standings and rolling history sync. Each cron call handles a bounded mix of due jobs, reserving a slot
+ * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
+ * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
