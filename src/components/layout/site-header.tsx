@@ -493,9 +493,13 @@ export function SiteHeader() {
                   </Link>
                   <Button
                     asChild
-                    className="h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm"
+                    // Until the context is ready we can't tell a returning user from a new one, so hold the
+                    // space and reveal the right button once, instead of swapping labels after paint.
+                    className={`h-10 whitespace-nowrap px-3 text-xs font-bold shadow-sm sm:px-4 sm:text-sm ${ctxReady ? "" : "invisible"}`}
                   >
-                    <Link to="/join">{t("header.getEarlyAccess")}</Link>
+                    <Link to="/join" tabIndex={ctxReady ? undefined : -1}>
+                      {t("header.getEarlyAccess")}
+                    </Link>
                   </Button>
                 </>
               )}
