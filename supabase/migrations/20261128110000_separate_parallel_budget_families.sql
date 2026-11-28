@@ -76,7 +76,7 @@ begin
     perform pg_advisory_xact_lock(hashtext('api_budget:' || v_family));
 
     if v_synthetic then
-      select coalesce(sum(spent_usd + reserved_usd), 0)
+      select coalesce(sum(spent_usd), 0)
         into v_spent
         from public.synthetic_experiments
        where created_at >= date_trunc('month', now() at time zone 'utc')::date;
@@ -94,6 +94,7 @@ begin
 
   -- One cumulative allowance across all Parallel endpoints, regardless of monthly family.
   if p_provider like 'parallel%' then
+    perform pg_advisory_xact_lock(hashtext('api_budget:parallel-global'));
     select * into v_period
       from public.api_spend_period_limits
      where family = 'parallel'
