@@ -66,3 +66,26 @@ export function pathFromPublicUrl(url: string | null | undefined): string | null
   const i = url.indexOf(marker);
   return i === -1 ? null : url.slice(i + marker.length);
 }
+
+/** Sports avatar choices use one optimized 4x4 sprite sheet stored in the public assets directory. */
+export const SPORTS_AVATARS = [
+  { key: "football-fan", label: "Football fan", index: 0 },
+  { key: "goalkeeper", label: "Goalkeeper", index: 1 },
+  { key: "basketball-player", label: "Basketball", index: 2 },
+  { key: "rugby-player", label: "Rugby", index: 3 },
+  { key: "tennis-player", label: "Tennis", index: 4 },
+  { key: "cricket-batter", label: "Cricket", index: 5 },
+  { key: "athlete", label: "Athlete", index: 6 },
+  { key: "cyclist", label: "Cyclist", index: 7 },
+  { key: "gamer", label: "Gamer", index: 8 },
+  { key: "boxer", label: "Boxer", index: 9 },
+  { key: "skateboarder", label: "Skateboarder", index: 10 },
+  { key: "footballer", label: "Footballer", index: 11 },
+  { key: "basketball-fan", label: "Basketball fan", index: 12 },
+  { key: "coach", label: "Coach", index: 13 },
+  { key: "referee", label: "Referee", index: 14 },
+  { key: "lion-mascot", label: "Lion mascot", index: 15 },
+] as const;
+
+export type SportsAvatarKey = (typeof SPORTS_AVATARS)[number]["key"];
+export const sportsAvatarToken = (key: SportsAvatarKey) => `puntr-avatar://${key}`;

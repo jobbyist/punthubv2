@@ -194,8 +194,13 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   uecl: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: [
+        "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
+        "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures/",
+      ],
+    },
     queries: {
       fixtures: [
         "Conference League fixtures SAST kick-off times",
@@ -216,10 +221,23 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["Ligue 1 results", "Ligue 1 full time scores"],
     },
   },
+  "saudi-pro": {
+    official: ["spl.com.sa"],
+    pages: {
+      fixtures: ["https://www.spl.com.sa/en/fixtures-results"],
+      results: ["https://www.spl.com.sa/en/fixtures-results"],
+    },
+    queries: {
+      fixtures: ["Roshn Saudi League fixtures KSA time", "Saudi Pro League fixtures SA time"],
+      results: ["Roshn Saudi League results", "Saudi Pro League full time scores"],
+    },
+  },
   championship: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: ["https://www.efl.com/competitions/efl-championship/"],
+    },
     queries: {
       fixtures: [
         "EFL Championship fixtures SAST kick-off times",
@@ -344,8 +362,13 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "bafana-friendlies": {
     official: ["safa.net"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: [
+        "https://www.safa.net/general-news/disappointment-as-bafana-are-held-to-a-2-2-draw-by-kenya/",
+        "https://www.safa.net/match-centre/fixtures/bafana-bafana-u23-vs-madagascar-u23-2/",
+      ],
+    },
     queries: {
       fixtures: ["Bafana Bafana next match kick-off time SAST", "Bafana Bafana friendly fixture"],
       results: ["Bafana Bafana result", "Bafana Bafana full time score"],
@@ -480,7 +503,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       const today = sastDate(now());
       calls++;
       const targetedMatches = targetFixtures
-        .slice(0, 3)
+        .slice(0, 12)
         .map(
           (fixture) =>
             `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
@@ -710,7 +733,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       for (const c of await prioritizeByMemberInterest(selected(opts))) {
         const last = await deps.store.lastRunAt(c.key, "results").catch(() => null);
         const gap = resultsGapMs(now().getTime() - from.getTime());
-        if (last && now().getTime() - last.getTime() < gap) {
+        if (!opts?.force && last && now().getTime() - last.getTime() < gap) {
           out.skipped.push({
             key: c.key,
             reason: `checked less than ${Math.round(gap / 60_000)} minutes ago`,

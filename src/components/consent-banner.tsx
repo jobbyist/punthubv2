@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { CONSENT_OPEN_EVENT, readConsent, writeConsent } from "@/lib/consent";
+import {
+  CONSENT_BANNER_ATTR,
+  CONSENT_BANNER_EVENT,
+  CONSENT_OPEN_EVENT,
+  hasCurrentConsent,
+  writeConsent,
+} from "@/lib/consent";
 
 /** First-visit privacy choices. Reject and Accept carry equal weight; nothing is pre-ticked. */
 export function ConsentBanner() {
@@ -10,12 +16,19 @@ export function ConsentBanner() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!readConsent() || readConsent()?.noticeVersion !== "2026-11-27-pfie-learning")
-      setOpen(true);
+    if (!hasCurrentConsent()) setOpen(true);
     const reopen = () => setOpen(true);
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen);
   }, []);
+
+  // Tell other overlays (install prompt, notification prompt) when the banner is on screen, so they wait for it.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (open) root.setAttribute(CONSENT_BANNER_ATTR, "open");
+    else root.removeAttribute(CONSENT_BANNER_ATTR);
+    window.dispatchEvent(new CustomEvent(CONSENT_BANNER_EVENT, { detail: { open } }));
+  }, [open]);
 
   if (!open) return null;
 

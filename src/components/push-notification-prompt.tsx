@@ -3,6 +3,7 @@ import { Bell, X } from "lucide-react";
 import { useSession } from "@/components/session";
 import { useTranslation } from "react-i18next";
 import { enablePushNotifications, getPushStatus, supportsWebPush } from "@/lib/push-notifications";
+import { useConsentBannerPending, useOverlaySlot } from "@/hooks/use-overlay-slot";
 
 const DISMISS_KEY = "puntr:push-prompt-dismissed-until";
 
@@ -19,6 +20,8 @@ export function PushNotificationPrompt() {
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const consentPending = useConsentBannerPending();
+  const { bottom, blocked } = useOverlaySlot(show);
 
   useEffect(() => {
     if (
@@ -70,11 +73,11 @@ export function PushNotificationPrompt() {
     setShow(false);
   }
 
-  if (!show) return null;
+  if (!show || consentPending || blocked) return null;
   return (
     <aside
-      className="fixed inset-x-3 z-[95] mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-4 text-white shadow-2xl"
-      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)" }}
+      className="fixed inset-x-3 z-[60] mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-4 text-white shadow-2xl transition-[bottom] duration-300 ease-out motion-reduce:transition-none lg:left-6 lg:right-auto lg:mx-0 lg:w-[380px]"
+      style={{ bottom }}
       aria-label="Puntr notification preferences"
     >
       <div className="flex items-start gap-3">

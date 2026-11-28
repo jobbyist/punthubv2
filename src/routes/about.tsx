@@ -1,19 +1,31 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
+  ArrowRight,
   Award,
+  BadgeCheck,
   BarChart3,
   Brain,
+  Compass,
+  Crown,
+  DatabaseZap,
+  FlaskConical,
   Gift,
+  HandCoins,
   Heart,
   Lightbulb,
   LineChart,
+  ListOrdered,
+  Lock,
+  SearchCheck,
   Shield,
+  Star,
+  Swords,
   Target,
   TrendingUp,
   Trophy,
   Users,
-  Zap,
+  type LucideIcon,
 } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -26,6 +38,9 @@ import { useBrandLogos } from "@/hooks/use-brand-logos";
 import { analytics } from "@/lib/analytics";
 import { money } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
+import { DEFAULT_LAUNCH_DATE } from "@/lib/launch";
+import { SPORT_ROADMAP, weekWindow } from "@/lib/roadmap";
+import { soccerCoverage } from "@/lib/sports/coverage";
 
 export const Route = createFileRoute("/about")({
   head: ({ match }) => {
@@ -84,10 +99,17 @@ const fade = {
 };
 
 const WHY = [
-  [BarChart3, "data"],
+  [DatabaseZap, "data"],
   [Users, "community"],
   [Brain, "ai"],
-  [Gift, "recognition"],
+  [Award, "recognition"],
+] as const;
+
+const JOURNEY = [
+  [Compass, "discover"],
+  [LineChart, "analyse"],
+  [Lock, "predict"],
+  [Trophy, "prove"],
 ] as const;
 
 const PRINCIPLES = [
@@ -99,19 +121,77 @@ const PRINCIPLES = [
   [BarChart3, "evidence"],
 ] as const;
 
-const LAYERS = ["data", "record", "community", "board", "points", "ai", "pro"] as const;
+type Layer = {
+  key: string;
+  icon: LucideIcon;
+  to:
+    | "/discover"
+    | "/teams"
+    | "/tables"
+    | "/fixtures"
+    | "/predictions"
+    | "/duels"
+    | "/leaderboards"
+    | "/practice"
+    | "/puntpoints"
+    | "/pricing";
+  badge?: "badgeFounding" | "badgePro";
+};
 
-/** All eight sports with dedicated landing pages, aligned to the canonical sports roadmap. */
-const SPORTS_COVERAGE = [
-  ["soccer", "Football"],
-  ["basketball", "Basketball"],
-  ["rugby", "Rugby"],
-  ["racing", "Racing"],
-  ["combat", "Combat sports"],
-  ["athletics", "Athletics"],
-  ["cricket", "Cricket"],
-  ["tennis", "Tennis"],
+/** Every layer links to the live page that delivers it, so the About page never describes something hidden. */
+const LAYERS: readonly Layer[] = [
+  { key: "discover", icon: Compass, to: "/discover" },
+  { key: "teams", icon: Star, to: "/teams" },
+  { key: "tables", icon: ListOrdered, to: "/tables" },
+  { key: "analysis", icon: LineChart, to: "/fixtures" },
+  { key: "record", icon: Lock, to: "/predictions" },
+  { key: "duels", icon: Swords, to: "/duels" },
+  { key: "board", icon: Trophy, to: "/leaderboards" },
+  { key: "practice", icon: FlaskConical, to: "/practice", badge: "badgeFounding" },
+  { key: "points", icon: Gift, to: "/puntpoints" },
+  { key: "pro", icon: Crown, to: "/pricing", badge: "badgePro" },
+];
+
+const PFIE_STEPS = [
+  [SearchCheck, "collect"],
+  [BadgeCheck, "check"],
+  [DatabaseZap, "publish"],
 ] as const;
+
+/** Football launch leagues come from the coverage registry, so this page stays in step with /sports/soccer. */
+const COVERAGE = soccerCoverage();
+const LAUNCH_LEAGUES = COVERAGE.filter((c) => c.phase === "launch");
+const POST_LAUNCH_COUNT = COVERAGE.filter((c) => c.phase === "post-launch").length;
+
+const MONTHS: Record<string, readonly string[]> = {
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  af: ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
+};
+
+/** "Jan–Feb 2027" from two YYYY-MM-DD dates (string maths only, so server and browser agree). */
+function monthWindow(from: string, to: string, lang: string): string {
+  const names = MONTHS[lang.startsWith("af") ? "af" : "en"]!;
+  const [fy, fm] = from.split("-").map(Number) as [number, number];
+  const [ty, tm] = to.split("-").map(Number) as [number, number];
+  const a = names[fm - 1]!;
+  const b = names[tm - 1]!;
+  if (fy !== ty) return `${a} ${fy} – ${b} ${ty}`;
+  return fm === tm ? `${a} ${ty}` : `${a}–${b} ${ty}`;
+}
+
+/** Later sports, grouped by shared launch window (basketball and rugby share one). */
+const ROADMAP_WINDOWS = (() => {
+  const map = new Map<string, { from: string; to: string; sports: string[] }>();
+  for (const { sport, weeks } of SPORT_ROADMAP) {
+    if (sport === "soccer") continue;
+    const { from, to } = weekWindow(DEFAULT_LAUNCH_DATE, weeks);
+    const entry = map.get(from) ?? { from, to, sports: [] };
+    if (to > entry.to) entry.to = to;
+    entry.sports.push(sport);
+    map.set(from, entry);
+  }
+  return [...map.values()];
+})();
 
 /** Ten logo slots for the partnership network. Replace with approved partner logos as agreements are confirmed. */
 const PARTNER_SLOTS = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -120,13 +200,12 @@ const KNOWLEDGE = [
   [Target, "predict"],
   [TrendingUp, "compete"],
   [LineChart, "learn"],
-  [Gift, "recognised"],
+  [Award, "recognised"],
 ] as const;
 
 const POINTS = [
   [Target, "accuracy"],
   [Users, "engagement"],
-  [Gift, "referrals"],
   [Trophy, "tipsters"],
 ] as const;
 
@@ -145,9 +224,22 @@ function AboutExplainer() {
   );
 }
 
+function SectionTitle({ a, b, c, body }: { a: string; b: string; c?: string; body?: string }) {
+  return (
+    <div className="text-center">
+      <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold leading-tight">
+        {a} <span className="text-primary">{b}</span>
+        {c ? ` ${c}` : "."}
+      </h2>
+      {body && <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{body}</p>}
+    </div>
+  );
+}
+
 function About() {
-  const { t } = useTranslation("about");
+  const { t, i18n } = useTranslation("about");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("roadmap");
   const navigate = useNavigate();
   const aboutLogos = useBrandLogos("about").filter((l) => l.active && l.imageUrl);
 
@@ -158,35 +250,38 @@ function About() {
   return (
     <div className="overflow-hidden bg-background">
       {/* Hero */}
-      <section className="relative min-h-[85vh] overflow-hidden bg-[#111111] text-white">
-        <div className="pointer-events-none absolute inset-0">
+      <section className="relative overflow-hidden bg-[#111111] text-white">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16A34A] opacity-10 blur-[120px]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:py-32">
+        <div className="relative mx-auto max-w-[1400px] px-4 pb-14 pt-16 sm:px-6 lg:pb-20 lg:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
             className="mx-auto max-w-4xl text-center"
           >
-            <h1 className="text-[clamp(2.5rem,7vw,5rem)] font-extrabold leading-[1.05] tracking-tight">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#4ADE80]">
+              {t("hero.eyebrow")}
+            </p>
+            <h1 className="mt-4 text-[clamp(2.4rem,7vw,5rem)] font-extrabold leading-[1.05] tracking-tight">
               {t("hero.title1")}
               <br />
               {t("hero.title3")} <span className="text-[#16A34A]">{t("hero.title2")}</span>.
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-300">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-gray-300 sm:text-lg">
               <Trans
                 t={t}
                 i18nKey="hero.body"
-                components={{ 1: <strong className="font-semibold text-[#16A34A]" /> }}
+                components={{ 1: <strong className="font-semibold text-[#4ADE80]" /> }}
               />
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <Button
                 size="lg"
-                className="h-13 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
+                className="h-12 bg-[#16A34A] px-8 text-base hover:bg-[#16A34A]/90"
                 onClick={() => navigate({ to: "/join" })}
               >
                 {t("hero.cta")}
@@ -194,13 +289,31 @@ function About() {
               <Button
                 size="lg"
                 variant="outline"
-                className="h-13 border-white/20 bg-transparent px-8 text-base text-white hover:bg-white/10"
+                className="h-12 border-white/20 bg-transparent px-8 text-base text-white hover:bg-white/10"
                 asChild
               >
-                <a href="#ecosystem">{t("hero.meet")}</a>
+                <a href="#how-it-works">{t("hero.meet")}</a>
               </Button>
             </div>
           </motion.div>
+
+          <ul className="mx-auto mt-12 grid max-w-4xl gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+            {(
+              [
+                [Trophy, t("hero.stats.leagues", { count: LAUNCH_LEAGUES.length })],
+                [Lock, t("hero.stats.locked")],
+                [BadgeCheck, t("hero.stats.launch")],
+              ] as const
+            ).map(([Icon, label]) => (
+              <li
+                key={label}
+                className="flex items-center gap-3 bg-[#111111] px-5 py-4 text-left text-sm font-semibold"
+              >
+                <Icon className="size-5 shrink-0 text-[#4ADE80]" aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -232,11 +345,44 @@ function About() {
           </div>
         </motion.section>
 
+        {/* How it works */}
+        <motion.section {...fade} id="how-it-works" className="scroll-mt-24 py-16">
+          <SectionTitle a={t("journey.title1")} b={t("journey.title2")} body={t("journey.body")} />
+          <ol className="relative mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {JOURNEY.map(([Icon, key], i) => (
+              <motion.li
+                key={key}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="relative rounded-xl border border-border bg-card p-6"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="grid size-11 place-items-center rounded-lg bg-primary-soft text-primary">
+                    <Icon className="size-5" strokeWidth={1.75} />
+                  </span>
+                  <span className="font-display text-4xl font-extrabold text-muted-foreground/20 tnum">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-lg font-bold">{t(`journey.${key}.title`)}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {t(`journey.${key}.body`)}
+                </p>
+              </motion.li>
+            ))}
+          </ol>
+        </motion.section>
+
         {/* Mission and vision */}
         <motion.section {...fade} className="py-16">
           <div className="grid gap-8 rounded-2xl bg-[#111111] p-8 text-white lg:grid-cols-2 lg:p-12">
             <div className="relative">
-              <div className="absolute -left-4 -top-4 text-[120px] font-extrabold leading-none text-[#16A34A] opacity-10">
+              <div
+                className="absolute -left-4 -top-4 text-[120px] font-extrabold leading-none text-[#16A34A] opacity-10"
+                aria-hidden="true"
+              >
                 P
               </div>
               <div className="relative">
@@ -263,109 +409,169 @@ function About() {
           </div>
         </motion.section>
 
-        {/* Principles */}
-        <motion.section {...fade} className="py-16 lg:py-24">
-          <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("principles.title1")}{" "}
-              <span className="text-primary">{t("principles.title2")}</span>.
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {PRINCIPLES.map(([Icon, key]) => (
-              <motion.div
-                key={key}
-                whileHover={{ y: -4 }}
-                className="rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="grid size-12 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
-                    <Icon className="size-6" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{t(`principles.${key}.title`)}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {t(`principles.${key}.body`)}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
         {/* Ecosystem */}
         <motion.section {...fade} id="ecosystem" className="py-16 lg:py-24">
-          <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("ecosystem.title1")} <span className="text-primary">{t("ecosystem.title2")}</span>.
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("ecosystem.body")}</p>
-          </div>
-          <div className="mx-auto mt-12 max-w-4xl">
-            <div className="rounded-2xl border border-border bg-card p-8">
-              <div className="space-y-4">
-                {LAYERS.map((key, index) => (
-                  <motion.div
-                    key={key}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="group relative flex items-center gap-4 rounded-xl border border-border bg-background p-4 transition-all hover:border-primary hover:shadow-md"
-                  >
-                    <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
-                      <Zap className="size-5" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold group-hover:text-primary">
-                        {t(`ecosystem.${key}.title`)}
-                      </h4>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
-                        {t(`ecosystem.${key}.body`)}
-                      </p>
-                    </div>
-                    {index < LAYERS.length - 1 && (
-                      <div className="absolute -bottom-2 left-9 h-4 w-0.5 bg-border" />
+          <SectionTitle
+            a={t("ecosystem.title1")}
+            b={t("ecosystem.title2")}
+            body={t("ecosystem.body")}
+          />
+          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {LAYERS.map(({ key, icon: Icon, to, badge }, index) => (
+              <motion.li
+                key={key}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (index % 5) * 0.06 }}
+              >
+                <Link
+                  to={to}
+                  className="group flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:hover:translate-y-0 sm:flex-col sm:gap-0 sm:p-5"
+                >
+                  <div className="flex shrink-0 items-start justify-between gap-2 sm:w-full">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
+                      <Icon className="size-5" strokeWidth={1.75} />
+                    </span>
+                    {badge && (
+                      <span className="hidden rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:inline">
+                        {t(`ecosystem.${badge}`)}
+                      </span>
                     )}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
+                  </div>
+                  <div className="min-w-0 flex-1 sm:mt-4 sm:flex sm:w-full sm:flex-col">
+                    <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold group-hover:text-primary">
+                      {t(`ecosystem.${key}.title`)}
+                      {badge && (
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:hidden">
+                          {t(`ecosystem.${badge}`)}
+                        </span>
+                      )}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:flex-1">
+                      {t(`ecosystem.${key}.body`)}
+                    </p>
+                    <span className="mt-4 hidden items-center gap-1 text-xs font-bold text-primary sm:inline-flex">
+                      {t("ecosystem.open")}
+                      <ArrowRight
+                        className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </div>
+                  <ArrowRight
+                    className="mt-3 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:hidden"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </motion.li>
+            ))}
+          </ul>
         </motion.section>
+      </div>
 
-        {/* Sports */}
-        <motion.section {...fade} className="py-16">
-          <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("sports.title1")} <span className="text-primary">{t("sports.title2")}</span>.
+      {/* PFIE */}
+      <motion.section {...fade} className="bg-[#111111] text-white">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.3fr] lg:items-center lg:py-24">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#4ADE80]">
+              {t("pfie.eyebrow")}
+            </p>
+            <h2 className="mt-3 text-[clamp(1.9rem,4vw,2.8rem)] font-bold leading-tight">
+              {t("pfie.title")}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("sports.body")}</p>
+            <p className="mt-4 leading-relaxed text-gray-300">{t("pfie.body")}</p>
+            <Button
+              asChild
+              variant="outline"
+              className="mt-6 border-white/20 bg-transparent text-white hover:bg-white/10"
+            >
+              <Link to="/sports/$sport" params={{ sport: "soccer" }}>
+                {t("pfie.cta")}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </Button>
           </div>
-          <div className="mt-12">
-            <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-center text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                SPORTS COVERAGE
-              </h3>
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {SPORTS_COVERAGE.map(([sport, name]) => (
-                  <Link
-                    key={sport}
-                    to="/sports/$sport"
-                    params={{ sport }}
-                    className="group flex min-h-28 flex-col items-center justify-center rounded-lg border border-border bg-background p-4 text-center transition-all hover:border-primary hover:bg-primary/5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    <Trophy className="size-8 text-primary opacity-60 transition-transform group-hover:scale-110" />
-                    <span className="mt-2 text-sm font-semibold group-hover:text-primary">
-                      {name}
-                    </span>
-                    <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                      Explore sport
-                    </span>
-                  </Link>
-                ))}
+          <ol className="grid gap-3 sm:grid-cols-3">
+            {PFIE_STEPS.map(([Icon, key], i) => (
+              <li key={key} className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-9 place-items-center rounded-lg bg-[#16A34A]/15 text-[#4ADE80]">
+                    <Icon className="size-4" aria-hidden="true" />
+                  </span>
+                  <span className="text-xs font-bold text-white/40 tnum">0{i + 1}</span>
+                </div>
+                <h3 className="mt-4 font-semibold">{t(`pfie.${key}.title`)}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-gray-300">
+                  {t(`pfie.${key}.body`)}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </motion.section>
+
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        {/* Sports */}
+        <motion.section {...fade} className="py-16 lg:py-24">
+          <SectionTitle a={t("sports.title1")} b={t("sports.title2")} body={t("sports.body")} />
+          <div className="mt-12 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-lg font-bold">{t("sports.footballTitle")}</h3>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+                  <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  {t("sports.fromLaunch")}
+                </span>
               </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t("sports.footballBody", { count: LAUNCH_LEAGUES.length })}
+              </p>
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {LAUNCH_LEAGUES.map((c) => (
+                  <li
+                    key={c.key}
+                    className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold"
+                  >
+                    {c.name}
+                  </li>
+                ))}
+                {POST_LAUNCH_COUNT > 0 && (
+                  <li className="rounded-full border border-dashed border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                    {t("sports.postLaunch", { count: POST_LAUNCH_COUNT })}
+                  </li>
+                )}
+              </ul>
+              <Button asChild className="mt-6">
+                <Link to="/sports/$sport" params={{ sport: "soccer" }}>
+                  {t("sports.explore")}
+                </Link>
+              </Button>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+              <h3 className="text-lg font-bold">{t("sports.roadmapTitle")}</h3>
+              <ol className="mt-4 space-y-3">
+                {ROADMAP_WINDOWS.map((w) => (
+                  <li
+                    key={w.from}
+                    className="flex items-center justify-between gap-3 border-b border-border pb-3 last:border-0 last:pb-0"
+                  >
+                    <span className="text-sm font-semibold">
+                      {w.sports.map((s) => tr(`sport.${s}.name`)).join(" · ")}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground tnum">
+                      {t("sports.planned", { when: monthWindow(w.from, w.to, i18n.language) })}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <Link
+                to="/roadmap"
+                className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
+              >
+                {t("sports.roadmap")}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </motion.section>
@@ -377,74 +583,6 @@ function About() {
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("video.body")}</p>
           </div>
           <AboutExplainer />
-        </motion.section>
-
-        {/* Foundation and partners */}
-        <motion.section {...fade} className="py-16 lg:py-24">
-          <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("tech.title1")} <span className="text-primary">{t("tech.title2")}</span>{" "}
-              {t("tech.title3")}
-            </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">{t("tech.body")}</p>
-          </div>
-          <ul
-            className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
-            aria-label={t("tech.logosLabel")}
-          >
-            {aboutLogos.length > 0
-              ? aboutLogos.map((l) => (
-                  <li key={l.id} className="card-surface group grid h-20 place-items-center p-3">
-                    <PartnerLogo src={l.imageUrl ?? ""} alt={l.name} loading="lazy" />
-                  </li>
-                ))
-              : PARTNER_SLOTS.map((n) => (
-                  <li
-                    key={n}
-                    className="grid h-20 place-items-center rounded-xl border border-dashed border-border bg-card text-xs font-medium text-muted-foreground"
-                  >
-                    {t("tech.logoPlaceholder", { n })}
-                  </li>
-                ))}
-          </ul>
-        </motion.section>
-
-        {/* How it fits together */}
-        <motion.section {...fade} className="py-16">
-          <div className="text-center">
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
-              {t("fits.title1")} <span className="text-primary">{t("fits.title2")}</span>
-            </h2>
-          </div>
-          <div className="mx-auto mt-12 max-w-5xl">
-            <div className="rounded-2xl border border-border bg-card p-8">
-              <div className="grid gap-6 lg:grid-cols-[1fr_auto_1fr]">
-                {(
-                  [
-                    ["core", ["c1", "c2", "c3", "c4"]],
-                    ["infra", ["i1", "i2", "i3", "i4"]],
-                  ] as const
-                ).flatMap(([group, items], gi) => [
-                  gi === 1 ? (
-                    <div key="divider" className="hidden lg:flex lg:items-center lg:justify-center">
-                      <div className="h-full w-0.5 bg-border" />
-                    </div>
-                  ) : null,
-                  <div key={group} className="rounded-lg border border-border bg-background p-4">
-                    <h4 className="font-semibold">{t(`fits.${group}`)}</h4>
-                    <div className="mt-3 space-y-2 text-sm">
-                      {items.map((i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <div className="size-2 rounded-full bg-primary" />
-                          <span className="text-muted-foreground">{t(`fits.${i}`)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>,
-                ])}
-              </div>
-            </div>
-          </div>
         </motion.section>
 
         {/* Knowledge */}
@@ -505,15 +643,15 @@ function About() {
           </div>
         </motion.section>
 
-        {/* PuntPoints */}
+        {/* PuntPoints and referrals */}
         <motion.section {...fade} className="py-16">
-          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 lg:p-12">
-            <div className="mx-auto max-w-3xl text-center">
+          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 sm:p-8 lg:p-12">
+            <div className="mx-auto max-w-4xl text-center">
               <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
                 {t("points.title1")} <span className="text-primary">{t("points.title2")}</span>.
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("points.body")}</p>
-              <div className="mt-10 grid gap-6 sm:grid-cols-3">
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
                 {POINTS.map(([Icon, key]) => (
                   <div key={key} className="rounded-xl border border-border bg-card p-6">
                     <div className="mx-auto grid size-12 place-items-center rounded-lg bg-primary-soft text-primary">
@@ -527,6 +665,107 @@ function About() {
                 ))}
               </div>
             </div>
+            <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-5 rounded-xl border border-primary/30 bg-card p-6 sm:flex-row sm:items-center">
+              <span className="grid size-12 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
+                <HandCoins className="size-6" strokeWidth={1.75} aria-hidden="true" />
+              </span>
+              <div className="flex-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+                  {t("refer.eyebrow")}
+                </p>
+                <h3 className="mt-1 text-lg font-bold">{t("refer.title")}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {t("refer.body")}
+                </p>
+              </div>
+              <Button asChild variant="outline" className="shrink-0">
+                <Link to="/referrals">{t("refer.cta")}</Link>
+              </Button>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Principles */}
+        <motion.section {...fade} className="py-16 lg:py-24">
+          <SectionTitle a={t("principles.title1")} b={t("principles.title2")} />
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {PRINCIPLES.map(([Icon, key]) => (
+              <motion.div
+                key={key}
+                whileHover={{ y: -4 }}
+                className="rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="grid size-12 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
+                    <Icon className="size-6" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{t(`principles.${key}.title`)}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {t(`principles.${key}.body`)}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Foundation and partners */}
+        <motion.section {...fade} className="py-16">
+          <div className="text-center">
+            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-bold">
+              {t("tech.title1")} <span className="text-primary">{t("tech.title2")}</span>{" "}
+              {t("tech.title3")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">{t("tech.body")}</p>
+          </div>
+          <ul
+            className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
+            aria-label={t("tech.logosLabel")}
+          >
+            {aboutLogos.length > 0
+              ? aboutLogos.map((l) => (
+                  <li key={l.id} className="card-surface group grid h-20 place-items-center p-3">
+                    <PartnerLogo src={l.imageUrl ?? ""} alt={l.name} loading="lazy" />
+                  </li>
+                ))
+              : PARTNER_SLOTS.map((n) => (
+                  <li
+                    key={n}
+                    className="grid h-20 place-items-center rounded-xl border border-dashed border-border bg-card text-xs font-medium text-muted-foreground"
+                  >
+                    {t("tech.logoPlaceholder", { n })}
+                  </li>
+                ))}
+          </ul>
+        </motion.section>
+
+        {/* How it fits together */}
+        <motion.section {...fade} className="py-16">
+          <SectionTitle a={t("fits.title1")} b={t("fits.title2")} />
+          <div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-2">
+            {(
+              [
+                ["core", ["c1", "c2", "c3", "c4"]],
+                ["infra", ["i1", "i2", "i3", "i4"]],
+              ] as const
+            ).map(([group, items]) => (
+              <div key={group} className="rounded-xl border border-border bg-card p-6">
+                <h3 className="font-semibold">{t(`fits.${group}`)}</h3>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  {items.map((i) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <span
+                        className="mt-1.5 size-2 shrink-0 rounded-full bg-primary"
+                        aria-hidden="true"
+                      />
+                      <span className="text-muted-foreground">{t(`fits.${i}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </motion.section>
       </div>
@@ -543,7 +782,6 @@ function About() {
               pass: money(299),
               annual: money(1188),
               monthly: money(99),
-              saving: money(889),
             })}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

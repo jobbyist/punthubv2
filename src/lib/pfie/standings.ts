@@ -223,15 +223,17 @@ export const STANDINGS_COMPETITIONS: Partial<
       "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
       "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship 2026/27 standings",
       "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
-      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:cbssports.com/soccer/efl-championship/standings EFL Championship 2026/27 full table",
+      "site:sportsmole.co.uk/football/championship/table.html Championship 2026/27 full standings",
       "site:transfermarkt.com/championship/tabelle/wettbewerb/GB2 EFL Championship table 2026/27",
     ],
     pages: [
       "https://www.efl.com/competitions/efl-championship/",
+      "https://www.efl.com/embeds/league-table/",
       "https://www.skysports.com/championship-table?dcmp=GameOn",
+      "https://www.cbssports.com/soccer/efl-championship/standings/",
+      "https://www.sportsmole.co.uk/football/championship/table.html",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
-      "https://www.transfermarkt.com/championship/tabelle/wettbewerb/GB2",
-      "https://zeanball.online/en/table/championship/",
     ],
   },
   "saudi-pro": {
@@ -461,6 +463,110 @@ export function parseStandings(text: string): RawStandingRow[] | null {
   if (!json) return null;
   const parsed = rawSchema.safeParse(json);
   return parsed.success ? parsed.data.rows : null;
+}
+
+/**
+ * Parse a complete Markdown league table without asking a model to re-serialize it.
+ * This is deliberately conservative: it requires explicit position, team, played,
+ * W/D/L, GF/GA and points columns. The normal validation pipeline still checks
+ * completeness, team identity, arithmetic, freshness and source quotes.
+ */
+export function parseStandingsMarkdown(text: string, source: number): RawStandingRow[] | null {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const headerKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const aliases = {
+    position: ["pos", "position", "rank", "no"],
+    team: ["team", "club", "squad"],
+    played: ["p", "pl", "pld", "played", "mp", "matchesplayed"],
+    won: ["w", "won"],
+    drawn: ["d", "drawn"],
+    lost: ["l", "lost"],
+    goalsFor: ["gf", "f", "for", "goalsfor"],
+    goalsAgainst: ["ga", "a", "against", "goalsagainst"],
+    points: ["pts", "points", "pt"],
+  } as const;
+  const integer = (value: string, signed = false): number | null => {
+    const cleaned = value.replace(/,/g, "").trim();
+    if (!(signed ? /^-?\d+$/.test(cleaned) : /^\d+$/.test(cleaned))) return null;
+    const parsed = Number(cleaned);
+    return Number.isSafeInteger(parsed) ? parsed : null;
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const headerLine = lines[i]!;
+    if (!headerLine.includes("|")) continue;
+    const headers = headerLine
+      .replace(/^\||\|$/g, "")
+      .split("|")
+      .map(headerKey);
+    const indexOf = (keys: readonly string[]) =>
+      headers.findIndex((header) => keys.includes(header));
+    const columns = {
+      position: indexOf(aliases.position),
+      team: indexOf(aliases.team),
+      played: indexOf(aliases.played),
+      won: indexOf(aliases.won),
+      drawn: indexOf(aliases.drawn),
+      lost: indexOf(aliases.lost),
+      goalsFor: indexOf(aliases.goalsFor),
+      goalsAgainst: indexOf(aliases.goalsAgainst),
+      points: indexOf(aliases.points),
+    };
+    if (Object.values(columns).some((index) => index < 0)) continue;
+
+    const rows: RawStandingRow[] = [];
+    for (let rowIndex = i + 1; rowIndex < lines.length; rowIndex++) {
+      const line = lines[rowIndex]!;
+      if (!line.includes("|")) break;
+      const cells = line
+        .replace(/^\||\|$/g, "")
+        .split("|")
+        .map((cell) => cell.trim());
+      if (cells.length !== headers.length || cells.every((cell) => /^:?-{2,}:?$/.test(cell)))
+        continue;
+      const position = integer(cells[columns.position] ?? "");
+      const team = (cells[columns.team] ?? "").replace(/^\d+[.)]?\s*/, "").trim();
+      const played = integer(cells[columns.played] ?? "");
+      const won = integer(cells[columns.won] ?? "");
+      const drawn = integer(cells[columns.drawn] ?? "");
+      const lost = integer(cells[columns.lost] ?? "");
+      const goalsFor = integer(cells[columns.goalsFor] ?? "");
+      const goalsAgainst = integer(cells[columns.goalsAgainst] ?? "");
+      const points = integer(cells[columns.points] ?? "", true);
+      if (
+        position === null ||
+        !team ||
+        played === null ||
+        won === null ||
+        drawn === null ||
+        lost === null ||
+        goalsFor === null ||
+        goalsAgainst === null ||
+        points === null
+      )
+        continue;
+      rows.push({
+        source,
+        position,
+        team,
+        played,
+        won,
+        drawn,
+        lost,
+        goalsFor,
+        goalsAgainst,
+        points,
+        quote: line,
+        tableDate: null,
+        tableDateQuote: null,
+      });
+    }
+    if (rows.length >= 4) return rows;
+  }
+  return null;
 }
 
 export interface TableRejection {

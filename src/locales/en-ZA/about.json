@@ -1,45 +1,72 @@
 {
   "meta": {
-    "title": "About Puntr | A better standard for sports predictions",
-    "description": "Meet Puntr: a South African sports prediction community built around transparent records, consistent grading and shared sporting knowledge.",
+    "title": "About Puntr | Sports intelligence, on the record",
+    "description": "Puntr is a South African, community-first sports intelligence platform: discover fixtures, analyse verified data, publish locked predictions, compare with the community and collect PuntPoints. 18+.",
     "ogTitle": "About Puntr | Sports knowledge, on the record"
   },
   "hero": {
+    "eyebrow": "About Puntr",
     "title1": "Sports knowledge",
     "title2": "proper record",
     "title3": "deserves a",
-    "body": "Puntr is a <1>community-first sports platform</1> for South African fans who want more than big claims and screenshots. Publish picks before kick-off, see them locked and automatically graded, and build a public record that shows the full picture. <1>AI-powered insights</1> are part of the platform’s wider roadmap.",
-    "cta": "Join Puntr",
-    "meet": "Meet the platform"
+    "body": "Puntr is a <1>community-first sports intelligence platform</1> for South African fans and tipsters. Discover fixtures, analyse checked data, publish your picks before kick-off and build a public record that shows the full picture, wins and losses together. Our <1>Puntr Football Intelligence Engine (PFIE)</1> checks the data behind it all.",
+    "cta": "Join Puntr free",
+    "meet": "See how it works",
+    "stats": {
+      "leagues": "{{count}} football leagues at launch",
+      "locked": "Every pick locked before kick-off",
+      "launch": "Official launch 1 December 2026"
+    }
   },
   "why": {
     "title1": "Less noise.",
     "title2": "More",
     "title3": "proof.",
-    "p1": "Sport is full of opinions. Puntr gives those opinions a consistent way to be tested: every pick is timestamped before kick-off, locked and graded against the result.",
+    "p1": "Sport is full of opinions. Puntr gives those opinions a consistent way to be tested: every pick is timestamped before kick-off, locked and graded against the confirmed result.",
     "p2": "A winning screenshot tells only part of the story. Puntr keeps wins and losses together, with performance context, so the community can judge a record on its merits.",
     "data": {
-      "title": "Data",
-      "body": "Turn information into insight."
+      "title": "Checked data",
+      "body": "Fixtures, results and tables confirmed by PFIE before they appear."
     },
     "community": {
       "title": "Community",
-      "body": "See what other predictors think."
+      "body": "See what other predictors think, then make your own call."
     },
     "ai": {
-      "title": "AI-Powered Insights",
-      "body": "Plain-language context for every fixture, coming soon."
+      "title": "AI-assisted, rules-checked",
+      "body": "AI helps read the sources. Fixed rules and independent sources decide what is true."
     },
     "recognition": {
       "title": "Recognition",
       "body": "Be known for your knowledge, with a record to prove it."
     }
   },
+  "journey": {
+    "title1": "How Puntr",
+    "title2": "works",
+    "body": "Four steps, from the first fixture you check to a record you can stand behind.",
+    "discover": {
+      "title": "Discover",
+      "body": "Your home base: upcoming fixtures, the teams you follow and your next best move, in one place."
+    },
+    "analyse": {
+      "title": "Analyse",
+      "body": "League tables, last-five form and head-to-head history for every covered match."
+    },
+    "predict": {
+      "title": "Predict",
+      "body": "Publish your pick before kick-off. It is timestamped, locked and can never be edited."
+    },
+    "prove": {
+      "title": "Prove it",
+      "body": "Picks are graded automatically. Compare with the community, climb the leaderboards and collect PuntPoints."
+    }
+  },
   "mission": {
     "title": "Mission",
     "body": "To build a <1>community-first sports platform</1> where knowledge is tested openly, performance is transparent and genuine contribution gets recognised.",
     "visionTitle": "Vision",
-    "vision": "To become a trusted home for sports predictions in South Africa, and then across Africa, with every pick on the record."
+    "vision": "To become a trusted home for sports intelligence in South Africa, and then across Africa, with every pick on the record."
   },
   "principles": {
     "title1": "Built On Better",
@@ -50,7 +77,7 @@
     },
     "transparency": {
       "title": "Transparency",
-      "body": "Clear information. Honest interactions."
+      "body": "Clear information. Honest interactions. Every pick stays on the record."
     },
     "responsible": {
       "title": "Responsible Gambling",
@@ -72,41 +99,82 @@
   "ecosystem": {
     "title1": "One Platform. Layers of",
     "title2": "Insight",
-    "body": "One connected experience: fixtures and results, locked predictions, community insight, performance records and useful tools.",
-    "data": {
-      "title": "Sports Data",
-      "body": "Fixtures and results for the competitions we cover"
+    "body": "Everything connects: the fixtures you discover feed the analysis, your picks feed your record, and your record feeds the community.",
+    "open": "Open",
+    "badgeFounding": "Founding Members",
+    "badgePro": "Puntr Pro",
+    "discover": {
+      "title": "Discover",
+      "body": "A personal home base with fixtures, followed teams and a league rail."
+    },
+    "teams": {
+      "title": "Team directory",
+      "body": "Search every covered team and follow up to 50 of them."
+    },
+    "tables": {
+      "title": "League tables",
+      "body": "Verified standings with last-five form, built for any screen."
+    },
+    "analysis": {
+      "title": "Match analysis",
+      "body": "Form, head-to-head history and table context on each fixture."
     },
     "record": {
-      "title": "Locked Records",
-      "body": "Timestamped before kick-off, never edited"
+      "title": "Locked predictions",
+      "body": "Timestamped before kick-off, graded automatically, never edited."
     },
-    "community": {
-      "title": "Community Predictions",
-      "body": "See what other fans are backing"
+    "duels": {
+      "title": "Community Duels",
+      "body": "Head-to-head calls with other members and a Duel leaderboard."
     },
     "board": {
-      "title": "Weekly Leaderboard",
-      "body": "Ranked on units, ROI and sample size"
+      "title": "Leaderboards",
+      "body": "Ranked on results and sample size. PuntPoints never affect rank."
+    },
+    "practice": {
+      "title": "Practice Mode",
+      "body": "A fictional league that plays out in minutes, to learn the ropes risk-free."
     },
     "points": {
       "title": "PuntPoints",
-      "body": "Points for activity, redeemed for vouchers, sponsored rewards and perks. No cash value"
-    },
-    "ai": {
-      "title": "AI-Powered Insights",
-      "body": "Match previews, available at launch"
+      "body": "Collected for activity, redeemed for vouchers, sponsored rewards and perks. No cash value."
     },
     "pro": {
       "title": "Puntr Pro",
-      "body": "Advanced analytics and deeper tools with Puntr Pro, plus planned Tipster Support for verified Tipsters."
+      "body": "Deeper analytics and tools for members who want more."
     }
+  },
+  "pfie": {
+    "eyebrow": "Puntr Football Intelligence Engine",
+    "title": "Data you can check, not just trust.",
+    "body": "PFIE is the engine behind Puntr's fixtures, results and league tables. AI never decides what is true: it helps read the sources, then fixed rules and independent sources settle the facts.",
+    "collect": {
+      "title": "Collect",
+      "body": "Fixtures, results and tables are read from the league's own site and other reputable sources."
+    },
+    "check": {
+      "title": "Check",
+      "body": "Deterministic rules validate every record, and independent sources must agree before it counts."
+    },
+    "publish": {
+      "title": "Publish",
+      "body": "Only verified data reaches the site. If a refresh fails, the table is flagged or held back."
+    },
+    "cta": "See football coverage"
   },
   "sports": {
     "title1": "Built Around The Sports You",
     "title2": "Love",
-    "body": "We are starting with football competitions followed by South African fans. Coverage will expand as the data and grading are ready.",
-    "heading": "SPORTS COVERAGE"
+    "body": "We start with football and add sports only once their data and grading are ready. Until then, no page claims coverage of them.",
+    "heading": "Sports coverage",
+    "footballTitle": "Football at launch",
+    "footballBody": "{{count}} launch leagues, with more already being read by PFIE for after launch.",
+    "postLaunch": "+{{count}} more after launch",
+    "roadmapTitle": "Coming next",
+    "fromLaunch": "From 1 Dec 2026",
+    "planned": "Planned · {{when}}",
+    "explore": "Explore football",
+    "roadmap": "See the full roadmap"
   },
   "tech": {
     "title1": "Built On A",
@@ -121,13 +189,13 @@
     "title2": "Fits Together",
     "core": "Core application",
     "infra": "Infrastructure and services",
-    "c1": "Puntr web app",
-    "c2": "Email-code sign-in",
-    "c3": "Locked prediction record",
-    "c4": "Community and leaderboards",
+    "c1": "Puntr web app, installable on your phone",
+    "c2": "Email-code and password sign-in",
+    "c3": "Locked, hash-chained prediction record",
+    "c4": "Community, Duels and leaderboards",
     "i1": "Vercel (hosting)",
     "i2": "Supabase (database and sign-in)",
-    "i3": "Sports data provider (fixtures and results)",
+    "i3": "PFIE (fixtures, results and tables, checked against independent sources)",
     "i4": "Email delivery"
   },
   "knowledge": {
@@ -158,7 +226,7 @@
   "points": {
     "title1": "Every Prediction",
     "title2": "Counts",
-    "body": "PuntPoints recognise eligible activity and community contribution. They can be redeemed for available vouchers, sponsored rewards and perks. A planned Tipster Support feature will let Punters send voluntary PuntPoints tips to eligible verified Tipsters. Points have no cash value and do not affect rankings.",
+    "body": "PuntPoints recognise eligible activity and community contribution. Collect them and redeem them for available vouchers, sponsored rewards and perks. Points have no cash value and never affect rankings.",
     "accuracy": {
       "title": "Accuracy",
       "body": "Be recognised for getting it right."
@@ -167,14 +235,16 @@
       "title": "Engagement",
       "body": "Take part, contribute and build your reputation."
     },
-    "referrals": {
-      "title": "Referrals",
-      "body": "Invite friends and watch the community grow."
-    },
     "tipsters": {
       "title": "Tipster Support",
-      "body": "Planned for Puntr Pro: Punters will be able to recognise verified Tipsters with a consistent track record by sending them PuntPoints. Points have no cash value and never affect rankings. Not available yet."
+      "body": "Planned for Puntr Pro: Punters will be able to recognise verified Tipsters by sending them PuntPoints. Not available yet."
     }
+  },
+  "refer": {
+    "eyebrow": "Refer and earn",
+    "title": "Recurring commission on Puntr Pro referrals.",
+    "body": "Share Puntr with your sports community. When someone you refer becomes a paying Puntr Pro subscriber, you can earn 10–30% recurring commission under the programme terms. Commission comes from Pro subscription revenue only, never from bets, deposits or winnings.",
+    "cta": "How referrals work"
   },
   "cta": {
     "title1": "Think You Know",
@@ -198,5 +268,5 @@
     "pricing": "See pricing",
     "newsroom": "Read the Newsroom"
   },
-  "vision": "To become a trusted home for sports predictions in South Africa and, over time, across Africa — with every pick on the record."
+  "vision": "To become a trusted home for sports intelligence in South Africa and, over time, across Africa, with every pick on the record."
 }

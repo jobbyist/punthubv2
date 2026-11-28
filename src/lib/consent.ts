@@ -25,6 +25,15 @@ export const CONSENT_COOKIE = "puntr_consent";
 export const CONSENT_NOTICE_VERSION = "2026-11-27-pfie-learning";
 export const CONSENT_CHANGED_EVENT = "puntr:consent-changed";
 export const CONSENT_OPEN_EVENT = "puntr:open-consent";
+/** Fired by the consent banner whenever it shows or hides (detail: { open: boolean }). */
+export const CONSENT_BANNER_EVENT = "puntr:consent-banner";
+/** Set on <html> while the consent banner is on screen, so late-mounting overlays can check it. */
+export const CONSENT_BANNER_ATTR = "data-consent-banner";
+
+/** True when this browser already holds a choice made under the current notice. */
+export function hasCurrentConsent(): boolean {
+  return readConsent()?.noticeVersion === CONSENT_NOTICE_VERSION;
+}
 
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 

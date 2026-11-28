@@ -94,7 +94,6 @@ export function corroborate(input: {
 
   const decisions: Decision[] = [];
   for (const c of clusters.values()) {
-    const existing = input.known.find((k) => k.home === c.home && k.away === c.away) ?? null;
     // Printed (or fixed-site) zones decide first; inferred zones only corroborate (see below).
     const printed = (o: Observation) => (o.kickoffInferred ? null : o.kickoffUtc);
     const inferredObs = c.observations.filter((o) => o.kickoffInferred && o.kickoffUtc);
@@ -150,6 +149,29 @@ export function corroborate(input: {
         };
       }
     }
+    // Match stored rows by canonical team identity, not just display spelling. Prefer the closest
+    // kick-off, then an unresolved duplicate over a finished alias row so syncResults can reconcile
+    // every provider_ref for the same match.
+    const targetKickoff =
+      kickoff?.value ?? c.observations.find((o) => o.kickoffUtc)?.kickoffUtc ?? null;
+    const matchingFixtures = input.known
+      .filter(
+        (fixture) =>
+          normaliseTeam(fixture.home) === normaliseTeam(c.home) &&
+          normaliseTeam(fixture.away) === normaliseTeam(c.away),
+      )
+      .sort((a, b) => {
+        const distance = (fixture: KnownFixture) => {
+          if (!targetKickoff) return 0;
+          const value = Math.abs(Date.parse(fixture.kickoffAt) - Date.parse(targetKickoff));
+          return Number.isFinite(value) ? value : Number.MAX_SAFE_INTEGER;
+        };
+        const byKickoff = distance(a) - distance(b);
+        if (byKickoff !== 0) return byKickoff;
+        return Number(a.status === "finished") - Number(b.status === "finished");
+      });
+    const existing = matchingFixtures[0] ?? null;
+
     const final = decide(
       c.observations.filter((o) => o.status === "finished"),
       (o) => (o.homeScore !== null && o.awayScore !== null ? [o.homeScore, o.awayScore] : null),

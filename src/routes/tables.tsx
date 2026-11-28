@@ -1,14 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { EmptyState } from "@/components/empty-state";
 import { AppShell, PageHeading } from "@/components/layout/app-shell";
 import { CompetitionBadge } from "@/components/match/competition-badge";
 import { FilterChips } from "@/components/match/filter-chips";
-import { FormGuide } from "@/components/match/form-guide";
-import { TeamLogo } from "@/components/team-logo";
+import { StandingsTable } from "@/components/standings/standings-table";
 import { useTeamForms } from "@/hooks/use-team-forms";
 import { formatDate, formatTime } from "@/lib/format";
 import { headT } from "@/lib/i18n/head";
@@ -22,7 +21,6 @@ import {
   type StandingRow,
   type SyncStatus,
 } from "@/lib/standings-data";
-import { cn } from "@/lib/utils";
 
 const KEYS = [...STANDINGS_LAUNCH_KEYS] as CompetitionKey[];
 
@@ -102,14 +100,6 @@ function Standings() {
   }, [selectedLeague, statuses]);
 
   const teams = useMemo(() => (rows ?? []).map((r) => r.team), [rows]);
-  const groupedRows = useMemo(() => {
-    const groups = new Map<string, StandingRow[]>();
-    for (const row of rows ?? []) {
-      const group = row.group_name ?? "";
-      groups.set(group, [...(groups.get(group) ?? []), row]);
-    }
-    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [rows]);
   const { forms } = useTeamForms(teams);
   const status = statuses?.find((s) => s.job === "standings" && s.scope === selectedLeague);
   const stale = rows !== null && rows.length > 0 && isStale(status);
@@ -180,123 +170,12 @@ function Standings() {
             ) : rows.length === 0 ? (
               <EmptyState art="podium" title={t("empty")} body={t("pending")} className="m-4" />
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] text-sm">
-                  <thead>
-                    <tr className="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                      <th className="px-3 py-2 font-semibold" scope="col">
-                        {t("cols.pos")}
-                      </th>
-                      <th className="px-2 py-2 font-semibold" scope="col">
-                        {t("cols.team")}
-                      </th>
-                      {(["p", "w", "d", "l"] as const).map((c) => (
-                        <th key={c} className="px-2 py-2 text-right font-semibold" scope="col">
-                          {t(`cols.${c}`)}
-                        </th>
-                      ))}
-                      <th
-                        className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
-                        scope="col"
-                      >
-                        {t("cols.gf")}
-                      </th>
-                      <th
-                        className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
-                        scope="col"
-                      >
-                        {t("cols.ga")}
-                      </th>
-                      <th className="px-2 py-2 text-right font-semibold" scope="col">
-                        {t("cols.gd")}
-                      </th>
-                      <th className="px-2 py-2 text-right font-semibold" scope="col">
-                        {t("cols.pts")}
-                      </th>
-                      <th
-                        className="hidden px-3 py-2 text-right font-semibold md:table-cell"
-                        scope="col"
-                      >
-                        {t("cols.form")}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="tnum">
-                    {groupedRows.map(([group, groupRows]) => (
-                      <Fragment key={group || "overall"}>
-                        {group && (
-                          <tr className="border-t-2 border-border bg-muted/50">
-                            <td
-                              colSpan={11}
-                              className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground"
-                            >
-                              <div>Group {group}</div>
-                              {selectedLeague === "caf-cc" &&
-                                group === "C" &&
-                                groupRows.length === 3 && (
-                                  <p className="mt-1 text-[10px] font-medium normal-case tracking-normal text-muted-foreground">
-                                    One Group C place is pending completion of the preliminary-round
-                                    tie.
-                                  </p>
-                                )}
-                            </td>
-                          </tr>
-                        )}
-                        {groupRows.map((r) => (
-                          <tr key={`${group}-${r.team}`} className="border-t border-border">
-                            <td className="px-3 py-2.5">
-                              <span
-                                className={cn(
-                                  "grid size-6 place-items-center rounded-md text-xs font-bold",
-                                  r.position <= 4
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-muted",
-                                )}
-                              >
-                                {r.position}
-                              </span>
-                            </td>
-                            <td className="max-w-0 px-2 py-2.5">
-                              <span className="flex min-w-0 items-center gap-2">
-                                <TeamLogo
-                                  team={r.team}
-                                  sport="soccer"
-                                  size="sm"
-                                  className="size-6 shrink-0"
-                                />
-                                <span className="truncate font-semibold">{r.team}</span>
-                              </span>
-                            </td>
-                            <td className="px-2 py-2.5 text-right">{r.played}</td>
-                            <td className="px-2 py-2.5 text-right">{r.won}</td>
-                            <td className="px-2 py-2.5 text-right">{r.drawn}</td>
-                            <td className="px-2 py-2.5 text-right">{r.lost}</td>
-                            <td className="hidden px-2 py-2.5 text-right sm:table-cell">
-                              {r.goals_for}
-                            </td>
-                            <td className="hidden px-2 py-2.5 text-right sm:table-cell">
-                              {r.goals_against}
-                            </td>
-                            <td className="px-2 py-2.5 text-right">
-                              {r.goal_diff > 0 ? `+${r.goal_diff}` : r.goal_diff}
-                            </td>
-                            <td className="px-2 py-2.5 text-right font-display font-extrabold">
-                              {r.points}
-                            </td>
-                            <td className="hidden px-3 py-2.5 md:table-cell">
-                              <FormGuide
-                                team={r.team}
-                                entries={forms[r.team]?.entries}
-                                align="end"
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </Fragment>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <StandingsTable
+                rows={rows}
+                forms={forms}
+                competitionKey={selectedLeague}
+                caption={name}
+              />
             )}
           </section>
         </>

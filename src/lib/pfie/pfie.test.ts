@@ -7,7 +7,7 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 import { corroborate } from "./corroborate";
 import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
-import { createPfieProvider, resultsGapMs, tierOf } from "./provider";
+import { createPfieProvider, PFIE_SOURCES, resultsGapMs, tierOf } from "./provider";
 import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
@@ -125,6 +125,8 @@ describe("team names", () => {
     expect(normaliseTeam("Manchester City FC")).toBe("manchester city");
     expect(normaliseTeam("Man City")).toBe("manchester city");
     expect(normaliseTeam("AmaZulu F.C.")).toBe("amazulu");
+    expect(resolveTeam("LOSC Lille", ["Lille OSC"])).toBe("Lille OSC");
+    expect(resolveTeam("Olympique Lyonnais", ["Olympique Lyon"])).toBe("Olympique Lyon");
     expect(teamSlug("Brighton & Hove Albion")).toBe("brighton-and-hove-albion");
   });
   it("matches a short name only when exactly one team fits", () => {
@@ -457,6 +459,39 @@ describe("corroboration", () => {
     const d = by(decide(accepted).decisions, "Stellenbosch FC");
     expect(d?.sources.sort()).toEqual(["psl.co.za", "supersport.com"]);
   });
+  it("reconciles an unresolved alias duplicate when a finished canonical row already exists", () => {
+    const accepted = accept(
+      RAW.filter((o) => o.status === "finished" && o.home === "Mamelodi Sundowns"),
+    ).accepted;
+    const known: KnownFixture[] = [
+      {
+        providerRef: "finished-canonical",
+        home: "Mamelodi Sundowns",
+        away: "Durban City",
+        kickoffAt: "2026-11-12T17:30:00.000Z",
+        status: "finished",
+      },
+      {
+        providerRef: "scheduled-alias",
+        home: "Mamelodi Sundowns FC",
+        away: "Durban City",
+        kickoffAt: "2026-11-12T17:30:00.000Z",
+        status: "scheduled",
+      },
+    ];
+
+    const result = decide(accepted, known).decisions[0];
+
+    expect(result).toMatchObject({
+      providerRef: "scheduled-alias",
+      status: "finished",
+      statusVerdict: "verified",
+      publish: true,
+      homeScore: 4,
+      awayScore: 1,
+    });
+  });
+
   it("does not publish a result for a fixture it has no kick-off for", () => {
     const d = by(decide(accepted).decisions, "Mamelodi Sundowns");
     expect(d).toMatchObject({ status: "finished", homeScore: 4, awayScore: 1, publish: false });
@@ -648,6 +683,26 @@ const llm = (text: string | Error): LlmProvider & { models: string[] } => {
 const ANSWER = JSON.stringify({ matches: RAW });
 
 describe("provider", () => {
+  it("uses official SAFA match pages for Bafana friendlies", () => {
+    expect(PFIE_SOURCES["bafana-friendlies"]?.pages?.results).toContain(
+      "https://www.safa.net/general-news/disappointment-as-bafana-are-held-to-a-2-2-draw-by-kenya/",
+    );
+    expect(PFIE_SOURCES["bafana-friendlies"]?.pages?.results).toContain(
+      "https://www.safa.net/match-centre/fixtures/bafana-bafana-u23-vs-madagascar-u23-2/",
+    );
+  });
+
+  it("uses official UEFA, Saudi Pro League and EFL result pages", () => {
+    expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
+      "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
+    );
+    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toContain(
+      "https://www.spl.com.sa/en/fixtures-results",
+    );
+    expect(PFIE_SOURCES.championship?.pages?.results).toContain(
+      "https://www.efl.com/competitions/efl-championship/",
+    );
+  });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
 
   it("returns verified fixtures in the shape the existing sync expects, using the configured primary model first", async () => {
@@ -755,11 +810,11 @@ describe("provider", () => {
         return SOURCES.map((s) => ({ url: s.url, title: "t", excerpt: s.text, publishedAt: null }));
       },
     };
-    const target = {
-      home: "Napoli",
-      away: "Torino",
+    const targets = Array.from({ length: 12 }, (_, index) => ({
+      home: `Home Club ${index + 1}`,
+      away: `Away Club ${index + 1}`,
       kickoffAt: "2026-11-12T18:45:00.000Z",
-    };
+    }));
     const provider = createPfieProvider({
       ...base,
       search: targetedSearch,
@@ -768,10 +823,12 @@ describe("provider", () => {
     });
     await provider.listResults(new Date("2026-11-12T18:45:00Z"), NOW, {
       only: ["seriea"],
-      fixtures: [target],
+      fixtures: targets,
     });
-    expect(captured.value?.queries).toContain("Napoli vs Torino result score 2026-11-12");
-    expect(captured.value?.objective).toContain("Napoli vs Torino");
+    expect(captured.value?.queries).toContain("Home Club 1 vs Away Club 1 result score 2026-11-12");
+    for (const target of targets) {
+      expect(captured.value?.objective).toContain(`${target.home} vs ${target.away}`);
+    }
   });
 
   it("does not fall back to Gemini or another provider when Parallel Responses is capped", async () => {

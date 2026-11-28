@@ -22,6 +22,7 @@ import {
   chooseTables,
   independentSourceKey,
   parseStandings,
+  parseStandingsMarkdown,
   tableRegression,
   standingsRequest,
   standingsDisagreementHint,
@@ -395,7 +396,9 @@ export function standingsDue(
   latestFinishedMs: number | undefined,
   now: Date,
   refreshHours = 24,
+  force = false,
 ): boolean {
+  if (force) return true;
   if (!retryDue(s, now)) return false;
   if (!s?.lastSuccessAt) return true;
   const last = Date.parse(s.lastSuccessAt);
@@ -405,7 +408,7 @@ export function standingsDue(
 
 export async function runTablesSync(
   deps: TablesDeps,
-  opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob } = {},
+  opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
 ) {
   const now = deps.now ?? (() => new Date());
   const maxJobs = opts.maxJobs ?? 2;
@@ -438,6 +441,7 @@ export async function runTablesSync(
         finished.get(c.name),
         now(),
         STANDINGS_COMPETITIONS[key]!.refreshHours,
+        opts.force,
       )
     )
       due.push({ job: "standings", key });
@@ -561,8 +565,12 @@ async function gatherSources(
   return sources;
 }
 
-async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
-  const models = deps.models ?? ["parallel-low"];
+async function generate(
+  deps: TablesDeps,
+  request: Parameters<LlmProvider["generate"]>[1],
+  modelOverride?: string[],
+) {
+  const models = modelOverride ?? deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
   for (const m of models) {
@@ -608,6 +616,24 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
+        const deterministic =
+          !cfg.groups?.length && source.via === "extract"
+            ? parseStandingsMarkdown(source.text, source.index)
+            : null;
+        if (deterministic) {
+          const validation = validateTables(
+            deterministic,
+            [source],
+            cfg.teams,
+            known,
+            now(),
+            key === "ucl",
+            cfg.groups,
+            cfg.teamsPerGroup ?? cfg.teams,
+            cfg.groupTeamRanges,
+          );
+          if (validation.tables.length > 0) return { source, parsed: deterministic, validation };
+        }
         const answer = await generate(
           deps,
           standingsRequest({
@@ -619,7 +645,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           }),
         );
         modelsUsed.add(answer.model);
-        const parsed = parseStandings(answer.text);
+        const parsed = parseStandings(answer.text) ?? deterministic;
         const validation = parsed
           ? validateTables(
               parsed,
@@ -654,6 +680,10 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       retryCandidates.map(async (result) => {
         const hint =
           result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
+        // Championship is the only launch table still failing structured extraction after two low-effort passes.
+        // Use a bounded Medium-first retry for that one source pass, then fall back to Low if Medium is quota-blocked.
+        const retryModels =
+          key === "championship" ? ["parallel-medium", "parallel-low"] : undefined;
         const answer = await generate(
           deps,
           standingsRequest({
@@ -664,6 +694,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             groups: cfg.groups,
             groupNotes: cfg.groupNotes,
           }),
+          retryModels,
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
