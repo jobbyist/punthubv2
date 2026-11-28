@@ -107,6 +107,22 @@ describe("cachedCall", () => {
     expect(extract).toHaveBeenCalledTimes(1);
   });
 
+  it("forwards PFIE competition and job-run context through cache wrappers", async () => {
+    const search = vi.fn(async () => [
+      { url: "https://example.com", title: "Result", excerpt: "excerpt", publishedAt: null },
+    ]);
+    const cached = withSearchCache({ name: "parallel", search }, null, "fixtures");
+    const input = { objective: "Championship fixtures", queries: ["Championship"], maxResults: 5 };
+    const context = {
+      competition: "championship",
+      jobRunId: "9b7d2d9c-77fd-4e29-84a2-8f2011d00000",
+      jobKind: "fixtures",
+    };
+
+    await cached.search(input, context);
+    expect(search).toHaveBeenCalledWith(input, context);
+  });
+
   it("reports estimated avoided provider spend on a persistent cache hit", async () => {
     const store = memoryStore();
     const fetcher = vi.fn(async () => [{ url: "https://example.com", title: "x", excerpt: "y", publishedAt: null }]);
