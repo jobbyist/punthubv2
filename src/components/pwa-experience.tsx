@@ -36,6 +36,7 @@ export function PwaExperience() {
   const [showIosGuide, setShowIosGuide] = useState(false);
   const [ios, setIos] = useState(false);
   const [scrolling, setScrolling] = useState(false);
+  const [installing, setInstalling] = useState(false);
   const installRef = useRef<InstallPromptEvent | null>(null);
   installRef.current = installEvent;
   const reduceMotion = useReducedMotion();
@@ -119,6 +120,8 @@ export function PwaExperience() {
       }
       const deferred = installRef.current;
       if (deferred) {
+        installRef.current = null;
+        setInstallEvent(null);
         void deferred.prompt().then(async () => {
           const choice = await deferred.userChoice;
           setInstallEvent(null);
@@ -218,9 +221,22 @@ export function PwaExperience() {
       setShowIosGuide(true);
       return;
     }
-    if (!installEvent) return;
-    await installEvent.prompt();
-    const choice = await installEvent.userChoice;
+    // A deferred install prompt can only be shown once: consume it before awaiting so a double tap is a no-op.
+    const deferred = installRef.current;
+    if (!deferred || installing) return;
+    installRef.current = null;
+    setInstallEvent(null);
+    setInstalling(true);
+    let choice: { outcome: "accepted" | "dismissed" };
+    try {
+      await deferred.prompt();
+      choice = await deferred.userChoice;
+    } catch (error) {
+      console.error("[Puntr PWA] Install prompt failed", error);
+      return;
+    } finally {
+      setInstalling(false);
+    }
     if (choice.outcome === "accepted") {
       setShowPrompt(false);
       setShowNotch(false);
@@ -317,7 +333,9 @@ export function PwaExperience() {
               <button
                 type="button"
                 onClick={install}
-                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]"
+                disabled={installing}
+                aria-busy={installing}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D] disabled:opacity-70"
               >
                 {ios ? <Share2 className="size-4" /> : <Download className="size-4" />}
                 {t("pwa.install")}
