@@ -1010,6 +1010,13 @@ describe("scheduling", () => {
     expect(standingsDue(due12h, undefined, now, 12)).toBe(true);
     expect(standingsDue(due12h, undefined, now, 24)).toBe(false);
     expect(standingsDue(fresh, Date.parse("2026-11-15T01:00:00Z"), now, 12)).toBe(true);
+    const backoff = s({
+      lastSuccessAt: "2026-11-14T20:10:00Z",
+      lastAttemptAt: "2026-11-15T01:30:00Z",
+      consecutiveFailures: 3,
+    });
+    expect(standingsDue(backoff, undefined, now, 12)).toBe(false);
+    expect(standingsDue(backoff, undefined, now, 12, true)).toBe(true);
   });
 });
 
