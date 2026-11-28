@@ -360,3 +360,12 @@ Monthly USD family budgets remain unchanged. The scheduled job records the resto
 - Target: settle a pick or duel within minutes after a verified final result becomes available, and ordinarily within 60 minutes after full time.
 - The five-minute watchdog and two-minute settlement cycle remove cron cadence as the bottleneck. They cannot force a source to publish a final score; if the official feed and independent sources remain stale or disagree, Puntr deliberately leaves the fixture pending rather than risk an incorrect settlement.
 - A delayed result remains eligible for automatic retry. Members should contact support if it remains pending more than 60 minutes after full time, with the fixture and pick/duel link.
+
+
+### Lincoln City vs Wolves: production watchdog verification
+
+- The new production priority query correctly selected the Lincoln City vs Wolves fixture because it has an active duel and had passed the 105-minute post-kick-off threshold.
+- The first priority run completed successfully (HTTP 200), made three Parallel calls (one Search and two Responses Low), and wrote no result because the 24 extracted observations were not final-status verified. EFL and FBref still returned `scheduled`; BBC and FotMob returned `live`. The fixture and duel therefore remain pending; no unverified 0–0 score was written.
+- The watchdog is now active every five minutes, but provider calls respect the bounded 5m / 15m / 60m per-competition retry backoff. Result search phrasing now explicitly asks for full-time status and final-score evidence.
+- The 2-minute settlement endpoint independently ran both pick and duel settlement successfully; it correctly found zero terminal fixtures to settle in this cycle.
+- The external Guardian clockwatch and a community match thread report a 0–0 draw, but the primary PFIE source set did not yet provide the required terminal status. Puntr deliberately does not promote that score solely on the basis of a scoreline without the required final-status evidence.
