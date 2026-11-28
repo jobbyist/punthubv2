@@ -123,3 +123,40 @@ begin
   return public.api_quota_claim(p_provider,p_units);
 end;
 $function$;
+
+create or replace function public.api_family_spend_usd(p_family text)
+returns numeric
+language plpgsql
+stable
+security definer
+set search_path to public, pg_temp
+as $function$
+declare
+  v_spent numeric := 0;
+  v_pfie_low numeric := 0;
+begin
+  select coalesce(sum(u.calls * p.usd_per_unit), 0)
+    into v_spent
+    from public.content_api_usage u
+    join public.api_unit_prices p on p.provider = u.provider
+   where public.api_provider_family(u.provider) = p_family
+     and u.day >= date_trunc('month', now() at time zone 'utc')::date;
+
+  -- Parallel Responses low is normally in the auxiliary reserve. PFIE-tagged calls are reassigned to core.
+  if p_family in ('parallel', 'parallel-aux') then
+    select coalesce(sum(estimated_cost_usd), 0)
+      into v_pfie_low
+      from public.api_call_events
+     where provider = 'parallel-chat:low'
+       and feature like 'pfie:%'
+       and claimed_at >= date_trunc('month', now() at time zone 'utc');
+    if p_family = 'parallel' then
+      v_spent := v_spent + v_pfie_low;
+    else
+      v_spent := greatest(0, v_spent - v_pfie_low);
+    end if;
+  end if;
+
+  return v_spent;
+end;
+$function$;
