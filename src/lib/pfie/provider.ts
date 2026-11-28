@@ -189,8 +189,13 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   uecl: {
     official: ["uefa.com"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: [
+        "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
+        "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures/",
+      ],
+    },
     queries: {
       fixtures: [
         "Conference League fixtures SAST kick-off times",
@@ -211,10 +216,23 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["Ligue 1 results", "Ligue 1 full time scores"],
     },
   },
+  "saudi-pro": {
+    official: ["spl.com.sa"],
+    pages: {
+      fixtures: ["https://www.spl.com.sa/en/fixtures-results"],
+      results: ["https://www.spl.com.sa/en/fixtures-results"],
+    },
+    queries: {
+      fixtures: ["Roshn Saudi League fixtures KSA time", "Saudi Pro League fixtures SA time"],
+      results: ["Roshn Saudi League results", "Saudi Pro League full time scores"],
+    },
+  },
   championship: {
     official: ["efl.com"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: ["https://www.efl.com/competitions/efl-championship/"],
+    },
     queries: {
       fixtures: [
         "EFL Championship fixtures SAST kick-off times",
