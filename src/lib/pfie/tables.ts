@@ -808,7 +808,15 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           retryModels,
         );
         modelsUsed.add(answer.model);
-        const parsed = stampPageDate(parseStandings(answer.text), result.source);
+        // Preserve the deterministic page parse through the retry path. A failed model response must
+        // never erase an already parsed source table; retaining it also exposes the real validation reason
+        // (team count, arithmetic, identity or freshness) instead of mislabelling it as invalid JSON.
+        const deterministicRetry =
+          !cfg.groups?.length && result.source.via === "extract"
+            ? stampPageDate(parseStandingsMarkdown(result.source.text, result.source.index), result.source)
+            : null;
+        const parsed =
+          stampPageDate(parseStandings(answer.text), result.source) ?? deterministicRetry;
         const validation = parsed
           ? validateTables(
               parsed,
@@ -1326,10 +1334,16 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 const text = source.text ?? "";
                 const marker = /middlesbrough|wolverhampton|\bgoals\b|\bpts\b/i.exec(text);
                 const center = marker?.index ?? 0;
+                const parsed = !cfg.groups?.length
+                  ? parseStandingsMarkdown(text, source.index)
+                  : null;
                 return {
                   domain: source.domain,
                   length: text.length,
                   format: /^\s*</.test(text) ? "html" : text.includes("|") ? "markdown-or-pipes" : "plain-text",
+                  deterministicRows: parsed?.length ?? 0,
+                  firstTeam: parsed?.[0]?.team ?? null,
+                  lastTeam: parsed?.at(-1)?.team ?? null,
                   excerpt: text.slice(Math.max(0, center - 350), Math.min(text.length, center + 1_200)),
                 };
               }),
