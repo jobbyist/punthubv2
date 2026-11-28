@@ -153,6 +153,8 @@ export interface TablesDeps {
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
 const MAX_SOURCES = 5;
+const MAX_SEASON_SOURCES = 3;
+const THREE_SEASON_HISTORY_KEYS = new Set<CompetitionKey>(["ucl", "uecl", "caf-cc"]);
 const MAX_CHARS = 24_000;
 const HISTORY_DAYS = 42;
 /** Season backfill reads results in windows this long (about one matchday), so a search lands on the right dates. */
@@ -161,9 +163,9 @@ const SEASON_WINDOW_DAYS = 7;
 const SEASON_GIVE_UP = 6;
 
 /**
- * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league: from the start of the previous
- * season up to where the form backfill begins (today - 42 days). Newest first, so the current season fills before
- * last season. Each window is one idempotent job, recorded in sync_status as `season` / `<key>:<start>`.
+ * Season backfill windows (window start dates, YYYY-MM-DD) for a July-start league. The three launch cup
+ * competitions (UCL, UECL and CAF CC) retain three seasons of history; other non-archive competitions retain
+ * two. Windows are newest first and each is an idempotent `season` / `<key>:<start>` job.
  */
 const MONTHS = [
   "January",
@@ -283,9 +285,10 @@ export function seasonQueries(
   return out;
 }
 
-export function seasonWindows(now: Date): { start: string; end: string }[] {
+export function seasonWindows(now: Date, key?: CompetitionKey): { start: string; end: string }[] {
   const year = now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
-  const first = Date.UTC(year - 1, 7, 1); // 1 August of the previous season
+  const seasonsBack = key && THREE_SEASON_HISTORY_KEYS.has(key) ? 2 : 1;
+  const first = Date.UTC(year - seasonsBack, 7, 1); // 1 August of the oldest retained season
   const stop = now.getTime() - HISTORY_DAYS * DAY;
   const out: { start: string; end: string }[] = [];
   for (let t = first; t < stop; t += SEASON_WINDOW_DAYS * DAY) {
@@ -375,14 +378,14 @@ export async function runTablesSync(
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
   const season: { key: CompetitionKey; start: string; end: string }[] = [];
   if (!opts.job || opts.job === "season") {
-    for (const w of seasonWindows(now())) {
-      for (const key of keys) {
-        // Leagues covered by the archive import no longer need the search-based backfill.
-        if (ARCHIVE_SOURCES[key]) continue;
-        const s = status("season", `${key}:${w.start}`);
-        if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
-        if (retryDue(s, now())) season.push({ key, ...w });
-      }
+    const windows = keys
+      .filter((key) => !ARCHIVE_SOURCES[key])
+      .flatMap((key) => seasonWindows(now(), key).map((window) => ({ key, ...window })))
+      .sort((a, b) => b.start.localeCompare(a.start));
+    for (const window of windows) {
+      const s = status("season", `${window.key}:${window.start}`);
+      if (s?.lastSuccessAt || (s?.consecutiveFailures ?? 0) >= SEASON_GIVE_UP) continue;
+      if (retryDue(s, now())) season.push(window);
     }
   }
 
@@ -408,6 +411,7 @@ async function gatherSources(
   preferSearchResults = false,
   preferredUrls: string[] = [],
   allowSecondary = false,
+  maxSources = MAX_SOURCES,
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -446,7 +450,7 @@ async function gatherSources(
     if (tier === "other" || isBlockedDomain(domain) || (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))) continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
-    if (candidates.length >= MAX_SOURCES) break;
+    if (candidates.length >= maxSources) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
   const fetched = await Promise.all(
@@ -817,11 +821,11 @@ async function syncSeasonWindow(
     // First use the competition's own official result archive. If it cannot provide usable observations for
     // this particular window, retry with trusted independent publishers; history verification still requires
     // two matching domains whenever an official scoreline is not present.
-    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls);
+    let sources = await gatherSources(deps, key, objective, queries, true, preferredUrls, false, MAX_SEASON_SOURCES);
     if (sources.length === 0) throw new Error("no usable source");
     let result = await extractAndVerify(sources);
     if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
-      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
+      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true, MAX_SEASON_SOURCES);
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
         if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
@@ -879,7 +883,9 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
       true,
-      seasonArchiveUrls(c.name, start),
+      seasonArchiveUrls(c.name, sastDate(from)),
+      false,
+      MAX_SEASON_SOURCES,
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
