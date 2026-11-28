@@ -24,6 +24,7 @@ import {
   titleSimilarity,
   validateDraft,
 } from "./validate";
+import { mapProviderUsage, modelQuotaOptions } from "./usage";
 
 const noSleep = async () => undefined;
 const REQUEST: LlmRequest = {
@@ -61,6 +62,7 @@ describe("config", () => {
     expect(parseModelList(undefined).models).toContain("gemini-3.8-flash");
     expect(modelsForContentSlot(parseModelList(undefined).models, "breaking")).toEqual([
       "parallel-medium",
+      "parallel-low",
     ]);
   });
   it("refuses a model that is not on the shared allowlist", () => {
@@ -68,12 +70,31 @@ describe("config", () => {
     expect(models).toEqual(["parallel-medium", "gemini-3.1-flash-lite"]);
     expect(refused).toEqual(["gemini-3.1-pro-preview"]);
   });
-  it("uses Parallel Medium for every Newsroom slot", () => {
-    const models = ["parallel-medium"];
+  it("prefers Medium and keeps Parallel Low as the quota fallback for every Newsroom slot", () => {
+    const models = ["parallel-medium", "parallel-low"];
     expect(modelsForContentSlot(models, "breaking")).toEqual(models);
     expect(modelsForContentSlot(models, "editorial")).toEqual(models);
     expect(modelsForContentSlot(models, "intelligence")).toEqual(models);
     expect(modelsForContentSlot(models)).toEqual(models);
+  });
+  it("maps calls plus quota refusals and loads per-model daily caps", () => {
+    const usage = mapProviderUsage(
+      [
+        { provider: "parallel-chat:medium", calls: 9, refused: 342 },
+        { provider: "parallel-chat:low", calls: 246, refused: 0 },
+      ],
+      [
+        { provider: "parallel-chat:medium", daily_cap: 18 },
+        { provider: "parallel-chat:low", daily_cap: 500 },
+      ],
+    );
+    expect(usage["parallel-chat:medium"]).toBe(351);
+    expect(
+      modelQuotaOptions(["parallel-medium", "parallel-low"], usage, {}),
+    ).toEqual({
+      usedToday: { "parallel-medium": 351, "parallel-low": 246 },
+      dailyCap: { "parallel-medium": 18, "parallel-low": 500 },
+    });
   });
   it("reads daily caps and ignores bad entries", () => {
     expect(parseDailyCaps("parallel-medium=12, x=abc")).toEqual({
@@ -180,15 +201,30 @@ describe("model router", () => {
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
     expect(llm.calls).toHaveLength(0);
   });
+  it("skips capped Medium and falls back to Parallel Low", async () => {
+    const llm = fakeLlm(() => "{}");
+    const router = createModelRouter(llm, {
+      models: ["parallel-medium", "parallel-low"],
+      usedToday: { "parallel-medium": 351, "parallel-low": 246 },
+      dailyCap: { "parallel-medium": 18, "parallel-low": 500 },
+      sleep: noSleep,
+    });
+    const out = await router.generate(REQUEST);
+    expect(out.model).toBe("parallel-low");
+    expect(llm.calls.map((call) => call.model)).toEqual(["parallel-low"]);
+  });
   it("keeps Gemini out of every Newsroom slot even though PFIE can use it", () => {
     expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "breaking")).toEqual([
       "parallel-medium",
+      "parallel-low",
     ]);
     expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "editorial")).toEqual([
       "parallel-medium",
+      "parallel-low",
     ]);
     expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "intelligence")).toEqual([
       "parallel-medium",
+      "parallel-low",
     ]);
   });
   it("throws AllModelsFailed when Parallel is out of quota", async () => {
