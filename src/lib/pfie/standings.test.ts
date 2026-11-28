@@ -1963,3 +1963,21 @@ describe("plain-text standings source parsing", () => {
     expect(extractStandingsTableDate("Updated 2026-11-28", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-28");
   });
 });
+
+describe("source-specific standings formatting", () => {
+  it("normalises strike-through markup around combined goal separators", () => {
+    const source = [
+      "| # | Club | P | W | D | L | Goals | GD | Pts |",
+      "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34~~:~~22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27~~:~~19 | +8 | 35 |",
+      "| 3 | Wolves | 17 | 10 | 4 | 3 | 31~~:~~19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30~~:~~15 | +15 | 32 |",
+    ].join("\n");
+    expect(parseStandingsMarkdown(source, 3)?.[0]).toMatchObject({ goalsFor: 34, goalsAgainst: 22 });
+  });
+
+  it("recognises ordinal dates on source pages", () => {
+    expect(extractStandingsTableDate("Last Updated 27th November 2026 at 21:53", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-27");
+  });
+});
