@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "title": "Football team directory: PSL, EPL, UCL clubs and more | Puntr",
+    "description": "Every football team Puntr covers, with badges, league position, form and next fixture. Betway Premiership, Premier League, Champions League, La Liga and more. Follow your teams.",
+    "teamTitle": "{{team}}: form, table position and next fixture | Puntr",
+    "teamDescription": "{{team}} on Puntr: verified results, current table position, recent form and the next fixture in {{competition}}. Follow {{team}} and predict their matches."
+  },
+  "breadcrumb": "Teams",
+  "eyebrow": "Team directory",
+  "title": "Every team we cover",
+  "lead": "Badges, table positions, form and the next fixture for every club and national side on Puntr. Follow your teams to put their matches first.",
+  "stats": {
+    "teams": "Teams",
+    "competitions": "Competitions",
+    "following": "You follow"
+  },
+  "search": {
+    "label": "Search teams",
+    "placeholder": "Search a team, e.g. Sundowns",
+    "clear": "Clear search"
+  },
+  "filters": {
+    "label": "Filter by competition",
+    "all": "All",
+    "following": "Following"
+  },
+  "count_one": "{{count}} team",
+  "count_other": "{{count}} teams",
+  "empty": {
+    "title": "No teams match",
+    "body": "Try another name or competition.",
+    "following": "You're not following any teams yet. Tap Follow on a team to add it."
+  },
+  "card": {
+    "position": "{{pos}} in {{competition}}",
+    "next": "Next: {{venue}} {{opponent}}",
+    "vs": "vs",
+    "at": "at",
+    "noFixture": "No fixture in the next 45 days"
+  },
+  "follow": {
+    "follow": "Follow",
+    "following": "Following",
+    "unfollow": "Unfollow {{team}}",
+    "followTeam": "Follow {{team}}",
+    "signIn": "Join free or sign in to follow teams",
+    "followed": "You're following {{team}}",
+    "unfollowed": "You've unfollowed {{team}}",
+    "error": "Couldn't update that follow. Please try again.",
+    "limit": "You can follow up to 50 teams."
+  },
+  "followers_one": "{{count}} follower",
+  "followers_other": "{{count}} followers",
+  "detail": {
+    "competitions": "Competitions",
+    "table": "League table",
+    "pos": "Pos",
+    "p": "P",
+    "w": "W",
+    "d": "D",
+    "l": "L",
+    "gd": "GD",
+    "pts": "Pts",
+    "ofTeams": "of {{count}}",
+    "noTable": "No verified table for this team yet.",
+    "next": "Next fixture",
+    "noNext": "No fixture in the next 45 days.",
+    "predict": "Predict this match",
+    "form": "Recent form",
+    "formLoading": "Loading verified results…",
+    "noForm": "No verified results stored for this team yet.",
+    "upcoming_one": "{{count}} fixture in the next 45 days",
+    "upcoming_other": "{{count}} fixtures in the next 45 days",
+    "fixtures": "All fixtures",
+    "fullTable": "Full table",
+    "open": "Open team page",
+    "close": "Close",
+    "back": "All teams",
+    "source": "Table and results are verified by PFIE before they appear."
+  },
+  "profile": {
+    "title": "Teams you follow",
+    "body": "Their matches come first on your Matchday card. Only you can see this list.",
+    "empty": "You're not following any teams yet.",
+    "browse": "Browse teams",
+    "since": "Since {{date}}"
+  },
+  "admin": {
+    "title": "Team follows",
+    "members": "Members following",
+    "total": "Total follows",
+    "follows7": "Follows (7 days)",
+    "unfollows7": "Unfollows (7 days)",
+    "follows30": "Follows (30 days)",
+    "top": "Most-followed teams",
+    "team": "Team",
+    "followers": "Followers",
+    "new7": "New (7 days)",
+    "empty": "No follows yet.",
+    "unavailable": "Team follows will appear once the database migration is applied."
+  }
+}

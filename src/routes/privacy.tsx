@@ -67,10 +67,10 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you delete your account [attorney review]",
   ],
   [
-    "Favourites (optional)",
-    "The sports, competitions and teams you choose to follow",
-    "Your consent (you choose to set them; clear them at any time in your account)",
-    "While your account is open; deleted when you clear them or delete your account. Used only to order your own Matchday card and shortcuts; never shown to others or shared [attorney review]",
+    "Favourites and followed teams (optional)",
+    "The sports, competitions and teams you choose to follow, including teams you follow in the team directory, and a log of when you followed or unfollowed a team",
+    "Your consent (you choose to set them; clear them or unfollow at any time in your account or the team directory)",
+    "While your account is open; deleted when you clear them or delete your account. Used to order your own Matchday card and shortcuts and to show which teams you follow on your account page. Others see only an anonymous follower count per team; admins see follow totals and the most-followed teams, never a list of who follows whom. Never shared [attorney review]",
   ],
   [
     "Betting slips (optional)",
@@ -165,7 +165,7 @@ const PURPOSES: [string, string, string, string][] = [
   ],
   [
     "PFIE learning (optional)",
-    "If you opt in: pseudonymous feature and fixture engagement, selected sports, competitions and markets, and your published pick actions (market, selection, odds and confidence). We exclude email, display name, private messages, payment details, stake amounts, IP addresses and device fingerprints. Data is stored separately from campaign analytics and used to evaluate user preferences, feature usefulness and PFIE data quality; user selections are never treated as verified match outcomes.",
+    "If you opt in: pseudonymous feature and fixture engagement, selected sports, competitions and markets, teams you follow or unfollow, and your published pick actions (market, selection, odds and confidence). We exclude email, display name, private messages, payment details, stake amounts, IP addresses and device fingerprints. Data is stored separately from campaign analytics and used to evaluate user preferences, feature usefulness and PFIE data quality; user selections are never treated as verified match outcomes.",
     "Your separate, explicit consent. Off by default for this purpose; withdrawing stops new collection and deletes raw events and derived learning examples linked to your pseudonymous learning record.",
     "Up to 12 months for event-level learning records, followed by deletion or irreversible aggregation. Your public pick record remains subject to its separate retention rules.",
   ],
@@ -208,7 +208,7 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 27 November 2026 (version 2026-11-27-r23). Draft pending
+          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-team-follows). Draft pending
           attorney review.
         </p>
 

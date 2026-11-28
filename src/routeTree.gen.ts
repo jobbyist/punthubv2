@@ -69,6 +69,8 @@ import { Route as NewsroomIndexRouteImport } from './routes/newsroom.index'
 import { Route as NewsroomSlugRouteImport } from './routes/newsroom.$slug'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy_.request'
 import { Route as SportsSportRouteImport } from './routes/sports.$sport'
+import { Route as TeamsIndexRouteImport } from './routes/teams.index'
+import { Route as TeamsSlugRouteImport } from './routes/teams.$slug'
 import { Route as TheGoodSportEpisode01RouteImport } from './routes/the-good-sport.episode-01'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAnnualPassPayRouteImport } from './routes/api.annual-pass.pay'
@@ -400,6 +402,16 @@ const SportsSportRoute = SportsSportRouteImport.update({
   path: '/sports/$sport',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamsIndexRoute = TeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamsSlugRoute = TeamsSlugRouteImport.update({
+  id: '/teams/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TheGoodSportEpisode01Route = TheGoodSportEpisode01RouteImport.update({
   id: '/episode-01',
   path: '/episode-01',
@@ -614,12 +626,14 @@ export interface FileRoutesByFullPath {
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/teams/$slug': typeof TeamsSlugRoute
   '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/duels/': typeof DuelsIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
+  '/teams/': typeof TeamsIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
@@ -706,12 +720,14 @@ export interface FileRoutesByTo {
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/teams/$slug': typeof TeamsSlugRoute
   '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/duels': typeof DuelsIndexRoute
   '/newsroom': typeof NewsroomIndexRoute
+  '/teams': typeof TeamsIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
@@ -799,12 +815,14 @@ export interface FileRoutesById {
   '/newsroom/$slug': typeof NewsroomSlugRoute
   '/privacy_/request': typeof PrivacyRequestRoute
   '/sports/$sport': typeof SportsSportRoute
+  '/teams/$slug': typeof TeamsSlugRoute
   '/the-good-sport/episode-01': typeof TheGoodSportEpisode01Route
   '/u/$username': typeof UUsernameRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/duels/': typeof DuelsIndexRoute
   '/newsroom/': typeof NewsroomIndexRoute
+  '/teams/': typeof TeamsIndexRoute
   '/api/annual-pass/pay': typeof ApiAnnualPassPayRoute
   '/api/auth/send-email': typeof ApiAuthSendEmailRoute
   '/api/cron/ai-community-daily': typeof ApiCronAiCommunityDailyRoute
@@ -893,12 +911,14 @@ export interface FileRouteTypes {
     | '/newsroom/$slug'
     | '/privacy/request'
     | '/sports/$sport'
+    | '/teams/$slug'
     | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account/'
     | '/admin/'
     | '/duels/'
     | '/newsroom/'
+    | '/teams/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
     | '/api/cron/ai-community-daily'
@@ -985,12 +1005,14 @@ export interface FileRouteTypes {
     | '/newsroom/$slug'
     | '/privacy/request'
     | '/sports/$sport'
+    | '/teams/$slug'
     | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account'
     | '/admin'
     | '/duels'
     | '/newsroom'
+    | '/teams'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
     | '/api/cron/ai-community-daily'
@@ -1077,12 +1099,14 @@ export interface FileRouteTypes {
     | '/newsroom/$slug'
     | '/privacy_/request'
     | '/sports/$sport'
+    | '/teams/$slug'
     | '/the-good-sport/episode-01'
     | '/u/$username'
     | '/account/'
     | '/admin/'
     | '/duels/'
     | '/newsroom/'
+    | '/teams/'
     | '/api/annual-pass/pay'
     | '/api/auth/send-email'
     | '/api/cron/ai-community-daily'
@@ -1170,11 +1194,13 @@ export interface RootRouteChildren {
   NewsroomSlugRoute: typeof NewsroomSlugRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   SportsSportRoute: typeof SportsSportRoute
+  TeamsSlugRoute: typeof TeamsSlugRoute
   UUsernameRoute: typeof UUsernameRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
   DuelsIndexRoute: typeof DuelsIndexRoute
   NewsroomIndexRoute: typeof NewsroomIndexRoute
+  TeamsIndexRoute: typeof TeamsIndexRoute
   ApiAnnualPassPayRoute: typeof ApiAnnualPassPayRoute
   ApiAuthSendEmailRoute: typeof ApiAuthSendEmailRoute
   ApiCronAiCommunityDailyRoute: typeof ApiCronAiCommunityDailyRoute
@@ -1627,6 +1653,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SportsSportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teams/': {
+      id: '/teams/'
+      path: '/teams'
+      fullPath: '/teams/'
+      preLoaderRoute: typeof TeamsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teams/$slug': {
+      id: '/teams/$slug'
+      path: '/teams/$slug'
+      fullPath: '/teams/$slug'
+      preLoaderRoute: typeof TeamsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/the-good-sport/episode-01': {
       id: '/the-good-sport/episode-01'
       path: '/episode-01'
@@ -1909,11 +1949,13 @@ const rootRouteChildren: RootRouteChildren = {
   NewsroomSlugRoute: NewsroomSlugRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   SportsSportRoute: SportsSportRoute,
+  TeamsSlugRoute: TeamsSlugRoute,
   UUsernameRoute: UUsernameRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
   DuelsIndexRoute: DuelsIndexRoute,
   NewsroomIndexRoute: NewsroomIndexRoute,
+  TeamsIndexRoute: TeamsIndexRoute,
   ApiAnnualPassPayRoute: ApiAnnualPassPayRoute,
   ApiAuthSendEmailRoute: ApiAuthSendEmailRoute,
   ApiCronAiCommunityDailyRoute: ApiCronAiCommunityDailyRoute,

@@ -25,7 +25,9 @@ describe("football coverage registry", () => {
     const firstPost = phases.indexOf("post-launch");
     const firstPlanned = phases.indexOf("planned");
     expect(phases.slice(0, firstPost).every((p) => p === "launch")).toBe(true);
-    expect(phases.slice(firstPost, firstPlanned).every((p) => p === "post-launch")).toBe(true);
+    const postEnd = firstPlanned === -1 ? phases.length : firstPlanned;
+    expect(phases.slice(firstPost, postEnd).every((p) => p === "post-launch")).toBe(true);
+    expect(phases.slice(postEnd).every((p) => p === "planned")).toBe(true);
   });
 
   it("maps stored competition names back to keys", () => {

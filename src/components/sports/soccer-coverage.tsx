@@ -204,6 +204,7 @@ const FEATURES: { key: FeatureKey; icon: LucideIcon; to: string }[] = [
   { key: "duels", icon: Swords, to: "/duels" },
   { key: "practice", icon: Gamepad2, to: "/practice" },
   { key: "tables", icon: BarChart3, to: "/tables" },
+  { key: "teams", icon: Users, to: "/teams" },
 ];
 
 /** What members can do with football: predictions, duels, practice, tables. */
