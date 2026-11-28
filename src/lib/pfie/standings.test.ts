@@ -255,7 +255,10 @@ describe("restored standings source coverage", () => {
       "https://zeanball.online/en/table/championship/",
     );
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
-      "https://statsfera.com.tr/en/standings/ingiltere-championship",
+      "https://www.stat-football.com/en/t/eng20.php",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.skysports.com/football/competitions/championship/table",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.ninetyminutesplus.com/league/ligue-1/standings",
@@ -1035,7 +1038,7 @@ describe("season backfill sync", () => {
     const { deps, recorded, calls } = make(["{ truncated", answer([])]);
     const out = await runTablesSync(deps as never, {
       job: "season",
-      only: ["sa-championship"],
+      only: ["ucl"],
       maxJobs: 1,
     });
     expect(calls()).toBe(2);
@@ -1045,7 +1048,7 @@ describe("season backfill sync", () => {
 
   it("reports invalid JSON when the retry fails too", async () => {
     const { deps, recorded, calls } = make(["{ bad", "{ still bad"]);
-    await runTablesSync(deps as never, { job: "season", only: ["sa-championship"], maxJobs: 1 });
+    await runTablesSync(deps as never, { job: "season", only: ["ucl"], maxJobs: 1 });
     expect(calls()).toBe(2);
     expect(recorded.at(-1)!.error).toBe("extraction answer was not valid JSON");
   });
@@ -1061,7 +1064,7 @@ describe("season backfill sync", () => {
     const windows = seasonWindows(deps.now());
     const failed = windows.map((w) => ({
       job: "season" as const,
-      scope: `sa-championship:${w.start}`,
+      scope: `ucl:${w.start}`,
       lastAttemptAt: "2026-11-01T00:00:00Z",
       lastSuccessAt: null,
       consecutiveFailures: 6,
@@ -1069,7 +1072,7 @@ describe("season backfill sync", () => {
     deps.store.statuses = async () => failed;
     const out = await runTablesSync(deps as never, {
       job: "season",
-      only: ["sa-championship"],
+      only: ["ucl"],
       maxJobs: 3,
     });
     expect(out.seasonDue).toBe(0);
@@ -1184,12 +1187,12 @@ describe("cup history source attribution", () => {
       JSON.stringify({ matches: [] }), // official-only attempt
       JSON.stringify({ matches: [] }), // official page in corroboration retry
       JSON.stringify({ matches: [{
-        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
+        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-10",
         time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
         quote: "Alpha FC 2-1 Bravo United",
       }] }),
       JSON.stringify({ matches: [{
-        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-20",
+        source: 1, home: "Alpha FC", away: "Bravo United", date: "2026-10-10",
         time: null, tz: null, status: "finished", homeScore: 2, awayScore: 1,
         quote: "Alpha FC 2-1 Bravo United",
       }] }),
@@ -1197,7 +1200,7 @@ describe("cup history source attribution", () => {
     let calls = 0;
     const inserted: unknown[] = [];
     const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
-    const long = "UEFA Champions League results. Tuesday 20 October 2026. Alpha FC 2-1 Bravo United. ";
+    const long = "UEFA Champions League results. 10 October 2026. Alpha FC 2-1 Bravo United. ";
     const deps = {
       search: {
         name: "fake",
@@ -1216,7 +1219,7 @@ describe("cup history source attribution", () => {
         generate: async () => ({ text: replies[Math.min(calls++, replies.length - 1)]!, model: "gemini-3.8-flash" }),
       },
       models: ["gemini-3.8-flash"],
-      now: () => new Date("2026-11-28T02:00:00Z"),
+      now: () => new Date("2026-11-21T02:00:00Z"),
       store: {
         statuses: async (): Promise<SyncStatusRow[]> => [],
         latestFinished: async () => new Map(),
@@ -1234,7 +1237,7 @@ describe("cup history source attribution", () => {
     expect(report.ran[0]?.ok).toBe(true);
     expect(inserted).toHaveLength(1);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
+    expect(records.at(-1)?.meta["sources"]).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
   });
 });
 
