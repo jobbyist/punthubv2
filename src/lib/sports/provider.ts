@@ -6,6 +6,8 @@ export interface ListOptions {
   only?: CompetitionKey[];
   /** Specific unresolved fixtures that should be prioritised in a results search. */
   fixtures?: { home: string; away: string; kickoffAt: string }[];
+  /** Authenticated operator retry: bypass provider cooldown for the selected competitions only. */
+  force?: boolean;
 }
 
 export interface ListResult {
