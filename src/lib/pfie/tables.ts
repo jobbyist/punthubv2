@@ -13,7 +13,7 @@ import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/compe
 import { extractionRequest, parseObservations, validateObservations } from "./extract";
 import { ARCHIVE_SOURCES } from "./archive";
 import { archiveJobsDue, runArchiveJob } from "./archive-run";
-import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
+import { verifyHistory, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
 import { modelQuotaOptions } from "./usage";
@@ -441,6 +441,17 @@ export function standingsDue(
   return now.getTime() - last >= refreshHours * HOUR;
 }
 
+/** History gets a rolling refresh every 72 hours; failures retain the existing back-off. */
+export function historyRefreshDue(
+  s: SyncStatusRow | undefined,
+  now: Date,
+  refreshHours = 72,
+): boolean {
+  if (!retryDue(s, now)) return false;
+  if (!s?.lastSuccessAt) return true;
+  return now.getTime() - Date.parse(s.lastSuccessAt) >= refreshHours * HOUR;
+}
+
 export async function runTablesSync(
   deps: TablesDeps,
   opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
@@ -481,16 +492,11 @@ export async function runTablesSync(
     )
       due.push({ job: "standings", key });
   }
-  const HISTORY_REFRESH_HOURS = 72;
   for (const key of keys) {
     if (opts.job === "standings") continue;
     const s = status("history", key);
-    if (
-      s?.lastSuccessAt &&
-      opts.job !== "history" &&
-      now().getTime() - Date.parse(s.lastSuccessAt) < HISTORY_REFRESH_HOURS * HOUR
-    ) continue;
-    if (retryDue(s, now())) due.push({ job: "history", key });
+    const isDue = opts.job === "history" ? retryDue(s, now()) : historyRefreshDue(s, now());
+    if (isDue) due.push({ job: "history", key });
   }
 
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
