@@ -23,6 +23,7 @@ import { formatDate, formatTime } from "@/lib/format";
 import { fetchTableKeys } from "@/lib/hub-data";
 import {
   clearRecent,
+  normalise,
   pushRecent,
   readRecent,
   searchItems,
@@ -161,7 +162,6 @@ export function SiteSearch() {
   const [fixtures, setFixtures] = useState<UpcomingFixture[]>([]);
   const [standings, setStandings] = useState<StandingRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const [recent, setRecent] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -199,9 +199,12 @@ export function SiteSearch() {
   }, [open, isSignedIn]);
 
   // Fixtures and tables load once, the first time search opens, so the header costs nothing on page load.
+  // A ref (not state) guards the fetch: with state in the deps, the effect's own setLoading(true) re-ran it and
+  // its cleanup discarded the result, leaving search stuck on "loading".
+  const fetchStarted = useRef(false);
   useEffect(() => {
-    if (!open || loaded || loading) return;
-    let live = true;
+    if (!open || fetchStarted.current) return;
+    fetchStarted.current = true;
     setLoading(true);
     Promise.all([
       fetchUpcomingFixtures({ days: 45, limit: 400 }).catch(() => [] as UpcomingFixture[]),
@@ -213,18 +216,11 @@ export function SiteSearch() {
         .catch(() => [] as StandingRow[]),
     ])
       .then(([nextFixtures, nextStandings]) => {
-        if (!live) return;
         setFixtures(nextFixtures);
         setStandings(nextStandings);
-        setLoaded(true);
       })
-      .finally(() => {
-        if (live) setLoading(false);
-      });
-    return () => {
-      live = false;
-    };
-  }, [open, loaded, loading]);
+      .finally(() => setLoading(false));
+  }, [open]);
 
   const items = useMemo<SearchItem[]>(() => {
     const pages: SearchItem[] = PAGES.filter((p) =>
@@ -489,7 +485,8 @@ const ITEM_CLASS =
 /** Bolds the part of the title that matches what the member typed. */
 function Highlight({ text, query }: { text: string; query?: string | undefined }) {
   if (!query) return <>{text}</>;
-  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  // Match accent-insensitively, like the ranking does ("atletico" highlights "Atlético").
+  const index = normalise(text).indexOf(normalise(query));
   if (index < 0) return <>{text}</>;
   return (
     <>

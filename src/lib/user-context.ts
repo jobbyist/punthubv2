@@ -31,6 +31,8 @@ export interface ContextInput {
   pickCount: number | null;
   hasFavourites: boolean;
   isStandalone: boolean;
+  /** Someone has signed in on this device before (local flag set at sign-in). */
+  hasAccount?: boolean;
   local: LocalSignals;
 }
 
@@ -51,22 +53,33 @@ export function deriveSegment(
 }
 
 export type ActionKey =
-  "join" | "learn" | "firstPick" | "favourites" | "practice" | "continueMatch" | "leaderboard";
+  | "join"
+  | "signIn"
+  | "learn"
+  | "firstPick"
+  | "favourites"
+  | "practice"
+  | "continueMatch"
+  | "leaderboard";
 
 export interface NextAction {
   key: ActionKey;
   to: string;
   params?: Record<string, string>;
+  search?: Record<string, string>;
   hash?: string;
 }
 
 /**
  * The single most useful next step for this person. Order matters: the first rule that applies wins.
- * Guests are steered to join (returning guests) or to learn first (first visit); members to their first pick,
+ * Guests who have signed in on this device before are offered sign-in; other guests are steered to join
+ * (returning) or to learn first (first visit). Members go to their first pick,
  * then to favourites, then back to the match they last opened, then to their standing.
  */
 export function nextBestAction(input: ContextInput): NextAction {
   const segment = deriveSegment(input);
+  if (!input.isSignedIn && input.hasAccount)
+    return { key: "signIn", to: "/join", search: { mode: "signin" } };
   if (segment === "guest-first") return { key: "learn", to: "/how-it-works" };
   if (segment === "guest-returning") return { key: "join", to: "/join" };
   if (segment === "member-onboarding") return { key: "firstPick", to: "/fixtures" };
@@ -152,5 +165,15 @@ function safeDecode(value: string): string {
     return decodeURIComponent(value);
   } catch {
     return value;
+  }
+}
+
+export const ACCOUNT_FLAG_KEY = "puntr:has-account";
+
+export function readHasAccount(): boolean {
+  try {
+    return window.localStorage.getItem(ACCOUNT_FLAG_KEY) === "1";
+  } catch {
+    return false;
   }
 }

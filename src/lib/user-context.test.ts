@@ -51,6 +51,16 @@ describe("nextBestAction", () => {
     expect(nextBestAction(base).key).toBe("learn");
     expect(nextBestAction({ ...base, local: { ...EMPTY_SIGNALS, visits: 2 } }).key).toBe("join");
   });
+  it("offers sign-in to signed-out guests who have an account on this device", () => {
+    expect(nextBestAction({ ...base, hasAccount: true })).toEqual({
+      key: "signIn",
+      to: "/join",
+      search: { mode: "signin" },
+    });
+    expect(nextBestAction({ ...base, isSignedIn: true, pickCount: 0, hasAccount: true }).key).toBe(
+      "firstPick",
+    );
+  });
 });
 
 describe("foldVisit", () => {

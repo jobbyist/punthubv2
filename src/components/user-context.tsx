@@ -13,10 +13,12 @@ import { useSession } from "@/components/session";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchFavourites, hasFavourites, type Favourites } from "@/lib/preferences";
 import {
+  ACCOUNT_FLAG_KEY,
   EMPTY_SIGNALS,
   deriveSegment,
   foldVisit,
   nextBestAction,
+  readHasAccount,
   readSignals,
   writeSignals,
   type LocalSignals,
@@ -30,6 +32,8 @@ export interface UserContextValue {
   segment: Segment;
   isSignedIn: boolean;
   isStandalone: boolean;
+  /** Someone has signed in on this device before. */
+  hasAccount: boolean;
   pickCount: number | null;
   favourites: Favourites | null;
   hasFavourites: boolean;
@@ -60,12 +64,14 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
   const [local, setLocal] = useState<LocalSignals>(EMPTY_SIGNALS);
   const [mounted, setMounted] = useState(false);
   const [isStandalone, setStandalone] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
   const [pickCount, setPickCount] = useState<number | null>(null);
   const [favourites, setFavourites] = useState<Favourites | null>(null);
 
   useEffect(() => {
     setLocal(readSignals());
     setStandalone(standalone());
+    setHasAccount(readHasAccount());
     setMounted(true);
   }, []);
 
@@ -86,6 +92,13 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
       setFavourites(null);
       return;
     }
+    // Remember on this device that someone has an account, so next time we offer Sign in, not Join.
+    try {
+      window.localStorage.setItem(ACCOUNT_FLAG_KEY, "1");
+    } catch {
+      // Storage blocked: guests just see Join.
+    }
+    setHasAccount(true);
     let live = true;
     void supabase
       .from("predictions")
@@ -125,12 +138,13 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<UserContextValue>(() => {
     const fav = hasFavourites(favourites);
-    const input = { isSignedIn, pickCount, hasFavourites: fav, isStandalone, local };
+    const input = { isSignedIn, pickCount, hasFavourites: fav, isStandalone, hasAccount, local };
     return {
       ready: mounted && !loading,
       segment: deriveSegment(input),
       isSignedIn,
       isStandalone,
+      hasAccount,
       pickCount,
       favourites,
       hasFavourites: fav,
@@ -139,7 +153,17 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
       dismiss,
       isDismissed: (id: string) => local.dismissed.includes(id),
     };
-  }, [mounted, loading, isSignedIn, pickCount, favourites, isStandalone, local, dismiss]);
+  }, [
+    mounted,
+    loading,
+    isSignedIn,
+    pickCount,
+    favourites,
+    isStandalone,
+    hasAccount,
+    local,
+    dismiss,
+  ]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
