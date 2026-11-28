@@ -1930,3 +1930,35 @@ describe("deterministic standings parser with combined goal totals", () => {
     });
   });
 });
+
+describe("plain-text standings source parsing", () => {
+  it("parses combined GF:GA columns from a complete plain-text table", () => {
+    const plain = [
+      "# Club P W D L Goals GD Pts",
+      "1 Middlesbrough 18 10 5 3 34:22 +12 35",
+      "2 Stoke City 17 11 2 4 27:19 +8 35",
+      "3 Wolves 17 10 4 3 31:19 +12 34",
+      "4 Birmingham City 17 9 5 3 30:15 +15 32",
+    ].join("\\n");
+    const rows = parseStandingsMarkdown(plain, 3);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({
+      team: "Middlesbrough",
+      played: 18,
+      goalsFor: 34,
+      goalsAgainst: 22,
+      points: 35,
+    });
+  });
+
+  it("extracts a fresh source-page update date when the page omits the year", () => {
+    expect(extractStandingsTableDate("Last updated: 27 November, 8:00pm", new Date("2026-11-28T11:00:00Z"))).toEqual({
+      date: "2026-11-27",
+      quote: "Last updated: 27 November, 8:00pm",
+    });
+  });
+
+  it("extracts ISO update dates", () => {
+    expect(extractStandingsTableDate("Updated 2026-11-28", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-28");
+  });
+});
