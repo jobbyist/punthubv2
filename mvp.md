@@ -388,3 +388,17 @@ Monthly USD family budgets remain unchanged. The scheduled job records the resto
 - Post-settlement check: `pending_settlement_result_fixtures()` returned zero candidates. The active duel was settled and the settlement queue was clear.
 - Production schedules confirmed: priority results watchdog every 5 minutes (90s request timeout); settlement every 2 minutes (15s timeout); general results/archive ingestion hourly at minute 37 (60s timeout). The timeout-aware cron helper is restricted to trusted roles.
 - Support Centre expanded to 49 FAQs in both English and Afrikaans. Results, Duels and How It Works copy now explicitly distinguishes a verified full-time result from an unverified score and explains delayed settlement.
+
+
+## Protected quota reserve for settlement priority (28 Nov 2026)
+
+The Lincoln–Wolves incident showed that a result run can be blocked even when the overall Parallel spend budget has ample headroom: the per-endpoint daily Responses Low ceiling had been consumed by testing and other workloads. A faster cron alone is insufficient if general traffic can consume all quota needed by settlement.
+
+### Reserved quota lanes
+
+- PFIE priority result verification now uses a separate feature identity: `pfie:settlement-priority`. Its Search, Extract and Responses Low claims are routed to protected quota aliases. API call events retain the canonical provider names; the quota ledger records the protected alias and the cost ledger still counts the calls.
+- The currently raised total provider ceilings are split without increasing them: Search 2,300 general + 200 settlement reserve per day; Extract 2,100 general + 400 settlement reserve; Responses Low 1,400 general + 100 settlement reserve. The same split applies to the current monthly totals.
+- The guarded 29 Nov restoration will preserve the previously approved total ceilings while setting general/reserved daily caps to Search 1,000/200, Extract 2,100/400, Responses Low 400/100, and Medium 18/0. Monthly general/reserved caps will be Search 10,000/2,000, Extract 8,000/2,000, Responses Low 9,000/3,000, and Medium 1,000/0.
+- General Parallel workloads stop at $40 of the $50 monthly core family budget and $175 of the $200 shared Q1 cap. The settlement-priority lane can use the remaining $10 monthly core and $25 Q1 headroom. Both lanes remain subject to the same hard total caps.
+- Provider, family and global budget backoffs are now lane-scoped. Exhausting the general quota/budget does not block settlement reserve calls; genuine upstream provider errors and the hard total caps still block both lanes.
+- The reserved quota aliases are visible in the API quota ledger and are included in global spend reporting. No additional provider or non-Parallel fallback was introduced.
