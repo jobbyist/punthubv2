@@ -1,5 +1,5 @@
 /**
- * Allowlisted Newsroom model router. Production is configured for Parallel Medium only.
+ * Shared allowlisted content model router. PFIE/odds default to Gemini; Newsroom pins its own slot to Parallel Medium.
  *
  * - A model outside APPROVED_CONTENT_MODELS is never called, whatever the configuration says.
  * - A quota or auth error moves straight to the next model. A timeout or 5xx also moves on while another model is
@@ -62,7 +62,7 @@ export function createModelRouter(provider: LlmProvider, options: RouterOptions)
 
       for (const model of order) {
         if (!APPROVED_CONTENT_MODELS.includes(model)) {
-          await note(attempts, { model, outcome: "refused_not_free" });
+          await note(attempts, { model, outcome: "refused_not_allowlisted" });
           continue;
         }
         const cap = options.dailyCap?.[model] ?? 0;
