@@ -247,4 +247,30 @@ describe("syncResults lookback", () => {
     expect(RESULTS_LOOKBACK_DAYS).toBe(30);
     expect(captured[0]?.toISOString()).toBe("2026-10-29T06:00:00.000Z");
   });
+  it("does not request PFIE results for competitions outside the ten-key launch allowlist", async () => {
+    const now = new Date("2026-11-28T06:00:00.000Z");
+    const deferred = [
+      { provider: "pfie", providerRef: "saudi-1", competition: "Saudi Pro League", home: "Al Hilal", away: "Al Nassr", kickoffAt: "2026-11-27T18:00:00.000Z" },
+      { provider: "pfie", providerRef: "primeira-1", competition: "Liga Portugal", home: "Porto", away: "Benfica", kickoffAt: "2026-11-27T20:00:00.000Z" },
+      { provider: "pfie", providerRef: "eredivisie-1", competition: "Eredivisie", home: "Ajax", away: "PSV", kickoffAt: "2026-11-27T19:00:00.000Z" },
+    ];
+    let providerCalls = 0;
+    const store = {
+      async openSince() { return deferred; },
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults() {
+        providerCalls += 1;
+        return { fixtures: [], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    const report = await syncResults(provider, store, now);
+
+    expect(providerCalls).toBe(0);
+    expect(report.calls).toBe(0);
+    expect(report.upserted).toBe(0);
+  });
+
 });
