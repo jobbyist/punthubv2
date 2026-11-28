@@ -12,7 +12,7 @@ export type CachePurpose =
 /** Seconds an answer stays fresh, per purpose. Results are short because scores change at full time. */
 export const CACHE_TTL_SECONDS: Readonly<Record<CachePurpose, number>> = {
   fixtures: 12 * 3600,
-  results: 30 * 60,
+  results: 4 * 60,
   tables: 18 * 3600,
   odds: 6 * 3600,
   news: 6 * 3600,

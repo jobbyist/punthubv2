@@ -80,6 +80,8 @@ describe("cache keys", () => {
   it("computes freshness from the purpose TTL", () => {
     const now = Date.parse("2026-11-15T00:00:00Z");
     const exp = expiresAt("results", now);
+    // The five-minute settlement watchdog must see refreshed source pages, not replay a 30-minute cache entry.
+    expect(CACHE_TTL_SECONDS.results).toBeLessThan(5 * 60);
     expect(Date.parse(exp) - now).toBe(CACHE_TTL_SECONDS.results * 1000);
     expect(isFresh(exp, now)).toBe(true);
     expect(isFresh(exp, now + CACHE_TTL_SECONDS.results * 1000 + 1)).toBe(false);

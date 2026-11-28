@@ -273,4 +273,36 @@ describe("syncResults lookback", () => {
     expect(report.upserted).toBe(0);
   });
 
+  it("uses the dedicated pending-settlement candidate set and forces a priority verification", async () => {
+    const now = new Date("2026-11-28T18:00:00.000Z");
+    let priorityRequested = false;
+    let received: { only?: string[]; force?: boolean } | null = null;
+    const store = {
+      async openSince(_since: Date, _now: Date, priority = false) {
+        priorityRequested = priority;
+        return [{
+          provider: "pfie",
+          providerRef: "championship:lincoln-wolves",
+          competition: "EFL Championship",
+          home: "Lincoln City",
+          away: "Wolves",
+          kickoffAt: "2026-11-28T12:30:00.000Z",
+        }];
+      },
+      async upsert() {},
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults(_from: Date, _to: Date, options: { only?: string[]; force?: boolean }) {
+        received = options;
+        return { fixtures: [], calls: 1, skipped: [] };
+      },
+    } as unknown as SportsProvider;
+
+    await syncResults(provider, store, now, { priority: true, only: ["championship"] });
+
+    expect(priorityRequested).toBe(true);
+    expect(received).toMatchObject({ force: true, only: ["championship"] });
+  });
+
 });

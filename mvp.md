@@ -335,3 +335,28 @@ The guarded restoration job is scheduled for **29 Nov 2026, 00:05 UTC (02:05 SAS
 | Responses Medium | 18 | 1,000 |
 
 Monthly USD family budgets remain unchanged. The scheduled job records the restoration in Admin → Platform Updates, closes Phase 3.6 and the parent Phase 3 tracker, then unschedules itself.
+
+
+## Settlement reliability hardening (28 Nov 2026)
+
+### Incident: Lincoln City vs Wolves, EFL Championship
+
+- Fixture kicked off at 14:30 SAST / 12:30 UTC and remained `scheduled` in the production `fixtures` row.
+- The 16:30 SAST Championship PFIE results run failed because the Parallel Responses Low quota was exhausted (`parallel-chat:low`).
+- A later 17:30 SAST verification run found 0–0 score observations from multiple sources, but those sources still labelled the match `scheduled`. PFIE correctly rejected the scores as `score_on_unfinished_match`; no unverified score was written.
+- The settlement cron continued to run, but `pending_settlements()` and `duels_to_settle()` only return records whose fixture is already in a terminal state. Thus the active duel remained open because no verified final fixture state existed.
+
+### Changes in this release
+
+- Added `pending_settlement_result_fixtures()`: returns only scheduled/live fixtures at least 105 minutes after kick-off that still have unsettled predictions or active duels. It includes duel-only fixtures, which the prior prediction-only pending-result query missed.
+- Added a settlement-priority mode to results sync. It polls only this candidate set, bypasses the general competition throttle, prioritises oldest candidates and rotates bounded batches. General results ingestion remains unchanged.
+- PFIE result retry cadence: every 5 minutes from 105 to 165 minutes after kick-off; every 15 minutes from 165 to 360 minutes; hourly for older unresolved fixtures. Results still require the official competition source or independent corroboration; no score is guessed.
+- Added a five-minute `settlement-results-watchdog` cron and changed settlement execution to every two minutes.
+- Pick and duel settlement now execute independently. An exception in one settlement path no longer prevents the other from running; failed paths return an error for retry and emit structured logs.
+- The Support Centre now has 49 FAQs in English and Afrikaans, including result verification, delayed settlement, score disputes, duels, synthetic AI participants, PuntPoints, rewards, referrals, Pro, Practice Mode, Fantasy Arena, leaderboards, privacy and troubleshooting.
+
+### Operational target and limitation
+
+- Target: settle a pick or duel within minutes after a verified final result becomes available, and ordinarily within 60 minutes after full time.
+- The five-minute watchdog and two-minute settlement cycle remove cron cadence as the bottleneck. They cannot force a source to publish a final score; if the official feed and independent sources remain stale or disagree, Puntr deliberately leaves the fixture pending rather than risk an incorrect settlement.
+- A delayed result remains eligible for automatic retry. Members should contact support if it remains pending more than 60 minutes after full time, with the fixture and pick/duel link.

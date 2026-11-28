@@ -34,7 +34,19 @@ export function createFixtureStore(): FixtureStore {
       );
       if (error) throw error;
     },
-    async openSince(since, now) {
+    async openSince(since, now, priority = false) {
+      if (priority) {
+        const { data, error } = await supabaseAdmin.rpc("pending_settlement_result_fixtures");
+        if (error) throw error;
+        return (data ?? []).map((r) => ({
+          provider: r.provider,
+          providerRef: r.provider_ref,
+          competition: r.competition,
+          home: r.home,
+          away: r.away,
+          kickoffAt: r.kickoff_at,
+        }));
+      }
       const { data, error } = await supabaseAdmin
         .from("fixtures")
         .select("provider, provider_ref, competition, home, away, kickoff_at")
