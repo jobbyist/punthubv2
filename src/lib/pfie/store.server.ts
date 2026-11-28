@@ -124,15 +124,16 @@ export function createPfieStore(): PfieStore {
 
     async usageToday() {
       const day = new Date().toISOString().slice(0, 10);
-      const { data, error } = await db
-        .from("content_api_usage")
-        .select("provider, calls")
-        .eq("day", day);
-      if (error) throw new Error(`content_api_usage: ${error.message}`);
-      const out: Record<string, number> = {};
-      for (const r of (data ?? []) as { provider: string; calls: number }[])
-        out[r.provider] = r.calls;
-      return out;
+      const [usage, quotas] = await Promise.all([
+        db.from("content_api_usage").select("provider, calls, refused").eq("day", day),
+        db.from("api_quota_limits").select("provider, daily_cap"),
+      ]);
+      if (usage.error) throw new Error(`content_api_usage: ${usage.error.message}`);
+      if (quotas.error) throw new Error(`api_quota_limits: ${quotas.error.message}`);
+      return mapProviderUsage(
+        (usage.data ?? []) as { provider: string; calls: number; refused: number }[],
+        (quotas.data ?? []) as { provider: string; daily_cap: number }[],
+      );
     },
   };
 }
