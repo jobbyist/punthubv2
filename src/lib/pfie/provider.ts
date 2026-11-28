@@ -554,11 +554,11 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
                 [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
               : resultQueries,
           maxResults: 10,
-        })
-        .then((hits) => {
-          if (cachedSearchResponses > 0) cachedSearchResponses--;
-          return hits;
         });
+      if (cachedSearchResponses > 0) {
+        cachedSearchResponses--;
+        calls--;
+      }
 
       // 2. Sources: official pages read in full first, then the best search hits.
       const seen = new Set<string>();
@@ -574,7 +574,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           calls++;
           try {
             const page = await extractProvider.extract(url);
-            if (cachedExtractResponses > 0) cachedExtractResponses--;
+            if (cachedExtractResponses > 0) {
+              cachedExtractResponses--;
+              calls--;
+            }
             if (page) add(url, page.markdown);
           } catch {
             void count(deps.extract.name, false);
