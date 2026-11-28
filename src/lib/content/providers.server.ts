@@ -148,20 +148,26 @@ export function createParallelResponses(
         JSON.stringify(outputSchema),
         "Return exactly one JSON object conforming to this schema. Do not include Markdown fences or commentary.",
       ].join("\\n\\n");
-      const json = await postJson(
-        "https://api.parallel.ai/v1/responses",
-        { Authorization: `Bearer ${apiKey}` },
-        {
-          model: "parallel",
-          input: [
-            { role: "system", content: system },
-            { role: "user", content: request.prompt },
-          ],
-          reasoning: { effort },
-          max_output_tokens: request.maxOutputTokens,
-        },
-        { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
-      );
+      let json: unknown;
+      try {
+        json = await postJson(
+          "https://api.parallel.ai/v1/responses",
+          { Authorization: `Bearer ${apiKey}` },
+          {
+            model: "parallel",
+            input: [
+              { role: "system", content: system },
+              { role: "user", content: request.prompt },
+            ],
+            reasoning: { effort },
+            max_output_tokens: request.maxOutputTokens,
+          },
+          { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+        );
+      } catch (error) {
+        console.error("parallel-responses request rejected", error instanceof Error ? error.message : "unknown error");
+        throw error;
+      }
       const direct = isRecord(json) ? str(json["output_text"]) : "";
       const items = isRecord(json) && Array.isArray(json["output"]) ? json["output"] : [];
       const nested = items.filter((item) => isRecord(item) && item["type"] === "message")
