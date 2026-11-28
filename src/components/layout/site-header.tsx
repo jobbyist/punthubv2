@@ -104,7 +104,7 @@ function isActive(path: string, to: string) {
 export function SiteHeader() {
   const { t } = useTranslation("nav");
   const { isSignedIn, profile, signOut, isAdmin } = useSession();
-  const { hasAccount } = useUserContext();
+  const { hasAccount, ready: ctxReady } = useUserContext();
   const pp = usePoints();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -463,7 +463,7 @@ export function SiteHeader() {
               <div className="hidden xl:block">
                 <FoundingCounter compact />
               </div>
-              {hasAccount ? (
+              {ctxReady && hasAccount ? (
                 // Someone has signed in on this device before: lead with Sign in, keep Join as the quiet link.
                 <>
                   <Link

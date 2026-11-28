@@ -29,7 +29,8 @@
       "favourites": "Pick my teams",
       "practice": "Try Practice Mode",
       "continueMatch": "Back to my last match",
-      "leaderboard": "See where I rank"
+      "leaderboard": "See where I rank",
+      "discover": "Open Discover"
     },
     "secondary": {
       "discover": "Explore Discover"
