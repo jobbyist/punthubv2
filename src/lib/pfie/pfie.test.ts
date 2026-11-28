@@ -753,11 +753,11 @@ describe("provider", () => {
         return SOURCES.map((s) => ({ url: s.url, title: "t", excerpt: s.text, publishedAt: null }));
       },
     };
-    const target = {
-      home: "Napoli",
-      away: "Torino",
+    const targets = Array.from({ length: 12 }, (_, index) => ({
+      home: `Home Club ${index + 1}`,
+      away: `Away Club ${index + 1}`,
       kickoffAt: "2026-11-12T18:45:00.000Z",
-    };
+    }));
     const provider = createPfieProvider({
       ...base,
       search: targetedSearch,
@@ -766,10 +766,12 @@ describe("provider", () => {
     });
     await provider.listResults(new Date("2026-11-12T18:45:00Z"), NOW, {
       only: ["seriea"],
-      fixtures: [target],
+      fixtures: targets,
     });
-    expect(captured.value?.queries).toContain("Napoli vs Torino result score 2026-11-12");
-    expect(captured.value?.objective).toContain("Napoli vs Torino");
+    expect(captured.value?.queries).toContain("Home Club 1 vs Away Club 1 result score 2026-11-12");
+    for (const target of targets) {
+      expect(captured.value?.objective).toContain(`${target.home} vs ${target.away}`);
+    }
   });
 
   it("does not fall back to Gemini or another provider when Parallel Responses is capped", async () => {

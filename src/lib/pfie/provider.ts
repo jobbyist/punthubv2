@@ -492,7 +492,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       // 1. Discovery.
       const today = sastDate(now());
       calls++;
-      const targetedMatches = targetFixtures.slice(0, 3).map(
+      const targetedMatches = targetFixtures.slice(0, 12).map(
         (fixture) => `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
       );
       const hits = await deps.search

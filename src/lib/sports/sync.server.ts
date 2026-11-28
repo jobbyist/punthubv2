@@ -99,6 +99,8 @@ export async function syncFixturesByCompetition(
 
 /** Unresolved fixtures remain eligible for a verified result update for 30 days after kick-off. */
 export const RESULTS_LOOKBACK_DAYS = 30;
+/** Pass a wider batch of unresolved fixtures into one PFIE result lookup without adding provider calls. */
+export const RESULTS_TARGET_FIXTURE_LIMIT = 12;
 export async function syncResults(
   provider: SportsProvider,
   store: FixtureStore,
@@ -134,7 +136,7 @@ export async function syncResults(
     const earliest = new Date(Math.min(...mine.map((o) => Date.parse(o.kickoffAt))));
     const r = await provider.listResults(earliest, now, {
       only: [key],
-      fixtures: mine.slice(0, 3).map((fixture) => ({
+      fixtures: mine.slice(0, RESULTS_TARGET_FIXTURE_LIMIT).map((fixture) => ({
         home: fixture.home,
         away: fixture.away,
         kickoffAt: fixture.kickoffAt,
