@@ -235,6 +235,20 @@ it("configures official and independent Conference League standings sources", ()
   );
 });
 describe("EFL Championship source configuration", () => {
+  it("prioritizes the official EFL embed and adds independent BBC and Flashscore tables", () => {
+    const pages = STANDINGS_COMPETITIONS.championship?.pages ?? [];
+    const queries = STANDINGS_COMPETITIONS.championship?.queries ?? [];
+
+    expect(pages[0]).toBe("https://www.efl.com/embeds/league-table/");
+    expect(pages).toContain("https://www.skysports.com/championship-table?dcmp=GameOn");
+    expect(pages).toContain("https://www.bbc.com/sport/football/championship/table");
+    expect(pages).toContain("https://www.flashscore.com/football/england/championship/standings/");
+    expect(queries.some((query) => query.includes("site:bbc.com/sport/football/championship/table"))).toBe(true);
+    expect(queries.some((query) => query.includes("site:flashscore.com/football/england/championship/standings"))).toBe(true);
+    expect(pages).not.toContain("https://www.cbssports.com/soccer/efl-championship/standings/");
+    expect(pages).not.toContain("https://www.sportsmole.co.uk/football/championship/table.html");
+  });
+
   it("includes independent ESPN and Transfermarkt table candidates", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
       "https://www.espn.com/soccer/standings/_/league/eng.2",
