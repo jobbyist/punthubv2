@@ -81,21 +81,27 @@ export async function runArchiveJob(
     }
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     const { rows, report } = reconcileSeason(key, matches, matrix, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
-
-    const meta = { ...report, inserted, table: "not checked" };
-    if (rows.length === 0) {
-      await deps.store.record("archive", scope, false, "no matches confirmed by both pages", meta);
-      return { ok: false, detail: `nothing confirmed (${JSON.stringify(report)})` };
+    const coverage = report.matrix > 0 ? report.verified / report.matrix : 0;
+    if (rows.length === 0 || report.matrix === 0 || coverage < 0.9 || report.disagreed > 0) {
+      const reason =
+        report.matrix === 0
+          ? "archive results matrix is empty"
+          : report.disagreed > 0
+            ? "archive sources disagree on one or more scores"
+            : `archive coverage below 90% (${Math.round(coverage * 100)}%)`;
+      await deps.store.record("archive", scope, false, reason, { ...report, coverage, inserted: 0 });
+      return { ok: false, detail: `${reason}; no partial rows imported` };
     }
+
+    // Only commit history after the complete two-source archive passes the coverage gate.
+    const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
+    const meta = { ...report, inserted, coverage, table: "not checked" };
 
     // Archive/Wikipedia sources are retained only for historical result reconciliation.
     // Current league standings are sourced separately through Parallel's live multi-source PFIE pipeline.
     const table = "deferred to live multi-source standings sync";
 
-    await deps.store.record("archive", scope, true, null, { ...meta, table });
+    await deps.store.record("archive", scope, true, null, { ...meta, coverage, table });
     return {
       ok: true,
       detail: `${inserted} new of ${rows.length} confirmed (${report.disagreed} disagreed, ${report.unmatched} unmatched); standings ${table}`,

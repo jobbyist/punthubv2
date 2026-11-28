@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   isConfirmedNoMatchesInWindow,
+  historyRefreshDue,
   preferAuthoritativeSources,
   shouldIncludeSecondaryStandingsSources,
   seasonArchiveUrls,
@@ -139,5 +140,19 @@ describe("PFIE historical season windows", () => {
     expect(uecl.some((query) => query.includes("espn.com/soccer/scoreboard"))).toBe(true);
     expect(caf.some((query) => query.includes("vavel.com"))).toBe(true);
     expect(caf.some((query) => query.includes("foot-africa.com"))).toBe(true);
+  });
+});
+
+describe("PFIE rolling history refresh cadence", () => {
+  const now = new Date("2026-11-28T12:00:00.000Z");
+  it("schedules first-time history jobs immediately", () => {
+    expect(historyRefreshDue(undefined, now)).toBe(true);
+  });
+  it("waits 72 hours after a successful rolling refresh", () => {
+    expect(historyRefreshDue({ job: "history", scope: "epl", lastAttemptAt: now.toISOString(), lastSuccessAt: new Date(now.getTime() - 48 * 3600000).toISOString(), consecutiveFailures: 0 }, now)).toBe(false);
+    expect(historyRefreshDue({ job: "history", scope: "epl", lastAttemptAt: now.toISOString(), lastSuccessAt: new Date(now.getTime() - 73 * 3600000).toISOString(), consecutiveFailures: 0 }, now)).toBe(true);
+  });
+  it("honours failure back-off even after the refresh interval", () => {
+    expect(historyRefreshDue({ job: "history", scope: "epl", lastAttemptAt: new Date(now.getTime() - 5 * 60000).toISOString(), lastSuccessAt: new Date(now.getTime() - 100 * 3600000).toISOString(), consecutiveFailures: 1 }, now)).toBe(false);
   });
 });

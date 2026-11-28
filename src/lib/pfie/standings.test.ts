@@ -1909,3 +1909,24 @@ describe("verified standings record corrections", () => {
     expect(tableRegression(corrected, previous, false, [], false, true)).toBeNull();
   });
 });
+
+describe("deterministic standings parser with combined goal totals", () => {
+  it("parses a full table whose source combines goals for and against", () => {
+    const markdown = [
+      "| # | Club | P | W | D | L | Goals | GD | Pts |",
+      "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34:22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27:19 | +8 | 35 |",
+      "| 3 | Wolves | 17 | 10 | 4 | 3 | 31:19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30:15 | +15 | 32 |",
+    ].join("\\n");
+    const rows = parseStandingsMarkdown(markdown, 1);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({
+      team: "Middlesbrough",
+      goalsFor: 34,
+      goalsAgainst: 22,
+      points: 35,
+    });
+  });
+});

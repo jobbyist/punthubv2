@@ -4,24 +4,13 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
-import { supabase } from "@/integrations/supabase/client";
 import {
-  avatarPath,
   checkAvatarFile,
-  compressAvatar,
-  pathFromPublicUrl,
   SPORTS_AVATARS,
   sportsAvatarToken,
   type SportsAvatarKey,
 } from "@/lib/avatar";
-
-// avatar_url is not in the generated types until types.ts is regenerated.
-const profiles = () =>
-  supabase.from("profiles") as unknown as {
-    update: (v: { avatar_url: string | null }) => {
-      eq: (k: string, v: string) => Promise<{ error: unknown }>;
-    };
-  };
+import { chooseSportsAvatar, removeAvatar, uploadAvatar } from "@/lib/avatar-actions";
 
 export function AvatarUploader() {
   const { t } = useTranslation("account");
@@ -42,23 +31,7 @@ export function AvatarUploader() {
     setBusy(true);
     setNote(null);
     try {
-      const { blob, ext } = await compressAvatar(file);
-      const path = avatarPath(profile.id, ext);
-      const bucket = supabase.storage.from("avatars");
-      const { error: upErr } = await bucket.upload(path, blob, {
-        contentType: blob.type,
-        cacheControl: "31536000",
-        upsert: false,
-      });
-      if (upErr) throw upErr;
-      const url = bucket.getPublicUrl(path).data.publicUrl;
-      const { error } = await profiles().update({ avatar_url: url }).eq("id", profile.id);
-      if (error) {
-        await bucket.remove([path]);
-        throw error;
-      }
-      const old = pathFromPublicUrl(current);
-      if (old) await bucket.remove([old]);
+      await uploadAvatar(profile.id, file, current);
       await refreshProfile();
       setNote({ text: t("avatar.saved"), error: false });
     } catch (err) {
@@ -70,18 +43,13 @@ export function AvatarUploader() {
     }
   };
 
-  const chooseSportsAvatar = async (key: SportsAvatarKey) => {
+  const pickSportsAvatar = async (key: SportsAvatarKey) => {
     setBusy(true);
     setNote(null);
     try {
-      const { error } = await profiles()
-        .update({ avatar_url: sportsAvatarToken(key) })
-        .eq("id", profile.id);
-      if (error) throw error;
-      const old = pathFromPublicUrl(current);
-      if (old) await supabase.storage.from("avatars").remove([old]);
+      await chooseSportsAvatar(profile.id, key, current);
       await refreshProfile();
-      setNote({ text: "Sports avatar saved.", error: false });
+      setNote({ text: t("avatar.sportsSaved"), error: false });
     } catch (err) {
       console.error("sports avatar selection failed", err);
       setNote({ text: t("avatar.failed"), error: true });
@@ -94,14 +62,7 @@ export function AvatarUploader() {
     setBusy(true);
     setNote(null);
     try {
-      // Delete the file first: if that fails nothing changes and the member can retry.
-      const old = pathFromPublicUrl(current);
-      if (old) {
-        const { error: rmErr } = await supabase.storage.from("avatars").remove([old]);
-        if (rmErr) throw rmErr;
-      }
-      const { error } = await profiles().update({ avatar_url: null }).eq("id", profile.id);
-      if (error) throw error;
+      await removeAvatar(profile.id, current);
       await refreshProfile();
       setNote({ text: t("avatar.removed"), error: false });
     } catch (err) {
@@ -161,7 +122,7 @@ export function AvatarUploader() {
                 disabled={busy}
                 aria-label={`Use ${avatar.label} avatar`}
                 aria-pressed={selected}
-                onClick={() => void chooseSportsAvatar(avatar.key)}
+                onClick={() => void pickSportsAvatar(avatar.key)}
                 className={`flex flex-col items-center gap-1 rounded-lg p-1 transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${selected ? "bg-primary/10 ring-2 ring-primary" : ""}`}
               >
                 <UserAvatar

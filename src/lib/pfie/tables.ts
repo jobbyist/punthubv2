@@ -1,8 +1,7 @@
 /**
- * Daily standings and history sync. Each cron call handles at most `maxJobs` due jobs (standings first, then a
- * one-time history backfill), so a run stays inside the function time limit and the API quotas. Jobs are
- * idempotent: a table replaces the previous one atomically, history rows skip duplicates, and every attempt is
- * recorded in `sync_status` (failures back off and stop after three tries a day).
+ * Daily standings and rolling history sync. Each cron call handles a bounded mix of due jobs, reserving a slot
+ * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
+ * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
@@ -13,7 +12,7 @@ import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/compe
 import { extractionRequest, parseObservations, validateObservations } from "./extract";
 import { ARCHIVE_SOURCES } from "./archive";
 import { archiveJobsDue, runArchiveJob } from "./archive-run";
-import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
+import { verifyHistory, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
 import { modelQuotaOptions } from "./usage";
@@ -441,6 +440,17 @@ export function standingsDue(
   return now.getTime() - last >= refreshHours * HOUR;
 }
 
+/** History gets a rolling refresh every 72 hours; failures retain the existing back-off. */
+export function historyRefreshDue(
+  s: SyncStatusRow | undefined,
+  now: Date,
+  refreshHours = 72,
+): boolean {
+  if (!retryDue(s, now)) return false;
+  if (!s?.lastSuccessAt) return true;
+  return now.getTime() - Date.parse(s.lastSuccessAt) >= refreshHours * HOUR;
+}
+
 export async function runTablesSync(
   deps: TablesDeps,
   opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
@@ -484,8 +494,8 @@ export async function runTablesSync(
   for (const key of keys) {
     if (opts.job === "standings") continue;
     const s = status("history", key);
-    if (s?.lastSuccessAt && opts.job !== "history") continue; // one-time backfill
-    if (retryDue(s, now())) due.push({ job: "history", key });
+    const isDue = opts.job === "history" ? retryDue(s, now()) : historyRefreshDue(s, now());
+    if (isDue) due.push({ job: "history", key });
   }
 
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
@@ -503,7 +513,27 @@ export async function runTablesSync(
   }
 
   const report: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-  const daily = opts.job === "season" ? [] : due.slice(0, maxJobs);
+  const standingsDueJobs = due.filter((item) => item.job === "standings");
+  const historyDueJobs = due
+    .filter((item) => item.job === "history")
+    .sort((a, b) => {
+      const last = (key: CompetitionKey) => status("history", key)?.lastSuccessAt ?? "";
+      return last(a.key).localeCompare(last(b.key));
+    });
+  let daily: { job: TableJob; key: CompetitionKey }[] = [];
+  if (opts.job === "history") {
+    daily = historyDueJobs.slice(0, maxJobs);
+  } else if (opts.job === "standings") {
+    daily = standingsDueJobs.slice(0, maxJobs);
+  } else if (opts.job !== "season") {
+    // Reserve one slot for the oldest-due rolling history job so standings refreshes cannot starve it.
+    if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+    if (historyDueJobs.length && daily.length < maxJobs) daily.push(historyDueJobs.shift()!);
+    while (daily.length < maxJobs && (standingsDueJobs.length || historyDueJobs.length)) {
+      if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+      else if (historyDueJobs.length) daily.push(historyDueJobs.shift()!);
+    }
+  }
   for (const { job, key } of daily) {
     const r =
       job === "standings" ? await syncStandings(deps, key, now) : await syncHistory(deps, key, now);
@@ -1433,12 +1463,9 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
   const to = now();
   const from = new Date(to.getTime() - HISTORY_DAYS * DAY);
   try {
+    // Refresh a rolling 42-day window on a recurring cadence. A one-time backfill is not enough:
+    // source corrections and newly published results must flow into the history table.
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const counts = await deps.store.completedCounts(c.name).catch(() => new Map<string, number>());
-    if (known.length > 0 && !needsBackfill(counts, known)) {
-      await deps.store.record("history", key, true, null, { skipped: "enough results recorded" });
-      return { ok: true, detail: "enough results already recorded" };
-    }
     const sources = await gatherSources(
       deps,
       key,
@@ -1470,13 +1497,23 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       knownTeams: known,
     });
     const { rows, unverified } = verifyHistory(accepted, key, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
+    if (rows.length === 0) {
+      await deps.store.record("history", key, false, "no independently verified results in rolling window", {
+        extracted: raw.length,
+        accepted: accepted.length,
+        unverified,
+        sourceCount: sources.length,
+        model: answer.model,
+      });
+      return { ok: false, detail: "no independently verified results in rolling window; not marked successful" };
+    }
+    // insert_team_results performs a natural-key upsert, so corrected scores replace stale values.
+    const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
     await deps.store.record("history", key, true, null, {
       verified: rows.length,
-      inserted,
+      insertedOrUpdated: inserted,
       unverified,
+      sourceCount: sources.length,
       model: answer.model,
     });
     return {

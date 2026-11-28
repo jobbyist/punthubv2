@@ -20,6 +20,7 @@ import {
   startProSubscription,
 } from "@/lib/payments.functions";
 import { headT } from "@/lib/i18n/head";
+import { postToPayfast } from "@/lib/payfast-form";
 import {
   fetchWallet,
   fetchWalletHistory,
@@ -246,21 +247,6 @@ function SendForm({ wallet: w, onSent }: { wallet: Wallet; onSent: () => void })
 }
 
 /** Credit packs. Shown as "from launch" until payments are switched on server-side. */
-function postToPayfast(action: string, fields: [string, string][]) {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = action;
-  for (const [k, v] of fields) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = k;
-    input.value = v;
-    form.appendChild(input);
-  }
-  document.body.appendChild(form);
-  form.submit();
-}
-
 /** Puntr Pro: subscribe (PayFast monthly), see renewal and fair-use usage, cancel. Hidden until payments are on. */
 function ProPanel() {
   const { t } = useTranslation("wallet");
