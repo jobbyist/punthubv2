@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 /**
- * League standings refresh and one-time form history backfill (PFIE). Parallel-only: Search, Extract and Responses. Scheduled every five minutes in two daily windows (04:10-05:55 and 16:10-17:55 SAST); production cron processes one due competition per request to stay within the HTTP timeout. `?only=epl,psl`, `?job=standings|history` and
- * `?max=N` (1-4) are for manual runs.
+ * League standings refresh and rolling 42-day form history refresh (PFIE). Parallel-only: Search, Extract and Responses. Scheduled every five minutes in two daily windows (04:10-05:55 and 16:10-17:55 SAST); production cron processes one due competition per request to stay within the HTTP timeout. `?only=epl,psl`, `?job=standings|history` and
+ * `?max=N` (1-4) are for manual runs; authenticated `?force=1` is scoped to explicit standings/history competitions.
  */
 export const Route = createFileRoute("/api/cron/sync-tables")({
   server: {
@@ -28,9 +28,12 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
             ? jobParam
             : undefined;
         const max = Math.min(4, Math.max(1, Number(url.searchParams.get("max")) || 2));
-        // Forced retries are restricted to an authenticated cron request and an explicit standings scope.
+        // Forced refreshes are restricted to an authenticated cron request and an explicit competition scope.
+        // History force bypasses the 72-hour cadence but still respects failure back-off in runTablesSync.
         const force =
-          url.searchParams.get("force") === "1" && job === "standings" && Boolean(only?.length);
+          url.searchParams.get("force") === "1" &&
+          (job === "standings" || job === "history") &&
+          Boolean(only?.length);
 
         const { createParallelExtract, createParallelResponses, createParallelSearch } =
           await import("@/lib/content/providers.server");
