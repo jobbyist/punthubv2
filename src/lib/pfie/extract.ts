@@ -66,7 +66,7 @@ export function chunkSourcesForExtraction(
       buffer = "";
     };
 
-    for (const line of source.text.split(/\\r?\\n/)) {
+    for (const line of source.text.split(/\r?\n/)) {
       if (line.length > maxChunkChars) {
         pushBuffer();
         for (let offset = 0; offset < line.length; offset += maxChunkChars) {
@@ -78,7 +78,7 @@ export function chunkSourcesForExtraction(
         continue;
       }
       if (buffer.length && buffer.length + line.length + 1 > maxChunkChars) pushBuffer();
-      buffer += (buffer ? "\\n" : "") + line;
+      buffer += (buffer ? "\n" : "") + line;
     }
     pushBuffer();
   }
