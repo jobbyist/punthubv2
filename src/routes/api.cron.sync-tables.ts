@@ -55,7 +55,7 @@ export const Route = createFileRoute("/api/cron/sync-tables")({
                     // One bounded attempt per publisher keeps batches inside the cron HTTP timeout.
                     attempts: 1,
                   },
-                  { maxAgeSeconds: job === "archive" ? undefined : 900 },
+                  job === "archive" ? {} : { maxAgeSeconds: 900 },
                 ),
                 claim,
               ),

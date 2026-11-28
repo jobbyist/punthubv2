@@ -16,8 +16,9 @@
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
-import { resolveTeam, teamSlug } from "./teams";
+import { isGenericTeamName, normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import type { Decision, KnownFixture, Observation, Verdict } from "./types";
+import { publisherKey } from "./publisher-identity";
 
 interface Cluster {
   home: string;
@@ -30,7 +31,7 @@ function agree<T>(values: { value: T; domain: string }[]): { value: T; verdict: 
   const groups = new Map<string, Set<string>>();
   for (const v of values) {
     const key = JSON.stringify(v.value);
-    groups.set(key, (groups.get(key) ?? new Set()).add(v.domain));
+    groups.set(key, (groups.get(key) ?? new Set()).add(publisherKey(v.domain)));
   }
   if (groups.size > 1) return { value: values[0]!.value, verdict: "disputed" };
   const [key, domains] = [...groups.entries()][0]!;
@@ -44,7 +45,9 @@ function decide<T>(
   const stated = observations
     .map((o) => ({ value: pick(o), domain: o.domain, tier: o.tier }))
     .filter((v): v is { value: T; domain: string; tier: Observation["tier"] } => v.value !== null);
-  const official = stated.filter((v) => v.tier === "official");
+  // "Other" sources are useful for discovery and audit, but never count as verification.
+  const eligible = stated.filter((v) => v.tier !== "other");
+  const official = eligible.filter((v) => v.tier === "official");
   if (official.length > 0) {
     const result = agree(official);
     // Official pages that contradict each other are a dispute; one official statement is enough otherwise.
@@ -55,7 +58,7 @@ function decide<T>(
       }
     );
   }
-  return agree(stated);
+  return agree(eligible.filter((v) => v.tier === "trusted"));
 }
 
 export function corroborate(input: {
@@ -73,7 +76,7 @@ export function corroborate(input: {
   // Names from the official site (seen first) become the canonical spelling for teams not already known.
   const canonical = (name: string): string | null => {
     const hit = resolveTeam(name, registry);
-    if (hit === "ambiguous") return null;
+    if (hit === "ambiguous" || isGenericTeamName(name)) return null;
     if (hit) return hit;
     registry.push(name);
     return name;
@@ -101,11 +104,11 @@ export function corroborate(input: {
     if (kickoff?.verdict === "single_source") {
       const stated = kickoff.value;
       const statedBy = new Set(
-        c.observations.filter((o) => printed(o) === stated).map((o) => o.domain),
+        c.observations.filter((o) => printed(o) === stated).map((o) => publisherKey(o.domain)),
       );
       const confirmed = c.observations.some(
         (o) =>
-          !statedBy.has(o.domain) &&
+          !statedBy.has(publisherKey(o.domain)) &&
           !printed(o) &&
           // An inferred page keeps its plausible instants too, so it can confirm in any of them (as a zone-less
           // page could before inferred zones existed).
@@ -123,7 +126,7 @@ export function corroborate(input: {
         );
         // An inferred time that contradicts the stated one blocks this weaker rule.
         const inferredConflict = inferredObs.some(
-          (o) => !statedBy.has(o.domain) && o.kickoffUtc !== stated,
+          (o) => !statedBy.has(publisherKey(o.domain)) && o.kickoffUtc !== stated,
         );
         if (trustedStated && sameDateElsewhere && !inferredConflict)
           kickoff = { value: stated, verdict: "verified" };
@@ -135,13 +138,13 @@ export function corroborate(input: {
       // between inferred instants is a dispute.
       const groups = new Map<string, Set<string>>();
       for (const o of inferredObs)
-        groups.set(o.kickoffUtc!, (groups.get(o.kickoffUtc!) ?? new Set()).add(o.domain));
+        groups.set(o.kickoffUtc!, (groups.get(o.kickoffUtc!) ?? new Set()).add(publisherKey(o.domain)));
       const [value, domains] = [...groups.entries()][0]!;
       if (groups.size > 1) kickoff = { value, verdict: "disputed" };
       else {
         const confirmedByCandidate = c.observations.some(
           (o) =>
-            !domains.has(o.domain) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(value),
+            !domains.has(publisherKey(o.domain)) && !o.kickoffUtc && (o.kickoffCandidates ?? []).includes(value),
         );
         kickoff = {
           value,

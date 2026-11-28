@@ -125,26 +125,36 @@ export async function syncResults(
       skipped: [{ key: "csv", reason: "open fixtures are not from a provider competition" }],
     };
 
-  // One provider call per competition, each from its own earliest open kick-off, so one stuck match in one
-  // competition never slows the checks for another (the PFIE back-off is measured from this time).
+  // One provider call per competition. Rotate bounded batches every 30-minute cron slot so a large
+  // backlog cannot permanently starve older unresolved fixtures. Keep provider ownership isolated.
   const fixtures: NormalisedFixture[] = [];
   const skipped: { key: string; reason: string }[] = [];
   let calls = 0;
   for (const key of only) {
     const name = activeCompetitions().find((c) => c.key === key)?.name;
     const mine = open
-      .filter((o) => o.competition === name)
-      .sort((a, b) => a.kickoffAt.localeCompare(b.kickoffAt));
-    const earliest = new Date(Math.min(...mine.map((o) => Date.parse(o.kickoffAt))));
+      .filter((o) => o.competition === name && o.provider === provider.name)
+      .sort((a, b) => b.kickoffAt.localeCompare(a.kickoffAt));
+    if (mine.length === 0) continue;
+    const batchCount = Math.ceil(mine.length / RESULTS_TARGET_FIXTURE_LIMIT);
+    const cronSlot = Math.floor(now.getTime() / (30 * 60 * 1000));
+    const batchIndex = cronSlot % batchCount;
+    const batch = mine.slice(
+      batchIndex * RESULTS_TARGET_FIXTURE_LIMIT,
+      (batchIndex + 1) * RESULTS_TARGET_FIXTURE_LIMIT,
+    );
+    const earliest = new Date(Math.min(...batch.map((fixture) => Date.parse(fixture.kickoffAt))));
     const r = await provider.listResults(earliest, now, {
       only: [key],
-      fixtures: mine.slice(0, RESULTS_TARGET_FIXTURE_LIMIT).map((fixture) => ({
+      fixtures: batch.map((fixture) => ({
         home: fixture.home,
         away: fixture.away,
         kickoffAt: fixture.kickoffAt,
       })),
       ...(options.force ? { force: true } : {}),
     });
+    // Do not filter returned results by the requested provider_ref: PFIE may legitimately return a verified
+    // terminal result for a fixture absent from or mislabelled in the current schedule.
     fixtures.push(...r.fixtures);
     skipped.push(...r.skipped);
     calls += r.calls;
@@ -168,6 +178,7 @@ export async function syncResults(
   for (const result of fixtures) {
     const candidates = openByTeams.get(teamKey(result.competition, result.home, result.away)) ?? [];
     const resultKickoff = Date.parse(result.kickoffAt);
+    let matchedExisting = false;
     for (const candidate of candidates) {
       const candidateKickoff = Date.parse(candidate.kickoffAt);
       if (
@@ -176,6 +187,7 @@ export async function syncResults(
         Math.abs(resultKickoff - candidateKickoff) > 15 * 60 * 1000
       )
         continue;
+      matchedExisting = true;
       rowsByRef.set(candidate.providerRef, {
         ...result,
         provider: candidate.provider,
@@ -185,6 +197,18 @@ export async function syncResults(
         away: candidate.away,
         kickoffAt: candidate.kickoffAt,
       });
+    }
+
+    // PFIE can verify a result for a match missing from (or mislabelled in) the fixture schedule. The provider
+    // only returns publishable decisions; persist a verified terminal result under its own canonical provider_ref
+    // instead of silently dropping it because no unresolved row has the same teams and kick-off.
+    if (
+      !matchedExisting &&
+      result.provider === provider.name &&
+      result.status !== "scheduled" &&
+      result.status !== "live"
+    ) {
+      rowsByRef.set(result.providerRef, result);
     }
   }
   const rows = [...rowsByRef.values()];

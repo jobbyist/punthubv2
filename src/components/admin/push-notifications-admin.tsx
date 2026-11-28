@@ -66,6 +66,7 @@ export function PushNotificationsAdmin() {
         error?: string;
         sent?: number;
         failed?: number;
+        attempted?: number;
       }>({
         action: test ? "test" : "dispatch",
         title: test ? "Puntr test notification" : title,
@@ -75,10 +76,12 @@ export function PushNotificationsAdmin() {
         username,
       });
       if (!data?.ok && !test) throw new Error(data?.error || "Push campaign failed.");
-      if (test && data?.ok !== true) throw new Error(data?.error || "Test notification failed.");
+      if (test && (data?.ok !== true || (data.sent ?? 0) < 1)) {
+        throw new Error(data?.error || "No active device received the test notification.");
+      }
       toast.success(
         test
-          ? "Test notification sent to your active devices."
+          ? `Test notification sent to ${data.sent} device${data.sent === 1 ? "" : "s"}.`
           : `Push sent: ${data.sent} delivered, ${data.failed} failed.`,
       );
       if (!test) {

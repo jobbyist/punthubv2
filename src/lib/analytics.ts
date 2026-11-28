@@ -33,8 +33,9 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
           data: {
             event,
             payload,
-            fixtureId:
-              typeof payload["fixture_id"] === "string" ? payload["fixture_id"] : undefined,
+            ...(typeof payload["fixture_id"] === "string"
+              ? { fixtureId: payload["fixture_id"] }
+              : {}),
           },
         }),
       )

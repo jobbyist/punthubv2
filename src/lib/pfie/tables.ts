@@ -1,8 +1,7 @@
 /**
- * Daily standings and history sync. Each cron call handles at most `maxJobs` due jobs (standings first, then a
- * one-time history backfill), so a run stays inside the function time limit and the API quotas. Jobs are
- * idempotent: a table replaces the previous one atomically, history rows skip duplicates, and every attempt is
- * recorded in `sync_status` (failures back off and stop after three tries a day).
+ * Daily standings and rolling history sync. Each cron call handles a bounded mix of due jobs, reserving a slot
+ * for overdue history so standings refreshes cannot starve it. Standings snapshots replace only their own season;
+ * history rows upsert corrected scores; every attempt is recorded in `sync_status` with failure back-off.
  */
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
@@ -13,9 +12,10 @@ import { competitions, seasonFor, type CompetitionKey } from "@/lib/sports/compe
 import { extractionRequest, parseObservations, validateObservations } from "./extract";
 import { ARCHIVE_SOURCES } from "./archive";
 import { archiveJobsDue, runArchiveJob } from "./archive-run";
-import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
+import { verifyHistory, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
+import { modelQuotaOptions } from "./usage";
 import {
   STANDINGS_COMPETITIONS,
   STANDINGS_LAUNCH_KEYS,
@@ -206,7 +206,7 @@ export function isConfirmedNoMatchesInWindow(result: {
     result.parsedSources > 0 &&
     result.parseFailures === 0 &&
     result.extracted > 0 &&
-    result.reasons.outside_date_range === result.extracted &&
+    result.reasons["outside_date_range"] === result.extracted &&
     Object.keys(result.reasons).every((reason) => reason === "outside_date_range")
   );
 }
@@ -242,41 +242,52 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
   const month = Number(start.slice(5, 7));
   const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
   if (name === "UEFA Champions League") {
-    return seasonStart === 2026
-      ? [
-          "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
-        ]
-      : seasonStart === 2025
-        ? [
-            "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
-          ]
-        : [];
+    const official =
+      seasonStart === 2026
+        ? ["https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/"]
+        : seasonStart === 2025
+          ? ["https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/"]
+          : [];
+    return [
+      ...official,
+      "https://www.bbc.com/sport/football/champions-league/scores-fixtures",
+      "https://fbref.com/en/comps/8/schedule/Champions-League-Scores-and-Fixtures",
+    ];
   }
   if (name === "UEFA Conference League") {
-    return seasonStart === 2026
-      ? [
-          "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
-        ]
-      : seasonStart === 2025
-        ? [
-            "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
-          ]
-        : [];
+    const official =
+      seasonStart === 2026
+        ? ["https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/"]
+        : seasonStart === 2025
+          ? ["https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/"]
+          : [];
+    return [
+      ...official,
+      "https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures",
+      "https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf",
+    ];
   }
   if (name === "CAF Confederation Cup") {
-    if (start === "2026-10-16")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
-      ];
-    if (start === "2026-10-23")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
-        "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
-      ];
-    if (start === "2026-09-04")
-      return [
-        "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
-      ];
+    const official =
+      start === "2026-10-16"
+        ? [
+            "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+          ]
+        : start === "2026-10-23"
+          ? [
+              "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+              "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+            ]
+          : start === "2026-09-04"
+            ? [
+                "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
+              ]
+            : [];
+    return [
+      ...official,
+      "https://www.vavel.com/en-us/data/caf-confederation-cup/results",
+      "https://foot-africa.com/en/leagues/international/caf-confederations-cup/",
+    ];
   }
   return [];
 }
@@ -429,6 +440,17 @@ export function standingsDue(
   return now.getTime() - last >= refreshHours * HOUR;
 }
 
+/** History gets a rolling refresh every 72 hours; failures retain the existing back-off. */
+export function historyRefreshDue(
+  s: SyncStatusRow | undefined,
+  now: Date,
+  refreshHours = 72,
+): boolean {
+  if (!retryDue(s, now)) return false;
+  if (!s?.lastSuccessAt) return true;
+  return now.getTime() - Date.parse(s.lastSuccessAt) >= refreshHours * HOUR;
+}
+
 export async function runTablesSync(
   deps: TablesDeps,
   opts: { maxJobs?: number; only?: CompetitionKey[]; job?: TableJob; force?: boolean } = {},
@@ -472,8 +494,8 @@ export async function runTablesSync(
   for (const key of keys) {
     if (opts.job === "standings") continue;
     const s = status("history", key);
-    if (s?.lastSuccessAt && opts.job !== "history") continue; // one-time backfill
-    if (retryDue(s, now())) due.push({ job: "history", key });
+    const isDue = opts.job === "history" ? retryDue(s, now()) : historyRefreshDue(s, now());
+    if (isDue) due.push({ job: "history", key });
   }
 
   // Season backfill only fills slots the daily jobs leave free, or runs on its own with ?job=season.
@@ -491,7 +513,27 @@ export async function runTablesSync(
   }
 
   const report: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-  const daily = opts.job === "season" ? [] : due.slice(0, maxJobs);
+  const standingsDueJobs = due.filter((item) => item.job === "standings");
+  const historyDueJobs = due
+    .filter((item) => item.job === "history")
+    .sort((a, b) => {
+      const last = (key: CompetitionKey) => status("history", key)?.lastSuccessAt ?? "";
+      return last(a.key).localeCompare(last(b.key));
+    });
+  let daily: { job: TableJob; key: CompetitionKey }[] = [];
+  if (opts.job === "history") {
+    daily = historyDueJobs.slice(0, maxJobs);
+  } else if (opts.job === "standings") {
+    daily = standingsDueJobs.slice(0, maxJobs);
+  } else if (opts.job !== "season") {
+    // Reserve one slot for the oldest-due rolling history job so standings refreshes cannot starve it.
+    if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+    if (historyDueJobs.length && daily.length < maxJobs) daily.push(historyDueJobs.shift()!);
+    while (daily.length < maxJobs && (standingsDueJobs.length || historyDueJobs.length)) {
+      if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+      else if (historyDueJobs.length) daily.push(historyDueJobs.shift()!);
+    }
+  }
   for (const { job, key } of daily) {
     const r =
       job === "standings" ? await syncStandings(deps, key, now) : await syncHistory(deps, key, now);
@@ -595,18 +637,17 @@ async function generate(
 ) {
   const models = modelOverride ?? deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
-  const usedToday: Record<string, number> = {};
-  for (const m of models) {
-    const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
-    usedToday[m] = effort
-      ? ((usage as Record<string, number>)[`parallel-chat:${effort}`] ?? 0)
-      : ((usage as Record<string, number>)[m] ?? 0);
-  }
-  return createModelRouter(deps.llm, { models, usedToday }).generate(request);
+  const quota = modelQuotaOptions(models, usage as Record<string, number>);
+  return createModelRouter(deps.llm, { models, ...quota }).generate(request);
 }
 
 const message = (e: unknown) =>
   e instanceof AllModelsFailed || e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
+
+/** Secondary publishers are enabled only for the ten pre-launch standings competitions. */
+export function shouldIncludeSecondaryStandingsSources(key: CompetitionKey): boolean {
+  return STANDINGS_LAUNCH_KEYS.some((launchKey) => launchKey === key);
+}
 
 async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
   const c = competitions.find((x) => x.key === key)!;
@@ -630,7 +671,18 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       `${c.name} league table after latest matchday ${today}`,
       ...cfg.queries,
     ].slice(0, 5);
-    sources = await gatherSources(deps, key, objective, queries);
+    // Only the ten launch competitions may expand source discovery to trusted independent publishers.
+    // Deferred competitions (including Saudi Pro League and Liga Portugal) remain untouched until post-launch.
+    // Existing validation still requires official authority or independent-source consensus before persistence.
+    sources = await gatherSources(
+      deps,
+      key,
+      objective,
+      queries,
+      false,
+      [],
+      shouldIncludeSecondaryStandingsSources(key),
+    );
     primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
@@ -663,8 +715,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             competition: c.name,
             season,
             sources: [source],
-            groups: cfg.groups,
-            groupNotes: cfg.groupNotes,
+            ...(cfg.groups ? { groups: cfg.groups } : {}),
+            ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
           }),
         );
         modelsUsed.add(answer.model);
@@ -714,8 +766,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             season,
             sources: [result.source],
             retryHint: hint,
-            groups: cfg.groups,
-            groupNotes: cfg.groupNotes,
+            ...(cfg.groups ? { groups: cfg.groups } : {}),
+            ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
           }),
           retryModels,
         );
@@ -806,8 +858,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                   season,
                   sources: [source],
                   retryHint: hint,
-                  groups: cfg.groups,
-                  groupNotes: cfg.groupNotes,
+                  ...(cfg.groups ? { groups: cfg.groups } : {}),
+                  ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
                 }),
               );
               modelsUsed.add(answer.model);
@@ -909,8 +961,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 competition: c.name,
                 season,
                 sources: [source],
-                groups: cfg.groups,
-                groupNotes: cfg.groupNotes,
+                ...(cfg.groups ? { groups: cfg.groups } : {}),
+                ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
               }),
             );
             modelsUsed.add(answer.model);
@@ -959,8 +1011,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
                 season,
                 sources: [result.source],
                 retryHint: hint,
-                groups: cfg.groups,
-                groupNotes: cfg.groupNotes,
+                ...(cfg.groups ? { groups: cfg.groups } : {}),
+                ...(cfg.groupNotes ? { groupNotes: cfg.groupNotes } : {}),
               }),
             );
             modelsUsed.add(answer.model);
@@ -1336,7 +1388,7 @@ async function syncSeasonWindow(
     let result = await extractAndVerify(sources);
     const onlyOutOfWindow = (value: typeof result) =>
       value.extracted > 0 &&
-      value.reasons.outside_date_range === value.extracted &&
+      value.reasons["outside_date_range"] === value.extracted &&
       Object.keys(value.reasons).every((reason) => reason === "outside_date_range");
     if (
       result.rows.length === 0 &&
@@ -1355,7 +1407,11 @@ async function syncSeasonWindow(
       );
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
-        if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
+        if (
+          fallback.rows.length > 0 ||
+          fallback.extracted > result.extracted ||
+          fallback.parsedSources > result.parsedSources
+        ) {
           sources = secondary;
           result = fallback;
         }
@@ -1407,12 +1463,9 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
   const to = now();
   const from = new Date(to.getTime() - HISTORY_DAYS * DAY);
   try {
+    // Refresh a rolling 42-day window on a recurring cadence. A one-time backfill is not enough:
+    // source corrections and newly published results must flow into the history table.
     const known = await deps.store.knownTeams(c.name).catch(() => []);
-    const counts = await deps.store.completedCounts(c.name).catch(() => new Map<string, number>());
-    if (known.length > 0 && !needsBackfill(counts, known)) {
-      await deps.store.record("history", key, true, null, { skipped: "enough results recorded" });
-      return { ok: true, detail: "enough results already recorded" };
-    }
     const sources = await gatherSources(
       deps,
       key,
@@ -1444,13 +1497,23 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       knownTeams: known,
     });
     const { rows, unverified } = verifyHistory(accepted, key, known);
-    const inserted = rows.length
-      ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))
-      : 0;
+    if (rows.length === 0) {
+      await deps.store.record("history", key, false, "no independently verified results in rolling window", {
+        extracted: raw.length,
+        accepted: accepted.length,
+        unverified,
+        sourceCount: sources.length,
+        model: answer.model,
+      });
+      return { ok: false, detail: "no independently verified results in rolling window; not marked successful" };
+    }
+    // insert_team_results performs a natural-key upsert, so corrected scores replace stale values.
+    const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
     await deps.store.record("history", key, true, null, {
       verified: rows.length,
-      inserted,
+      insertedOrUpdated: inserted,
       unverified,
+      sourceCount: sources.length,
       model: answer.model,
     });
     return {

@@ -7,8 +7,15 @@ import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content
 
 import { corroborate } from "./corroborate";
 import { chunkSourcesForExtraction, parseObservations, validateObservations } from "./extract";
-import { createPfieProvider, PFIE_SOURCES, resultsGapMs, tierOf } from "./provider";
-import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
+import {
+  createPfieProvider,
+  isPfiePrelaunchDeferredCompetition,
+  PFIE_SOURCES,
+  pfieRetryPreference,
+  resultsGapMs,
+  tierOf,
+} from "./provider";
+import { isGenericTeamName, normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import { candidateInstants, inferredZoneFor, zonedToUtc, zoneFor } from "./time";
 import type { KnownFixture, Observation, PfieSource, PfieStore, RawObservation } from "./types";
 
@@ -123,10 +130,19 @@ const decide = (observations: Observation[], known: KnownFixture[] = []) =>
 describe("team names", () => {
   it("normalises spelling, suffixes and short forms", () => {
     expect(normaliseTeam("Manchester City FC")).toBe("manchester city");
+    expect(normaliseTeam("Paris FC")).toBe("paris fc");
+    expect(teamSlug("Paris FC")).toBe("paris-fc");
+    expect(isGenericTeamName("Paris")).toBe(true);
+    expect(resolveTeam("Paris FC", ["Paris FC", "Paris Saint-Germain"])).toBe("Paris FC");
+    expect(resolveTeam("Paris", ["Paris FC", "Paris Saint-Germain"])).toBeNull();
     expect(normaliseTeam("Man City")).toBe("manchester city");
     expect(normaliseTeam("AmaZulu F.C.")).toBe("amazulu");
+    expect(normaliseTeam("LOSC Lille")).toBe("lille osc");
+    expect(normaliseTeam("FC Iberia 1999")).toBe("iberia tbilisi");
+    expect(normaliseTeam("Olympique Lyonnais")).toBe("olympique lyon");
     expect(resolveTeam("LOSC Lille", ["Lille OSC"])).toBe("Lille OSC");
     expect(resolveTeam("Olympique Lyonnais", ["Olympique Lyon"])).toBe("Olympique Lyon");
+    expect(resolveTeam("Iberia Tbilisi", ["FC Iberia 1999"])).toBe("FC Iberia 1999");
     expect(teamSlug("Brighton & Hove Albion")).toBe("brighton-and-hove-albion");
   });
   it("matches a short name only when exactly one team fits", () => {
@@ -402,7 +418,7 @@ describe("validation", () => {
     expect(parseObservations("here are the fixtures")).toBeNull();
     expect(parseObservations('{"matches":[{"home":"A"}]}')).toBeNull();
     const valid = JSON.stringify({ matches: [raw({})] });
-    expect(parseObservations(```json\n${valid}\n```)).toHaveLength(1);
+    expect(parseObservations(`\`\`\`json\n${valid}\n\`\`\``)).toHaveLength(1);
     expect(parseObservations(`Here is the result:\n${valid}\nDone.`)).toHaveLength(1);
   });
 });
@@ -516,6 +532,68 @@ describe("corroboration", () => {
       providerRef: known[0]!.providerRef,
     });
   });
+  it("does not let two other-tier sources verify a final score", () => {
+    const base: Observation = {
+      home: "Lille OSC",
+      away: "Olympique Lyon",
+      date: "2026-11-21",
+      time: "19:45",
+      tz: "UTC",
+      kickoffUtc: "2026-11-21T19:45:00.000Z",
+      status: "finished",
+      homeScore: 0,
+      awayScore: 1,
+      quote: "Lille OSC 0-1 Olympique Lyon",
+      source: 1,
+      domain: "unverified-site-one.example",
+      tier: "other",
+    };
+    const second: Observation = {
+      ...base,
+      source: 2,
+      domain: "unverified-site-two.example",
+    };
+
+    const result = by(decide([base, second]).decisions, "Lille OSC");
+    expect(result).toMatchObject({
+      status: "scheduled",
+      statusVerdict: "single_source",
+      publish: false,
+    });
+  });
+
+  it("requires two trusted domains when no official source is present", () => {
+    const base: Observation = {
+      home: "Lille OSC",
+      away: "Olympique Lyon",
+      date: "2026-11-21",
+      time: "19:45",
+      tz: "UTC",
+      kickoffUtc: "2026-11-21T19:45:00.000Z",
+      status: "finished",
+      homeScore: 0,
+      awayScore: 1,
+      quote: "Lille OSC 0-1 Olympique Lyon",
+      source: 1,
+      domain: "publisher-one.example",
+      tier: "trusted",
+    };
+    const second: Observation = {
+      ...base,
+      source: 2,
+      domain: "publisher-two.example",
+    };
+
+    const result = by(decide([base, second]).decisions, "Lille OSC");
+    expect(result).toMatchObject({
+      status: "finished",
+      statusVerdict: "verified",
+      publish: true,
+      homeScore: 0,
+      awayScore: 1,
+    });
+  });
+
   it("without the official site, one source is not enough", () => {
     const fanOnly = accepted.filter((o) => o.domain === "durbancityfcnews.co.za");
     const d = by(decide(fanOnly).decisions, "Durban City");
@@ -696,14 +774,42 @@ describe("provider", () => {
     expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
       "https://www.uefa.com/uefaconferenceleague/fixtures-results/",
     );
-    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toContain(
-      "https://www.spl.com.sa/en/fixtures-results",
-    );
+    // Saudi Pro is search-only on purpose (the later PFIE_SOURCES entry wins), so no full-page reads.
+    expect(PFIE_SOURCES["saudi-pro"]?.pages?.results).toEqual([]);
     expect(PFIE_SOURCES.championship?.pages?.results).toContain(
       "https://www.efl.com/competitions/efl-championship/",
     );
   });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
+
+  it("uses a Medium-first retry only for Championship fixture extraction", () => {
+    expect(pfieRetryPreference("championship", "fixtures")).toBe("parallel-medium");
+    expect(pfieRetryPreference("championship", "results")).toBeUndefined();
+    expect(pfieRetryPreference("epl", "fixtures")).toBeUndefined();
+    expect(pfieRetryPreference("uecl", "fixtures")).toBeUndefined();
+  });
+
+  it("defers Saudi Pro League and Liga Portugal PFIE fixture/result refreshes before launch", async () => {
+    expect(isPfiePrelaunchDeferredCompetition("saudi-pro")).toBe(true);
+    expect(isPfiePrelaunchDeferredCompetition("primeira")).toBe(true);
+    expect(isPfiePrelaunchDeferredCompetition("epl")).toBe(false);
+    expect(isPfiePrelaunchDeferredCompetition("bundesliga")).toBe(false);
+
+    const store = memory();
+    const provider = createPfieProvider({ ...base, llm: llm(ANSWER), store });
+    const fixtures = await provider.listFixtures(WINDOW.from, WINDOW.to, {
+      only: ["saudi-pro", "primeira"],
+    });
+    const results = await provider.listResults(WINDOW.from, WINDOW.to, {
+      only: ["saudi-pro", "primeira"],
+    });
+
+    expect(fixtures.calls).toBe(0);
+    expect(results.calls).toBe(0);
+    expect(fixtures.fixtures).toHaveLength(0);
+    expect(results.fixtures).toHaveLength(0);
+    expect(store.runs).toHaveLength(0);
+  });
 
   it("returns verified fixtures in the shape the existing sync expects, using the configured primary model first", async () => {
     const model = llm(ANSWER);
@@ -825,8 +931,12 @@ describe("provider", () => {
       only: ["seriea"],
       fixtures: targets,
     });
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 1 vs Away Club 1 result score 2026-11-12");
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 12 vs Away Club 12 result score 2026-11-12");
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 1 vs Away Club 1 result score 2026-11-12",
+    );
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 12 vs Away Club 12 result score 2026-11-12",
+    );
     expect(captured.value?.queries).toHaveLength(5);
     for (const target of targets) {
       expect(captured.value?.objective).toContain(`${target.home} vs ${target.away}`);

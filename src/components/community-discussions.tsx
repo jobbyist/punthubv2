@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { Activity, MessageCircle, RefreshCw, Send } from "lucide-react";
+import { Activity, MessageCircle, RefreshCw, Send, Sparkles } from "lucide-react";
 import { ProBadge } from "@/components/pro-badge";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -82,11 +82,13 @@ function Author({
           ) : (
             <span className="font-semibold">{authorLabel(profile)}</span>
           )}
-          {(profile?.is_ai_participant || generated) && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary-soft px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
-              <Sparkles className="size-3" /> AI-GENERATED
+          {profile?.is_ai_participant ? (
+            <ProBadge aiParticipant />
+          ) : generated ? (
+            <span className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-muted-foreground">
+              AI
             </span>
-          )}
+          ) : null}
           {profile?.founding_number && (
             <span className="text-[10px] text-muted-foreground">
               Founding #{profile.founding_number}
@@ -373,7 +375,7 @@ export function CommunityDiscussions() {
             Sign in with a verified Puntr account to start a discussion or reply.
           </p>
           <Button asChild size="sm" variant="outline">
-            <Link to="/login">Sign in</Link>
+            <Link to="/join">Sign in</Link>
           </Button>
         </div>
       )}

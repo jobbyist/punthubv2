@@ -124,8 +124,12 @@ export function FantasyArenaPromo() {
         )}
         <motion.div
           className="relative grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-          animate={reduce ? undefined : { y: [0, -4, 0], rotate: [0, -5, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          {...(reduce
+            ? {}
+            : {
+                animate: { y: [0, -4, 0], rotate: [0, -5, 0] },
+                transition: { duration: 3, repeat: Infinity, ease: "easeInOut" as const },
+              })}
         >
           <Trophy className="size-5" />
         </motion.div>

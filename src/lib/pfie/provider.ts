@@ -29,6 +29,7 @@ import {
   validateObservations,
 } from "./extract";
 import type { Decision, PfieSource, PfieStore, SourceTier } from "./types";
+import { isPfieLaunchCompetition } from "./launch-scope";
 
 interface CompetitionSources {
   /** The competition's own site: authoritative. */
@@ -219,17 +220,6 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
         "Ligue 1 fixtures this week kick-off times",
       ],
       results: ["Ligue 1 results", "Ligue 1 full time scores"],
-    },
-  },
-  "saudi-pro": {
-    official: ["spl.com.sa"],
-    pages: {
-      fixtures: ["https://www.spl.com.sa/en/fixtures-results"],
-      results: ["https://www.spl.com.sa/en/fixtures-results"],
-    },
-    queries: {
-      fixtures: ["Roshn Saudi League fixtures KSA time", "Saudi Pro League fixtures SA time"],
-      results: ["Roshn Saudi League results", "Saudi Pro League full time scores"],
     },
   },
   championship: {
@@ -444,8 +434,11 @@ const TRUSTED = [
   "ligue1schedule.com",
   "sportnewsafrica.com",
   "vavel.com",
+  "vavel.fr",
   "foot-africa.com",
   "english.ahram.org.eg",
+  "psg.fr",
+  "footmercato.net",
 ];
 
 export function tierOf(domain: string, official: string[]): SourceTier {
@@ -483,6 +476,14 @@ export interface PfieDeps {
 }
 
 export const PFIE_PROVIDER = "pfie";
+
+/** Championship fixture extraction gets one bounded Medium-first retry after the Low response fails JSON parsing. */
+export function pfieRetryPreference(
+  competitionKey: CompetitionKey,
+  kind: "fixtures" | "results",
+): string | undefined {
+  return competitionKey === "championship" && kind === "fixtures" ? "parallel-medium" : undefined;
+}
 
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
   const now = deps.now ?? (() => new Date());
@@ -573,14 +574,18 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       // 3. Extraction. Split long historical pages into bounded chunks so the combined Parallel input
       // (instructions + schema + source text) stays comfortably below the 20,000-character endpoint limit.
+      const retryPreference = pfieRetryPreference(competition.key, kind);
+      const routerModels = retryPreference
+        ? [...new Set([...models, retryPreference])]
+        : models;
       const usage = await deps.store.usageToday().catch(() => ({}) as Record<string, number>);
       const usedToday: Record<string, number> = {};
-      for (const m of models) {
+      for (const m of routerModels) {
         const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
         usedToday[m] = effort ? (usage[`parallel-chat:${effort}`] ?? 0) : (usage[m] ?? 0);
       }
       const router = createModelRouter(deps.llm, {
-        models,
+        models: routerModels,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
@@ -623,6 +628,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               retrySources,
               "The previous response was not valid JSON or did not match the required schema.",
             ),
+            retryPreference,
           );
           modelUsed = answer.model;
           parsed = parseObservations(answer.text);
@@ -660,7 +666,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           competition: competition.key,
           kind,
           ok: true,
-          model: modelUsed ?? undefined,
+          ...(modelUsed ? { model: modelUsed } : {}),
           sources,
           accepted,
           rejected,
@@ -696,7 +702,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
   function selected(opts?: ListOptions): Competition[] {
     return activeCompetitions().filter(
       (c) =>
-        c.sport === "soccer" && PFIE_SOURCES[c.key] && (!opts?.only || opts.only.includes(c.key)),
+        c.sport === "soccer" &&
+        isPfieLaunchCompetition(c.key) &&
+        PFIE_SOURCES[c.key] &&
+        (!opts?.only || opts.only.includes(c.key)),
     );
   }
 

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Json } from "@/integrations/supabase/types";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -41,7 +42,7 @@ export interface PlatformTaskEvent {
   id: number;
   taskId: string;
   eventType: string;
-  detail: Record<string, unknown>;
+  detail: Record<string, Json>;
   createdAt: string;
 }
 export interface PlatformUpdatesSnapshot {
@@ -104,7 +105,7 @@ export const adminPlatformUpdatesOverview = createServerFn({ method: "GET" })
         id: Number(r["id"]),
         taskId: str(r["task_id"]),
         eventType: str(r["event_type"]),
-        detail: (r["detail"] as Record<string, unknown>) ?? {},
+        detail: (r["detail"] as Record<string, Json>) ?? {},
         createdAt: str(r["created_at"]),
       })),
       generatedAt: new Date().toISOString(),
@@ -129,8 +130,8 @@ export const adminSyncPlatformUpdates = createServerFn({ method: "POST" })
         Accept: "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
       };
-      const githubToken = process.env.GITHUB_TOKEN?.trim();
-      if (githubToken) headers.Authorization = `Bearer ${githubToken}`;
+      const githubToken = process.env["GITHUB_TOKEN"]?.trim();
+      if (githubToken) headers["Authorization"] = `Bearer ${githubToken}`;
       const response = await fetch(
         `https://api.github.com/repos/jobbyist/punthubv2/pulls?state=closed&per_page=100&sort=created&direction=asc&page=${page}`,
         {
@@ -217,42 +218,42 @@ export function validateSavePlatformTaskInput(value: unknown): SavePlatformTaskI
   const input = value as Record<string, unknown>;
   const statuses = ["planned", "in_progress", "blocked", "completed", "cancelled"] as const;
   const priorities = ["low", "medium", "high", "critical"] as const;
-  if (typeof input.title !== "string") throw new Error("Task title is required.");
-  if (typeof input.description !== "string") throw new Error("Task description must be text.");
-  if (typeof input.category !== "string") throw new Error("Task category must be text.");
+  if (typeof input["title"] !== "string") throw new Error("Task title is required.");
+  if (typeof input["description"] !== "string") throw new Error("Task description must be text.");
+  if (typeof input["category"] !== "string") throw new Error("Task category must be text.");
   if (
-    typeof input.status !== "string" ||
-    !statuses.includes(input.status as (typeof statuses)[number])
+    typeof input["status"] !== "string" ||
+    !statuses.includes(input["status"] as (typeof statuses)[number])
   ) {
     throw new Error("Invalid task status.");
   }
   if (
-    typeof input.priority !== "string" ||
-    !priorities.includes(input.priority as (typeof priorities)[number])
+    typeof input["priority"] !== "string" ||
+    !priorities.includes(input["priority"] as (typeof priorities)[number])
   ) {
     throw new Error("Invalid task priority.");
   }
-  const progress = Number(input.progress);
-  const sortOrder = input.sortOrder === undefined ? 0 : Number(input.sortOrder);
+  const progress = Number(input["progress"]);
+  const sortOrder = input["sortOrder"] === undefined ? 0 : Number(input["sortOrder"]);
   if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
     throw new Error("Task progress must be a number between 0 and 100.");
   }
   if (!Number.isFinite(sortOrder)) throw new Error("Task sort order must be a number.");
-  if (input.dueDate !== undefined && typeof input.dueDate !== "string") {
+  if (input["dueDate"] !== undefined && typeof input["dueDate"] !== "string") {
     throw new Error("Task target date must be text.");
   }
-  if (input.id !== undefined && typeof input.id !== "string") {
+  if (input["id"] !== undefined && typeof input["id"] !== "string") {
     throw new Error("Invalid task identifier.");
   }
   return {
-    id: input.id as string | undefined,
-    title: input.title,
-    description: input.description,
-    category: input.category,
-    status: input.status as SavePlatformTaskInput["status"],
-    priority: input.priority as SavePlatformTaskInput["priority"],
+    ...(typeof input["id"] === "string" ? { id: input["id"] } : {}),
+    title: input["title"],
+    description: input["description"],
+    category: input["category"],
+    status: input["status"] as SavePlatformTaskInput["status"],
+    priority: input["priority"] as SavePlatformTaskInput["priority"],
     progress,
-    dueDate: (input.dueDate as string | undefined) ?? "",
+    dueDate: (input["dueDate"] as string | undefined) ?? "",
     sortOrder,
   };
 }

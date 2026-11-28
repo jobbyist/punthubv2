@@ -235,6 +235,20 @@ it("configures official and independent Conference League standings sources", ()
   );
 });
 describe("EFL Championship source configuration", () => {
+  it("prioritizes the official EFL embed and adds independent BBC and Flashscore tables", () => {
+    const pages = STANDINGS_COMPETITIONS.championship?.pages ?? [];
+    const queries = STANDINGS_COMPETITIONS.championship?.queries ?? [];
+
+    expect(pages[0]).toBe("https://www.efl.com/embeds/league-table/");
+    expect(pages).toContain("https://www.skysports.com/championship-table?dcmp=GameOn");
+    expect(pages).toContain("https://www.bbc.com/sport/football/championship/table");
+    expect(pages).toContain("https://www.flashscore.com/football/england/championship/standings/");
+    expect(queries.some((query) => query.includes("site:bbc.com/sport/football/championship/table"))).toBe(true);
+    expect(queries.some((query) => query.includes("site:flashscore.com/football/england/championship/standings"))).toBe(true);
+    expect(pages).not.toContain("https://www.cbssports.com/soccer/efl-championship/standings/");
+    expect(pages).not.toContain("https://www.sportsmole.co.uk/football/championship/table.html");
+  });
+
   it("includes independent ESPN and Transfermarkt table candidates", () => {
     expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
       "https://www.espn.com/soccer/standings/_/league/eng.2",
@@ -1692,7 +1706,11 @@ describe("cup history source attribution", () => {
     expect(report.ran[0]?.ok).toBe(true);
     expect(inserted).toHaveLength(1);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.sources).toEqual(["uefa.com", "theguardian.com", "cbssports.com"]);
+    expect(records.at(-1)?.meta["sources"]).toEqual([
+      "uefa.com",
+      "theguardian.com",
+      "cbssports.com",
+    ]);
   });
 });
 
@@ -1785,8 +1803,8 @@ describe("official standings fallback", () => {
     });
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.fallbackFromOfficial).toBe(true);
-    expect(records.at(-1)?.meta.sourceCount).toBeGreaterThanOrEqual(2);
+    expect(records.at(-1)?.meta["fallbackFromOfficial"]).toBe(true);
+    expect(records.at(-1)?.meta["sourceCount"]).toBeGreaterThanOrEqual(2);
   });
 });
 
@@ -1855,7 +1873,7 @@ describe("empty historical windows", () => {
     expect(calls).toBe(1);
     expect(report.ran[0]?.ok).toBe(true);
     expect(records.at(-1)?.ok).toBe(true);
-    expect(records.at(-1)?.meta.noMatchesInWindow).toBe(true);
+    expect(records.at(-1)?.meta["noMatchesInWindow"]).toBe(true);
   });
 });
 
@@ -1889,5 +1907,26 @@ describe("verified standings record corrections", () => {
     ];
     expect(tableRegression(corrected, previous)).toBe("won_changed_without_new_matches_Genoa");
     expect(tableRegression(corrected, previous, false, [], false, true)).toBeNull();
+  });
+});
+
+describe("deterministic standings parser with combined goal totals", () => {
+  it("parses a full table whose source combines goals for and against", () => {
+    const markdown = [
+      "| # | Club | P | W | D | L | Goals | GD | Pts |",
+      "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34:22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27:19 | +8 | 35 |",
+      "| 3 | Wolves | 17 | 10 | 4 | 3 | 31:19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30:15 | +15 | 32 |",
+    ].join("\\n");
+    const rows = parseStandingsMarkdown(markdown, 1);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({
+      team: "Middlesbrough",
+      goalsFor: 34,
+      goalsAgainst: 22,
+      points: 35,
+    });
   });
 });

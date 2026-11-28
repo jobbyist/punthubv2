@@ -107,7 +107,9 @@ export const Route = createFileRoute("/api/cron/synthetic-decisions-daily")({
             continue;
           }
           const key = `${match.provider}:${match.provider_ref}`;
-          const current = groups.get(key) || {
+          const current: { fixture: Record<string, unknown>; personaIds: string[] } = groups.get(
+            key,
+          ) || {
             fixture: {
               fixture_id: key,
               home_team: match.home,

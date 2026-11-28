@@ -6,7 +6,10 @@ import { Trans, useTranslation } from "react-i18next";
 
 import { MfaChallenge } from "@/components/mfa-challenge";
 import { RgNotice } from "@/components/rg-notice";
-import { AnnualPassClaim } from "@/components/annual-pass-claim";
+import { AvatarStep } from "@/components/onboarding/avatar-step";
+import { JoinProgress } from "@/components/onboarding/join-progress";
+import { PlanStep } from "@/components/onboarding/plan-step";
+import { UserAvatar } from "@/components/user-avatar";
 import { useSession } from "@/components/session";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -57,7 +60,7 @@ export const Route = createFileRoute("/join")({
   component: Join,
 });
 
-type Step = "email" | "code" | "mfa" | "onboarding" | "done" | "blocked";
+type Step = "email" | "code" | "mfa" | "onboarding" | "avatar" | "plan" | "done" | "blocked";
 type CodeKind = "email" | "signup";
 
 const RESEND_SECONDS = 30;
@@ -93,7 +96,8 @@ function Join() {
       if (!active) return;
       if (profile) {
         setFoundingNumber((n) => n ?? profile.founding_number);
-        setStep("done");
+        // A member who has just created their profile carries on through the optional avatar and plan steps.
+        setStep((s) => (s === "avatar" || s === "plan" ? s : "done"));
         rememberAccount();
         if (!justJoined) void navigate({ to: returnTo as never });
       } else if (user) {
@@ -107,9 +111,23 @@ function Join() {
   }, [loading, profile, user, mfaTick, navigate, returnTo, justJoined]);
 
   const stepIndex =
-    step === "email" ? 0 : step === "code" || step === "mfa" ? 1 : step === "onboarding" ? 2 : 3;
+    step === "email"
+      ? 0
+      : step === "code" || step === "mfa"
+        ? 1
+        : step === "onboarding"
+          ? 2
+          : step === "avatar"
+            ? 3
+            : step === "plan"
+              ? 4
+              : 5;
   const showProgress =
-    step === "code" || step === "onboarding" || (step === "email" && mode !== "signin");
+    step === "code" ||
+    step === "onboarding" ||
+    step === "avatar" ||
+    step === "plan" ||
+    (step === "email" && mode !== "signin");
 
   return (
     <div className="relative mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
@@ -127,7 +145,7 @@ function Join() {
 
       {showProgress && <JoinProgress current={stepIndex} />}
 
-      <div className="card-surface mt-6 p-6">
+      <div key={step} className="puntr-rise card-surface mt-6 p-5 sm:p-6">
         {step === "email" && (
           <AuthStep
             initialMode={mode ?? (hasAccountOnDevice() ? "signin" : "create")}
@@ -173,11 +191,14 @@ function Join() {
             onDone={async (n) => {
               setJustJoined(true);
               setFoundingNumber(n);
+              // Set before the profile arrives, so the session effect keeps the member on the next step.
+              setStep("avatar");
               await refreshProfile();
-              setStep("done");
             }}
           />
         )}
+        {step === "avatar" && <AvatarStep onNext={() => setStep("plan")} />}
+        {step === "plan" && <PlanStep onNext={() => setStep("done")} />}
         {step === "done" && <DoneStep foundingNumber={foundingNumber} returnTo={returnTo} />}
       </div>
 
@@ -215,31 +236,6 @@ function hasAccountOnDevice() {
   } catch {
     return false;
   }
-}
-
-/** Three short steps, so new members always know how far along they are. */
-function JoinProgress({ current }: { current: number }) {
-  const { t } = useTranslation("auth");
-  const steps = ["account", "confirm", "profile"] as const;
-  return (
-    <ol className="mt-6 grid grid-cols-3 gap-2" aria-label={t("join.progress.label")}>
-      {steps.map((key, i) => {
-        const state = i < current ? "done" : i === current ? "current" : "todo";
-        return (
-          <li key={key} aria-current={state === "current" ? "step" : undefined} className="min-w-0">
-            <span
-              className={`block h-1.5 rounded-full transition-colors duration-500 ${state === "todo" ? "bg-muted" : "bg-primary"}`}
-            />
-            <span
-              className={`mt-1.5 block truncate text-[11px] font-semibold ${state === "current" ? "text-foreground" : "text-muted-foreground"}`}
-            >
-              {i + 1}. {t(`join.progress.${key}`)}
-            </span>
-          </li>
-        );
-      })}
-    </ol>
-  );
 }
 
 function GoogleLogo() {
@@ -837,18 +833,27 @@ function DoneStep({
   ] as const;
   return (
     <div className="space-y-5">
-      <div className="puntr-pop rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
-          {number ? t("join.done.celebrationEyebrow") : t("join.done.welcomeEyebrow")}
-        </p>
-        <h2 className="mt-2 text-2xl">
-          {number
-            ? t("join.done.founding", { number, cap: FOUNDING_CAP })
-            : emailConfirmed
-              ? t("join.done.full")
-              : t("join.done.unconfirmed")}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
+      <div className="puntr-pop flex items-start gap-4 rounded-xl border border-primary/40 bg-primary-soft/50 p-4">
+        {profile && (
+          <UserAvatar
+            username={profile.username}
+            url={profile.avatar_url}
+            className="size-14 shrink-0 text-lg"
+          />
+        )}
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">
+            {number ? t("join.done.celebrationEyebrow") : t("join.done.welcomeEyebrow")}
+          </p>
+          <h2 className="mt-2 text-2xl">
+            {number
+              ? t("join.done.founding", { number, cap: FOUNDING_CAP })
+              : emailConfirmed
+                ? t("join.done.full")
+                : t("join.done.unconfirmed")}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t("join.done.body")}</p>
+        </div>
       </div>
       {!emailConfirmed && (
         <p className="border border-border bg-muted/40 p-3 text-sm">
@@ -865,7 +870,7 @@ function DoneStep({
             <li key={key} className="puntr-rise" style={{ ["--i" as string]: i + 1 }}>
               <Link
                 to={to}
-                hash={"hash" in rest ? rest.hash : undefined}
+                {...("hash" in rest && rest.hash ? { hash: rest.hash } : {})}
                 onClick={() => trackEvent("onboarding_move_clicked", { move: key })}
                 className="group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/50 hover:bg-muted/40"
               >
@@ -886,7 +891,6 @@ function DoneStep({
           ))}
         </ul>
       </div>
-      {emailConfirmed && <AnnualPassClaim onboarding />}
       <QuestsChecklist compact />
       <Button asChild className="h-11 w-full">
         <Link to={returnTo as never}>{t("join.done.continue")}</Link>

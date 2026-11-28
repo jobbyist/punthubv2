@@ -187,7 +187,8 @@
     "failed": "We couldn't upload your picture. Please try again.",
     "saved": "Picture saved.",
     "removed": "Picture removed.",
-    "alt": "{{username}}'s profile picture"
+    "alt": "{{username}}'s profile picture",
+    "sportsSaved": "Sports avatar saved."
   },
   "pushNotifications": {
     "title": "Push notifications",
