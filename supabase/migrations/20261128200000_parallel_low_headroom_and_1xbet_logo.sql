@@ -9,11 +9,11 @@ where provider = 'parallel-chat:low';
 
 -- Register the local, already-uploaded 1xBet mark in Admin > Logos/Branding.
 insert into public.brand_logos (code, name, kind, placements, image_url, link_url, active, sort_order)
-values ('1xbet', '1xBet', 'partner', array['bookmakers']::text[], '/logos/1xbet.png', 'https://1xbet.com', true, 50)
+values ('1xbet', '1xBet', 'partner', array['bookmakers', 'homepage']::text[], '/logos/1xbet.png', 'https://1xbet.com', true, 50)
 on conflict (code) do update
 set name = excluded.name,
     kind = excluded.kind,
-    placements = array['bookmakers']::text[],
+    placements = array['bookmakers', 'homepage']::text[],
     image_url = excluded.image_url,
     link_url = excluded.link_url,
     active = true,
