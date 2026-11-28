@@ -1,4 +1,4 @@
--- Phase 3.1: report the shared Parallel cumulative allowance using the same
+-- Phase 3.2: report the shared Parallel cumulative allowance using the same
 -- provider scope enforced by api_budget_claim. The period row named "parallel"
 -- represents the global cap, not only the monthly core family.
 create or replace function private.api_spend_period_status()
