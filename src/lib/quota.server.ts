@@ -56,9 +56,8 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
         p_feature: feature,
       });
       if (!error) {
-        const granted = data === true;
-        if (granted) await recordClaim(provider);
-        return granted;
+        // api_budget_claim writes the attribution event in the same transaction as the quota debit.
+        return data === true;
       }
       if (!isMissingFunction(error)) {
         console.error("quota: budget claim failed, refusing the call", provider, error.message);
