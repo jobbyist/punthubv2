@@ -61,6 +61,16 @@ describe("cache keys", () => {
     expect(stableStringify({ a: 1, b: undefined })).toBe('{"a":1}');
   });
 
+  it("normalises URL hosts without collapsing case-sensitive paths or query values", async () => {
+    const hostCase = await cacheKey("extract", { url: "https://Example.com/Story/ABC?ref=Final" });
+    const sameUrl = await cacheKey("extract", { url: "https://example.com/Story/ABC?ref=Final" });
+    const differentPath = await cacheKey("extract", { url: "https://example.com/story/abc?ref=Final" });
+    const differentQuery = await cacheKey("extract", { url: "https://example.com/Story/ABC?ref=final" });
+    expect(hostCase).toBe(sameUrl);
+    expect(hostCase).not.toBe(differentPath);
+    expect(hostCase).not.toBe(differentQuery);
+  });
+
   it("computes freshness from the purpose TTL", () => {
     const now = Date.parse("2026-11-15T00:00:00Z");
     const exp = expiresAt("results", now);
@@ -95,6 +105,27 @@ describe("cachedCall", () => {
       title: "Article",
     });
     expect(extract).toHaveBeenCalledTimes(1);
+  });
+
+  it("coalesces concurrent identical misses into one provider request", async () => {
+    const store = memoryStore();
+    let resolveFetch!: (value: { ok: number }) => void;
+    const fetcher = vi.fn(
+      () =>
+        new Promise<{ ok: number }>((resolve) => {
+          resolveFetch = resolve;
+        }),
+    );
+    const input = { endpoint: "search:parallel", body: { q: "same" }, purpose: "fixtures" as const };
+    const first = cachedCall(store, input, fetcher);
+    await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1));
+    const second = cachedCall(store, input, fetcher);
+    await Promise.resolve();
+    resolveFetch({ ok: 1 });
+    const [a, b] = await Promise.all([first, second]);
+    expect(a).toEqual({ value: { ok: 1 }, cached: false });
+    expect(b).toEqual({ value: { ok: 1 }, cached: true, deduplicated: true });
+    expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   it("calls again once the entry has expired", async () => {
