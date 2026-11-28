@@ -5,7 +5,7 @@
  * Flash-Lite, so a busy or capped model no longer drops straight to the lightest one. Every entry is on the free
  * tier; a model the project cannot reach answers 404 and the router simply moves on.
  */
-/** Default Gemini models used by the PFIE fixture and odds research pipelines. */
+/** Gemini models retained for non-PFIE odds and content workflows. */
 export const DEFAULT_GEMINI_MODELS = [
   "gemini-3.8-flash",
   "gemini-3.6-flash",
@@ -17,7 +17,7 @@ export const DEFAULT_GEMINI_MODELS = [
 /** PFIE structured extraction is performed by Parallel Responses low effort only. */
 export const DEFAULT_PFIE_MODELS = ["parallel-low"] as const;
 
-/** Shared router allowlist for PFIE/odds. The Newsroom slot selector below pins Newsroom to Parallel only. */
+/** Shared model allowlist. PFIE pins Parallel low; Newsroom pins Parallel medium; Gemini is non-PFIE only. */
 export const APPROVED_CONTENT_MODELS: readonly string[] = [
   "parallel-medium",
   "parallel-low",
