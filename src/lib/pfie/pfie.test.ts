@@ -603,7 +603,7 @@ const search: SearchProvider = {
 const llm = (text: string | Error): LlmProvider & { models: string[] } => {
   const models: string[] = [];
   return {
-    name: "gemini",
+    name: "parallel-responses",
     models,
     async generate(model) {
       models.push(model);
@@ -679,7 +679,7 @@ describe("provider", () => {
     expect(resultsGapMs(7 * 24 * h)).toBe(6 * h);
   });
   it("records a failed run and returns nothing when the model output is unusable or every model fails", async () => {
-    for (const bad of ["not json", new ProviderError("gemini", "quota", 429, "limit")]) {
+    for (const bad of ["not json", new ProviderError("parallel-chat", "quota", 429, "limit")]) {
       const store = memory();
       const provider = createPfieProvider({ ...base, llm: llm(bad), store });
       const out = await provider.listFixtures(WINDOW.from, WINDOW.to, { only: ["psl"] });
@@ -735,24 +735,23 @@ describe("provider", () => {
     expect(captured.value?.objective).toContain("Napoli vs Torino");
   });
 
-  it("falls back to the second model on quota", async () => {
+  it("does not fall back to Gemini or another provider when Parallel Responses is capped", async () => {
     const models: string[] = [];
-    const flaky: LlmProvider = {
-      name: "gemini",
+    const capped: LlmProvider = {
+      name: "parallel-responses",
       async generate(model) {
         models.push(model);
-        if (model === DEFAULT_PFIE_MODELS[0])
-          throw new ProviderError("gemini", "quota", 429, "limit");
-        return { model, text: ANSWER };
+        throw new ProviderError("parallel-chat", "quota", 429, "limit");
       },
     };
-    const out = await createPfieProvider({ ...base, llm: flaky, store: memory() }).listFixtures(
+    const out = await createPfieProvider({ ...base, llm: capped, store: memory() }).listFixtures(
       WINDOW.from,
       WINDOW.to,
       { only: ["psl"] },
     );
-    expect(models).toEqual(DEFAULT_PFIE_MODELS.slice(0, 2));
-    expect(out.fixtures).toHaveLength(2);
+    expect(models).toEqual(["parallel-low"]);
+    expect(out.fixtures).toEqual([]);
+    expect(out.skipped[0]?.reason).toContain("failed");
   });
 });
 
