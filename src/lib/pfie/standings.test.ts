@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { needsBackfill, verifyHistory } from "./history";
+import { validateObservations } from "./extract";
 import { tierOf } from "./provider";
 import { normaliseTeam, resolveTeam } from "./teams";
 import {
@@ -27,7 +28,7 @@ import {
   standingsDue,
   type SyncStatusRow,
 } from "./tables";
-import type { Observation, PfieSource } from "./types";
+import type { Observation, PfieSource, RawObservation } from "./types";
 
 const teams = ["Alpha FC", "Bravo United", "Charlie City", "Delta Rovers"];
 const page = (
@@ -98,6 +99,7 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("sportmetrics.org", [])).toBe("trusted");
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
+    expect(tierOf("theanalyst.com", [])).toBe("trusted");
     expect(tierOf("scoremondo.com", [])).toBe("trusted");
     expect(tierOf("zeanball.online", [])).toBe("trusted");
     expect(tierOf("statsfera.com.tr", [])).toBe("trusted");
@@ -139,16 +141,16 @@ describe("configured direct standings sources", () => {
   });
   it("includes independent full-table sources for leagues that previously had no baseline", () => {
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.sportsmole.co.uk/football/ligue-1/table.html",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://theanalyst.com/competition/ligue-1/table",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.ligue1schedule.com/table/2026-27",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.tntsports.co.uk/football/ligue-1/standings.shtml",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.cbssports.com/soccer/ligue-1/standings/",
-    );
-    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://zeanball.online/en/table/ligue-1/",
     );
     expect(STANDINGS_COMPETITIONS.eredivisie?.pages).toContain(
       "https://www.vi.nl/competities/eredivisie/stand",
@@ -249,10 +251,10 @@ describe("restored standings source coverage", () => {
       "https://statsfera.com.tr/en/standings/ingiltere-championship",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://www.ligue1schedule.com/table/2026-27",
+      "https://www.ninetyminutesplus.com/league/ligue-1/standings",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://zeanball.online/en/table/ligue-1/",
+      "https://theanalyst.com/competition/ligue-1/table",
     );
     expect(STANDINGS_COMPETITIONS.seriea?.allowVerifiedPlayedCorrections).toEqual(["Milan"]);
     expect(STANDINGS_COMPETITIONS.psl?.pages?.length).toBeLessThanOrEqual(6);
@@ -1064,5 +1066,32 @@ describe("season backfill sync", () => {
       maxJobs: 3,
     });
     expect(out.seasonDue).toBe(0);
+  });
+});
+
+describe("PFIE match evidence validation", () => {
+  const source: PfieSource = {
+    index: 1, url: "https://www.uefa.com/results", domain: "uefa.com", tier: "official",
+    text: "Tuesday 13 October 2026\\nArsenal 3-0 Lille\\nWednesday 14 October 2026\\nRoma 3-4 Real Madrid",
+    via: "extract",
+  };
+  const window = { from: new Date("2026-10-13T00:00:00Z"), to: new Date("2026-10-14T23:59:59Z"), now: new Date("2026-11-28T00:00:00Z") };
+  const observation = (overrides: Partial<RawObservation> = {}): RawObservation => ({
+    source: 1, home: "Arsenal", away: "Lille", date: "2026-10-13", time: null, tz: null,
+    status: "finished", homeScore: 3, awayScore: 0, quote: "Arsenal won three nil against Lille", ...overrides,
+  });
+  it("accepts adjacent team and exact score evidence when a page splits table cells", () => {
+    const result = validateObservations([observation()], [source], window);
+    expect(result.accepted).toHaveLength(1);
+    expect(result.rejected).toEqual([]);
+  });
+  it("rejects a score that does not appear with the named teams on the page", () => {
+    const result = validateObservations([observation({ homeScore: 2, quote: "Arsenal 2-0 Lille" })], [source], window);
+    expect(result.accepted).toHaveLength(0);
+    expect(result.rejected[0]?.reason).toBe("quote_not_on_page");
+  });
+  it("continues to accept an exact verbatim source quote", () => {
+    const result = validateObservations([observation({ quote: "Arsenal 3-0 Lille" })], [source], window);
+    expect(result.accepted).toHaveLength(1);
   });
 });
