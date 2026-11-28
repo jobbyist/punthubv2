@@ -240,8 +240,8 @@ describe("sync", () => {
     const makeProvider = () => ({
       name: "apisports",
       listFixtures: vi.fn(),
-      listResults: vi.fn().mockImplementation(async (_from: Date, _to: Date, opts: { fixtures: { home: string; away: string; kickoffAt: string }[] }) => {
-        const refs = opts.fixtures.map((fixture) => open.find((item) => item.home === fixture.home)?.providerRef ?? "");
+      listResults: vi.fn().mockImplementation(async (_from: Date, _to: Date, opts: { fixtures?: { home: string; away: string; kickoffAt: string }[] }) => {
+        const refs = (opts.fixtures ?? []).map((fixture) => open.find((item) => item.home === fixture.home)?.providerRef ?? "");
         batches.push(refs);
         return { fixtures: refs.map((ref) => fx(ref, "finished")), calls: 1, skipped: [] };
       }),
