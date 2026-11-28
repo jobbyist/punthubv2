@@ -35,14 +35,46 @@ export function PwaExperience() {
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
-    const register = () => {
-      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch((error) => {
-        console.error("[Puntr PWA] Service worker registration failed", error);
-      });
+
+    // A newly activated worker means the deployed application has changed.
+    // Reload once when it takes control so installed PWAs cannot remain on an old JS bundle.
+    const onControllerChange = () => window.location.reload();
+    navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+
+    let registration: ServiceWorkerRegistration | undefined;
+    let disposed = false;
+    const refreshWorker = async () => {
+      try {
+        registration = await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+          updateViaCache: "none",
+        });
+        if (!disposed) await registration.update();
+      } catch (error) {
+        console.error("[Puntr PWA] Service worker update check failed", error);
+      }
     };
-    if (document.readyState === "complete") register();
-    else window.addEventListener("load", register, { once: true });
-    return () => window.removeEventListener("load", register);
+
+    if (document.readyState === "complete") void refreshWorker();
+    else window.addEventListener("load", refreshWorker, { once: true });
+
+    // Re-check whenever a user returns to the installed PWA after a deployment.
+    const onFocus = () => void registration?.update().catch((error) => {
+      console.error("[Puntr PWA] Service worker focus update failed", error);
+    });
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") onFocus();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      disposed = true;
+      window.removeEventListener("load", refreshWorker);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+      navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+    };
   }, []);
 
   useEffect(() => {
