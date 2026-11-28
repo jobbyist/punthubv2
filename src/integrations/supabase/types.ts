@@ -51,24 +51,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "account_warnings_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "account_warnings_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "account_warnings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -110,24 +96,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "admin_actions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "admin_actions_target_user_fkey"
             columns: ["target_user"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_actions_target_user_fkey"
-            columns: ["target_user"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -174,11 +146,117 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      affiliate_ad_events: {
+        Row: {
+          created_at: string
+          creative_id: string | null
+          id: number
+          kind: string
+          partner_id: string
+          placement: string
+        }
+        Insert: {
+          created_at?: string
+          creative_id?: string | null
+          id?: never
+          kind: string
+          partner_id: string
+          placement: string
+        }
+        Update: {
+          created_at?: string
+          creative_id?: string | null
+          id?: never
+          kind?: string
+          partner_id?: string
+          placement?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "admin_notifications_done_by_fkey"
-            columns: ["done_by"]
+            foreignKeyName: "affiliate_ad_events_creative_id_fkey"
+            columns: ["creative_id"]
             isOneToOne: false
-            referencedRelation: "public_profiles"
+            referencedRelation: "affiliate_creatives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_ad_events_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_creatives: {
+        Row: {
+          active: boolean
+          approved_at: string | null
+          body: string | null
+          created_at: string
+          cta_label: string
+          ends_at: string | null
+          format: string
+          headline: string
+          id: string
+          image_url: string | null
+          name: string
+          partner_id: string
+          placements: string[]
+          starts_at: string | null
+          terms_line: string | null
+          tracking_link: string | null
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          active?: boolean
+          approved_at?: string | null
+          body?: string | null
+          created_at?: string
+          cta_label?: string
+          ends_at?: string | null
+          format?: string
+          headline: string
+          id?: string
+          image_url?: string | null
+          name: string
+          partner_id: string
+          placements?: string[]
+          starts_at?: string | null
+          terms_line?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          active?: boolean
+          approved_at?: string | null
+          body?: string | null
+          created_at?: string
+          cta_label?: string
+          ends_at?: string | null
+          format?: string
+          headline?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          partner_id?: string
+          placements?: string[]
+          starts_at?: string | null
+          terms_line?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_creatives_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_partners"
             referencedColumns: ["id"]
           },
         ]
@@ -217,24 +295,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "affiliate_partner_events_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "affiliate_partner_events_partner_id_fkey"
             columns: ["partner_id"]
             isOneToOne: false
             referencedRelation: "affiliate_partners"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "affiliate_partner_events_partner_id_fkey"
-            columns: ["partner_id"]
-            isOneToOne: false
-            referencedRelation: "public_affiliate_partners"
             referencedColumns: ["id"]
           },
         ]
@@ -327,13 +391,6 @@ export type Database = {
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "affiliate_partners_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -492,13 +549,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "ai_sports_wallets_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       annual_pass_claims: {
@@ -596,37 +646,91 @@ export type Database = {
       }
       api_call_events: {
         Row: {
+          attempt_id: string
           claimed_at: string
+          competition: string | null
+          completed_at: string | null
           consumer: string | null
           estimated_cost_usd: number | null
           feature: string
           id: number
+          job_run_id: string | null
           metadata: Json
           operation: string | null
           provider: string
+          reason_code: string | null
           status: string
         }
         Insert: {
+          attempt_id?: string
           claimed_at?: string
+          competition?: string | null
+          completed_at?: string | null
           consumer?: string | null
           estimated_cost_usd?: number | null
           feature?: string
           id?: never
+          job_run_id?: string | null
           metadata?: Json
           operation?: string | null
           provider: string
+          reason_code?: string | null
           status?: string
         }
         Update: {
+          attempt_id?: string
           claimed_at?: string
+          competition?: string | null
+          completed_at?: string | null
           consumer?: string | null
           estimated_cost_usd?: number | null
           feature?: string
           id?: never
+          job_run_id?: string | null
           metadata?: Json
           operation?: string | null
           provider?: string
+          reason_code?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      api_provider_backoff: {
+        Row: {
+          blocked_until: string
+          competition: string | null
+          created_at: string
+          feature: string | null
+          job_run_id: string | null
+          metadata: Json
+          reason_code: string
+          scope: string
+          scope_key: string
+          updated_at: string
+        }
+        Insert: {
+          blocked_until: string
+          competition?: string | null
+          created_at?: string
+          feature?: string | null
+          job_run_id?: string | null
+          metadata?: Json
+          reason_code: string
+          scope: string
+          scope_key: string
+          updated_at?: string
+        }
+        Update: {
+          blocked_until?: string
+          competition?: string | null
+          created_at?: string
+          feature?: string | null
+          job_run_id?: string | null
+          metadata?: Json
+          reason_code?: string
+          scope?: string
+          scope_key?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -737,13 +841,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "app_settings_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       bet_slip_legs: {
@@ -804,21 +901,7 @@ export type Database = {
             foreignKeyName: "bet_slip_legs_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "bet_slip_legs_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bet_slip_legs_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
           {
@@ -897,13 +980,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bet_slips_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -992,6 +1068,48 @@ export type Database = {
           rights_reviewed_by?: string | null
           storage_approved?: boolean
           updated_at?: string
+        }
+        Relationships: []
+      }
+      bookmaker_reviews: {
+        Row: {
+          body: string | null
+          bookmaker_slug: string
+          created_at: string
+          ease_of_use: number
+          id: string
+          overall: number
+          payouts: number
+          status: string
+          support: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          bookmaker_slug: string
+          created_at?: string
+          ease_of_use: number
+          id?: string
+          overall: number
+          payouts: number
+          status?: string
+          support: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          bookmaker_slug?: string
+          created_at?: string
+          ease_of_use?: number
+          id?: string
+          overall?: number
+          payouts?: number
+          status?: string
+          support?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1142,21 +1260,7 @@ export type Database = {
             foreignKeyName: "chain_heads_last_prediction_id_fkey"
             columns: ["last_prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "chain_heads_last_prediction_id_fkey"
-            columns: ["last_prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chain_heads_last_prediction_id_fkey"
-            columns: ["last_prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
         ]
@@ -1204,13 +1308,6 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "community_posts_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1277,21 +1374,7 @@ export type Database = {
             foreignKeyName: "competition_score_ledger_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "competition_score_ledger_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "competition_score_ledger_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
           {
@@ -1306,13 +1389,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "competition_score_ledger_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1357,13 +1433,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "consent_records_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1523,13 +1592,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "content_project_updates_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "content_project_updates_used_in_article_fkey"
             columns: ["used_in_article"]
             isOneToOne: false
@@ -1578,13 +1640,6 @@ export type Database = {
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "content_settings_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1695,24 +1750,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "credit_ledger_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "credit_ledger_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "credit_ledger_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1796,13 +1837,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "duel_picks_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       duel_votes: {
@@ -1837,13 +1871,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "duel_votes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1906,13 +1933,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "duels_challenger_fkey"
-            columns: ["challenger"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "duels_fixture_id_fkey"
             columns: ["fixture_id"]
             isOneToOne: false
@@ -1927,24 +1947,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "duels_opponent_fkey"
-            columns: ["opponent"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "duels_winner_fkey"
             columns: ["winner"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "duels_winner_fkey"
-            columns: ["winner"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2055,24 +2061,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "email_outbox_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "email_outbox_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "email_outbox_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2471,31 +2463,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "hidden_predictions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "hidden_predictions_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: true
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
             foreignKeyName: "hidden_predictions_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: true
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "hidden_predictions_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: true
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
         ]
@@ -2700,13 +2671,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "member_details_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       member_preferences: {
@@ -2737,13 +2701,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "member_preferences_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2836,13 +2793,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "newsroom_articles_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "newsroom_articles_generation_job_fk"
             columns: ["generation_job_id"]
             isOneToOne: false
@@ -2927,24 +2877,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "notifications_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "notifications_recipient_id_fkey"
             columns: ["recipient_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_recipient_id_fkey"
-            columns: ["recipient_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3018,13 +2954,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "payment_orders_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       pfie_learning_examples: {
@@ -3094,13 +3023,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "pfie_learning_examples_reviewed_by_fkey"
-            columns: ["reviewed_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       pfie_learning_ingest_runs: {
@@ -3167,13 +3089,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pfie_learning_subject_map_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3329,13 +3244,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pfie_user_activity_events_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3552,13 +3460,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "practice_credit_ledger_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       practice_draw_log: {
@@ -3607,24 +3508,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "practice_draw_log_drawn_by_fkey"
-            columns: ["drawn_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "practice_draw_log_winner_user_id_fkey"
             columns: ["winner_user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "practice_draw_log_winner_user_id_fkey"
-            columns: ["winner_user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3750,13 +3637,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "practice_points_ledger_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       practice_predictions: {
@@ -3814,13 +3694,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "practice_predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       practice_redemptions: {
@@ -3861,13 +3734,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "practice_redemptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3995,21 +3861,7 @@ export type Database = {
             foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: true
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: true
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "prediction_odds_overrides_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: true
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
         ]
@@ -4081,13 +3933,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       privacy_requests: {
@@ -4133,13 +3978,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "privacy_requests_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4225,13 +4063,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "pro_subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       pro_usage: {
@@ -4259,13 +4090,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pro_usage_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4348,13 +4172,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "profiles_referred_by_fkey"
-            columns: ["referred_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       punt_ai_cache: {
@@ -4432,13 +4249,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "punt_ai_usage_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       puntpoints_ledger: {
@@ -4487,24 +4297,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "puntpoints_ledger_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "puntpoints_ledger_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "puntpoints_ledger_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4578,24 +4374,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "puntpoints_transfers_from_user_fkey"
-            columns: ["from_user"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "puntpoints_transfers_to_user_fkey"
             columns: ["to_user"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "puntpoints_transfers_to_user_fkey"
-            columns: ["to_user"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4649,13 +4431,6 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "push_notification_campaigns_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4756,13 +4531,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "push_subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       quest_progress: {
@@ -4818,24 +4586,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quest_progress_reviewed_by_fkey"
-            columns: ["reviewed_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "quest_progress_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "quest_progress_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4934,13 +4688,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "redemptions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "redemptions_reward_id_fkey"
             columns: ["reward_id"]
             isOneToOne: false
@@ -4952,13 +4699,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "redemptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5029,24 +4769,10 @@ export type Database = {
             foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
             columns: ["qualifying_prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
-            columns: ["qualifying_prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "referral_rewards_qualifying_prediction_id_fkey"
-            columns: ["qualifying_prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "referral_rewards_referred_id_fkey"
             columns: ["referred_id"]
             isOneToOne: true
@@ -5054,24 +4780,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "referral_rewards_referred_id_fkey"
-            columns: ["referred_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "referral_rewards_referrer_id_fkey"
             columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "referral_rewards_referrer_id_fkey"
-            columns: ["referrer_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5106,21 +4818,7 @@ export type Database = {
             foreignKeyName: "reports_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "reports_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reports_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
           {
@@ -5128,13 +4826,6 @@ export type Database = {
             columns: ["reporter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reports_reporter_id_fkey"
-            columns: ["reporter_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5203,13 +4894,6 @@ export type Database = {
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reward_settings_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5334,13 +5018,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "scoring_rules_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       settlement_events: {
@@ -5386,31 +5063,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "settlement_events_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "settlement_events_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
             foreignKeyName: "settlement_events_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
             referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "settlement_events_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
             referencedColumns: ["id"]
           },
         ]
@@ -5448,30 +5104,41 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "slip_parses_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       standings_applied: {
         Row: {
           applied_at: string
+          applied_away_score: number | null
+          applied_home_score: number | null
+          away_team: string | null
           competition_key: string
           fixture_id: string
+          home_team: string | null
+          needs_refresh: boolean
+          season: string | null
         }
         Insert: {
           applied_at?: string
+          applied_away_score?: number | null
+          applied_home_score?: number | null
+          away_team?: string | null
           competition_key: string
           fixture_id: string
+          home_team?: string | null
+          needs_refresh?: boolean
+          season?: string | null
         }
         Update: {
           applied_at?: string
+          applied_away_score?: number | null
+          applied_home_score?: number | null
+          away_team?: string | null
           competition_key?: string
           fixture_id?: string
+          home_team?: string | null
+          needs_refresh?: boolean
+          season?: string | null
         }
         Relationships: [
           {
@@ -5535,13 +5202,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "survey_responses_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5724,13 +5384,6 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "synthetic_personas_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5919,13 +5572,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "team_follow_events_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       team_follows: {
@@ -5956,13 +5602,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "team_follows_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6005,6 +5644,285 @@ export type Database = {
           source_domains?: string[]
         }
         Relationships: []
+      }
+      tipster_charges: {
+        Row: {
+          amount: number
+          created_at: string
+          fee: number
+          id: string
+          kind: string
+          period_end: string | null
+          period_start: string | null
+          prediction_id: string | null
+          resolved_at: string | null
+          status: string
+          subscription_id: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          fee?: number
+          id?: string
+          kind: string
+          period_end?: string | null
+          period_start?: string | null
+          prediction_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          subscription_id: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          fee?: number
+          id?: string
+          kind?: string
+          period_end?: string | null
+          period_start?: string | null
+          prediction_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          subscription_id?: string
+          supporter_id?: string
+          tipster_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tipster_charges_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_charges_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "tipster_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_charges_supporter_id_fkey"
+            columns: ["supporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_charges_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tipster_copies: {
+        Row: {
+          created_at: string
+          prediction_id: string
+          subscription_id: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Insert: {
+          created_at?: string
+          prediction_id: string
+          subscription_id: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Update: {
+          created_at?: string
+          prediction_id?: string
+          subscription_id?: string
+          supporter_id?: string
+          tipster_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tipster_copies_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_copies_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "tipster_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_copies_supporter_id_fkey"
+            columns: ["supporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_copies_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tipster_pick_notes: {
+        Row: {
+          created_at: string
+          note: string
+          prediction_id: string
+          tipster_id: string
+        }
+        Insert: {
+          created_at?: string
+          note: string
+          prediction_id: string
+          tipster_id: string
+        }
+        Update: {
+          created_at?: string
+          note?: string
+          prediction_id?: string
+          tipster_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tipster_pick_notes_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: true
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_pick_notes_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tipster_profiles: {
+        Row: {
+          accepting: boolean
+          pitch: string | null
+          price_month: number | null
+          price_pick: number | null
+          price_week: number | null
+          qualified_at: string
+          status: string
+          status_reason: string | null
+          streak_at_unlock: number | null
+          unlocked_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepting?: boolean
+          pitch?: string | null
+          price_month?: number | null
+          price_pick?: number | null
+          price_week?: number | null
+          qualified_at?: string
+          status?: string
+          status_reason?: string | null
+          streak_at_unlock?: number | null
+          unlocked_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepting?: boolean
+          pitch?: string | null
+          price_month?: number | null
+          price_pick?: number | null
+          price_week?: number | null
+          qualified_at?: string
+          status?: string
+          status_reason?: string | null
+          streak_at_unlock?: number | null
+          unlocked_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tipster_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tipster_subscriptions: {
+        Row: {
+          auto_renew: boolean
+          created_at: string
+          end_reason: string | null
+          ended_at: string | null
+          id: string
+          period_end: string | null
+          period_start: string | null
+          plan: string
+          price: number
+          status: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Insert: {
+          auto_renew?: boolean
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          id?: string
+          period_end?: string | null
+          period_start?: string | null
+          plan: string
+          price: number
+          status?: string
+          supporter_id: string
+          tipster_id: string
+        }
+        Update: {
+          auto_renew?: boolean
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          id?: string
+          period_end?: string | null
+          period_start?: string | null
+          plan?: string
+          price?: number
+          status?: string
+          supporter_id?: string
+          tipster_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tipster_subscriptions_supporter_id_fkey"
+            columns: ["supporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tipster_subscriptions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       translation_reviews: {
         Row: {
@@ -6127,24 +6045,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_entitlements_granted_by_fkey"
-            columns: ["granted_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "user_entitlements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_entitlements_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6184,13 +6088,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6245,6 +6142,68 @@ export type Database = {
         }
         Relationships: []
       }
+      api_call_usage_attribution_detail: {
+        Row: {
+          attempt_id: string | null
+          claimed_at: string | null
+          competition: string | null
+          completed_at: string | null
+          consumer: string | null
+          estimated_cost_usd: number | null
+          feature: string | null
+          id: number | null
+          job_run_id: string | null
+          metadata: Json | null
+          operation: string | null
+          provider: string | null
+          reason_code: string | null
+          status: string | null
+        }
+        Insert: {
+          attempt_id?: string | null
+          claimed_at?: string | null
+          competition?: string | null
+          completed_at?: string | null
+          consumer?: string | null
+          estimated_cost_usd?: number | null
+          feature?: string | null
+          id?: number | null
+          job_run_id?: string | null
+          metadata?: Json | null
+          operation?: string | null
+          provider?: string | null
+          reason_code?: string | null
+          status?: string | null
+        }
+        Update: {
+          attempt_id?: string | null
+          claimed_at?: string | null
+          competition?: string | null
+          completed_at?: string | null
+          consumer?: string | null
+          estimated_cost_usd?: number | null
+          feature?: string | null
+          id?: number | null
+          job_run_id?: string | null
+          metadata?: Json | null
+          operation?: string | null
+          provider?: string | null
+          reason_code?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      bookmaker_review_stats: {
+        Row: {
+          avg_ease_of_use: number | null
+          avg_overall: number | null
+          avg_payouts: number | null
+          avg_support: number | null
+          bookmaker_slug: string | null
+          review_count: number | null
+        }
+        Relationships: []
+      }
       completed_matches: {
         Row: {
           away: string | null
@@ -6272,13 +6231,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "consent_records_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6355,43 +6307,53 @@ export type Database = {
             foreignKeyName: "settlement_events_prediction_id_fkey"
             columns: ["prediction_id"]
             isOneToOne: false
-            referencedRelation: "prediction_odds_state"
-            referencedColumns: ["prediction_id"]
-          },
-          {
-            foreignKeyName: "settlement_events_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
             referencedRelation: "predictions"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "settlement_events_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "visible_predictions"
-            referencedColumns: ["id"]
-          },
         ]
+      }
+      public_affiliate_creatives: {
+        Row: {
+          body: string | null
+          cta_label: string | null
+          format: string | null
+          headline: string | null
+          id: string | null
+          image_url: string | null
+          partner_id: string | null
+          partner_name: string | null
+          partner_slug: string | null
+          placements: string[] | null
+          terms_line: string | null
+          tracking_link: string | null
+          weight: number | null
+        }
+        Relationships: []
       }
       public_affiliate_partners: {
         Row: {
           id: string | null
           name: string | null
+          slug: string | null
           tracking_link: string | null
           website_url: string | null
         }
-        Insert: {
-          id?: string | null
-          name?: string | null
-          tracking_link?: string | null
-          website_url?: string | null
-        }
-        Update: {
-          id?: string | null
-          name?: string | null
-          tracking_link?: string | null
-          website_url?: string | null
+        Relationships: []
+      }
+      public_bookmaker_reviews: {
+        Row: {
+          avatar_url: string | null
+          body: string | null
+          bookmaker_slug: string | null
+          created_at: string | null
+          display_name: string | null
+          ease_of_use: number | null
+          id: string | null
+          overall: number | null
+          payouts: number | null
+          support: number | null
+          updated_at: string | null
+          username: string | null
         }
         Relationships: []
       }
@@ -6404,24 +6366,6 @@ export type Database = {
           id: string | null
           is_ai_participant: boolean | null
           username: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          founding_number?: number | null
-          id?: string | null
-          is_ai_participant?: boolean | null
-          username?: never
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          founding_number?: number | null
-          id?: string | null
-          is_ai_participant?: boolean | null
-          username?: never
         }
         Relationships: []
       }
@@ -6445,13 +6389,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       visible_predictions: {
@@ -6472,29 +6409,7 @@ export type Database = {
           seq: number | null
           user_id: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "predictions_fixture_id_fkey"
-            columns: ["fixture_id"]
-            isOneToOne: false
-            referencedRelation: "fixtures"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       weekly_leaderboard: {
         Row: {
@@ -6517,19 +6432,16 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "predictions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Functions: {
       accept_duel: { Args: { p_duel: string; p_picks: Json }; Returns: Json }
       acknowledge_warnings: { Args: never; Returns: number }
+      add_tipster_note: {
+        Args: { p_note: string; p_prediction: string }
+        Returns: undefined
+      }
       admin_adjust_points: {
         Args: { p_points: number; p_reason: string; p_user: string }
         Returns: number
@@ -6703,6 +6615,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_set_tipster_status: {
+        Args: { p_reason: string; p_status: string; p_user: string }
+        Returns: undefined
+      }
       admin_settle_prediction: {
         Args: { p_prediction: string; p_reason: string; p_result: string }
         Returns: {
@@ -6724,6 +6640,18 @@ export type Database = {
         }
       }
       admin_team_follow_stats: { Args: never; Returns: Json }
+      admin_tipster_overview: { Args: never; Returns: Json }
+      affiliate_ad_stats: {
+        Args: { p_days?: number }
+        Returns: {
+          clicks: number
+          creative_id: string
+          dismissals: number
+          impressions: number
+          partner_id: string
+          placement: string
+        }[]
+      }
       annual_pass_expired_recipients: {
         Args: { p_grace?: string }
         Returns: {
@@ -6771,6 +6699,27 @@ export type Database = {
             Args: { p_feature: string; p_provider: string; p_units: number }
             Returns: boolean
           }
+      api_budget_claim_context: {
+        Args: {
+          p_attempt_id: string
+          p_competition: string
+          p_feature: string
+          p_job_run_id: string
+          p_metadata?: Json
+          p_provider: string
+          p_units: number
+        }
+        Returns: Json
+      }
+      api_call_event_result: {
+        Args: {
+          p_attempt_id: string
+          p_metadata?: Json
+          p_reason_code?: string
+          p_status: string
+        }
+        Returns: boolean
+      }
       api_family_spend_usd: { Args: { p_family: string }; Returns: number }
       api_provider_family: { Args: { p_provider: string }; Returns: string }
       api_quota_claim: {
@@ -7091,7 +7040,10 @@ export type Database = {
         }[]
       }
       insert_team_results: { Args: { p_rows: Json }; Returns: number }
-      invoke_cron: { Args: { p_path: string }; Returns: undefined }
+      invoke_cron:
+        | { Args: { p_path: string }; Returns: undefined }
+        | { Args: { p_path: string; p_timeout_ms: number }; Returns: undefined }
+      is_ad_free: { Args: never; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       is_founding_member: { Args: never; Returns: boolean }
       is_staff_email: { Args: { p_email: string }; Returns: boolean }
@@ -7193,6 +7145,7 @@ export type Database = {
           vested: number
         }[]
       }
+      my_tipster_support: { Args: never; Returns: Json }
       my_wallet: { Args: never; Returns: Json }
       my_wallet_history: {
         Args: { p_before?: string; p_limit?: number }
@@ -7216,6 +7169,19 @@ export type Database = {
           kickoff_at: string
           pending: number
           status: string
+        }[]
+      }
+      pending_settlement_result_fixtures: {
+        Args: never
+        Returns: {
+          away: string
+          competition: string
+          fixture_id: string
+          home: string
+          kickoff_at: string
+          pending: number
+          provider: string
+          provider_ref: string
         }[]
       }
       pending_settlements: {
@@ -7328,6 +7294,7 @@ export type Database = {
         }[]
       }
       pro_cap: { Args: { p_user: string }; Returns: number }
+      process_tipster_periods: { Args: { p_limit?: number }; Returns: number }
       provision_ai_community_member: {
         Args: {
           p_display_name: string
@@ -7382,6 +7349,15 @@ export type Database = {
         Returns: string
       }
       quests_sync: { Args: never; Returns: number }
+      record_ad_event: {
+        Args: {
+          p_creative: string
+          p_kind: string
+          p_partner: string
+          p_placement: string
+        }
+        Returns: undefined
+      }
       record_consent: {
         Args: {
           p_granted: boolean
@@ -7505,6 +7481,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_tipster_support: {
+        Args: { p_on: boolean; p_subscription: string }
+        Returns: string
+      }
       setting_bool: {
         Args: { p_default: boolean; p_key: string }
         Returns: boolean
@@ -7537,6 +7517,10 @@ export type Database = {
         Args: { p_details: string; p_email: string; p_kind: string }
         Returns: string
       }
+      support_tipster: {
+        Args: { p_auto_renew?: boolean; p_plan: string; p_username: string }
+        Returns: string
+      }
       sync_my_points: { Args: never; Returns: number }
       team_follower_counts: {
         Args: { p_sport?: string }
@@ -7545,11 +7529,53 @@ export type Database = {
           team_key: string
         }[]
       }
+      tipster_check_hold: {
+        Args: { p_amount: number; p_user: string }
+        Returns: undefined
+      }
+      tipster_check_unlock: { Args: { p_user: string }; Returns: string }
+      tipster_fee_for: {
+        Args: { p_amount: number; p_tipster: string }
+        Returns: number
+      }
+      tipster_is_verified: { Args: { p_user: string }; Returns: boolean }
+      tipster_notify: {
+        Args: {
+          p_message: string
+          p_title: string
+          p_url: string
+          p_user: string
+        }
+        Returns: undefined
+      }
+      tipster_plan_interval: { Args: { p_plan: string }; Returns: string }
+      tipster_resolve_charge: {
+        Args: { p_charge: string; p_pay: boolean; p_reason: string }
+        Returns: undefined
+      }
+      tipster_setting_numeric: {
+        Args: { p_default: number; p_key: string }
+        Returns: number
+      }
+      tipster_spent_30d: { Args: { p_user: string }; Returns: number }
+      tipster_streak: { Args: { p_user: string }; Returns: Json }
+      tipster_support_card: { Args: { p_username: string }; Returns: Json }
+      top_supported_tipsters: { Args: { p_limit?: number }; Returns: Json }
       transfer_puntpoints: {
         Args: { p_note?: string; p_points: number; p_to_username: string }
         Returns: Json
       }
       update_my_username: { Args: { p_username: string }; Returns: string }
+      update_tipster_settings: {
+        Args: {
+          p_accepting: boolean
+          p_pitch: string
+          p_price_month: number
+          p_price_pick: number
+          p_price_week: number
+        }
+        Returns: Json
+      }
       username_available: { Args: { p_username: string }; Returns: boolean }
       vest_referrals: { Args: never; Returns: number }
       vote_duel: { Args: { p_duel: string; p_side: string }; Returns: Json }
