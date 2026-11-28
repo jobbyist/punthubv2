@@ -8,6 +8,7 @@
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
 import { ProviderError } from "@/lib/content/http";
+import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
 import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
@@ -468,6 +469,8 @@ export interface PfieDeps {
   extract: ExtractProvider | null;
   llm: LlmProvider;
   store: PfieStore;
+  /** Persistent Parallel cache; cache wrappers are applied outside quota guards. */
+  cache?: CacheStore | null;
   /** Ordered model list; extraction prefers the high-allowance lite model. */
   models?: string[];
   dailyCap?: Record<string, number>;
@@ -502,6 +505,11 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       deps.store.countUsage(provider, ok ? "ok" : "error").catch(() => undefined);
     let calls = 0;
     const sources: PfieSource[] = [];
+    const cacheEvent = (event: CacheEvent) =>
+      console.info("pfie-cache", JSON.stringify({ competition: competition.key, kind, ...event }));
+    // These wrappers sit outside guardSearch/guardExtract, so cache hits never consume quota.
+    const searchProvider = withSearchCache(deps.search, deps.cache ?? null, kind, cacheEvent);
+    const extractProvider = withExtractCache(deps.extract, deps.cache ?? null, kind, cacheEvent);
     try {
       // 1. Discovery.
       const today = sastDate(now());
@@ -537,9 +545,9 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           maxResults: 10,
         })
         .then(
-          (h) => (count(deps.search.name, true), h),
+          (h) => (count(searchProvider.name, true), h),
           (e: unknown) => {
-            void count(deps.search.name, false);
+            void count(searchProvider.name, false);
             throw e;
           },
         );
@@ -553,12 +561,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         seen.add(canonicalUrl(url));
         sources.push({ index: 0, url, domain, tier: tierOf(domain, config.official), text: clean });
       };
-      if (deps.extract) {
+      if (extractProvider) {
         for (const url of config.pages[kind]) {
           calls++;
           try {
-            const page = await deps.extract.extract(url);
-            void count(deps.extract.name, true);
+            const page = await extractProvider.extract(url);
+            void count(extractProvider.name, true);
             if (page) add(url, page.markdown);
           } catch {
             void count(deps.extract.name, false);
