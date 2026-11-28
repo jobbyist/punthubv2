@@ -11,6 +11,7 @@ import {
   createPfieProvider,
   isPfiePrelaunchDeferredCompetition,
   PFIE_SOURCES,
+  pfieRetryPreference,
   resultsGapMs,
   tierOf,
 } from "./provider";
@@ -780,6 +781,13 @@ describe("provider", () => {
     );
   });
   const base = { search, extract: null, now: () => NOW, sleep: async () => undefined };
+
+  it("uses a Medium-first retry only for Championship fixture extraction", () => {
+    expect(pfieRetryPreference("championship", "fixtures")).toBe("parallel-medium");
+    expect(pfieRetryPreference("championship", "results")).toBeUndefined();
+    expect(pfieRetryPreference("epl", "fixtures")).toBeUndefined();
+    expect(pfieRetryPreference("uecl", "fixtures")).toBeUndefined();
+  });
 
   it("defers Saudi Pro League and Liga Portugal PFIE fixture/result refreshes before launch", async () => {
     expect(isPfiePrelaunchDeferredCompetition("saudi-pro")).toBe(true);
