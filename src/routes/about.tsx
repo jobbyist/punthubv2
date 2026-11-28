@@ -186,6 +186,7 @@ const ROADMAP_WINDOWS = (() => {
     if (sport === "soccer") continue;
     const { from, to } = weekWindow(DEFAULT_LAUNCH_DATE, weeks);
     const entry = map.get(from) ?? { from, to, sports: [] };
+    if (to > entry.to) entry.to = to;
     entry.sports.push(sport);
     map.set(from, entry);
   }
@@ -781,7 +782,6 @@ function About() {
               pass: money(299),
               annual: money(1188),
               monthly: money(99),
-              saving: money(889),
             })}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
