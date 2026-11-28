@@ -8,6 +8,7 @@ import {
   seasonArchiveUrls,
   isStandingsBaselineFresh,
   preferAuthoritativeSources,
+  rankSyncSourceCandidates,
   shouldIncludeSecondaryStandingsSources,
   seasonQueries,
 } from "./tables";
@@ -187,8 +188,9 @@ describe("rolling history source coverage", () => {
   it("uses two independent archive sources for Serie A and other domestic launch leagues", () => {
     const serieA = seasonArchiveUrls("Serie A", "2026-10-17");
     expect(serieA).toContain("https://fbref.com/en/comps/11/2026-2027/schedule/2026-2027-Serie-A-Scores-and-Fixtures");
+    expect(serieA).toContain("https://www.skysports.com/serie-a-scores-fixtures");
     expect(serieA.some((url) => url.startsWith("https://en.wikipedia.org/wiki/"))).toBe(true);
-    expect(seasonArchiveUrls("EFL Championship", "2026-10-17")).toHaveLength(2);
+    expect(seasonArchiveUrls("EFL Championship", "2026-10-17")).toContain("https://www.skysports.com/championship-scores-fixtures");
   });
 
   it("does not add archive URLs for competitions outside the pre-launch allowlist", () => {
@@ -244,5 +246,28 @@ describe("history source retry evidence", () => {
   });
   it("does not mistake a page with no results for a retry candidate", () => {
     expect(hasHistoryResultEvidence("Upcoming fixtures and league table only")).toBe(false);
+  });
+});
+
+describe("history source candidate ordering", () => {
+  it("prioritises result/archive URLs and excludes configured standings pages from history discovery", () => {
+    const preferred = [
+      { url: "https://fbref.com/en/comps/9/2026-2027/schedule/results" },
+      { url: "https://www.skysports.com/premier-league-scores-fixtures" },
+    ];
+    const hits = [
+      { url: "https://www.premierleague.com/en/tables/premier-league" },
+      { url: "https://www.vavel.com/en/data/premier-league/results" },
+    ];
+    const configured = [{ url: "https://www.premierleague.com/en/tables/premier-league" }];
+    const ranked = rankSyncSourceCandidates(true, preferred, hits, configured, ["premierleague.com"]);
+    expect(ranked.slice(0, 2)).toEqual(preferred);
+    expect(ranked).not.toContain(configured[0]);
+  });
+
+  it("retains configured official standings pages for standings syncs", () => {
+    const configured = [{ url: "https://www.premierleague.com/en/tables/premier-league" }];
+    const hits = [{ url: "https://www.skysports.com/premier-league-scores-fixtures" }];
+    expect(rankSyncSourceCandidates(false, [], hits, configured, ["premierleague.com"])[0]).toEqual(configured[0]);
   });
 });
