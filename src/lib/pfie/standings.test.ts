@@ -127,6 +127,15 @@ describe("launch standings coverage", () => {
   });
 });
 describe("configured direct standings sources", () => {
+  it("includes BBC as an independent EFL Championship table source", () => {
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.bbc.com/sport/football/championship/table",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.queries).toContain(
+      "site:bbc.com/sport/football/championship/table EFL Championship 2026/27 full table",
+    );
+    expect(tierOf("bbc.com", [])).toBe("trusted");
+  });
   it("includes the official Bundesliga table and independent DFB data centre", () => {
     expect(STANDINGS_COMPETITIONS.bundesliga?.pages).toContain(
       "https://www.bundesliga.com/en/bundesliga/table?view=full",
