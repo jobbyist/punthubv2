@@ -19,7 +19,7 @@ describe("PFIE deterministic standings extraction", () => {
       "2 Stoke City 17 11 2 4 27 19 8 35",
       "3 Southampton 18 10 5 3 34 16 18 31",
       "4 Wolverhampton Wanderers 17 10 4 3 31 19 12 34",
-    ].join("\\n");
+    ].join("\n");
     const source: PfieSource = {
       index: 1,
       url: "https://www.sportsmole.co.uk/football/championship/table.html",
