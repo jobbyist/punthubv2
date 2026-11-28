@@ -1095,3 +1095,14 @@ describe("PFIE match evidence validation", () => {
     expect(result.accepted).toHaveLength(1);
   });
 });
+describe("official cup history search targets", () => {
+  it("targets the current and prior UEFA season result archives", () => {
+    expect(seasonQueries("UEFA Champions League", "2026-10-09", "2026-10-15")).toContain("https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/");
+    expect(seasonQueries("UEFA Conference League", "2025-10-02", "2025-10-08")).toContain("https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/");
+  });
+  it("targets official CAF match-result archives across both seasons", () => {
+    const queries = seasonQueries("CAF Confederation Cup", "2026-10-16", "2026-10-22");
+    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/");
+    expect(queries).toContain("https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/");
+  });
+});
