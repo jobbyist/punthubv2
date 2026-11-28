@@ -1,4 +1,5 @@
 import { activeCompetitions, type CompetitionKey } from "./competitions";
+import { normaliseTeam } from "../pfie/teams";
 import type { SportsProvider } from "./provider";
 import type { NormalisedFixture } from "./types";
 
@@ -144,10 +145,44 @@ export async function syncResults(
     skipped.push(...r.skipped);
     calls += r.calls;
   }
-  const openRefs = new Set(
-    open.filter((o) => o.provider === provider.name).map((o) => o.providerRef),
-  );
-  const rows = fixtures.filter((f) => openRefs.has(f.providerRef));
+  const providerOpen = open.filter((o) => o.provider === provider.name);
+  const openByTeams = new Map<string, typeof providerOpen>();
+  const teamKey = (competition: string, home: string, away: string) =>
+    `${competition.trim().toLowerCase()}|${normaliseTeam(home)}|${normaliseTeam(away)}`;
+  for (const fixture of providerOpen) {
+    const key = teamKey(fixture.competition, fixture.home, fixture.away);
+    const bucket = openByTeams.get(key) ?? [];
+    bucket.push(fixture);
+    openByTeams.set(key, bucket);
+  }
+
+  // Provider result pages often use official short names (AGF/Aarhus, FC Iberia/Iberia Tbilisi)
+  // that differ from the original fixture label. Match only the same competition, canonical home/away
+  // pairing and a kick-off within 15 minutes. If duplicate aliases represent the same fixture, update
+  // each stored provider_ref so no duplicate row remains indefinitely scheduled.
+  const rowsByRef = new Map<string, NormalisedFixture>();
+  for (const result of fixtures) {
+    const candidates = openByTeams.get(teamKey(result.competition, result.home, result.away)) ?? [];
+    const resultKickoff = Date.parse(result.kickoffAt);
+    for (const candidate of candidates) {
+      const candidateKickoff = Date.parse(candidate.kickoffAt);
+      if (
+        !Number.isFinite(resultKickoff) ||
+        !Number.isFinite(candidateKickoff) ||
+        Math.abs(resultKickoff - candidateKickoff) > 15 * 60 * 1000
+      ) continue;
+      rowsByRef.set(candidate.providerRef, {
+        ...result,
+        provider: candidate.provider,
+        providerRef: candidate.providerRef,
+        competition: candidate.competition,
+        home: candidate.home,
+        away: candidate.away,
+        kickoffAt: candidate.kickoffAt,
+      });
+    }
+  }
+  const rows = [...rowsByRef.values()];
   if (rows.length) await store.upsert(rows);
   return { ok: true, calls, upserted: rows.length, skipped };
 }
