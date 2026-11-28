@@ -1096,6 +1096,19 @@ describe("PFIE match evidence validation", () => {
     expect(result.accepted).toHaveLength(0);
     expect(result.rejected[0]?.reason).toBe("quote_not_on_page");
   });
+  it("resolves a known short team name before checking source evidence", () => {
+    const psgSource: PfieSource = { ...source, text: "Tuesday 13 October 2026\\nParis Saint-Germain 2-0 Lille" };
+    const result = validateObservations([
+      observation({ home: "PSG", homeScore: 2, awayScore: 0, quote: "PSG beat Lille" }),
+    ], [psgSource], { ...window, knownTeams: ["Paris Saint-Germain", "Lille"] });
+    expect(result.accepted).toHaveLength(1);
+  });
+  it("accepts a non-verbatim quote only when exact teams and score are independently visible", () => {
+    const result = validateObservations([
+      observation({ quote: "Arsenal defeated Lille", homeScore: 3, awayScore: 0 }),
+    ], [source], window);
+    expect(result.accepted).toHaveLength(1);
+  });
   it("continues to accept an exact verbatim source quote", () => {
     const result = validateObservations([observation({ quote: "Arsenal 3-0 Lille" })], [source], window);
     expect(result.accepted).toHaveLength(1);
