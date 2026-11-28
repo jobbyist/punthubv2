@@ -147,7 +147,7 @@ export function createParallelResponses(
         "OUTPUT SCHEMA (JSON Schema):",
         JSON.stringify(outputSchema),
         "Return exactly one JSON object conforming to this schema. Do not include Markdown fences or commentary.",
-      ].join("\\n\\n");
+      ].join("\n\n");
       let json: unknown;
       try {
         json = await postJson(
