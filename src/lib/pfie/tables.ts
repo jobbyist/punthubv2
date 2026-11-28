@@ -142,12 +142,16 @@ export function seasonQueries(
       "site:uefa.com/uefachampionsleague/news/ " + seasonLabel + " Champions League all results matchday scores " + months,
       "site:uefa.com/uefachampionsleague/news/ Champions League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
       'site:uefa.com/uefachampionsleague/news/ "2026/27 Champions League: All the league phase fixtures and results"',
+      "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
+      "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
     );
   } else if (name === "UEFA Conference League") {
     out.push(
       "site:uefa.com/uefaconferenceleague/news/ " + seasonLabel + " Conference League all results matchday scores " + months,
       "site:uefa.com/uefaconferenceleague/news/ Conference League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
       'site:uefa.com/uefaconferenceleague/news/ "2026/27 Conference League: All the league phase fixtures and results"',
+      "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
+      "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
     );
   } else if (name === "CAF Confederation Cup") {
     out.push(
@@ -155,6 +159,13 @@ export function seasonQueries(
       "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " + longDate(start) + " " + longDate(end),
       'site:cafonline.com/caf-confederation-cup/news/ "Surprise results shake up TotalEnergies CAF Confederation Cup Group Stage race"',
       'site:cafonline.com/caf-confederation-cup/news/ "Full results of first-leg of First Preliminary stage"',
+      "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+      "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+      "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+      "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
+      "https://www.cafonline.com/caf-confederation-cup/news/full-results-of-first-leg-of-first-preliminary-stage-of-202526-totalenergies-caf-confederation-cup/",
+      "https://www.cafonline.com/caf-confederation-cup/news/fixtures-and-results-of-the-second-leg-of-first-preliminary-round-of-202526-totalenergies-caf-confederation-cup/",
+      "https://www.cafonline.com/caf-confederation-cup/news/belouizdad-cruise-al-masry-edge-chiefs-in-totalenergies-caf-confederation-cup-group-stage-openers/",
     );
   }
   return out;
