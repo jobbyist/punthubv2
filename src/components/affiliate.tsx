@@ -61,11 +61,10 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">Sponsored partners</p>
-            <h2 className="mt-1 text-lg font-bold">Puntr bookmaker partners</h2>
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">{t("placement.eyebrow")}</p>
+            <h2 className="mt-1 text-lg font-bold">{t("placement.title")}</h2>
             <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted-foreground">
-              18+ only. Puntr may earn a commission if you register through these affiliate links.
-              Commercial relationships do not influence our predictions, analysis or rankings.
+              {t("placement.description")}
             </p>
           </div>
         </div>
@@ -76,7 +75,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
 
       {!ageConfirmed ? (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-muted/60 p-3">
-          <p className="text-sm font-medium">Confirm that you are 18 years or older to view partner links.</p>
+          <p className="text-sm font-medium">{t("placement.agePrompt")}</p>
           <button
             type="button"
             onClick={confirmAge}
@@ -108,7 +107,7 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
                   )}
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-bold">{partner.name}</span>
-                    <span className="block text-[10px] text-muted-foreground">Visit partner website</span>
+                    <span className="block text-[10px] text-muted-foreground">{t("placement.visit")}</span>
                   </span>
                 </span>
                 <ExternalLink className="size-4 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
