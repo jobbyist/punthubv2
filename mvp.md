@@ -247,3 +247,11 @@ A deeper route-level audit found that the PFIE standings/history pipeline (`api.
 - The standings/history correction branch adds per-job UUID context before each standings, history, season or archive run; writes those run IDs into `pfie_runs`; and uses the same IDs in `api_call_events`.
 - The same branch applies the persistent cache outside the quota guards to standings/history discovery and extraction, using the 18-hour `tables` TTL and 30-minute `results` TTL. It also sets `stopOnQuota: true` for the table-generation model router.
 - Exact-head Vercel Preview and production verification are pending. The historical Gemini/Firecrawl rows remain unchanged; Phase 3.5 will add an explicit database-level PFIE provider allowlist so future non-Parallel claims fail closed.
+
+
+## PFIE Phase 3 — Provider routing hardening (28 Nov 2026)
+
+- PFIE's provider factory now fails closed unless Search, Extract and Responses are the approved Parallel adapters. Gemini and Firecrawl remain available to separate non-PFIE content workflows only.
+- PFIE model configuration is restricted to Parallel Responses Low and Medium; the only Medium retry remains the bounded Championship-fixtures exception. A quota denial stops the chain rather than routing around the denied Parallel budget.
+- Added regression coverage for attempts to inject Firecrawl Search/Extract, Gemini Responses, or Gemini model IDs into PFIE.
+- Phase 3.4 cache-accounting correction merged as PR #447 and deployed to production. Extract failure events now use the cache-wrapped provider identity, matching successful calls.
