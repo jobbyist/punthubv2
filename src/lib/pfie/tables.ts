@@ -726,9 +726,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     const previous = await deps.store.currentStandings(key, season);
     const candidateRows = chosenTables.flatMap((selection) => selection.table.rows);
     const supportingDomains = [...new Set(chosenTables.flatMap((selection) => selection.supportingDomains))].sort();
-    const allowVerifiedGoalCorrections = chosenTables.every(
+    const twoSourceCorroborated = chosenTables.every(
       (selection) => selection.verdict === "two_sources" && selection.supportingDomains.length >= 2,
     );
+    const allowVerifiedGoalCorrections = twoSourceCorroborated;
+    const allowVerifiedRecordCorrections = cfg.allowVerifiedRecordCorrections === true && twoSourceCorroborated;
     const goalCorrections = previous.flatMap((old) => {
       const next = candidateRows.find(
         (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
@@ -777,7 +779,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       allowVerifiedGoalCorrections,
       cfg.allowVerifiedPlayedCorrections,
       cfg.allowTeamCountIncrease,
-      cfg.allowVerifiedRecordCorrections,
+      allowVerifiedRecordCorrections,
     );
     if (regression) throw new Error(`stale or regressive table rejected (${regression})`);
     const n = await deps.store.replaceStandings({
@@ -801,7 +803,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       tableDate: chosenTables[0]!.table.tableDate ?? null,
       teams: n,
       models: [...modelsUsed],
-      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
+      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated" : "strict",
+      recordCorrectionPolicy: allowVerifiedRecordCorrections ? "two-source-corroborated" : "strict",
       playedCorrectionPolicy: cfg.allowVerifiedPlayedCorrections ?? [],
       playedCorrections,
       teamCountExpansionPolicy: cfg.allowTeamCountIncrease ? "one-new-team-when-group-range-allows" : "strict",

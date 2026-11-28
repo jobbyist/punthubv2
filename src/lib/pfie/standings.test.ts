@@ -221,6 +221,19 @@ describe("configured direct standings sources", () => {
       "https://www.tntsports.co.uk/football/uefa-europa-conference-league/standings.shtml",
     );
   });
+describe("EFL Championship source configuration", () => {
+  it("includes independent ESPN and Transfermarkt table candidates", () => {
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.espn.com/soccer/standings/_/league/eng.2",
+    );
+    expect(STANDINGS_COMPETITIONS.championship?.pages).toContain(
+      "https://www.transfermarkt.com/championship/tabelle/wettbewerb/GB2",
+    );
+    expect(tierOf("espn.com", ["efl.com"])).toBe("trusted");
+    expect(tierOf("transfermarkt.com", ["efl.com"])).toBe("trusted");
+  });
+});
+
 describe("La Liga live source configuration", () => {
   it("includes the official La Liga table and independent publisher candidates", () => {
     expect(STANDINGS_COMPETITIONS.laliga?.pages).toContain(
@@ -284,6 +297,17 @@ describe("validateTables", () => {
     const { tables, rejected } = validateTables(raw(1), [official], 4, teams);
     expect(rejected).toEqual([]);
     expect(tables[0]!.rows.map((r) => r.team)).toEqual(teams);
+  });
+  it("accepts source-published points below the WDL total when a deduction is applied", () => {
+    const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
+    const sourceLines = lines.map((line) => line.startsWith("1 Alpha FC") ? deductionQuote : line);
+    const source = page("league.com", "official", 1, sourceLines);
+    const rows = raw(1, (row) =>
+      row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
+    );
+    const result = validateTables(rows, [source], 4, teams);
+    expect(result.rejected).toEqual([]);
+    expect(result.tables[0]!.rows[0]!.points).toBe(20);
   });
   it("rejects bad arithmetic, wrong team counts and unsupported row statistics", () => {
     expect(
@@ -783,6 +807,15 @@ describe("tableRegression", () => {
     expect(tableRegression(corrected, previous)).toBe("goalsFor_changed_without_new_matches_Alpha FC");
     expect(tableRegression(corrected, previous, true)).toBeNull();
   });
+  it("allows two-source-corroborated goal and record corrections when no matches were added", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const corrected = previous.map((row) =>
+      row.team === "Alpha FC"
+        ? { ...row, won: 8, drawn: 1, lost: 1, goalsFor: row.goalsFor + 2, points: 25 }
+        : row,
+    );
+    expect(tableRegression(corrected, previous, true, [], false, true)).toBeNull();
+  });
   it("still rejects points and win/draw/loss changes without additional matches", () => {
     const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!
       .rows;
@@ -791,6 +824,17 @@ describe("tableRegression", () => {
     );
     expect(tableRegression(changedPoints, previous, true)).toBe("points_changed_without_new_matches_Alpha FC");
   });
+  it("allows a verified points-deduction correction without changing match records", () => {
+    const previous = validateTables(raw(1), [page("old.com", "trusted", 1, lines)], 4).tables[0]!.rows;
+    const deductionQuote = "1 Alpha FC 10 7 2 1 20 8 20";
+    const sourceLines = lines.map((line) => line.startsWith("1 Alpha FC") ? deductionQuote : line);
+    const rows = raw(1, (row) =>
+      row.team === "Alpha FC" ? { ...row, points: 20, quote: deductionQuote } : row,
+    );
+    const candidate = validateTables(rows, [page("new.com", "trusted", 1, sourceLines)], 4).tables[0]!.rows;
+    expect(tableRegression(candidate, previous, false, [], false, true)).toBeNull();
+  });
+
   it("allows one verified new team when a pending group qualifier is confirmed", () => {
     const previous: StandingRow[] = [
       { group: "C", position: 1, team: "Alpha C", played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 },
