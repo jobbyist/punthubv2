@@ -107,6 +107,17 @@ describe("cachedCall", () => {
     expect(extract).toHaveBeenCalledTimes(1);
   });
 
+  it("reports estimated avoided provider spend on a persistent cache hit", async () => {
+    const store = memoryStore();
+    const fetcher = vi.fn(async () => [{ url: "https://example.com", title: "x", excerpt: "y", publishedAt: null }]);
+    const input = { endpoint: "search:parallel", body: { q: "same" }, purpose: "fixtures" as const };
+    await cachedCall(store, input, fetcher);
+    const events: { outcome: string; estimatedCostAvoidedUsd?: number }[] = [];
+    await cachedCall(store, { ...input, onEvent: (event) => events.push(event) }, fetcher);
+    expect(events).toEqual([{ endpoint: "search:parallel", purpose: "fixtures", outcome: "hit", estimatedCostAvoidedUsd: 0.001 }]);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it("coalesces concurrent identical misses into one provider request", async () => {
     const store = memoryStore();
     let resolveFetch!: (value: { ok: number }) => void;
