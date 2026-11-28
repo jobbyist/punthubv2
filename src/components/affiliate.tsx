@@ -8,6 +8,7 @@ import { RgNotice } from "@/components/rg-notice";
 import { useAsync } from "@/hooks/use-async";
 import { supabase } from "@/integrations/supabase/client";
 import { platforms } from "@/lib/mock-data";
+import { useBrandLogos } from "@/hooks/use-brand-logos";
 import { AFFILIATES_ENABLED } from "@/lib/flags";
 import { trackEvent } from "@/lib/analytics";
 
@@ -26,6 +27,7 @@ type PublicAffiliatePartner = {
 export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
   const { t } = useTranslation("affiliate");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const uploadedLogos = useBrandLogos("bookmakers");
   const { data } = useAsync(async () => {
     if (!AFFILIATES_ENABLED) return [] as PublicAffiliatePartner[];
     const { data: rows, error } = await supabase
@@ -87,7 +89,9 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
       ) : (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {data.map((partner) => {
-            const logo = platforms.find((p) => p.name.toLowerCase() === partner.name.toLowerCase())?.logo;
+            const logo =
+              uploadedLogos.find((entry) => entry.active && entry.imageUrl && entry.name.toLowerCase() === partner.name.toLowerCase())?.imageUrl ??
+              platforms.find((p) => p.name.toLowerCase() === partner.name.toLowerCase())?.logo;
             return (
               <a
                 key={partner.id}
