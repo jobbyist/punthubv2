@@ -32,6 +32,59 @@ describe("syncResults lookback", () => {
     expect(received).toMatchObject({ force: true, only: ["epl"] });
   });
 
+  it("maps verified result aliases back to every matching stored fixture reference", async () => {
+    const now = new Date("2026-11-28T06:00:00.000Z");
+    const open = [
+      {
+        provider: "pfie",
+        providerRef: "old-brann-aarhus",
+        competition: "UEFA Conference League",
+        home: "Brann",
+        away: "Aarhus",
+        kickoffAt: "2026-11-26T17:45:00.000Z",
+      },
+      {
+        provider: "pfie",
+        providerRef: "old-brann-agf",
+        competition: "UEFA Conference League",
+        home: "Brann",
+        away: "AGF",
+        kickoffAt: "2026-11-26T17:45:00.000Z",
+      },
+    ];
+    const saved: Record<string, unknown>[] = [];
+    const store = {
+      async openSince() { return open; },
+      async upsert(rows: Record<string, unknown>[]) { saved.push(...rows); },
+    } as unknown as FixtureStore;
+    const provider = {
+      name: "pfie",
+      async listResults() {
+        return {
+          calls: 1,
+          skipped: [],
+          fixtures: [{
+            provider: "pfie",
+            providerRef: "new-brann-agf",
+            competition: "UEFA Conference League",
+            home: "Brann",
+            away: "AGF",
+            kickoffAt: "2026-11-26T17:45:00.000Z",
+            status: "finished",
+            homeScore: 2,
+            awayScore: 1,
+          }],
+        };
+      },
+    } as unknown as SportsProvider;
+
+    const report = await syncResults(provider, store, now, { force: true, only: ["uecl"] });
+
+    expect(report.upserted).toBe(2);
+    expect(saved.map((row) => row.providerRef).sort()).toEqual(["old-brann-agf", "old-brann-aarhus"]);
+    expect(saved.every((row) => row.home === "Brann" && row.kickoffAt === open[0]?.kickoffAt)).toBe(true);
+  });
+
   it("keeps unresolved past fixtures in the 30-day verification window", async () => {
     const now = new Date("2026-11-28T06:00:00.000Z");
     const captured: Date[] = [];
