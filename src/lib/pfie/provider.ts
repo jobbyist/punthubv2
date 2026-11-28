@@ -507,8 +507,6 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     deps.setUsageContext?.({ competition: competition.key, jobRunId });
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
-    const count = (provider: string, ok: boolean) =>
-      deps.store.countUsage(provider, ok ? "ok" : "error").catch(() => undefined);
     let calls = 0;
     const sources: PfieSource[] = [];
     let cachedSearchResponses = 0;
@@ -557,17 +555,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               : resultQueries,
           maxResults: 10,
         })
-        .then(
-          (h) => {
-            if (cachedSearchResponses > 0) cachedSearchResponses--;
-            else void count(searchProvider.name, true);
-            return h;
-          },
-          (e: unknown) => {
-            void count(searchProvider.name, false);
-            throw e;
-          },
-        );
+        .then((hits) => {
+          if (cachedSearchResponses > 0) cachedSearchResponses--;
+          return hits;
+        });
 
       // 2. Sources: official pages read in full first, then the best search hits.
       const seen = new Set<string>();
@@ -584,7 +575,6 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           try {
             const page = await extractProvider.extract(url);
             if (cachedExtractResponses > 0) cachedExtractResponses--;
-            else void count(extractProvider.name, true);
             if (page) add(url, page.markdown);
           } catch {
             void count(deps.extract.name, false);
@@ -614,12 +604,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         models: routerModels,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
+        stopOnQuota: true,
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
-        onAttempt: async (a) => {
-          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free") {
-            const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
-            await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
-          }
+        onAttempt: async (attempt) => {
+          console.info("pfie-model-attempt", JSON.stringify({ competition: competition.key, kind, ...attempt }));
         },
       });
 
