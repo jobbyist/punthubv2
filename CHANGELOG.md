@@ -1,3 +1,11 @@
+## 28 November 2026 — Type checks, lint and database migrations
+
+- `bun run lint` is clean (was about 2,250 errors): one repo-wide Prettier sweep (#312) plus a parse error in `experiments/synthetic/tests/public-journeys.spec.ts`.
+- `bun run typecheck` is clean (was about 150 errors): Supabase types regenerated from the live database, plus real bugs the checker found. `createQuotaClaim()` was called without its required feature name in email sending, endorsements and the slip converter; `Sparkles`, `ProBadge`, `Link` and `normaliseTeam` were used without imports; a sign-in link pointed at a non-existent `/login`; `provider.ts` had a duplicate `saudi-pro` entry.
+- Migrations `20261128080000_team_follows.sql`, `20261128081000_team_badges_sofascore.sql` and `20261128090000_tracking_notice_r3.sql` are applied to the live Puntr database and verified (tables, functions, notice rows, `upgrade_checked_at`). Team follows now work; the follow buttons no longer wait for the migration.
+- CLAUDE.md: recurring Pro referral commissions (10–30%) replace the "no cash referrals" rule; the Support FAQ no longer says referrals pay no cash.
+- Still open: 25 unit tests already failed on main before this work (content, PFIE standings, odds, roadmap, translations, sports sync) and the PFIE and odds GitHub workflow never starts (it runs `npm ci` but the repo uses `bun.lock`).
+
 ## 28 November 2026 — Team badges from SofaScore
 
 - The badge job now looks for each team's SofaScore page first (found through Parallel search, matched on the club name and rejecting youth, women's and reserve sides) and mirrors its crest to Puntr storage. Wikipedia stays the fallback.
