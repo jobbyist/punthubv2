@@ -2,7 +2,7 @@
 -- The family-level monthly USD budget remains the hard financial control.
 update public.api_quota_limits
 set daily_cap = 250,
-    monthly_cap = 5000,
+    monthly_cap = 3000,
     note = 'Parallel Responses low: PFIE structured observations plus PUNT AI live-web; monthly spend remains constrained by core ($50 PFIE) and auxiliary ($35 PUNT AI) budgets.',
     updated_at = now()
 where provider = 'parallel-chat:low';
