@@ -1302,6 +1302,77 @@ describe("cup history source attribution", () => {
   });
 });
 
+describe("official standings fallback", () => {
+  it("retries an invalid official table using independent full-table sources", async () => {
+    const teamNames = [
+      "Club 01", "Club 02", "Club 03", "Club 04", "Club 05",
+      "Club 06", "Club 07", "Club 08", "Club 09", "Club 10",
+      "Club 11", "Club 12", "Club 13", "Club 14", "Club 15",
+      "Club 16", "Club 17", "Club 18", "Club 19", "Club 20",
+    ];
+    const makeRows = (source: number, count: number) => teamNames.slice(0, count).map((team, index) => {
+      const won = 20 - index;
+      const lost = 20 - won;
+      const goalsFor = won * 3;
+      const goalsAgainst = lost * 2;
+      const position = index + 1;
+      const quote = `${position} ${team} 20 ${won} 0 ${lost} ${goalsFor} ${goalsAgainst} ${won * 3}`;
+      return {
+        source,
+        position,
+        team,
+        played: 20,
+        won,
+        drawn: 0,
+        lost,
+        goalsFor,
+        goalsAgainst,
+        points: won * 3,
+        quote,
+      };
+    });
+    const validRows = makeRows(1, 20);
+    const pageText = validRows.map((row) => row.quote).join("\n") + "\nUpdated 28 November 2026";
+    const records: { ok: boolean; meta: Record<string, unknown> }[] = [];
+    const deps = {
+      search: { name: "fake", search: async () => [] },
+      extract: { name: "fake", extract: async () => ({ markdown: pageText }) },
+      llm: {
+        name: "fake",
+        generate: async (request: { prompt?: string }) => {
+          const source = Number(request.prompt?.match(/<source n="(\d+)"/)?.[1] ?? 1);
+          const isOfficial = request.prompt?.includes("premierleague.com") ?? false;
+          return {
+            text: JSON.stringify({ rows: makeRows(source, isOfficial ? 19 : 20) }),
+            model: "mock-model",
+          };
+        },
+      },
+      models: ["gemini-3.8-flash"],
+      now: () => new Date("2026-11-28T03:00:00Z"),
+      store: {
+        statuses: async (): Promise<SyncStatusRow[]> => [],
+        latestFinished: async () => new Map(),
+        knownTeams: async () => teamNames,
+        currentStandings: async () => [],
+        replaceStandings: async (input: { rows: unknown[] }) => input.rows.length,
+        record: async (
+          _job: string,
+          _scope: string,
+          ok: boolean,
+          _error: string | null,
+          meta: Record<string, unknown>,
+        ) => { records.push({ ok, meta }); },
+      },
+    };
+    const report = await runTablesSync(deps as never, { job: "standings", only: ["epl"], maxJobs: 1 });
+    expect(report.ran[0]?.ok).toBe(true);
+    expect(records.at(-1)?.ok).toBe(true);
+    expect(records.at(-1)?.meta.fallbackFromOfficial).toBe(true);
+    expect(records.at(-1)?.meta.sourceCount).toBeGreaterThanOrEqual(2);
+  });
+});
+
 describe("empty historical windows", () => {
   it("marks a week with only out-of-window results as complete without a redundant secondary read", async () => {
     const pageText = `UEFA Champions League historical results. Alpha FC 2-1 Bravo United. ${"Match report and final score. ".repeat(20)}`;

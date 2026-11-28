@@ -494,18 +494,18 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
   const modelsUsed = new Set<string>();
   const sourceFailures: string[] = [];
   let sourceDiagnostics: Array<Record<string, unknown>> = [];
+  let usedSecondaryFallback = false;
+  let primarySources: PfieSource[] = [];
   const sourceLabel = (index: number) => {
     const source = sources.find((item) => item.index === index);
     return source ? `${index}@${source.domain}` : String(index);
   };
   try {
     const today = sastDate(now());
-    sources = await gatherSources(
-      deps,
-      key,
-      `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
-      [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
-    );
+    const objective = `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`;
+    const queries = [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5);
+    sources = await gatherSources(deps, key, objective, queries);
+    primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
     let raw = [] as NonNullable<ReturnType<typeof parseStandings>>;
@@ -546,7 +546,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
-    }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
+    }
     let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
@@ -618,6 +618,73 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         chosenTables = chooseTables(validation.tables, cfg.groups);
       }
     }
+    if (!chosenTables && sources.some((source) => source.tier === "official")) {
+      const secondary = (await gatherSources(deps, key, objective, queries, false, [], true, MAX_SOURCES))
+        .filter((source) => source.tier !== "official");
+      const secondaryDomains = new Set(secondary.map((source) => source.domain));
+      if (secondaryDomains.size >= 2) {
+        usedSecondaryFallback = true;
+        sources = secondary;
+        const secondaryInitial = await Promise.all(
+          sources.map(async (source) => {
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
+            modelsUsed.add(answer.model);
+            const parsed = parseStandings(answer.text);
+            const result = parsed
+              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json_secondary" }] };
+            return { source, parsed, result };
+          }),
+        );
+        const secondaryRetryCandidates = secondaryInitial.filter((result) => result.result.tables.length === 0);
+        const secondaryRetries = await Promise.all(
+          secondaryRetryCandidates.map(async (result) => {
+            const hint = result.result.rejected.map((item) => item.reason).join(", ") || "incomplete_secondary_table";
+            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }));
+            modelsUsed.add(answer.model);
+            const parsed = parseStandings(answer.text);
+            const validation = parsed
+              ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
+              : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: result.source.index, reason: "invalid_json_secondary_retry" }] };
+            return { source: result.source, parsed, validation };
+          }),
+        );
+        const secondaryRetryByIndex = new Map(secondaryRetries.map((result) => [result.source.index, result]));
+        raw = [];
+        for (const firstPass of secondaryInitial) {
+          const retry = secondaryRetryByIndex.get(firstPass.source.index);
+          const parsed = retry?.parsed ?? firstPass.parsed;
+          const result = retry?.validation ?? firstPass.result;
+          if (parsed && result.tables.length > 0) raw.push(...parsed);
+          else {
+            const reason = result.rejected.map((item) => item.reason).join(";") || "incomplete_secondary_table";
+            sourceFailures.push(`secondary:${firstPass.source.index}@${firstPass.source.domain}:${reason}`);
+          }
+        }
+        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
+        sourceDiagnostics = validation.tables.map((table) => ({
+          domain: table.source.domain,
+          url: table.source.url,
+          group: table.group ?? null,
+          tableDate: table.tableDate ?? null,
+          rowCount: table.rows.length,
+          rows: table.rows.map((row) => ({
+            position: row.position,
+            team: row.team,
+            played: row.played,
+            won: row.won,
+            drawn: row.drawn,
+            lost: row.lost,
+            goalsFor: row.goalsFor,
+            goalsAgainst: row.goalsAgainst,
+            points: row.points,
+          })),
+        }));
+        chosenTables = chooseTables(validation.tables, cfg.groups);
+      } else {
+        sourceFailures.push("secondary_fallback_insufficient_independent_domains");
+      }
+    }
     if (!chosenTables && key === "caf-cc") {
       const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
       if (groupResults.length > 0) {
@@ -636,6 +703,7 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
           await deps.store.record("standings", key, true, null, {
             verdict: "derived_verified_group_stage_results",
             provisional: true,
+            fallbackFromOfficial: usedSecondaryFallback,
             source: "verified_completed_matches",
             sourceUrl: CAF_GROUP_DRAW_URL,
             groupCount: 4,
@@ -726,6 +794,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       sourceCount: supportingDomains.length,
       sources: supportingDomains,
       sourceFailures,
+      fallbackFromOfficial: usedSecondaryFallback,
+      primarySources: primarySources.map((source) => ({ domain: source.domain, url: source.url })),
       groups: chosenTables.map((selection) => selection.table.group ?? null),
       primarySource: chosenTables[0]!.table.source.url,
       tableDate: chosenTables[0]!.table.tableDate ?? null,
@@ -746,6 +816,8 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       sources: sources.map((source) => ({ index: source.index, domain: source.domain, url: source.url, via: source.via, retrievedAt: source.retrievedAt })),
       sourceFailures,
       sourceDiagnostics,
+      fallbackFromOfficial: usedSecondaryFallback,
+      primarySources: primarySources.map((source) => ({ domain: source.domain, url: source.url })),
       models: [...modelsUsed],
     }).catch(() => undefined);
     return { ok: false, detail: message(e) };
