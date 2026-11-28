@@ -16,7 +16,7 @@
  * - Sites that disagree (and no official statement) make the fact disputed. Disputed and single-source facts are
  *   kept in the audit tables and never reach public.fixtures.
  */
-import { resolveTeam, teamSlug } from "./teams";
+import { normaliseTeam, resolveTeam, teamSlug } from "./teams";
 import type { Decision, KnownFixture, Observation, Verdict } from "./types";
 
 interface Cluster {

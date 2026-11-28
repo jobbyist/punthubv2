@@ -865,7 +865,7 @@ function DoneStep({
             <li key={key} className="puntr-rise" style={{ ["--i" as string]: i + 1 }}>
               <Link
                 to={to}
-                hash={"hash" in rest ? rest.hash : undefined}
+                {...("hash" in rest && rest.hash ? { hash: rest.hash } : {})}
                 onClick={() => trackEvent("onboarding_move_clicked", { move: key })}
                 className="group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/50 hover:bg-muted/40"
               >

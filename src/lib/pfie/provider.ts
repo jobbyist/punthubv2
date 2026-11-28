@@ -221,17 +221,6 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
       results: ["Ligue 1 results", "Ligue 1 full time scores"],
     },
   },
-  "saudi-pro": {
-    official: ["spl.com.sa"],
-    pages: {
-      fixtures: ["https://www.spl.com.sa/en/fixtures-results"],
-      results: ["https://www.spl.com.sa/en/fixtures-results"],
-    },
-    queries: {
-      fixtures: ["Roshn Saudi League fixtures KSA time", "Saudi Pro League fixtures SA time"],
-      results: ["Roshn Saudi League results", "Saudi Pro League full time scores"],
-    },
-  },
   championship: {
     official: ["efl.com"],
     pages: {
@@ -649,7 +638,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           competition: competition.key,
           kind,
           ok: true,
-          model: modelUsed ?? undefined,
+          ...(modelUsed ? { model: modelUsed } : {}),
           sources,
           accepted,
           rejected,

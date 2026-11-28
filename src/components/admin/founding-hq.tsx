@@ -184,7 +184,7 @@ export function FoundingHqPage() {
           .sort((a, b) => a - b);
         if (numbers.length > 0) {
           const contiguous = numbers.every(
-            (number, index) => index === 0 || number === numbers[index - 1] + 1,
+            (number, index) => index === 0 || number === (numbers[index - 1] ?? 0) + 1,
           );
           setAiNumberSummary(
             contiguous

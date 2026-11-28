@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Json } from "@/integrations/supabase/types";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -38,7 +39,7 @@ export interface ApiUsageSnapshot {
     status: string;
     estimatedUsd: number | null;
     claimedAt: string;
-    metadata: Record<string, unknown>;
+    metadata: Record<string, Json>;
   }[];
   generatedAt: string;
 }
@@ -194,7 +195,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
             ? (priceByProvider.get(String(r["provider"])) ?? null)
             : Number(r["estimated_cost_usd"]),
         claimedAt: String(r["claimed_at"]),
-        metadata: (r["metadata"] as Record<string, unknown>) ?? {},
+        metadata: (r["metadata"] as Record<string, Json>) ?? {},
       })),
       generatedAt: now.toISOString(),
     };

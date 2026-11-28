@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { ProBadge } from "@/components/pro-badge";
 import { cn } from "@/lib/utils";
 
 /**

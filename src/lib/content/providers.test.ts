@@ -29,7 +29,7 @@ describe("parallelJsonSchema", () => {
 
 describe("createParallelResponses", () => {
   it("uses Parallel JSON Schema output with the configured low reasoning effort", async () => {
-    let sent: Record<string, unknown> | null = null;
+    let sent = null as Record<string, unknown> | null;
     const fetchImpl: typeof fetch = async (_input, init) => {
       sent = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
       return new Response(JSON.stringify({ output_text: '{"matches":[]}' }), {

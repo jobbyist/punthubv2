@@ -146,10 +146,12 @@ export function BookmakerComplianceTab() {
       .from("bookmaker_odds_permissions")
       .update({
         ...payload,
-        licence_verified_at:
-          payload.licence_status === "verified" ? new Date().toISOString() : undefined,
-        rights_reviewed_at:
-          payload.data_rights_status === "approved" ? new Date().toISOString() : undefined,
+        ...(payload.licence_status === "verified"
+          ? { licence_verified_at: new Date().toISOString() }
+          : {}),
+        ...(payload.data_rights_status === "approved"
+          ? { rights_reviewed_at: new Date().toISOString() }
+          : {}),
       })
       .eq("id", row.id);
     setSaving(null);
