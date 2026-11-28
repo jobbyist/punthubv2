@@ -199,7 +199,7 @@ function withJobUsageContext(deps: TablesDeps, key: CompetitionKey, jobKind: Tab
       ...deps.store,
       record: (job, scope, ok, error, meta) =>
         deps.store.record(job, scope, ok, error, {
-          ...meta,
+          ...(meta ?? {}),
           competition: key,
           job_run_id: jobRunId,
           ...metadata,
@@ -578,13 +578,14 @@ export async function runTablesSync(
   if (opts.job === "archive") {
     const jobs = archiveJobsDue(deps, statuses, opts.only).slice(0, maxJobs);
     const ran: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-    for (const j of jobs)
+    for (const j of jobs) {
       const archiveDeps = withJobUsageContext(deps, j.key, "archive");
       ran.push({
         job: "archive",
         key: `${j.key}:${j.year}`,
         ...(await runArchiveJob(archiveDeps, j.key, j.year)),
       });
+    }
     return { due: jobs.length, seasonDue: 0, ran };
   }
   const status = (job: TableJob, scope: string) =>
