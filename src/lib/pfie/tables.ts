@@ -187,6 +187,33 @@ const longDate = (iso: string) =>
  * Search phrasings for a past window. Exact dates, a month name, "weekend round-up" and a few club names steer
  * the search to round-up and archive pages for those days instead of this week's fixtures.
  */
+export function seasonArchiveUrls(name: string, start: string): string[] {
+  const month = Number(start.slice(5, 7));
+  const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
+  if (name === "UEFA Champions League") {
+    return seasonStart === 2026
+      ? ["https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/"]
+      : seasonStart === 2025
+        ? ["https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/"]
+        : [];
+  }
+  if (name === "UEFA Conference League") {
+    return seasonStart === 2026
+      ? ["https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/"]
+      : seasonStart === 2025
+        ? ["https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/"]
+        : [];
+  }
+  if (name === "CAF Confederation Cup") {
+    if (start === "2026-10-16") return ["https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/"];
+    if (start === "2026-10-23") return [
+      "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+      "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+    ];
+    if (start === "2026-09-04") return ["https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/"];
+  }
+  return [];
+}
 export function seasonQueries(
   name: string,
   start: string,
@@ -368,6 +395,7 @@ async function gatherSources(
   objective: string,
   queries: string[],
   preferSearchResults = false,
+  preferredUrls: string[] = [],
 ): Promise<PfieSource[]> {
   const official = PFIE_SOURCES[key]?.official ?? [];
   const hits = await deps.search.search({ objective, queries, maxResults: 20 });
@@ -377,10 +405,17 @@ async function gatherSources(
     excerpt: "",
     publishedAt: null,
   }));
+  const preferredPages = preferredUrls.map((url) => ({
+    url,
+    title: "Preferred official historical results archive",
+    excerpt: "",
+    publishedAt: null,
+  }));
+  const preferredUrlSet = new Set(preferredUrls);
   const order = { official: 0, trusted: 1, other: 2 } as const;
   // Historical result queries must win over the configured standings URL for the same official domain.
   // Otherwise domain deduplication keeps the table page and discards the match-results archive page.
-  const ranked = (preferSearchResults ? [...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
+  const ranked = (preferSearchResults ? [...preferredPages, ...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
   const sources: PfieSource[] = [];
@@ -393,7 +428,7 @@ async function gatherSources(
     const domain = domainOf(hit.url);
     const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
-    if (tier === "other" || isBlockedDomain(domain) || seenDomains.has(sourceKey)) continue;
+    if (tier === "other" || isBlockedDomain(domain) || (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))) continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
     if (candidates.length >= MAX_SOURCES) break;
@@ -716,6 +751,7 @@ async function syncSeasonWindow(
         `Prefer the official competition site and established sports news sites.`,
       seasonQueries(c.name, start, end, known),
       true,
+      seasonArchiveUrls(c.name, start),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const request = (list: PfieSource[]) =>
@@ -790,6 +826,7 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
         `Prefer the official competition site and established sports news sites.`,
       [`${c.name} results`, `${c.name} scores last matchdays`],
       true,
+      seasonArchiveUrls(c.name, start),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const answer = await generate(
