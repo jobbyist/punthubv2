@@ -53,6 +53,10 @@ export function BookmakerComplianceTab() {
       .map((entry) => ({ entry, row: byName.get(entry.name.toLowerCase()) }))
       .filter(({ entry }) => entry.name.toLowerCase().includes(filter.toLowerCase()))
       .sort((a, b) => {
+        const affiliateRank = (status?: string) => status === "approved" ? 0 : status === "applied" ? 1 : 2;
+        const rankA = affiliateRank(a.row?.affiliate_status);
+        const rankB = affiliateRank(b.row?.affiliate_status);
+        if (rankA !== rankB) return rankA - rankB;
         const priorityA = a.row?.affiliate_priority ?? 30;
         const priorityB = b.row?.affiliate_priority ?? 30;
         return priorityA - priorityB || a.entry.name.localeCompare(b.entry.name);
