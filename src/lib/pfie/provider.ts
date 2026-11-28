@@ -505,8 +505,15 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       deps.store.countUsage(provider, ok ? "ok" : "error").catch(() => undefined);
     let calls = 0;
     const sources: PfieSource[] = [];
-    const cacheEvent = (event: CacheEvent) =>
+    let cachedSearchResponses = 0;
+    let cachedExtractResponses = 0;
+    const cacheEvent = (event: CacheEvent) => {
+      if (event.outcome === "hit" || event.outcome === "deduplicated") {
+        if (event.endpoint.startsWith("search:")) cachedSearchResponses++;
+        if (event.endpoint.startsWith("extract:")) cachedExtractResponses++;
+      }
       console.info("pfie-cache", JSON.stringify({ competition: competition.key, kind, ...event }));
+    };
     // These wrappers sit outside guardSearch/guardExtract, so cache hits never consume quota.
     const searchProvider = withSearchCache(deps.search, deps.cache ?? null, kind, cacheEvent);
     const extractProvider = withExtractCache(deps.extract, deps.cache ?? null, kind, cacheEvent);
@@ -545,7 +552,11 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           maxResults: 10,
         })
         .then(
-          (h) => (count(searchProvider.name, true), h),
+          (h) => {
+            if (cachedSearchResponses > 0) cachedSearchResponses--;
+            else void count(searchProvider.name, true);
+            return h;
+          },
           (e: unknown) => {
             void count(searchProvider.name, false);
             throw e;
@@ -566,7 +577,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           calls++;
           try {
             const page = await extractProvider.extract(url);
-            void count(extractProvider.name, true);
+            if (cachedExtractResponses > 0) cachedExtractResponses--;
+            else void count(extractProvider.name, true);
             if (page) add(url, page.markdown);
           } catch {
             void count(deps.extract.name, false);
