@@ -614,6 +614,11 @@ async function generate(
 const message = (e: unknown) =>
   e instanceof AllModelsFailed || e instanceof Error ? e.message.slice(0, 280) : "unexpected error";
 
+/** Secondary publishers are enabled only for the ten pre-launch standings competitions. */
+export function shouldIncludeSecondaryStandingsSources(key: CompetitionKey): boolean {
+  return STANDINGS_LAUNCH_KEYS.some((launchKey) => launchKey === key);
+}
+
 async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => Date) {
   const c = competitions.find((x) => x.key === key)!;
   const cfg = STANDINGS_COMPETITIONS[key]!;
@@ -636,9 +641,18 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       `${c.name} league table after latest matchday ${today}`,
       ...cfg.queries,
     ].slice(0, 5);
-    // Standings must consider independent full-table publishers when the official page is incomplete or stale.
-    // The existing validation still enforces official authority or multi-source consensus before persistence.
-    sources = await gatherSources(deps, key, objective, queries, false, [], true);
+    // Only the ten launch competitions may expand source discovery to trusted independent publishers.
+    // Deferred competitions (including Saudi Pro League and Liga Portugal) remain untouched until post-launch.
+    // Existing validation still requires official authority or independent-source consensus before persistence.
+    sources = await gatherSources(
+      deps,
+      key,
+      objective,
+      queries,
+      false,
+      [],
+      shouldIncludeSecondaryStandingsSources(key),
+    );
     primarySources = [...sources];
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
