@@ -119,6 +119,7 @@
         "leaderboards": "Leaderboards",
         "discussions": "Sports discussions",
         "duels": "Head-to-head duels",
+        "tipsterSupport": "Tipster Support",
         "newsroom": "Visit the Newsroom",
         "tools": "Betting toolkit",
         "bookmakers": "Bookmaker directory",
@@ -156,6 +157,7 @@
     "navigation": "Desktop side navigation",
     "liveNow": "Live now",
     "duels": "Duels",
+    "tipsterSupport": "Tipster Support",
     "standings": "Tables",
     "slips": "Slips"
   },

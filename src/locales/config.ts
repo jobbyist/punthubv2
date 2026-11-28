@@ -105,6 +105,7 @@ export const NAMESPACES = [
   "standings",
   "slips",
   "teams",
+  "tipster",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];

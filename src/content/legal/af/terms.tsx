@@ -225,6 +225,32 @@ export function TermsAf() {
               terugtrek waar lede saamspan of meer as een rekening gebruik. [attorney review]
             </p>
             <p className={P}>
+              Tipsterondersteuning (vanaf bekendstelling): 'n lid wat identiteitsverifikasie geslaag
+              het en 10 voorspellings agtereenvolgens wen op wedstryde wat in die afgelope 30 dae
+              gespeel is, ontsluit Tipsterondersteuning. Slegs die eerste voorspelling op elke
+              wedstryd tel, nietige uitslae word oorgeslaan, oorwinnings onder die minimum pryse wat
+              gewys word (tans 1.40) tel nie en enige verlies begin die reeks van voor af. 'n
+              Tipster kan pryse in PuntPoints per gekopieerde voorspelling, per week of per maand
+              stel, binne die perke wat gewys word. Ander lede (18+, in goeie aansien, rekening
+              minstens 14 dae oud) kan 'n tipster ondersteun: elke nuwe voorspelling word dan na die
+              ondersteuner se lys van gekopieerde voorspellings gekopieer, met 'n kennisgewing en
+              enige nota slegs vir ondersteuners. Gekopieerde voorspellings is die tipster se
+              mening, nie advies nie; Puntr plaas nie weddenskappe nie en gekopieerde voorspellings
+              tel nooit op die ondersteuner se eie rekord nie. Punte word gehou wanneer dit gehef
+              word: 'n heffing per voorspelling gaan na die tipster wanneer daardie voorspelling
+              afgehandel is en word terugbetaal as die wedstryd nietig is of die voorspelling
+              verwyder word; 'n weeklikse of maandelikse heffing gaan aan die einde van die tydperk
+              na die tipster slegs as minstens een nie-nietige voorspelling daarin gekopieer is,
+              anders word dit ten volle terugbetaal. Puntr hou 'n platformfooi van elke betaling aan
+              'n tipster (tans 10%, 0% vir Puntr Pro-tipsters), wat uit omloop verwyder word. Gratis
+              lede kan tot 2 tipsters op 'n slag ondersteun en Puntr Pro-lede tot 10, met 'n
+              30-dae-perk (tans 1 500 punte). PuntPoints het geen kontantwaarde nie en
+              Tipsterondersteuning betaal nooit geld uit nie. Ons kan Tipsterondersteuning opskort
+              of herroep, gehoue punte terugbetaal en punte terugtrek waar lede saamspan, meer as
+              een rekening gebruik of hierdie Bepalings oortree. Die Engelse weergawe geld.
+              [attorney review]
+            </p>
+            <p className={P}>
               Wedstrokies: jy kan 'n strokie wat jy by 'n boekmaker geplaas het, byvoeg deur dit in
               te tik, die teks te plak of 'n foto op te laai. Jy moet elke besonderheid nagaan
               voordat jy stoor; teks wat van 'n foto of deur ons assistent gelees word, kan verkeerd

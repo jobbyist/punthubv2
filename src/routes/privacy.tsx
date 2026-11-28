@@ -85,6 +85,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open. On deletion, open challenges are cancelled, active duels are voided with stakes returned and your votes are deleted; settled duels stay with the anonymous account so the other member's record stays correct [attorney review]",
   ],
   [
+    "Tipster Support (from launch)",
+    "Whether you have unlocked Tipster Support and your streak at unlock; your prices and pitch; who you support or who supports you, the plan, price and dates; the picks copied to you; PuntPoints held, paid and refunded; supporters-only notes you write. Your supporter count and prices are public; who supports whom is visible only to the two members and to Puntr admins",
+    "Contract (providing the Tipster Support feature you choose to use)",
+    "While your account is open. Points entries stay in the append-only PuntPoints ledger [attorney review]",
+  ],
+  [
     "Wallet (from launch)",
     "Your PuntPoints and Pay-As-You-Go credit balances and history; PuntPoints you send or receive (the other member's username, the amount, an optional note and the time)",
     "Contract (providing the loyalty scheme and the paid features to you)",
@@ -208,8 +214,8 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-team-follows). Draft
-          pending attorney review.
+          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-tipster-support).
+          Draft pending attorney review.
         </p>
 
         <section>

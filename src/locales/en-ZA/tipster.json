@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Tipster Support | Puntr",
+    "description": "Follow proven tipsters on Puntr and get their picks copied to your list the moment they post. Unlock it yourself with a 10-pick winning streak."
+  },
+  "title": "Tipster Support",
+  "subtitle": "Back proven tipsters with PuntPoints and get their picks the moment they post. Prove yourself and others can back you.",
+  "notLive": "Tipster Support switches on soon. Keep predicting: streaks you build now count.",
+  "signIn": "Sign in to use Tipster Support.",
+  "tabs": {
+    "label": "Tipster Support sections",
+    "supporting": "Supporting",
+    "tipster": "My tipster hub",
+    "discover": "Find tipsters",
+    "how": "How it works"
+  },
+  "nudge": {
+    "eyebrow": "Tipster Support",
+    "building": "Win {{target}} in a row to unlock Tipster Support",
+    "close": "{{count}} more wins to unlock Tipster Support",
+    "close_one": "1 more win to unlock Tipster Support",
+    "verify": "Streak complete. Verify your ID to unlock",
+    "unlocked": "Tipster Support is unlocked",
+    "paused": "Tipster Support is paused on your account",
+    "body": "Hit {{target}} straight winning picks on matches played in the last {{days}} days and verified members can back you with PuntPoints for your picks.",
+    "unlockedBody": "Set your prices and members can back you. Your picks stay public on your record.",
+    "streak": "Current streak",
+    "of": "{{streak}} of {{target}}",
+    "rules": "One pick per match counts. Wins below {{odds}} do not count, but any loss resets the streak. Voids are skipped.",
+    "cta": "Make a prediction",
+    "verifyCta": "Verify my ID",
+    "setupCta": "Set up Tipster Support",
+    "learn": "How it works",
+    "markW": "Counted win",
+    "markL": "Loss",
+    "markS": "Win below the minimum odds"
+  },
+  "card": {
+    "title": "Support @{{username}}",
+    "pitchFallback": "Copy every new pick from @{{username}} straight to your list, with alerts and their supporters-only notes.",
+    "supporters": "{{count}} supporters",
+    "supporters_one": "1 supporter",
+    "notAccepting": "@{{username}} is not taking new supporters right now.",
+    "button": "Support this tipster",
+    "supporting": "You support @{{username}}",
+    "manage": "Manage",
+    "plans": "Choose how to support",
+    "plan": {
+      "pick": "Per pick",
+      "week": "Weekly",
+      "month": "Monthly"
+    },
+    "price": {
+      "pick": "{{points}} PuntPoints per copied pick",
+      "week": "{{points}} PuntPoints a week",
+      "month": "{{points}} PuntPoints a month"
+    },
+    "planHelp": {
+      "pick": "Held when each pick is copied. Refunded if the match is void or the pick is removed. Stops by itself if your balance runs low.",
+      "week": "Held up front for 7 days. Refunded in full if no picks arrive in that week.",
+      "month": "Held up front for 30 days. Refunded in full if no picks arrive in that month."
+    },
+    "autoRenew": "Renew automatically",
+    "available": "Available to spend: {{points}} PuntPoints",
+    "confirm": "Support for {{points}} PuntPoints",
+    "confirmPick": "Start copying picks",
+    "busy": "Working…",
+    "done": "You now support @{{username}}. Their next pick lands in your list.",
+    "noAdvice": "Copied picks are another member's opinion, not advice. Puntr never places bets for you. Only bet what you can afford to lose.",
+    "selfNote": "This is your Tipster Support card. Members see your prices here."
+  },
+  "supporting": {
+    "title": "Tipsters you support",
+    "empty": "You do not support anyone yet.",
+    "findCta": "Find tipsters",
+    "limit": "{{used}} of {{limit}} supports used",
+    "limitPro": "Puntr Pro lets you back up to {{limit}} tipsters at once.",
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "cancelled": "Stopped",
+      "expired": "Ended",
+      "ended": "Ended by Puntr"
+    },
+    "renews": "Renews {{date}}",
+    "ends": "Ends {{date}}",
+    "copies": "{{count}} picks copied",
+    "copies_one": "1 pick copied",
+    "stop": "Stop",
+    "stopRenewal": "Stop renewing",
+    "resume": "Resume",
+    "renewOn": "Renew again",
+    "pausedReason": "Paused because we could not hold the next payment. Top up your balance, then resume.",
+    "spent": "Held for Tipster Support in the last 30 days: {{spent}} of {{cap}} PuntPoints"
+  },
+  "copies": {
+    "title": "Copied picks",
+    "empty": "Picks from tipsters you support appear here the moment they post.",
+    "from": "from @{{username}}",
+    "note": "Supporters-only note",
+    "result": {
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void · refunded",
+      "push": "Push · refunded",
+      "pending": "Pending"
+    },
+    "odds": "at {{odds}}",
+    "notCounted": "Copied picks are not added to your own record, streak or leaderboard place."
+  },
+  "hub": {
+    "progressTitle": "Your road to Tipster Support",
+    "stats": {
+      "supporters": "Active supporters",
+      "held": "Held until picks settle",
+      "week": "Received, 7 days",
+      "month": "Received, 30 days",
+      "all": "Received, all time",
+      "refunded": "Refunded, 30 days"
+    },
+    "points": "{{points}} PP",
+    "settings": {
+      "title": "Your offer",
+      "accepting": "Accept new supporters",
+      "pricePick": "Price per copied pick",
+      "priceWeek": "Weekly price",
+      "priceMonth": "Monthly price",
+      "range": "{{min}} to {{max}} PuntPoints. Leave empty to not offer this plan.",
+      "pitch": "Your pitch (optional)",
+      "pitchPlaceholder": "What you focus on, e.g. PSL home sides and BTTS.",
+      "save": "Save",
+      "saved": "Saved.",
+      "invalid": "Check the prices: whole numbers inside the range.",
+      "fee": "Puntr keeps {{pct}}% of each payment as a platform fee, removed from circulation.",
+      "feePro": "Puntr Pro tipsters pay {{pct}}% platform fee.",
+      "existing": "Price changes apply to new supporters. Existing supporters keep their price, or get yours if it drops."
+    },
+    "notes": {
+      "title": "Supporters-only notes",
+      "body": "Add one short note to an upcoming pick. Only your supporters see it. Notes cannot be edited.",
+      "empty": "Post a pick on an upcoming match to add a note.",
+      "placeholder": "Why you like this pick…",
+      "add": "Add note",
+      "added": "Note added",
+      "hasNote": "Note added"
+    },
+    "recent": {
+      "title": "Recent payments",
+      "empty": "No payments yet.",
+      "kind": {
+        "pick": "Copied pick",
+        "period": "Period"
+      },
+      "status": {
+        "held": "Held",
+        "paid": "Received",
+        "refunded": "Refunded"
+      },
+      "fee": "fee {{fee}}"
+    },
+    "publicLink": "See your public card"
+  },
+  "discover": {
+    "title": "Tipsters open to supporters",
+    "empty": "No one has unlocked Tipster Support yet. Be the first: win 10 in a row.",
+    "winRate": "{{rate}} win rate",
+    "settled": "{{count}} settled",
+    "from": "from {{points}} PP",
+    "view": "View record"
+  },
+  "how": {
+    "title": "How Tipster Support works",
+    "s1": "Unlock it: verify your ID and win 10 picks in a row on matches played in the last 30 days. One pick per match counts, and wins below the minimum odds don't.",
+    "s2": "Set your offer: a price per copied pick, a weekly price, a monthly price, or any mix.",
+    "s3": "Members back you with PuntPoints. Each new pick you post is copied to their list with an alert, plus any supporters-only note.",
+    "s4": "Payments are held, never trusted. Per-pick payments release when the pick settles and are refunded if it is void. Weekly and monthly payments are refunded in full if no picks arrive.",
+    "proTitle": "Free for everyone, better with Pro",
+    "pro": "Any verified member can unlock Tipster Support and back tipsters. Puntr Pro members can back up to {{limitPro}} tipsters at once (free members {{limitFree}}) and keep 100% of support as tipsters ({{feeFree}}% platform fee on the free plan).",
+    "safeTitle": "Built to stay fair",
+    "safe": "Picks stay public and permanent. Copied picks never count on the supporter's own record. Accounts must be 14 days old, PuntPoints are never cash, and there is a monthly cap on what you can put towards Tipster Support."
+  },
+  "errors": {
+    "generic": "That did not work. Try again.",
+    "not_authenticated": "Sign in first.",
+    "not_launched": "Tipster Support opens on 1 December 2026.",
+    "support_paused": "Tipster Support is paused for now.",
+    "invalid_plan": "That plan is not available.",
+    "tipster_not_found": "No member with that username.",
+    "self_support": "You cannot support yourself.",
+    "tipster_unavailable": "This tipster is not taking supporters right now.",
+    "already_supporting": "You already support this tipster.",
+    "support_limit": "You have reached your support limit. Stop one first, or go Pro for more.",
+    "account_too_new": "Your account must be at least 14 days old to use PuntPoints for Tipster Support.",
+    "spend_cap": "That would go over your 30-day Tipster Support limit.",
+    "insufficient_transferable": "Not enough PuntPoints available (recent and invite points cannot be used yet).",
+    "support_unavailable": "That support is no longer active.",
+    "not_unlocked": "Unlock Tipster Support first.",
+    "pitch_too_long": "Keep your pitch under 280 characters.",
+    "invalid_price": "A price is outside the allowed range.",
+    "no_price": "Set at least one price to accept supporters.",
+    "invalid_note": "Write a note of up to 1,000 characters.",
+    "not_your_pick": "You can only add notes to your own picks.",
+    "kickoff_passed": "This match has kicked off.",
+    "note_exists": "This pick already has a note.",
+    "banned": "Your account cannot do this.",
+    "suspended": "Your account is suspended.",
+    "limited": "Your account is limited right now.",
+    "age_not_attested": "Confirm you are 18+ in your account first.",
+    "ai_participant_restricted": "This account cannot do this."
+  }
+}

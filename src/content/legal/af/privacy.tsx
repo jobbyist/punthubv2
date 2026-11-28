@@ -69,6 +69,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Terwyl jou rekening oop is. Wanneer jy jou rekening skrap, word oop uitdagings gekanselleer, aktiewe duelle nietig verklaar met insette terugbetaal en jou stemme geskrap; afgehandelde duelle bly by die anonieme rekening sodat die ander lid se rekord korrek bly [attorney review]",
   ],
   [
+    "Tipsterondersteuning (vanaf bekendstelling)",
+    "Of jy Tipsterondersteuning ontsluit het en jou reeks by ontsluiting; jou pryse en beskrywing; wie jy ondersteun of wie jou ondersteun, die plan, prys en datums; die voorspellings wat na jou gekopieer is; PuntPoints wat gehou, betaal en terugbetaal is; notas slegs vir ondersteuners wat jy skryf. Jou aantal ondersteuners en pryse is openbaar; wie wie ondersteun, is slegs sigbaar vir die twee lede en Puntr-administrateurs",
+    "Kontrak (om die Tipsterondersteuning-funksie te verskaf wat jy kies om te gebruik)",
+    "Terwyl jou rekening oop is. Puntinskrywings bly in die PuntPoints-grootboek, waarin niks verander of geskrap word nie [attorney review]",
+  ],
+  [
     "Beursie (vanaf bekendstelling)",
     "Jou PuntPoints- en betaal-soos-jy-gebruik-kredietsaldo's en -geskiedenis; PuntPoints wat jy stuur of ontvang (die ander lid se gebruikersnaam, die bedrag, 'n opsionele nota en die tyd)",
     "Kontrak (om die lojaliteitskema en die betaalde funksies aan jou te verskaf)",
