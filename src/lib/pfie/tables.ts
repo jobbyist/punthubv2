@@ -189,7 +189,7 @@ export interface TablesDeps {
 }
 
 /** Bind each standings/history/season/archive provider attempt to its competition and job run. */
-function withJobUsageContext(deps: TablesDeps, key: CompetitionKey, jobKind: TableJob): TablesDeps {
+export function withJobUsageContext(deps: TablesDeps, key: CompetitionKey, jobKind: TableJob): TablesDeps {
   const jobRunId = randomUUID();
   const metadata = { job_kind: jobKind };
   deps.setUsageContext?.({ competition: key, jobRunId, metadata });
