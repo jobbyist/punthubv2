@@ -52,13 +52,24 @@ export const getDrawOverview = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: entries, error } = await supabaseAdmin.rpc("admin_practice_draw_entries");
     if (error) throw new Error(error.message);
-    const { data: log, error: logError } = await supabaseAdmin
+    const { data: logData, error: logError } = await supabaseAdmin
       .from("practice_draw_log")
-      .select("id, draw_group_id, winner_rank, drawn_at, witness, entries, winner_user_id, winner_founding_number, note")
+      .select("*")
       .order("drawn_at", { ascending: false })
       .limit(20);
     if (logError) throw new Error(logError.message);
-    const ids = (log ?? []).flatMap((l) => (l.winner_user_id ? [l.winner_user_id] : []));
+    const log = (logData ?? []) as unknown as Array<{
+      id: string;
+      draw_group_id: string;
+      winner_rank: number;
+      drawn_at: string;
+      witness: string;
+      entries: number;
+      winner_user_id: string | null;
+      winner_founding_number: number | null;
+      note: string | null;
+    }>;
+    const ids = log.flatMap((l) => (l.winner_user_id ? [l.winner_user_id] : []));
     const names = new Map<string, string>();
     if (ids.length) {
       const { data: profiles, error: profilesError } = await supabaseAdmin
@@ -72,7 +83,7 @@ export const getDrawOverview = createServerFn({ method: "GET" })
       closesAt: DRAW_CLOSES_AT,
       closed: Date.now() >= new Date(DRAW_CLOSES_AT).getTime(),
       entries: (entries ?? []) as DrawEntry[],
-      log: (log ?? []).map((l) => ({
+      log: log.map((l) => ({
         id: l.id,
         draw_group_id: l.draw_group_id,
         winner_rank: l.winner_rank,
@@ -133,7 +144,7 @@ export const runPracticeDraw = createServerFn({ method: "POST" })
       console.error("practice draw failed", error.message);
       return { ok: false, error: "failed" };
     }
-    const winners = (rows ?? []) as Array<{
+    const winners = (rows ?? []) as unknown as Array<{
       winner_rank: number;
       winner_user_id: string;
       winner_username: string;
