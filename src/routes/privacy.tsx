@@ -73,6 +73,12 @@ const PURPOSES: [string, string, string, string][] = [
     "While your account is open; deleted when you clear them or delete your account. Used to order your own Matchday card and shortcuts and to show which teams you follow on your account page. Others see only an anonymous follower count per team; admins see follow totals and the most-followed teams, never a list of who follows whom. Never shared [attorney review]",
   ],
   [
+    "Bookmaker reviews (optional)",
+    "Your star ratings for a bookmaker in the bookmaker directory (overall, ease of use, payouts, support), an optional comment of up to 600 characters, and when you posted or edited it",
+    "Your consent (you choose to post a review; edit or delete it at any time on the bookmaker's page)",
+    "While your account is open; deleted when you delete the review or your account. Your review is public, shown with your public display name or username, and counted in the bookmaker's average ratings. Moderators can hide a review that breaks the community rules. Never shared with bookmakers [attorney review]",
+  ],
+  [
     "Betting slips (optional)",
     "Slips you add: matches, markets, odds, and if you enter them the bookmaker, stake and potential return; an optional photo or screenshot of the slip. The bookmaker is shown only to you; your stake and return are shown on a published slip only if you switch that on. Published legs become normal picks shown with your username",
     "Your consent (you choose to add a slip) and contract (publishing picks you ask us to publish)",

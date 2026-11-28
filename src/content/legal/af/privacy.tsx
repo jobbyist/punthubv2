@@ -57,6 +57,12 @@ const PURPOSES: [string, string, string, string][] = [
     "Terwyl jou rekening oop is; geskrap wanneer jy dit uitvee of jou rekening skrap. Word gebruik om jou eie Wedstryddag-kaart en kortpaaie te orden en om op jou rekeningblad te wys watter spanne jy volg. Ander sien slegs 'n anonieme aantal volgers per span; admins sien totale en die mees gevolgde spanne, nooit wie wie volg nie. Nooit gedeel nie [attorney review]",
   ],
   [
+    "Bookmaker-resensies (opsioneel)",
+    "Jou stergraderings vir 'n bookmaker in die bookmaker-gids (algeheel, gebruiksgemak, uitbetalings, ondersteuning), 'n opsionele kommentaar van tot 600 karakters, en wanneer jy dit geplaas of gewysig het",
+    "Jou toestemming (jy kies om 'n resensie te plaas; wysig of skrap dit enige tyd op die bookmaker se blad)",
+    "Terwyl jou rekening oop is; geskrap wanneer jy die resensie of jou rekening skrap. Jou resensie is openbaar, word met jou openbare vertoonnaam of gebruikersnaam gewys en tel by die bookmaker se gemiddelde graderings. Moderators kan 'n resensie wat die gemeenskapsreëls oortree, versteek. Nooit met bookmakers gedeel nie [attorney review]",
+  ],
+  [
     "Wedstrokies (opsioneel)",
     "Strokies wat jy byvoeg: wedstryde, markte, pryse, en as jy dit invoer die boekmaker, inset en moontlike opbrengs; 'n opsionele foto of skermskoot van die strokie. Die boekmaker word net aan jou gewys; jou inset en opbrengs word net op 'n gepubliseerde strokie gewys as jy dit aanskakel. Gepubliseerde bene word gewone voorspellings wat met jou gebruikersnaam gewys word",
     "Jou toestemming (jy kies om 'n strokie by te voeg) en kontrak (die publisering van voorspellings wat jy vra dat ons publiseer)",
@@ -190,8 +196,8 @@ export function PrivacyAf() {
       <LegalTranslationNotice />
       <div className="card-surface space-y-8 p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
         <p>
-          <strong>Laas bygewerk:</strong> 23 November 2026 (weergawe 2026-11-23-r22). Konsep wat op
-          hersiening deur 'n prokureur wag.
+          <strong>Laas bygewerk:</strong> 28 November 2026 (weergawe 2026-11-28-bookmaker-reviews).
+          Konsep wat op hersiening deur 'n prokureur wag.
         </p>
 
         <section>
