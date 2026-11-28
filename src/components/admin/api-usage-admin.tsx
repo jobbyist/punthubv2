@@ -13,6 +13,9 @@ const INTEGRATIONS = [
   { name: "Firecrawl API", status: "Integrated · non-PFIE", purpose: "Web-page scraping for non-PFIE content workflows.", boundary: "Not used by PFIE after the provider migration." },
   { name: "API-Sports", status: "Conditional sports provider", purpose: "Alternative fixtures and results provider when SPORTS_PROVIDER is not set to pfie.", boundary: "PFIE mode takes precedence when explicitly configured." },
   { name: "Supabase", status: "Core infrastructure", purpose: "Postgres database, authentication, object storage, RPCs and realtime application data.", boundary: "Stores PFIE observations, standings, team badges and API audit records." },
+  { name: "SofaScore image service", status: "Public source · team badges", purpose: "Supplies team crest images after Parallel Search identifies and validates the matching team page.", boundary: "Images are mirrored into Puntr's Supabase Storage; the app does not embed the third-party image host." },
+  { name: "Wikipedia REST API", status: "Public source · fallback badges", purpose: "Retrieves article summary and image metadata after Parallel Search identifies a candidate team article.", boundary: "Used only as a team-badge source fallback; not used for PFIE fixtures, results or standings." },
+  { name: "Vercel Cron", status: "Scheduled job runner", purpose: "Triggers PFIE standings/history refreshes, badge resolution, learning ingestion and synthetic workflows.", boundary: "Runs Puntr server routes; it is not a sports-data provider." },
   { name: "Resend", status: "Transactional email", purpose: "Authentication, launch and transactional email delivery.", boundary: "Usage is separately quota-controlled." },
   { name: "PayFast", status: "Payments", purpose: "Payment checkout and Instant Transaction Notification handling.", boundary: "Payment status is confirmed server-side through verified callbacks." },
 ] as const;
