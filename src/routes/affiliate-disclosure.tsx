@@ -38,6 +38,18 @@ function AffiliateDisclosure() {
           it holds the licence it needs.
         </p>
         <p>
+          Bookmaker profiles in the{" "}
+          <a className="underline" href="/bookmakers">
+            bookmaker directory
+          </a>{" "}
+          show a sign-up link only for live partners, labelled &quot;Ad&quot; and revealed after you
+          confirm you are 18+. The rest of each profile (licence, payment methods, popularity and
+          member ratings) is the same whether or not the bookmaker is a partner, and lists its
+          sources. Where a partner holds only a foreign licence and is not on the National Gambling
+          Board register (currently 1xBet, licensed in Curaçao), its profile says so and warns that
+          online betting with it may not be lawful in your province.
+        </p>
+        <p>
           Partner links never contain your name, email or any other personal information. Click
           tracking is switched on only if you accept it in{" "}
           <a className="underline" href="/cookies">

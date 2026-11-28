@@ -1,11 +1,22 @@
 export type BookmakerListing = {
+  /** URL slug for /bookmakers/$slug and the ?bookmaker= modal. */
+  slug: string;
   name: string;
+  /** Official website domain, only where an operator or regulator page confirmed it. */
+  domain?: string;
+  /** "sa" = South African provincial licence on the NGB register; "offshore" = foreign licence only. */
+  licenceType?: "sa" | "offshore";
+  /** Where to verify this licence. Defaults to the NGB register. */
+  verifyUrl?: string;
   licenceHolder: string;
   regulator: string;
   province: string;
   licenceReference: string;
   verificationNote?: string;
 };
+
+/** Curaçao Gaming Authority certificate page for 1xbet.com (Caecus N.V., OGL/2024/1262/0493). */
+export const ONEXBET_CGA_CERT_URL = "https://cert.cga.cw/token?id=493";
 
 export const NGB_REGISTER_URL = "https://www.ngb.org.za/verified-operators/";
 
@@ -18,6 +29,8 @@ export const NGB_REGISTER_URL = "https://www.ngb.org.za/verified-operators/";
 export const bookmakerDirectory: BookmakerListing[] = [
   {
     name: "10Bet",
+    slug: "10bet",
+    domain: "10bet.co.za",
     licenceHolder: "Not specified in NGB register",
     regulator: "Mpumalanga Economic Regulator",
     province: "Mpumalanga",
@@ -25,6 +38,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Apex Bets",
+    slug: "apex-bets",
+    domain: "apexbets.co.za",
     licenceHolder: "Letsbet (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -32,6 +47,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "BET.co.za",
+    slug: "bet-co-za",
+    domain: "bet.co.za",
     licenceHolder: "Betcoza Online (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -41,6 +58,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "BetJets",
+    slug: "betjets",
+    domain: "betjets.co.za",
     licenceHolder: "Betjets (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -48,6 +67,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Betway",
+    slug: "betway",
+    domain: "betway.co.za",
     licenceHolder: "Raging River Trading (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -55,6 +76,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "BetXchange",
+    slug: "betxchange",
+    domain: "betxchange.com",
     licenceHolder: "BetXchange Western Cape (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -62,6 +85,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Boss Bets",
+    slug: "boss-bets",
+    domain: "bossbets.co.za",
     licenceHolder: "Big Daddy Boss Bets (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -69,6 +94,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Bravobet",
+    slug: "bravobet",
     licenceHolder: "AJ Tattersalls (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -76,6 +102,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Betshezi",
+    slug: "betshezi",
+    domain: "betshezi.com",
     licenceHolder: "SMP Gaming (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -83,6 +111,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "BetOlimp",
+    slug: "betolimp",
+    domain: "betolimp.co.za",
     licenceHolder: "Olimp (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -90,6 +120,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Easybet",
+    slug: "easybet",
+    domain: "easybet.co.za",
     licenceHolder: "Easybet Group (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -97,6 +129,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Fanbets",
+    slug: "fanbets",
+    domain: "fanbets.co.za",
     licenceHolder: "GameOn Gaming (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -104,6 +138,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "G-Bets",
+    slug: "g-bets",
+    domain: "gbets.co.za",
     licenceHolder: "Dymanex (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -111,6 +147,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Gameland",
+    slug: "gameland",
+    domain: "gameland.co.za",
     licenceHolder: "Gameland (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -118,6 +156,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "GV Bet",
+    slug: "gv-bet",
+    domain: "gvbet.co.za",
     licenceHolder: "GV International (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -125,6 +165,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Hollywoodbets",
+    slug: "hollywoodbets",
+    domain: "hollywoodbets.net",
     licenceHolder: "Hollywood Sportsbook Western Cape (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -132,6 +174,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Interbet",
+    slug: "interbet",
+    domain: "interbet.co.za",
     licenceHolder: "Interbet International (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -139,6 +183,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Jabula Bets",
+    slug: "jabula-bets",
+    domain: "jabulabets.co.za",
     licenceHolder: "Jabula Bets (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -146,6 +192,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "King Bets",
+    slug: "king-bets",
+    domain: "kingbets.co.za",
     licenceHolder: "King Bets (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -153,6 +201,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Lottoland",
+    slug: "lottoland",
+    domain: "lottoland.co.za",
     licenceHolder: "Lottoland South Africa (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -160,6 +210,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Lulabets",
+    slug: "lulabets",
+    domain: "lulabet.co.za",
     licenceHolder: "Lula Bets (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -167,6 +219,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Lucky Fish",
+    slug: "lucky-fish",
     licenceHolder: "Race Coast Western Cape (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -174,6 +227,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Lotto247",
+    slug: "lotto247",
+    domain: "lotto247.co.za",
     licenceHolder: "Jackpotstar 777 (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -181,6 +236,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "MBET",
+    slug: "mbet",
     licenceHolder: "MBET International (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -188,6 +244,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Neo.Bet",
+    slug: "neo-bet",
+    domain: "neobet.co.za",
     licenceHolder: "Greenvest Betting (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -195,6 +253,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "OneBet",
+    slug: "onebet",
+    domain: "onebet.co.za",
     licenceHolder: "OneBet (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -202,6 +262,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Pantherbet",
+    slug: "pantherbet",
     licenceHolder: "Ubuntu Quantum (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -209,6 +270,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Play.co.za",
+    slug: "play-co-za",
+    domain: "play.co.za",
     licenceHolder: "Betflash (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -216,6 +279,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Playabets",
+    slug: "playabets",
+    domain: "playabets.co.za",
     licenceHolder: "Playabets WC (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -223,6 +288,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "PlayTsogo",
+    slug: "playtsogo",
     licenceHolder: "Play Tsogo (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -230,6 +296,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Sportland",
+    slug: "sportland",
+    domain: "sportland.co.za",
     licenceHolder: "Sportland (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -237,6 +305,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SportPesa",
+    slug: "sportpesa",
+    domain: "sportpesa.co.za",
     licenceHolder: "Sportpesa (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -244,6 +314,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Sportingbet SA",
+    slug: "sportingbet-sa",
+    domain: "sportingbet.co.za",
     licenceHolder: "Greatodds (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -251,6 +323,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SportyBet",
+    slug: "sportybet",
+    domain: "sportybet.co.za",
     licenceHolder: "Not specified in NGB register",
     regulator: "Mpumalanga Economic Regulator",
     province: "Mpumalanga",
@@ -258,6 +332,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SunBet",
+    slug: "sunbet",
+    domain: "sunbet.co.za",
     licenceHolder: "SunBet (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -265,6 +341,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SupaBets",
+    slug: "supabets",
+    domain: "supabets.co.za",
     licenceHolder: "Not specified in NGB register",
     regulator: "Free State Gambling and Liquor Authority",
     province: "Free State",
@@ -272,6 +350,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SuperSportBet",
+    slug: "supersportbet",
+    domain: "supersportbet.com",
     licenceHolder: "SuperSportBet (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -279,6 +359,7 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "SwiftySports",
+    slug: "swiftysports",
     licenceHolder: "Swifty Africa (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -286,6 +367,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Topbet SA",
+    slug: "topbet-sa",
+    domain: "topbet.co.za",
     licenceHolder: "Hatsy (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -293,6 +376,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "Vegas Bets",
+    slug: "vegas-bets",
+    domain: "vegasbets.co.za",
     licenceHolder: "Somerset West Tattersalls CC",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -300,6 +385,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "World Sports Betting",
+    slug: "world-sports-betting",
+    domain: "worldsportsbetting.co.za",
     licenceHolder: "SWB Solutions (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -307,6 +394,8 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "YesPlay",
+    slug: "yesplay",
+    domain: "yesplay.bet",
     licenceHolder: "SA Sportsbook (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
@@ -314,9 +403,28 @@ export const bookmakerDirectory: BookmakerListing[] = [
   },
   {
     name: "ZARbet",
+    slug: "zarbet",
     licenceHolder: "Apollo Gaming 2024 (Pty) Ltd",
     regulator: "Western Cape Gambling and Racing Board",
     province: "Western Cape",
     licenceReference: "10010581-030",
   },
+  {
+    slug: "1xbet",
+    name: "1xBet",
+    domain: "1xbet.com",
+    licenceType: "offshore",
+    verifyUrl: ONEXBET_CGA_CERT_URL,
+    licenceHolder: "Caecus N.V. (Curaçao company 163779)",
+    regulator: "Curaçao Gaming Authority",
+    province: "Offshore (Curaçao)",
+    licenceReference: "OGL/2024/1262/0493",
+    verificationNote:
+      "Licensed in Curaçao, not by a South African provincial gambling board, and not on the NGB register. Puntr records it as an affiliate partner that accepts South African customers; a Curaçao licence does not by itself authorise online betting in South Africa.",
+  },
 ];
+
+/** Find a listing by its slug. */
+export function bookmakerBySlug(slug: string): BookmakerListing | undefined {
+  return bookmakerDirectory.find((b) => b.slug === slug);
+}

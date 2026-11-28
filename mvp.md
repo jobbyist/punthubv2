@@ -75,6 +75,8 @@ Secondary standings publishers are enabled only for the ten priority launch comp
 - **PR #210 — PWA desktop hardening:** not merged. Its branch is 229 commits behind and has conflicts despite an older READY preview; port only validated UX fixes into a current-main PR if they remain launch-critical.
 - **PUNT AI:** recommend deferring new AI-facing product implementations until after MVP launch. Pre-launch engineering capacity is reserved for PFIE reliability, the ten priority competitions, existing product functionality, UX refinement and production readiness.
 
+- **PR #398 — bookmaker profiles, reviews and 1xBet:** every `/bookmakers` entry opens a profile (popup via `?bookmaker=<slug>`, full page `/bookmakers/<slug>`) with licence, payment methods, SA popularity (Semrush Oct 2026), member ratings/reviews, logo and dated sources (`src/lib/bookmaker-profiles.ts`). 1xBet added as an offshore Curaçao entry; affiliate "Visit" box only for live partners (Ad, 18+ gate, T&Cs, helpline). Migration `20261128310000_bookmaker_reviews.sql` is **not applied** yet (connector approval auto-cancelled); the review UI stays hidden until it is. Next: apply the migration and regenerate types; counsel to rule on promoting 1xBet without an SA provincial licence; refresh payment data from operator cashiers (several withdrawal lists unverified); check the Hollywoodbets brand_logos image (file name suggests it was swapped with Parallel.ai's); add Afrikaans `bookmakers.json`.
+
 ## Outstanding pre-launch work
 
 - Complete PFIE source, consensus, freshness and result-sync audits across all ten priority competitions.
