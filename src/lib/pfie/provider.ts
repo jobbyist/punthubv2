@@ -4,8 +4,9 @@
  * interface as the API-Sports adapter, so the
  * existing sync, settlement and cron code runs unchanged.
  *
- * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
- * site shows it or two independent sites agree, usually within an hour or two of full time.
+ * This is not a live-score feed. Fixtures refresh once a day; results are polled more aggressively for fixtures
+ * with unsettled picks or active duels and are published only when the official competition site shows a final
+ * result or independent sources corroborate it. Source publication delays can still exceed the target SLA.
  */
 import { randomUUID } from "node:crypto";
 
@@ -452,18 +453,20 @@ export function tierOf(domain: string, official: string[]): SourceTier {
 
 const MAX_SOURCES = 6;
 const MAX_CHARS = 9_000;
-const RESULTS_MIN_GAP_MS = 50 * 60_000;
 /** A match that kicked off less than this long ago cannot have a final score yet. */
 const RESULTS_EARLIEST_MS = 105 * 60_000;
 
 /**
- * Back-off between results checks for one competition: 50 minutes soon after kick-off, then a third of the time
- * since the earliest open kick-off, capped at six hours so unresolved fixtures remain in the retry cycle.
+ * Result polling is settlement-aware. Once a match is old enough to have reached full time, poll every
+ * five minutes during the first hour of the expected settlement window. Back off to 15 minutes for the
+ * next few hours, then hourly for stale unresolved fixtures. The priority watchdog only asks for fixtures
+ * with pending predictions or active duels, so this faster cadence does not fan out across every match.
  */
 export function resultsGapMs(sinceKickoffMs: number): number {
-  // Keep retrying old unresolved fixtures at least four times per day; a very old fixture must not
-  // push its competition's next result check out by multiple days.
-  return Math.min(6 * 60 * 60_000, Math.max(RESULTS_MIN_GAP_MS, Math.floor(sinceKickoffMs / 3)));
+  const minutesSinceKickoff = sinceKickoffMs / 60_000;
+  if (minutesSinceKickoff < 165) return 5 * 60_000;
+  if (minutesSinceKickoff < 360) return 15 * 60_000;
+  return 60 * 60_000;
 }
 
 export interface PfieDeps {
