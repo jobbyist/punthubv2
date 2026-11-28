@@ -45,6 +45,7 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
       const { data, error } = await db.rpc("api_budget_claim", {
         p_provider: provider,
         p_units: 1,
+        p_feature: feature,
       });
       if (!error) {
         const granted = data === true;
