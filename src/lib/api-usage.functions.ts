@@ -42,6 +42,7 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       if (result.error) throw new Error("API usage data unavailable: " + result.error.message);
     }
 
+    const priceByProvider = new Map(((prices.data ?? []) as { provider: string; usd_per_unit: number }[]).map((p) => [p.provider, Number(p.usd_per_unit)]));
     const budgetRows = (budgets.data ?? []) as { family: string; monthly_usd: number; note: string | null }[];
     const spent = await Promise.all(budgetRows.map(async (row) => {
       const { data, error } = await db.rpc("api_family_spend_usd", { p_family: row.family });
@@ -81,7 +82,9 @@ export const adminApiUsage = createServerFn({ method: "GET" })
       events: ((recentEvents.data ?? []) as Record<string, unknown>[]).map((r) => ({
         id: Number(r["id"]), provider: String(r["provider"]), feature: String(r["feature"]),
         consumer: (r["consumer"] as string | null) ?? null, operation: (r["operation"] as string | null) ?? null,
-        status: String(r["status"] ?? "claimed"), estimatedUsd: r["estimated_cost_usd"] == null ? null : Number(r["estimated_cost_usd"]),
+        status: String(r["status"] ?? "claimed"), estimatedUsd: r["estimated_cost_usd"] == null
+          ? (priceByProvider.get(String(r["provider"])) ?? null)
+          : Number(r["estimated_cost_usd"]),
         claimedAt: String(r["claimed_at"]), metadata: (r["metadata"] as Record<string, unknown>) ?? {},
       })),
       generatedAt: now.toISOString(),
