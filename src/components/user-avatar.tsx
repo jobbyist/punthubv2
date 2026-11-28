@@ -36,9 +36,11 @@ export function UserAvatar({
       ) : url ? (
         <AvatarImage src={url} alt={alt ?? username} className="object-cover" />
       ) : null}
-      <AvatarFallback className="text-xs font-semibold uppercase">
-        {username.slice(0, 1)}
-      </AvatarFallback>
+      {!sportsAvatar && (
+        <AvatarFallback className="text-xs font-semibold uppercase">
+          {username.slice(0, 1)}
+        </AvatarFallback>
+      )}
     </Avatar>
   );
 }
