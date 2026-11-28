@@ -9,6 +9,33 @@ import type { StandingRow } from "./standings";
 
 const db = supabaseAdmin as unknown as SupabaseClient;
 
+async function canonicalCompetitionTeams(competition: string): Promise<string[]> {
+  const { data: standings, error: standingsError } = await db
+    .from("league_standings")
+    .select("team, season, synced_at")
+    .eq("competition", competition)
+    .order("synced_at", { ascending: false })
+    .limit(200);
+  if (standingsError) throw new Error(`league_standings team identities: ${standingsError.message}`);
+  const rows = (standings ?? []) as { team: string; season: string; synced_at: string }[];
+  if (rows.length) {
+    const latestSeason = rows[0]!.season;
+    return [...new Set(rows.filter((row) => row.season === latestSeason).map((row) => row.team))];
+  }
+  const { data: fixtures, error: fixtureError } = await db
+    .from("fixtures")
+    .select("home, away")
+    .eq("competition", competition)
+    .limit(1000);
+  if (fixtureError) throw new Error(`fixture team identities: ${fixtureError.message}`);
+  const names = new Set<string>();
+  for (const row of (fixtures ?? []) as { home: string; away: string }[]) {
+    names.add(row.home);
+    names.add(row.away);
+  }
+  return [...names];
+}
+
 export function createTablesStore(): TablesStore {
   return {
     async statuses() {
@@ -38,17 +65,7 @@ export function createTablesStore(): TablesStore {
       return out;
     },
     async knownTeams(competition) {
-      const [fx, st] = await Promise.all([
-        db.from("fixtures").select("home, away").eq("competition", competition).limit(1000),
-        db.from("league_standings").select("team").eq("competition", competition),
-      ]);
-      const names = new Set<string>();
-      for (const r of (fx.data ?? []) as { home: string; away: string }[]) {
-        names.add(r.home);
-        names.add(r.away);
-      }
-      for (const r of (st.data ?? []) as { team: string }[]) names.add(r.team);
-      return [...names];
+      return canonicalCompetitionTeams(competition);
     },
     async completedCounts(competition) {
       const [fixtures, history] = await Promise.all([
@@ -95,7 +112,7 @@ export function createTablesStore(): TablesStore {
           awayScore: r.away_score,
         })),
       ];
-      return completedMatchCounts(rows);
+      return completedMatchCounts(rows, await canonicalCompetitionTeams(competition));
     },
     async cafGroupStageResults() {
       const [fixtures, history] = await Promise.all([
@@ -146,7 +163,7 @@ export function createTablesStore(): TablesStore {
           awayScore: r.away_score,
         })),
       ];
-      return dedupeCompletedMatches(rows).map((row) => ({
+      return dedupeCompletedMatches(rows, await canonicalCompetitionTeams("CAF Confederation Cup")).map((row) => ({
         home: row.home,
         away: row.away,
         kickoffAt: row.kickoffAt ?? `${row.matchDate}T12:00:00.000Z`,
