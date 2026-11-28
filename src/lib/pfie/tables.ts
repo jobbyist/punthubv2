@@ -240,6 +240,21 @@ export function hasHistoryResultEvidence(text: string): boolean {
 }
 
 
+/** Preserve Markdown table structure for deterministic standings parsing and model evidence. */
+export function cleanStandingsMarkdown(markdown: string, maxChars = MAX_CHARS): string {
+  return markdown
+    .replace(/\r\n?/g, "\n")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\\([|#])/g, "$1")
+    .replace(/[ \t]+/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .slice(0, maxChars);
+}
+
 /** Exclude extracted pages that mention a competition but do not contain a real standings table. */
 export function hasStandingsTableEvidence(text: string): boolean {
   const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
@@ -802,7 +817,7 @@ async function gatherSources(
     if (!preferSearchResults && !hasStandingsTableEvidence(page.markdown)) continue;
     const clean = preferSearchResults
       ? cleanHistoryText(page.markdown, MAX_CHARS)
-      : cleanText(page.markdown, MAX_CHARS);
+      : cleanStandingsMarkdown(page.markdown, MAX_CHARS);
     if (clean.length < 300) continue;
     if (preferSearchResults && !hasHistoryResultEvidence(clean)) continue;
     sources.push({
