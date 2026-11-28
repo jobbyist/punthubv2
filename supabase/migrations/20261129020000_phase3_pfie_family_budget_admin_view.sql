@@ -1,5 +1,5 @@
--- Phase 3.3 corrective audit: complete PFIE monthly-family accounting and expose the
--- 30-day usage detail view to admins under invoker RLS.
+-- Phase 3.3 corrective audit: include PFIE Responses Medium in the core PFIE budget
+-- and expose usage detail to authenticated admins through invoker RLS.
 
 create or replace function public.api_family_spend_usd(p_family text)
 returns numeric
@@ -66,8 +66,7 @@ begin
 end;
 $function$;
 
--- The view is security-invoker: authenticated users receive SELECT only when public.is_admin() is true
--- under the api_call_events RLS policy.
+-- The view is security-invoker. The base-table policy below restricts authenticated reads to admins.
 alter view public.api_call_usage_attribution_detail set (security_invoker = true);
 grant select on public.api_call_events to authenticated;
 drop policy if exists api_call_events_admin_read on public.api_call_events;
