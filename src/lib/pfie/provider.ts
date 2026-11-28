@@ -7,11 +7,12 @@
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
+import { randomUUID } from "node:crypto";
 import { ProviderError } from "@/lib/content/http";
 import { withExtractCache, withSearchCache, type CacheEvent, type CacheStore } from "@/lib/parallel/cached";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
-import type { ExtractProvider, LlmProvider, SearchProvider } from "@/lib/content/types";
+import type { ExtractProvider, LlmProvider, SearchProvider, UsageContext } from "@/lib/content/types";
 import { sastDate } from "@/lib/sast";
 import {
   activeCompetitions,
@@ -501,18 +502,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
-    const count = (provider: string, ok: boolean) =>
-      deps.store.countUsage(provider, ok ? "ok" : "error").catch(() => undefined);
+    const jobRunId = randomUUID();
+    const usageContext: UsageContext = { competition: competition.key, jobRunId, jobKind: kind };
     let calls = 0;
     const sources: PfieSource[] = [];
-    let cachedSearchResponses = 0;
-    let cachedExtractResponses = 0;
     const cacheEvent = (event: CacheEvent) => {
-      if (event.outcome === "hit" || event.outcome === "deduplicated") {
-        if (event.endpoint.startsWith("search:")) cachedSearchResponses++;
-        if (event.endpoint.startsWith("extract:")) cachedExtractResponses++;
-      }
-      console.info("pfie-cache", JSON.stringify({ competition: competition.key, kind, ...event }));
+      console.info("pfie-cache", JSON.stringify({ competition: competition.key, kind, jobRunId, ...event }));
     };
     // These wrappers sit outside guardSearch/guardExtract, so cache hits never consume quota.
     const searchProvider = withSearchCache(deps.search, deps.cache ?? null, kind, cacheEvent);
@@ -550,18 +545,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
                 [...config.queries.fixtures, ...(ZONE_QUERIES[competition.key] ?? [])].slice(0, 5)
               : resultQueries,
           maxResults: 10,
-        })
-        .then(
-          (h) => {
-            if (cachedSearchResponses > 0) cachedSearchResponses--;
-            else void count(searchProvider.name, true);
-            return h;
-          },
-          (e: unknown) => {
-            void count(searchProvider.name, false);
-            throw e;
-          },
-        );
+        }, usageContext);
 
       // 2. Sources: official pages read in full first, then the best search hits.
       const seen = new Set<string>();
@@ -604,17 +588,15 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
         usedToday[m] = effort ? (usage[`parallel-chat:${effort}`] ?? 0) : (usage[m] ?? 0);
       }
-      const router = createModelRouter(deps.llm, {
+      const contextualLlm: LlmProvider = {
+        name: deps.llm.name,
+        generate: (model, request) => deps.llm.generate(model, request, usageContext),
+      };
+      const router = createModelRouter(contextualLlm, {
         models: routerModels,
         usedToday,
         ...(deps.dailyCap ? { dailyCap: deps.dailyCap } : {}),
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
-        onAttempt: async (a) => {
-          if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free") {
-            const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
-            await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
-          }
-        },
       });
 
       const raw = [] as NonNullable<ReturnType<typeof parseObservations>>;
@@ -683,6 +665,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
 
       await deps.store
         .recordRun({
+          id: jobRunId,
           competition: competition.key,
           kind,
           ok: true,
@@ -705,6 +688,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
           : "unexpected error";
       await deps.store
         .recordRun({
+          id: jobRunId,
           competition: competition.key,
           kind,
           ok: false,
