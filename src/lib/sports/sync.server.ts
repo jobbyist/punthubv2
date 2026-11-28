@@ -1,5 +1,6 @@
 import { activeCompetitions, type CompetitionKey } from "./competitions";
 import { normaliseTeam } from "../pfie/teams";
+import { isPfieLaunchCompetition } from "../pfie/launch-scope";
 import type { SportsProvider } from "./provider";
 import type { NormalisedFixture } from "./types";
 
@@ -115,7 +116,7 @@ export async function syncResults(
 
   const names = new Set(open.map((o) => o.competition));
   const only = activeCompetitions()
-    .filter((c) => names.has(c.name) && (!options.only || options.only.includes(c.key)))
+    .filter((c) => names.has(c.name) && (provider.name !== "pfie" || isPfieLaunchCompetition(c.key)) && (!options.only || options.only.includes(c.key)))
     .map((c) => c.key) as CompetitionKey[];
   if (only.length === 0)
     return {

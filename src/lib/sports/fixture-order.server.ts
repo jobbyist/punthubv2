@@ -2,6 +2,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 import { activeCompetitions, type CompetitionKey } from "./competitions";
 import { orderKeys } from "./fixture-order";
+import { isPfieLaunchCompetition } from "../pfie/launch-scope";
 
 /**
  * Soccer competitions whose last PFIE fixtures run is older than `staleHours` (or that never ran), least recently
@@ -9,7 +10,7 @@ import { orderKeys } from "./fixture-order";
  */
 export async function orderForFixtureSync(opts: { staleHours: number }): Promise<CompetitionKey[]> {
   const keys = activeCompetitions()
-    .filter((c) => c.sport === "soccer")
+    .filter((c) => c.sport === "soccer" && isPfieLaunchCompetition(c.key))
     .map((c) => c.key);
   const since = new Date(Date.now() - 3 * 86_400_000).toISOString();
   const { data } = await (
