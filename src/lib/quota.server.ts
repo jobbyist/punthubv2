@@ -16,6 +16,7 @@ export interface ClaimResult {
 export interface ClaimContext {
   competition?: string | null;
   jobRunId?: string | null;
+  feature?: string | null;
   metadata?: Record<string, unknown>;
 }
 export type Claim = ((provider: string) => Promise<ClaimResult>) & {
@@ -65,7 +66,7 @@ export async function createQuotaClaim(
       const { data, error } = await db.rpc("api_budget_claim_context", {
         p_provider: provider,
         p_units: 1,
-        p_feature: feature,
+        p_feature: context.feature?.trim() || feature,
         p_competition: context.competition ?? null,
         p_job_run_id: context.jobRunId ?? null,
         p_attempt_id: attemptId,

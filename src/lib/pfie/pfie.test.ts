@@ -1037,4 +1037,29 @@ describe("page reader fallback", () => {
     await expect(bad.extract("https://x.test")).rejects.toBeInstanceOf(ProviderError);
     expect(withExtractFallback([])).toBeNull();
   });
+  it("uses the dedicated settlement-priority quota feature for priority result runs", async () => {
+    const contexts: { competition: string; jobRunId: string; feature?: string }[] = [];
+    const provider = createPfieProvider({
+      ...base,
+      llm: llm(ANSWER),
+      store: memory(),
+      setUsageContext: (context) => contexts.push(context),
+    });
+    await provider.listResults(WINDOW.from, NOW, {
+      only: ["psl"],
+      priority: true,
+      fixtures: [{
+        home: "Durban City",
+        away: "Polokwane City",
+        kickoffAt: "2026-11-12T17:30:00.000Z",
+      }],
+    });
+    expect(contexts).toHaveLength(1);
+    expect(contexts[0]).toMatchObject({
+      competition: "psl",
+      feature: "pfie:settlement-priority",
+    });
+    expect(contexts[0].jobRunId).toBeTruthy();
+  });
+
 });

@@ -302,7 +302,7 @@ describe("syncResults lookback", () => {
     await syncResults(provider, store, now, { priority: true, only: ["championship"] });
 
     expect(priorityRequested).toBe(true);
-    expect(received).toMatchObject({ only: ["championship"] });
+    expect(received).toMatchObject({ only: ["championship"], priority: true });
     expect(received?.force).toBeUndefined();
   });
 
