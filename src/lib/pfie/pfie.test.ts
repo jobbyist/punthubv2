@@ -399,7 +399,11 @@ describe("validation", () => {
       awayScore: 0,
       quote: "Como 1 Venezia 0 Full time",
     });
-    const result = validateObservations([observation], [source], WINDOW);
+    const result = validateObservations([observation], [source], {
+      from: new Date("2026-11-12T00:00:00Z"),
+      to: new Date("2026-11-27T00:00:00Z"),
+      now: new Date("2026-11-28T12:00:00Z"),
+    });
     expect(result.rejected).toEqual([]);
     expect(result.accepted).toHaveLength(1);
   });
