@@ -9,6 +9,7 @@ export interface ApiUsageSnapshot {
   spendLimits: { family: string; periodStart: string; periodEnd: string; limitUsd: number; note: string | null }[];
   prices: { provider: string; usdPerUnit: number; note: string | null }[];
   today: { provider: string; calls: number; errors: number; refused: number }[];
+  month: { provider: string; calls: number; errors: number; refused: number }[];
   last7Days: { provider: string; feature: string; calls: number; estimatedUsd: number; lastCall: string }[];
   events: { id: number; provider: string; feature: string; consumer: string | null; operation: string | null; status: string; estimatedUsd: number | null; claimedAt: string; metadata: Record<string, unknown> }[];
   generatedAt: string;
@@ -25,17 +26,19 @@ export const adminApiUsage = createServerFn({ method: "GET" })
     const now = new Date();
     const today = now.toISOString().slice(0, 10);
     const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString();
+    const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString().slice(0, 10);
 
-    const [limits, budgets, spendLimits, prices, todayUsage, recentEvents, weeklyUsage] = await Promise.all([
+    const [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, weeklyUsage] = await Promise.all([
       db.from("api_quota_limits").select("provider,daily_cap,monthly_cap,note,updated_at").order("provider"),
       db.from("api_budgets").select("family,monthly_usd,note").order("family"),
       db.from("api_spend_period_limits").select("family,period_start,period_end,limit_usd,note").order("family"),
       db.from("api_unit_prices").select("provider,usd_per_unit,note").order("provider"),
       db.from("content_api_usage").select("provider,calls,errors,refused").eq("day", today).order("provider"),
+      db.from("content_api_usage").select("provider,calls,errors,refused").gte("day", monthStart).order("provider"),
       db.from("api_call_events").select("id,provider,feature,consumer,operation,status,estimated_cost_usd,claimed_at,metadata").gte("claimed_at", sevenDaysAgo).order("claimed_at", { ascending: false }).limit(150),
       db.from("content_api_usage").select("provider,day,calls,errors,refused").gte("day", sevenDaysAgo.slice(0, 10)).order("day", { ascending: false }),
     ]);
-    for (const result of [limits, budgets, spendLimits, prices, todayUsage, recentEvents, weeklyUsage]) {
+    for (const result of [limits, budgets, spendLimits, prices, todayUsage, monthUsage, recentEvents, weeklyUsage]) {
       if (result.error) throw new Error("API usage data unavailable: " + result.error.message);
     }
 
@@ -73,6 +76,9 @@ export const adminApiUsage = createServerFn({ method: "GET" })
         provider: String(r["provider"]), usdPerUnit: Number(r["usd_per_unit"]), note: (r["note"] as string | null) ?? null,
       })),
       today: ((todayUsage.data ?? []) as Record<string, unknown>[]).map((r) => ({
+        provider: String(r["provider"]), calls: Number(r["calls"]), errors: Number(r["errors"]), refused: Number(r["refused"]),
+      })),
+      month: ((monthUsage.data ?? []) as Record<string, unknown>[]).map((r) => ({
         provider: String(r["provider"]), calls: Number(r["calls"]), errors: Number(r["errors"]), refused: Number(r["refused"]),
       })),
       last7Days: [...eventGroups.values()].sort((a, b) => b.calls - a.calls).slice(0, 50),
