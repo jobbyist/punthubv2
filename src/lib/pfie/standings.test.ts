@@ -100,6 +100,7 @@ describe("trusted standings publisher domains", () => {
     expect(tierOf("tribuna.com", [])).toBe("trusted");
     expect(tierOf("ninetyminutesplus.com", [])).toBe("trusted");
     expect(tierOf("theanalyst.com", [])).toBe("trusted");
+    expect(tierOf("smartsoccerstats.eu", [])).toBe("trusted");
     expect(tierOf("scoremondo.com", [])).toBe("trusted");
     expect(tierOf("zeanball.online", [])).toBe("trusted");
     expect(tierOf("statsfera.com.tr", [])).toBe("trusted");
@@ -147,7 +148,10 @@ describe("configured direct standings sources", () => {
       "https://www.ninetyminutesplus.com/league/ligue-1/standings",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
-      "https://theanalyst.com/competition/ligue-1/table",
+      "https://footballedgelab.com/ligue-1/tables/2026-27",
+    );
+    expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
+      "https://smartsoccerstats.eu/leagues/france-ligue-1-2026-27",
     );
     expect(STANDINGS_COMPETITIONS.ligue1?.pages).toContain(
       "https://www.ligue1schedule.com/table/2026-27",
