@@ -92,5 +92,52 @@
     },
     "disclaimer": "Information on this page comes from the sources listed and was checked on the dates shown. Operators change their licences and payment methods without notice, so confirm everything on the operator's site and with the regulator. Puntr is not a bookmaker and does not endorse any operator."
   },
-  "listCopy": "Puntr is an independent sports prediction and community platform, not a bookmaker. This is an informational licence reference, not an endorsement. Open a bookmaker for its licence, payment methods and member reviews. Sign-up links appear only for Puntr's affiliate partners, are labelled \"Ad\" and are shown only after you confirm you're 18+. A register entry does not prove that a particular website is authorised for online betting in every province. Confirm the current licence and online betting authorisation with the relevant regulator."
+  "listCopy": "Puntr is an independent sports prediction and community platform, not a bookmaker. This is an informational licence reference, not an endorsement. Open a bookmaker for its licence, payment methods and member reviews. Sign-up links appear only for Puntr's affiliate partners, are labelled \"Ad\" and are shown only after you confirm you're 18+. A register entry does not prove that a particular website is authorised for online betting in every province. Confirm the current licence and online betting authorisation with the relevant regulator.",
+  "list": {
+    "eyebrow": "Bookmaker directory",
+    "title": "South African bookmakers, checked.",
+    "lead": "Licence records from the National Gambling Board, with payment methods, popularity in South Africa and member ratings where we could verify them. Search, filter by province or licence, and open any bookmaker for its full profile.",
+    "stats": {
+      "listed": "Bookmakers listed",
+      "sa": "SA provincial licences",
+      "provinces": "Provinces",
+      "profiles": "Detailed profiles"
+    },
+    "search": {
+      "label": "Search by bookmaker, licence holder or licence number",
+      "placeholder": "Search bookmaker, licence holder or number…",
+      "clear": "Clear search"
+    },
+    "sort": {
+      "label": "Sort bookmakers",
+      "popular": "Most visited in SA",
+      "az": "A to Z"
+    },
+    "licence": {
+      "label": "Filter by licence",
+      "all": "All licences",
+      "sa": "SA provincial",
+      "offshore": "Offshore"
+    },
+    "filters": {
+      "label": "Filter by province",
+      "all": "All provinces"
+    },
+    "showing": "Showing {{first}}–{{last}} of {{total}} bookmakers",
+    "none": "No bookmakers match these filters",
+    "aria": "Bookmaker directory",
+    "empty": {
+      "title": "No matching bookmaker records",
+      "body": "Try another name, licence holder, province or licence type."
+    },
+    "popularBadge": "#{{rank}} most visited in SA",
+    "pagination": {
+      "label": "Bookmaker pages",
+      "prev": "Previous page",
+      "next": "Next page"
+    },
+    "checkTitle": "Check the licence. Make your own decision.",
+    "openRegister": "Open the National Gambling Board register",
+    "source": "Source: National Gambling Board Verified Operators register, accessed 22 November 2026; popularity from Semrush (October 2026). Register entries and licence conditions can change. This curated directory is not a real-time licence validation service and does not establish that a specific operator website or product has online betting approval. Partner links and placements are labelled \"Partner\", \"Sponsored\" or \"Ad\". 18+ only. Gamble responsibly."
+  }
 }
