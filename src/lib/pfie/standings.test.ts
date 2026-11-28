@@ -1981,3 +1981,19 @@ describe("source-specific standings formatting", () => {
     expect(extractStandingsTableDate("Last Updated 27th November 2026 at 21:53", new Date("2026-11-28T11:00:00Z"))?.date).toBe("2026-11-27");
   });
 });
+
+describe("ranked source tables with separate team and position cells", () => {
+  it("parses Sky Sports style tables where rank is an extra first data cell", () => {
+    const sky = [
+      "| Team | Pl | W | D | L | F | A | GD | Pts |",
+      "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+      "| 1 | Middlesbrough | 18 | 10 | 5 | 3 | 34 | 22 | +12 | 35 |",
+      "| 2 | Stoke City | 17 | 11 | 2 | 4 | 27 | 19 | +8 | 35 |",
+      "| 3 | Wolverhampton Wanderers | 17 | 10 | 4 | 3 | 31 | 19 | +12 | 34 |",
+      "| 4 | Birmingham City | 17 | 9 | 5 | 3 | 30 | 15 | +15 | 32 |",
+    ].join("\n");
+    const rows = parseStandingsMarkdown(sky, 2);
+    expect(rows).toHaveLength(4);
+    expect(rows?.[0]).toMatchObject({ position: 1, team: "Middlesbrough", played: 18, goalsFor: 34, goalsAgainst: 22, points: 35 });
+  });
+});
