@@ -141,29 +141,43 @@ export const adminListMembers = createServerFn({ method: "POST" })
     const ids = profiles.map((p) => String(p["id"]));
     if (ids.length === 0) return [];
 
-    const [ents, warns, points, credits, practice, users, details, preferences, identity, predictions, referrals] =
-      await Promise.all([
-        db
-          .from("user_entitlements")
-          .select("user_id, entitlement, expires_at, revoked_at")
-          .in("user_id", ids),
-        db.from("account_warnings").select("user_id").in("user_id", ids).is("acknowledged_at", null),
-        db.from("puntpoints_ledger").select("user_id, points").in("user_id", ids),
-        db.from("credit_ledger").select("user_id, credits").in("user_id", ids),
-        db.from("practice_predictions").select("user_id").in("user_id", ids),
-        db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
-        db
-          .from("member_details")
-          .select("user_id, first_name, last_name, phone, date_of_birth, province")
-          .in("user_id", ids),
-        db.from("member_preferences").select("user_id, sports, competitions, teams").in("user_id", ids),
-        db
-          .from("identity_verifications")
-          .select("user_id, status, method, over_18, submitted_at, reviewed_at")
-          .in("user_id", ids),
-        db.from("predictions").select("user_id").in("user_id", ids),
-        db.from("profiles").select("referred_by").in("referred_by", ids),
-      ]);
+    const [
+      ents,
+      warns,
+      points,
+      credits,
+      practice,
+      users,
+      details,
+      preferences,
+      identity,
+      predictions,
+      referrals,
+    ] = await Promise.all([
+      db
+        .from("user_entitlements")
+        .select("user_id, entitlement, expires_at, revoked_at")
+        .in("user_id", ids),
+      db.from("account_warnings").select("user_id").in("user_id", ids).is("acknowledged_at", null),
+      db.from("puntpoints_ledger").select("user_id, points").in("user_id", ids),
+      db.from("credit_ledger").select("user_id, credits").in("user_id", ids),
+      db.from("practice_predictions").select("user_id").in("user_id", ids),
+      db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+      db
+        .from("member_details")
+        .select("user_id, first_name, last_name, phone, date_of_birth, province")
+        .in("user_id", ids),
+      db
+        .from("member_preferences")
+        .select("user_id, sports, competitions, teams")
+        .in("user_id", ids),
+      db
+        .from("identity_verifications")
+        .select("user_id, status, method, over_18, submitted_at, reviewed_at")
+        .in("user_id", ids),
+      db.from("predictions").select("user_id").in("user_id", ids),
+      db.from("profiles").select("referred_by").in("referred_by", ids),
+    ]);
 
     const now = Date.now();
     const sum = (list: unknown, key: string, id: string) =>
@@ -187,13 +201,20 @@ export const adminListMembers = createServerFn({ method: "POST" })
       return counts;
     };
     const authById = new Map((users.data?.users ?? []).map((u) => [u.id, u]));
-    const detailsById = new Map(((details.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
-    const preferencesById = new Map(((preferences.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
-    const identityById = new Map(((identity.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]));
+    const detailsById = new Map(
+      ((details.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]),
+    );
+    const preferencesById = new Map(
+      ((preferences.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]),
+    );
+    const identityById = new Map(
+      ((identity.data ?? []) as Record<string, unknown>[]).map((r) => [String(r["user_id"]), r]),
+    );
     const predictionCounts = countByUser(predictions.data);
     const inviteCounts = countByReferred(referrals.data);
     const future = (v: unknown) => (typeof v === "string" && Date.parse(v) > now ? v : null);
-    const stringArray = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+    const stringArray = (v: unknown) =>
+      Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 
     return profiles.map((p) => {
       const id = String(p["id"]);

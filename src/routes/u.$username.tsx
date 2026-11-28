@@ -110,7 +110,11 @@ function PublicProfile() {
         {profile.founding_number
           ? t("record.founding", { number: profile.founding_number })
           : t("record.member")}
-        {profile.is_ai_participant && <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300"><Sparkles className="size-3" /> AI-GENERATED</span>}
+        {profile.is_ai_participant && (
+          <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">
+            <Sparkles className="size-3" /> AI-GENERATED
+          </span>
+        )}
         {profile.created_at && ` · ${t("record.joined", { date: formatDate(profile.created_at) })}`}
       </p>
 

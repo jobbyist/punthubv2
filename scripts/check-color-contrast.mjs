@@ -37,9 +37,7 @@ function toSrgb([L, C, H]) {
 }
 
 function luminance(rgb) {
-  const [r, g, b] = rgb.map((v) =>
-    v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4,
-  );
+  const [r, g, b] = rgb.map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
@@ -86,7 +84,10 @@ const checks = [
 ];
 
 let failed = false;
-for (const [theme, raw] of [["light", rootBlock], ["dark", darkBlock]]) {
+for (const [theme, raw] of [
+  ["light", rootBlock],
+  ["dark", darkBlock],
+]) {
   const vars = { ...blockVars(rootBlock), ...blockVars(raw) };
   for (const [label, fg, bg, min] of checks) {
     if (!vars[fg] || !vars[bg]) {
@@ -96,7 +97,9 @@ for (const [theme, raw] of [["light", rootBlock], ["dark", darkBlock]]) {
     }
     const value = ratio(vars[fg], vars[bg]);
     const pass = value >= min;
-    console.log(`${pass ? "PASS" : "FAIL"} [${theme}] ${label}: ${value.toFixed(2)}:1 (minimum ${min}:1)`);
+    console.log(
+      `${pass ? "PASS" : "FAIL"} [${theme}] ${label}: ${value.toFixed(2)}:1 (minimum ${min}:1)`,
+    );
     if (!pass) failed = true;
   }
   const page = toSrgb(parseOklch(vars.background));
@@ -108,7 +111,9 @@ for (const [theme, raw] of [["light", rootBlock], ["dark", darkBlock]]) {
     const composed = blend(toSrgb(parseOklch(vars[bg])), page, alpha);
     const value = ratioSrgb(toSrgb(parseOklch(vars[fg])), composed);
     const pass = value >= 4.5;
-    console.log(`${pass ? "PASS" : "FAIL"} [${theme}] ${label}: ${value.toFixed(2)}:1 (minimum 4.5:1)`);
+    console.log(
+      `${pass ? "PASS" : "FAIL"} [${theme}] ${label}: ${value.toFixed(2)}:1 (minimum 4.5:1)`,
+    );
     if (!pass) failed = true;
   }
 }

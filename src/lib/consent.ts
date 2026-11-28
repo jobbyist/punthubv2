@@ -64,7 +64,8 @@ export function hasConsent(purpose: ConsentPurpose): boolean {
 }
 
 export function writeConsent(
-  choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> & Partial<Pick<ConsentState, "pfie_learning">>,
+  choice: Pick<ConsentState, "analytics" | "affiliate_tracking"> &
+    Partial<Pick<ConsentState, "pfie_learning">>,
   source: "banner" | "account" = "banner",
   syncToAccount = true,
 ): ConsentState {
@@ -116,7 +117,6 @@ export async function syncConsentToAccount(
   }
 }
 
-
 /** On sign-in, persist a previously made browser choice only for purposes with no account record yet. */
 export async function syncMissingConsentToAccount(state: ConsentState): Promise<void> {
   try {
@@ -124,8 +124,11 @@ export async function syncMissingConsentToAccount(state: ConsentState): Promise<
     const { data } = await supabase.auth.getSession();
     if (!data.session) return;
     const purposes: ConsentPurpose[] = ["analytics", "affiliate_tracking", "pfie_learning"];
-    const { data: existing, error } = await supabase.from("current_consents")
-      .select("purpose").eq("user_id", data.session.user.id).in("purpose", purposes);
+    const { data: existing, error } = await supabase
+      .from("current_consents")
+      .select("purpose")
+      .eq("user_id", data.session.user.id)
+      .in("purpose", purposes);
     if (error) return;
     const recorded = new Set((existing ?? []).map((row) => row.purpose));
     for (const purpose of purposes) {

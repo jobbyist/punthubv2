@@ -55,7 +55,15 @@ function timestamp(value: string): string {
   });
 }
 
-function Author({ profile, generated, createdAt }: { profile: PublicProfile | null; generated: boolean; createdAt: string }) {
+function Author({
+  profile,
+  generated,
+  createdAt,
+}: {
+  profile: PublicProfile | null;
+  generated: boolean;
+  createdAt: string;
+}) {
   const username = profile?.username;
   return (
     <div className="flex min-w-0 items-center gap-2">
@@ -63,7 +71,11 @@ function Author({ profile, generated, createdAt }: { profile: PublicProfile | nu
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           {username ? (
-            <Link to="/u/$username" params={{ username }} className="font-semibold hover:text-primary">
+            <Link
+              to="/u/$username"
+              params={{ username }}
+              className="font-semibold hover:text-primary"
+            >
               @{username}
             </Link>
           ) : (
@@ -75,7 +87,9 @@ function Author({ profile, generated, createdAt }: { profile: PublicProfile | nu
             </span>
           )}
           {profile?.founding_number && (
-            <span className="text-[10px] text-muted-foreground">Founding #{profile.founding_number}</span>
+            <span className="text-[10px] text-muted-foreground">
+              Founding #{profile.founding_number}
+            </span>
           )}
         </div>
         <p className="text-[10px] text-muted-foreground">{timestamp(createdAt)}</p>
@@ -146,11 +160,13 @@ export function CommunityDiscussions() {
         list.push({ ...reply, author: byProfile.get(reply.author_id) ?? null });
         repliesByThread.set(reply.parent_id, list);
       }
-      setThreads(rawThreads.map((thread) => ({
-        ...thread,
-        author: byProfile.get(thread.author_id) ?? null,
-        replies: repliesByThread.get(thread.id) ?? [],
-      })));
+      setThreads(
+        rawThreads.map((thread) => ({
+          ...thread,
+          author: byProfile.get(thread.author_id) ?? null,
+          replies: repliesByThread.get(thread.id) ?? [],
+        })),
+      );
       setFailed(false);
     } catch (error) {
       console.error("community discussion feed failed", error);
@@ -167,14 +183,12 @@ export function CommunityDiscussions() {
     let refreshTimer: ReturnType<typeof setTimeout> | undefined;
     const channel = db
       .channel("puntr-community-discussions")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "community_posts" },
-        () => {
-          if (refreshTimer) clearTimeout(refreshTimer);
-          refreshTimer = setTimeout(() => { void load(true); }, 250);
-        },
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "community_posts" }, () => {
+        if (refreshTimer) clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          void load(true);
+        }, 250);
+      })
       .subscribe((status) => setRealtimeConnected(status === "SUBSCRIBED"));
 
     return () => {
@@ -189,12 +203,15 @@ export function CommunityDiscussions() {
     const query = searchQuery.trim().toLocaleLowerCase();
     const filtered = threads.filter((thread) => {
       const matchesCategory = activeCategory === "all" || thread.category === activeCategory;
-      const searchable = `${thread.title ?? ""} ${thread.body} ${authorLabel(thread.author)} ${thread.replies.map((reply) => reply.body).join(" ")}`.toLocaleLowerCase();
+      const searchable =
+        `${thread.title ?? ""} ${thread.body} ${authorLabel(thread.author)} ${thread.replies.map((reply) => reply.body).join(" ")}`.toLocaleLowerCase();
       return matchesCategory && (!query || searchable.includes(query));
     });
-    return [...filtered].sort((a, b) => sortMode === "most_replied"
-      ? b.replies.length - a.replies.length || b.created_at.localeCompare(a.created_at)
-      : b.created_at.localeCompare(a.created_at));
+    return [...filtered].sort((a, b) =>
+      sortMode === "most_replied"
+        ? b.replies.length - a.replies.length || b.created_at.localeCompare(a.created_at)
+        : b.created_at.localeCompare(a.created_at),
+    );
   }, [threads, activeCategory, searchQuery, sortMode]);
   const threadCount = useMemo(() => visibleThreads.length, [visibleThreads]);
 
@@ -203,7 +220,12 @@ export function CommunityDiscussions() {
     if (!profile?.id || posting) return;
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
-    if (cleanTitle.length < 10 || cleanTitle.length > 120 || cleanBody.length < 30 || cleanBody.length > 1000) {
+    if (
+      cleanTitle.length < 10 ||
+      cleanTitle.length > 120 ||
+      cleanBody.length < 30 ||
+      cleanBody.length > 1000
+    ) {
       toast.error("Use a 10–120 character title and a 30–1,000 character discussion post.");
       return;
     }
@@ -219,7 +241,9 @@ export function CommunityDiscussions() {
     });
     setPosting(false);
     if (error) {
-      toast.error("Your post could not be published. Check that your account is verified and in good standing.");
+      toast.error(
+        "Your post could not be published. Check that your account is verified and in good standing.",
+      );
       return;
     }
     setTitle("");
@@ -247,7 +271,9 @@ export function CommunityDiscussions() {
     });
     setReplyBusy(null);
     if (error) {
-      toast.error("Your reply could not be published. Check that your account is verified and in good standing.");
+      toast.error(
+        "Your reply could not be published. Check that your account is verified and in good standing.",
+      );
       return;
     }
     setReplyDrafts((current) => ({ ...current, [thread.id]: "" }));
@@ -260,14 +286,21 @@ export function CommunityDiscussions() {
     <section aria-labelledby="community-discussions-title">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <h2 id="community-discussions-title" className="text-xl">{t("discussions.title")}</h2>
+          <h2 id="community-discussions-title" className="text-xl">
+            {t("discussions.title")}
+          </h2>
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             Discuss the match, tactics and the sport. No guaranteed outcomes or pressure to punt.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-[10px] font-medium text-muted-foreground" aria-live="polite">
-            <Activity className={`size-3 ${realtimeConnected ? "text-emerald-500" : "text-muted-foreground"}`} />
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-[10px] font-medium text-muted-foreground"
+            aria-live="polite"
+          >
+            <Activity
+              className={`size-3 ${realtimeConnected ? "text-emerald-500" : "text-muted-foreground"}`}
+            />
             {realtimeConnected ? "Live updates" : "Refreshing manually"}
           </span>
           <Button size="sm" variant="outline" onClick={() => void load()} disabled={loading}>
@@ -281,9 +314,13 @@ export function CommunityDiscussions() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h3 className="font-semibold">Start a discussion</h3>
-              <p className="mt-0.5 text-xs text-muted-foreground">Bring a match, a tactical idea or a product suggestion to the room.</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Bring a match, a tactical idea or a product suggestion to the room.
+              </p>
             </div>
-            <span className="rounded-full border border-border px-2.5 py-1 text-[10px] text-muted-foreground">10 posts/replies daily</span>
+            <span className="rounded-full border border-border px-2.5 py-1 text-[10px] text-muted-foreground">
+              10 posts/replies daily
+            </span>
           </div>
           <input
             value={title}
@@ -314,9 +351,16 @@ export function CommunityDiscussions() {
                 aria-label="Discussion category"
                 className="h-11 rounded-lg border border-input bg-background px-3 text-sm"
               >
-                {CATEGORIES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                {CATEGORIES.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
-              <Button type="submit" disabled={posting || title.trim().length < 10 || body.trim().length < 30}>
+              <Button
+                type="submit"
+                disabled={posting || title.trim().length < 10 || body.trim().length < 30}
+              >
                 <Send className="mr-2 size-4" /> {posting ? "Publishing…" : "Publish discussion"}
               </Button>
             </div>
@@ -324,19 +368,33 @@ export function CommunityDiscussions() {
         </form>
       ) : (
         <div className="card-surface mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
-          <p className="text-sm text-muted-foreground">Sign in with a verified Puntr account to start a discussion or reply.</p>
-          <Button asChild size="sm" variant="outline"><Link to="/login">Sign in</Link></Button>
+          <p className="text-sm text-muted-foreground">
+            Sign in with a verified Puntr account to start a discussion or reply.
+          </p>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/login">Sign in</Link>
+          </Button>
         </div>
       )}
 
       <div className="mb-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]">
         <label className="block">
           <span className="sr-only">Search discussions</span>
-          <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} type="search" placeholder="Search discussions, members or replies…" className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15" />
+          <input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            type="search"
+            placeholder="Search discussions, members or replies…"
+            className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
+          />
         </label>
         <label className="block">
           <span className="sr-only">Sort discussions</span>
-          <select value={sortMode} onChange={(event) => setSortMode(event.target.value as typeof sortMode)} className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm">
+          <select
+            value={sortMode}
+            onChange={(event) => setSortMode(event.target.value as typeof sortMode)}
+            className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+          >
             <option value="newest">Newest first</option>
             <option value="most_replied">Most discussed</option>
           </select>
@@ -345,52 +403,83 @@ export function CommunityDiscussions() {
 
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap gap-2" aria-label="Filter discussions by category">
-        <button type="button" onClick={() => setActiveCategory("all")} aria-pressed={activeCategory === "all"} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === "all" ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}>
-          All discussions
-        </button>
-        {CATEGORIES.map((item) => (
-          <button key={item.value} type="button" onClick={() => setActiveCategory(item.value)} aria-pressed={activeCategory === item.value} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === item.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}>
-            {item.label}
+          <button
+            type="button"
+            onClick={() => setActiveCategory("all")}
+            aria-pressed={activeCategory === "all"}
+            className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === "all" ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}
+          >
+            All discussions
           </button>
-        ))}
+          {CATEGORIES.map((item) => (
+            <button
+              key={item.value}
+              type="button"
+              onClick={() => setActiveCategory(item.value)}
+              aria-pressed={activeCategory === item.value}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === item.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
-        <span className="text-[11px] text-muted-foreground" aria-live="polite">{threadCount} {threadCount === 1 ? "discussion" : "discussions"}</span>
+        <span className="text-[11px] text-muted-foreground" aria-live="polite">
+          {threadCount} {threadCount === 1 ? "discussion" : "discussions"}
+        </span>
       </div>
 
       {failed ? (
-        <p role="alert" className="card-surface p-5 text-sm text-destructive">Discussions could not be loaded. Refresh to try again.</p>
+        <p role="alert" className="card-surface p-5 text-sm text-destructive">
+          Discussions could not be loaded. Refresh to try again.
+        </p>
       ) : loading ? (
         <div className="space-y-4" role="status" aria-label="Loading discussions">
-          {[0, 1, 2].map((item) => <div key={item} className="puntr-shimmer h-36 rounded-2xl" />)}
+          {[0, 1, 2].map((item) => (
+            <div key={item} className="puntr-shimmer h-36 rounded-2xl" />
+          ))}
         </div>
       ) : threadCount === 0 ? (
         <div className="card-surface p-6 text-center">
           <MessageCircle className="mx-auto size-6 text-muted-foreground" />
           <h3 className="mt-3 font-semibold">No discussions yet</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{activeCategory === "all" ? "Start the first conversation. Be the first to get it going." : "No discussions in this category yet. Start a conversation to get it going."}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {activeCategory === "all"
+              ? "Start the first conversation. Be the first to get it going."
+              : "No discussions in this category yet. Start a conversation to get it going."}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
           {visibleThreads.map((thread) => (
             <article key={thread.id} className="card-surface p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <Author profile={thread.author} generated={thread.is_ai_generated} createdAt={thread.created_at} />
+                <Author
+                  profile={thread.author}
+                  generated={thread.is_ai_generated}
+                  createdAt={thread.created_at}
+                />
                 <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">
-                  {CATEGORIES.find((item) => item.value === thread.category)?.label ?? thread.category}
+                  {CATEGORIES.find((item) => item.value === thread.category)?.label ??
+                    thread.category}
                 </span>
               </div>
-              
+
               <h3 className="mt-3 text-base font-bold leading-snug sm:text-lg">{thread.title}</h3>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{thread.body}</p>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {thread.body}
+              </p>
 
               <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <MessageCircle className="size-4" /> {thread.replies.length} {thread.replies.length === 1 ? "reply" : "replies"}
+                  <MessageCircle className="size-4" /> {thread.replies.length}{" "}
+                  {thread.replies.length === 1 ? "reply" : "replies"}
                 </span>
                 {canPost && (
                   <button
                     type="button"
-                    onClick={() => setReplyingTo((current) => current === thread.id ? null : thread.id)}
+                    onClick={() =>
+                      setReplyingTo((current) => (current === thread.id ? null : thread.id))
+                    }
                     className="text-xs font-semibold text-primary hover:underline"
                   >
                     {replyingTo === thread.id ? "Cancel reply" : "Reply"}
@@ -402,9 +491,14 @@ export function CommunityDiscussions() {
                 <ul className="mt-4 space-y-3 border-l-2 border-border pl-3 sm:pl-4">
                   {thread.replies.map((reply) => (
                     <li key={reply.id} className="min-w-0">
-                      <Author profile={reply.author} generated={reply.is_ai_generated} createdAt={reply.created_at} />
-                      <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{reply.body}</p>
-                      
+                      <Author
+                        profile={reply.author}
+                        generated={reply.is_ai_generated}
+                        createdAt={reply.created_at}
+                      />
+                      <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                        {reply.body}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -414,7 +508,9 @@ export function CommunityDiscussions() {
                 <div className="mt-4 flex flex-col gap-2">
                   <textarea
                     value={replyDrafts[thread.id] ?? ""}
-                    onChange={(event) => setReplyDrafts((current) => ({ ...current, [thread.id]: event.target.value }))}
+                    onChange={(event) =>
+                      setReplyDrafts((current) => ({ ...current, [thread.id]: event.target.value }))
+                    }
                     rows={2}
                     maxLength={1000}
                     minLength={5}
@@ -423,8 +519,15 @@ export function CommunityDiscussions() {
                     className="w-full resize-y rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
                   />
                   <div className="flex justify-end">
-                    <Button size="sm" onClick={() => void createReply(thread)} disabled={replyBusy === thread.id || (replyDrafts[thread.id] ?? "").trim().length < 5}>
-                      <Send className="mr-2 size-3.5" /> {replyBusy === thread.id ? "Sending…" : "Post reply"}
+                    <Button
+                      size="sm"
+                      onClick={() => void createReply(thread)}
+                      disabled={
+                        replyBusy === thread.id || (replyDrafts[thread.id] ?? "").trim().length < 5
+                      }
+                    >
+                      <Send className="mr-2 size-3.5" />{" "}
+                      {replyBusy === thread.id ? "Sending…" : "Post reply"}
                     </Button>
                   </div>
                 </div>

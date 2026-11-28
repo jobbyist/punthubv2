@@ -76,7 +76,8 @@ export interface TablesStore {
   ): Promise<void>;
 }
 
-const CAF_GROUP_DRAW_URL = "https://www.cafonline.com/caf-confederation-cup/news/totalenergies-caf-confederation-cup-202627-group-stage-draw-produces-exciting-encounters/";
+const CAF_GROUP_DRAW_URL =
+  "https://www.cafonline.com/caf-confederation-cup/news/totalenergies-caf-confederation-cup-202627-group-stage-draw-produces-exciting-encounters/";
 const CAF_GROUPS_2026_27 = {
   A: [
     { name: "Al Ahly", aliases: ["Al Ahly"] },
@@ -105,11 +106,26 @@ const CAF_GROUPS_2026_27 = {
 } as const;
 
 export function buildCafGroupStandings(results: CafGroupStageResult[]): StandingRow[] {
-  const key = (name: string) => name.normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const key = (name: string) =>
+    name
+      .normalize("NFKD")
+      .replace(/[\\u0300-\\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
   const teams = new Map<string, { group: string; row: Omit<StandingRow, "position"> }>();
   for (const [group, entries] of Object.entries(CAF_GROUPS_2026_27)) {
     for (const entry of entries) {
-      const row = { group, team: entry.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 };
+      const row = {
+        group,
+        team: entry.name,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+      };
       for (const alias of entry.aliases) teams.set(key(alias), { group, row });
     }
   }
@@ -124,18 +140,34 @@ export function buildCafGroupStandings(results: CafGroupStageResult[]): Standing
     away.row.goalsFor += result.awayScore;
     away.row.goalsAgainst += result.homeScore;
     if (result.homeScore > result.awayScore) {
-      home.row.won += 1; home.row.points += 3; away.row.lost += 1;
+      home.row.won += 1;
+      home.row.points += 3;
+      away.row.lost += 1;
     } else if (result.homeScore < result.awayScore) {
-      away.row.won += 1; away.row.points += 3; home.row.lost += 1;
+      away.row.won += 1;
+      away.row.points += 3;
+      home.row.lost += 1;
     } else {
-      home.row.drawn += 1; away.row.drawn += 1; home.row.points += 1; away.row.points += 1;
+      home.row.drawn += 1;
+      away.row.drawn += 1;
+      home.row.points += 1;
+      away.row.points += 1;
     }
   }
   const output: StandingRow[] = [];
   for (const group of ["A", "B", "C", "D"]) {
-    const rows = [...teams.values()].filter((entry) => entry.group === group).map((entry) => entry.row);
+    const rows = [...teams.values()]
+      .filter((entry) => entry.group === group)
+      .map((entry) => entry.row);
     const unique = [...new Map(rows.map((row) => [row.team, row])).values()];
-    unique.sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst) || b.goalsFor - a.goalsFor || b.won - a.won || a.team.localeCompare(b.team));
+    unique.sort(
+      (a, b) =>
+        b.points - a.points ||
+        b.goalsFor - b.goalsAgainst - (a.goalsFor - a.goalsAgainst) ||
+        b.goalsFor - a.goalsFor ||
+        b.won - a.won ||
+        a.team.localeCompare(b.team),
+    );
     unique.forEach((row, index) => output.push({ ...row, position: index + 1 }));
   }
   return output;
@@ -192,25 +224,40 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
   const seasonStart = Number(start.slice(0, 4)) - (month < 7 ? 1 : 0);
   if (name === "UEFA Champions League") {
     return seasonStart === 2026
-      ? ["https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/"]
+      ? [
+          "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
+        ]
       : seasonStart === 2025
-        ? ["https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/"]
+        ? [
+            "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
+          ]
         : [];
   }
   if (name === "UEFA Conference League") {
     return seasonStart === 2026
-      ? ["https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/"]
+      ? [
+          "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
+        ]
       : seasonStart === 2025
-        ? ["https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/"]
+        ? [
+            "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
+          ]
         : [];
   }
   if (name === "CAF Confederation Cup") {
-    if (start === "2026-10-16") return ["https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/"];
-    if (start === "2026-10-23") return [
-      "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
-      "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
-    ];
-    if (start === "2026-09-04") return ["https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/"];
+    if (start === "2026-10-16")
+      return [
+        "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
+      ];
+    if (start === "2026-10-23")
+      return [
+        "https://www.cafonline.com/caf-confederation-cup/news/red-arrows-stun-kaizer-chiefs-on-penalties-to-reach-totalenergies-caf-confederation-cup-group-stage/",
+        "https://www.cafonline.com/caf-confederation-cup/news/azam-fc-and-real-bamako-advance-to-totalenergies-caf-confederation-cup-group-stage-after-decisive-return-legs/",
+      ];
+    if (start === "2026-09-04")
+      return [
+        "https://www.cafonline.com/caf-confederation-cup/news/es-zarzis-mark-continental-return-with-3-1-win-as-totalenergies-caf-confederation-cup-preliminary-round-begins/",
+      ];
   }
   return [];
 }
@@ -251,24 +298,46 @@ export function seasonQueries(
   const seasonLabel = `${seasonStart}/${String(seasonStart + 1).slice(-2)}`;
   if (name === "UEFA Champions League") {
     out.push(
-      "site:uefa.com/uefachampionsleague/news/ " + seasonLabel + " Champions League all results matchday scores " + months,
-      "site:uefa.com/uefachampionsleague/news/ Champions League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      "site:uefa.com/uefachampionsleague/news/ " +
+        seasonLabel +
+        " Champions League all results matchday scores " +
+        months,
+      "site:uefa.com/uefachampionsleague/news/ Champions League " +
+        seasonLabel +
+        " results " +
+        longDate(start) +
+        " " +
+        longDate(end),
       'site:uefa.com/uefachampionsleague/news/ "2026/27 Champions League: All the league phase fixtures and results"',
       "https://www.uefa.com/uefachampionsleague/news/02a8-2174c9e9019d-f909a77bd77a-1000--2026-27-champions-league-league-phase-fixtures-and-results/",
       "https://www.uefa.com/uefachampionsleague/news/029c-1e9a2f63fe2d-ebf9ad643892-1000--2025-26-champions-league-all-the-results/",
     );
   } else if (name === "UEFA Conference League") {
     out.push(
-      "site:uefa.com/uefaconferenceleague/news/ " + seasonLabel + " Conference League all results matchday scores " + months,
-      "site:uefa.com/uefaconferenceleague/news/ Conference League " + seasonLabel + " results " + longDate(start) + " " + longDate(end),
+      "site:uefa.com/uefaconferenceleague/news/ " +
+        seasonLabel +
+        " Conference League all results matchday scores " +
+        months,
+      "site:uefa.com/uefaconferenceleague/news/ Conference League " +
+        seasonLabel +
+        " results " +
+        longDate(start) +
+        " " +
+        longDate(end),
       'site:uefa.com/uefaconferenceleague/news/ "2026/27 Conference League: All the league phase fixtures and results"',
       "https://www.uefa.com/uefaconferenceleague/news/02a8-2174cb200f25-b94693ddff4e-1000--2026-27-conference-league-all-the-league-phase-fixtures-a/",
       "https://www.uefa.com/uefaconferenceleague/news/029c-1e9ad66c8169-aaecb38941a7-1000--2025-26-conference-league-all-the-league-phase-results/",
     );
   } else if (name === "CAF Confederation Cup") {
     out.push(
-      "site:cafonline.com/caf-confederation-cup/news/ " + seasonLabel + " Confederation Cup results matchday scores " + months,
-      "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " + longDate(start) + " " + longDate(end),
+      "site:cafonline.com/caf-confederation-cup/news/ " +
+        seasonLabel +
+        " Confederation Cup results matchday scores " +
+        months,
+      "site:cafonline.com/caf-confederation-cup/news/ Confederation Cup results " +
+        longDate(start) +
+        " " +
+        longDate(end),
       'site:cafonline.com/caf-confederation-cup/news/ "Surprise results shake up TotalEnergies CAF Confederation Cup Group Stage race"',
       'site:cafonline.com/caf-confederation-cup/news/ "Full results of first-leg of First Preliminary stage"',
       "https://www.cafonline.com/caf-confederation-cup/news/surprise-results-shake-up-totalenergies-caf-confederation-cup-group-stage-race/",
@@ -361,7 +430,12 @@ export async function runTablesSync(
     const c = competitions.find((x) => x.key === key)!;
     if (
       opts.job !== "history" &&
-      standingsDue(status("standings", key), finished.get(c.name), now(), STANDINGS_COMPETITIONS[key]!.refreshHours)
+      standingsDue(
+        status("standings", key),
+        finished.get(c.name),
+        now(),
+        STANDINGS_COMPETITIONS[key]!.refreshHours,
+      )
     )
       due.push({ job: "standings", key });
   }
@@ -427,7 +501,11 @@ async function gatherSources(
   const order = { official: 0, trusted: 1, other: 2 } as const;
   // Historical result queries must win over the configured standings URL for the same official domain.
   // Otherwise domain deduplication keeps the table page and discards the match-results archive page.
-  const ranked = (preferSearchResults ? [...preferredPages, ...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
+  const ranked = (
+    preferSearchResults
+      ? [...preferredPages, ...hits, ...configuredPages]
+      : [...configuredPages, ...hits]
+  ).sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
   // An official competition results page is authoritative. Mixing in secondary pages can introduce stale or
@@ -443,14 +521,22 @@ async function gatherSources(
     const domain = domainOf(hit.url);
     const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
-    if (tier === "other" || isBlockedDomain(domain) || (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))) continue;
+    if (
+      tier === "other" ||
+      isBlockedDomain(domain) ||
+      (seenDomains.has(sourceKey) && !preferredUrlSet.has(hit.url))
+    )
+      continue;
     seenDomains.add(sourceKey);
     candidates.push(hit);
     if (candidates.length >= MAX_SOURCES) break;
   }
   // Parallelise the small, bounded set of full-page reads to stay inside the serverless request window.
   const fetched = await Promise.all(
-    candidates.map(async (hit) => ({ hit, page: await extract.extract(hit.url).catch(() => null) })),
+    candidates.map(async (hit) => ({
+      hit,
+      page: await extract.extract(hit.url).catch(() => null),
+    })),
   );
   for (const { hit, page } of fetched) {
     if (!page?.markdown) continue;
@@ -500,7 +586,11 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       deps,
       key,
       `${c.name} current ${season} league standings table as of ${today}, updated after the latest completed matchday. Return the full table for every team, including played, won, drawn, lost, goals for, goals against and points. Prefer official competition data, then independent established sports data providers. Exclude historical season archives and Wikipedia.`,
-      [`${c.name} current standings table ${today}`, `${c.name} league table after latest matchday ${today}`, ...cfg.queries].slice(0, 5),
+      [
+        `${c.name} current standings table ${today}`,
+        `${c.name} league table after latest matchday ${today}`,
+        ...cfg.queries,
+      ].slice(0, 5),
     );
     if (sources.length === 0) throw new Error("no usable source");
     const known = await deps.store.knownTeams(c.name).catch(() => []);
@@ -509,28 +599,91 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     // retry only that source in a second concurrent wave; this keeps one competition inside the cron timeout.
     const initial = await Promise.all(
       sources.map(async (source) => {
-        const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], groups: cfg.groups, groupNotes: cfg.groupNotes }));
+        const answer = await generate(
+          deps,
+          standingsRequest({
+            competition: c.name,
+            season,
+            sources: [source],
+            groups: cfg.groups,
+            groupNotes: cfg.groupNotes,
+          }),
+        );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
-          : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json" }] };
+          ? validateTables(
+              parsed,
+              [source],
+              cfg.teams,
+              known,
+              now(),
+              key === "ucl",
+              cfg.groups,
+              cfg.teamsPerGroup ?? cfg.teams,
+              cfg.groupTeamRanges,
+            )
+          : {
+              ...validateTables(
+                [],
+                [source],
+                cfg.teams,
+                known,
+                now(),
+                key === "ucl",
+                cfg.groups,
+                cfg.teamsPerGroup ?? cfg.teams,
+                cfg.groupTeamRanges,
+              ),
+              rejected: [{ source: source.index, reason: "invalid_json" }],
+            };
         return { source, parsed, validation };
       }),
     );
     const retryCandidates = initial.filter((result) => result.validation.tables.length === 0);
     const retried = await Promise.all(
       retryCandidates.map(async (result) => {
-        const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
+        const hint =
+          result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
         const answer = await generate(
           deps,
-          standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }),
+          standingsRequest({
+            competition: c.name,
+            season,
+            sources: [result.source],
+            retryHint: hint,
+            groups: cfg.groups,
+            groupNotes: cfg.groupNotes,
+          }),
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
         const validation = parsed
-          ? validateTables(parsed, [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
-          : { ...validateTables([], [result.source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }] };
+          ? validateTables(
+              parsed,
+              [result.source],
+              cfg.teams,
+              known,
+              now(),
+              key === "ucl",
+              cfg.groups,
+              cfg.teamsPerGroup ?? cfg.teams,
+              cfg.groupTeamRanges,
+            )
+          : {
+              ...validateTables(
+                [],
+                [result.source],
+                cfg.teams,
+                known,
+                now(),
+                key === "ucl",
+                cfg.groups,
+                cfg.teamsPerGroup ?? cfg.teams,
+                cfg.groupTeamRanges,
+              ),
+              rejected: [{ source: result.source.index, reason: "invalid_json_on_retry" }],
+            };
         return { source: result.source, parsed, validation };
       }),
     );
@@ -539,11 +692,24 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       const result = retryByIndex.get(firstPass.source.index) ?? firstPass;
       if (result.parsed && result.validation.tables.length > 0) raw.push(...result.parsed);
       else {
-        const reason = result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
+        const reason =
+          result.validation.rejected.map((r) => r.reason).join(";") || "incomplete_source_table";
         sourceFailures.push(`${sourceLabel(result.source.index)}:${reason}`);
       }
-    }    if (raw.length === 0) throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
-    let validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
+    }
+    if (raw.length === 0)
+      throw new Error(`no source returned a validated table (${sourceFailures.join(", ")})`);
+    let validation = validateTables(
+      raw,
+      sources,
+      cfg.teams,
+      known,
+      now(),
+      key === "ucl",
+      cfg.groups,
+      cfg.teamsPerGroup ?? cfg.teams,
+      cfg.groupTeamRanges,
+    );
     sourceDiagnostics = validation.tables.map((table) => ({
       domain: table.source.domain,
       url: table.source.url,
@@ -568,54 +734,106 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       if (hint) {
         // Re-read each valid source independently once when full tables disagree; never share peer values.
         const consensusRetries = await Promise.all(
-          [...new Set(validation.tables.map((table) => table.source.index))].map(async (sourceIndex) => {
-            const source = sources.find((candidate) => candidate.index === sourceIndex);
-            if (!source) return null;
-            const answer = await generate(deps, standingsRequest({ competition: c.name, season, sources: [source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }));
-            modelsUsed.add(answer.model);
-            const parsed = parseStandings(answer.text);
-            const result = parsed
-              ? validateTables(parsed, [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges)
-              : { ...validateTables([], [source], cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges), rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }] };
-            return { source, parsed, result };
-          }),
+          [...new Set(validation.tables.map((table) => table.source.index))].map(
+            async (sourceIndex) => {
+              const source = sources.find((candidate) => candidate.index === sourceIndex);
+              if (!source) return null;
+              const answer = await generate(
+                deps,
+                standingsRequest({
+                  competition: c.name,
+                  season,
+                  sources: [source],
+                  retryHint: hint,
+                  groups: cfg.groups,
+                  groupNotes: cfg.groupNotes,
+                }),
+              );
+              modelsUsed.add(answer.model);
+              const parsed = parseStandings(answer.text);
+              const result = parsed
+                ? validateTables(
+                    parsed,
+                    [source],
+                    cfg.teams,
+                    known,
+                    now(),
+                    key === "ucl",
+                    cfg.groups,
+                    cfg.teamsPerGroup ?? cfg.teams,
+                    cfg.groupTeamRanges,
+                  )
+                : {
+                    ...validateTables(
+                      [],
+                      [source],
+                      cfg.teams,
+                      known,
+                      now(),
+                      key === "ucl",
+                      cfg.groups,
+                      cfg.teamsPerGroup ?? cfg.teams,
+                      cfg.groupTeamRanges,
+                    ),
+                    rejected: [{ source: source.index, reason: "invalid_json_on_consensus_retry" }],
+                  };
+              return { source, parsed, result };
+            },
+          ),
         );
         const bySource = new Map<number, NonNullable<ReturnType<typeof parseStandings>>>();
         for (const row of raw) bySource.set(row.source, [...(bySource.get(row.source) ?? []), row]);
         for (const retry of consensusRetries) {
           if (!retry) continue;
           if (retry.parsed && retry.result.tables.length > 0) {
-            bySource.set(retry.source.index, retry.parsed.filter((row) => row.source === retry.source.index));
+            bySource.set(
+              retry.source.index,
+              retry.parsed.filter((row) => row.source === retry.source.index),
+            );
           } else {
-            const reason = retry.result.rejected.map((item) => item.reason).join(";") || "consensus_retry_incomplete";
-            sourceFailures.push("consensus_retry_" + sourceLabel(retry.source.index) + ":" + reason);
+            const reason =
+              retry.result.rejected.map((item) => item.reason).join(";") ||
+              "consensus_retry_incomplete";
+            sourceFailures.push(
+              "consensus_retry_" + sourceLabel(retry.source.index) + ":" + reason,
+            );
           }
         }
         raw = [...bySource.values()].flat();
-        validation = validateTables(raw, sources, cfg.teams, known, now(), key === "ucl", cfg.groups, cfg.teamsPerGroup ?? cfg.teams, cfg.groupTeamRanges);
+        validation = validateTables(
+          raw,
+          sources,
+          cfg.teams,
+          known,
+          now(),
+          key === "ucl",
+          cfg.groups,
+          cfg.teamsPerGroup ?? cfg.teams,
+          cfg.groupTeamRanges,
+        );
         sourceDiagnostics = validation.tables.map((table) => ({
-      domain: table.source.domain,
-      url: table.source.url,
-      group: table.group ?? null,
-      tableDate: table.tableDate ?? null,
-      rowCount: table.rows.length,
-      rows: table.rows.map((row) => ({
-        position: row.position,
-        team: row.team,
-        played: row.played,
-        won: row.won,
-        drawn: row.drawn,
-        lost: row.lost,
-        goalsFor: row.goalsFor,
-        goalsAgainst: row.goalsAgainst,
-        points: row.points,
-      })),
-    }));
+          domain: table.source.domain,
+          url: table.source.url,
+          group: table.group ?? null,
+          tableDate: table.tableDate ?? null,
+          rowCount: table.rows.length,
+          rows: table.rows.map((row) => ({
+            position: row.position,
+            team: row.team,
+            played: row.played,
+            won: row.won,
+            drawn: row.drawn,
+            lost: row.lost,
+            goalsFor: row.goalsFor,
+            goalsAgainst: row.goalsAgainst,
+            points: row.points,
+          })),
+        }));
         chosenTables = chooseTables(validation.tables, cfg.groups);
       }
     }
     if (!chosenTables && key === "caf-cc") {
-      const groupResults = await deps.store.cafGroupStageResults?.() ?? [];
+      const groupResults = (await deps.store.cafGroupStageResults?.()) ?? [];
       if (groupResults.length > 0) {
         const derivedRows = buildCafGroupStandings(groupResults);
         const previousDerived = await deps.store.currentStandings(key, season);
@@ -638,28 +856,51 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
             confirmedTeams: count,
             pendingGroupCQualifier: true,
             verifiedMatchesUsed: groupResults.length,
-            latestMatch: groupResults.map((item) => item.kickoffAt).sort().at(-1) ?? null,
+            latestMatch:
+              groupResults
+                .map((item) => item.kickoffAt)
+                .sort()
+                .at(-1) ?? null,
           });
-          return { ok: true, detail: count + " teams across 4 provisional groups calculated from " + groupResults.length + " verified group-stage results" };
+          return {
+            ok: true,
+            detail:
+              count +
+              " teams across 4 provisional groups calculated from " +
+              groupResults.length +
+              " verified group-stage results",
+          };
         }
       }
     }
     if (!chosenTables) {
       const domains = validation.tables.map((table) => table.source.domain).join(", ");
-      const why = [...sourceFailures, ...validation.rejected.map((r) => sourceLabel(r.source) + ":" + r.reason)].join(", ") ||
-        String(validation.tables.length) + " unconfirmed tables" + (domains ? " from " + domains : "");
+      const why =
+        [
+          ...sourceFailures,
+          ...validation.rejected.map((r) => sourceLabel(r.source) + ":" + r.reason),
+        ].join(", ") ||
+        String(validation.tables.length) +
+          " unconfirmed tables" +
+          (domains ? " from " + domains : "");
       const disagreement = standingsDisagreementHint(validation.tables);
-      throw new Error("no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")");
+      throw new Error(
+        "no verified table (" + why + (disagreement ? "; " + disagreement : "") + ")",
+      );
     }
     const previous = await deps.store.currentStandings(key, season);
     const candidateRows = chosenTables.flatMap((selection) => selection.table.rows);
-    const supportingDomains = [...new Set(chosenTables.flatMap((selection) => selection.supportingDomains))].sort();
+    const supportingDomains = [
+      ...new Set(chosenTables.flatMap((selection) => selection.supportingDomains)),
+    ].sort();
     const allowVerifiedGoalCorrections = chosenTables.every(
       (selection) => selection.verdict === "two_sources" && selection.supportingDomains.length >= 2,
     );
     const goalCorrections = previous.flatMap((old) => {
       const next = candidateRows.find(
-        (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
+        (row) =>
+          (row.group ?? "") === (old.group ?? "") &&
+          normaliseTeam(row.team) === normaliseTeam(old.team),
       );
       if (
         !next ||
@@ -669,35 +910,45 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
         next.lost !== old.lost ||
         next.points !== old.points ||
         (next.goalsFor === old.goalsFor && next.goalsAgainst === old.goalsAgainst)
-      ) return [];
-      return [{
-        team: next.team,
-        previousGoalsFor: old.goalsFor,
-        currentGoalsFor: next.goalsFor,
-        previousGoalsAgainst: old.goalsAgainst,
-        currentGoalsAgainst: next.goalsAgainst,
-      }];
+      )
+        return [];
+      return [
+        {
+          team: next.team,
+          previousGoalsFor: old.goalsFor,
+          currentGoalsFor: next.goalsFor,
+          previousGoalsAgainst: old.goalsAgainst,
+          currentGoalsAgainst: next.goalsAgainst,
+        },
+      ];
     });
     const playedCorrections = previous.flatMap((old) => {
       const next = candidateRows.find(
-        (row) => (row.group ?? "") === (old.group ?? "") && normaliseTeam(row.team) === normaliseTeam(old.team),
+        (row) =>
+          (row.group ?? "") === (old.group ?? "") &&
+          normaliseTeam(row.team) === normaliseTeam(old.team),
       );
       if (
         !next ||
         old.played - next.played !== 1 ||
-        !cfg.allowVerifiedPlayedCorrections?.some((name) => normaliseTeam(name) === normaliseTeam(old.team))
-      ) return [];
-      return [{
-        team: next.team,
-        previousPlayed: old.played,
-        currentPlayed: next.played,
-        previousRecord: `${old.won}-${old.drawn}-${old.lost}`,
-        currentRecord: `${next.won}-${next.drawn}-${next.lost}`,
-        previousGoals: `${old.goalsFor}-${old.goalsAgainst}`,
-        currentGoals: `${next.goalsFor}-${next.goalsAgainst}`,
-        previousPoints: old.points,
-        currentPoints: next.points,
-      }];
+        !cfg.allowVerifiedPlayedCorrections?.some(
+          (name) => normaliseTeam(name) === normaliseTeam(old.team),
+        )
+      )
+        return [];
+      return [
+        {
+          team: next.team,
+          previousPlayed: old.played,
+          currentPlayed: next.played,
+          previousRecord: `${old.won}-${old.drawn}-${old.lost}`,
+          currentRecord: `${next.won}-${next.drawn}-${next.lost}`,
+          previousGoals: `${old.goalsFor}-${old.goalsAgainst}`,
+          currentGoals: `${next.goalsFor}-${next.goalsAgainst}`,
+          previousPoints: old.points,
+          currentPoints: next.points,
+        },
+      ];
     });
     const regression = tableRegression(
       candidateRows,
@@ -727,10 +978,14 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       tableDate: chosenTables[0]!.table.tableDate ?? null,
       teams: n,
       models: [...modelsUsed],
-      goalCorrectionPolicy: allowVerifiedGoalCorrections ? "two-source-corroborated-goals-only" : "strict",
+      goalCorrectionPolicy: allowVerifiedGoalCorrections
+        ? "two-source-corroborated-goals-only"
+        : "strict",
       playedCorrectionPolicy: cfg.allowVerifiedPlayedCorrections ?? [],
       playedCorrections,
-      teamCountExpansionPolicy: cfg.allowTeamCountIncrease ? "one-new-team-when-group-range-allows" : "strict",
+      teamCountExpansionPolicy: cfg.allowTeamCountIncrease
+        ? "one-new-team-when-group-range-allows"
+        : "strict",
       goalCorrections,
     });
     return {
@@ -738,12 +993,20 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
       detail: `${n} teams across ${chosenTables.length} table(s) verified by ${supportingDomains.length} sources (${supportingDomains.join(", ")})`,
     };
   } catch (e) {
-    await deps.store.record("standings", key, false, message(e), {
-      sources: sources.map((source) => ({ index: source.index, domain: source.domain, url: source.url, via: source.via, retrievedAt: source.retrievedAt })),
-      sourceFailures,
-      sourceDiagnostics,
-      models: [...modelsUsed],
-    }).catch(() => undefined);
+    await deps.store
+      .record("standings", key, false, message(e), {
+        sources: sources.map((source) => ({
+          index: source.index,
+          domain: source.domain,
+          url: source.url,
+          via: source.via,
+          retrievedAt: source.retrievedAt,
+        })),
+        sourceFailures,
+        sourceDiagnostics,
+        models: [...modelsUsed],
+      })
+      .catch(() => undefined);
     return { ok: false, detail: message(e) };
   }
 }
@@ -793,15 +1056,24 @@ async function syncSeasonWindow(
         let answer = await generate(deps, sourceRequest([isolated]));
         let raw = parseObservations(answer.text);
         if (!raw) {
-          answer = await generate(deps, sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]));
+          answer = await generate(
+            deps,
+            sourceRequest([{ ...isolated, text: isolated.text.slice(0, 8_000) }]),
+          );
           raw = parseObservations(answer.text);
         }
         models.add(answer.model);
         if (!raw) continue;
         extracted += raw.length;
-        const validation = validateObservations(raw, [isolated], { from, to, now: now(), knownTeams: known });
+        const validation = validateObservations(raw, [isolated], {
+          from,
+          to,
+          now: now(),
+          knownTeams: known,
+        });
         accepted.push(...validation.accepted);
-        for (const item of validation.rejected) reasons[item.reason] = (reasons[item.reason] ?? 0) + 1;
+        for (const item of validation.rejected)
+          reasons[item.reason] = (reasons[item.reason] ?? 0) + 1;
       }
       const { rows, unverified } = verifyHistory(accepted, key, known);
       return {
@@ -821,7 +1093,15 @@ async function syncSeasonWindow(
     if (sources.length === 0) throw new Error("no usable source");
     let result = await extractAndVerify(sources);
     if (result.rows.length === 0 && sources.some((source) => source.tier === "official")) {
-      const secondary = await gatherSources(deps, key, objective, queries, true, preferredUrls, true);
+      const secondary = await gatherSources(
+        deps,
+        key,
+        objective,
+        queries,
+        true,
+        preferredUrls,
+        true,
+      );
       if (secondary.some((source) => source.tier !== "official")) {
         const fallback = await extractAndVerify(secondary);
         if (fallback.rows.length > 0 || fallback.extracted > result.extracted) {
@@ -894,7 +1174,12 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
     );
     const raw = parseObservations(answer.text);
     if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted } = validateObservations(raw, sources, { from, to, now: to, knownTeams: known });
+    const { accepted } = validateObservations(raw, sources, {
+      from,
+      to,
+      now: to,
+      knownTeams: known,
+    });
     const { rows, unverified } = verifyHistory(accepted, key, known);
     const inserted = rows.length
       ? await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })))

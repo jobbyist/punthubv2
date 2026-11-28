@@ -208,8 +208,8 @@ function Privacy() {
       />
       <div className="card-surface space-y-8 p-6 sm:p-8 text-sm leading-relaxed text-muted-foreground">
         <p>
-          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-team-follows). Draft pending
-          attorney review.
+          <strong>Last updated:</strong> 28 November 2026 (version 2026-11-28-team-follows). Draft
+          pending attorney review.
         </p>
 
         <section>
@@ -263,7 +263,8 @@ function Privacy() {
             receives and processes payment credentials directly; Puntr receives the transaction
             reference, amount, payment status and order or subscription details needed to provide
             the service and keep accounting records. We do not see or store your full card or bank
-            details. We never see your password: our sign-in provider keeps only a one-way hash of it.
+            details. We never see your password: our sign-in provider keeps only a one-way hash of
+            it.
           </p>
         </section>
 
@@ -308,9 +309,9 @@ function Privacy() {
             receives your payment details directly; we do not see or store your full card or bank
             details. If you submit a Brand Ambassador application, we store the details and answers
             you provide so our partnerships team can assess it and contact you. We email that
-            application to partners@puntr.co.za using our email provider. If you add a profile picture, we
-            store a compressed copy and show it publicly on your profile and next to your username;
-            you can remove it at any time on your account page. [attorney review]
+            application to partners@puntr.co.za using our email provider. If you add a profile
+            picture, we store a compressed copy and show it publicly on your profile and next to
+            your username; you can remove it at any time on your account page. [attorney review]
           </p>
         </section>
 
@@ -336,28 +337,27 @@ function Privacy() {
           <p>
             Supabase (database, sign-in and live notifications to our admins, hosted in Ireland,
             EU), Vercel (website hosting), Google (only if you choose Google to sign in), PayFast by
-            Network (South Africa; it
-            processes paid Puntr transactions and returns the transaction reference, amount and
-            status), and Resend (transactional email, including Brand Ambassador applications sent
-            to partners@puntr.co.za). Ozow is a planned future payment option; it is not currently
-            integrated and does not receive your personal or payment information through Puntr.
-            We will update this notice before enabling it. We also get match fixtures and results
-            from a sports-data provider; no personal
-            information is sent to it. Reward sponsors do not receive your personal information from
-            us: vouchers come from bulk codes the sponsor supplies, and a sponsor&apos;s own site
-            collects data when you use a code. Sending data outside South Africa is allowed under
-            POPIA section 72 where the receiving country or contract gives comparable protection. We
-            never send personal data to AI services. When you upload a slip photo, its text is read
-            on your own device (the photo is never sent to an AI service). Before slip text is used,
-            we remove the personal details we can detect (email addresses, phone numbers, long
-            account, ID or card numbers, and lines labelled with a name, username, balance, account
-            or ID); if our own reader cannot find the bet, that cleaned text alone may be sent to
-            Google Gemini to read the matches, markets and odds. Please cover your account name and
-            balance before uploading. [attorney review] To write newsroom articles and to read
-            football fixtures and results from public web pages we use Parallel (web search),
-            Firecrawl (page reading) and Google Gemini (summarising those pages): they receive only
-            public web pages and Puntr&apos;s own approved project updates, never information about
-            you. We do not sell your data.
+            Network (South Africa; it processes paid Puntr transactions and returns the transaction
+            reference, amount and status), and Resend (transactional email, including Brand
+            Ambassador applications sent to partners@puntr.co.za). Ozow is a planned future payment
+            option; it is not currently integrated and does not receive your personal or payment
+            information through Puntr. We will update this notice before enabling it. We also get
+            match fixtures and results from a sports-data provider; no personal information is sent
+            to it. Reward sponsors do not receive your personal information from us: vouchers come
+            from bulk codes the sponsor supplies, and a sponsor&apos;s own site collects data when
+            you use a code. Sending data outside South Africa is allowed under POPIA section 72
+            where the receiving country or contract gives comparable protection. We never send
+            personal data to AI services. When you upload a slip photo, its text is read on your own
+            device (the photo is never sent to an AI service). Before slip text is used, we remove
+            the personal details we can detect (email addresses, phone numbers, long account, ID or
+            card numbers, and lines labelled with a name, username, balance, account or ID); if our
+            own reader cannot find the bet, that cleaned text alone may be sent to Google Gemini to
+            read the matches, markets and odds. Please cover your account name and balance before
+            uploading. [attorney review] To write newsroom articles and to read football fixtures
+            and results from public web pages we use Parallel (web search), Firecrawl (page reading)
+            and Google Gemini (summarising those pages): they receive only public web pages and
+            Puntr&apos;s own approved project updates, never information about you. We do not sell
+            your data.
           </p>
         </section>
 

@@ -56,12 +56,17 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
   };
 
   return (
-    <section aria-label="Puntr bookmaker partners" className="card-surface border-primary/25 p-5 sm:p-6">
+    <section
+      aria-label="Puntr bookmaker partners"
+      className="card-surface border-primary/25 p-5 sm:p-6"
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">{t("placement.eyebrow")}</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">
+              {t("placement.eyebrow")}
+            </p>
             <h2 className="mt-1 text-lg font-bold">{t("placement.title")}</h2>
             <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted-foreground">
               {t("placement.description")}
@@ -87,30 +92,53 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
       ) : (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {data.map((partner) => {
-            const logo = platforms.find((p) => p.name.toLowerCase() === partner.name.toLowerCase())?.logo;
+            const logo = platforms.find(
+              (p) => p.name.toLowerCase() === partner.name.toLowerCase(),
+            )?.logo;
             return (
               <a
                 key={partner.id}
                 href={partner.tracking_link}
                 target="_blank"
                 rel="sponsored nofollow noopener noreferrer"
-                onClick={() => trackEvent("affiliate_partner_click", { partner_id: partner.id, partner_name: partner.name, placement: label })}
+                onClick={() =>
+                  trackEvent("affiliate_partner_click", {
+                    partner_id: partner.id,
+                    partner_name: partner.name,
+                    placement: label,
+                  })
+                }
                 className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-border bg-background p-3 transition hover:border-primary/50 hover:bg-primary-soft/30"
               >
                 <span className="flex min-w-0 items-center gap-3">
                   {logo ? (
-                    <PartnerLogo src={logo} alt={partner.name} loading="lazy" className="h-9 w-16 shrink-0" />
+                    <PartnerLogo
+                      src={logo}
+                      alt={partner.name}
+                      loading="lazy"
+                      className="h-9 w-16 shrink-0"
+                    />
                   ) : (
                     <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted text-xs font-black">
-                      {partner.name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}
+                      {partner.name
+                        .split(/\s+/)
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join("")
+                        .toUpperCase()}
                     </span>
                   )}
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-bold">{partner.name}</span>
-                    <span className="block text-[10px] text-muted-foreground">{t("placement.visit")}</span>
+                    <span className="block text-[10px] text-muted-foreground">
+                      {t("placement.visit")}
+                    </span>
                   </span>
                 </span>
-                <ExternalLink className="size-4 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                <ExternalLink
+                  className="size-4 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
               </a>
             );
           })}
@@ -120,7 +148,13 @@ export function AffiliateBanner({ label = "homepage" }: { label?: string }) {
       <div className="mt-4 border-t border-border pt-3">
         <p className="text-[11px] leading-relaxed text-muted-foreground">
           Affiliate disclosure: {t("disclosure.short")}{" "}
-          <Link to="/affiliate-disclosure" className="font-semibold text-foreground underline underline-offset-2">Read the full disclosure</Link>.
+          <Link
+            to="/affiliate-disclosure"
+            className="font-semibold text-foreground underline underline-offset-2"
+          >
+            Read the full disclosure
+          </Link>
+          .
         </p>
         <RgNotice variant="compact" className="mt-2" />
       </div>

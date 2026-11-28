@@ -197,15 +197,20 @@ export function SettlementTab() {
               <section className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
                 <h3 className="text-sm font-semibold">Awaiting verified results</h3>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  These fixtures have unsettled picks but are still marked scheduled or live. Puntr will not grade them until a final result is verified.
+                  These fixtures have unsettled picks but are still marked scheduled or live. Puntr
+                  will not grade them until a final result is verified.
                 </p>
                 <ul className="mt-3 divide-y divide-border text-sm">
                   {data.resultPending.map((f) => (
                     <li key={f.fixtureId} className="flex flex-wrap items-center gap-x-3 py-2">
                       <span className="font-semibold">{f.label}</span>
                       <span className="text-xs text-muted-foreground">{f.status}</span>
-                      <span className="text-xs text-muted-foreground tnum">{formatDateTime(f.kickoffAt)}</span>
-                      <span className="ml-auto text-xs text-muted-foreground">{f.pending} pending picks</span>
+                      <span className="text-xs text-muted-foreground tnum">
+                        {formatDateTime(f.kickoffAt)}
+                      </span>
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {f.pending} pending picks
+                      </span>
                     </li>
                   ))}
                 </ul>

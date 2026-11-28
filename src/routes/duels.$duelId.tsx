@@ -276,7 +276,11 @@ function PlayerColumn({
     <div className={cn("min-w-0", align === "right" && "text-right")}>
       <p className={cn("truncate font-display text-base font-extrabold", won && "text-primary")}>
         {name}
-        {isAi && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">AI participant</span>}
+        {isAi && (
+          <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
+            AI participant
+          </span>
+        )}
         {you && (
           <span className="ml-1.5 text-[10px] font-bold uppercase text-muted-foreground">
             {t("you")}

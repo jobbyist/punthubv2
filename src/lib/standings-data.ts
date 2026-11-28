@@ -70,7 +70,11 @@ export function freshStandingsKeys<T extends string>(
   statuses: SyncStatus[],
   now = Date.now(),
 ): T[] {
-  return keys.filter((key) =>
-    !isStale(statuses.find((status) => status.job === "standings" && status.scope === key), now),
+  return keys.filter(
+    (key) =>
+      !isStale(
+        statuses.find((status) => status.job === "standings" && status.scope === key),
+        now,
+      ),
   );
 }

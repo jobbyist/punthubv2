@@ -217,11 +217,20 @@ function QuestItem({ row, onChange }: { row: QuestRow; onChange: () => void }) {
     const code = row.code as "install_app" | "push_notifications";
     if (code === "install_app" && !runningInstalled()) {
       window.dispatchEvent(new Event("puntr:request-install"));
-      toast.info(t("installPrompt", { defaultValue: "Install Puntr, then open it from your home screen and tap Check to claim your points." }));
+      toast.info(
+        t("installPrompt", {
+          defaultValue:
+            "Install Puntr, then open it from your home screen and tap Check to claim your points.",
+        }),
+      );
       return;
     }
     if (code === "push_notifications" && !supportsWebPush()) {
-      toast.error(t("error.pushUnsupported", { defaultValue: "Push notifications are not supported by this browser." }));
+      toast.error(
+        t("error.pushUnsupported", {
+          defaultValue: "Push notifications are not supported by this browser.",
+        }),
+      );
       return;
     }
     setBusy(true);
@@ -239,11 +248,15 @@ function QuestItem({ row, onChange }: { row: QuestRow; onChange: () => void }) {
       onChange();
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
-      toast.error(message.includes("permission") || message.includes("blocked")
-        ? t("error.pushOff")
-        : message.includes("supported")
-          ? t("error.pushUnsupported", { defaultValue: "Push notifications are not supported by this browser." })
-          : t("error.generic"));
+      toast.error(
+        message.includes("permission") || message.includes("blocked")
+          ? t("error.pushOff")
+          : message.includes("supported")
+            ? t("error.pushUnsupported", {
+                defaultValue: "Push notifications are not supported by this browser.",
+              })
+            : t("error.generic"),
+      );
     } finally {
       setBusy(false);
     }
@@ -323,7 +336,9 @@ function QuestItem({ row, onChange }: { row: QuestRow; onChange: () => void }) {
             {row.code === "push_notifications"
               ? t("cta.enablePush", { defaultValue: "Enable notifications" })
               : row.code === "install_app"
-                ? runningInstalled() ? t("cta.check") : t("cta.installApp", { defaultValue: "Install app" })
+                ? runningInstalled()
+                  ? t("cta.check")
+                  : t("cta.installApp", { defaultValue: "Install app" })
                 : t("cta.check")}
           </Button>
         ) : row.action_url ? (

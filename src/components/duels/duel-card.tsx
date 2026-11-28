@@ -45,7 +45,11 @@ export function DuelCard({ duel }: { duel: DuelSummary }) {
   const side = (name: string | null, correct: number | null, won: boolean, isAi: boolean) => (
     <span className={cn("min-w-0 truncate text-sm font-bold", won && "text-primary")}>
       {name ? `@${name}` : t("open")}
-      {isAi && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">AI</span>}
+      {isAi && (
+        <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
+          AI
+        </span>
+      )}
       {settled && correct !== null && (
         <span className="ml-1.5 text-xs font-semibold text-muted-foreground tnum">{correct}</span>
       )}
@@ -74,7 +78,12 @@ export function DuelCard({ duel }: { duel: DuelSummary }) {
         )}
       </div>
       <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 rounded-lg bg-muted/50 px-3 py-2.5">
-        {side(duel.challenger, duel.challenger_correct, duel.winner === duel.challenger, duel.challenger_is_ai)}
+        {side(
+          duel.challenger,
+          duel.challenger_correct,
+          duel.winner === duel.challenger,
+          duel.challenger_is_ai,
+        )}
         <Swords className="size-4 text-primary" aria-hidden="true" />
         <span className="text-right">
           {side(

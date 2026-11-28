@@ -33,12 +33,12 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>1. Inleiding</h2>
             <p className={P}>
-              Welkom by Puntr South Africa ("Puntr"), 'n platform wat deur Gravitas Industries (Pty) Ltd
-              (CK No.: 2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is ("Gravitas"),
-              bedryf word. In hierdie Bepalings verwys "ons" en "ons s'n" na Gravitas, die operateur
-              van Puntr. Hierdie bepalings en voorwaardes ("Bepalings") beheer jou toegang tot en
-              gebruik van die Puntr-platform, -webwerf, -mobiele toepassings en verwante dienste
-              (gesamentlik die "Diens").
+              Welkom by Puntr South Africa ("Puntr"), 'n platform wat deur Gravitas Industries (Pty)
+              Ltd (CK No.: 2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is
+              ("Gravitas"), bedryf word. In hierdie Bepalings verwys "ons" en "ons s'n" na Gravitas,
+              die operateur van Puntr. Hierdie bepalings en voorwaardes ("Bepalings") beheer jou
+              toegang tot en gebruik van die Puntr-platform, -webwerf, -mobiele toepassings en
+              verwante dienste (gesamentlik die "Diens").
             </p>
             <p className={PL}>
               Deur ons Diens te gebruik of toegang daartoe te verkry, stem jy in om deur hierdie
@@ -151,13 +151,12 @@ export function TermsAf() {
             <p className={P}>
               <strong>Betalingsverwerking:</strong> Betalings vir betaalde Puntr-funksies word tans
               deur PayFast by Network verwerk. Wanneer jy kies om te betaal, kan jy na PayFast se
-              gehoste betaalblad herlei word. PayFast ontvang en verwerk jou betalingsbewyse
-              direk. Puntr ontvang die bestelling- of intekeningverwysing, transaksieverwysing,
-              bedrag, betalingstatus en toepaslike datums om die gekoopte diens te lewer,
-              transaksies te rekonsilieer en ondersteuning te bied. Ons sien of stoor nie jou volle
-              kaart- of bankbesonderhede nie. Die Stigters-jaarpas is 'n eenmalige R299-betaling;
-              om dit op Puntr te bespreek is gratis en die veilige PayFast-skakel word per e-pos
-              gestuur.
+              gehoste betaalblad herlei word. PayFast ontvang en verwerk jou betalingsbewyse direk.
+              Puntr ontvang die bestelling- of intekeningverwysing, transaksieverwysing, bedrag,
+              betalingstatus en toepaslike datums om die gekoopte diens te lewer, transaksies te
+              rekonsilieer en ondersteuning te bied. Ons sien of stoor nie jou volle kaart- of
+              bankbesonderhede nie. Die Stigters-jaarpas is 'n eenmalige R299-betaling; om dit op
+              Puntr te bespreek is gratis en die veilige PayFast-skakel word per e-pos gestuur.
             </p>
             <p className={P}>
               <strong>Betaalmetodes:</strong> PayFast by Network is die huidige betaalopsie. Ozow
@@ -167,8 +166,8 @@ export function TermsAf() {
               betalingsverwerking wat dit uitvoer.
             </p>
             <p className={P}>
-              <strong>Derdepartydienste:</strong> As jy 'n skakel na 'n gelisensieerde boekmaker
-              of kleinhandelaar volg, is jy onderhewig aan daardie maatskappy se bepalings,
+              <strong>Derdepartydienste:</strong> As jy 'n skakel na 'n gelisensieerde boekmaker of
+              kleinhandelaar volg, is jy onderhewig aan daardie maatskappy se bepalings,
               privaatheidsbeleid en betalingsvoorwaardes. Puntr is nie verantwoordelik vir hul
               praktyke, beleide of dienste nie. Puntr aanvaar nie weddenskappe nie, hou nie
               weddenskapsgeld nie en hanteer nie boekmakerwinste nie.
@@ -331,9 +330,9 @@ export function TermsAf() {
               tot die einde van die betaalde tydperk voortduur. Die Stigters-jaarpas is 'n
               afsonderlike eenmalige R299-aanbod en hernu nie outomaties nie. Terugbetalings en
               betalingsnavrae word volgens die Terugbetalings-bladsy, die voorwaardes by betaalpunt
-              en toepaslike wetgewing hanteer. Krediete wat ons vir promosies of toetsing toeken,
-              is nie aankope nie en het geen kontantwaarde nie. Betaling verdien nooit ekstra punte,
-              'n hoër voorspellingsranglys of kwalifikasie vir pryse nie.
+              en toepaslike wetgewing hanteer. Krediete wat ons vir promosies of toetsing toeken, is
+              nie aankope nie en het geen kontantwaarde nie. Betaling verdien nooit ekstra punte, 'n
+              hoër voorspellingsranglys of kwalifikasie vir pryse nie.
             </p>
           </section>
 
@@ -388,8 +387,9 @@ export function TermsAf() {
             <p className={P}>
               Alle inhoud, funksies en funksionaliteit van die Diens, insluitend maar nie beperk nie
               tot teks, grafika, logo's, ikone, beelde, klankgrepe en sagteware, is die uitsluitlike
-              eiendom van Gravitas Industries (Pty) Ltd en word deur Suid-Afrikaanse en internasionale
-              outeursreg-, handelsmerk- en ander wette op intellektuele eiendom beskerm.
+              eiendom van Gravitas Industries (Pty) Ltd en word deur Suid-Afrikaanse en
+              internasionale outeursreg-, handelsmerk- en ander wette op intellektuele eiendom
+              beskerm.
             </p>
             <p className={PL}>
               Jy mag nie enige deel van die Diens sonder ons uitdruklike skriftelike toestemming
@@ -432,10 +432,10 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>16. Beperking van aanspreeklikheid</h2>
             <p className={P}>
-              TOT DIE MAKSIMUM MATE WAT SUID-AFRIKAANSE WETGEWING TOELAAT, IS GRAVITAS INDUSTRIES (PTY) LTD NIE
-              AANSPREEKLIK VIR ENIGE INDIREKTE, TOEVALLIGE, SPESIALE, GEVOLGLIKE OF STRAFSKADE NIE,
-              INSLUITEND MAAR NIE BEPERK NIE TOT VERLIES AAN WINS, DATA OF ANDER ONTASBARE VERLIESE
-              WAT VOORTSPRUIT UIT:
+              TOT DIE MAKSIMUM MATE WAT SUID-AFRIKAANSE WETGEWING TOELAAT, IS GRAVITAS INDUSTRIES
+              (PTY) LTD NIE AANSPREEKLIK VIR ENIGE INDIREKTE, TOEVALLIGE, SPESIALE, GEVOLGLIKE OF
+              STRAFSKADE NIE, INSLUITEND MAAR NIE BEPERK NIE TOT VERLIES AAN WINS, DATA OF ANDER
+              ONTASBARE VERLIESE WAT VOORTSPRUIT UIT:
             </p>
             <ul className={UL}>
               <li>Jou gebruik of onvermoë om die Diens te gebruik</li>
@@ -449,10 +449,10 @@ export function TermsAf() {
           <section className="mb-8">
             <h2 className={H}>17. Vrywaring</h2>
             <p className={PL}>
-              Jy stem in om Gravitas Industries (Pty) Ltd, sy beamptes, direkteure, werknemers en verbonde
-              partye te vrywaar, te verdedig en skadeloos te hou teen enige eise, skade, verliese,
-              aanspreeklikhede en uitgawes (insluitend regskoste) wat voortspruit uit jou gebruik
-              van die Diens of oortreding van hierdie Bepalings.
+              Jy stem in om Gravitas Industries (Pty) Ltd, sy beamptes, direkteure, werknemers en
+              verbonde partye te vrywaar, te verdedig en skadeloos te hou teen enige eise, skade,
+              verliese, aanspreeklikhede en uitgawes (insluitend regskoste) wat voortspruit uit jou
+              gebruik van die Diens of oortreding van hierdie Bepalings.
             </p>
           </section>
 

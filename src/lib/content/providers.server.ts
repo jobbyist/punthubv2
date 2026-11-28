@@ -90,14 +90,23 @@ export function createGemini(apiKey: string, overrides: Overrides = {}): LlmProv
         },
         { provider: "gemini", timeoutMs: 30_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
       );
-      const candidates = isRecord(json) && Array.isArray(json["candidates"]) ? json["candidates"] : [];
+      const candidates =
+        isRecord(json) && Array.isArray(json["candidates"]) ? json["candidates"] : [];
       const first = candidates[0];
       const content = isRecord(first) && isRecord(first["content"]) ? first["content"] : null;
       const parts = content && Array.isArray(content["parts"]) ? content["parts"] : [];
-      const text = parts.map((part) => (isRecord(part) && part["thought"] !== true ? str(part["text"]) : "")).join("").trim();
+      const text = parts
+        .map((part) => (isRecord(part) && part["thought"] !== true ? str(part["text"]) : ""))
+        .join("")
+        .trim();
       if (!text) {
         const reason = isRecord(first) ? str(first["finishReason"]) : "";
-        throw new ProviderError("gemini", "bad_response", null, `empty answer${reason ? ` (${reason})` : ""}`);
+        throw new ProviderError(
+          "gemini",
+          "bad_response",
+          null,
+          `empty answer${reason ? ` (${reason})` : ""}`,
+        );
       }
       return { model, text };
     },
@@ -115,7 +124,17 @@ function parallelJsonSchema(schema: Record<string, unknown>): Record<string, unk
     const out: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {
       if (key === "type" && typeof child === "string") {
-        out[key] = ({ OBJECT: "object", ARRAY: "array", STRING: "string", INTEGER: "integer", NUMBER: "number", BOOLEAN: "boolean" } as Record<string, string>)[child] ?? child;
+        out[key] =
+          (
+            {
+              OBJECT: "object",
+              ARRAY: "array",
+              STRING: "string",
+              INTEGER: "integer",
+              NUMBER: "number",
+              BOOLEAN: "boolean",
+            } as Record<string, string>
+          )[child] ?? child;
       } else out[key] = visit(child);
     }
     if (out["type"] === "object") {
@@ -147,17 +166,35 @@ export function createParallelResponses(
           ],
           reasoning: { effort },
           max_output_tokens: request.maxOutputTokens,
-          text: { format: { type: "json_schema", name: "puntr_structured_output", strict: true, schema: parallelJsonSchema(request.schema) } },
+          text: {
+            format: {
+              type: "json_schema",
+              name: "puntr_structured_output",
+              strict: true,
+              schema: parallelJsonSchema(request.schema),
+            },
+          },
         },
-        { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
+        {
+          provider: "parallel-chat",
+          timeoutMs: 60_000,
+          attempts: 1,
+          baseDelayMs: 1_000,
+          ...overrides,
+        },
       );
       const direct = isRecord(json) ? str(json["output_text"]) : "";
       const items = isRecord(json) && Array.isArray(json["output"]) ? json["output"] : [];
-      const nested = items.filter((item) => isRecord(item) && item["type"] === "message")
-        .flatMap((item) => isRecord(item) && Array.isArray(item["content"]) ? item["content"] : [])
-        .map((part) => isRecord(part) ? str(part["text"]) : "").join("");
+      const nested = items
+        .filter((item) => isRecord(item) && item["type"] === "message")
+        .flatMap((item) =>
+          isRecord(item) && Array.isArray(item["content"]) ? item["content"] : [],
+        )
+        .map((part) => (isRecord(part) ? str(part["text"]) : ""))
+        .join("");
       const text = direct || nested;
-      if (!text.trim()) throw new ProviderError("parallel-chat", "bad_response", null, "empty response");
+      if (!text.trim())
+        throw new ProviderError("parallel-chat", "bad_response", null, "empty response");
       return { model: `parallel-${effort}`, text: text.trim() };
     },
   };

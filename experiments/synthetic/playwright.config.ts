@@ -26,8 +26,8 @@ export default defineConfig({
     serviceWorkers: "block",
     extraHTTPHeaders: {
       "x-puntr-synthetic-test": "true",
-      "x-puntr-experiment": "puntr-30-day-synthetic-2026-11-27"
+      "x-puntr-experiment": "puntr-30-day-synthetic-2026-11-27",
     },
-    ...devices["Desktop Chrome"]
-  }
+    ...devices["Desktop Chrome"],
+  },
 });

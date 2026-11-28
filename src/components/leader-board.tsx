@@ -134,7 +134,11 @@ export function RankRow({
         <div className="flex items-baseline justify-between gap-3">
           <span className="flex min-w-0 flex-wrap items-center gap-1.5">
             <span className="min-w-0 truncate text-sm font-semibold">{nameSlot ?? name}</span>
-            {isAi && <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">AI-GENERATED</span>}
+            {isAi && (
+              <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">
+                AI-GENERATED
+              </span>
+            )}
           </span>
           <span className="shrink-0 text-sm font-extrabold text-primary tnum">{primary}</span>
         </div>

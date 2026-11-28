@@ -20,7 +20,7 @@ function FoundingHqRoute() {
 
   return (
     <RequireMember>
-      {() => (
+      {() =>
         isAdmin ? (
           <FoundingHqPage />
         ) : (
@@ -31,7 +31,7 @@ function FoundingHqRoute() {
             </p>
           </main>
         )
-      )}
+      }
     </RequireMember>
   );
 }

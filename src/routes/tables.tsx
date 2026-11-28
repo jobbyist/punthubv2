@@ -57,7 +57,7 @@ function Standings() {
     () => (statuses ? freshStandingsKeys(KEYS, statuses) : []),
     [statuses],
   );
-  const selectedLeague = activeKeys.includes(league) ? league : activeKeys[0] ?? null;
+  const selectedLeague = activeKeys.includes(league) ? league : (activeKeys[0] ?? null);
   const name = selectedLeague
     ? (competitions.find((c) => c.key === selectedLeague)?.name ?? selectedLeague)
     : "League tables";
@@ -148,140 +148,156 @@ function Standings() {
           />
 
           <section className="card-surface overflow-hidden" aria-labelledby="table-title">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
-          <h2 id="table-title" className="text-base">
-            <CompetitionBadge
-              name={name}
-              className="[&>span:last-child]:text-sm [&>span:last-child]:text-foreground"
-            />
-          </h2>
-          {updated && (
-            <span className="text-xs text-muted-foreground tnum">
-              {t("updated", { when: `${formatDate(updated)} ${formatTime(updated)}` })}
-              {rows?.[0]?.source_domain && <> · {t("source", { domain: rows[0].source_domain })}</>}
-            </span>
-          )}
-        </div>
-        {stale && (
-          <p
-            role="status"
-            className="flex items-start gap-2 border-b border-border bg-primary-soft px-4 py-2 text-xs font-medium text-primary"
-          >
-            <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-            {t("stale")}
-          </p>
-        )}
-        {failed ? (
-          <p className="p-6 text-sm text-muted-foreground">{t("error")}</p>
-        ) : rows === null ? (
-          <div className="h-96 animate-pulse bg-muted" aria-hidden />
-        ) : rows.length === 0 ? (
-          <EmptyState art="podium" title={t("empty")} body={t("pending")} className="m-4" />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-sm">
-              <thead>
-                <tr className="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                  <th className="px-3 py-2 font-semibold" scope="col">
-                    {t("cols.pos")}
-                  </th>
-                  <th className="px-2 py-2 font-semibold" scope="col">
-                    {t("cols.team")}
-                  </th>
-                  {(["p", "w", "d", "l"] as const).map((c) => (
-                    <th key={c} className="px-2 py-2 text-right font-semibold" scope="col">
-                      {t(`cols.${c}`)}
-                    </th>
-                  ))}
-                  <th
-                    className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
-                    scope="col"
-                  >
-                    {t("cols.gf")}
-                  </th>
-                  <th
-                    className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
-                    scope="col"
-                  >
-                    {t("cols.ga")}
-                  </th>
-                  <th className="px-2 py-2 text-right font-semibold" scope="col">
-                    {t("cols.gd")}
-                  </th>
-                  <th className="px-2 py-2 text-right font-semibold" scope="col">
-                    {t("cols.pts")}
-                  </th>
-                  <th
-                    className="hidden px-3 py-2 text-right font-semibold md:table-cell"
-                    scope="col"
-                  >
-                    {t("cols.form")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="tnum">
-                {groupedRows.map(([group, groupRows]) => (
-                  <Fragment key={group || "overall"}>
-                    {group && (
-                      <tr className="border-t-2 border-border bg-muted/50">
-                        <td colSpan={11} className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground">
-                          <div>Group {group}</div>
-                          {selectedLeague === "caf-cc" && group === "C" && groupRows.length === 3 && (
-                            <p className="mt-1 text-[10px] font-medium normal-case tracking-normal text-muted-foreground">
-                              One Group C place is pending completion of the preliminary-round tie.
-                            </p>
-                          )}
-                        </td>
-                      </tr>
-                    )}
-                    {groupRows.map((r) => (
-                  <tr key={`${group}-${r.team}`} className="border-t border-border">
-                    <td className="px-3 py-2.5">
-                      <span
-                        className={cn(
-                          "grid size-6 place-items-center rounded-md text-xs font-bold",
-                          r.position <= 4 ? "bg-primary text-primary-foreground" : "bg-muted",
-                        )}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
+              <h2 id="table-title" className="text-base">
+                <CompetitionBadge
+                  name={name}
+                  className="[&>span:last-child]:text-sm [&>span:last-child]:text-foreground"
+                />
+              </h2>
+              {updated && (
+                <span className="text-xs text-muted-foreground tnum">
+                  {t("updated", { when: `${formatDate(updated)} ${formatTime(updated)}` })}
+                  {rows?.[0]?.source_domain && (
+                    <> · {t("source", { domain: rows[0].source_domain })}</>
+                  )}
+                </span>
+              )}
+            </div>
+            {stale && (
+              <p
+                role="status"
+                className="flex items-start gap-2 border-b border-border bg-primary-soft px-4 py-2 text-xs font-medium text-primary"
+              >
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+                {t("stale")}
+              </p>
+            )}
+            {failed ? (
+              <p className="p-6 text-sm text-muted-foreground">{t("error")}</p>
+            ) : rows === null ? (
+              <div className="h-96 animate-pulse bg-muted" aria-hidden />
+            ) : rows.length === 0 ? (
+              <EmptyState art="podium" title={t("empty")} body={t("pending")} className="m-4" />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[560px] text-sm">
+                  <thead>
+                    <tr className="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+                      <th className="px-3 py-2 font-semibold" scope="col">
+                        {t("cols.pos")}
+                      </th>
+                      <th className="px-2 py-2 font-semibold" scope="col">
+                        {t("cols.team")}
+                      </th>
+                      {(["p", "w", "d", "l"] as const).map((c) => (
+                        <th key={c} className="px-2 py-2 text-right font-semibold" scope="col">
+                          {t(`cols.${c}`)}
+                        </th>
+                      ))}
+                      <th
+                        className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
+                        scope="col"
                       >
-                        {r.position}
-                      </span>
-                    </td>
-                    <td className="max-w-0 px-2 py-2.5">
-                      <span className="flex min-w-0 items-center gap-2">
-                        <TeamLogo
-                          team={r.team}
-                          sport="soccer"
-                          size="sm"
-                          className="size-6 shrink-0"
-                        />
-                        <span className="truncate font-semibold">{r.team}</span>
-                      </span>
-                    </td>
-                    <td className="px-2 py-2.5 text-right">{r.played}</td>
-                    <td className="px-2 py-2.5 text-right">{r.won}</td>
-                    <td className="px-2 py-2.5 text-right">{r.drawn}</td>
-                    <td className="px-2 py-2.5 text-right">{r.lost}</td>
-                    <td className="hidden px-2 py-2.5 text-right sm:table-cell">{r.goals_for}</td>
-                    <td className="hidden px-2 py-2.5 text-right sm:table-cell">
-                      {r.goals_against}
-                    </td>
-                    <td className="px-2 py-2.5 text-right">
-                      {r.goal_diff > 0 ? `+${r.goal_diff}` : r.goal_diff}
-                    </td>
-                    <td className="px-2 py-2.5 text-right font-display font-extrabold">
-                      {r.points}
-                    </td>
-                    <td className="hidden px-3 py-2.5 md:table-cell">
-                      <FormGuide team={r.team} entries={forms[r.team]?.entries} align="end" />
-                    </td>
-                  </tr>
+                        {t("cols.gf")}
+                      </th>
+                      <th
+                        className="hidden px-2 py-2 text-right font-semibold sm:table-cell"
+                        scope="col"
+                      >
+                        {t("cols.ga")}
+                      </th>
+                      <th className="px-2 py-2 text-right font-semibold" scope="col">
+                        {t("cols.gd")}
+                      </th>
+                      <th className="px-2 py-2 text-right font-semibold" scope="col">
+                        {t("cols.pts")}
+                      </th>
+                      <th
+                        className="hidden px-3 py-2 text-right font-semibold md:table-cell"
+                        scope="col"
+                      >
+                        {t("cols.form")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="tnum">
+                    {groupedRows.map(([group, groupRows]) => (
+                      <Fragment key={group || "overall"}>
+                        {group && (
+                          <tr className="border-t-2 border-border bg-muted/50">
+                            <td
+                              colSpan={11}
+                              className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground"
+                            >
+                              <div>Group {group}</div>
+                              {selectedLeague === "caf-cc" &&
+                                group === "C" &&
+                                groupRows.length === 3 && (
+                                  <p className="mt-1 text-[10px] font-medium normal-case tracking-normal text-muted-foreground">
+                                    One Group C place is pending completion of the preliminary-round
+                                    tie.
+                                  </p>
+                                )}
+                            </td>
+                          </tr>
+                        )}
+                        {groupRows.map((r) => (
+                          <tr key={`${group}-${r.team}`} className="border-t border-border">
+                            <td className="px-3 py-2.5">
+                              <span
+                                className={cn(
+                                  "grid size-6 place-items-center rounded-md text-xs font-bold",
+                                  r.position <= 4
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted",
+                                )}
+                              >
+                                {r.position}
+                              </span>
+                            </td>
+                            <td className="max-w-0 px-2 py-2.5">
+                              <span className="flex min-w-0 items-center gap-2">
+                                <TeamLogo
+                                  team={r.team}
+                                  sport="soccer"
+                                  size="sm"
+                                  className="size-6 shrink-0"
+                                />
+                                <span className="truncate font-semibold">{r.team}</span>
+                              </span>
+                            </td>
+                            <td className="px-2 py-2.5 text-right">{r.played}</td>
+                            <td className="px-2 py-2.5 text-right">{r.won}</td>
+                            <td className="px-2 py-2.5 text-right">{r.drawn}</td>
+                            <td className="px-2 py-2.5 text-right">{r.lost}</td>
+                            <td className="hidden px-2 py-2.5 text-right sm:table-cell">
+                              {r.goals_for}
+                            </td>
+                            <td className="hidden px-2 py-2.5 text-right sm:table-cell">
+                              {r.goals_against}
+                            </td>
+                            <td className="px-2 py-2.5 text-right">
+                              {r.goal_diff > 0 ? `+${r.goal_diff}` : r.goal_diff}
+                            </td>
+                            <td className="px-2 py-2.5 text-right font-display font-extrabold">
+                              {r.points}
+                            </td>
+                            <td className="hidden px-3 py-2.5 md:table-cell">
+                              <FormGuide
+                                team={r.team}
+                                entries={forms[r.team]?.entries}
+                                align="end"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </Fragment>
                     ))}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
         </>
       )}

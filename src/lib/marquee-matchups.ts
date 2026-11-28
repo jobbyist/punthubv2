@@ -93,18 +93,43 @@ export const MARQUEE_MATCHUPS: readonly MarqueeMatchup[] = [
 
 /** Curated teams shown in the home hero badge marquee, across all supported sports. */
 export const MARQUEE_BADGE_TEAMS = [
-  { sport: "soccer", team: "Orlando Pirates", label: "Orlando Pirates", competition: "Club football" },
+  {
+    sport: "soccer",
+    team: "Orlando Pirates",
+    label: "Orlando Pirates",
+    competition: "Club football",
+  },
   { sport: "soccer", team: "Kaizer Chiefs", label: "Kaizer Chiefs", competition: "Club football" },
   { sport: "rugby", team: "South Africa", label: "Springboks", competition: "International rugby" },
   { sport: "rugby", team: "New Zealand", label: "All Blacks", competition: "International rugby" },
   { sport: "soccer", team: "Real Madrid", label: "Real Madrid", competition: "Club football" },
   { sport: "soccer", team: "Barcelona", label: "FC Barcelona", competition: "Club football" },
-  { sport: "rugby", team: "Stormers", label: "DHL Stormers", competition: "United Rugby Championship" },
-  { sport: "rugby", team: "Bulls", label: "Vodacom Bulls", competition: "United Rugby Championship" },
+  {
+    sport: "rugby",
+    team: "Stormers",
+    label: "DHL Stormers",
+    competition: "United Rugby Championship",
+  },
+  {
+    sport: "rugby",
+    team: "Bulls",
+    label: "Vodacom Bulls",
+    competition: "United Rugby Championship",
+  },
   { sport: "basketball", team: "Boston Celtics", label: "Boston Celtics", competition: "NBA" },
   { sport: "basketball", team: "Los Angeles Lakers", label: "LA Lakers", competition: "NBA" },
-  { sport: "cricket", team: "South Africa", label: "Proteas", competition: "International cricket" },
-  { sport: "soccer", team: "Australia", label: "Australia · World Cup", competition: "FIFA World Cup" },
+  {
+    sport: "cricket",
+    team: "South Africa",
+    label: "Proteas",
+    competition: "International cricket",
+  },
+  {
+    sport: "soccer",
+    team: "Australia",
+    label: "Australia · World Cup",
+    competition: "FIFA World Cup",
+  },
 ] as const;
 /** The SSR/first-paint matchup: always the Soweto Derby, so server and client render the same markup. */
 export const DEFAULT_MATCHUP_ID: MarqueeMatchup["id"] = "soweto";

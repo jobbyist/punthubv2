@@ -474,9 +474,12 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       // 1. Discovery.
       const today = sastDate(now());
       calls++;
-      const targetedMatches = targetFixtures.slice(0, 3).map(
-        (fixture) => `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
-      );
+      const targetedMatches = targetFixtures
+        .slice(0, 3)
+        .map(
+          (fixture) =>
+            `${fixture.home} vs ${fixture.away} result score ${sastDate(new Date(fixture.kickoffAt))}`,
+        );
       const hits = await deps.search
         .search({
           objective:
@@ -570,7 +573,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
             to: sastDate(to),
             today,
             sources: retrySources,
-            retryHint: "The previous response was not valid JSON or did not match the required schema.",
+            retryHint:
+              "The previous response was not valid JSON or did not match the required schema.",
           }),
         );
         raw = parseObservations(answer.text);
@@ -642,7 +646,6 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     );
   }
 
-
   async function prioritizeByMemberInterest(items: Competition[]): Promise<Competition[]> {
     try {
       const { getPfieLearningSignals } = await import("./learning.server");
@@ -655,9 +658,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         score.set(key, Math.max(score.get(key) ?? 0, value));
       }
       // Reorder only: every selected competition is still processed and validation rules are unchanged.
-      return [...items].sort((a, b) =>
-        (score.get(b.name.trim().toLocaleLowerCase()) ?? 0) -
-        (score.get(a.name.trim().toLocaleLowerCase()) ?? 0)
+      return [...items].sort(
+        (a, b) =>
+          (score.get(b.name.trim().toLocaleLowerCase()) ?? 0) -
+          (score.get(a.name.trim().toLocaleLowerCase()) ?? 0),
       );
     } catch {
       // Learning data is an optional prioritisation signal, never a dependency for PFIE facts.

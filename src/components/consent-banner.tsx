@@ -10,7 +10,8 @@ export function ConsentBanner() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!readConsent() || readConsent()?.noticeVersion !== "2026-11-27-pfie-learning") setOpen(true);
+    if (!readConsent() || readConsent()?.noticeVersion !== "2026-11-27-pfie-learning")
+      setOpen(true);
     const reopen = () => setOpen(true);
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen);

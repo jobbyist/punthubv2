@@ -76,7 +76,11 @@ export function DuelBoard({ className }: { className?: string }) {
                   >
                     @{r.username}
                   </Link>
-                  {r.is_ai_participant && <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 align-middle text-[9px] font-bold uppercase tracking-wide text-primary">AI</span>}
+                  {r.is_ai_participant && (
+                    <span className="ml-1.5 rounded-full border border-primary/30 bg-primary-soft px-1.5 py-0.5 align-middle text-[9px] font-bold uppercase tracking-wide text-primary">
+                      AI
+                    </span>
+                  )}
                 </td>
                 <td className="py-2 text-right">{r.wins}</td>
                 <td className="py-2 text-right">{r.draws}</td>

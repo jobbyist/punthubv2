@@ -45,7 +45,15 @@ const TAB_GROUPS = [
   { label: "Community", items: ["users", "waitlist", "notifications", "push", "reports"] },
   {
     label: "Growth & partnerships",
-    items: ["newsroom", "campaigns", "annualPass", "affiliates", "endorsements", "draw", "bookmakers"],
+    items: [
+      "newsroom",
+      "campaigns",
+      "annualPass",
+      "affiliates",
+      "endorsements",
+      "draw",
+      "bookmakers",
+    ],
   },
   {
     label: "Platform",
@@ -154,7 +162,11 @@ function Admin() {
                         Current section
                       </p>
                       <h2 className="mt-0.5 text-xl font-semibold tracking-tight">
-                        {activeTab === "pfieLearning" ? "PFIE Learning" : activeTab ? t(`tabs.${activeTab}`) : t("title")}
+                        {activeTab === "pfieLearning"
+                          ? "PFIE Learning"
+                          : activeTab
+                            ? t(`tabs.${activeTab}`)
+                            : t("title")}
                       </h2>
                     </div>
                     <span className="hidden rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] font-medium text-muted-foreground sm:inline-flex">

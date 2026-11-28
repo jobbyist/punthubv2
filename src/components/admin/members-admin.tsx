@@ -162,7 +162,11 @@ function MemberCard({
         aria-expanded={open}
       >
         <span className="font-semibold">@{m.username}</span>
-        {m.isAiParticipant && <span className="rounded-full border border-primary/30 bg-primary-soft px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">AI participant</span>}
+        {m.isAiParticipant && (
+          <span className="rounded-full border border-primary/30 bg-primary-soft px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
+            AI participant
+          </span>
+        )}
         {m.foundingNumber !== null && (
           <Badge tone="green">{t("members.founding", { number: m.foundingNumber })}</Badge>
         )}
@@ -193,18 +197,45 @@ function MemberCard({
                 label={t("members.f.email")}
                 value={`${m.email ?? "-"}${m.emailConfirmed ? "" : ` (${t("members.unconfirmed")})`}`}
               />
-              <Info label="Email confirmation" value={m.emailConfirmedAt ? formatDateTime(m.emailConfirmedAt) : "Not confirmed"} />
-              <Info label="Phone confirmation" value={m.phoneConfirmedAt ? formatDateTime(m.phoneConfirmedAt) : "Not confirmed"} />
+              <Info
+                label="Email confirmation"
+                value={m.emailConfirmedAt ? formatDateTime(m.emailConfirmedAt) : "Not confirmed"}
+              />
+              <Info
+                label="Phone confirmation"
+                value={m.phoneConfirmedAt ? formatDateTime(m.phoneConfirmedAt) : "Not confirmed"}
+              />
               <Info label="Sign-in methods" value={m.authProviders.join(", ") || "Email"} />
-              <Info label="Registered" value={m.authCreatedAt ? formatDateTime(m.authCreatedAt) : formatDateTime(m.createdAt)} />
-              <Info label={t("members.f.lastSeen")} value={m.lastSignInAt ? formatDateTime(m.lastSignInAt) : "-"} />
+              <Info
+                label="Registered"
+                value={
+                  m.authCreatedAt ? formatDateTime(m.authCreatedAt) : formatDateTime(m.createdAt)
+                }
+              />
+              <Info
+                label={t("members.f.lastSeen")}
+                value={m.lastSignInAt ? formatDateTime(m.lastSignInAt) : "-"}
+              />
               <Info label="Account role" value={m.role} />
               <Info label="Account type" value={m.accountType} />
-              <Info label="Founding number" value={m.foundingNumber === null ? "-" : String(m.foundingNumber)} />
+              <Info
+                label="Founding number"
+                value={m.foundingNumber === null ? "-" : String(m.foundingNumber)}
+              />
               <Info label="Entitlements" value={m.entitlements.join(", ") || "None"} />
-              <Info label={t("members.f.marketing")} value={m.marketingOptIn ? t("members.yes") : t("members.no")} />
-              {m.suspendedUntil && <Info label={t("members.f.suspendedUntil")} value={formatDateTime(m.suspendedUntil)} />}
-              {m.limitedUntil && <Info label={t("members.f.limitedUntil")} value={formatDateTime(m.limitedUntil)} />}
+              <Info
+                label={t("members.f.marketing")}
+                value={m.marketingOptIn ? t("members.yes") : t("members.no")}
+              />
+              {m.suspendedUntil && (
+                <Info
+                  label={t("members.f.suspendedUntil")}
+                  value={formatDateTime(m.suspendedUntil)}
+                />
+              )}
+              {m.limitedUntil && (
+                <Info label={t("members.f.limitedUntil")} value={formatDateTime(m.limitedUntil)} />
+              )}
             </dl>
           </section>
 
@@ -219,7 +250,10 @@ function MemberCard({
               <Info label="Birth year" value={m.birthYear === null ? "-" : String(m.birthYear)} />
               <Info label="Province" value={m.province ?? "-"} />
               <Info label="18+ attested" value={m.ageAttested ? "Yes" : "No"} />
-              <Info label="POPIA consent recorded" value={m.popiaConsentAt ? formatDateTime(m.popiaConsentAt) : "-"} />
+              <Info
+                label="POPIA consent recorded"
+                value={m.popiaConsentAt ? formatDateTime(m.popiaConsentAt) : "-"}
+              />
               <Info label="Preferred language" value={m.language} />
               <Info label="Avatar URL" value={m.avatarUrl ?? "-"} />
             </dl>
@@ -230,11 +264,23 @@ function MemberCard({
             <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
               <Info label="Verification status" value={m.identityStatus ?? "Not submitted"} />
               <Info label="Verification method" value={m.identityMethod ?? "-"} />
-              <Info label="18+ confirmed by ID" value={m.identityOver18 === null ? "-" : m.identityOver18 ? "Yes" : "No"} />
-              <Info label="Document submitted" value={m.identitySubmittedAt ? formatDateTime(m.identitySubmittedAt) : "-"} />
-              <Info label="Review completed" value={m.identityReviewedAt ? formatDateTime(m.identityReviewedAt) : "-"} />
+              <Info
+                label="18+ confirmed by ID"
+                value={m.identityOver18 === null ? "-" : m.identityOver18 ? "Yes" : "No"}
+              />
+              <Info
+                label="Document submitted"
+                value={m.identitySubmittedAt ? formatDateTime(m.identitySubmittedAt) : "-"}
+              />
+              <Info
+                label="Review completed"
+                value={m.identityReviewedAt ? formatDateTime(m.identityReviewedAt) : "-"}
+              />
             </dl>
-            <p className="text-xs text-muted-foreground">ID document images and ID numbers are not retained after a verification decision; this view shows the verification outcome only.</p>
+            <p className="text-xs text-muted-foreground">
+              ID document images and ID numbers are not retained after a verification decision; this
+              view shows the verification outcome only.
+            </p>
           </section>
 
           <section className="space-y-2">

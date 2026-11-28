@@ -15,8 +15,11 @@ export interface PfieLearningSignal {
 
 export async function getPfieLearningSignals(limit = 50): Promise<PfieLearningSignal[]> {
   const db = supabaseAdmin as unknown as SupabaseClient;
-  const { data, error } = await db.from("pfie_learning_signals")
-    .select("event_type,sport,competition,market,category,interactions,pseudonymous_participants,last_seen_at")
+  const { data, error } = await db
+    .from("pfie_learning_signals")
+    .select(
+      "event_type,sport,competition,market,category,interactions,pseudonymous_participants,last_seen_at",
+    )
     .order("interactions", { ascending: false })
     .limit(Math.max(1, Math.min(limit, 100)));
   if (error) throw new Error(`PFIE learning signals: ${error.message}`);

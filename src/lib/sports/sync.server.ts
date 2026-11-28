@@ -11,14 +11,16 @@ export interface FixtureStore {
   openSince(
     since: Date,
     now: Date,
-  ): Promise<{
-    provider: string;
-    providerRef: string;
-    competition: string;
-    home: string;
-    away: string;
-    kickoffAt: string;
-  }[]>;
+  ): Promise<
+    {
+      provider: string;
+      providerRef: string;
+      competition: string;
+      home: string;
+      away: string;
+      kickoffAt: string;
+    }[]
+  >;
 }
 
 export interface SyncReport {

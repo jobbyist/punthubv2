@@ -274,20 +274,37 @@ function AuthPromptModal({ close }: { close: () => void }) {
         className="w-full max-w-md rounded-3xl border border-white/10 bg-[#101210] p-6 text-white shadow-2xl"
       >
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#4ADE80]">Members-only listening</span>
-          <button type="button" onClick={close} aria-label="Close" className="rounded-full p-2 text-white/60 hover:bg-white/10">
+          <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#4ADE80]">
+            Members-only listening
+          </span>
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close"
+            className="rounded-full p-2 text-white/60 hover:bg-white/10"
+          >
             <X className="size-4" />
           </button>
         </div>
-        <h2 id="good-sport-auth-title" className="mt-3 font-display text-2xl font-black">Join the conversation.</h2>
+        <h2 id="good-sport-auth-title" className="mt-3 font-display text-2xl font-black">
+          Join the conversation.
+        </h2>
         <p className="mt-2 text-sm leading-relaxed text-white/65">
-          Create a free Puntr account or log in to listen to The Good Sport. The series is open to explore; episode playback is reserved for members.
+          Create a free Puntr account or log in to listen to The Good Sport. The series is open to
+          explore; episode playback is reserved for members.
         </p>
         <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-          <Link to="/join" className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-[#16A34A] px-4 text-sm font-extrabold text-white hover:bg-[#15803D]">
+          <Link
+            to="/join"
+            className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-[#16A34A] px-4 text-sm font-extrabold text-white hover:bg-[#15803D]"
+          >
             Sign up or log in
           </Link>
-          <button type="button" onClick={close} className="h-11 rounded-xl border border-white/15 px-4 text-sm font-bold text-white/75 hover:bg-white/10">
+          <button
+            type="button"
+            onClick={close}
+            className="h-11 rounded-xl border border-white/15 px-4 text-sm font-bold text-white/75 hover:bg-white/10"
+          >
             Maybe later
           </button>
         </div>
@@ -399,7 +416,13 @@ export function TheGoodSportPromo() {
                   />
                 </div>
                 <div className="mt-2 flex justify-between text-[9px] font-semibold uppercase tracking-wider text-white/35">
-                  <span>{AUDIO_URL ? (isSignedIn ? "Episode preview" : "Sign in to listen") : "Premieres 5 Jan"}</span>
+                  <span>
+                    {AUDIO_URL
+                      ? isSignedIn
+                        ? "Episode preview"
+                        : "Sign in to listen"
+                      : "Premieres 5 Jan"}
+                  </span>
                   <span>—:—</span>
                 </div>
               </div>
@@ -644,7 +667,9 @@ export function TheGoodSportEpisodePage() {
                   : "The episode audio is being prepared."}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {isSignedIn ? "The player will activate when the episode master is uploaded." : "Episode playback is reserved for Puntr members."}
+              {isSignedIn
+                ? "The player will activate when the episode master is uploaded."
+                : "Episode playback is reserved for Puntr members."}
             </p>
             {!isSignedIn && (
               <button

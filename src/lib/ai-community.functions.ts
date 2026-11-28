@@ -60,7 +60,12 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         alreadyProvisioned: 0,
         failed: 0,
         members: [],
-        errors: [{ personaKey: "all", message: `Expected exactly 50 active personas; found ${personas.length}. No accounts were created.` }],
+        errors: [
+          {
+            personaKey: "all",
+            message: `Expected exactly 50 active personas; found ${personas.length}. No accounts were created.`,
+          },
+        ],
       };
     }
 
@@ -74,7 +79,13 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         alreadyProvisioned: personas.length - pending.length,
         failed: 0,
         members: [],
-        errors: [{ personaKey: "all", message: "There are not enough remaining founding places for all unprovisioned AI participants." }],
+        errors: [
+          {
+            personaKey: "all",
+            message:
+              "There are not enough remaining founding places for all unprovisioned AI participants.",
+          },
+        ],
       };
     }
 
@@ -82,7 +93,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
       page: 1,
       perPage: 1000,
     });
-    if (authListError) throw new Error(`Could not inspect existing synthetic identities: ${authListError.message}`);
+    if (authListError)
+      throw new Error(`Could not inspect existing synthetic identities: ${authListError.message}`);
     const byEmail = new Map((authData.users ?? []).map((u) => [u.email?.toLowerCase() ?? "", u]));
 
     const result: AiMemberProvisionResult = {
@@ -117,11 +129,14 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
               account_label: "AI participant",
             },
           });
-          if (createError || !created.user) throw new Error(createError?.message ?? "Auth user creation failed.");
+          if (createError || !created.user)
+            throw new Error(createError?.message ?? "Auth user creation failed.");
           user = created.user;
           byEmail.set(email, user);
-        } else if (user.app_metadata?.["is_ai_participant"] !== true
-          || user.app_metadata?.["synthetic_persona_key"] !== persona.persona_key) {
+        } else if (
+          user.app_metadata?.["is_ai_participant"] !== true ||
+          user.app_metadata?.["synthetic_persona_key"] !== persona.persona_key
+        ) {
           throw new Error("The reserved synthetic email already belongs to a non-AI account.");
         }
 
@@ -148,7 +163,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         result.ok = false;
         result.errors.push({
           personaKey: persona.persona_key,
-          message: error instanceof Error ? error.message.slice(0, 240) : "Unknown provisioning error.",
+          message:
+            error instanceof Error ? error.message.slice(0, 240) : "Unknown provisioning error.",
         });
       }
     }
@@ -164,7 +180,8 @@ export const adminProvisionAiFoundingMembers = createServerFn({ method: "POST" }
         founding_numbers: result.members.map((m) => m.foundingNumber),
       },
     });
-    if (auditError) console.error("AI founding member provisioning audit failed", auditError.message);
+    if (auditError)
+      console.error("AI founding member provisioning audit failed", auditError.message);
 
     return result;
   });

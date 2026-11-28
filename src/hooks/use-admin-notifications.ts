@@ -50,7 +50,6 @@ export function useAdminNotifications(enabled: boolean, onNew?: (n: AdminNotific
       void supabase.removeChannel(channel);
     };
     // onNew is read once per subscription on purpose.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, load]);
 
   const markDone = useCallback(

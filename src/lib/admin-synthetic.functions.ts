@@ -17,21 +17,49 @@ export interface SyntheticAdminSnapshot {
     spentUsd: number;
     updatedAt: string;
   } | null;
-  personas: { total: number; active: number; linkedMembers: number; lastRunAt: string | null; lastDecisionAt: string | null };
+  personas: {
+    total: number;
+    active: number;
+    linkedMembers: number;
+    lastRunAt: string | null;
+    lastDecisionAt: string | null;
+  };
   founding: { taken: number; cap: number; aiMembers: number };
   sessions: {
     total: number;
-    recent: { id: string; personaKey: string; type: string; startedAt: string; finishedAt: string | null; outcome: string; paths: string[]; error: string | null }[];
+    recent: {
+      id: string;
+      personaKey: string;
+      type: string;
+      startedAt: string;
+      finishedAt: string | null;
+      outcome: string;
+      paths: string[];
+      error: string | null;
+    }[];
   };
   research: {
     total: number;
-    recent: { fixtureKey: string; createdAt: string; decisionCount: number; sourceCount: number; noPickCount: number }[];
+    recent: {
+      fixtureKey: string;
+      createdAt: string;
+      decisionCount: number;
+      sourceCount: number;
+      noPickCount: number;
+    }[];
   };
   budget: {
     reserved: number;
     settled: number;
     failed: number;
-    recent: { provider: string; operation: string; estimatedUsd: number; settledUsd: number | null; status: string; createdAt: string }[];
+    recent: {
+      provider: string;
+      operation: string;
+      estimatedUsd: number;
+      settledUsd: number | null;
+      status: string;
+      createdAt: string;
+    }[];
   };
 }
 
@@ -54,36 +82,91 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
     // A preview or a deployment preceding the migration should render an explicit setup state.
     if (experimentError?.code === "42P01" || experimentError?.code === "PGRST205") {
       return {
-        configured: false, experiment: null,
+        configured: false,
+        experiment: null,
         personas: { total: 0, active: 0, linkedMembers: 0, lastRunAt: null, lastDecisionAt: null },
         founding: { taken: 0, cap: 100, aiMembers: 0 },
-        sessions: { total: 0, recent: [] }, research: { total: 0, recent: [] },
+        sessions: { total: 0, recent: [] },
+        research: { total: 0, recent: [] },
         budget: { reserved: 0, settled: 0, failed: 0, recent: [] },
       };
     }
     if (experimentError) throw experimentError;
     if (!experiment) {
       return {
-        configured: false, experiment: null,
+        configured: false,
+        experiment: null,
         personas: { total: 0, active: 0, linkedMembers: 0, lastRunAt: null, lastDecisionAt: null },
         founding: { taken: 0, cap: 100, aiMembers: 0 },
-        sessions: { total: 0, recent: [] }, research: { total: 0, recent: [] },
+        sessions: { total: 0, recent: [] },
+        research: { total: 0, recent: [] },
         budget: { reserved: 0, settled: 0, failed: 0, recent: [] },
       };
     }
 
-    const [personaResult, sessionCount, sessionResult, researchCount, researchResult, budgetResult, foundingCount, aiCount, foundingSpots] = await Promise.all([
-      db.from("synthetic_personas").select("persona_key,active,last_run_at,last_decision_at").eq("experiment_id", experiment.id).order("persona_key"),
-      db.from("synthetic_sessions").select("id", { count: "exact", head: true }).eq("experiment_id", experiment.id),
-      db.from("synthetic_sessions").select("id,persona_key,session_type,started_at,finished_at,outcome,page_paths,error_code").eq("experiment_id", experiment.id).order("started_at", { ascending: false }).limit(30),
-      db.from("synthetic_research").select("id", { count: "exact", head: true }).eq("experiment_id", experiment.id),
-      db.from("synthetic_research").select("fixture_key,created_at,response_json,source_urls").eq("experiment_id", experiment.id).order("created_at", { ascending: false }).limit(20),
-      db.from("synthetic_budget_ledger").select("provider,operation,estimated_usd,settled_usd,status,created_at").eq("experiment_id", experiment.id).order("created_at", { ascending: false }).limit(30),
-      db.from("synthetic_personas").select("profile_id", { count: "exact", head: true }).eq("experiment_id", experiment.id).not("profile_id", "is", null),
-      db.from("profiles").select("id", { count: "exact", head: true }).eq("is_ai_participant", true).not("founding_number", "is", null),
+    const [
+      personaResult,
+      sessionCount,
+      sessionResult,
+      researchCount,
+      researchResult,
+      budgetResult,
+      foundingCount,
+      aiCount,
+      foundingSpots,
+    ] = await Promise.all([
+      db
+        .from("synthetic_personas")
+        .select("persona_key,active,last_run_at,last_decision_at")
+        .eq("experiment_id", experiment.id)
+        .order("persona_key"),
+      db
+        .from("synthetic_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("experiment_id", experiment.id),
+      db
+        .from("synthetic_sessions")
+        .select("id,persona_key,session_type,started_at,finished_at,outcome,page_paths,error_code")
+        .eq("experiment_id", experiment.id)
+        .order("started_at", { ascending: false })
+        .limit(30),
+      db
+        .from("synthetic_research")
+        .select("id", { count: "exact", head: true })
+        .eq("experiment_id", experiment.id),
+      db
+        .from("synthetic_research")
+        .select("fixture_key,created_at,response_json,source_urls")
+        .eq("experiment_id", experiment.id)
+        .order("created_at", { ascending: false })
+        .limit(20),
+      db
+        .from("synthetic_budget_ledger")
+        .select("provider,operation,estimated_usd,settled_usd,status,created_at")
+        .eq("experiment_id", experiment.id)
+        .order("created_at", { ascending: false })
+        .limit(30),
+      db
+        .from("synthetic_personas")
+        .select("profile_id", { count: "exact", head: true })
+        .eq("experiment_id", experiment.id)
+        .not("profile_id", "is", null),
+      db
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("is_ai_participant", true)
+        .not("founding_number", "is", null),
       db.rpc("founding_spots_taken"),
     ]);
-    for (const result of [personaResult, sessionResult, researchResult, budgetResult, foundingCount, aiCount, foundingSpots]) {
+    for (const result of [
+      personaResult,
+      sessionResult,
+      researchResult,
+      budgetResult,
+      foundingCount,
+      aiCount,
+      foundingSpots,
+    ]) {
       if (result.error) throw result.error;
     }
 
@@ -93,7 +176,9 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
     const ledger = budgetResult.data ?? [];
     const recentResearch = research.map((row) => {
       const payload = row.response_json as Record<string, unknown>;
-      const decisions = Array.isArray(payload["decisions"]) ? payload["decisions"] as Record<string, unknown>[] : [];
+      const decisions = Array.isArray(payload["decisions"])
+        ? (payload["decisions"] as Record<string, unknown>[])
+        : [];
       return {
         fixtureKey: row.fixture_key,
         createdAt: row.created_at,
@@ -106,18 +191,34 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
     return {
       configured: true,
       experiment: {
-        id: experiment.id, label: experiment.label, status: experiment.status,
-        startsAt: experiment.starts_at, endsAt: experiment.ends_at,
+        id: experiment.id,
+        label: experiment.label,
+        status: experiment.status,
+        startsAt: experiment.starts_at,
+        endsAt: experiment.ends_at,
         budgetCapUsd: Number(experiment.budget_cap_usd),
-        reservedUsd: Number(experiment.reserved_usd), spentUsd: Number(experiment.spent_usd),
+        reservedUsd: Number(experiment.reserved_usd),
+        spentUsd: Number(experiment.spent_usd),
         updatedAt: experiment.updated_at,
       },
       personas: {
         total: personas.length,
         active: personas.filter((p) => p.active).length,
         linkedMembers: foundingCount.count ?? 0,
-        lastRunAt: personas.reduce<string | null>((latest, p) => !p.last_run_at ? latest : !latest || p.last_run_at > latest ? p.last_run_at : latest, null),
-        lastDecisionAt: personas.reduce<string | null>((latest, p) => !p.last_decision_at ? latest : !latest || p.last_decision_at > latest ? p.last_decision_at : latest, null),
+        lastRunAt: personas.reduce<string | null>(
+          (latest, p) =>
+            !p.last_run_at ? latest : !latest || p.last_run_at > latest ? p.last_run_at : latest,
+          null,
+        ),
+        lastDecisionAt: personas.reduce<string | null>(
+          (latest, p) =>
+            !p.last_decision_at
+              ? latest
+              : !latest || p.last_decision_at > latest
+                ? p.last_decision_at
+                : latest,
+          null,
+        ),
       },
       founding: {
         taken: typeof foundingSpots.data === "number" ? foundingSpots.data : 0,
@@ -127,9 +228,14 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
       sessions: {
         total: sessionCount.count ?? 0,
         recent: sessions.map((s) => ({
-          id: s.id, personaKey: s.persona_key, type: s.session_type,
-          startedAt: s.started_at, finishedAt: s.finished_at, outcome: s.outcome,
-          paths: s.page_paths ?? [], error: s.error_code,
+          id: s.id,
+          personaKey: s.persona_key,
+          type: s.session_type,
+          startedAt: s.started_at,
+          finishedAt: s.finished_at,
+          outcome: s.outcome,
+          paths: s.page_paths ?? [],
+          error: s.error_code,
         })),
       },
       research: { total: researchCount.count ?? 0, recent: recentResearch },
@@ -138,9 +244,12 @@ export const adminSyntheticExperiment = createServerFn({ method: "GET" })
         settled: ledger.filter((r) => r.status === "settled").length,
         failed: ledger.filter((r) => r.status === "failed").length,
         recent: ledger.map((r) => ({
-          provider: r.provider, operation: r.operation, estimatedUsd: Number(r.estimated_usd),
+          provider: r.provider,
+          operation: r.operation,
+          estimatedUsd: Number(r.estimated_usd),
           settledUsd: r.settled_usd === null ? null : Number(r.settled_usd),
-          status: r.status, createdAt: r.created_at,
+          status: r.status,
+          createdAt: r.created_at,
         })),
       },
     };

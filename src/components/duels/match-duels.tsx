@@ -29,7 +29,21 @@ export function MatchDuels({ fixture, open }: { fixture: ChallengeFixture; open:
         <h2 id="match-duels-title" className="text-lg">
           {t("match.title")}
         </h2>
-        {open && <ChallengeDialog fixtures={[fixture]} initialStake={50} shareAfterCreate trigger={<button type="button" className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98]">Challenge a Friend · 50 PP</button>} />}
+        {open && (
+          <ChallengeDialog
+            fixtures={[fixture]}
+            initialStake={50}
+            shareAfterCreate
+            trigger={
+              <button
+                type="button"
+                className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Challenge a Friend · 50 PP
+              </button>
+            }
+          />
+        )}
       </div>
       {duels === null ? (
         <div className="h-24 animate-pulse rounded-xl bg-muted" />

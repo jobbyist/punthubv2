@@ -191,12 +191,11 @@ export function PrivacyAf() {
         <section>
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Wie verantwoordelik is</h2>
           <p>
-            Puntr South Africa (puntr.co.za) word deur Gravitas Industries (Pty) Ltd
-            (CK No.: 2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is, bedryf.
-            Gravitas Industries (Pty) Ltd is die verantwoordelike party ingevolge die Wet op die
-            Beskerming van Persoonlike Inligting (POPIA). Ons inligtingsbeampte is die stigter,
-            [naam word bevestig], geregistreer by die Inligtingsreguleerder [registrasie hangend].
-            Kontak:{" "}
+            Puntr South Africa (puntr.co.za) word deur Gravitas Industries (Pty) Ltd (CK No.:
+            2024/596436/07), 'n maatskappy wat in Suid-Afrika geregistreer is, bedryf. Gravitas
+            Industries (Pty) Ltd is die verantwoordelike party ingevolge die Wet op die Beskerming
+            van Persoonlike Inligting (POPIA). Ons inligtingsbeampte is die stigter, [naam word
+            bevestig], geregistreer by die Inligtingsreguleerder [registrasie hangend]. Kontak:{" "}
             <a className="underline" href="mailto:privacy@puntr.co.za">
               privacy@puntr.co.za
             </a>
@@ -289,9 +288,9 @@ export function PrivacyAf() {
             nie. As jy 'n Handelsmerkambassadeur-aansoek indien, stoor ons die besonderhede en
             antwoorde wat jy verskaf sodat ons vennootskapspan dit kan beoordeel en jou kan kontak.
             Ons e-pos die aansoek aan partners@puntr.co.za deur ons e-posverskaffer. As jy 'n
-            profielfoto byvoeg, stoor ons 'n saamgeperste afskrif en
-            wys dit openbaar op jou profiel en langs jou gebruikersnaam; jy kan dit enige tyd op jou
-            rekeningbladsy verwyder. [attorney review]
+            profielfoto byvoeg, stoor ons 'n saamgeperste afskrif en wys dit openbaar op jou profiel
+            en langs jou gebruikersnaam; jy kan dit enige tyd op jou rekeningbladsy verwyder.
+            [attorney review]
           </p>
         </section>
 
@@ -317,10 +316,10 @@ export function PrivacyAf() {
           </h2>
           <p>
             Supabase (databasis, aantekening en regstreekse kennisgewings aan ons admins, gehuisves
-            in Ierland, EU), Vercel (webwerfhuisvesting), Google (slegs as jy kies om met Google
-            aan te teken), PayFast by Network (Suid-Afrika; dit verwerk betaalde Puntr-transaksies
-            en stuur die transaksieverwysing, bedrag en status terug), en Resend (transaksionele
-            e-pos, insluitend Handelsmerkambassadeur-aansoeke aan partners@puntr.co.za). Ozow is 'n
+            in Ierland, EU), Vercel (webwerfhuisvesting), Google (slegs as jy kies om met Google aan
+            te teken), PayFast by Network (Suid-Afrika; dit verwerk betaalde Puntr-transaksies en
+            stuur die transaksieverwysing, bedrag en status terug), en Resend (transaksionele e-pos,
+            insluitend Handelsmerkambassadeur-aansoeke aan partners@puntr.co.za). Ozow is 'n
             beplande toekomstige betaalopsie; dit is nog nie geïntegreer nie en ontvang tans geen
             persoonlike of betalingsinligting deur Puntr nie. Ons sal hierdie kennisgewing bywerk
             voordat dit geaktiveer word. Ons kry ook wedstryde en uitslae van 'n

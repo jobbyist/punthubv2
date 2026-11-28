@@ -66,7 +66,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (profile && profile.language !== locale && isEnabledLocale(profile.language)) {
       setLocale(profile.language);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.language]);
 
   const loadProfile = useCallback(async (userId: string | null) => {
@@ -165,7 +164,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     await removeCurrentPushDevice().catch((error) => {
-      console.warn("[Puntr PWA] Could not remove this device push subscription before sign-out", error);
+      console.warn(
+        "[Puntr PWA] Could not remove this device push subscription before sign-out",
+        error,
+      );
     });
     await supabase.auth.signOut();
     setSession(null);

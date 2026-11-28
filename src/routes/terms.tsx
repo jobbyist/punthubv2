@@ -44,11 +44,11 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">1. Introduction</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              Welcome to Puntr South Africa ("Puntr"), a platform operated by Gravitas Industries (Pty) Ltd
-              (CK No.: 2024/596436/07), a company registered in South Africa ("Gravitas"). In these
-              Terms, "we", "us" and "our" refer to Gravitas, the operator of Puntr. These Terms &
-              Conditions ("Terms") govern your access to and use of the Puntr platform, website,
-              mobile applications and related services (collectively, the "Service").
+              Welcome to Puntr South Africa ("Puntr"), a platform operated by Gravitas Industries
+              (Pty) Ltd (CK No.: 2024/596436/07), a company registered in South Africa ("Gravitas").
+              In these Terms, "we", "us" and "our" refer to Gravitas, the operator of Puntr. These
+              Terms & Conditions ("Terms") govern your access to and use of the Puntr platform,
+              website, mobile applications and related services (collectively, the "Service").
             </p>
             <p className="leading-relaxed text-muted-foreground">
               By accessing or using our Service, you agree to be bound by these Terms. If you do not
@@ -153,22 +153,22 @@ function Terms() {
             <p className="mb-3 leading-relaxed text-muted-foreground">
               <strong>Payment processing:</strong> Payments for paid Puntr features are currently
               processed by PayFast by Network. When you choose to pay, you may be redirected to
-              PayFast&apos;s hosted checkout. PayFast receives and processes your payment credentials
-              directly. Puntr receives the order or subscription reference, transaction reference,
-              amount, payment status and relevant dates so we can provide the purchased service,
-              reconcile transactions and handle support requests. We do not see or store your full
-              card or bank details. The Founding Annual Pass is a once-off R299 payment; reserving it
-              on Puntr is free and the secure PayFast payment link is sent by email.
+              PayFast&apos;s hosted checkout. PayFast receives and processes your payment
+              credentials directly. Puntr receives the order or subscription reference, transaction
+              reference, amount, payment status and relevant dates so we can provide the purchased
+              service, reconcile transactions and handle support requests. We do not see or store
+              your full card or bank details. The Founding Annual Pass is a once-off R299 payment;
+              reserving it on Puntr is free and the secure PayFast payment link is sent by email.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
               <strong>Payment methods:</strong> PayFast by Network is the current payment option.
               Ozow is planned but is not yet integrated or available at checkout. We will update
-              these Terms and our Privacy Notice before Ozow is enabled. PayFast&apos;s own terms and
-              privacy notice also apply to the payment processing it performs.
+              these Terms and our Privacy Notice before Ozow is enabled. PayFast&apos;s own terms
+              and privacy notice also apply to the payment processing it performs.
             </p>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              <strong>Third-party services:</strong> If you follow a link to a licensed bookmaker
-              or retailer, you are subject to that company&apos;s terms, privacy policy and payment
+              <strong>Third-party services:</strong> If you follow a link to a licensed bookmaker or
+              retailer, you are subject to that company&apos;s terms, privacy policy and payment
               terms. Puntr is not responsible for their practices, policies or services. Puntr does
               not accept bets, hold betting funds or handle bookmaker winnings.
             </p>
@@ -309,7 +309,9 @@ function Terms() {
           </section>
 
           <section className="mb-8">
-            <h2 className="mb-3 text-xl font-semibold">10. Paid features, billing and cancellation</h2>
+            <h2 className="mb-3 text-xl font-semibold">
+              10. Paid features, billing and cancellation
+            </h2>
             <p className="leading-relaxed text-muted-foreground">
               Where checkout is enabled, Pay-As-You-Go credit packs and Puntr Pro may be purchased
               through your Wallet. Credit-pack prices and included credits are displayed before
@@ -321,8 +323,8 @@ function Terms() {
               paid period. The Founding Annual Pass is a separate once-off R299 offer and does not
               renew automatically. Refunds and payment queries are handled under the Refunds page,
               the terms shown at checkout and applicable law. Credits we grant for promotions or
-              testing are not purchases and have no cash value. Paying never earns extra points,
-              a higher prediction ranking or prize eligibility.
+              testing are not purchases and have no cash value. Paying never earns extra points, a
+              higher prediction ranking or prize eligibility.
             </p>
           </section>
 
@@ -364,8 +366,8 @@ function Terms() {
             <p className="mb-3 leading-relaxed text-muted-foreground">
               All content, features, and functionality of the Service, including but not limited to
               text, graphics, logos, icons, images, audio clips, and software, are the exclusive
-              property of Gravitas Industries (Pty) Ltd and are protected by South African and international
-              copyright, trademark, and other intellectual property laws.
+              property of Gravitas Industries (Pty) Ltd and are protected by South African and
+              international copyright, trademark, and other intellectual property laws.
             </p>
             <p className="leading-relaxed text-muted-foreground">
               You may not reproduce, distribute, modify, create derivative works, or exploit any
@@ -407,10 +409,10 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">16. Limitation of Liability</h2>
             <p className="mb-3 leading-relaxed text-muted-foreground">
-              TO THE MAXIMUM EXTENT PERMITTED BY SOUTH AFRICAN LAW, GRAVITAS INDUSTRIES (PTY) LTD SHALL NOT BE
-              LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES,
-              INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR OTHER INTANGIBLE LOSSES ARISING
-              FROM:
+              TO THE MAXIMUM EXTENT PERMITTED BY SOUTH AFRICAN LAW, GRAVITAS INDUSTRIES (PTY) LTD
+              SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE
+              DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR OTHER INTANGIBLE
+              LOSSES ARISING FROM:
             </p>
             <ul className="mb-3 ml-5 list-disc space-y-1 text-muted-foreground">
               <li>Your use or inability to use the Service</li>
@@ -424,10 +426,10 @@ function Terms() {
           <section className="mb-8">
             <h2 className="mb-3 text-xl font-semibold">17. Indemnification</h2>
             <p className="leading-relaxed text-muted-foreground">
-              You agree to indemnify, defend, and hold harmless Gravitas Industries (Pty) Ltd, its officers,
-              directors, employees, and affiliates from any claims, damages, losses, liabilities,
-              and expenses (including legal fees) arising from your use of the Service or violation
-              of these Terms.
+              You agree to indemnify, defend, and hold harmless Gravitas Industries (Pty) Ltd, its
+              officers, directors, employees, and affiliates from any claims, damages, losses,
+              liabilities, and expenses (including legal fees) arising from your use of the Service
+              or violation of these Terms.
             </p>
           </section>
 

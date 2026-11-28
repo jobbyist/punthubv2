@@ -30,7 +30,12 @@ export async function createQuotaClaim(feature = "unattributed"): Promise<Claim>
     try {
       const { error } = await db.from("api_call_events").insert({ provider, feature });
       if (error) {
-        console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
+        console.warn(
+          "quota: call attribution could not be recorded",
+          provider,
+          feature,
+          error.message,
+        );
       }
     } catch {
       console.warn("quota: call attribution unavailable", provider, feature);

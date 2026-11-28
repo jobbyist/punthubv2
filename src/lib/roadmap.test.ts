@@ -27,16 +27,10 @@ describe("roadmap", () => {
 
   it("spaces each post-January category by at least one full month", () => {
     const items = buildRoadmap({ today: "2026-11-05", launch, enabled: ["soccer"] });
-    const windows = ["racing", "combat", "athletics", "cricket", "tennis"].map((sport) =>
-      items.find((i) => i.sport === sport)!.from,
+    const windows = ["racing", "combat", "athletics", "cricket", "tennis"].map(
+      (sport) => items.find((i) => i.sport === sport)!.from,
     );
-    expect(windows).toEqual([
-      "2027-03-02",
-      "2027-05-04",
-      "2027-07-06",
-      "2027-09-07",
-      "2027-11-09",
-    ]);
+    expect(windows).toEqual(["2027-03-02", "2027-05-04", "2027-07-06", "2027-09-07", "2027-11-09"]);
   });
 
   it("only shows a sport as live when it is switched on", () => {

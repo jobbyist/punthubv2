@@ -203,10 +203,25 @@ function Roadmap() {
                 </div>
               </>
             );
-            const className = "card-surface flex gap-3 p-4 text-left transition-colors hover:border-primary/50";
-            if (key === "fantasyArena") return <Link key={key} to="/fantasy-arena" className={className}>{content}</Link>;
-            if (key === "ambassadors") return <Link key={key} to="/brand-ambassadors" className={className}>{content}</Link>;
-            return <div key={key} className={className}>{content}</div>;
+            const className =
+              "card-surface flex gap-3 p-4 text-left transition-colors hover:border-primary/50";
+            if (key === "fantasyArena")
+              return (
+                <Link key={key} to="/fantasy-arena" className={className}>
+                  {content}
+                </Link>
+              );
+            if (key === "ambassadors")
+              return (
+                <Link key={key} to="/brand-ambassadors" className={className}>
+                  {content}
+                </Link>
+              );
+            return (
+              <div key={key} className={className}>
+                {content}
+              </div>
+            );
           })}
         </div>
       </section>

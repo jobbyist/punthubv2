@@ -63,10 +63,18 @@ export function ChallengeDialog({
 
   useEffect(() => {
     if (!open) return;
-    fetchDuelConfig().then((next) => {
-      setConfig(next);
-      setStake(next.stakes_enabled && initialStake >= next.stake_min && initialStake <= next.stake_max && (next.transferable ?? 0) >= initialStake ? initialStake : 0);
-    })
+    fetchDuelConfig()
+      .then((next) => {
+        setConfig(next);
+        setStake(
+          next.stakes_enabled &&
+            initialStake >= next.stake_min &&
+            initialStake <= next.stake_max &&
+            (next.transferable ?? 0) >= initialStake
+            ? initialStake
+            : 0,
+        );
+      })
       .catch((e: unknown) => console.error("duel config failed", e));
   }, [open]);
 
@@ -242,8 +250,12 @@ export function ChallengeDialog({
           </div>
 
           {shareAfterCreate && stake !== 50 && (
-            <p role="status" className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-2 text-xs text-muted-foreground">
-              A 50 PuntPoints stake is required for this quick challenge. Check your available balance and duel stake settings.
+            <p
+              role="status"
+              className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-2 text-xs text-muted-foreground"
+            >
+              A 50 PuntPoints stake is required for this quick challenge. Check your available
+              balance and duel stake settings.
             </p>
           )}
           {error && (

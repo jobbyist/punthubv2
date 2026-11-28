@@ -154,7 +154,11 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
       sources = projectSources(updates);
       await log("research", "info", `${sources.length} approved project update(s)`);
     } else {
-      const brief = sportsBrief(sastDayNumber(started) + (options.beatOffset ?? 0), started, options.slot);
+      const brief = sportsBrief(
+        sastDayNumber(started) + (options.beatOffset ?? 0),
+        started,
+        options.slot,
+      );
       beat = brief.beat;
       await log("topic", "info", `beat: ${beat}`, brief.queries);
       sources = await research(deps, brief, log, options.slot);
@@ -259,7 +263,10 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     let reviewRan = false;
     if (budgetLeft() > 12_000) {
       try {
-        const review = await router.generate(reviewRequest(draft, sources, options.slot), written.model);
+        const review = await router.generate(
+          reviewRequest(draft, sources, options.slot),
+          written.model,
+        );
         const parsed = parseReview(review.text);
         if (parsed) {
           reviewerUnsupported = parsed;
@@ -301,9 +308,7 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
     // Parallel-authored articles publish for owner review even when QA is below the configured threshold.
     // QA flags and score remain attached to the article and the alert; this is not recorded as a QA pass.
     const publish =
-      settings.enabled &&
-      settings.autoPublish &&
-      (passed || written.model === "parallel-medium");
+      settings.enabled && settings.autoPublish && (passed || written.model === "parallel-medium");
 
     if (options.dry) {
       await store.finishJob(job.id, {
@@ -322,7 +327,16 @@ export async function runContentJob(deps: PipelineDeps, options: RunOptions): Pr
         title: draft.title,
         excerpt: draft.excerpt,
         body: draft.body,
-        category: options.slot === "breaking" ? "breaking" : options.slot === "editorial" ? "editorial" : options.slot === "intelligence" ? "intelligence" : kind === "sports" ? "sports" : "product",
+        category:
+          options.slot === "breaking"
+            ? "breaking"
+            : options.slot === "editorial"
+              ? "editorial"
+              : options.slot === "intelligence"
+                ? "intelligence"
+                : kind === "sports"
+                  ? "sports"
+                  : "product",
         tags: draft.tags.slice(0, 6).map((t) => t.toLowerCase()),
         seoTitle: draft.seoTitle.slice(0, 60),
         seoDescription: draft.seoDescription.slice(0, 160),

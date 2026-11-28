@@ -28,11 +28,25 @@ type AmbassadorStage =
 
 const SEGMENTS: Segment[] = ["punter", "tipster", "hybrid", "community_admin"];
 const STAGES: Stage[] = [
-  "new", "engaged", "contacted", "replied", "interested", "link_sent",
-  "follow_up", "registered", "not_interested", "do_not_contact",
+  "new",
+  "engaged",
+  "contacted",
+  "replied",
+  "interested",
+  "link_sent",
+  "follow_up",
+  "registered",
+  "not_interested",
+  "do_not_contact",
 ];
 const AMBASSADOR_STAGES: AmbassadorStage[] = [
-  "not_approached", "identified", "approached", "in_discussion", "agreed", "active", "declined",
+  "not_approached",
+  "identified",
+  "approached",
+  "in_discussion",
+  "agreed",
+  "active",
+  "declined",
 ];
 
 async function adminDb(context: Ctx): Promise<SupabaseClient | null> {
@@ -119,8 +133,16 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
     const [leadResult, memberResult, humanResult, aiResult, activityResult] = await Promise.all([
       db.from("founding_hq_leads").select("*").order("created_at", { ascending: false }).limit(500),
       db.rpc("founding_spots_taken"),
-      db.from("profiles").select("id", { count: "exact", head: true }).not("founding_number", "is", null).eq("is_ai_participant", false),
-      db.from("profiles").select("id", { count: "exact", head: true }).not("founding_number", "is", null).eq("is_ai_participant", true),
+      db
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .not("founding_number", "is", null)
+        .eq("is_ai_participant", false),
+      db
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .not("founding_number", "is", null)
+        .eq("is_ai_participant", true),
       db
         .from("founding_hq_activities")
         .select("id, lead_id, kind, body, created_at")
@@ -158,7 +180,10 @@ export const adminFoundingHqOverview = createServerFn({ method: "GET" })
       foundingMembers: typeof memberResult.data === "number" ? memberResult.data : 0,
       humanMembers: humanResult.count ?? 0,
       aiMembers: aiResult.count ?? 0,
-      reservedSpots: Math.max(0, Number(memberResult.data ?? 0) - (humanResult.count ?? 0) - (aiResult.count ?? 0)),
+      reservedSpots: Math.max(
+        0,
+        Number(memberResult.data ?? 0) - (humanResult.count ?? 0) - (aiResult.count ?? 0),
+      ),
       target: 100,
       leads,
       activities: (activityResult.data ?? []).map((row) => ({
@@ -177,22 +202,27 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
     const o = obj(input);
     const displayName = text(o["displayName"], 120);
     if (!displayName || displayName.length < 2) throw new Error("A name or handle is required");
-    const segment = typeof o["segment"] === "string" && SEGMENTS.includes(o["segment"] as Segment)
-      ? (o["segment"] as Segment)
-      : "punter";
-    const stage = typeof o["stage"] === "string" && STAGES.includes(o["stage"] as Stage)
-      ? (o["stage"] as Stage)
-      : "new";
+    const segment =
+      typeof o["segment"] === "string" && SEGMENTS.includes(o["segment"] as Segment)
+        ? (o["segment"] as Segment)
+        : "punter";
+    const stage =
+      typeof o["stage"] === "string" && STAGES.includes(o["stage"] as Stage)
+        ? (o["stage"] as Stage)
+        : "new";
     const ambassadorStage =
-      typeof o["ambassadorStage"] === "string" && AMBASSADOR_STAGES.includes(o["ambassadorStage"] as AmbassadorStage)
+      typeof o["ambassadorStage"] === "string" &&
+      AMBASSADOR_STAGES.includes(o["ambassadorStage"] as AmbassadorStage)
         ? (o["ambassadorStage"] as AmbassadorStage)
         : "not_approached";
     const followers =
       typeof o["followerCount"] === "number" && Number.isFinite(o["followerCount"])
         ? Math.max(0, Math.min(100_000_000, Math.floor(o["followerCount"])))
         : null;
-    if (o["registered"] !== undefined && typeof o["registered"] !== "boolean") throw new Error("Invalid registration flag");
-    if (o["isAmbassador"] !== undefined && typeof o["isAmbassador"] !== "boolean") throw new Error("Invalid ambassador flag");
+    if (o["registered"] !== undefined && typeof o["registered"] !== "boolean")
+      throw new Error("Invalid registration flag");
+    if (o["isAmbassador"] !== undefined && typeof o["isAmbassador"] !== "boolean")
+      throw new Error("Invalid ambassador flag");
     const id = o["id"] === undefined || o["id"] === null || o["id"] === "" ? null : uuid(o["id"]);
     if (o["id"] && !id) throw new Error("Invalid lead ID");
     return {
@@ -201,7 +231,8 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
       xHandle: text(o["xHandle"], 80)?.replace(/^@/, "") ?? null,
       profileUrl: (() => {
         const url = text(o["profileUrl"], 500);
-        if (url && !(url.startsWith("https://") || url.startsWith("http://"))) throw new Error("Invalid profile URL");
+        if (url && !(url.startsWith("https://") || url.startsWith("http://")))
+          throw new Error("Invalid profile URL");
         return url;
       })(),
       segment,
@@ -248,7 +279,10 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
         .maybeSingle();
       if (error) return { ok: false, code: "error", message: error.message };
       if (!saved) return { ok: false, code: "not_found" };
-      await logAdminAction(db, ctx.userId, "founding_hq.lead_updated", { leadId: data.id, stage: row.stage });
+      await logAdminAction(db, ctx.userId, "founding_hq.lead_updated", {
+        leadId: data.id,
+        stage: row.stage,
+      });
       return { ok: true, id: data.id };
     }
 
@@ -258,7 +292,10 @@ export const adminSaveFoundingHqLead = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error) return { ok: false, code: "error", message: error.message };
-    await logAdminAction(db, ctx.userId, "founding_hq.lead_created", { leadId: saved.id, stage: row.stage });
+    await logAdminAction(db, ctx.userId, "founding_hq.lead_created", {
+      leadId: saved.id,
+      stage: row.stage,
+    });
     return { ok: true, id: saved.id };
   });
 
@@ -289,7 +326,9 @@ export const adminAddFoundingHqActivity = createServerFn({ method: "POST" })
     const o = obj(input);
     const leadId = uuid(o["leadId"]);
     const body = text(o["body"], 2000);
-    const kind = ["note", "reply", "meeting", "status", "referral", "other"].includes(String(o["kind"]))
+    const kind = ["note", "reply", "meeting", "status", "referral", "other"].includes(
+      String(o["kind"]),
+    )
       ? String(o["kind"])
       : "note";
     if (!leadId || !body) throw new Error("A lead and activity note are required");
@@ -306,6 +345,9 @@ export const adminAddFoundingHqActivity = createServerFn({ method: "POST" })
       created_by: ctx.userId,
     });
     if (error) return { ok: false, code: "error", message: error.message };
-    await logAdminAction(db, ctx.userId, "founding_hq.activity_added", { leadId: data.leadId, kind: data.kind });
+    await logAdminAction(db, ctx.userId, "founding_hq.activity_added", {
+      leadId: data.leadId,
+      kind: data.kind,
+    });
     return { ok: true };
   });

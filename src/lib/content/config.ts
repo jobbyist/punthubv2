@@ -56,7 +56,10 @@ function clean(value: string | undefined): string | null {
 }
 
 export function parseModelList(raw: string | undefined): { models: string[]; refused: string[] } {
-  const wanted = (raw ?? "").split(",").map((m) => m.trim()).filter(Boolean);
+  const wanted = (raw ?? "")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean);
   const list = wanted.length > 0 ? wanted : [...DEFAULT_GEMINI_MODELS];
   const ordered = ["parallel-medium", ...list.filter((m) => m !== "parallel-medium")];
   const models: string[] = [];
@@ -107,8 +110,10 @@ export function redact(secret: string | null): string {
   return `${secret.slice(0, 2)}…${secret.slice(-2)}`;
 }
 
-
 /** Every Newsroom slot uses Parallel Medium; Gemini remains available only to the separate PFIE/odds pipelines. */
-export function modelsForContentSlot(_models: readonly string[], _slot?: "breaking" | "editorial" | "intelligence"): string[] {
+export function modelsForContentSlot(
+  _models: readonly string[],
+  _slot?: "breaking" | "editorial" | "intelligence",
+): string[] {
   return ["parallel-medium"];
 }

@@ -57,7 +57,8 @@ const NOT_YOU =
 const SIGN: [string, string] = ["The Puntr team", "Puntr - South Africa"];
 
 /** Pages the confirm screen may send a member on to after verifying. Anything else falls back to the default. */
-const ALLOWED_NEXT = /^\/(?!\/|join(?:\/|$)|auth(?:\/|$)|api(?:\/|$)|admin(?:\/|$)|logout(?:\/|$))(?:[a-zA-Z0-9._~-]+(?:\/[a-zA-Z0-9._~-]+)*)?(?:\?[\w=&%.,:+@~-]*)?(?:#[\w-]*)?$/;
+const ALLOWED_NEXT =
+  /^\/(?!\/|join(?:\/|$)|auth(?:\/|$)|api(?:\/|$)|admin(?:\/|$)|logout(?:\/|$))(?:[a-zA-Z0-9._~-]+(?:\/[a-zA-Z0-9._~-]+)*)?(?:\?[\w=&%.,:+@~-]*)?(?:#[\w-]*)?$/;
 
 export function safeNext(value: string | null | undefined, fallback: string): string {
   if (!value) return fallback;

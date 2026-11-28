@@ -60,7 +60,9 @@ function DevPage() {
   if (!page || page.status === "forbidden") {
     return (
       <main className="mx-auto flex min-h-[65vh] max-w-xl flex-col items-center justify-center px-4 text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Puntr · Internal</p>
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
+          Puntr · Internal
+        </p>
         <h1 className="mt-3 text-2xl font-bold">Admin access required</h1>
         <p className="mt-2 max-w-md text-sm text-muted-foreground">
           Sign in to Puntr with an administrator account, then open this page again.

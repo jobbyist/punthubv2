@@ -23,7 +23,16 @@ const ALLOWED_EVENTS = new Set([
   "sport_filter_changed",
   "search_submitted",
 ]);
-const ALLOWED_KEYS = new Set(["sport", "competition", "market", "category", "slug", "what", "source", "position"]);
+const ALLOWED_KEYS = new Set([
+  "sport",
+  "competition",
+  "market",
+  "category",
+  "slug",
+  "what",
+  "source",
+  "position",
+]);
 
 function cleanEventData(value: unknown): Record<string, string> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
@@ -38,7 +47,9 @@ function cleanEventData(value: unknown): Record<string, string> {
 
 export const recordPfieActivity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((data: { event: string; payload?: Record<string, unknown>; fixtureId?: string }) => data)
+  .validator(
+    (data: { event: string; payload?: Record<string, unknown>; fixtureId?: string }) => data,
+  )
   .handler(async ({ context, data }): Promise<boolean> => {
     if (!ALLOWED_EVENTS.has(data.event)) return false;
     const db = context.supabase as unknown as SupabaseClient;
@@ -58,13 +69,17 @@ export const recordPfieActivity = createServerFn({ method: "POST" })
     const { error } = await db.from("pfie_user_activity_events").insert({
       user_id: context.userId,
       event_type: data.event,
-      fixture_id: typeof data.fixtureId === "string" && /^[0-9a-f-]{36}$/i.test(data.fixtureId) ? data.fixtureId : null,
+      fixture_id:
+        typeof data.fixtureId === "string" && /^[0-9a-f-]{36}$/i.test(data.fixtureId)
+          ? data.fixtureId
+          : null,
       event_data: cleanEventData(data.payload),
       source: "client",
     });
     if (error) {
       // Consent can be withdrawn between the read and insert; telemetry must never break product UX.
-      if (error.code !== "42501") console.warn("[pfie-learning] activity capture skipped", error.message);
+      if (error.code !== "42501")
+        console.warn("[pfie-learning] activity capture skipped", error.message);
       return false;
     }
     return true;
@@ -97,12 +112,21 @@ export const setPfieLearningConsent = createServerFn({ method: "POST" })
         .eq("user_id", context.userId)
         .maybeSingle();
       if (subject?.subject_key) {
-        const { error } = await admin.from("pfie_learning_examples").delete().eq("subject_key", subject.subject_key);
+        const { error } = await admin
+          .from("pfie_learning_examples")
+          .delete()
+          .eq("subject_key", subject.subject_key);
         if (error) throw error;
       }
-      const { error: eventError } = await admin.from("pfie_user_activity_events").delete().eq("user_id", context.userId);
+      const { error: eventError } = await admin
+        .from("pfie_user_activity_events")
+        .delete()
+        .eq("user_id", context.userId);
       if (eventError) throw eventError;
-      const { error: mapError } = await admin.from("pfie_learning_subject_map").delete().eq("user_id", context.userId);
+      const { error: mapError } = await admin
+        .from("pfie_learning_subject_map")
+        .delete()
+        .eq("user_id", context.userId);
       if (mapError) throw mapError;
     }
     return true;

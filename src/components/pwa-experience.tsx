@@ -59,18 +59,22 @@ export function PwaExperience() {
     else window.addEventListener("load", refreshWorker, { once: true });
 
     // Re-check whenever a user returns to the installed PWA after a deployment.
-    const onFocus = () => void registration?.update().catch((error) => {
-      console.error("[Puntr PWA] Service worker focus update failed", error);
-    });
+    const onFocus = () =>
+      void registration?.update().catch((error) => {
+        console.error("[Puntr PWA] Service worker focus update failed", error);
+      });
     const onVisibility = () => {
       if (document.visibilityState === "visible") onFocus();
     };
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibility);
     // Check periodically while an installed PWA remains open, not only on navigation or refocus.
-    const updateInterval = window.setInterval(() => {
-      if (document.visibilityState === "visible") onFocus();
-    }, 5 * 60 * 1000);
+    const updateInterval = window.setInterval(
+      () => {
+        if (document.visibilityState === "visible") onFocus();
+      },
+      5 * 60 * 1000,
+    );
 
     return () => {
       disposed = true;

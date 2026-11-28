@@ -42,7 +42,9 @@ describe("buildDraftRequest", () => {
   });
   it("keeps institutional requests proportionate to the organisation mandate", () => {
     const r = buildDraftRequest({ ...org }, "outreach", "michael", "", []);
-    expect(r.system).toContain("Ask for formal recognition or endorsement only when the brief explicitly requests it");
+    expect(r.system).toContain(
+      "Ask for formal recognition or endorsement only when the brief explicitly requests it",
+    );
     expect(r.system).toContain("Do not ask regulators to endorse Puntr");
   });
   it("lists earlier subjects for a follow-up", () => {

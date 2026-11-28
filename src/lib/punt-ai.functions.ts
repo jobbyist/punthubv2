@@ -4,7 +4,12 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
-import { createGemini, createParallelExtract, createParallelResponses, createParallelSearch } from "@/lib/content/providers.server";
+import {
+  createGemini,
+  createParallelExtract,
+  createParallelResponses,
+  createParallelSearch,
+} from "@/lib/content/providers.server";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { cleanText, domainOf } from "@/lib/content/research";
 import { createQuotaClaim, guardExtract, guardLlm, guardSearch } from "@/lib/quota.server";
@@ -82,7 +87,9 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 
 function isTrustedLiveDomain(domain: string): boolean {
   const host = domain.toLowerCase();
-  return LIVE_TRUSTED_DOMAINS.some((candidate) => host === candidate || host.endsWith(`.${candidate}`));
+  return LIVE_TRUSTED_DOMAINS.some(
+    (candidate) => host === candidate || host.endsWith(`.${candidate}`),
+  );
 }
 
 async function sha256(value: string): Promise<string> {
@@ -96,7 +103,10 @@ function parseAnswer(text: string): string {
     const parsed = JSON.parse(text) as { answer?: unknown };
     if (typeof parsed.answer === "string" && parsed.answer.trim()) return parsed.answer.trim();
   } catch {
-    const unfenced = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    const unfenced = text
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/, "")
+      .trim();
     try {
       const parsed = JSON.parse(unfenced) as { answer?: unknown };
       if (typeof parsed.answer === "string" && parsed.answer.trim()) return parsed.answer.trim();
@@ -130,7 +140,9 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
       .limit(12),
     db
       .from("league_standings")
-      .select("competition_key, competition, group_name, team, position, played, won, drawn, lost, goals_for, goals_against, points, synced_at")
+      .select(
+        "competition_key, competition, group_name, team, position, played, won, drawn, lost, goals_for, goals_against, points, synced_at",
+      )
       .in("competition_key", [...STANDINGS_LAUNCH_KEYS])
       .order("competition_key")
       .order("group_name")
@@ -144,10 +156,14 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
       .limit(6),
   ]);
 
-  if (fixturesResult.error) throw new Error(`Puntr fixture context unavailable: ${fixturesResult.error.message}`);
-  if (resultsResult.error) throw new Error(`Puntr results context unavailable: ${resultsResult.error.message}`);
-  if (standingsResult.error) throw new Error(`Puntr standings context unavailable: ${standingsResult.error.message}`);
-  if (articlesResult.error) throw new Error(`Puntr newsroom context unavailable: ${articlesResult.error.message}`);
+  if (fixturesResult.error)
+    throw new Error(`Puntr fixture context unavailable: ${fixturesResult.error.message}`);
+  if (resultsResult.error)
+    throw new Error(`Puntr results context unavailable: ${resultsResult.error.message}`);
+  if (standingsResult.error)
+    throw new Error(`Puntr standings context unavailable: ${standingsResult.error.message}`);
+  if (articlesResult.error)
+    throw new Error(`Puntr newsroom context unavailable: ${articlesResult.error.message}`);
 
   const fixtures = (fixturesResult.data ?? []) as Record<string, unknown>[];
   const results = (resultsResult.data ?? []) as Record<string, unknown>[];
@@ -158,22 +174,39 @@ async function loadPuntrContext(db: SupabaseClient, now: Date): Promise<ContextB
     `Context timestamp: ${now.toISOString()}.`,
     "UPCOMING VERIFIED FIXTURES (next seven days):",
     fixtures.length
-      ? fixtures.map((f) => `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} vs ${f["away"]}, kick-off ${f["kickoff_at"]}.`).join("\n")
+      ? fixtures
+          .map(
+            (f) =>
+              `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} vs ${f["away"]}, kick-off ${f["kickoff_at"]}.`,
+          )
+          .join("\n")
       : "No upcoming fixtures are currently available in Puntr's verified fixture store.",
     "RECENT VERIFIED RESULTS (previous seven days):",
     results.length
-      ? results.map((f) => `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} ${f["home_score"]}–${f["away_score"]} ${f["away"]}, played ${f["kickoff_at"]}.`).join("\n")
+      ? results
+          .map(
+            (f) =>
+              `- ${f["sport"]} · ${f["competition"]}: ${f["home"]} ${f["home_score"]}–${f["away_score"]} ${f["away"]}, played ${f["kickoff_at"]}.`,
+          )
+          .join("\n")
       : "No recent completed results are currently available in Puntr's verified fixture store.",
     "LATEST STORED LEAGUE STANDINGS:",
     standings.length
-      ? standings.map((r) => {
-          const group = typeof r["group_name"] === "string" && r["group_name"] ? ` Group ${r["group_name"]}` : "";
-          return `- ${r["competition"]}${group}: #${r["position"]} ${r["team"]}; P${r["played"]} W${r["won"]} D${r["drawn"]} L${r["lost"]} GF${r["goals_for"]} GA${r["goals_against"]} Pts ${r["points"]}; synced ${r["synced_at"]}.`;
-        }).join("\n")
+      ? standings
+          .map((r) => {
+            const group =
+              typeof r["group_name"] === "string" && r["group_name"]
+                ? ` Group ${r["group_name"]}`
+                : "";
+            return `- ${r["competition"]}${group}: #${r["position"]} ${r["team"]}; P${r["played"]} W${r["won"]} D${r["drawn"]} L${r["lost"]} GF${r["goals_for"]} GA${r["goals_against"]} Pts ${r["points"]}; synced ${r["synced_at"]}.`;
+          })
+          .join("\n")
       : "No verified standings are currently stored for the launch competitions.",
     "RECENT PUBLISHED PUNTR NEWSROOM ITEMS:",
     articles.length
-      ? articles.map((a) => `- ${a["title"]} (${a["category"]}, ${a["published_at"]}): ${a["excerpt"]}`).join("\n")
+      ? articles
+          .map((a) => `- ${a["title"]} (${a["category"]}, ${a["published_at"]}): ${a["excerpt"]}`)
+          .join("\n")
       : "No published Newsroom items are currently available.",
   ];
 
@@ -189,14 +222,17 @@ async function generateInternalAnswer(
   context: ContextBundle,
   env: NodeJS.ProcessEnv,
 ): Promise<{ answer: string; model: string }> {
-  if (!env["GEMINI_API_KEY"]?.trim()) throw new Error("Gemini is not configured for internal-data answers.");
+  if (!env["GEMINI_API_KEY"]?.trim())
+    throw new Error("Gemini is not configured for internal-data answers.");
   const claim = await createQuotaClaim("punt-ai:internal");
   const provider = guardLlm(createGemini(env["GEMINI_API_KEY"]!.trim()), claim);
   const configured = parseModelList(env["PFIE_GEMINI_MODELS"] ?? DEFAULT_PFIE_MODELS.join(","));
   const models = configured.models.filter((model) => model.startsWith("gemini-"));
   const router = createModelRouter(provider, { models });
   const result = await router.generate({
-    system: SYSTEM_PROMPT + "\nAnswer strictly from the supplied Puntr context and product context. If the answer is not in that context, say what is missing.",
+    system:
+      SYSTEM_PROMPT +
+      "\nAnswer strictly from the supplied Puntr context and product context. If the answer is not in that context, say what is missing.",
     prompt: `MEMBER QUESTION:\n${safeMessage}\n\nPUNTR VERIFIED DATA:\n${context.text}\n\nReturn a concise answer. Do not invent external facts.`,
     schema: ANSWER_SCHEMA,
     temperature: 0.2,
@@ -224,7 +260,10 @@ async function generateLiveAnswer(
   });
   const candidates = hits
     .filter((hit) => /^https:\/\//i.test(hit.url) && isTrustedLiveDomain(domainOf(hit.url)))
-    .filter((hit, index, all) => all.findIndex((other) => domainOf(other.url) === domainOf(hit.url)) === index)
+    .filter(
+      (hit, index, all) =>
+        all.findIndex((other) => domainOf(other.url) === domainOf(hit.url)) === index,
+    )
     .slice(0, MAX_LIVE_SOURCES);
   if (!candidates.length) return null;
 
@@ -234,27 +273,34 @@ async function generateLiveAnswer(
     "chat",
   );
   if (!extract) return null;
-  const pages = await Promise.all(candidates.map(async (hit) => {
-    const page = await extract.extract(hit.url).catch(() => null);
-    if (!page?.markdown) return null;
-    return {
-      title: page.title || hit.title || domainOf(hit.url),
-      url: hit.url,
-      domain: domainOf(hit.url),
-      text: cleanText(page.markdown, 4_500),
-    };
-  }));
+  const pages = await Promise.all(
+    candidates.map(async (hit) => {
+      const page = await extract.extract(hit.url).catch(() => null);
+      if (!page?.markdown) return null;
+      return {
+        title: page.title || hit.title || domainOf(hit.url),
+        url: hit.url,
+        domain: domainOf(hit.url),
+        text: cleanText(page.markdown, 4_500),
+      };
+    }),
+  );
   const sources = pages.filter((page): page is NonNullable<typeof page> => Boolean(page?.text));
   if (!sources.length) return null;
 
-  const sourceText = sources.map((source, index) =>
-    `[${index + 1}] ${source.title} — ${source.domain}\nURL: ${source.url}\n${source.text}`,
-  ).join("\n\n");
+  const sourceText = sources
+    .map(
+      (source, index) =>
+        `[${index + 1}] ${source.title} — ${source.domain}\nURL: ${source.url}\n${source.text}`,
+    )
+    .join("\n\n");
   const answer = await guardLlm(
     createParallelResponses(parallelKey, {}, { effort: "low" }),
     claim,
   ).generate("parallel-low", {
-    system: SYSTEM_PROMPT + "\nUse the live source extracts and Puntr context. Cite live source references as [1], [2] etc. Never cite a source that was not supplied.",
+    system:
+      SYSTEM_PROMPT +
+      "\nUse the live source extracts and Puntr context. Cite live source references as [1], [2] etc. Never cite a source that was not supplied.",
     prompt: `MEMBER QUESTION:\n${safeMessage}\n\nPUNTR VERIFIED DATA:\n${context.text}\n\nLIVE SOURCES:\n${sourceText}\n\nAnswer the question using the strongest available evidence. If sources disagree or do not answer it, say so.`,
     schema: ANSWER_SCHEMA,
     temperature: 0.2,
@@ -276,14 +322,17 @@ async function writeCache(
   model: string,
   now: Date,
 ) {
-  const { error } = await db.from("punt_ai_cache").upsert({
-    cache_key: cacheKey,
-    mode,
-    answer,
-    sources,
-    model,
-    expires_at: new Date(now.getTime() + CACHE_TTL_MS).toISOString(),
-  }, { onConflict: "cache_key" });
+  const { error } = await db.from("punt_ai_cache").upsert(
+    {
+      cache_key: cacheKey,
+      mode,
+      answer,
+      sources,
+      model,
+      expires_at: new Date(now.getTime() + CACHE_TTL_MS).toISOString(),
+    },
+    { onConflict: "cache_key" },
+  );
   if (error) console.warn("PUNT AI cache write failed", error.message);
 }
 
@@ -311,7 +360,8 @@ export const askPuntAi = createServerFn({ method: "POST" })
     if (containsPuntAiPrivateContext(data.message)) {
       return {
         ok: true,
-        answer: "I can't access or disclose personal account, contact, financial or health information. Please use your account settings or contact Puntr support for account-specific help.",
+        answer:
+          "I can't access or disclose personal account, contact, financial or health information. Please use your account settings or contact Puntr support for account-specific help.",
         sources: [],
         mode: "internal",
         model: "policy",
@@ -327,7 +377,8 @@ export const askPuntAi = createServerFn({ method: "POST" })
     let notice: string | undefined;
     let balance: number | null = null;
     if (oddsQuestion) {
-      notice = "Automated bookmaker prices are not available in PUNT AI while data-use permissions are being finalised. I can explain the market or discuss odds you enter yourself.";
+      notice =
+        "Automated bookmaker prices are not available in PUNT AI while data-use permissions are being finalised. I can explain the market or discuss odds you enter yourself.";
     }
     if (liveRequested) {
       const [entitlement, balanceResult] = await Promise.all([
@@ -337,7 +388,9 @@ export const askPuntAi = createServerFn({ method: "POST" })
       balance = typeof balanceResult.data === "number" ? balanceResult.data : 0;
       const pro = entitlement.data === true || profile.account_type === "pro";
       if (pro || balance >= PUNT_AI_LIVE_CREDIT_COST) mode = "live_web";
-      else notice = "Live web answers require Pro or 2 credits. This answer uses Puntr's stored data only.";
+      else
+        notice =
+          "Live web answers require Pro or 2 credits. This answer uses Puntr's stored data only.";
     }
 
     const cacheKey = `punt-ai:v1:${mode}:${await sha256(normalized)}`;
@@ -363,11 +416,17 @@ export const askPuntAi = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const markUsage = async (values: Record<string, unknown>) => {
-      const { error } = await db.from("punt_ai_usage").update({ ...values, updated_at: new Date().toISOString() }).eq("id", usageId);
+      const { error } = await db
+        .from("punt_ai_usage")
+        .update({ ...values, updated_at: new Date().toISOString() })
+        .eq("id", usageId);
       if (error) console.warn("PUNT AI usage update failed", error.message);
     };
 
-    const spendLiveCredit = async (): Promise<{ charged: number; balance: number | null } | null> => {
+    const spendLiveCredit = async (): Promise<{
+      charged: number;
+      balance: number | null;
+    } | null> => {
       const ref = `punt-ai:${await sha256(normalized)}:${Math.floor(now.getTime() / CACHE_TTL_MS)}`;
       const { data, error } = await context.supabase.rpc("spend_credits", {
         p_feature: "punt_ai_live",
@@ -412,9 +471,15 @@ export const askPuntAi = createServerFn({ method: "POST" })
 
       // Never serve a cached live answer without a successful credit debit.
       // Fall through to the internal cache/generation path instead.
-      await markUsage({ mode: "internal", status: "started", cache_hit: false, credits_charged: 0 });
+      await markUsage({
+        mode: "internal",
+        status: "started",
+        cache_hit: false,
+        credits_charged: 0,
+      });
       mode = "internal";
-      notice = "Live web access could not be charged to your account, so this answer uses Puntr's stored data only.";
+      notice =
+        "Live web access could not be charged to your account, so this answer uses Puntr's stored data only.";
     }
 
     try {
@@ -424,7 +489,11 @@ export const askPuntAi = createServerFn({ method: "POST" })
       if (mode === "live_web" && env["PARALLEL_API_KEY"]?.trim()) {
         let live: Awaited<ReturnType<typeof generateLiveAnswer>> = null;
         try {
-          live = await generateLiveAnswer(safeMessage, contextBundle, env["PARALLEL_API_KEY"]!.trim());
+          live = await generateLiveAnswer(
+            safeMessage,
+            contextBundle,
+            env["PARALLEL_API_KEY"]!.trim(),
+          );
         } catch (error) {
           console.warn("PUNT AI live-web path unavailable; falling back to Puntr data", error);
         }
@@ -432,8 +501,20 @@ export const askPuntAi = createServerFn({ method: "POST" })
           const charged = await spendLiveCredit();
           if (charged) {
             generated = live;
-            await writeCache(db, cacheKey, mode, generated.answer, generated.sources, generated.model, now);
-            await markUsage({ status: "completed", cache_hit: false, credits_charged: charged.charged });
+            await writeCache(
+              db,
+              cacheKey,
+              mode,
+              generated.answer,
+              generated.sources,
+              generated.model,
+              now,
+            );
+            await markUsage({
+              status: "completed",
+              cache_hit: false,
+              credits_charged: charged.charged,
+            });
             return {
               ok: true,
               answer: generated.answer,
@@ -445,7 +526,8 @@ export const askPuntAi = createServerFn({ method: "POST" })
             };
           }
         }
-        notice = "Live sources or account credit were unavailable, so this answer uses Puntr's stored data only.";
+        notice =
+          "Live sources or account credit were unavailable, so this answer uses Puntr's stored data only.";
         mode = "internal";
       } else if (mode === "live_web") {
         notice = "Live web is temporarily unavailable. This answer uses Puntr's stored data only.";
@@ -453,12 +535,17 @@ export const askPuntAi = createServerFn({ method: "POST" })
       }
 
       const internalCacheKey = `punt-ai:v1:internal:${await sha256(normalized)}`;
-      const internalCached = cacheKey === internalCacheKey ? cached : (await db
-        .from("punt_ai_cache")
-        .select("answer, sources, model")
-        .eq("cache_key", internalCacheKey)
-        .gt("expires_at", now.toISOString())
-        .maybeSingle()).data;
+      const internalCached =
+        cacheKey === internalCacheKey
+          ? cached
+          : (
+              await db
+                .from("punt_ai_cache")
+                .select("answer, sources, model")
+                .eq("cache_key", internalCacheKey)
+                .gt("expires_at", now.toISOString())
+                .maybeSingle()
+            ).data;
       if (internalCached) {
         generated = {
           answer: String(internalCached.answer),
@@ -478,7 +565,15 @@ export const askPuntAi = createServerFn({ method: "POST" })
 
       const internal = await generateInternalAnswer(safeMessage, contextBundle, env);
       generated = { ...internal, sources: contextBundle.sources };
-      await writeCache(db, internalCacheKey, "internal", generated.answer, generated.sources, generated.model, now);
+      await writeCache(
+        db,
+        internalCacheKey,
+        "internal",
+        generated.answer,
+        generated.sources,
+        generated.model,
+        now,
+      );
       await markUsage({ mode: "internal", status: "completed", cache_hit: false });
       return {
         ok: true,
@@ -490,7 +585,8 @@ export const askPuntAi = createServerFn({ method: "POST" })
       };
     } catch (error) {
       await markUsage({ status: "failed" });
-      if (error instanceof AllModelsFailed) console.warn("PUNT AI Gemini models exhausted", error.attempts);
+      if (error instanceof AllModelsFailed)
+        console.warn("PUNT AI Gemini models exhausted", error.attempts);
       else console.error("PUNT AI request failed", error);
       return { ok: false, code: "unavailable" };
     }

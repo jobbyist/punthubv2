@@ -1,7 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { BettingSlipGraphic } from "@/components/predictions/betting-slip-graphic";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Camera, ClipboardPaste, Keyboard, ShieldCheck, Swords, Trophy } from "lucide-react";
+import {
+  ArrowRight,
+  Camera,
+  ClipboardPaste,
+  Keyboard,
+  ShieldCheck,
+  Swords,
+  Trophy,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -73,30 +81,54 @@ export function SlipConverterPromo() {
         </div>
 
         <BettingSlipGraphic />
-
       </div>
     </section>
   );
 }
-
 
 /** Upcoming fantasy competition spotlight, separate from the live slip-conversion feature. */
 export function FantasyArenaPromo() {
   const { t } = useTranslation("predictions");
   const reduce = useReducedMotion();
   return (
-    <section className="relative mb-10 flex min-w-0 items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-4 sm:gap-6 sm:p-5" aria-labelledby="fantasy-arena-title">
+    <section
+      className="relative mb-10 flex min-w-0 items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-4 sm:gap-6 sm:p-5"
+      aria-labelledby="fantasy-arena-title"
+    >
       <div className="min-w-0 flex-1">
-        <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-primary">{t("fantasy.eyebrow")}</p>
-        <h2 id="fantasy-arena-title" className="text-lg font-extrabold sm:text-xl">{t("fantasy.title")}</h2>
-        <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">{t("fantasy.body")}</p>
-        <Link to="/fantasy-arena" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">{t("fantasy.cta")} <ArrowRight className="size-3.5" aria-hidden /></Link>
+        <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+          {t("fantasy.eyebrow")}
+        </p>
+        <h2 id="fantasy-arena-title" className="text-lg font-extrabold sm:text-xl">
+          {t("fantasy.title")}
+        </h2>
+        <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          {t("fantasy.body")}
+        </p>
+        <Link
+          to="/fantasy-arena"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+        >
+          {t("fantasy.cta")} <ArrowRight className="size-3.5" aria-hidden />
+        </Link>
       </div>
       <div aria-hidden className="relative grid size-20 shrink-0 place-items-center sm:size-24">
         <div className="absolute inset-1 rounded-2xl border border-primary/30 bg-primary/5" />
         <div className="absolute inset-3 rounded-xl border border-primary/20" />
-        {!reduce && <motion.div className="absolute inset-0 rounded-2xl border-t-2 border-primary" animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }} />}
-        <motion.div className="relative grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20" animate={reduce ? undefined : { y: [0, -4, 0], rotate: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}><Trophy className="size-5" /></motion.div>
+        {!reduce && (
+          <motion.div
+            className="absolute inset-0 rounded-2xl border-t-2 border-primary"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          />
+        )}
+        <motion.div
+          className="relative grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+          animate={reduce ? undefined : { y: [0, -4, 0], rotate: [0, -5, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Trophy className="size-5" />
+        </motion.div>
         <Swords className="absolute -right-1 -top-1 size-5 text-primary" />
       </div>
     </section>

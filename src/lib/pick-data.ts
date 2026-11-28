@@ -52,7 +52,10 @@ async function decorate(
   const userIds = [...new Set(rows.map((r) => r.user_id))];
   const ids = rows.map((r) => r.id);
   const [{ data: profiles }, { data: results }] = await Promise.all([
-    supabase.from("public_profiles").select("id, username, founding_number, is_ai_participant").in("id", userIds),
+    supabase
+      .from("public_profiles")
+      .select("id, username, founding_number, is_ai_participant")
+      .in("id", userIds),
     supabase
       .from("prediction_results")
       .select("prediction_id, result, units")
@@ -74,7 +77,10 @@ async function decorate(
   });
 }
 
-type RawPick = Omit<PickRow, "username" | "founding_number" | "is_ai_participant" | "result" | "units">;
+type RawPick = Omit<
+  PickRow,
+  "username" | "founding_number" | "is_ai_participant" | "result" | "units"
+>;
 
 /** Every visible (not hidden by moderation) pick on one match, oldest first. */
 export async function fetchPicksForFixture(fixtureId: string): Promise<PickRow[]> {

@@ -40,7 +40,10 @@ export function TeamBadgesPanel() {
     <section className="card-surface p-5">
       <h2 className="text-lg">{t("badges.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{t("badges.body")}</p>
-      <p className="mt-2 text-xs text-muted-foreground">Parallel searches and verifies badges first. Add a manual image URL only when a team remains unresolved or the sourced badge is incorrect.</p>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Parallel searches and verifies badges first. Add a manual image URL only when a team remains
+        unresolved or the sourced badge is incorrect.
+      </p>
       {data && (
         <p className="mt-3 text-sm font-semibold">
           {t("badges.summary", { total: data.length, missing })}

@@ -59,7 +59,9 @@ describe("config", () => {
   it("keeps the shared router model list available to PFIE while Newsroom slots stay Parallel-only", () => {
     expect(parseModelList(undefined).models[0]).toBe("parallel-medium");
     expect(parseModelList(undefined).models).toContain("gemini-3.8-flash");
-    expect(modelsForContentSlot(parseModelList(undefined).models, "breaking")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(parseModelList(undefined).models, "breaking")).toEqual([
+      "parallel-medium",
+    ]);
   });
   it("refuses a model that is not on the shared allowlist", () => {
     const { models, refused } = parseModelList("gemini-3.1-pro-preview, gemini-3.1-flash-lite");
@@ -179,12 +181,21 @@ describe("model router", () => {
     expect(llm.calls).toHaveLength(0);
   });
   it("keeps Gemini out of every Newsroom slot even though PFIE can use it", () => {
-    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "breaking")).toEqual(["parallel-medium"]);
-    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "editorial")).toEqual(["parallel-medium"]);
-    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "intelligence")).toEqual(["parallel-medium"]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "breaking")).toEqual([
+      "parallel-medium",
+    ]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "editorial")).toEqual([
+      "parallel-medium",
+    ]);
+    expect(modelsForContentSlot(["parallel-medium", "gemini-3.8-flash"], "intelligence")).toEqual([
+      "parallel-medium",
+    ]);
   });
   it("throws AllModelsFailed when Parallel is out of quota", async () => {
-    const router = createModelRouter(fakeLlm(() => quota()), { models, sleep: noSleep });
+    const router = createModelRouter(
+      fakeLlm(() => quota()),
+      { models, sleep: noSleep },
+    );
     await expect(router.generate(REQUEST)).rejects.toBeInstanceOf(AllModelsFailed);
   });
 });
@@ -193,7 +204,9 @@ describe("schedule", () => {
   const base = { scheduleMode: "alternate" as const, nextKindOverride: null };
   it("keys the job on the South African date", () => {
     expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"))).toBe("daily:2026-11-14");
-    expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"), "breaking")).toBe("daily:2026-11-14:breaking");
+    expect(dailyJobKey(new Date("2026-11-13T22:30:00Z"), "breaking")).toBe(
+      "daily:2026-11-14:breaking",
+    );
   });
   it("alternates day by day", () => {
     const a = kindForDay(base, true, new Date("2026-11-14T04:00:00Z")).kind;
@@ -351,7 +364,12 @@ describe("pipeline", () => {
     expect(store.articles).toHaveLength(1);
     expect(store.articles[0]).toMatchObject({ status: "PUBLISHED", citedSources: 2 });
     expect([...store.jobs.values()][0]?.status).toBe("succeeded");
-    expect(store.usage).toMatchObject({ parallel: 1, firecrawl: 2, "parallel-chat:medium": 1, "gemini:gemini-3.8-flash": 1 });
+    expect(store.usage).toMatchObject({
+      parallel: 1,
+      firecrawl: 2,
+      "parallel-chat:medium": 1,
+      "gemini:gemini-3.8-flash": 1,
+    });
   });
   it("is idempotent: a second call for the same day does nothing", async () => {
     const d = deps();

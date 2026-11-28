@@ -3,9 +3,21 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const personas = JSON.parse(await readFile(resolve("personas.json"), "utf8"));
-const requested = process.env.SYNTHETIC_PERSONA_IDS?.split(",").map(x => x.trim()).filter(Boolean);
-const selected = requested?.length ? personas.filter(p => requested.includes(p.persona_id)) : personas;
-const allowedPaths = new Set(["/", "/founding", "/predictions", "/fixtures", "/results", "/newsroom", "/roadmap"]);
+const requested = process.env.SYNTHETIC_PERSONA_IDS?.split(",")
+  .map((x) => x.trim())
+  .filter(Boolean);
+const selected = requested?.length
+  ? personas.filter((p) => requested.includes(p.persona_id))
+  : personas;
+const allowedPaths = new Set([
+  "/",
+  "/founding",
+  "/predictions",
+  "/fixtures",
+  "/results",
+  "/newsroom",
+  "/roadmap",
+]);
 
 if (requested?.length && selected.length !== requested.length) {
   throw new Error("One or more SYNTHETIC_PERSONA_IDS were not found in personas.json");
@@ -22,18 +34,28 @@ async function recordSession(payload) {
       apikey: key,
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal"
+      Prefer: "return=minimal",
     },
-    body: JSON.stringify({ experiment_id: experimentId, ...payload })
+    body: JSON.stringify({ experiment_id: experimentId, ...payload }),
   });
-  if (!response.ok) throw new Error(`Synthetic session logging failed: ${response.status} ${(await response.text()).slice(0,300)}`);
+  if (!response.ok)
+    throw new Error(
+      `Synthetic session logging failed: ${response.status} ${(await response.text()).slice(0, 300)}`,
+    );
 }
 
 test.describe("Puntr production read-only synthetic QA", () => {
   test.describe.configure({ mode: "parallel" });
 
   for (const persona of selected) {
-    test(`@smoke ${persona.persona_id} — ${persona.segment}`, async ({ page }) => {\n      const baseUrl = process.env.PUNTR_BASE_URL;\n      if (!baseUrl) throw new Error("PUNTR_BASE_URL is required");\n      await page.context().addCookies([{ name: "puntr_synthetic_qa", value: "1", url: baseUrl, secure: true, sameSite: "Lax" }]);
+    test(`@smoke ${persona.persona_id} — ${persona.segment}`, async ({ page }) => {
+      const baseUrl = process.env.PUNTR_BASE_URL;
+      if (!baseUrl) throw new Error("PUNTR_BASE_URL is required");
+      await page
+        .context()
+        .addCookies([
+          { name: "puntr_synthetic_qa", value: "1", url: baseUrl, secure: true, sameSite: "Lax" },
+        ]);
       const startedAt = new Date().toISOString();
       const visited = [];
       let outcome = "passed";
@@ -48,7 +70,12 @@ test.describe("Puntr production read-only synthetic QA", () => {
           visited.push(path);
           // Small deterministic pauses make rendering and client-side navigation observable.
           // This is test pacing, not stealth or an attempt to imitate genuine customers.
-          await page.waitForTimeout(250 + ((persona.persona_id.charCodeAt(persona.persona_id.length - 1) + visited.length * 137) % 500));
+          await page.waitForTimeout(
+            250 +
+              ((persona.persona_id.charCodeAt(persona.persona_id.length - 1) +
+                visited.length * 137) %
+                500),
+          );
         }
       } catch (error) {
         outcome = "failed";
@@ -63,7 +90,12 @@ test.describe("Puntr production read-only synthetic QA", () => {
           outcome,
           page_paths: visited,
           error_code: errorCode,
-          metadata: { segment: persona.segment, marker: "synthetic_qa", analytics_excluded: true, account_mode: persona.account_mode }
+          metadata: {
+            segment: persona.segment,
+            marker: "synthetic_qa",
+            analytics_excluded: true,
+            account_mode: persona.account_mode,
+          },
         });
       }
     });
