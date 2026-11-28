@@ -474,7 +474,7 @@ export interface PfieDeps {
   /** Persistent Parallel cache; cache wrappers are applied outside quota guards. */
   cache?: CacheStore | null;
   /** Set before each competition run so API claim events share the same competition/run context. */
-  setUsageContext?: (context: { competition: string; jobRunId: string }) => void;
+  setUsageContext?: (context: { competition: string; jobRunId: string; metadata?: Record<string, unknown> }) => void;
   /** Ordered model list; extraction prefers the high-allowance lite model. */
   models?: string[];
   dailyCap?: Record<string, number>;
@@ -504,7 +504,7 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
     targetFixtures: NonNullable<ListOptions["fixtures"]> = [],
   ): Promise<{ fixtures: NormalisedFixture[]; calls: number; skipped?: string }> {
     const jobRunId = randomUUID();
-    deps.setUsageContext?.({ competition: competition.key, jobRunId });
+    deps.setUsageContext?.({ competition: competition.key, jobRunId, metadata: { job_kind: kind } });
     const config = PFIE_SOURCES[competition.key];
     if (!config) return { fixtures: [], calls: 0, skipped: "no PFIE sources configured" };
     let calls = 0;
@@ -579,8 +579,9 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
               calls--;
             }
             if (page) add(url, page.markdown);
-          } catch {
-            void count(deps.extract.name, false);
+          } catch (error) {
+            // The quota guard finalises the attempt and records the provider error exactly once.
+            console.warn("pfie extract failed", competition.key, url, error instanceof Error ? error.message : error);
           }
         }
       }
