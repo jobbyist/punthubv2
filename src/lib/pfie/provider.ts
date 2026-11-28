@@ -1,12 +1,12 @@
 /**
- * PFIE fixtures provider: Parallel Search finds the pages, Gemini lists what each page states, and plain code
- * validates and corroborates. It implements the same `SportsProvider` interface as the API-Sports adapter, so the
+ * PFIE fixtures provider: Parallel Search finds the pages, Parallel Extract reads them, Parallel Responses
+ * structures observations, and plain code validates and corroborates. It implements the same `SportsProvider`
+ * interface as the API-Sports adapter, so the
  * existing sync, settlement and cron code runs unchanged.
  *
  * This is not a live-score feed. Fixtures refresh once a day; a result is published when the competition's official
  * site shows it or two independent sites agree, usually within an hour or two of full time.
  */
-import { DEFAULT_PFIE_MODELS, parseModelList } from "@/lib/content/config";
 import { ProviderError } from "@/lib/content/http";
 import { AllModelsFailed, createModelRouter } from "@/lib/content/model-router";
 import { canonicalUrl, cleanText, domainOf, isBlockedDomain } from "@/lib/content/research";
@@ -455,7 +455,7 @@ export const PFIE_PROVIDER = "pfie";
 
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
   const now = deps.now ?? (() => new Date());
-  const models = deps.models ?? parseModelList(DEFAULT_PFIE_MODELS.join(",")).models;
+  const models = deps.models ?? ["parallel-low"];
 
   async function run(
     competition: Competition,
@@ -532,7 +532,10 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
       // 3. Extraction (one model call for all sources).
       const usage = await deps.store.usageToday().catch(() => ({}) as Record<string, number>);
       const usedToday: Record<string, number> = {};
-      for (const m of models) usedToday[m] = usage[`gemini:${m}`] ?? 0;
+      for (const m of models) {
+        const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
+        usedToday[m] = effort ? usage[`parallel-chat:${effort}`] ?? 0 : usage[m] ?? 0;
+      }
       const router = createModelRouter(deps.llm, {
         models,
         usedToday,
@@ -540,7 +543,8 @@ export function createPfieProvider(deps: PfieDeps): SportsProvider {
         ...(deps.sleep ? { sleep: deps.sleep } : {}),
         onAttempt: async (a) => {
           if (a.outcome !== "skipped_cap" && a.outcome !== "refused_not_free")
-            await count(`gemini:${a.model}`, a.outcome === "ok");
+            const effort = /^parallel-(low|medium|high)$/.exec(a.model)?.[1];
+            await count(effort ? `parallel-chat:${effort}` : a.model, a.outcome === "ok");
         },
       });
       calls++;
