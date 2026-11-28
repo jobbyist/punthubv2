@@ -152,7 +152,9 @@ export function createParallelResponses(
           ],
           reasoning: { effort },
           max_output_tokens: request.maxOutputTokens,
-          text: { format: { type: "json_schema", name: "puntr_structured_output", schema: parallelJsonSchema(request.schema) } },
+          // Parallel's Responses API accepts json_object reliably across all response shapes.
+          // PFIE applies its own Zod and source-evidence validation immediately after parsing.
+          text: { format: { type: "json_object" } },
         },
         { provider: "parallel-chat", timeoutMs: 60_000, attempts: 1, baseDelayMs: 1_000, ...overrides },
       );
