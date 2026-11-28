@@ -160,3 +160,14 @@ begin
   return v_spent;
 end;
 $function$;
+
+-- Team badges may be verified from official team/league pages discovered by Parallel Search.
+alter table public.team_badges drop constraint if exists team_badges_method_check;
+alter table public.team_badges
+  add constraint team_badges_method_check
+  check (method is null or method = any (array[
+    'parallel_wikipedia'::text,
+    'parallel_sofascore'::text,
+    'parallel_official'::text,
+    'manual'::text
+  ]));
