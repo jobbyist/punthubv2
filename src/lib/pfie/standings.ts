@@ -13,20 +13,10 @@ import type { CompetitionKey } from "@/lib/sports/competitions";
 
 import { normaliseTeam, resolveTeam } from "./teams";
 import type { PfieSource } from "./types";
+import { PFIE_LAUNCH_KEYS } from "./launch-scope";
 
 /** Ten competition tables in the agreed MVP launch priority order. */
-export const STANDINGS_LAUNCH_KEYS = [
-  "psl",
-  "epl",
-  "championship",
-  "laliga",
-  "ucl",
-  "uecl",
-  "bundesliga",
-  "seriea",
-  "ligue1",
-  "caf-cc",
-] as const satisfies readonly CompetitionKey[];
+export const STANDINGS_LAUNCH_KEYS = PFIE_LAUNCH_KEYS;
 
 /** Other table-based competitions are explicitly deferred beyond the ten-competition launch scope. */
 export const STANDINGS_POST_LAUNCH_KEYS = [
