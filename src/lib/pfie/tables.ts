@@ -478,8 +478,12 @@ async function gatherSources(
   return sources;
 }
 
-async function generate(deps: TablesDeps, request: Parameters<LlmProvider["generate"]>[1]) {
-  const models = deps.models ?? ["parallel-low"];
+async function generate(
+  deps: TablesDeps,
+  request: Parameters<LlmProvider["generate"]>[1],
+  modelOverride?: string[],
+) {
+  const models = modelOverride ?? deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
   const usedToday: Record<string, number> = {};
   for (const m of models) {
@@ -552,9 +556,13 @@ async function syncStandings(deps: TablesDeps, key: CompetitionKey, now: () => D
     const retried = await Promise.all(
       retryCandidates.map(async (result) => {
         const hint = result.validation.rejected.map((r) => r.reason).join(", ") || "incomplete_table";
+        // Championship is the only launch table still failing structured extraction after two low-effort passes.
+        // Use a bounded Medium-first retry for that one source pass, then fall back to Low if Medium is quota-blocked.
+        const retryModels = key === "championship" ? ["parallel-medium", "parallel-low"] : undefined;
         const answer = await generate(
           deps,
           standingsRequest({ competition: c.name, season, sources: [result.source], retryHint: hint, groups: cfg.groups, groupNotes: cfg.groupNotes }),
+          retryModels,
         );
         modelsUsed.add(answer.model);
         const parsed = parseStandings(answer.text);
