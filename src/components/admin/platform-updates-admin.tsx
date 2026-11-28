@@ -8,6 +8,7 @@ import { useAsync } from "@/hooks/use-async";
 import {
   adminPlatformUpdatesOverview,
   adminSavePlatformTask,
+  adminSyncPlatformUpdates,
   type PlatformTask,
   type SavePlatformTaskInput,
 } from "@/lib/platform-updates.functions";
@@ -39,6 +40,7 @@ export function PlatformUpdatesTab() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   const filteredUpdates = useMemo(() => {
     const q = updateSearch.trim().toLowerCase();
@@ -81,6 +83,22 @@ export function PlatformUpdatesTab() {
     setShowForm(true);
   }
 
+  async function syncHistory() {
+    setSyncing(true);
+    try {
+      const result = await adminSyncPlatformUpdates();
+      if (!result.ok) toast.error(result.message);
+      else {
+        toast.success(`Synced ${result.synced} merged pull requests from GitHub.`);
+        setTick((n) => n + 1);
+      }
+    } catch {
+      toast.error("Could not sync repository history.");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   async function saveTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true);
@@ -113,7 +131,7 @@ export function PlatformUpdatesTab() {
               Search the merged pull-request history and manage the forward implementation queue from one admin workspace.
             </p>
           </div>
-          <Button size="sm" variant="outline" onClick={() => setTick((n) => n + 1)}>Refresh</Button>
+          <div className="flex gap-2"><Button size="sm" variant="outline" disabled={syncing} onClick={() => void syncHistory()}>{syncing ? "Syncing…" : "Sync GitHub history"}</Button><Button size="sm" variant="outline" onClick={() => setTick((n) => n + 1)}>Refresh</Button></div>
         </div>
         {failed && <p role="alert" className="mt-3 text-sm text-destructive">Could not load platform updates. Check the migration and admin permissions.</p>}
         {loading && !data && <p className="mt-3 text-sm text-muted-foreground">Loading repository history…</p>}
@@ -171,6 +189,21 @@ export function PlatformUpdatesTab() {
           ))}
           {data && filteredTasks.length === 0 && <p className="py-5 text-center text-sm text-muted-foreground">No tasks match these filters yet.</p>}
         </div>
+        {(data?.events ?? []).length > 0 && (
+          <div className="mt-5 border-t border-border pt-4">
+            <h4 className="text-sm font-semibold">Recent implementation activity</h4>
+            <ul className="mt-2 divide-y divide-border">
+              {(data?.events ?? []).slice(0, 12).map((event) => {
+                const task = data?.tasks.find((item) => item.id === event.taskId);
+                const after = event.detail["after"] as Record<string, unknown> | undefined;
+                return <li key={event.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-xs">
+                  <span><b>{task?.title ?? "Implementation task"}</b> · {event.eventType}{after?.["status"] ? " · " + statusLabel(after["status"] as PlatformTask["status"]) : ""}{after?.["progress"] !== undefined ? " · " + String(after["progress"]) + "%" : ""}</span>
+                  <span className="text-muted-foreground">{formatDateTime(event.createdAt)}</span>
+                </li>;
+              })}
+            </ul>
+          </div>
+        )}
       </section>
 
       <section className={panel}>
