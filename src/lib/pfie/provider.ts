@@ -493,8 +493,23 @@ export function pfieRetryPreference(
 }
 
 export function createPfieProvider(deps: PfieDeps): SportsProvider {
-  const now = deps.now ?? (() => new Date());
+  // PFIE must fail closed if a caller wires a legacy provider or a non-Parallel model.
+  // Gemini and Firecrawl remain available to other content pipelines, never this ingestion path.
+  if (deps.search.name !== "parallel") {
+    throw new Error(`PFIE requires Parallel Search; received ${deps.search.name}`);
+  }
+  if (deps.extract && deps.extract.name !== "parallel-extract") {
+    throw new Error(`PFIE requires Parallel Extract; received ${deps.extract.name}`);
+  }
+  if (deps.llm.name !== "parallel-responses") {
+    throw new Error(`PFIE requires Parallel Responses; received ${deps.llm.name}`);
+  }
   const models = deps.models ?? ["parallel-low"];
+  const allowedModels = new Set(["parallel-low", "parallel-medium"]);
+  if (models.length === 0 || models.some((model) => !allowedModels.has(model))) {
+    throw new Error("PFIE models must be restricted to Parallel Responses low/medium");
+  }
+  const now = deps.now ?? (() => new Date());
 
   async function run(
     competition: Competition,
