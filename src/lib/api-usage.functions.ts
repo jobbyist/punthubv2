@@ -42,6 +42,7 @@ export interface ApiUsageSnapshot {
     claimedAt: string;
     metadata: Record<string, Json>;
   }[];
+  runRate: SpendRunRate | null;
   generatedAt: string;
 }
 
