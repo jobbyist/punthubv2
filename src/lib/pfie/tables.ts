@@ -214,6 +214,12 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
   }
   return [];
 }
+/** If the competition's own results page is available, use it alone rather than mixing in conflicting secondary score feeds. */
+export function preferAuthoritativeSources<T extends { url: string }>(hits: T[], official: string[]): T[] {
+  const authoritative = hits.filter((hit) => tierOf(domainOf(hit.url), official) === "official");
+  return authoritative.length > 0 ? authoritative : hits;
+}
+
 export function seasonQueries(
   name: string,
   start: string,
@@ -418,13 +424,16 @@ async function gatherSources(
   const ranked = (preferSearchResults ? [...preferredPages, ...hits, ...configuredPages] : [...configuredPages, ...hits]).sort(
     (a, b) => order[tierOf(domainOf(a.url), official)] - order[tierOf(domainOf(b.url), official)],
   );
+  // An official competition results page is authoritative. Mixing in secondary pages can introduce stale or
+  // differently scoped scorelines that make otherwise verified official results look contradictory.
+  const sourcePool = preferAuthoritativeSources(ranked, official);
   const sources: PfieSource[] = [];
   const seenDomains = new Set<string>();
   const candidates = [] as typeof ranked;
   const extract = deps.extract;
   if (!extract) return [];
   // Search is discovery only. Current tables require a freshly extracted full page from each independent domain.
-  for (const hit of ranked) {
+  for (const hit of sourcePool) {
     const domain = domainOf(hit.url);
     const sourceKey = independentSourceKey(domain);
     const tier = tierOf(domain, official);
