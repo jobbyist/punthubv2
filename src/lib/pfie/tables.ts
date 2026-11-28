@@ -514,7 +514,27 @@ export async function runTablesSync(
   }
 
   const report: { job: TableJob; key: string; ok: boolean; detail: string }[] = [];
-  const daily = opts.job === "season" ? [] : due.slice(0, maxJobs);
+  const standingsDueJobs = due.filter((item) => item.job === "standings");
+  const historyDueJobs = due
+    .filter((item) => item.job === "history")
+    .sort((a, b) => {
+      const last = (key: CompetitionKey) => status("history", key)?.lastSuccessAt ?? "";
+      return last(a.key).localeCompare(last(b.key));
+    });
+  let daily: { job: TableJob; key: CompetitionKey }[] = [];
+  if (opts.job === "history") {
+    daily = historyDueJobs.slice(0, maxJobs);
+  } else if (opts.job === "standings") {
+    daily = standingsDueJobs.slice(0, maxJobs);
+  } else if (opts.job !== "season") {
+    // Reserve one slot for the oldest-due rolling history job so standings refreshes cannot starve it.
+    if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+    if (historyDueJobs.length && daily.length < maxJobs) daily.push(historyDueJobs.shift()!);
+    while (daily.length < maxJobs && (standingsDueJobs.length || historyDueJobs.length)) {
+      if (standingsDueJobs.length) daily.push(standingsDueJobs.shift()!);
+      else if (historyDueJobs.length) daily.push(historyDueJobs.shift()!);
+    }
+  }
   for (const { job, key } of daily) {
     const r =
       job === "standings" ? await syncStandings(deps, key, now) : await syncHistory(deps, key, now);
