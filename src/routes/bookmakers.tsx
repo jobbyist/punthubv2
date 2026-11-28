@@ -191,7 +191,7 @@ function BookmakersPage() {
       [...bookmakerDirectory]
         .filter((b) => b.domain)
         .sort((a, b) => popularityRank(a) - popularityRank(b))
-        .slice(0, 8),
+        .slice(0, 6),
     [],
   );
   const first = filtered.length ? (current - 1) * PER_PAGE + 1 : 0;
@@ -214,7 +214,7 @@ function BookmakersPage() {
         </p>
         <h1 className="mt-4 text-[clamp(2.2rem,5.5vw,3.4rem)] leading-[1.02]">{t("list.title")}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t("list.lead")}</p>
-        <ul className="mt-5 flex" aria-hidden="true">
+        <ul className="mt-5 flex overflow-hidden" aria-hidden="true">
           {logoStack.map((b, i) => (
             <motion.li
               key={b.slug}
