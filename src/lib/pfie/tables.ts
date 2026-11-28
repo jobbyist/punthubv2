@@ -294,6 +294,7 @@ export function seasonArchiveUrls(name: string, start: string): string[] {
     return [
       ...official,
       "https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures",
+      "https://www.skysports.com/europa-conference-league-scores-fixtures",
       "https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf",
     ];
   }
