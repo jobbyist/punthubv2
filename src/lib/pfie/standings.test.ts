@@ -1133,3 +1133,9 @@ describe("CAF 2026/27 derived group standings", () => {
     expect(rows.every((row) => row.played === 0)).toBe(true);
   });
 });
+
+describe("Ligue 1 team aliases", () => {
+  it("normalises Stade Rennais to Rennes across table publishers", () => {
+    expect(normaliseTeam("Stade Rennais")).toBe("rennes");
+  });
+});
