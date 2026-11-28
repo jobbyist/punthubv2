@@ -215,8 +215,16 @@ begin
 
   v_definition := replace(
     v_definition,
-    $old$        ('provider', p_provider, v_blocked_until, v_reason, v_feature, p_competition, p_job_run_id, coalesce(p_metadata, '{}'::jsonb))$old$,
-    $new$        ('provider', v_provider_backoff_key, v_blocked_until, v_reason, v_feature, p_competition, p_job_run_id, coalesce(p_metadata, '{}'::jsonb))$new$
+    $old$      insert into public.api_provider_backoff
+        (scope, scope_key, blocked_until, reason_code, feature, competition, job_run_id, metadata)
+      values
+        ('provider', p_provider, v_blocked_until, v_reason, v_feature, p_competition, p_job_run_id, coalesce(p_metadata, '{}'::jsonb))
+      on conflict (scope, scope_key) do update$old$,
+    $new$      insert into public.api_provider_backoff
+        (scope, scope_key, blocked_until, reason_code, feature, competition, job_run_id, metadata)
+      values
+        ('provider', v_provider_backoff_key, v_blocked_until, v_reason, v_feature, p_competition, p_job_run_id, coalesce(p_metadata, '{}'::jsonb))
+      on conflict (scope, scope_key) do update$new$
   );
 
   v_definition := replace(
