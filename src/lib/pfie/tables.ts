@@ -1556,12 +1556,37 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       knownTeams: known,
     });
     const { rows, unverified } = verifyHistory(accepted, key, known);
+    const sourceDiagnostics = sources.map((source) => ({
+      domain: source.domain,
+      publisher: independentSourceKey(source.domain),
+      tier: source.tier,
+      url: source.url,
+      textLength: source.text.length,
+    }));
+    const publisherCounts = accepted.reduce<Record<string, number>>((counts, observation) => {
+      const publisher = independentSourceKey(observation.domain);
+      counts[publisher] = (counts[publisher] ?? 0) + 1;
+      return counts;
+    }, {});
+    const sampleObservations = accepted.slice(0, 16).map((observation) => ({
+      date: observation.date,
+      home: observation.home,
+      away: observation.away,
+      homeScore: observation.homeScore,
+      awayScore: observation.awayScore,
+      domain: observation.domain,
+      publisher: independentSourceKey(observation.domain),
+      tier: observation.tier,
+    }));
     if (rows.length === 0) {
       await deps.store.record("history", key, false, "no independently verified results in rolling window", {
         extracted: raw.length,
         accepted: accepted.length,
         unverified,
         sourceCount: sources.length,
+        sourceDiagnostics,
+        publisherCounts,
+        sampleObservations,
         model: answer.model,
       });
       return { ok: false, detail: "no independently verified results in rolling window; not marked successful" };
@@ -1573,6 +1598,8 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
       insertedOrUpdated: inserted,
       unverified,
       sourceCount: sources.length,
+      sourceDiagnostics,
+      publisherCounts,
       model: answer.model,
     });
     return {
