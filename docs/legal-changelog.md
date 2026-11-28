@@ -1,3 +1,9 @@
+## 2026-11-28, team crests sourced from SofaScore (no notice version change)
+
+- **What changed:** club crests shown next to team names are now taken from the team's public SofaScore page (Wikipedia/Wikimedia stays the fallback) and copied into Puntr's own storage. No personal information is involved.
+- **Pages:** none changed. The Terms do not describe crest sources, and the crests are shown only to identify clubs.
+- **Review `[attorney review]`:** (1) whether SofaScore's terms allow automated retrieval and reuse of their crest images, or whether a licence or attribution is needed; (2) club crests are trademarks: confirm identification-only use next to fixtures and tables is acceptable, and whether a trademark notice belongs in the Terms.
+
 ## 2026-11-28, Team directory follows (Privacy 2026-11-28-team-follows)
 
 - **What changed:** members can follow teams in the new team directory (`/teams`). Puntr stores the teams a member follows (`team_follows`) and an append-only follow/unfollow log (`team_follow_events`). Followed football teams are mirrored into the existing favourites (`member_preferences.teams`, max 10) to order the member's Matchday card.

@@ -1,3 +1,10 @@
+## 28 November 2026 — Team badges from SofaScore
+
+- The badge job now looks for each team's SofaScore page first (found through Parallel search, matched on the club name and rejecting youth, women's and reserve sides) and mirrors its crest to Puntr storage. Wikipedia stays the fallback.
+- Teams in stored league tables are now included, not only teams in upcoming fixtures, so every team in the directory gets a badge.
+- Spare capacity in each run upgrades existing Wikipedia badges to the SofaScore crest, once per team. Mirrored files carry a version query so browsers pick up the new crest.
+- Migration `20261128081000_team_badges_sofascore.sql` adds the `parallel_sofascore` method and `upgrade_checked_at`. Until it is applied the job keeps the Wikipedia path.
+- No personal data is involved; legal-changelog notes the crest-source question for counsel.
 ## 28 November 2026 — Team directory with follows
 
 - Add `/teams`: an SEO-friendly directory of every football team Puntr covers (from league tables, upcoming fixtures and the verified badge registry), with search, competition filters, a Following filter and CollectionPage/ItemList JSON-LD. Clicking a team opens a modal (bottom sheet on mobile) with badge, table position, recent verified form, next fixture and links; each team also has its own page at `/teams/<slug>` with SportsTeam JSON-LD, listed in the sitemap.

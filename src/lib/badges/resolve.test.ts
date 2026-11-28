@@ -7,7 +7,10 @@ import {
   cleanManualLogoUrl,
   pickCrestImage,
   pickWikipediaTitle,
+  isSofascoreImageHost,
   searchName,
+  sofascoreCandidates,
+  sofascoreImageUrls,
   wikipediaCandidates,
 } from "./resolve";
 
@@ -16,12 +19,12 @@ describe("Parallel search requests", () => {
     expect(badgeSearchRequest("Australia", "FIFA World Cup", "soccer").queries.join(" ")).toContain(
       "national football team",
     );
-    expect(badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries.join(" ")).toContain(
-      "professional basketball team",
-    );
-    expect(badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries.join(" ")).toContain(
-      "rugby union team",
-    );
+    expect(
+      badgeSearchRequest("Los Angeles Lakers", "NBA", "basketball").queries.join(" "),
+    ).toContain("professional basketball team");
+    expect(
+      badgeSearchRequest("Stormers", "United Rugby Championship", "rugby").queries.join(" "),
+    ).toContain("rugby union team");
   });
 });
 describe("names", () => {
@@ -147,5 +150,36 @@ describe("review fixes", () => {
     ];
     expect(pickWikipediaTitle(hits, "Arsenal")).toBe("Arsenal_F.C.");
     expect(pickWikipediaTitle(hits, "Arsenal Women")).toBe("Arsenal_W.F.C._Women");
+  });
+});
+
+describe("SofaScore candidates", () => {
+  const hits = [
+    { url: "https://www.sofascore.com/football/team/manchester-city-wfc/142658" },
+    { url: "https://www.sofascore.com/football/team/manchester-city/17" },
+    { url: "https://www.sofascore.com/es/football/team/manchester-city/17" },
+    { url: "https://www.sofascore.com/football/team/manchester-united/35" },
+    { url: "https://www.sofascore.com/basketball/team/manchester-giants/1234" },
+  ];
+  it("takes the senior men's team page for the right sport", () => {
+    expect(sofascoreCandidates(hits, "Man City", "soccer")).toEqual([17]);
+  });
+  it("matches local clubs and ignores other sports", () => {
+    expect(
+      sofascoreCandidates(
+        [
+          { url: "https://www.sofascore.com/football/team/orlando-pirates/7668" },
+          { url: "https://www.sofascore.com/en-us/football/team/mamelodi-sundowns/7665" },
+        ],
+        "Mamelodi Sundowns",
+        "soccer",
+      ),
+    ).toEqual([7665]);
+    expect(sofascoreCandidates(hits, "Manchester Giants", "soccer")).toEqual([]);
+  });
+  it("builds image addresses and checks hosts", () => {
+    expect(sofascoreImageUrls(17)[0]).toBe("https://img.sofascore.com/api/v1/team/17/image");
+    expect(isSofascoreImageHost("https://img.sofascore.com/api/v1/team/17/image")).toBe(true);
+    expect(isSofascoreImageHost("https://evil.example/sofascore.com")).toBe(false);
   });
 });
