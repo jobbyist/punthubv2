@@ -221,6 +221,7 @@ export const STANDINGS_COMPETITIONS: Partial<
     queries: [
       "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
       "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship 2026/27 standings",
+      "site:efl.com/embeds/league-table EFL Championship current full table",
       "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
       "site:bbc.com/sport/football/championship/table EFL Championship 2026/27 full table",
       "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
@@ -228,6 +229,7 @@ export const STANDINGS_COMPETITIONS: Partial<
     ],
     pages: [
       "https://www.efl.com/competitions/efl-championship/",
+      "https://www.efl.com/embeds/league-table/",
       "https://www.skysports.com/championship-table?dcmp=GameOn",
       "https://www.bbc.com/sport/football/championship/table",
       "https://www.espn.com/soccer/standings/_/league/eng.2",
