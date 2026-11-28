@@ -382,7 +382,7 @@ describe("pipeline", () => {
     const d = {
       ...deps({
         llm: fakeLlm((_m, r) =>
-          r.system.startsWith("You are a fact checker")
+          r.system.startsWith("You are an independent fact checker")
             ? '{"unsupported":[]}'
             : JSON.stringify(draft),
         ),
@@ -401,7 +401,7 @@ describe("pipeline", () => {
     const bad = sampleDraft();
     bad.body += "\n\nA crowd of 45000 watched.";
     const llm = fakeLlm((_m, r) =>
-      r.system.startsWith("You are a fact checker") ? '{"unsupported":[]}' : JSON.stringify(bad),
+      r.system.startsWith("You are an independent fact checker") ? '{"unsupported":[]}' : JSON.stringify(bad),
     );
     const d = deps({ llm });
     const out = await runContentJob(d, { trigger: "cron" });
@@ -415,7 +415,7 @@ describe("pipeline", () => {
     bad.body += "\n\nA crowd of 45000 watched.";
     const d = deps({
       llm: fakeLlm((_m, r) =>
-        r.system.startsWith("You are a fact checker")
+        r.system.startsWith("You are an independent fact checker")
           ? '{"unsupported":[]}'
           : r.prompt.includes("failed these checks")
             ? JSON.stringify(sampleDraft())
@@ -432,7 +432,7 @@ describe("pipeline", () => {
   it("queues Parallel output when the independent review cannot run", async () => {
     const d = deps({
       llm: fakeLlm((_m, r) =>
-        r.system.startsWith("You are a fact checker") ? quota() : JSON.stringify(sampleDraft()),
+        r.system.startsWith("You are an independent fact checker") ? quota() : JSON.stringify(sampleDraft()),
       ),
     });
     expect((await runContentJob(d, { trigger: "cron" })).status).toBe("queued_for_review");
@@ -443,7 +443,7 @@ describe("pipeline", () => {
       llm: fakeLlm((model, r) =>
         model === "gemini-3.8-flash"
           ? quota()
-          : r.system.startsWith("You are a fact checker")
+          : r.system.startsWith("You are an independent fact checker")
             ? '{"unsupported":[]}'
             : JSON.stringify(sampleDraft()),
       ),
@@ -543,7 +543,7 @@ describe("pipeline", () => {
       store,
       search,
       llm: fakeLlm((_m, r) =>
-        r.system.startsWith("You are a fact checker")
+        r.system.startsWith("You are an independent fact checker")
           ? '{"unsupported":[]}'
           : JSON.stringify(draft),
       ),
