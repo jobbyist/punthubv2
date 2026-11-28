@@ -18,8 +18,8 @@
     "cta": "Eis jou stigtersplek op"
   },
   "draw": {
-    "title": "Wen 'n OTT-koopbewys van R500",
-    "body": "Probeer Oefenmodus ten minste een keer, los dan jou terugvoer en merk die blokkie vir die trekking. Albei stappe is nodig. Slegs oop vir stigterslede.",
+    "title": "Drie wenners. Drie R500 OTT-bewyse.",
+    "body": "Kwalifiserende stigterslede met 'n aktiewe Puntr Pro-reg kan deelneem. Maak ten minste een Oefenmodus-keuse, dien jou terugvoer in en teken in vir die trekking. Inskrywings sluit op 31 Desember 2026 om 23:59 SAST.",
     "cta": "Gee terugvoer",
     "rules": "Reëls vir die trekking"
   },
@@ -54,12 +54,12 @@
     "BTTS": "Albei spanne score"
   },
   "selection": {
+    "12": "Tuis of weg",
     "home": "Tuis",
     "draw": "Gelykop",
     "away": "Weg",
     "1X": "Tuis of gelykop",
     "X2": "Gelykop of weg",
-    "12": "Tuis of weg",
     "over": "Meer as 2.5",
     "under": "Minder as 2.5",
     "yes": "Ja",
