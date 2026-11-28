@@ -464,8 +464,8 @@ const RESULTS_EARLIEST_MS = 105 * 60_000;
  */
 export function resultsGapMs(sinceKickoffMs: number): number {
   const minutesSinceKickoff = sinceKickoffMs / 60_000;
-  if (minutesSinceKickoff < 165) return 5 * 60_000;
-  if (minutesSinceKickoff < 360) return 15 * 60_000;
+  if (minutesSinceKickoff < 240) return 5 * 60_000;
+  if (minutesSinceKickoff < 720) return 15 * 60_000;
   return 60 * 60_000;
 }
 
