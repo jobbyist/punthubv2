@@ -53,7 +53,7 @@ export interface PfieExtractionSourceBatch {
  */
 export function chunkSourcesForExtraction(
   sources: PfieSource[],
-  maxBatchChars = 12_000,
+  maxBatchChars = 14_000,
   maxChunkChars = 6_000,
 ): PfieExtractionSourceBatch[] {
   const chunks: { source: PfieSource; originalIndex: number }[] = [];
