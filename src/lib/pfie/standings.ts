@@ -571,7 +571,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   // standings header is present, parse the row's printed numeric columns deterministically instead of
   // asking the language model to reconstruct JSON from an otherwise readable table.
   const plainHeaderIndex = lines.findIndex((line) => {
-    const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/);
+    const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/);
     const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
     return (
       has(aliases.position) &&
@@ -587,7 +587,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   });
   if (plainHeaderIndex >= 0) {
     const rowPattern =
-      /^\\s*(\\d{1,2})[.)]?\\s+(.+?)\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})\\s+([+-]?\\d{1,3})\\s+([+-]?\\d{1,3})(?:\\s+.*)?$/;
+      /^\s*(\\d{1,2})[.)]?\s+(.+?)\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+(\\d{1,3})\s+([+-]?\\d{1,3})\s+([+-]?\\d{1,3})(?:\s+.*)?$/;
     const rows: RawStandingRow[] = [];
     for (let rowIndex = plainHeaderIndex + 1; rowIndex < lines.length; rowIndex++) {
       const line = lines[rowIndex]!;
