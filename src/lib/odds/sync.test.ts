@@ -26,7 +26,7 @@ function makeDeps(options: { allowedDomains?: string[]; extractedPage?: string |
     record: async (scope, ok, error, meta) => { records.push({ scope, ok, error, meta }); },
   };
   const deps = {
-    search: { search: async () => ({ results: [{ url: "https://www.betway.co.za/soccer/odds", title: "Match odds", snippet: "Pre-match odds" }] }) },
+    search: { search: async () => [{ url: "https://www.betway.co.za/soccer/odds", title: "Match odds", snippet: "Pre-match odds" }] },
     extract: { extract },
     llm: { generate: async () => ({ text: answer, model: "parallel-chat:low" }) },
     store,
