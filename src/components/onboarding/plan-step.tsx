@@ -15,7 +15,7 @@ import { postToPayfast } from "@/lib/payfast-form";
 import { getProStatus, startCreditPurchase, startProSubscription } from "@/lib/payments.functions";
 
 const FREE = ["f1", "f2", "f3"] as const;
-const PRO = ["f1", "f2", "f3", "f4", "f5"] as const;
+const PRO = ["f1", "f7", "f2", "f3", "f4", "f5"] as const;
 const USES = [
   ["preview", 5],
   ["slip", 3],
