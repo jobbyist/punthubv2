@@ -25,7 +25,7 @@ describe("validateSavePlatformTaskInput", () => {
     expect(() => validateSavePlatformTaskInput({ ...valid, progress: "not-a-number" })).toThrow("Task progress must be a number");
   });
 
-  it("normalises valid task input without silently clamping invalid progress", () => {
+  it("accepts valid progress and rejects out-of-range progress", () => {
     expect(validateSavePlatformTaskInput(valid)).toMatchObject({
       title: valid.title,
       status: "planned",
@@ -33,6 +33,6 @@ describe("validateSavePlatformTaskInput", () => {
       progress: 0,
       dueDate: valid.dueDate,
     });
-    expect(() => validateSavePlatformTaskInput({ ...valid, progress: 101 })).not.toThrow();
+    expect(() => validateSavePlatformTaskInput({ ...valid, progress: 101 })).toThrow("Task progress must be a number between 0 and 100");
   });
 });
