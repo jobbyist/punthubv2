@@ -825,8 +825,12 @@ describe("provider", () => {
       only: ["seriea"],
       fixtures: targets,
     });
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 1 vs Away Club 1 result score 2026-11-12");
-    expect(captured.value?.queries.join(" ")).toContain("Home Club 12 vs Away Club 12 result score 2026-11-12");
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 1 vs Away Club 1 result score 2026-11-12",
+    );
+    expect(captured.value?.queries.join(" ")).toContain(
+      "Home Club 12 vs Away Club 12 result score 2026-11-12",
+    );
     expect(captured.value?.queries).toHaveLength(5);
     for (const target of targets) {
       expect(captured.value?.objective).toContain(`${target.home} vs ${target.away}`);

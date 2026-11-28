@@ -206,7 +206,7 @@ export function isConfirmedNoMatchesInWindow(result: {
     result.parsedSources > 0 &&
     result.parseFailures === 0 &&
     result.extracted > 0 &&
-    result.reasons.outside_date_range === result.extracted &&
+    result.reasons["outside_date_range"] === result.extracted &&
     Object.keys(result.reasons).every((reason) => reason === "outside_date_range")
   );
 }
