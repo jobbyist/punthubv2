@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Download, Plus, Share2, Smartphone, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { BellRing, Download, Maximize2, Plus, Share2, Smartphone, X, Zap } from "lucide-react";
+
+import { useConsentBannerPending, useOverlaySlot } from "@/hooks/use-overlay-slot";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -32,6 +35,15 @@ export function PwaExperience() {
   const [showNotch, setShowNotch] = useState(false);
   const [showIosGuide, setShowIosGuide] = useState(false);
   const [ios, setIos] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
+  const [installing, setInstalling] = useState(false);
+  const installRef = useRef<InstallPromptEvent | null>(null);
+  installRef.current = installEvent;
+  const reduceMotion = useReducedMotion();
+  // Nothing install-related shows while the cookie banner is up (or about to be), or over a dialog or the dock menu.
+  const consentPending = useConsentBannerPending();
+  const { bottom, blocked } = useOverlaySlot(showPrompt || showNotch);
+  const quiet = consentPending || blocked;
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -59,18 +71,22 @@ export function PwaExperience() {
     else window.addEventListener("load", refreshWorker, { once: true });
 
     // Re-check whenever a user returns to the installed PWA after a deployment.
-    const onFocus = () => void registration?.update().catch((error) => {
-      console.error("[Puntr PWA] Service worker focus update failed", error);
-    });
+    const onFocus = () =>
+      void registration?.update().catch((error) => {
+        console.error("[Puntr PWA] Service worker focus update failed", error);
+      });
     const onVisibility = () => {
       if (document.visibilityState === "visible") onFocus();
     };
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibility);
     // Check periodically while an installed PWA remains open, not only on navigation or refocus.
-    const updateInterval = window.setInterval(() => {
-      if (document.visibilityState === "visible") onFocus();
-    }, 5 * 60 * 1000);
+    const updateInterval = window.setInterval(
+      () => {
+        if (document.visibilityState === "visible") onFocus();
+      },
+      5 * 60 * 1000,
+    );
 
     return () => {
       disposed = true;
@@ -92,11 +108,28 @@ export function PwaExperience() {
   }, []);
 
   useEffect(() => {
+    // An explicit "Get the app" tap. The native dialog and the iOS guide are full-screen, so they can open at once;
+    // the card itself still waits for the consent banner.
     const requestInstall = () => {
       if (isStandalone()) return;
       setShowNotch(false);
+      if (isIosSafari()) {
+        setShowPrompt(true);
+        setShowIosGuide(true);
+        return;
+      }
+      const deferred = installRef.current;
+      if (deferred) {
+        installRef.current = null;
+        setInstallEvent(null);
+        void deferred.prompt().then(async () => {
+          const choice = await deferred.userChoice;
+          setInstallEvent(null);
+          if (choice.outcome !== "accepted") setShowNotch(true);
+        });
+        return;
+      }
       setShowPrompt(true);
-      if (isIosSafari()) setShowIosGuide(true);
     };
     window.addEventListener("puntr:request-install", requestInstall);
     return () => window.removeEventListener("puntr:request-install", requestInstall);
@@ -141,6 +174,22 @@ export function PwaExperience() {
     };
   }, [installEvent]);
 
+  // The notch tucks away while the page scrolls, so it never sits on top of text being read.
+  useEffect(() => {
+    if (!showNotch) return;
+    let timer: number | undefined;
+    const onScroll = () => {
+      setScrolling(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setScrolling(false), 900);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [showNotch]);
+
   const snooze = () => {
     try {
       localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 24 * 60 * 60 * 1000));
@@ -172,9 +221,22 @@ export function PwaExperience() {
       setShowIosGuide(true);
       return;
     }
-    if (!installEvent) return;
-    await installEvent.prompt();
-    const choice = await installEvent.userChoice;
+    // A deferred install prompt can only be shown once: consume it before awaiting so a double tap is a no-op.
+    const deferred = installRef.current;
+    if (!deferred || installing) return;
+    installRef.current = null;
+    setInstallEvent(null);
+    setInstalling(true);
+    let choice: { outcome: "accepted" | "dismissed" };
+    try {
+      await deferred.prompt();
+      choice = await deferred.userChoice;
+    } catch (error) {
+      console.error("[Puntr PWA] Install prompt failed", error);
+      return;
+    } finally {
+      setInstalling(false);
+    }
     if (choice.outcome === "accepted") {
       setShowPrompt(false);
       setShowNotch(false);
@@ -188,74 +250,107 @@ export function PwaExperience() {
     setInstallEvent(null);
   };
 
-  if ((!showPrompt && !showNotch) || isStandalone()) return null;
+  if ((!showPrompt && !showNotch && !showIosGuide) || isStandalone()) return null;
+  const notchVisible = showNotch && !showPrompt && !quiet;
+  const promptVisible = showPrompt && !quiet;
   return (
     <>
-      {showNotch && !showPrompt && (
+      {notchVisible && (
         <button
           type="button"
           onClick={reopenPrompt}
-          aria-label="Get The App"
-          className="fixed left-0 top-1/2 z-[90] inline-flex -translate-y-1/2 items-center gap-2 rounded-r-xl border border-l-0 border-white/15 bg-[#101510] px-3 py-3 text-xs font-extrabold text-white shadow-xl shadow-black/25 transition hover:bg-[#17351f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80]"
+          aria-label={t("pwa.notchLabel")}
+          title={t("pwa.notchLabel")}
+          className={`group fixed left-0 top-[58%] z-[60] inline-flex -translate-y-1/2 items-center gap-2 rounded-r-lg border border-l-0 border-white/15 bg-[#101510]/95 py-2.5 pl-1.5 pr-2 text-xs font-extrabold text-white shadow-lg shadow-black/25 backdrop-blur transition-[transform,opacity,background-color] duration-300 ease-out hover:bg-[#17351f] focus-visible:translate-x-0 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80] motion-reduce:transition-none lg:top-1/2 lg:px-3 lg:py-3 ${
+            scrolling ? "-translate-x-[70%] opacity-60" : "translate-x-0 opacity-100"
+          }`}
         >
-          <Download className="size-4 text-[#4ADE80]" />
-          <span className="[writing-mode:vertical-rl] rotate-180 tracking-wide">Get The App</span>
+          <Download className="size-4 text-[#4ADE80]" aria-hidden="true" />
+          <span className="hidden rotate-180 tracking-wide [writing-mode:vertical-rl] lg:inline">
+            {t("pwa.notch")}
+          </span>
         </button>
       )}
-      {showPrompt && (
-        <aside
-          className="fixed inset-x-3 z-[90] mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-4 text-white shadow-2xl shadow-black/30"
-          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)" }}
-          aria-label={t("pwa.promptLabel")}
-        >
-          <div className="flex items-start gap-3">
-            <img
-              src="/brand/icon-192.png"
-              alt=""
-              width={52}
-              height={52}
-              className="shrink-0 rounded-xl"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <p className="font-display text-sm font-extrabold tracking-tight">
-                  puntr<span className="text-[#16A34A]">.</span>
-                </p>
-                <span className="rounded-full bg-[#16A34A]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">
-                  {t("pwa.badge")}
-                </span>
+      <AnimatePresence>
+        {promptVisible && (
+          <motion.aside
+            key="pwa-install"
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-x-3 z-[60] mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-4 text-white shadow-2xl shadow-black/30 transition-[bottom] duration-300 ease-out motion-reduce:transition-none lg:left-6 lg:right-auto lg:mx-0 lg:w-[380px]"
+            style={{ bottom }}
+            aria-label={t("pwa.promptLabel")}
+          >
+            <div className="flex items-start gap-3">
+              <img
+                src="/brand/icon-192.png"
+                alt=""
+                width={48}
+                height={48}
+                className="size-12 shrink-0 rounded-xl"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <p className="font-display text-sm font-extrabold tracking-tight">
+                    puntr<span className="text-[#16A34A]">.</span>
+                  </p>
+                  <span className="rounded-full bg-[#16A34A]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">
+                    {t("pwa.badge")}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm font-semibold">{t("pwa.title")}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-white/65">{t("pwa.body")}</p>
               </div>
-              <p className="mt-1 text-sm font-semibold">{t("pwa.title")}</p>
-              <p className="mt-0.5 text-xs leading-relaxed text-white/65">{t("pwa.body")}</p>
+              <button
+                type="button"
+                onClick={dismissPermanently}
+                aria-label={t("action.close")}
+                className="-mr-1 -mt-1 grid size-9 shrink-0 place-items-center rounded-full text-white/55 transition hover:bg-white/10 hover:text-white"
+              >
+                <X className="size-4" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={dismissPermanently}
-              aria-label={t("action.close")}
-              className="rounded-full p-1 text-white/55 transition hover:bg-white/10 hover:text-white"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-          <div className="mt-3 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={install}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]"
-            >
-              {ios ? <Share2 className="size-4" /> : <Download className="size-4" />}
-              {t("pwa.install")}
-            </button>
-            <button
-              type="button"
-              onClick={snooze}
-              className="rounded-xl px-3 py-2.5 text-xs font-semibold text-white/65 transition hover:bg-white/10"
-            >
-              {t("pwa.notNow")}
-            </button>
-          </div>
-        </aside>
-      )}
+            <ul className="mt-3 flex flex-wrap gap-1.5" aria-label={t("pwa.perksLabel")}>
+              {(
+                [
+                  [Maximize2, "pwa.perkFullScreen"],
+                  [Zap, "pwa.perkFaster"],
+                  [BellRing, "pwa.perkAlerts"],
+                ] as const
+              ).map(([Icon, key]) => (
+                <li
+                  key={key}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-white/80"
+                >
+                  <Icon className="size-3 text-[#4ADE80]" aria-hidden="true" />
+                  {t(key)}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={install}
+                disabled={installing}
+                aria-busy={installing}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D] disabled:opacity-70"
+              >
+                {ios ? <Share2 className="size-4" /> : <Download className="size-4" />}
+                {t("pwa.install")}
+              </button>
+              <button
+                type="button"
+                onClick={snooze}
+                className="min-h-11 rounded-xl px-3 py-2.5 text-xs font-semibold text-white/65 transition hover:bg-white/10"
+              >
+                {t("pwa.notNow")}
+              </button>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
       {showIosGuide && (
         <div
           className="fixed inset-0 z-[110] flex items-end justify-center bg-black/65 p-3 sm:items-center"

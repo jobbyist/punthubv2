@@ -615,6 +615,8 @@ export function MobileNav() {
       {dockVisible && (
         <div
           inert={hideDock}
+          data-mobile-dock={hideDock ? "hidden" : "shown"}
+          data-dock-flyout={flyout ? "open" : undefined}
           className={`fixed inset-x-3 z-40 transition-transform duration-[250ms] ease-in-out motion-reduce:transition-none lg:hidden ${
             hideDock ? "translate-y-[150%]" : "translate-y-0"
           }`}

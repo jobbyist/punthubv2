@@ -194,7 +194,13 @@
       "notNow": "Not now",
       "error": "Couldn't enable notifications.",
       "enabling": "Enabling…"
-    }
+    },
+    "notch": "Get the app",
+    "notchLabel": "Get the Puntr app",
+    "perksLabel": "Why install",
+    "perkFullScreen": "Opens full screen",
+    "perkFaster": "Loads faster",
+    "perkAlerts": "Matchday alerts"
   },
   "proBadge": "PRO",
   "aiParticipant": "AI participant"
