@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   isConfirmedNoMatchesInWindow,
   historyRefreshDue,
+  hasHistoryResultEvidence,
   retryDue,
   seasonArchiveUrls,
   isStandingsBaselineFresh,
@@ -232,5 +233,16 @@ describe("flattened Stat-Football Championship extraction", () => {
     expect(parsed).toHaveLength(24);
     expect(parsed?.[0]).toMatchObject({ team: "Middlesbrough", goalsFor: 34, goalsAgainst: 22, points: 35 });
     expect(parsed?.[23]).toMatchObject({ team: "Derby County", goalsFor: 14, goalsAgainst: 35, points: 10 });
+  });
+});
+
+describe("history source retry evidence", () => {
+  it("recognises scorelines and final-time markers in extracted result pages", () => {
+    expect(hasHistoryResultEvidence("Middlesbrough 2–1 Stoke City FT")).toBe(true);
+    expect(hasHistoryResultEvidence("Full Time: Mamelodi Sundowns 4-1 Durban City")).toBe(true);
+    expect(hasHistoryResultEvidence("Final score 0-0")).toBe(true);
+  });
+  it("does not mistake a page with no results for a retry candidate", () => {
+    expect(hasHistoryResultEvidence("Upcoming fixtures and league table only")).toBe(false);
   });
 });

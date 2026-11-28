@@ -197,6 +197,30 @@ const HISTORY_DAYS = 42;
 const SEASON_WINDOW_DAYS = 7;
 /** A window that has failed this many times in a row is left alone (nothing to find, or no source has it). */
 const SEASON_GIVE_UP = 6;
+/** Detect whether an extracted page contains final-score evidence worth one bounded history retry. */
+export function hasHistoryResultEvidence(text: string): boolean {
+  const clean = text.replace(/\\/g, "").replace(/&nbsp;/gi, " ");
+  return (
+    /\b(?:FT|full[- ]?time|final|finished)\b/i.test(clean) ||
+    /\b\d{1,2}\s*[–-]\s*\d{1,2}\b/.test(clean)
+  );
+}
+
+function historySourceDiagnostics(sources: PfieSource[]): Record<string, unknown>[] {
+  return sources.map((source) => {
+    const text = source.text ?? "";
+    const marker = /\b(?:FT|full[- ]?time|final|finished)\b|\b\d{1,2}\s*[–-]\s*\d{1,2}\b/i.exec(text);
+    const center = marker?.index ?? 0;
+    return {
+      domain: source.domain,
+      url: source.url,
+      length: text.length,
+      scoreEvidence: hasHistoryResultEvidence(text),
+      excerpt: text.slice(Math.max(0, center - 250), Math.min(text.length, center + 750)),
+    };
+  });
+}
+
 
 /** An empty extraction is not proof that a date window had no matches. */
 export function isConfirmedNoMatchesInWindow(result: {
@@ -1542,16 +1566,16 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
     const sources = await gatherSources(
       deps,
       key,
-      `${c.name} results with final scores for every match played from ${sastDate(from)} to ${sastDate(to)}. ` +
-        `Prefer the official competition site and established sports news sites.`,
-      [`${c.name} results`, `${c.name} scores last matchdays`],
+      c.name + " results with final scores for every match played from " + sastDate(from) + " to " + sastDate(to) + ". " +
+        "Prefer the official competition site and established sports news sites.",
+      [c.name + " results", c.name + " scores last matchdays"],
       true,
       seasonArchiveUrls(c.name, sastDate(from)),
       true,
       MAX_SEASON_SOURCES,
     );
     if (sources.length === 0) throw new Error("no usable source");
-    const answer = await generate(
+    let answer = await generate(
       deps,
       extractionRequest({
         competition: c.name,
@@ -1561,40 +1585,107 @@ async function syncHistory(deps: TablesDeps, key: CompetitionKey, now: () => Dat
         sources,
       }),
     );
-    const raw = parseObservations(answer.text);
-    if (!raw) throw new Error("extraction answer was not valid JSON");
-    const { accepted } = validateObservations(raw, sources, {
-      from,
-      to,
-      now: to,
-      knownTeams: known,
-    });
-    const { rows, unverified } = verifyHistory(accepted, key, known);
+    let raw = parseObservations(answer.text);
+    let accepted: Observation[] = [];
+    let rejectedReasons: string[] = [];
+    let rows: HistoryRow[] = [];
+    let unverified = 0;
+    const validate = (observations: NonNullable<typeof raw>) => {
+      const result = validateObservations(observations, sources, {
+        from,
+        to,
+        now: to,
+        knownTeams: known,
+      });
+      const history = verifyHistory(result.accepted, key, known);
+      accepted = result.accepted;
+      rejectedReasons = result.rejected.map((item) => item.reason);
+      rows = history.rows;
+      unverified = history.unverified;
+    };
+    if (raw) validate(raw);
+
+    // A first pass can return valid JSON with an empty matches array even when the extracted pages visibly
+    // contain scorelines. Retry once, with an explicit instruction to inspect each source independently.
+    const hasPageScoreEvidence = sources.some((source) => hasHistoryResultEvidence(source.text));
+    let retryUsed = false;
+    if (rows.length === 0 && hasPageScoreEvidence) {
+      retryUsed = true;
+      const retryHint = !raw
+        ? "The first response was not valid JSON. Re-read every source independently and return its completed matches with explicit final scores as compact valid JSON."
+        : "The first response produced " + raw.length + " observations but zero independently verified finished results. " +
+          "Re-scan each source independently for completed matches in the requested date window. Do not omit score rows. " +
+          "Keep source indices exact. Prior validation rejections: " +
+          ([...new Set(rejectedReasons)].slice(0, 8).join(", ") || "none") + ".";
+      const retryAnswer = await generate(
+        deps,
+        extractionRequest({
+          competition: c.name,
+          from: sastDate(from),
+          to: sastDate(to),
+          today: sastDate(to),
+          sources,
+          retryHint,
+        }),
+      );
+      const retryRaw = parseObservations(retryAnswer.text);
+      if (retryRaw) {
+        raw = [...(raw ?? []), ...retryRaw];
+        answer = retryAnswer;
+        validate(raw);
+      } else if (!raw) {
+        raw = null;
+      }
+    }
+
+    if (!raw) {
+      await deps.store.record("history", key, false, "extraction answer was not valid JSON", {
+        extracted: 0,
+        accepted: 0,
+        unverified,
+        sourceCount: sources.length,
+        sourceDomains: sources.map((source) => source.domain),
+        retryUsed,
+        model: answer.model,
+        sourceDiagnostics: historySourceDiagnostics(sources),
+      });
+      return { ok: false, detail: "extraction answer was not valid JSON; not marked successful" };
+    }
     if (rows.length === 0) {
       await deps.store.record("history", key, false, "no independently verified results in rolling window", {
         extracted: raw.length,
         accepted: accepted.length,
         unverified,
+        rejectedReasons: [...new Set(rejectedReasons)].slice(0, 12),
         sourceCount: sources.length,
+        sourceDomains: sources.map((source) => source.domain),
+        retryUsed,
         model: answer.model,
+        sourceDiagnostics: historySourceDiagnostics(sources),
       });
       return { ok: false, detail: "no independently verified results in rolling window; not marked successful" };
     }
     // insert_team_results performs a natural-key upsert, so corrected scores replace stale values.
     const inserted = await deps.store.insertHistory(rows.map((r) => ({ ...r, competition: c.name })));
+    const dates = rows.map((row) => row.matchDate).sort();
     await deps.store.record("history", key, true, null, {
       verified: rows.length,
       insertedOrUpdated: inserted,
       unverified,
       sourceCount: sources.length,
+      sourceDomains: sources.map((source) => source.domain),
+      oldestVerifiedMatch: dates[0] ?? null,
+      newestVerifiedMatch: dates.at(-1) ?? null,
+      retryUsed,
       model: answer.model,
     });
     return {
       ok: true,
-      detail: `${inserted} new results (${rows.length} verified, ${unverified} unconfirmed)`,
+      detail: inserted + " new results (" + rows.length + " verified, " + unverified + " unconfirmed)",
     };
   } catch (e) {
     await deps.store.record("history", key, false, message(e), {}).catch(() => undefined);
     return { ok: false, detail: message(e) };
   }
 }
+
