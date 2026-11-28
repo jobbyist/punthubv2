@@ -73,17 +73,9 @@ const raw = (source: number, tweak?: (r: RawStandingRow) => RawStandingRow): Raw
     return tweak ? tweak(r) : r;
   });
 
-describe("PFIE standings extraction model order", () => {
-  it("uses the strongest free Flash models before Flash-Lite fallbacks", () => {
-    expect(DEFAULT_PFIE_MODELS.slice(0, 3)).toEqual([
-      "gemini-3.8-flash",
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
-    ]);
-    expect(DEFAULT_PFIE_MODELS.slice(3)).toEqual([
-      "gemini-3.5-flash-lite",
-      "gemini-3.1-flash-lite",
-    ]);
+describe("PFIE standings extraction model", () => {
+  it("uses Parallel Responses low effort as its only structured extraction model", () => {
+    expect(DEFAULT_PFIE_MODELS).toEqual(["parallel-low"]);
   });
 });
 describe("trusted standings publisher domains", () => {
@@ -1339,9 +1331,9 @@ describe("cup history source attribution", () => {
       },
       llm: {
         name: "fake",
-        generate: async () => ({ text: replies[Math.min(calls++, replies.length - 1)]!, model: "gemini-3.8-flash" }),
+        generate: async () => ({ text: replies[Math.min(calls++, replies.length - 1)]!, model: "parallel-low" }),
       },
-      models: ["gemini-3.8-flash"],
+      models: ["parallel-low"],
       now: () => new Date("2026-11-28T02:00:00Z"),
       store: {
         statuses: async (): Promise<SyncStatusRow[]> => [],
@@ -1410,7 +1402,7 @@ describe("official standings fallback", () => {
           };
         },
       },
-      models: ["gemini-3.8-flash"],
+      models: ["parallel-low"],
       now: () => new Date("2026-11-28T03:00:00Z"),
       store: {
         statuses: async (): Promise<SyncStatusRow[]> => [],
