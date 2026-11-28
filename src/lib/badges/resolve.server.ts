@@ -1,6 +1,6 @@
 /**
  * Server job for team badges: finds fixture, league-table and curated marquee teams without a verified badge and resolves
- * them with Parallel Search (SofaScore first, then Wikipedia), then mirrors the crest to Supabase Storage
+ * them with Parallel Search (SofaScore first, official team/league pages second, Wikipedia fallback), then mirrors the crest to Supabase Storage
  * (`media/teams/...`). Spare capacity upgrades Wikipedia badges to SofaScore crests. Quota-guarded: every Parallel
  * call claims a unit of the shared `parallel` quota, so badges never push the account past its cap.
  */
@@ -158,6 +158,69 @@ async function trySofascore(
   return null;
 }
 
+/** Extracts a candidate crest from an official team/league page discovered by Parallel Search. */
+async function tryOfficialPage(
+  client: SupabaseClient,
+  team: TeamRef,
+  hits: { url: string; title?: string; excerpt?: string }[],
+  apiKey: string,
+): Promise<{ logoUrl: string; page: string; image: string } | null> {
+  const candidates = hits.filter((hit) => {
+    try {
+      const url = new URL(hit.url);
+      const host = url.hostname.toLowerCase();
+      const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
+      return url.protocol === "https:"
+        && !host.includes("wikipedia.org")
+        && !host.includes("sofascore.")
+        && !/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)
+        && /official|club|team|crest|badge|logo|squad/i.test(text);
+    } catch {
+      return false;
+    }
+  }).slice(0, 2);
+  if (candidates.length === 0) return null;
+
+  const { createParallelExtract } = await import("@/lib/content/providers.server");
+  const { createQuotaClaim, guardExtract } = await import("@/lib/quota.server");
+  const extract = guardExtract(
+    createParallelExtract(apiKey, { timeoutMs: 25_000, attempts: 1 }),
+    await createQuotaClaim("team-badges:official-page-extract"),
+  );
+
+  for (const page of candidates) {
+    try {
+      const extracted = await extract.extract(page.url);
+      const markdown = extracted?.markdown ?? "";
+      const urls = new Set<string>();
+      for (const match of markdown.matchAll(/!\[[^\]]*\]\((https:\/\/[^)\s]+)\)/gi)) {
+        if (match[1]) urls.add(match[1].replace(/&amp;/g, "&"));
+      }
+      for (const match of markdown.matchAll(/https:\/\/[^\s)<>]+?\.(?:png|jpe?g|webp)(?:\?[^\s)<>]*)?/gi)) {
+        urls.add(match[0].replace(/&amp;/g, "&"));
+      }
+      const pageHost = new URL(page.url).hostname.toLowerCase();
+      const image = [...urls].find((candidate) => {
+        try {
+          const u = new URL(candidate);
+          const host = u.hostname.toLowerCase();
+          return u.protocol === "https:"
+            && (host === pageHost || host.endsWith(`.${pageHost}`))
+            && /logo|crest|badge|emblem|team|club/i.test(u.pathname);
+        } catch {
+          return false;
+        }
+      });
+      if (!image) continue;
+      const logoUrl = await mirror(client, image, badgePath(team.sport, team.name));
+      return { logoUrl, page: page.url, image };
+    } catch (error) {
+      console.warn("team-badges: official source failed", team.name, page.url, (error as Error).message);
+    }
+  }
+  return null;
+}
+
 export type ResolveOutcome = "verified" | "failed" | "quota" | "skipped";
 
 /** Resolves one team. Writes the result to team_badges either way. */
@@ -209,6 +272,20 @@ export async function resolveTeamBadge(
         logo_url: sofa.logoUrl,
         source_page: sofa.page.slice(0, 500),
         source_image: sofa.image.slice(0, 500),
+        last_error: null,
+        verified_at: new Date().toISOString(),
+        upgrade_checked_at: new Date().toISOString(),
+      });
+      return "verified";
+    }
+    const official = await tryOfficialPage(client, team, hits, apiKey);
+    if (official) {
+      await save({
+        status: "verified",
+        method: "parallel_official",
+        logo_url: official.logoUrl,
+        source_page: official.page.slice(0, 500),
+        source_image: official.image.slice(0, 500),
         last_error: null,
         verified_at: new Date().toISOString(),
         upgrade_checked_at: new Date().toISOString(),
