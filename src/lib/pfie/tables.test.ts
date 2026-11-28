@@ -128,6 +128,7 @@ describe("PFIE historical season windows", () => {
     expect(uecl).toContain("https://www.bbc.com/sport/football/europa-conference-league/scores-fixtures");
     expect(uecl).toContain("https://www.espn.com/soccer/scoreboard/_/league/uefa.europa.conf");
     expect(uecl).toContain("https://www.skysports.com/europa-conference-league-scores-fixtures");
+    expect(uecl).toContain("https://www.flashscore.com/football/europe/conference-league/results/");
     expect(caf).toContain("https://www.vavel.com/en-us/data/caf-confederation-cup/results");
     expect(caf).toContain("https://foot-africa.com/en/leagues/international/caf-confederations-cup/");
   });
@@ -298,5 +299,16 @@ describe("history page truncation", () => {
   });
   it("leaves short source pages unchanged apart from normal cleaning", () => {
     expect(cleanHistoryText("Recent result: Home 2-1 Away", 1_000)).toContain("Home 2-1 Away");
+  });
+});
+
+describe("Flashscore history result evidence", () => {
+  it("recognises round/date/time pages with separate home and away score cells", () => {
+    expect(
+      hasHistoryResultEvidence("Results Round 4 26.11. 20:00 Ajax Ajax Thun Thun 4 0 26.11. 20:00 Braga Braga KuPS KuPS 4 0"),
+    ).toBe(true);
+  });
+  it("still rejects standings goal-difference rows without dated result rounds", () => {
+    expect(hasHistoryResultEvidence("Premier League Table Wrexham 17 -1 22 Pts 35 Form")).toBe(false);
   });
 });
