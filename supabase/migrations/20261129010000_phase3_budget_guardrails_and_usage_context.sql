@@ -115,7 +115,8 @@ create trigger api_call_event_context_before_insert
 before insert on public.api_call_events
 for each row execute function private.api_call_event_context_before_insert();
 
-create index if not exists api_call_events_request_id_idx
+drop index if exists public.api_call_events_request_id_idx;
+create unique index api_call_events_request_id_uidx
   on public.api_call_events ((metadata->>'request_id'))
   where metadata ? 'request_id';
 
@@ -149,6 +150,7 @@ declare
   v_operation text;
   v_is_synthetic boolean := false;
   v_existing_cooldown timestamptz;
+  v_existing_status text;
 begin
   if p_provider is null or trim(p_provider) = '' or p_units is null or p_units < 1 then
     raise exception 'provider and positive units are required';
@@ -165,6 +167,15 @@ begin
   ));
   if v_context->>'request_id' is null then
     raise exception 'request_id is required for contextual quota claims';
+  end if;
+
+  -- Request ids make a claim idempotent across PostgREST retries. A repeated id never debits twice.
+  perform pg_advisory_xact_lock(hashtext('api-request:' || (v_context->>'request_id')));
+  select status into v_existing_status
+    from public.api_call_events
+   where metadata->>'request_id' = v_context->>'request_id';
+  if found then
+    return false;
   end if;
 
   perform pg_advisory_xact_lock(hashtext('api-provider-cooldown:' || p_provider));
@@ -350,7 +361,8 @@ begin
            'error', case when p_status = 'error' then left(coalesce(p_error, 'provider request failed'), 300) else null end
          ))
    where provider = p_provider
-     and metadata->>'request_id' = p_request_id;
+     and metadata->>'request_id' = p_request_id
+     and status = 'claimed';
 
   get diagnostics v_updated = row_count;
   if v_updated > 0 and p_status = 'error' then
