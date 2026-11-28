@@ -29,6 +29,7 @@ const ALIASES: Record<string, string> = {
   "bayern munchen": "bayern munich",
   "bayer 04 leverkusen": "bayer leverkusen",
   "stade rennais": "rennes",
+  sttruiden: "sint truidense",
   leverkusen: "bayer leverkusen",
   linz: "lask",
   "lask linz": "lask",
