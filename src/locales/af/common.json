@@ -194,5 +194,7 @@
       "error": "Kon nie kennisgewings aktiveer nie.",
       "enabling": "Aktiveer…"
     }
-  }
+  },
+  "proBadge": "PRO",
+  "aiParticipant": "KI-deelnemer"
 }
