@@ -19,8 +19,8 @@ as $function$
   from public.market_odds m
   join public.fixtures f on f.id = m.fixture_id
   join public.bookmaker_odds_permissions bp
-    on regexp_replace(lower(bp.domain), '^www\\.', '') =
-       regexp_replace(lower(m.source_domain), '^www\\.', '')
+    on regexp_replace(lower(bp.domain), '^www[.]', '') =
+       regexp_replace(lower(m.source_domain), '^www[.]', '')
   where m.fixture_id = any (p_fixture_ids)
     and cardinality(p_fixture_ids) <= 200
     and f.status = 'scheduled' and f.kickoff_at > now()
