@@ -7,6 +7,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { FixtureStatus } from "@/lib/sports/types";
 
 import type { KnownFixture, PfieStore } from "./types";
+import { mapProviderUsage } from "./usage";
 
 const db = supabaseAdmin as unknown as SupabaseClient;
 
