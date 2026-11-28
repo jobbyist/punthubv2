@@ -647,6 +647,8 @@ export interface SystemHealth {
   quotas: QuotaRow[];
   /** Monthly USD budgets per provider family (docs/PARALLEL_ARCHITECTURE.md). */
   spend: { family: string; monthlyUsd: number; spentUsd: number; remainingUsd: number }[];
+  /** Per-consumer API call attribution for the last seven days. */
+  attribution: { consumer: string; feature: string; provider: string; calls: number; estimatedUsd: number; lastCall: string }[];
   settings: Record<string, string>;
   scoring: { market: string; points: number }[];
   keys: Record<string, boolean>;
@@ -693,6 +695,7 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
       upcoming,
       pfieFixtures,
       spend,
+      attribution,
     ] = await Promise.all([
       db.rpc("api_quota_status"),
       db.from("app_settings").select("key, value"),
@@ -723,6 +726,7 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
       db.from("fixtures").select("id", { count: "exact", head: true }).eq("provider", "pfie"),
       // Empty until migration 20261115010000 is applied (the function does not exist yet).
       db.rpc("api_spend_status"),
+      db.rpc("api_usage_attribution_status", { p_days: 7 }),
     ]);
     const has = (k: string) => Boolean(process.env[k]?.trim());
     const cs = (contentSettings.data ?? {}) as Record<string, unknown>;
@@ -742,6 +746,16 @@ export const adminSystemHealth = createServerFn({ method: "GET" })
           monthlyUsd: Number(b["monthly_usd"]),
           spentUsd: Number(b["spent_usd"]),
           remainingUsd: Number(b["remaining_usd"]),
+        }),
+      ),
+      attribution: ((attribution.error ? [] : (attribution.data ?? [])) as Record<string, unknown>[]).map(
+        (row) => ({
+          consumer: String(row["consumer"] ?? "legacy-unattributed"),
+          feature: String(row["feature"] ?? "unattributed"),
+          provider: String(row["provider"] ?? ""),
+          calls: Number(row["calls"] ?? 0),
+          estimatedUsd: Number(row["estimated_usd"] ?? 0),
+          lastCall: String(row["last_call"] ?? ""),
         }),
       ),
       settings: Object.fromEntries(
