@@ -582,7 +582,7 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
   const plainHeaderIndex = lines.findIndex((line) => {
     const tokens = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/);
     const has = (keys: readonly string[]) => keys.some((key) => tokens.includes(key));
-    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line) || tokens[0] === "team";
+    const hasPosition = has(aliases.position) || /^\s*#\s+/.test(line) || tokens[0] === "team" || tokens[0] === "club";
     const hasGoals = (has(aliases.goalsFor) && has(aliases.goalsAgainst)) || has(aliases.goalsCombined);
     return hasPosition && has(aliases.team) && has(aliases.played) &&
       has(aliases.won) && has(aliases.drawn) && has(aliases.lost) && hasGoals && has(aliases.points);
@@ -639,6 +639,48 @@ export function parseStandingsMarkdown(text: string, source: number): RawStandin
     }
     if (rows.length >= 4) return rows;
   }
+  // Parallel Extract can flatten a table into one text line. Parse the numeric row pattern directly
+  // before falling back to an LLM; this keeps the two-source standings path deterministic and cheap.
+  const flattened = text
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\bTeam Badge\b/gi, " ")
+    .replace(/~~/g, "")
+    .replace(/\\/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const tableHeaderPatterns = [
+    /Position\s+Team(?:\s+Team)?\s+Pl\s+Played\s+W\s+Won\s+D\s+Drawn\s+L\s+Lost\s+F\s+Goals\s+For\s+A\s+Goals\s+Against\s+GD\s+Goal\s+Difference\s+Pts\s+Points/i,
+    /\bClub\s+P\s+W\s+D\s+L\s+Goals\s+GD\s+Pts\b/i,
+    /\bTeam\s+Pl\s+W\s+D\s+L\s+F\s+A\s+GD\s+Pts\b/i,
+  ];
+  const header = tableHeaderPatterns
+    .map((pattern) => pattern.exec(flattened))
+    .find((match) => match !== null);
+  if (!header) return null;
+  const tableText = flattened.slice(header.index + header[0].length);
+  const flattenedRowPattern =
+    /(?:^|\s)(\d{1,2})\s+(.+?)\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})(?:\s*[:–-]\s*|\s+)(\d{1,3})\s+([+-]?\d{1,3})\s+(\d{1,3})/g;
+  const flattenedRows: RawStandingRow[] = [];
+  for (const match of tableText.matchAll(flattenedRowPattern)) {
+    const position = integer(match[1] ?? "");
+    const team = (match[2] ?? "").replace(/^\\?\*\s*/, "").trim();
+    const played = integer(match[3] ?? "");
+    const won = integer(match[4] ?? "");
+    const drawn = integer(match[5] ?? "");
+    const lost = integer(match[6] ?? "");
+    const goalsFor = integer(match[7] ?? "");
+    const goalsAgainst = integer(match[8] ?? "");
+    const points = integer(match[10] ?? "", true);
+    if (
+      position === null || !team || played === null || won === null || drawn === null ||
+      lost === null || goalsFor === null || goalsAgainst === null || points === null
+    ) continue;
+    flattenedRows.push({
+      source, position, team, played, won, drawn, lost, goalsFor, goalsAgainst, points,
+      quote: match[0].trim(), tableDate: null, tableDateQuote: null,
+    });
+  }
+  if (flattenedRows.length >= 4) return flattenedRows;
   return null;
 }
 
@@ -680,7 +722,7 @@ export function extractStandingsTableDate(page: string, now: Date = new Date()):
     month < 0 || month > 11 || day < 1 || day > 31 ||
     parsed.getUTCMonth() !== month || parsed.getUTCDate() !== day
   ) return null;
-  return { date: parsed.toISOString().slice(0, 10), quote: line.trim() };
+  return { date: parsed.toISOString().slice(0, 10), quote: marked[0].trim() };
 }
 
 function dateAppearsOnPage(page: string, date: string): boolean {
@@ -850,6 +892,11 @@ export function validateTables(
     const sourceLines = source.text.split("\n");
     const hasRowEvidence = (r: RawStandingRow, teamVariants: string[]) => {
       const variants = teamVariants.map(fold).filter(Boolean);
+      const cleanEvidence = (value: string) =>
+        fold(value.replace(/\bTeam Badge\b/gi, " ").replace(/~~/g, " ").replace(/\\/g, " ").replace(/\s+/g, " "));
+      const quotedRow = cleanEvidence(r.quote ?? "");
+      const cleanedPage = cleanEvidence(source.text);
+      if (quotedRow && cleanedPage.includes(quotedRow)) return true;
       const expectedOrders = [
         [r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst, r.points],
         [r.points, r.played, r.won, r.drawn, r.lost, r.goalsFor, r.goalsAgainst],
