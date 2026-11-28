@@ -28,6 +28,62 @@ export function searchName(name: string): string {
     .join(" ");
 }
 
+const OFFICIAL_LEAGUE_DOMAINS: Record<string, string[]> = {
+  "betway premiership": ["psl.co.za"],
+  bundesliga: ["bundesliga.com"],
+  "caf confederation cup": ["cafonline.com"],
+  "efl championship": ["efl.com"],
+  "la liga": ["laliga.com"],
+  "liga portugal": ["ligaportugal.pt"],
+  "ligue 1": ["ligue1.com"],
+  "premier league": ["premierleague.com"],
+  "saudi pro league": ["spl.com.sa"],
+  "serie a": ["legaseriea.it"],
+  "uefa champions league": ["uefa.com"],
+  "uefa conference league": ["uefa.com"],
+};
+
+const NON_OFFICIAL_LOGO_SOURCES = [
+  /(^|\.)footylogos\.com$/i,
+  /(^|\.)football-logos\.cc$/i,
+  /(^|\.)transfermarkt\./i,
+  /(^|\.)soccerway\./i,
+  /(^|\.)worldfootball\.net$/i,
+  /(^|\.)espn\./i,
+  /(^|\.)flashscore\./i,
+  /(^|\.)fotmob\.com$/i,
+  /(^|\.)goal\.com$/i,
+  /(^|\.)wikipedia\.org$/i,
+  /(^|\.)sofascore\./i,
+];
+
+export function isOfficialBadgeSource(
+  hit: { url: string; title?: string; excerpt?: string },
+  teamName: string,
+  competition: string,
+): boolean {
+  try {
+    const url = new URL(hit.url);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    if (NON_OFFICIAL_LOGO_SOURCES.some((pattern) => pattern.test(host))) return false;
+    if (/(facebook|instagram|twitter|x\.com|youtube|tiktok)\./i.test(host)) return false;
+
+    const text = `${hit.title ?? ""} ${hit.excerpt ?? ""} ${hit.url}`;
+    const officialSite = /\bofficial\b.{0,50}\b(website|site|club|team|league)\b|\b(website|site)\b.{0,50}\bofficial\b/i.test(text);
+    const knownLeagueDomain = (OFFICIAL_LEAGUE_DOMAINS[competition.trim().toLowerCase()] ?? [])
+      .some((domain) => host === domain || host.endsWith(`.${domain}`));
+
+    const teamTokens = badgeKey(teamName)
+      .split(" ")
+      .filter((token) => token.length >= 4 && !["club", "team", "football", "united", "city"].includes(token));
+    const teamDomain = teamTokens.some((token) => host.includes(token));
+    return knownLeagueDomain || (officialSite && (teamDomain || /\bofficial\s+(website|site)\b/i.test(text)));
+  } catch {
+    return false;
+  }
+}
+
 export function badgeSearchRequest(name: string, competition: string, sport: string) {
   const full = searchName(name);
   const national = /world cup|international|national/i.test(competition);
