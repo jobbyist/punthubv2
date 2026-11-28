@@ -70,11 +70,13 @@ function Author({ profile, generated, createdAt }: { profile: PublicProfile | nu
           ) : (
             <span className="font-semibold">{authorLabel(profile)}</span>
           )}
-          {(profile?.is_ai_participant || generated) && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary-soft px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
-              <Sparkles className="size-3" /> AI-GENERATED
+          {profile?.is_ai_participant ? (
+            <ProBadge aiParticipant />
+          ) : generated ? (
+            <span className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-muted-foreground">
+              AI
             </span>
-          )}
+          ) : null}
           {profile?.founding_number && (
             <span className="text-[10px] text-muted-foreground">Founding #{profile.founding_number}</span>
           )}
