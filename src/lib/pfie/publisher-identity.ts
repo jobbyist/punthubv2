@@ -5,7 +5,7 @@ const ROOTS: Array<[string, readonly string[]]> = [
   ["dfb", ["dfb.de"]],
   ["bundesliga", ["bundesliga.com"]],
   ["espn", ["espn.com", "espn.co.uk"]],
-  ["sky-sports", ["skysports.com"]],
+  ["sky", ["sky.com", "skysports.com"]],
   ["supersport", ["supersport.com"]],
   ["goal", ["goal.com"]],
   ["uefa", ["uefa.com"]],
@@ -18,7 +18,6 @@ const ROOTS: Array<[string, readonly string[]]> = [
   ["football-edge-lab", ["footballedgelab.com"]],
   ["caf", ["cafonline.com"]],
   ["psl", ["psl.co.za"]],
-  ["sky", ["sky.com"]],
   ["reuters", ["reuters.com"]],
   ["ap", ["apnews.com"]],
 ];
