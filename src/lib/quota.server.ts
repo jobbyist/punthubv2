@@ -21,9 +21,13 @@ const isMissingFunction = (error: { code?: string; message: string }) =>
  * and then the call caps; before that migration is applied it falls back to the call caps alone, so deploying this
  * code first changes nothing.
  */
-export async function createQuotaClaim(feature: string): Promise<Claim> {
+export async function createQuotaClaim(feature: string, consumerInput?: string): Promise<Claim> {
   if (!feature.trim() || feature === "unattributed") {
     throw new Error("createQuotaClaim requires a named feature for usage attribution");
+  }
+  const consumer = (consumerInput?.trim() || feature.split(":")[0] || "unknown").toLowerCase();
+  if (!/^[a-z0-9][a-z0-9_-]{1,39}$/.test(consumer)) {
+    throw new Error("createQuotaClaim requires a valid consumer label");
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as SupabaseClient;
@@ -31,12 +35,12 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
 
   const recordClaim = async (provider: string) => {
     try {
-      const { error } = await db.from("api_call_events").insert({ provider, feature });
+      const { error } = await db.from("api_call_events").insert({ provider, feature, consumer });
       if (error) {
-        console.warn("quota: call attribution could not be recorded", provider, feature, error.message);
+        console.warn("quota: call attribution could not be recorded", provider, consumer, feature, error.message);
       }
     } catch {
-      console.warn("quota: call attribution unavailable", provider, feature);
+      console.warn("quota: call attribution unavailable", provider, consumer, feature);
     }
   };
 
@@ -46,7 +50,7 @@ export async function createQuotaClaim(feature: string): Promise<Claim> {
         p_provider: provider,
         p_units: 1,
         p_feature: feature,
-        p_feature: feature,
+        p_consumer: consumer,
       });
       if (!error) {
         const granted = data === true;
