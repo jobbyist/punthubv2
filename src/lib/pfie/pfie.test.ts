@@ -674,6 +674,15 @@ const llm = (text: string | Error): LlmProvider & { models: string[] } => {
 const ANSWER = JSON.stringify({ matches: RAW });
 
 describe("provider", () => {
+  it("uses official SAFA match pages for Bafana friendlies", () => {
+    expect(PFIE_SOURCES["bafana-friendlies"]?.pages?.results).toContain(
+      "https://www.safa.net/general-news/disappointment-as-bafana-are-held-to-a-2-2-draw-by-kenya/",
+    );
+    expect(PFIE_SOURCES["bafana-friendlies"]?.pages?.results).toContain(
+      "https://www.safa.net/match-centre/fixtures/bafana-bafana-u23-vs-madagascar-u23-2/",
+    );
+  });
+
   it("uses official UEFA, Saudi Pro League and EFL result pages", () => {
     expect(PFIE_SOURCES.uecl?.pages?.results).toContain(
       "https://www.uefa.com/uefaconferenceleague/fixtures-results/",

@@ -357,8 +357,13 @@ export const PFIE_SOURCES: Partial<Record<CompetitionKey, CompetitionSources>> =
   },
   "bafana-friendlies": {
     official: ["safa.net"],
-    // Search only (no full-page reads), so the wider coverage uses Parallel Search excerpts without unnecessary page-extract calls.
-    pages: { fixtures: [], results: [] },
+    pages: {
+      fixtures: [],
+      results: [
+        "https://www.safa.net/general-news/disappointment-as-bafana-are-held-to-a-2-2-draw-by-kenya/",
+        "https://www.safa.net/match-centre/fixtures/bafana-bafana-u23-vs-madagascar-u23-2/",
+      ],
+    },
     queries: {
       fixtures: ["Bafana Bafana next match kick-off time SAST", "Bafana Bafana friendly fixture"],
       results: ["Bafana Bafana result", "Bafana Bafana full time score"],
