@@ -55,6 +55,7 @@ export const STANDINGS_COMPETITIONS: Partial<
       allowTeamCountIncrease?: boolean;
       allowVerifiedGoalCorrections?: boolean;
       allowVerifiedPlayedCorrections?: string[];
+      allowVerifiedRecordCorrections?: boolean;
     }
   >
 > = {
@@ -62,17 +63,15 @@ export const STANDINGS_COMPETITIONS: Partial<
     teams: 16,
     refreshHours: 12,
     queries: [
-      "Betway Premiership log table 2026/27",
-      "PSL standings table current season",
-      "site:stats.ladumaanalytics.co.za/log Betway Premiership",
-      "site:45min.co.za/tables Betway Premiership",
-      "site:nasiscore.co.za/south-africa/psl/table Betway Premiership 2026/27 standings",
-      "site:scoremondo.com/en/competition/south-africa-premier-league-2983/standings Betway Premiership table",
+      "Betway Premiership 2026/27 full 16-team table played won drawn lost goals for goals against points updated 27 November 2026",
+      "site:nasiscore.co.za/south-africa/psl/table Betway Premiership 2026/27 full standings",
+      "site:topbookmakers.co.za/psl-log Betway Premiership 2026/27 full table",
+      "site:tntsports.co.uk/football/absa-premiership/standings.shtml Betway Premiership standings",
     ],
     pages: [
-      "https://stats.ladumaanalytics.co.za/log",
-      "https://45min.co.za/tables",
       "https://nasiscore.co.za/south-africa/psl/table",
+      "https://topbookmakers.co.za/psl-log/",
+      "https://www.tntsports.co.uk/football/absa-premiership/standings.shtml",
       "https://scoremondo.com/en/competition/south-africa-premier-league-2983/standings",
     ],
   },
@@ -115,15 +114,18 @@ export const STANDINGS_COMPETITIONS: Partial<
     teams: 20,
     refreshHours: 12,
     queries: [
-      "Serie A Enilive standings 2026/27",
-      "Italian Serie A current table full standings",
-      "site:skysports.com/football/competitions/serie-a/table Serie A table",
+      "Serie A 2026/27 full 20-team standings updated 27 November 2026 played wins draws losses goals for goals against points",
+      "site:en.legaseriea.it/serie-a/standings 2026/27 Serie A official table",
+      "site:serieaschedule.com/serie-a/standings Serie A 2026/27 full table",
+      "site:sportnewsafrica.com/en/fixtures/serie-a/table Serie A 2026/27 standings",
     ],
     pages: [
       "https://en.legaseriea.it/serie-a/standings",
-      "https://www.skysports.com/football/competitions/serie-a/table",
+      "https://www.serieaschedule.com/serie-a/standings",
+      "https://sportnewsafrica.com/en/fixtures/serie-a/table/",
     ],
     allowVerifiedPlayedCorrections: ["Milan"],
+    allowVerifiedRecordCorrections: true,
   },
   bundesliga: {
     teams: 18,
@@ -215,21 +217,16 @@ export const STANDINGS_COMPETITIONS: Partial<
     teams: 24,
     refreshHours: 12,
     queries: [
-      "EFL Championship full overall league table played won drawn lost goals for goals against points",
-      "site:efl.com/competitions/efl-championship EFL Championship league table",
-      "site:bbc.com/sport/football/championship/table EFL Championship table",
-      "site:skysports.com/football/competitions/championship/table Championship standings",
-      "site:espn.com/soccer/standings/_/league/eng.2 EFL Championship standings",
-      "site:zeanball.online/en/table/championship Championship 2026/27 table",
-      "site:statsfera.com.tr/en/standings/ingiltere-championship EFL Championship 2026/27",
+      "EFL Championship 2026/27 full 24-team table played won drawn lost goals for goals against points updated 27 November 2026",
+      "site:stat-football.com/en/t/eng20.php EFL Championship 2026/27 table",
+      "site:zeanball.online/en/table/championship Championship 2026/27 full standings",
+      "site:skysports.com/championship-table EFL Championship standings 27 November 2026",
     ],
     pages: [
-      "https://www.efl.com/competitions/efl-championship/",
-      "https://www.bbc.com/sport/football/championship/table",
-      "https://www.skysports.com/football/competitions/championship/table",
-      "https://www.espn.com/soccer/standings/_/league/eng.2",
+      "https://www.stat-football.com/en/t/eng20.php",
       "https://zeanball.online/en/table/championship/",
-      "https://statsfera.com.tr/en/standings/ingiltere-championship",
+      "https://www.skysports.com/championship-table?dcmp=GameOn",
+      "https://www.efl.com/competitions/efl-championship/",
     ],
   },
   "saudi-pro": {
@@ -810,6 +807,7 @@ export function tableRegression(
   allowVerifiedGoalCorrections = false,
   allowVerifiedPlayedCorrections: readonly string[] = [],
   allowTeamCountIncrease = false,
+  allowVerifiedRecordCorrections = false,
 ): string | null {
   if (previous.length === 0) return null;
   const addedTeams = candidate.length - previous.length;
@@ -840,6 +838,11 @@ export function tableRegression(
       next.drawn === old.drawn &&
       next.lost === old.lost &&
       next.points === old.points;
+    const verifiedRecordCorrection =
+      allowVerifiedRecordCorrections &&
+      next.played === old.played &&
+      next.won + next.drawn + next.lost === next.played &&
+      next.points === 3 * next.won + next.drawn;
     const fields = ["won", "drawn", "lost", "goalsFor", "goalsAgainst", "points"] as const;
     for (const field of fields) {
       if (next.played === old.played && next[field] !== old[field]) {
@@ -847,10 +850,14 @@ export function tableRegression(
           allowVerifiedGoalCorrections &&
           resultRecordUnchanged &&
           (field === "goalsFor" || field === "goalsAgainst");
-        if (verifiedGoalCorrection) continue;
+        const verifiedRecordField = field === "won" || field === "drawn" || field === "lost" || field === "points";
+        if (verifiedGoalCorrection || (verifiedRecordCorrection && verifiedRecordField)) continue;
         return `${field}_changed_without_new_matches_${old.team}`;
       }
-      if (next[field] < old[field]) return `${field}_regressed_${old.team}`;
+      const verifiedRecordField = field === "won" || field === "drawn" || field === "lost" || field === "points";
+      if (next[field] < old[field] && !(verifiedRecordCorrection && verifiedRecordField)) {
+        return `${field}_regressed_${old.team}`;
+      }
     }
   }
   return null;
