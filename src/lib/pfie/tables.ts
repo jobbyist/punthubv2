@@ -16,6 +16,7 @@ import { archiveJobsDue, runArchiveJob } from "./archive-run";
 import { verifyHistory, needsBackfill, type HistoryRow } from "./history";
 import { PFIE_SOURCES, tierOf } from "./provider";
 import { normaliseTeam } from "./teams";
+import { modelQuotaOptions } from "./usage";
 import {
   STANDINGS_COMPETITIONS,
   STANDINGS_LAUNCH_KEYS,
@@ -606,14 +607,8 @@ async function generate(
 ) {
   const models = modelOverride ?? deps.models ?? ["parallel-low"];
   const usage = (await deps.usageToday?.().catch(() => ({}))) ?? {};
-  const usedToday: Record<string, number> = {};
-  for (const m of models) {
-    const effort = /^parallel-(low|medium|high)$/.exec(m)?.[1];
-    usedToday[m] = effort
-      ? ((usage as Record<string, number>)[`parallel-chat:${effort}`] ?? 0)
-      : ((usage as Record<string, number>)[m] ?? 0);
-  }
-  return createModelRouter(deps.llm, { models, usedToday }).generate(request);
+  const quota = modelQuotaOptions(models, usage as Record<string, number>);
+  return createModelRouter(deps.llm, { models, ...quota }).generate(request);
 }
 
 const message = (e: unknown) =>
